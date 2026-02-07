@@ -28,7 +28,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, title, language = 'cpp' }) 
     };
 
     return (
-        <div className="rounded-xl overflow-hidden border border-slate-700/50 bg-[#1e1e1e] my-6 shadow-2xl relative group">
+        <div className="relative group bg-[#1e1e1e] h-full">
 
             {title && (
                 <div className="flex items-center justify-between bg-white/5 px-4 py-2.5 border-b border-white/5">
@@ -45,7 +45,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, title, language = 'cpp' }) 
             </button>
 
             {/* Code Content */}
-            <div className="p-6 overflow-x-auto custom-scrollbar">
+            <div className={`p-6 overflow-x-auto custom-scrollbar ${!title ? 'pt-6' : ''}`}>
                 <pre className="!bg-transparent !m-0 !p-0 font-mono text-sm leading-relaxed">
                     <code ref={codeRef} className={`language-${language}`}>
                         {code}

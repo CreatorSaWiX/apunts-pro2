@@ -45,14 +45,6 @@ const TopicPage: React.FC = () => {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="mb-2 border-b border-white/5 pb-4"
                 >
-                    <Link
-                        to="/"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-sky-400 transition-colors mb-6 group"
-                    >
-                        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                        Tornar a l'inici
-                    </Link>
-
                     <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-6">
                         {topic.title}
                     </h1>

@@ -1,27 +1,34 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, X, BookOpen, ChevronRight, Menu } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { X, BookOpen, ChevronRight, Menu, ArrowLeft, User, LogIn } from 'lucide-react';
 import { topics } from '../data/notes';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navigation: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const { user } = useAuth();
 
     return (
         <>
             {/* Top-Left Floating Navigation Pill */}
             <div className="fixed top-6 left-6 z-50">
                 <div className="flex items-center p-1.5 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl transition-all hover:bg-slate-900/80">
-                    <Link
-                        to="/"
-                        className={`p-2.5 rounded-full transition-all ${location.pathname === '/' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-                        title="Inici"
-                    >
-                        <Home size={20} />
-                    </Link>
 
-                    <div className="w-px h-5 bg-white/10 mx-1" />
+                    {location.pathname !== '/' && (
+                        <>
+                            <Link
+                                to="/"
+                                className="p-2.5 rounded-full text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+                                title="Tornar a l'Inici"
+                            >
+                                <ArrowLeft size={20} />
+                            </Link>
+                            <div className="w-px h-5 bg-white/10 mx-1" />
+                        </>
+                    )}
 
                     <button
                         onClick={() => setIsMenuOpen(true)}
@@ -30,6 +37,27 @@ const Navigation: React.FC = () => {
                     >
                         <Menu size={20} />
                     </button>
+
+                    <div className="w-px h-5 bg-white/10 mx-1" />
+
+                    {user ? (
+                        <Link
+                            to="/profile"
+                            className="p-1.5 pr-3 rounded-full flex items-center gap-2 hover:bg-white/5 transition-colors"
+                            title="El meu perfil"
+                        >
+                            <img src={user.avatar} alt={user.username} className="w-7 h-7 rounded-full bg-slate-800 border border-white/10" />
+                            <span className="text-sm font-medium text-slate-300 hidden sm:inline">{user.username}</span>
+                        </Link>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="p-2.5 rounded-full text-slate-400 hover:text-sky-400 hover:bg-white/5 transition-colors"
+                            title="Iniciar Sessió"
+                        >
+                            <LogIn size={20} />
+                        </Link>
+                    )}
                 </div>
             </div>
 

@@ -5,6 +5,12 @@ import Navigation from './components/Navigation';
 import TopicPage from './components/TopicPage';
 import Background from './components/Background';
 import TopicCarousel from './components/TopicCarousel';
+import SolutionsListPage from './components/SolutionsListPage';
+import SolutionDetailPage from './components/SolutionDetailPage';
+import LoginPage from './components/LoginPage';
+import ProfilePage from './components/ProfilePage';
+import NewSolutionPage from './components/NewSolutionPage';
+import { AuthProvider } from './contexts/AuthContext';
 
 const HomePage = () => {
   // Lock scroll on mount
@@ -37,16 +43,24 @@ const HomePage = () => {
 
 function App() {
   return (
-    <div className="min-h-screen text-slate-200 selection:bg-sky-500/30 font-sans relative">
+    <AuthProvider>
+      <div className="min-h-screen text-slate-200 selection:bg-sky-500/30 font-sans relative">
 
-      <Background />
-      <Navigation />
+        <Background />
+        <Navigation />
 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/tema/:id" element={<TopicPage />} />
-      </Routes>
-    </div>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:uid" element={<ProfilePage />} />
+          <Route path="/new-solution" element={<NewSolutionPage />} />
+          <Route path="/tema/:id" element={<TopicPage />} />
+          <Route path="/tema/:id/solucionaris" element={<SolutionsListPage />} />
+          <Route path="/tema/:id/solucionaris/:problemId" element={<SolutionDetailPage />} />
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
 

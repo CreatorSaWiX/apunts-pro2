@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { topics } from '../data/notes';
-import { ArrowRight, Book } from 'lucide-react';
+import { ArrowRight, Book, Terminal } from 'lucide-react';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 
 function SpotlightCard({
@@ -48,6 +48,7 @@ function SpotlightCard({
 }
 
 const TopicCarousel: React.FC = () => {
+    const navigate = useNavigate();
     const [activeIndex, setActiveIndex] = useState(0);
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -112,9 +113,8 @@ const TopicCarousel: React.FC = () => {
                     const isActive = activeIndex === i;
 
                     return (
-                        <Link
+                        <div
                             key={topic.id}
-                            to={`/tema/${topic.id}`}
                             draggable="false"
                             data-index={i}
                             className={`carousel-card flex-shrink-0 snap-center outline-none transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${isActive ? 'scale-100 z-10' : 'scale-90 opacity-40 blur-[2px] grayscale-[0.5] hover:opacity-60 hover:scale-95'
@@ -123,6 +123,9 @@ const TopicCarousel: React.FC = () => {
                                 if (!isActive) {
                                     e.preventDefault();
                                     scrollTo(i);
+                                } else {
+                                    // Navigate to topic on click
+                                    navigate(`/tema/${topic.id}`);
                                 }
                             }}
                         >
@@ -132,7 +135,7 @@ const TopicCarousel: React.FC = () => {
                                     w-[320px] md:w-[380px] h-[460px] md:h-[520px]
                                     rounded-[32px] md:rounded-[40px]
                                     flex flex-col justify-between
-                                    backdrop-blur-xl
+                                    backdrop-blur-xl cursor-pointer
                                     ${isActive
                                         ? 'bg-slate-900/80 border-sky-500/20 shadow-2xl shadow-sky-500/10 ring-1 ring-sky-500/20'
                                         : 'bg-slate-900/40 border-white/5 shadow-none'
@@ -191,14 +194,27 @@ const TopicCarousel: React.FC = () => {
                                     p-8 md:p-10 mt-auto relative z-20 transition-all duration-500 delay-100
                                     ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
                                 `}>
-                                    <div className="group/btn flex items-center gap-3 text-sky-400 font-medium cursor-pointer">
-                                        <span className="group-hover/btn:underline decoration-sky-500/30 underline-offset-4">Explorar Tema</span>
-                                        <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                                    <div className="flex flex-col gap-4">
+                                        <div className="group/btn flex items-center gap-3 text-sky-400 font-medium">
+                                            <span className="group-hover/btn:underline decoration-sky-500/30 underline-offset-4">Explorar Tema</span>
+                                            <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                                        </div>
+
+                                        <Link
+                                            to={`/tema/${topic.id}/solucionaris`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol"
+                                        >
+                                            <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">
+                                                <Terminal size={12} />
+                                            </div>
+                                            <span>Solucionaris Jutge</span>
+                                        </Link>
                                     </div>
                                 </div>
 
                             </SpotlightCard>
-                        </Link>
+                        </div>
                     );
                 })}
             </div>
