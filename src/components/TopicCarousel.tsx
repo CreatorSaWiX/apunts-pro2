@@ -84,8 +84,8 @@ const TopicCarousel: React.FC = () => {
             },
             {
                 root: container,
-                threshold: 0.6,
-                rootMargin: "-10% 0px -10% 0px"
+                threshold: 0.5,
+                rootMargin: "0px -40% 0px -40%"
             }
         );
 
