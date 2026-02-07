@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { User, LogOut, Upload, Clock, Trash2, Github, Loader, Edit2, X, Save } from 'lucide-react';
+import { User, LogOut, Upload, Clock, Trash2, Globe, Loader, Edit2, X, Save } from 'lucide-react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
@@ -12,7 +12,7 @@ import { motion } from 'framer-motion';
 // --- Edit Profile Modal Component ---
 const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
     const [username, setUsername] = useState(user?.username || '');
-    const [github, setGithub] = useState(user?.github || '');
+    const [portfolio, setPortfolio] = useState(user?.portfolio || '');
     const [avatar, setAvatar] = useState(user?.avatar || '');
     const [bio, setBio] = useState(user?.bio || '');
     const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +20,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
     useEffect(() => {
         if (user) {
             setUsername(user.username);
-            setGithub(user.github || '');
+            setPortfolio(user.portfolio || '');
             setAvatar(user.avatar || '');
             setBio(user.bio || '');
         }
@@ -30,7 +30,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            await onUpdate({ username, github, avatar, bio });
+            await onUpdate({ username, portfolio, avatar, bio });
             onClose();
         } catch (error) {
             console.error("Error updating profile:", error);
@@ -74,15 +74,15 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                         />
                     </div>
                     <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-400 uppercase">GitHub Username</label>
+                        <label className="text-xs font-semibold text-slate-400 uppercase">Portfoli / Web</label>
                         <div className="relative">
-                            <Github size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                            <Globe size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                             <input
                                 type="text"
-                                value={github}
-                                onChange={(e) => setGithub(e.target.value)}
+                                value={portfolio}
+                                onChange={(e) => setPortfolio(e.target.value)}
                                 className="w-full bg-slate-900 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:border-sky-500 outline-none"
-                                placeholder="usuari-github"
+                                placeholder="https://el-teu-portfolio.vercel.app"
                             />
                         </div>
                     </div>
@@ -192,6 +192,15 @@ const ProfilePage = () => {
 
     const rank = getRank(userContributions.length);
 
+    // Simple URL display helper
+    const displayUrl = (url: string) => {
+        try {
+            return new URL(url).hostname;
+        } catch {
+            return url;
+        }
+    };
+
     return (
         <div className="min-h-screen pt-24 pb-12 px-4 max-w-[1000px] mx-auto relative z-10">
             <EditProfileModal
@@ -275,18 +284,18 @@ const ProfilePage = () => {
                 </div>
 
                 <a
-                    href={extendedUser?.github ? `https://github.com/${extendedUser.github}` : '#'}
+                    href={extendedUser?.portfolio ? extendedUser.portfolio : '#'}
                     target="_blank"
                     rel="noreferrer"
-                    className={`bg-[#1e1e1e] border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center transition-all ${extendedUser?.github ? 'hover:border-purple-500/30 hover:bg-purple-500/5 cursor-pointer' : 'opacity-70'}`}
+                    className={`bg-[#1e1e1e] border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center transition-all ${extendedUser?.portfolio ? 'hover:border-sky-500/30 hover:bg-sky-500/5 cursor-pointer' : 'opacity-70'}`}
                 >
-                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mb-3">
-                        <Github size={20} />
+                    <div className="w-10 h-10 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-400 mb-3">
+                        <Globe size={20} />
                     </div>
                     <span className="text-2xl font-bold text-white truncate max-w-full px-2">
-                        {extendedUser?.github || 'No Linked'}
+                        {extendedUser?.portfolio ? displayUrl(extendedUser.portfolio) : 'No Linked'}
                     </span>
-                    <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">GitHub</span>
+                    <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Portfoli</span>
                 </a>
             </div>
 
