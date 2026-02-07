@@ -13,6 +13,7 @@ interface User {
 interface AuthContextType {
     user: User | null;
     login: (email: string, password: string) => Promise<void>;
+    signup: (email: string, password: string, username: string) => Promise<void>;
     logout: () => Promise<void>;
     isLoading: boolean;
 }
@@ -49,12 +50,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await signInWithEmailAndPassword(auth, email, password);
     };
 
+    const signup = async (email: string, password: string, username: string) => {
+        const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
+        const { doc, setDoc } = await import('firebase/firestore');
+        const { db } = await import('../lib/firebase');
+
+        // 1. Create User
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // 2. Update Profile
+        const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${username}`;
+        await updateProfile(user, {
+            displayName: username,
+            photoURL: avatarUrl
+        });
+
+        // 3. Create Firestore Document
+        await setDoc(doc(db, 'users', user.uid), {
+            username: username,
+            email: email,
+            avatar: avatarUrl,
+            role: 'editor', // Default role
+            createdAt: new Date().toISOString()
+        });
+    };
+
     const logout = async () => {
         await signOut(auth);
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+        <AuthContext.Provider value={{ user, login, logout, signup, isLoading }}>
             {!isLoading && children}
         </AuthContext.Provider>
     );

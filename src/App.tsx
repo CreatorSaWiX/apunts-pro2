@@ -8,6 +8,7 @@ import TopicCarousel from './components/TopicCarousel';
 import SolutionsListPage from './components/SolutionsListPage';
 import SolutionDetailPage from './components/SolutionDetailPage';
 import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import NewSolutionPage from './components/NewSolutionPage';
 import { AuthProvider } from './contexts/AuthContext';
@@ -58,6 +59,7 @@ function App() {
           <Route path="/tema/:id" element={<TopicPage />} />
           <Route path="/tema/:id/solucionaris" element={<SolutionsListPage />} />
           <Route path="/tema/:id/solucionaris/:problemId" element={<SolutionDetailPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </div>
     </AuthProvider>

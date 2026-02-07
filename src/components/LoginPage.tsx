@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, ArrowRight, Loader, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -106,7 +106,9 @@ const LoginPage = () => {
 
                 <div className="mt-8 text-center text-sm text-slate-500">
                     No tens compte?{' '}
-                    <span className="text-sky-400 hover:text-sky-300 cursor-pointer transition-colors font-medium" title="Contacta amb un administrador per demanar accés">Contacta amb l'administrador</span>
+                    <Link to="/register" className="text-sky-400 hover:text-sky-300 cursor-pointer transition-colors font-medium">
+                        Registra't amb codi d'invitació
+                    </Link>
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-white/5 text-center px-4">
