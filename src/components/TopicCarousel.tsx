@@ -69,11 +69,12 @@ const TopicCarousel: React.FC = () => {
         }
     };
 
-    // Track active index based on scroll position (more robust for Safari than IntersectionObserver)
+    // Track active index based on scroll position using getBoundingClientRect for absolute precision
     const handleScroll = () => {
         if (!scrollRef.current) return;
         const container = scrollRef.current;
-        const containerCenter = container.scrollLeft + (container.clientWidth / 2);
+        const containerRect = container.getBoundingClientRect();
+        const containerCenter = containerRect.left + (containerRect.width / 2);
 
         let closestIndex = 0;
         let minDistance = Number.MAX_VALUE;
@@ -83,7 +84,8 @@ const TopicCarousel: React.FC = () => {
             if (!child.classList.contains('carousel-card')) return;
 
             const card = child as HTMLElement;
-            const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+            const cardRect = card.getBoundingClientRect();
+            const cardCenter = cardRect.left + (cardRect.width / 2);
             const distance = Math.abs(containerCenter - cardCenter);
 
             if (distance < minDistance) {
@@ -97,16 +99,23 @@ const TopicCarousel: React.FC = () => {
         }
     };
 
-    // Keep active index updated on mount and scroll
+    // Keep active index updated on mount, scroll, and resize
     useEffect(() => {
-        handleScroll();
-        // Add scroll listener with passive option for performance
+        // Initial check
+        // Small timeout to ensure layout is stable especially with snaps
+        setTimeout(handleScroll, 100);
+
         const container = scrollRef.current;
         if (container) {
             container.addEventListener('scroll', handleScroll, { passive: true });
-            return () => container.removeEventListener('scroll', handleScroll);
+            window.addEventListener('resize', handleScroll, { passive: true });
+
+            return () => {
+                container.removeEventListener('scroll', handleScroll);
+                window.removeEventListener('resize', handleScroll);
+            };
         }
-    }, []);
+    }, [activeIndex]); // Depend on activeIndex to access latest state if needed, though mostly functional state
 
     return (
         <div className="w-full flex-1 flex flex-col justify-center relative">
@@ -118,7 +127,7 @@ const TopicCarousel: React.FC = () => {
                     scroll-smooth hide-scrollbar 
                     relative
                     pt-12 pb-20
-                    px-[max(20px,calc(50%-170px))] md:px-[max(20px,calc(50%-190px))]
+                    px-[calc(50%-160px)] md:px-[calc(50%-190px)]
                 "
             >
                 {topics.map((topic, i) => {
