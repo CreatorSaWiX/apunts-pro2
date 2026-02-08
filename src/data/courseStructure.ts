@@ -32,20 +32,13 @@ export const courseStructure: TopicDefinition[] = [
         id: "tema-2",
         title: "Tema 2: Recursivitat",
         description: "Disseny d'algorismes recursius i anàlisi de complexitat.",
-        problems: [
-            { id: "P12559", title: "P12559" },
-            { id: "P34091", title: "P34091" },
-            { id: "P51222", title: "P51222" }
-        ]
+        problems: []
     },
     {
         id: "tema-3",
         title: "Tema 3: Estructures de Dades Lineals",
         description: "Piles, cues i llistes.",
-        problems: [
-            { id: "P11111", title: "P11111" },
-            { id: "P22222", title: "P22222" }
-        ]
+        problems: []
     },
     {
         id: "tema-4",
@@ -53,5 +46,4 @@ export const courseStructure: TopicDefinition[] = [
         description: "Arbres binaris, recorreguts i arbres generals.",
         problems: []
     }
-    // Add more topics...
 ];
