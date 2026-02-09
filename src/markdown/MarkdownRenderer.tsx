@@ -1,30 +1,60 @@
-import React from "react";
+import { visit } from "unist-util-visit";
+import React, { type HTMLAttributes } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkDirective from "remark-directive";
 import { remarkDirectiveRehype } from "./remarkDirectiveRehype";
 import CodeBlock from "../components/ui/CodeBlock";
+import { isLanguageName } from "../utils/languages";
 
 type MarkdownRendererProps = {
     content: string;
     components?: React.ComponentProps<typeof ReactMarkdown>["components"];
 };
 
+// This plugin grabs the 'meta' from the markdown node 
+// and puts it where the HTML renderer can see it.
+export function remarkCodeMeta() {
+  return (tree: any) => {
+    visit(tree, 'code', (node: any) => {
+      if (node.meta) {
+        node.data = node.data || {};
+        node.data.hProperties = node.data.hProperties || {};
+        node.data.hProperties.metadata = node.meta; // "metadata" is a safe custom prop
+        console.log(node)
+      }
+    });
+  };
+}
+
 export function MarkdownRenderer({ content, components }: MarkdownRendererProps) {
     return (
         <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
-            remarkPlugins={[remarkDirective, remarkDirectiveRehype]}
+            remarkPlugins={[remarkDirective, remarkCodeMeta, remarkDirectiveRehype]}
             components={{
+                // Evitem dos tags pre anidats
+                pre({children}) {
+                    return children;
+                },
                 code(props) {
-                    const { children, className, ...rest } = props
-                    const match = /language-(\w+)/.exec(className || '')
-                    return match ? (
+                    const { children, className, node, ...rest } = props
+                    const lang = /language-(\w+)/.exec(className || '')?.[1]
+                    if (lang !== undefined && !isLanguageName(lang)) {
+                        throw new Error("Unknown language");
+                    }
+
+
+                    const meta = node?.properties.metadata as string;
+                    console.log(node)
+
+                    const title = /\[(.*?)\]/.exec(meta)?.[1];
+                    return lang ? (
                         <div className="not-prose my-8 -mx-4 md:mx-0">
                             <CodeBlock
                                 code={String(children).replace(/\n$/, '')}
-                                language={match[1]}
-                                title={match[1] === 'cpp' ? 'C++' : match[1]}
+                                title={title}
+                                language={lang}
                             />
                         </div>
                     ) : (
