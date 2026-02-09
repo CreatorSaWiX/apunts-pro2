@@ -8,8 +8,18 @@ import 'prismjs/components/prism-cpp';
 interface CodeBlockProps {
     code: string;
     title?: string;
-    language?: string;
+    language?: keyof typeof languageNames;
 }
+
+
+const languageColorsClass = {
+    blue: "bg-blue-600/20 border-blue-300/60 text-blue-300",
+    green: "bg-green-600/20 border-green-300/60 text-green-300",
+    purple: "bg-purple-600/20 border-purple-300/60 text-purple-300",
+    red: "bg-red-600/20 border-red-300/60 text-red-300",
+} as const satisfies Record<LanguageColors, string>;
+
+
 
 const CodeBlock: React.FC<CodeBlockProps> = ({ code, title, language = 'cpp' }) => {
     const [copied, setCopied] = useState(false);
