@@ -1,37 +1,18 @@
-import React, { useEffect } from 'react';
-import { useParams, Navigate, Link } from 'react-router-dom';
-import { motion, useScroll, useSpring } from 'framer-motion';
-import { allPersonalNotes } from 'content-collections';
-import rehypeRaw from 'rehype-raw';
-import remarkDirective from 'remark-directive';
-import { visit } from 'unist-util-visit';
-import ReactMarkdown from 'react-markdown';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import CodeBlock from '../components/ui/CodeBlock';
+import React, {useEffect} from 'react';
+import {useParams, Navigate, Link} from 'react-router-dom';
+import {motion, useScroll, useSpring} from 'framer-motion';
+import {allPersonalNotes} from 'content-collections';
 
-const remarkDirectiveRehype = () => {
-    return (tree: any) => {
-        visit(tree, (node) => {
-            if (node.type === 'dashboard' || node.type === 'containerDirective' || node.type === 'leafDirective' || node.type === 'textDirective') {
-                const data = node.data || (node.data = {});
-                const attributes = node.attributes || {};
-                const name = node.name;
+import {ArrowLeft, ArrowRight} from 'lucide-react';
+import {MarkdownRenderer} from "../markdown/MarkdownRenderer.tsx";
 
-                if (name !== 'div') return;
-
-                data.hName = name;
-                data.hProperties = attributes;
-            }
-        });
-    };
-};
 
 const TopicPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const topic = allPersonalNotes.find(note => note.slug === id);
 
     // Scroll Progress
-    const { scrollYProgress } = useScroll();
+    const {scrollYProgress} = useScroll();
     const scaleX = useSpring(scrollYProgress, {
         stiffness: 100,
         damping: 30,
@@ -48,7 +29,7 @@ const TopicPage: React.FC = () => {
     }, [id]);
 
     if (!topic) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/" replace/>;
     }
 
     return (
@@ -56,15 +37,15 @@ const TopicPage: React.FC = () => {
             {/* Reading Progress Bar - Sticky Top */}
             <motion.div
                 className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-400 to-indigo-500 origin-left z-50 shadow-[0_0_10px_rgba(56,189,248,0.5)]"
-                style={{ scaleX }}
+                style={{scaleX}}
             />
 
             <div className="pt-28 pb-20 px-4 sm:px-8 max-w-5xl mx-auto">
                 {/* Header */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    initial={{opacity: 0, y: 20}}
+                    animate={{opacity: 1, y: 0}}
+                    transition={{duration: 0.8, ease: "easeOut"}}
                     className="mb-8 border-b border-white/5 pb-8"
                 >
                     <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-4 leading-tight">
@@ -82,55 +63,7 @@ const TopicPage: React.FC = () => {
 
                 {/* Content */}
                 <div className="prose prose-invert prose-lg max-w-none heading-reset">
-                    <ReactMarkdown
-                        rehypePlugins={[rehypeRaw]}
-                        remarkPlugins={[remarkDirective, remarkDirectiveRehype]}
-                        components={{
-                            code(props) {
-                                const { children, className, node, ...rest } = props
-                                const match = /language-(\w+)/.exec(className || '')
-                                return match ? (
-                                    <div className="not-prose my-8 -mx-4 md:-mx-0">
-                                        <CodeBlock
-                                            code={String(children).replace(/\n$/, '')}
-                                            language={match[1]}
-                                            title={match[1] === 'cpp' ? 'C++' : match[1]}
-                                        />
-                                    </div>
-                                ) : (
-                                    <code {...rest} className="px-1.5 py-0.5 rounded-md bg-white/10 text-sky-300 font-mono text-[0.9em] border border-white/5">
-                                        {children}
-                                    </code>
-                                )
-                            },
-                            h2: ({ ...props }) => (
-                                <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mt-16 mb-6 scroll-mt-28 tracking-tight" {...props} />
-                            ),
-                            h3: ({ ...props }) => (
-                                <h3 className="text-xl font-semibold text-white mt-10 mb-4 scroll-mt-28" {...props} />
-                            ),
-                            p: ({ ...props }) => (
-                                <p className="text-slate-300 leading-8 mb-6 text-lg" {...props} />
-                            ),
-                            ul: ({ ...props }) => (
-                                <ul className="space-y-2 my-6 list-disc pl-6 marker:text-slate-500" {...props} />
-                            ),
-                            ol: ({ ...props }) => (
-                                <ol className="space-y-2 my-6 list-decimal pl-6 marker:text-slate-500 marker:font-bold" {...props} />
-                            ),
-                            li: ({ ...props }) => (
-                                <li className="text-slate-300 pl-2 leading-relaxed" {...props} />
-                            ),
-                            strong: ({ ...props }) => (
-                                <strong className="font-bold text-white" {...props} />
-                            ),
-                            blockquote: ({ ...props }) => (
-                                <blockquote className="border-l-4 border-sky-500/50 bg-sky-500/5 px-6 py-4 rounded-r-xl my-8 text-slate-300 italic not-prose" {...props} />
-                            ),
-                        }}
-                    >
-                        {topic.content}
-                    </ReactMarkdown>
+                    <MarkdownRenderer content={topic.content}/>
                 </div>
 
                 {/* Navigation Footer */}
@@ -140,34 +73,40 @@ const TopicPage: React.FC = () => {
                             to={`/tema/${prevTopic.slug}`}
                             className="group relative p-6 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all overflow-hidden"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500" />
+                            <div
+                                className="absolute inset-0 bg-gradient-to-r from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500"/>
                             <div className="relative z-10">
-                                <div className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                    <ArrowLeft size={12} /> Anterior
+                                <div
+                                    className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                    <ArrowLeft size={12}/> Anterior
                                 </div>
-                                <div className="text-xl font-bold text-slate-200 group-hover:text-white transition-colors">
+                                <div
+                                    className="text-xl font-bold text-slate-200 group-hover:text-white transition-colors">
                                     {prevTopic.title}
                                 </div>
                             </div>
                         </Link>
-                    ) : <div />}
+                    ) : <div/>}
 
                     {nextTopic ? (
                         <Link
                             to={`/tema/${nextTopic.slug}`}
                             className="group relative p-6 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all overflow-hidden text-right"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-l from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500" />
+                            <div
+                                className="absolute inset-0 bg-gradient-to-l from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500"/>
                             <div className="relative z-10">
-                                <div className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-end gap-2">
-                                    Següent <ArrowRight size={12} />
+                                <div
+                                    className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-end gap-2">
+                                    Següent <ArrowRight size={12}/>
                                 </div>
-                                <div className="text-xl font-bold text-slate-200 group-hover:text-white transition-colors">
+                                <div
+                                    className="text-xl font-bold text-slate-200 group-hover:text-white transition-colors">
                                     {nextTopic.title}
                                 </div>
                             </div>
                         </Link>
-                    ) : <div />}
+                    ) : <div/>}
                 </div>
             </div>
         </div>

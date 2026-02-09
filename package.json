@@ -15,6 +15,7 @@
     "@content-collections/vite": "^0.2.8",
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/vite": "^4.1.18",
+    "@types/mdast": "^4.0.4",
     "@types/prismjs": "^1.26.5",
     "@vercel/node": "^5.5.33",
     "cheerio": "^1.2.0",

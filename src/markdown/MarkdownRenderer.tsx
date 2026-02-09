@@ -1,0 +1,67 @@
+import React from "react";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkDirective from "remark-directive";
+import {remarkDirectiveRehype} from "./remarkDirectiveRehype.ts";
+import CodeBlock from "../components/ui/CodeBlock.tsx";
+
+type MarkdownRendererProps = {
+    content: string;
+    components?: React.ComponentProps<typeof ReactMarkdown>["components"];
+};
+
+export function MarkdownRenderer({content, components}: MarkdownRendererProps) {
+    return (
+        <ReactMarkdown
+            rehypePlugins={[rehypeRaw]}
+            remarkPlugins={[remarkDirective, remarkDirectiveRehype]}
+            components={{
+                code(props) {
+                    const {children, className, ...rest} = props
+                    const match = /language-(\w+)/.exec(className || '')
+                    return match ? (
+                        <div className="not-prose my-8 -mx-4 md:mx-0">
+                            <CodeBlock
+                                code={String(children).replace(/\n$/, '')}
+                                language={match[1]}
+                                title={match[1] === 'cpp' ? 'C++' : match[1]}
+                            />
+                        </div>
+                    ) : (
+                        <code {...rest}
+                              className="px-1.5 py-0.5 rounded-md bg-white/10 text-sky-300 font-mono text-[0.9em] border border-white/5">
+                            {children}
+                        </code>
+                    )
+                },
+                h2: ({...props}) => (
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mt-16 mb-6 scroll-mt-28 tracking-tight" {...props} />
+                ),
+                h3: ({...props}) => (
+                    <h3 className="text-xl font-semibold text-white mt-10 mb-4 scroll-mt-28" {...props} />
+                ),
+                p: ({...props}) => (
+                    <p className="text-slate-300 leading-8 mb-6 text-lg" {...props} />
+                ),
+                ul: ({...props}) => (
+                    <ul className="space-y-2 my-6 list-disc pl-6 marker:text-slate-500" {...props} />
+                ),
+                ol: ({...props}) => (
+                    <ol className="space-y-2 my-6 list-decimal pl-6 marker:text-slate-500 marker:font-bold" {...props} />
+                ),
+                li: ({...props}) => (
+                    <li className="text-slate-300 pl-2 leading-relaxed" {...props} />
+                ),
+                strong: ({...props}) => (
+                    <strong className="font-bold text-white" {...props} />
+                ),
+                blockquote: ({...props}) => (
+                    <blockquote
+                        className="border-l-4 border-sky-500/50 bg-sky-500/5 px-6 py-4 rounded-r-xl my-8 text-slate-300 italic not-prose" {...props} />
+                ), ...components
+            }}
+        >
+            {content}
+        </ReactMarkdown>
+    );
+}
