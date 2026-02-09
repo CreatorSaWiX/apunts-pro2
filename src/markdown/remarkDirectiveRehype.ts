@@ -1,8 +1,8 @@
-import {visit} from "unist-util-visit";
-import type {Node} from "unist";
-import type {DirectiveNode} from "./directives.ts";
-import {directiveHandlers} from "./directives.ts";
-import type {Root} from "mdast";
+import { visit } from "unist-util-visit";
+import type { Node } from "unist";
+import type { DirectiveNode } from "./directives";
+import { directiveHandlers } from "./directives";
+import type { Root } from "mdast";
 
 function isDirectiveNode(node: Node): node is DirectiveNode {
     return (
