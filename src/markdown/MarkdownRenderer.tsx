@@ -14,7 +14,7 @@ type MarkdownRendererProps = {
 
 // This plugin grabs the 'meta' from the markdown node 
 // and puts it where the HTML renderer can see it.
-export function remarkCodeMeta() {
+function remarkCodeMeta() {
   return (tree: any) => {
     visit(tree, 'code', (node: any) => {
       if (node.meta) {
