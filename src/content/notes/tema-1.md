@@ -40,8 +40,7 @@ Una **Classe** és com una struct, però amb una diferència clau: la visibilita
 
 :::grid{cols=2}
 
-```cpp
-// Punt.hpp (Especificació)
+```cpp [Punt.hpp (Especificació)]
 class Punt {
 private:
     double x, y;    // Atributs (Privats)
@@ -61,8 +60,7 @@ public:
 };
 ```
 
-```cpp
-// Punt.cpp (Implementació)
+```cpp [Punt.cpp (Implementació)]
 #include "Punt.hpp"
 #include <cmath>
 
