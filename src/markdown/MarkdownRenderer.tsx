@@ -44,7 +44,7 @@ export function MarkdownRenderer({ content, components }: MarkdownRendererProps)
                     <p className="text-slate-300 leading-8 mb-6 text-lg" {...props} />
                 ),
                 ul: ({ ...props }) => (
-                    <ul className="space-y-2 my-6 list-disc pl-6 marker:text-slate-500" {...props} />
+                    <ul className="space-y-2 my-6 list-disc pl-6 marker:text-slate-500 [&_ul]:my-2 [&_ul]:list-[circle] [&_ul]:marker:text-slate-600" {...props} />
                 ),
                 ol: ({ ...props }) => (
                     <ol className="space-y-2 my-6 list-decimal pl-6 marker:text-slate-500 marker:font-bold" {...props} />
