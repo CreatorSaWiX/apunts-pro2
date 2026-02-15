@@ -1,5 +1,5 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, Trash2, X } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { AlertCircle, Trash2 } from 'lucide-react';
 
 interface ConfirmModalProps {
     isOpen: boolean;
@@ -58,8 +58,8 @@ const ConfirmModal = ({
                                 onClose();
                             }}
                             className={`flex-1 px-4 py-2.5 rounded-xl font-medium text-white transition-colors shadow-lg ${isDestructive
-                                    ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20'
-                                    : 'bg-sky-500 hover:bg-sky-600 shadow-sky-500/20'
+                                ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20'
+                                : 'bg-sky-500 hover:bg-sky-600 shadow-sky-500/20'
                                 }`}
                         >
                             {confirmText}

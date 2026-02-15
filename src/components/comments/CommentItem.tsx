@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 import { ca } from 'date-fns/locale';
-import { Smile, Trash2, Reply, ChevronDown } from 'lucide-react';
+import { Smile, Trash2, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Custom emotes from /public/emojis
@@ -45,12 +45,17 @@ interface CommentItemProps {
 
 const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: CommentItemProps) => {
     const { user } = useAuth();
-    const [isHovering, setIsHovering] = useState(false);
     const [showReactorTooltip, setShowReactorTooltip] = useState<string | null>(null);
     const [areRepliesVisible, setAreRepliesVisible] = useState(false);
     const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
     const [showPicker, setShowPicker] = useState(false);
     const closeTimeoutRef = useRef<any>(null);
+
+    useEffect(() => {
+        return () => {
+            if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+        };
+    }, []);
 
     const handlePickerOpen = () => {
         if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
@@ -64,7 +69,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
     };
 
     // Group reactions by emoji for display
-    const reactionCounts = Object.entries(comment.reactions || {}).reduce((acc, [uid, data]) => {
+    const reactionCounts = Object.entries(comment.reactions || {}).reduce((acc, [, data]) => {
         if (!acc[data.emoji]) acc[data.emoji] = [];
         acc[data.emoji].push(data.username);
         return acc;
@@ -83,8 +88,6 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
         <div className="flex flex-col">
             <div
                 className={`flex gap-3 group/comment mt-4`}
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
             >
                 {/* Avatar */}
                 <Link to={`/profile/${comment.userId}`} className="shrink-0 hover:opacity-80 transition-opacity">

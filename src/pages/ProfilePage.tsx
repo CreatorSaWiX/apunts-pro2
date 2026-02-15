@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { User, LogOut, Upload, Clock, Trash2, Globe, Loader, Edit2, X, Save, Mail, Send, Bell } from 'lucide-react';
-import { Link, useParams, Navigate } from 'react-router-dom';
+import { User, LogOut, Upload, Globe, Loader, Edit2, X, Save, Mail, Send, Bell } from 'lucide-react';
+import { useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
@@ -137,7 +137,7 @@ const ProfilePage = () => {
     const userIdToFetch = uid || authUser?.id;
     const isOwnProfile = !uid || (authUser && authUser.id === uid);
 
-    const { solutions: userContributions, loading } = useUserSolutions(userIdToFetch || '');
+    const { solutions: userContributions } = useUserSolutions(userIdToFetch || '');
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     // Mailing & Activity State

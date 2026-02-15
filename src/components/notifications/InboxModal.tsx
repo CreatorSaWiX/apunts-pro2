@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Bell, ExternalLink, Heart, MessageCircle } from 'lucide-react';
-import { collection, query, where, getDocs, updateDoc, doc, orderBy } from 'firebase/firestore';
+import { X, Bell, Heart, MessageCircle } from 'lucide-react';
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -38,15 +38,6 @@ const InboxModal = ({ isOpen, onClose }: any) => {
         if (!user) return;
         setIsLoading(true);
         try {
-            const q = query(
-                collection(db, 'notifications'),
-                where('userId', '==', user.id),
-                orderBy('createdAt', 'desc') // Requires composite index usually, but if simple index exists on userId and createdAt... 
-                // Firestore might complain about index depending on ordering. 
-                // Let's try simple fetch and client sort if needed, or index creation.
-                // Assuming userId == ... is equality, adding orderBy requires index.
-                // For now let's just fetch by userId and sort client side if small volume.
-            );
             // Actually let's try just filtering by userId first to avoid index errors in dev
             const qSimple = query(collection(db, 'notifications'), where('userId', '==', user.id));
 
@@ -136,21 +127,12 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                         <div className="space-y-2">
                             {notifications.map(notification => (
                                 <Link
-                                    to={`/tema/unknown/solucionaris/${notification.resourceId}`} // We might need topicId to conform to URL structure :/
-                                    // Actually, SolutionDetailPage uses `topicId` param but fetches by `problemId`. 
-                                    // If URL is /tema/:id/solucionaris/:problemId, we need topicId.
-                                    // Storing relatedTopicId in notification would be better.
-                                    // For now let's hope finding by ID works or just redirect to a generic solutions page?
-                                    // Wait, SolutionDetailPage uses `useSolution(topicId, problemId)`.
-                                    // If topicId is wrong, it might fail to find path in breadcrumbs but might still load solution if logic allows?
-                                    // Actually `useSolution` fetches by `problemId` from `solutions` collection directly usually? 
-                                    // Let's check `useSolutions` hook later.
-                                    // Assuming passing 'activity' as topicId keeps app running.
+                                    to={`/tema/unknown/solucionaris/${notification.resourceId}`}
                                     key={notification.id}
                                     onClick={() => markAsRead(notification)}
                                     className={`flex items-start gap-4 p-4 rounded-xl border transition-all ${notification.read
-                                            ? 'bg-transparent border-transparent hover:bg-white/5'
-                                            : 'bg-indigo-500/5 border-indigo-500/20 hover:bg-indigo-500/10'
+                                        ? 'bg-transparent border-transparent hover:bg-white/5'
+                                        : 'bg-indigo-500/5 border-indigo-500/20 hover:bg-indigo-500/10'
                                         }`}
                                 >
                                     <div className="relative mt-1">
