@@ -158,10 +158,10 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                                         </div>
 
                                         <p className="text-sm text-slate-400 leading-relaxed line-clamp-2">
-                                            {notification.type === 'reaction' ? (
-                                                <span>Ha reaccionat amb <span className="text-lg inline-block align-middle">{notification.content}</span> al teu comentari a <span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></span>
+                                            {notification.type === 'reply' ? (
+                                                <>Ha respost al teu comentari a <span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
                                             ) : (
-                                                <span>Ha respost al teu comentari a <span className="text-indigo-400 font-medium">{notification.resourceTitle}</span>: "<i>{notification.content || 'Resposta'}</i>"</span>
+                                                <>Ha reaccionat al teu comentari a <span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
                                             )}
                                         </p>
                                     </div>

@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../lib/firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../lib/firebase';
 
 interface User {
     id: string;
     username: string;
     email: string;
     avatar?: string;
+    role?: string;
 }
 
 interface AuthContextType {
@@ -25,17 +27,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
             if (firebaseUser) {
-                // Map Firebase user to app user
-                // Using email as username fallback if display name is not set
-                const username = firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
+                // Fetch extra data from Firestore
+                let role = 'user';
+                let firestoreData: any = {};
+
+                try {
+                    const docSnap = await getDoc(doc(db, 'users', firebaseUser.uid));
+                    if (docSnap.exists()) {
+                        firestoreData = docSnap.data();
+                        role = firestoreData.role || 'user';
+                    }
+                } catch (e) {
+                    console.error("Error fetching user role", e);
+                }
+
+                const username = firestoreData.username || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
 
                 setUser({
                     id: firebaseUser.uid,
                     username: username,
                     email: firebaseUser.email || '',
-                    avatar: firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${username}`
+                    avatar: firestoreData.avatar || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${username}`,
+                    role: role
                 });
             } else {
                 setUser(null);
@@ -83,6 +98,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             // 4. Create Firestore Document
             await setDoc(doc(db, 'users', user.uid), userData);
+
+            // 5. Force update local state (fix race condition with onAuthStateChanged)
+            setUser({
+                id: user.uid,
+                username: username,
+                email: email,
+                avatar: avatarUrl,
+                role: userData.role
+            });
 
         } catch (error) {
             // If Firestore creation fails (e.g., invalid code), rollback Auth creation

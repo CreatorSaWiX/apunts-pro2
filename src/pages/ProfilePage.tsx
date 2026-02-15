@@ -299,27 +299,31 @@ const ProfilePage = () => {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-                <div className="bg-[#1e1e1e] border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center">
-                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-3">
-                        <Upload size={20} />
-                    </div>
-                    <span className="text-2xl font-bold text-white">{userContributions.length}</span>
-                    <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Solucionaris</span>
-                </div>
+            <div className={`grid grid-cols-1 ${extendedUser?.role === 'editor' ? 'md:grid-cols-3' : 'md:grid-cols-1'} gap-4 mb-12`}>
+                {extendedUser?.role === 'editor' && (
+                    <>
+                        <div className="bg-[#1e1e1e] border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center">
+                            <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-3">
+                                <Upload size={20} />
+                            </div>
+                            <span className="text-2xl font-bold text-white">{userContributions.length}</span>
+                            <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Solucionaris</span>
+                        </div>
 
-                {/* Rank Card */}
-                <div className="bg-[#1e1e1e] border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center relative overflow-hidden">
-                    <div className={`w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3 ${rank.color}`}>
-                        {/* We could use dynamic icons here based on rank */}
-                        <User size={20} />
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                        <span className={`text-2xl font-bold ${rank.color}`}>{rank.name}</span>
-                        {rank.division && <span className={`text-xl font-bold ${rank.color} opacity-80`}>{rank.division}</span>}
-                    </div>
-                    <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Rang Actual</span>
-                </div>
+                        {/* Rank Card */}
+                        <div className="bg-[#1e1e1e] border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center relative overflow-hidden">
+                            <div className={`w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3 ${rank.color}`}>
+                                {/* We could use dynamic icons here based on rank */}
+                                <User size={20} />
+                            </div>
+                            <div className="flex items-baseline gap-2">
+                                <span className={`text-2xl font-bold ${rank.color}`}>{rank.name}</span>
+                                {rank.division && <span className={`text-xl font-bold ${rank.color} opacity-80`}>{rank.division}</span>}
+                            </div>
+                            <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Rang Actual</span>
+                        </div>
+                    </>
+                )}
 
                 <a
                     href={extendedUser?.portfolio ? extendedUser.portfolio : '#'}

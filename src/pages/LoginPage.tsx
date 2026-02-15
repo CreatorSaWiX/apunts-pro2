@@ -104,14 +104,8 @@ const LoginPage = () => {
                 <div className="mt-8 text-center text-sm text-slate-500">
                     No tens compte?{' '}
                     <Link to="/register" className="text-sky-400 hover:text-sky-300 cursor-pointer transition-colors font-medium">
-                        Registra't amb codi d'invitació
+                        Registra't
                     </Link>
-                </div>
-
-                <div className="mt-6 pt-6 border-t border-white/5 text-center px-4">
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                        ⚠️ Recorda que l'accés està limitat a col·laboradors autoritzats. Si no tens un compte, no podràs accedir-hi.
-                    </p>
                 </div>
             </motion.div>
         </div>

@@ -115,7 +115,7 @@ const RegisterPage = () => {
                                 value={inviteCode}
                                 onChange={(e) => setInviteCode(e.target.value)}
                                 className="w-full bg-slate-950/50 border border-emerald-500/30 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-center tracking-widest font-mono"
-                                placeholder="Només Editors"
+                                placeholder="Només editors"
                             />
                         </div>
                     </div>

@@ -285,7 +285,7 @@ const SolutionDetailPage = () => {
                             </div>
 
                             {/* EDIT CONTROLS */}
-                            {user && (
+                            {user && user.role === 'editor' && (
                                 <div className="flex items-center gap-2">
                                     {isEditing ? (
                                         <>
