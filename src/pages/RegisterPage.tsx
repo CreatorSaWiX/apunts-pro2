@@ -20,8 +20,6 @@ const RegisterPage = () => {
         setIsLoading(true);
 
         try {
-            // The validation of the invite code is now handled by Firestore Security Rules
-            // during the user document creation inside the signup function.
             await signup(email, password, username, inviteCode);
             navigate('/');
         } catch (err: any) {
@@ -52,8 +50,8 @@ const RegisterPage = () => {
                     <div className="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-sky-500 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/20">
                         <User className="text-white" size={32} />
                     </div>
-                    <h1 className="text-2xl font-bold text-white mb-2">Crear Compte</h1>
-                    <p className="text-slate-400 text-sm">Uneix-te a l'equip de col·laboradors</p>
+                    <h1 className="text-2xl font-bold text-white mb-2">Crear compte</h1>
+                    <p className="text-slate-400 text-sm">Registra't per accedir a la comunitat</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -109,7 +107,7 @@ const RegisterPage = () => {
                     {/* Invitation Code */}
                     <div className="space-y-2">
                         <label className="text-xs font-semibold text-emerald-400 uppercase tracking-wider ml-1 flex items-center gap-2">
-                            <Key size={12} /> Codi d'Invitació
+                            <Key size={12} /> Codi d'Invitació <span className="text-slate-500 normal-case tracking-normal">(Opcional)</span>
                         </label>
                         <div className="relative">
                             <input
@@ -117,8 +115,7 @@ const RegisterPage = () => {
                                 value={inviteCode}
                                 onChange={(e) => setInviteCode(e.target.value)}
                                 className="w-full bg-slate-950/50 border border-emerald-500/30 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-center tracking-widest font-mono"
-                                placeholder="CODI-SECRET"
-                                required
+                                placeholder="Només Editors"
                             />
                         </div>
                     </div>
@@ -138,7 +135,7 @@ const RegisterPage = () => {
                             <Loader className="animate-spin" size={20} />
                         ) : (
                             <>
-                                Crear Compte
+                                Crear compte
                                 <ArrowRight size={18} />
                             </>
                         )}
@@ -148,7 +145,7 @@ const RegisterPage = () => {
                 <div className="mt-8 text-center text-sm text-slate-500">
                     Ja tens compte?{' '}
                     <Link to="/login" className="text-sky-400 hover:text-sky-300 cursor-pointer transition-colors font-medium">
-                        Vel a Iniciar Sessió
+                        Vés a iniciar sessió
                     </Link>
                 </div>
             </motion.div>

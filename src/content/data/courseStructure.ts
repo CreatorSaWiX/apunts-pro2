@@ -7,7 +7,7 @@ export interface TopicDefinition {
 
 export const courseStructure: TopicDefinition[] = [
     {
-        id: "tema-1", // Should match your existing IDs logic
+        id: "tema-1",
         title: "Tema 1: Iteracions 1 (Simulació)",
         description: "Exercicis bàsics d'iteracions i bucles extrets de PRO1 per a pràctica.",
         problems: [
@@ -15,11 +15,11 @@ export const courseStructure: TopicDefinition[] = [
             { id: "P59539", title: "Nombres harmònics (1)" },
             { id: "P59875", title: "Cap avall" },
             { id: "P97969", title: "Comptant as (1)" },
-            { id: "P97156", title: "Nombres en un interval" }, // Títol deduït o genèric si no és exacte
+            { id: "P97156", title: "Nombres en un interval" },
             { id: "P28754", title: "Número del revés en binari" },
             { id: "P60816", title: "Número del revés en hexadecimal" },
             { id: "P55622", title: "Nombre de dígits (1)" },
-            { id: "P74398", title: "Número de cifras 1" }, // Jutge title likely "Nombre de xifres (1)"
+            { id: "P74398", title: "Número de cifras 1" },
             { id: "P50327", title: "Número del revés" },
             { id: "X50286", title: "Quàntes hola?" },
             { id: "P39057", title: "Càlcul d'àrees" },

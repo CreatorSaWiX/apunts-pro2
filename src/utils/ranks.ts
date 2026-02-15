@@ -18,7 +18,6 @@ const ranks: Omit<Rank, 'division'>[] = [
 ];
 
 export const getRank = (solutionsCount: number): Rank => {
-    // 1. Find the main rank tier
     let rankTier = ranks[0];
     for (let i = ranks.length - 1; i >= 0; i--) {
         if (solutionsCount >= ranks[i].minSolutions) {
@@ -27,23 +26,7 @@ export const getRank = (solutionsCount: number): Rank => {
         }
     }
 
-    if (rankTier.name === 'SSL') {
-        return { ...rankTier };
-    }
-
-    // 2. Calculate Division (I, II, III) within the tier
-    // Logic: Divide the progress within the tier into 3 parts
-    // Note: This is a simplified logic. Can be adjusted.
-    // Example: Bronze (0-4 solutions). 
-    // Bronze I: 0-1, Bronze II: 2, Bronze III: 3-4? 
-    // Let's simplified: just return Tier + Division based on modulo or small steps if range allows.
-
-    // For now, let's keep it simple: simpler progression
-    // Bronze I (0), Bronze II (1-2), Bronze III (3-4)
-    // Next tier starts at 5.
-
-    // Actually, user asked for explicit I, II, III.
-    // Let's calculate division based on progress to next rank.
+    if (rankTier.name === 'SSL') return { ...rankTier };
 
     const currentTierIndex = ranks.findIndex(r => r.name === rankTier.name);
     const nextTier = ranks[currentTierIndex + 1];
@@ -57,7 +40,6 @@ export const getRank = (solutionsCount: number): Rank => {
         if (progress >= (range * 2 / 3)) division = 'III';
         else if (progress >= (range / 3)) division = 'II';
     } else {
-        // Top rank (SSL) usually doesn't have divisions or is just SSL
         return { ...rankTier };
     }
 

@@ -1,5 +1,5 @@
 ---
-title: "Tema 7: Cues de Prioritat i Heaps"
+title: "Tema 7: Projectes amb classes"
 description: "Implementació i ús de cues de prioritat."
 readTime: "Properament"
 order: 8

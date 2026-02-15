@@ -1,6 +1,6 @@
 ---
-title: "Tema 1: Programació orientada a objectes"
-description: "Fonaments de classes, disseny modular i gestió de memòria."
+title: "Tema 1: Classes i orientació a objectes"
+description: "Classes i disseny modular"
 readTime: "3 min"
 order: 1
 ---

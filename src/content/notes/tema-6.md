@@ -1,5 +1,5 @@
 ---
-title: "Tema 6: Arbres Binaris"
+title: "Tema 6: Recursivitat i arbres 2"
 description: "Propietats i recorreguts d'arbres binaris."
 readTime: "Properament"
 order: 6

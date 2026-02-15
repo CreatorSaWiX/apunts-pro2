@@ -1,6 +1,6 @@
 ---
-title: "Tema 8: Diccionaris i ABB"
-description: "Arbres Binaris de Cerca i la seva aplicació en diccionaris."
+title: "Tema 8: Punters i implementació de piles"
+description: "Punter i gestió de memòria."
 readTime: "Properament"
 order: 9
 ---

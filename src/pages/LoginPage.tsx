@@ -65,10 +65,7 @@ const LoginPage = () => {
                     </div>
 
                     <div className="space-y-2">
-                        <div className="flex justify-between items-center ml-1">
-                            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Contrasenya</label>
-                            <span className="text-xs text-sky-400 hover:text-sky-300 cursor-pointer transition-colors">Has oblidat la contrasenya?</span>
-                        </div>
+                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Contrasenya</label>
                         <div className="relative">
                             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                             <input

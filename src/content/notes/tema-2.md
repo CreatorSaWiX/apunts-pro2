@@ -1,6 +1,6 @@
 ---
-title: "Tema 2: Punter i Gestió de Memòria"
-description: "Introducció a l'ús de punters i la seva gestió en C++."
+title: "Tema 2: Piles i cues"
+description: "Introducció a l'ús de piles i cues."
 readTime: "Properament"
 order: 2
 ---

@@ -6,6 +6,7 @@ import { useSolution, useSolutions } from '../hooks/useSolutions';
 import CodeBlock from '../components/ui/CodeBlock';
 import { useAuth } from '../contexts/AuthContext';
 import { courseStructure } from '../content/data/courseStructure';
+import CommentsSection from '../components/comments/CommentsSection';
 
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();
@@ -155,7 +156,20 @@ const SolutionDetailPage = () => {
                             </span>
                             <span className="w-1 h-1 rounded-full bg-slate-600"></span>
                             <h1 className="text-lg font-bold text-slate-200 truncate max-w-xs sm:max-w-md">
-                                {solution.title}
+                                {(() => {
+                                    // Try to resolve canonical title
+                                    if (topicId) {
+                                        const topic = courseStructure.find(t => t.id === topicId);
+                                        const problemInfo = topic?.problems?.find(p =>
+                                            typeof p === 'object' ? p.id === solution.id : p === solution.id
+                                        );
+                                        if (problemInfo && typeof problemInfo === 'object') {
+                                            return problemInfo.title;
+                                        }
+                                    }
+                                    // Fallback: If title equals ID, try to make it look better or just show it
+                                    return solution.title === solution.id ? solution.title : solution.title;
+                                })()}
                             </h1>
                             {isSolved && (
                                 <div className="hidden sm:flex items-center gap-1 ml-2 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
@@ -166,6 +180,7 @@ const SolutionDetailPage = () => {
                         </div>
                         {/* Author Info */}
                         <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
+                            <span className="text-slate-500 mr-0.5">Autor:</span>
                             {solution.authorId ? (
                                 <Link to={`/profile/${solution.authorId}`} className="flex items-center gap-2 hover:text-sky-400 transition-colors">
                                     {authorData?.avatar && <img src={authorData.avatar} className="w-5 h-5 rounded-full bg-slate-800 object-cover" />}
@@ -251,6 +266,8 @@ const SolutionDetailPage = () => {
                             )}
                         </div>
                     </div>
+
+                    <CommentsSection solutionId={solution.id} solutionTitle={solution.title} />
                 </motion.div>
 
                 {/* Right Panel: Code */}

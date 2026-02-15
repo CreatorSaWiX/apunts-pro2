@@ -1,14 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { X, BookOpen, ChevronRight, Menu, ArrowLeft, LogIn } from 'lucide-react';
 import { allPersonalNotes } from 'content-collections';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+
 const Navigation: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(0);
     const location = useLocation();
     const { user } = useAuth();
+
+    useEffect(() => {
+        if (!user) {
+            setUnreadCount(0);
+            return;
+        }
+
+        const q = query(
+            collection(db, 'messages'),
+            where('receiverId', '==', user.id),
+            where('read', '==', false)
+        );
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            setUnreadCount(snapshot.size);
+        });
+
+        return () => unsubscribe();
+    }, [user]);
 
     return (
         <>
@@ -42,10 +65,15 @@ const Navigation: React.FC = () => {
                     {user ? (
                         <Link
                             to="/profile"
-                            className="p-1.5 pr-3 rounded-full flex items-center gap-2 hover:bg-white/5 transition-colors"
+                            className="p-1.5 pr-3 rounded-full flex items-center gap-2 hover:bg-white/5 transition-colors relative"
                             title="El meu perfil"
                         >
-                            <img src={user.avatar} alt={user.username} className="w-7 h-7 rounded-full bg-slate-800 border border-white/10" />
+                            <div className="relative">
+                                <img src={user.avatar} alt={user.username} className="w-7 h-7 rounded-full bg-slate-800 border border-white/10" />
+                                {unreadCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-900 shadow-sm" />
+                                )}
+                            </div>
                             <span className="text-sm font-medium text-slate-300 hidden sm:inline">{user.username}</span>
                         </Link>
                     ) : (

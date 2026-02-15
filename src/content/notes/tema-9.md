@@ -1,5 +1,5 @@
 ---
-title: "Tema 9: Cerca i Ordenació"
+title: "Tema 9: Implementació de cues i llistes"
 description: "Algorismes fonamentals de cerca i ordenació."
 readTime: "Properament"
 order: 10

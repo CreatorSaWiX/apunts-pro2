@@ -1,6 +1,6 @@
 ---
 title: "Tema 10: Grafs"
-description: "Introducció als grafs i els seus algorismes bàsics."
+description: "Implementació d'arbres binaris"
 readTime: "Properament"
 order: 11
 ---

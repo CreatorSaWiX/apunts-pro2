@@ -224,7 +224,7 @@ const TopicCarousel: React.FC = () => {
                                 `}>
                                     <div className="flex flex-col gap-4">
                                         <div className="group/btn flex items-center gap-3 text-sky-400 font-medium">
-                                            <span className="group-hover/btn:underline decoration-sky-500/30 underline-offset-4">Explorar Tema</span>
+                                            <span className="group-hover/btn:underline decoration-sky-500/30 underline-offset-4">Explorar tema</span>
                                             <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                                         </div>
 
@@ -247,7 +247,6 @@ const TopicCarousel: React.FC = () => {
                 })}
             </div>
 
-            {/* Elegant Pagination Indicators */}
             {/* Elegant Pagination Indicators */}
             <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-50">
                 {sortedTopics.map((_, i) => (

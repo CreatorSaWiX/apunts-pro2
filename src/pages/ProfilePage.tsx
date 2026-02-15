@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { User, LogOut, Upload, Clock, Trash2, Globe, Loader, Edit2, X, Save } from 'lucide-react';
+import { User, LogOut, Upload, Clock, Trash2, Globe, Loader, Edit2, X, Save, Mail, Send, Bell } from 'lucide-react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { updateProfile } from 'firebase/auth';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import MailboxModal from '../components/mailing/MailboxModal';
+import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
+import InboxModal from '../components/notifications/InboxModal';
 
 // --- Edit Profile Modal Component ---
 const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
@@ -131,19 +134,21 @@ const ProfilePage = () => {
     const { uid } = useParams();
     const { user: authUser, logout } = useAuth();
 
-    // Determine which user to show
-    // If uid is present, we show that user. If not, we show the logged-in user.
     const userIdToFetch = uid || authUser?.id;
     const isOwnProfile = !uid || (authUser && authUser.id === uid);
 
     const { solutions: userContributions, loading } = useUserSolutions(userIdToFetch || '');
-    const [activeTab, setActiveTab] = useState('uploads');
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    // Local state for extended user data
+    // Mailing & Activity State
+    const [isMailboxOpen, setIsMailboxOpen] = useState(false);
+    const [isInboxOpen, setIsInboxOpen] = useState(false);
+    const [isComposeOpen, setIsComposeOpen] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
+
     const [extendedUser, setExtendedUser] = useState<any>(null);
 
-    // Fetch extended user data
     useEffect(() => {
         const fetchUserData = async () => {
             if (userIdToFetch) {
@@ -152,10 +157,8 @@ const ProfilePage = () => {
                 if (docSnap.exists()) {
                     setExtendedUser({ ...docSnap.data(), id: userIdToFetch });
                 } else if (isOwnProfile && authUser) {
-                    // Fallback to auth user data if firestore doc missing
                     setExtendedUser(authUser);
                 } else {
-                    // User not found or just basic info
                     setExtendedUser({
                         username: 'Usuari',
                         avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${userIdToFetch}`,
@@ -167,16 +170,43 @@ const ProfilePage = () => {
         fetchUserData();
     }, [userIdToFetch, authUser, isOwnProfile]);
 
+    // Fetch unread counts
+    useEffect(() => {
+        const fetchUnread = async () => {
+            if (isOwnProfile && authUser) {
+                // Messages
+                const qMsg = query(
+                    collection(db, 'messages'),
+                    where('receiverId', '==', authUser.id),
+                    where('read', '==', false)
+                );
+                const snapMsg = await getDocs(qMsg);
+                setUnreadCount(snapMsg.size);
+
+                // Notifications
+                const qNotif = query(
+                    collection(db, 'notifications'),
+                    where('userId', '==', authUser.id),
+                    where('read', '==', false)
+                );
+                const snapNotif = await getDocs(qNotif);
+                setUnreadNotificationsCount(snapNotif.size);
+            }
+        };
+        fetchUnread();
+
+        const interval = setInterval(fetchUnread, 30000);
+        return () => clearInterval(interval);
+    }, [isOwnProfile, authUser, isMailboxOpen, isInboxOpen]);
+
     const handleUpdateProfile = async (data: any) => {
         if (!authUser?.id) return;
 
         const userRef = doc(db, 'users', authUser.id);
 
         try {
-            // Update Firestore
             await setDoc(userRef, data, { merge: true });
 
-            // Update Auth Profile (so it reflects in navbar etc)
             if (auth.currentUser && data.username) {
                 await updateProfile(auth.currentUser, {
                     displayName: data.username,
@@ -184,13 +214,10 @@ const ProfilePage = () => {
                 });
             }
 
-            // Update local state
             setExtendedUser((prev: any) => ({ ...prev, ...data }));
 
-            // Force reload to update context if needed, or we implement a context updater later
-            // For now, user might see old name in nav until refresh, but extendedUser handles profile page.
             if (data.username !== authUser.username) {
-                window.location.reload(); // Simple way to ensure AuthContext gets fresh data
+                window.location.reload();
             }
 
         } catch (error) {
@@ -204,7 +231,6 @@ const ProfilePage = () => {
 
     const rank = getRank(userContributions.length);
 
-    // Simple URL display helper
     const displayUrl = (url: string) => {
         try {
             return new URL(url).hostname;
@@ -267,7 +293,7 @@ const ProfilePage = () => {
                         className="absolute bottom-4 right-8 px-4 py-2 bg-slate-800/50 hover:bg-red-500/10 hover:border-red-500/20 text-slate-300 hover:text-red-400 border border-white/10 rounded-xl transition-all flex items-center gap-2 text-sm font-medium backdrop-blur-md"
                     >
                         <LogOut size={16} />
-                        Tancar Sessió
+                        Tancar sessió
                     </button>
                 )}
             </div>
@@ -311,69 +337,81 @@ const ProfilePage = () => {
                 </a>
             </div>
 
-            {/* Content Tabs */}
-            <div className="flex flex-col gap-6">
-                <div className="flex items-center gap-1 bg-white/5 p-1 rounded-xl w-fit">
-                    <button
-                        onClick={() => setActiveTab('uploads')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'uploads' ? 'bg-slate-700 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-                    >
-                        Els meus solucionaris
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('saved')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'saved' ? 'bg-slate-700 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-                    >
-                        Guardats
-                    </button>
-                </div>
-
-                <div className="bg-[#1e1e1e] rounded-2xl border border-white/5 overflow-hidden min-h-[200px]">
-                    {loading ? (
-                        <div className="flex items-center justify-center h-40">
-                            <Loader className="animate-spin text-slate-500" />
-                        </div>
-                    ) : userContributions.length > 0 ? (
-                        userContributions.map((item, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 font-mono text-xs font-bold border border-white/5">
-                                        CPP
-                                    </div>
-                                    <div>
-                                        <h4 className="text-slate-200 font-medium">{item.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs text-slate-500">
-                                            <span className="font-mono text-slate-400">{item.id}</span>
-                                            <span>•</span>
-                                            <span className="flex items-center gap-1"><Clock size={10} /> {item.date}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-4">
-                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${item.status === 'approved'
-                                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                                        : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
-                                        }`}>
-                                        {item.status === 'approved' ? 'Publicat' : 'Pendent'}
+            {/* Mailing & Activity System */}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full mb-12">
+                {isOwnProfile ? (
+                    <>
+                        <button
+                            onClick={() => setIsMailboxOpen(true)}
+                            className="relative px-8 py-6 bg-slate-800/50 hover:bg-sky-500/10 border border-white/5 hover:border-sky-500/30 rounded-2xl transition-all group w-full max-w-sm flex flex-col items-center gap-3"
+                        >
+                            <div className="relative">
+                                <Mail size={32} className="text-slate-400 group-hover:text-sky-400 transition-colors" />
+                                {unreadCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-red-500/20 animate-pulse">
+                                        {unreadCount}
                                     </span>
-
-                                    <button className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100">
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
+                                )}
                             </div>
-                        ))
-                    ) : (
-                        <div className="flex flex-col items-center justify-center h-40 text-slate-500">
-                            <p>No has pujat cap solució encara.</p>
-                            <Link to="/new-solution" className="text-sky-400 text-sm mt-2 hover:underline">
-                                Pujar la primera
-                            </Link>
-                        </div>
-                    )}
-                </div>
+                            <span className="text-lg font-bold text-slate-200 group-hover:text-white">Bústia privada</span>
+                            <span className="text-xs text-slate-500 uppercase tracking-wider">
+                                {unreadCount > 0 ? `${unreadCount} nous` : 'Sense novetats'}
+                            </span>
+                        </button>
+
+                        <button
+                            onClick={() => setIsInboxOpen(true)}
+                            className="relative px-8 py-6 bg-slate-800/50 hover:bg-indigo-500/10 border border-white/5 hover:border-indigo-500/30 rounded-2xl transition-all group w-full max-w-sm flex flex-col items-center gap-3"
+                        >
+                            <div className="relative">
+                                <Bell size={32} className="text-slate-400 group-hover:text-indigo-400 transition-colors" />
+                                {unreadNotificationsCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-pink-500/20 animate-pulse">
+                                        {unreadNotificationsCount}
+                                    </span>
+                                )}
+                            </div>
+                            <span className="text-lg font-bold text-slate-200 group-hover:text-white">Activitat</span>
+                            <span className="text-xs text-slate-500 uppercase tracking-wider">
+                                {unreadNotificationsCount > 0 ? `${unreadNotificationsCount} noves` : 'Tot al dia'}
+                            </span>
+                        </button>
+                    </>
+                ) : (
+                    <button
+                        onClick={() => {
+                            if (!authUser) {
+                                window.location.href = '/login';
+                                return;
+                            }
+                            setIsComposeOpen(true);
+                        }}
+                        className="px-8 py-4 bg-sky-500 hover:bg-sky-400 text-white rounded-2xl font-bold text-lg shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 transition-all flex items-center gap-3 w-full max-w-sm justify-center"
+                    >
+                        <Send size={24} />
+                        Enviar missatge
+                    </button>
+                )}
             </div>
+
+            {/* Modals */}
+            <AnimatePresence>
+                {isMailboxOpen && (
+                    <MailboxModal isOpen={isMailboxOpen} onClose={() => setIsMailboxOpen(false)} />
+                )}
+                {isInboxOpen && (
+                    <InboxModal isOpen={isInboxOpen} onClose={() => setIsInboxOpen(false)} />
+                )}
+                {isComposeOpen && extendedUser && (
+                    <ComposeMessageModal
+                        isOpen={isComposeOpen}
+                        onClose={() => setIsComposeOpen(false)}
+                        receiverId={extendedUser.id}
+                        receiverName={extendedUser.username}
+                        initialSubject=""
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 };

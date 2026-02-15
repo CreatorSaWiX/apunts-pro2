@@ -172,62 +172,6 @@ git push origin nom-de-la-teva-branca
 
 ---
 
-## 📂 Contribuir amb Contingut
-
-### Afegir Apunts
-
-Els apunts es troben a `src/data/notes.ts`. Per afegir nous apunts:
-
-```typescript
-{
-  id: 'nom-unic-apunt',
-  title: 'Títol de l\'Apunt',
-  content: `
-    ## Secció 1
-    Contingut en **Markdown**...
-  `,
-  author: 'El Teu Nom',
-  topicId: 'tema1' // Tema corresponent
-}
-```
-
-### Afegir Solucionaris
-
-Els solucionaris es troben a `src/data/solutions.ts`:
-
-```typescript
-{
-  id: 'P12345',
-  title: 'Nom del Problema',
-  difficulty: 'medium', // easy, medium, hard
-  topicId: 'tema1',
-  code: `
-    // El teu codi C++ aquí
-    #include <iostream>
-    using namespace std;
-    
-    int main() {
-      // ...
-    }
-  `
-}
-```
-
-### Afegir Nous Temes
-
-Edita `src/data/courseStructure.ts` per afegir nous temes:
-
-```typescript
-{
-  id: 'tema-nou',
-  title: 'Títol del Tema',
-  description: 'Descripció breu',
-  icon: 'IconName' // Icona de Lucide React
-}
-```
-
----
-
 ## 🏗️ Estructura del Projecte
 
 ```
@@ -330,15 +274,9 @@ Si aquest projecte t'ha ajudat, considera:
 
 ---
 
-## 📞 Contacte
-
-Tens dubtes o suggeriments? Obre un **Issue** o contacta'm a través de GitHub!
-
----
-
 <div align="center">
 
-**Fet amb ❤️ per estudiants, per a estudiants**
+**Fet amb ❤️ per estudiants FIB, per a estudiants 8)**
 
 📚 PRO2 @ FIB - UPC
 

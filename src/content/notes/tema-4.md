@@ -1,6 +1,6 @@
 ---
-title: "Tema 4: Estructures de Dades Lineals"
-description: "Piles, cues i llistes enllaçades."
+title: "Tema 4: Conjunts i diccionaris"
+description: "Introducció a l'ús de conjunts i diccionaris."
 readTime: "Properament"
 order: 4
 ---

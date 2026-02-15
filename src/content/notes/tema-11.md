@@ -1,6 +1,6 @@
 ---
 title: "Tema 11: Disseny d'Algorismes"
-description: "Estratègies avançades: Divide & Conquer, Greedy..."
+description: "Implementació d'arbres generals"
 readTime: "Properament"
 order: 12
 ---

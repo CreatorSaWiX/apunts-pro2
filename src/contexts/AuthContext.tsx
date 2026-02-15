@@ -13,7 +13,7 @@ interface User {
 interface AuthContextType {
     user: User | null;
     login: (email: string, password: string) => Promise<void>;
-    signup: (email: string, password: string, username: string, inviteCode: string) => Promise<void>;
+    signup: (email: string, password: string, username: string, inviteCode?: string) => Promise<void>;
     logout: () => Promise<void>;
     isLoading: boolean;
 }
@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await signInWithEmailAndPassword(auth, email, password);
     };
 
-    const signup = async (email: string, password: string, username: string, inviteCode: string) => {
+    const signup = async (email: string, password: string, username: string, inviteCode?: string) => {
         const { createUserWithEmailAndPassword, updateProfile, deleteUser } = await import('firebase/auth');
         const { doc, setDoc } = await import('firebase/firestore');
         const { db } = await import('../lib/firebase');
@@ -67,21 +67,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 photoURL: avatarUrl
             });
 
-            // 3. Create Firestore Document (Protected by Security Rules)
-            // This will fail if the inviteCode is invalid (does not exist in 'invites' collection)
-            await setDoc(doc(db, 'users', user.uid), {
+            // 3. Determine Role and Data
+            const userData: any = {
                 username: username,
                 email: email,
                 avatar: avatarUrl,
-                role: 'editor',
-                createdAt: new Date().toISOString(),
-                inviteCode: inviteCode // Required for validation rule
-            });
+                role: inviteCode ? 'editor' : 'user',
+                createdAt: new Date().toISOString()
+            };
+
+            // Only add inviteCode if provided (triggers validation rules for editors)
+            if (inviteCode) {
+                userData.inviteCode = inviteCode;
+            }
+
+            // 4. Create Firestore Document
+            await setDoc(doc(db, 'users', user.uid), userData);
+
         } catch (error) {
             // If Firestore creation fails (e.g., invalid code), rollback Auth creation
             console.error("Error creating user profile:", error);
             await deleteUser(user);
-            throw new Error("Error de validació: Codi d'invitació no vàlid o error del sistema.");
+            throw new Error(inviteCode ? "Codi d'invitació no vàlid o error del sistema." : "Error al crear el perfil d'usuari.");
         }
     };
 

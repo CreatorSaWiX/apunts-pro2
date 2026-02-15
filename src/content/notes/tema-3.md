@@ -1,6 +1,6 @@
 ---
-title: "Tema 3: Recursivitat"
-description: "Conceptes bàsics i avançats de recursivitat."
+title: "Tema 3: Llistes i iteradors"
+description: "Conceptes bàsics i avançats de llistes i iteradors."
 readTime: "Properament"
 order: 3
 ---
