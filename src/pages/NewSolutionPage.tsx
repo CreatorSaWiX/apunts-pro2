@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { allPersonalNotes } from 'content-collections';
 import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import CodeEditor from '../components/ui/CodeEditor';
 
 const NewSolutionPage = () => {
     const { user } = useAuth();
@@ -131,16 +132,14 @@ const NewSolutionPage = () => {
                         Codi C++
                     </h2>
 
-                    <div className="relative">
-                        <textarea
+                    <div className="relative h-96">
+                        <CodeEditor
                             value={code}
-                            onChange={(e) => setCode(e.target.value)}
-                            className="w-full h-80 bg-slate-950/50 border border-white/10 rounded-xl p-4 text-sm font-mono text-slate-300 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all resize-none leading-relaxed"
+                            onChange={setCode}
+                            height="100%"
+                            className="bg-slate-950/50"
                             placeholder="#include <iostream>..."
-                            spellCheck={false}
-                            required
                         />
-                        <div className="absolute top-4 right-4 text-xs text-slate-600 font-mono bg-slate-900/80 px-2 py-1 rounded">C++</div>
                     </div>
                 </div>
 

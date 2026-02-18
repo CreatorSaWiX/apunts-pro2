@@ -248,7 +248,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
 
     return (
         <>
-            <div className="flex flex-col bg-[#1e1e1e] border border-white/5 rounded-2xl shadow-lg mt-8 mb-12">
+            <div className="flex flex-col bg-slate-900/50 border border-white/5 rounded-2xl shadow-lg mt-8 mb-12 backdrop-blur-sm">
                 {/* Header */}
                 <div className="px-5 py-4 bg-white/5 border-b border-white/5 flex items-center gap-3 rounded-t-2xl">
                     <MessageCircle size={18} className="text-sky-400" />
@@ -297,7 +297,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 bg-[#151b2b] border-t border-white/5 relative z-10 rounded-b-2xl">
+                <div className="p-4 bg-black/20 border-t border-white/5 relative z-10 rounded-b-2xl">
                     {user ? (
                         <form onSubmit={handleSend} className="relative">
                             {replyingTo && (

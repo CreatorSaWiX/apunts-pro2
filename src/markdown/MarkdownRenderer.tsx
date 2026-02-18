@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkDirective from "remark-directive";
 import { remarkDirectiveRehype } from "./remarkDirectiveRehype";
+import { remarkCodeMetadata } from "./remarkCodeMetadata";
 import CodeBlock from "../components/ui/CodeBlock";
 
 type MarkdownRendererProps = {
@@ -14,17 +15,24 @@ export function MarkdownRenderer({ content, components }: MarkdownRendererProps)
     return (
         <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
-            remarkPlugins={[remarkDirective, remarkDirectiveRehype]}
+            remarkPlugins={[remarkDirective, remarkDirectiveRehype, remarkCodeMetadata]}
             components={{
+                pre: ({ children }) => <>{children}</>,
                 code(props) {
-                    const { children, className, ...rest } = props
-                    const match = /language-(\w+)/.exec(className || '')
+                    const { children, className, ...rest } = props;
+                    const match = /language-(\w+)/.exec(className || '');
+
+                    // Access metadata passed by remarkCodeMetadata via hProperties -> props
+                    const metadata = (rest as any).metadata || '';
+                    const titleMatch = metadata.match(/\[(.*?)\]/);
+                    const title = titleMatch ? titleMatch[1] : undefined;
+
                     return match ? (
                         <div className="not-prose my-8 -mx-4 md:mx-0">
                             <CodeBlock
                                 code={String(children).replace(/\n$/, '')}
                                 language={match[1]}
-                                title={match[1] === 'cpp' ? 'C++' : match[1]}
+                                title={title}
                             />
                         </div>
                     ) : (
@@ -32,7 +40,7 @@ export function MarkdownRenderer({ content, components }: MarkdownRendererProps)
                             className="px-1.5 py-0.5 rounded-md bg-white/10 text-sky-300 font-mono text-[0.9em] border border-white/5">
                             {children}
                         </code>
-                    )
+                    );
                 },
                 h2: ({ ...props }) => (
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mt-16 mb-6 scroll-mt-28 tracking-tight" {...props} />

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, FileText, ChevronLeft, ChevronRight, CheckCircle, Loader, Edit, Save, X } from 'lucide-react';
+import { ArrowLeft, FileText, ChevronLeft, ChevronRight, CheckCircle, Loader, Edit, Save, X, Copy, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSolution, useSolutions } from '../hooks/useSolutions';
 import CodeBlock from '../components/ui/CodeBlock';
 import { useAuth } from '../contexts/AuthContext';
 import { courseStructure } from '../content/data/courseStructure';
 import CommentsSection from '../components/comments/CommentsSection';
+import CodeEditor from '../components/ui/CodeEditor';
 
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();
@@ -19,6 +20,7 @@ const SolutionDetailPage = () => {
     const { user } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [currentCode, setCurrentCode] = useState('');
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (solution) setCurrentCode(solution.code);
@@ -53,6 +55,13 @@ const SolutionDetailPage = () => {
         window.scrollTo(0, 0);
         document.body.style.overflow = 'auto';
     }, [problemId]);
+
+    const handleCopy = () => {
+        if (!solution) return;
+        navigator.clipboard.writeText(solution.code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     const handleSave = async () => {
         if (!solution || !user) return;
@@ -232,7 +241,7 @@ const SolutionDetailPage = () => {
                     transition={{ duration: 0.5, delay: 0.1 }}
                     className="flex flex-col gap-6"
                 >
-                    <div className="bg-[#1e1e1e] border border-white/5 rounded-2xl overflow-hidden shadow-lg">
+                    <div className="bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden shadow-lg backdrop-blur-sm">
                         <div className="px-5 py-3 bg-white/5 border-b border-white/5 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <FileText size={16} className="text-indigo-400" />
@@ -277,57 +286,73 @@ const SolutionDetailPage = () => {
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="relative lg:col-span-1 h-full flex flex-col"
                 >
-                    <div className="bg-[#1e1e1e] border border-white/5 rounded-2xl overflow-hidden shadow-lg flex-1 flex flex-col">
-                        <div className="px-5 py-3 bg-white/5 border-b border-white/5 flex items-center justify-between">
+                    <div className="bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden shadow-lg flex-1 flex flex-col min-h-[500px] backdrop-blur-sm">
+                        <div className="px-5 py-3 bg-white/5 border-b border-white/5 flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-3">
                                 <span className="text-sm font-mono text-slate-400">{solution.id}.cpp</span>
                                 <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">C++</span>
                             </div>
 
                             {/* EDIT CONTROLS */}
-                            {user && user.role === 'editor' && (
-                                <div className="flex items-center gap-2">
-                                    {isEditing ? (
-                                        <>
+                            <div className="flex items-center gap-2">
+                                {/* COPY BUTTON (Visible only when not editing) */}
+                                {!isEditing && (
+                                    <button
+                                        onClick={handleCopy}
+                                        className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors mr-2"
+                                        title="Copiar codi"
+                                    >
+                                        {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
+                                    </button>
+                                )}
+
+                                {user && user.role === 'editor' && (
+                                    <>
+                                        {isEditing ? (
+                                            <>
+                                                <button
+                                                    onClick={() => setIsEditing(false)}
+                                                    className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                                    title="Cancel·lar"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={handleSave}
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
+                                                >
+                                                    <Save size={14} /> Guardar
+                                                </button>
+                                            </>
+                                        ) : (
                                             <button
-                                                onClick={() => setIsEditing(false)}
-                                                className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                                                title="Cancel·lar"
+                                                onClick={() => setIsEditing(true)}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
                                             >
-                                                <X size={16} />
+                                                <Edit size={14} /> Editar
                                             </button>
-                                            <button
-                                                onClick={handleSave}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
-                                            >
-                                                <Save size={14} /> Guardar
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <button
-                                            onClick={() => setIsEditing(true)}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
-                                        >
-                                            <Edit size={14} /> Editar
-                                        </button>
-                                    )}
-                                </div>
-                            )}
+                                        )}
+                                    </>
+                                )}
+                            </div>
                         </div>
 
-                        <div className="relative flex-1 bg-[#1e1e1e] min-h-[500px]">
+                        <div className="relative flex-1 bg-transparent overflow-hidden">
                             {isEditing ? (
-                                <textarea
+                                <CodeEditor
                                     value={currentCode}
-                                    onChange={(e) => setCurrentCode(e.target.value)}
-                                    className="w-full h-full p-6 bg-[#1e1e1e] text-slate-300 font-mono text-sm resize-none focus:outline-none"
-                                    spellCheck={false}
+                                    onChange={setCurrentCode}
+                                    height="100%"
+                                    className="bg-transparent h-full"
+                                    variant="minimal"
                                 />
                             ) : (
                                 <CodeBlock
                                     code={solution.code}
                                     language="cpp"
-                                    title=""
+                                    showHeader={false}
+                                    className="!m-0 h-full !bg-transparent !p-0"
+                                    variant="minimal"
                                 />
                             )}
                         </div>

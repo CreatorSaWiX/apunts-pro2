@@ -9,7 +9,7 @@ order: 1
 
 Una **struct** és un tipus definit per l'usuari que agrupa diverses dades relacionades.
 
-```cpp
+```cpp [main.cpp]
 struct Rellotge {
     int h, m, s;
 };  //Important posar ';'!
@@ -43,7 +43,7 @@ Per mantenir l'ordre, separem el "què fa" del "com ho fa".
 És el "menú" de la classe. Diu què pots fer, però no com.
 *Cal protegir-ho amb guàrdies (`#ifndef`) perquè no es copiï dos cops.*
 
-```cpp
+```cpp [Punt.hpp]
 #ifndef PUNT_HPP
 #define PUNT_HPP
 
@@ -74,7 +74,7 @@ Aquí escrivim el codi real de les funcions.
 > Com que estem fora de la classe, hem de dir a qui pertany cada funció.
 > `Punt::moure` significa "la funció `moure` que pertany a la classe `Punt`".
 
-```cpp
+```cpp [Punt.cpp]
 #include "Punt.hpp"
 #include <cmath>
 
@@ -102,7 +102,7 @@ double Punt::get_x() const {
 ### 3. Ús (`main.cc`)
 Així es crea i s'utilitza un objecte.
 
-```cpp
+```cpp [main.cpp]
 #include <iostream>
 #include "Punt.hpp"
 
