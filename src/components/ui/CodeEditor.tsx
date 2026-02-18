@@ -3,7 +3,7 @@ import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { EditorView } from '@codemirror/view';
 import { Loader2 } from 'lucide-react';
-import React, { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 
 interface CodeEditorProps {
     value?: string;
@@ -54,8 +54,8 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(({
 
     return (
         <div ref={ref} className={`overflow-hidden bg-[#1e1e1e] ${isMinimal
-                ? '!bg-transparent'
-                : 'rounded-xl border border-white/5 shadow-lg shadow-black/20'
+            ? '!bg-transparent'
+            : 'rounded-xl border border-white/5 shadow-lg shadow-black/20'
             } ${className}`}>
             <ReactCodeMirror
                 value={value}
