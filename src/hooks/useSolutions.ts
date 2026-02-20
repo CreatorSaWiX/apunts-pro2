@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { fetchJutgeProblem } from '../lib/jutge';
 import { allSolutions } from '../content/data/solutions';
 import type { Solution } from '../content/data/solutions';
 
@@ -91,8 +92,6 @@ export const useSolution = (topicId: string, problemId: string, lang: string = '
                 if (staticData) foundSolution = staticData;
 
                 // 2. Firestore
-                const { doc, getDoc } = await import('firebase/firestore');
-                const { db } = await import('../lib/firebase');
                 const docRef = doc(db, 'solutions', problemId);
 
                 try {
@@ -118,8 +117,6 @@ export const useSolution = (topicId: string, problemId: string, lang: string = '
                 // 3. API Check (Sempre comprovem API si volem assegurar idioma, o si falta enunciat)
                 // Optimització: Només si falta enunciat O si l'usuari ha demanat explícitament un idioma (tot i que aquí lang sempre té valor)
                 // Millor: Sempre demanem a l'API l'enunciat en l'idioma 'lang' i ho barregem.
-
-                const { fetchJutgeProblem } = await import('../lib/jutge');
                 const jutgeData = await fetchJutgeProblem(problemId, lang);
 
                 if (jutgeData) {

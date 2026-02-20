@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 import { ca } from 'date-fns/locale';
@@ -47,25 +48,30 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
     const { user } = useAuth();
     const [showReactorTooltip, setShowReactorTooltip] = useState<string | null>(null);
     const [areRepliesVisible, setAreRepliesVisible] = useState(false);
-    const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
     const [showPicker, setShowPicker] = useState(false);
-    const closeTimeoutRef = useRef<any>(null);
+    const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
 
-    useEffect(() => {
-        return () => {
-            if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-        };
-    }, []);
+    const handleTogglePicker = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (!showPicker) {
+            let top = e.clientY + 5;
+            let left = e.clientX + 5;
 
-    const handlePickerOpen = () => {
-        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-        setShowPicker(true);
-    };
+            // Make sure the 288px wide picker doesn't overflow the right edge
+            if (left + 288 > window.innerWidth) {
+                left = window.innerWidth - 300;
+            }
+            if (left < 10) left = 10; // Left bleeding protection
 
-    const handlePickerClose = () => {
-        closeTimeoutRef.current = setTimeout(() => {
+            // Make sure it doesn't overflow the bottom
+            if (top + 260 > window.innerHeight) {
+                top = e.clientY - 265;
+            }
+
+            setPickerPosition({ top, left });
+            setShowPicker(true);
+        } else {
             setShowPicker(false);
-        }, 200);
+        }
     };
 
     // Group reactions by emoji for display
@@ -196,45 +202,45 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                         ))}
 
                         {/* Add Reaction Button (Smile Icon) */}
-                        <div
-                            className="relative"
-                            onMouseEnter={(e) => {
-                                const rect = e.currentTarget.getBoundingClientRect();
-                                setPickerPosition({ top: rect.top - 5, left: rect.left });
-                                handlePickerOpen();
-                            }}
-                            onMouseLeave={handlePickerClose}
-                        >
+                        <div className="relative">
                             <button
+                                onClick={handleTogglePicker}
                                 className={`text-slate-500 hover:text-sky-400 transition-opacity ${showPicker ? 'opacity-100 text-sky-400' : 'opacity-0 group-hover/comment:opacity-100'}`}
                                 title="Afegir reacció"
                             >
                                 <Smile size={14} />
                             </button>
 
-                            {/* Quick Picker Popover - Fixed Position to escape overflow */}
-                            {showPicker && (
-                                <div
-                                    className="fixed z-[1000] p-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl grid grid-cols-6 gap-1 w-72 max-h-64 overflow-y-auto custom-scrollbar overscroll-contain"
-                                    style={{
-                                        top: pickerPosition.top,
-                                        left: pickerPosition.left,
-                                        transform: 'translateY(-100%)'
-                                    }}
-                                    onMouseEnter={handlePickerOpen}
-                                    onMouseLeave={handlePickerClose}
-                                >
-                                    {/* Custom Emotes */}
-                                    {CUSTOM_EMOTES.map(emoji => (
-                                        <button
-                                            key={emoji}
-                                            onClick={() => user && onReact(comment.id, emoji)}
-                                            className={`p-1 rounded-lg hover:bg-white/10 transition-transform hover:scale-110 flex items-center justify-center ${userReaction === emoji ? 'bg-sky-500/20' : ''}`}
-                                        >
-                                            <img src={emoji} alt="emoji" className="w-6 h-6 object-contain" loading="lazy" />
-                                        </button>
-                                    ))}
-                                </div>
+                            {/* Quick Picker Popover - Portal at Document Body */}
+                            {showPicker && createPortal(
+                                <>
+                                    <div
+                                        className="fixed inset-0 z-[9990]"
+                                        onClick={() => setShowPicker(false)}
+                                    />
+                                    <div
+                                        className="fixed z-[10000] p-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl grid grid-cols-6 gap-1 w-72 max-h-64 overflow-y-auto custom-scrollbar overscroll-contain origin-top-left"
+                                        style={{
+                                            top: pickerPosition.top,
+                                            left: pickerPosition.left,
+                                        }}
+                                    >
+                                        {/* Custom Emotes */}
+                                        {CUSTOM_EMOTES.map(emoji => (
+                                            <button
+                                                key={emoji}
+                                                onClick={() => {
+                                                    if (user) onReact(comment.id, emoji);
+                                                    setShowPicker(false);
+                                                }}
+                                                className={`p-1 rounded-lg hover:bg-slate-800 transition-transform hover:scale-110 flex items-center justify-center ${userReaction === emoji ? 'bg-sky-500/20' : ''}`}
+                                            >
+                                                <img src={emoji} alt="emoji" className="w-6 h-6 object-contain" loading="lazy" />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>,
+                                document.body
                             )}
                         </div>
                     </div>

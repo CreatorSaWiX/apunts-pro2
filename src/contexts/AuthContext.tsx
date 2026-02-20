@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile, deleteUser } from 'firebase/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
 interface User {
@@ -66,10 +66,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const signup = async (email: string, password: string, username: string, inviteCode?: string) => {
-        const { createUserWithEmailAndPassword, updateProfile, deleteUser } = await import('firebase/auth');
-        const { doc, setDoc } = await import('firebase/firestore');
-        const { db } = await import('../lib/firebase');
-
         // 1. Create User (Auth)
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;

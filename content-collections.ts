@@ -9,7 +9,8 @@ const personalNotes = defineCollection({
         title: z.string(),
         description: z.string(),
         readTime: z.string().optional(),
-        order: z.number()
+        order: z.number(),
+        content: z.string()
     }),
     transform: (document) => {
         const subject = document._meta.directory; // "pro2" or "m1"

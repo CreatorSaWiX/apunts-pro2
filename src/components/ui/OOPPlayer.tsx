@@ -73,8 +73,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
     }, [step.line, step.activeFile, activeTab]);
 
     return (
-        <div className="not-prose my-12 flex flex-col w-full rounded-2xl border border-white/10 bg-[#0B0F17] overflow-hidden shadow-2xl relative z-10 font-sans group/player lg:h-[550px] max-h-[85vh] xl:max-h-[600px]">
-
+        <div className="not-prose my-12 flex flex-col w-full rounded-2xl border border-white/10 bg-[#0B0F17] overflow-hidden shadow-2xl relative z-10 font-sans group/player h-[500px] lg:h-[550px] max-h-[85vh] xl:max-h-[600px]">
             {/* Mobile Tab Switcher */}
             <div className="flex lg:hidden border-b border-white/5 bg-[#0a0d14]">
                 <button

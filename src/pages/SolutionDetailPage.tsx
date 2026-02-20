@@ -8,6 +8,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { courseStructure } from '../content/data/courseStructure';
 import CommentsSection from '../components/comments/CommentsSection';
 import CodeEditor from '../components/ui/CodeEditor';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();
@@ -31,8 +33,6 @@ const SolutionDetailPage = () => {
         const fetchAuthor = async () => {
             if (solution?.authorId) {
                 try {
-                    const { doc, getDoc } = await import('firebase/firestore');
-                    const { db } = await import('../lib/firebase');
                     const userDoc = await getDoc(doc(db, 'users', solution.authorId));
                     if (userDoc.exists()) {
                         setAuthorData(userDoc.data());
@@ -67,9 +67,6 @@ const SolutionDetailPage = () => {
         if (!solution || !user) return;
 
         try {
-            const { doc, setDoc } = await import('firebase/firestore');
-            const { db } = await import('../lib/firebase');
-
             // Try to find the canonical title from courseStructure to avoid saving the ID as title
             let canonicalTitle = solution.title;
             if (topicId) {
