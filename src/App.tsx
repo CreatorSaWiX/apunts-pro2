@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Background from './components/Background';
+import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -10,28 +11,32 @@ import SolutionsListPage from './pages/SolutionsListPage';
 import SolutionDetailPage from './pages/SolutionDetailPage';
 import NewSolutionPage from './pages/NewSolutionPage';
 import { AuthProvider } from './contexts/AuthContext';
+import { SubjectProvider } from './contexts/SubjectContext';
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="min-h-screen text-slate-200 selection:bg-sky-500/30 font-sans relative">
+    <SubjectProvider>
+      <AuthProvider>
+        <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
 
-        <Background />
-        <Navigation />
+          <Background />
+          <PerformanceMonitor />
+          <Navigation />
 
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/profile/:uid" element={<ProfilePage />} />
-          <Route path="/new-solution" element={<NewSolutionPage />} />
-          <Route path="/tema/:id" element={<TopicPage />} />
-          <Route path="/tema/:id/solucionaris" element={<SolutionsListPage />} />
-          <Route path="/tema/:id/solucionaris/:problemId" element={<SolutionDetailPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Routes>
-      </div>
-    </AuthProvider>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/:uid" element={<ProfilePage />} />
+            <Route path="/new-solution" element={<NewSolutionPage />} />
+            <Route path="/tema/:id" element={<TopicPage />} />
+            <Route path="/tema/:id/solucionaris" element={<SolutionsListPage />} />
+            <Route path="/tema/:id/solucionaris/:problemId" element={<SolutionDetailPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+          </Routes>
+        </div>
+      </AuthProvider>
+    </SubjectProvider>
   );
 }
 

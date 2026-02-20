@@ -4,6 +4,7 @@ import { ArrowLeft, Search, Check, Code2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSolutions } from '../hooks/useSolutions';
 import { courseStructure } from '../content/data/courseStructure';
+import NotebookLayout from '../components/layout/NotebookLayout';
 
 const SolutionsListPage = () => {
     const { id: topicId } = useParams();
@@ -12,6 +13,11 @@ const SolutionsListPage = () => {
 
     // 1. Get definitions for the current topic from our static structure
     const topicDefinition = courseStructure.find(t => t.id === topicId);
+
+    // 2. M1 Special Layout Check
+    if (topicId?.startsWith('m1-') && topicDefinition) {
+        return <NotebookLayout topic={topicDefinition} solutions={uploadedSolutions} loading={loading} />;
+    }
 
     // 2. Identify problems associated with this topic
     // problemsList is now an array of { id, title }

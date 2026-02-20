@@ -8,6 +8,8 @@ export interface Solution {
     availableLanguages?: string[];
     status?: 'pending' | 'approved';
     date?: string;
+    type?: 'code' | 'notebook'; // New field to support notebook exercises
+    content?: string; // Rich markdown content for notebook solutions
 }
 
 export interface TopicSolutions {
@@ -15,10 +17,17 @@ export interface TopicSolutions {
     solutions: Solution[];
 }
 
+import { m1Solutions } from './solutions-m1';
+// Force reload
+
 export const allSolutions: TopicSolutions[] = [
     {
-        topicId: 'tema-1',
+        topicId: 'pro2-tema-1',
         solutions: []
+    },
+    {
+        topicId: 'm1-tema-1',
+        solutions: m1Solutions
     }
 ];
 

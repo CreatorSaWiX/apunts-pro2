@@ -16,9 +16,15 @@ export const useSolutions = (topicId: string) => {
                 const staticSolutions = allSolutions.find(t => t.topicId === topicId)?.solutions || [];
 
                 // 2. Get Firestore solutions
+                // HANDLE LEGACY IDs: If we are querying 'pro2-tema-1', we also want to catch 'tema-1'
+                const idsToQuery = [topicId];
+                if (topicId.startsWith('pro2-')) {
+                    idsToQuery.push(topicId.replace('pro2-', ''));
+                }
+
                 const q = query(
                     collection(db, 'solutions'),
-                    where('topicId', '==', topicId)
+                    where('topicId', 'in', idsToQuery)
                     // You might want to enable indexing for this: orderBy('createdAt', 'desc')
                 );
 
@@ -38,8 +44,16 @@ export const useSolutions = (topicId: string) => {
                 });
 
                 // 3. Merge (Firestore takes precedence if ID collision, or just append)
-                // Let's append Firestore ones to static ones for now
-                setSolutions([...staticSolutions, ...firestoreSolutions]);
+                // We use a Map to ensure unique by ID, preferring Firestore, then Static
+                const solutionsMap = new Map<string, Solution>();
+
+                // Add static first
+                staticSolutions.forEach(s => solutionsMap.set(s.id, s));
+
+                // Add firestore (overwriting static if exists, or adding new)
+                firestoreSolutions.forEach(s => solutionsMap.set(s.id, s));
+
+                setSolutions(Array.from(solutionsMap.values()));
 
             } catch (error) {
                 console.error("Error fetching solutions:", error);

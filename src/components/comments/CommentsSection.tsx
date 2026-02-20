@@ -50,11 +50,6 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
 
             setComments(rawComments);
             setLoading(false);
-
-            // Scroll to bottom on initial load
-            if (loading) {
-                setTimeout(() => scrollToBottom(), 100);
-            }
         });
 
         return () => unsubscribe();

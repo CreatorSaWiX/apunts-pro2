@@ -12,9 +12,11 @@ const personalNotes = defineCollection({
         order: z.number()
     }),
     transform: (document) => {
+        const subject = document._meta.directory; // "pro2" or "m1"
         return {
             ...document,
-            slug: document._meta.fileName.replace(/\.md$/, '')
+            subject: subject || 'pro2',
+            slug: `${subject || 'pro2'}-${document._meta.fileName.replace(/\.md$/, '')}`
         };
     }
 });

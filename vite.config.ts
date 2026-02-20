@@ -44,6 +44,7 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
+          maximumFileSizeToCacheInBytes: 3000000,
           runtimeCaching: [
             {
               urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
@@ -277,6 +278,18 @@ export default defineConfig(({ mode }) => {
           });
         }
       }
-    ]
+    ],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-graphs': ['react-force-graph-2d'],
+            'vendor-markdown': ['react-markdown', 'rehype-raw', 'rehype-katex', 'remark-math', 'remark-directive'],
+            'vendor-utils': ['framer-motion', 'lucide-react', 'date-fns']
+          }
+        }
+      }
+    }
   }
 })

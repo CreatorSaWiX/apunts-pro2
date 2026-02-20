@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSubject } from '../contexts/SubjectContext';
 import { Link, useLocation } from 'react-router-dom';
 import { X, BookOpen, ChevronRight, Menu, ArrowLeft, LogIn } from 'lucide-react';
 import { allPersonalNotes } from 'content-collections';
@@ -9,6 +10,7 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
 const Navigation: React.FC = () => {
+    const { subject, theme } = useSubject();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const location = useLocation();
@@ -108,8 +110,8 @@ const Navigation: React.FC = () => {
                         >
                             <div className="p-6 border-b border-white/5 flex justify-between items-center bg-slate-950/50">
                                 <h3 className="text-xl font-bold text-white flex items-center gap-3">
-                                    <BookOpen size={24} className="text-sky-400" />
-                                    Apunts PRO2
+                                    <BookOpen size={24} className="text-accent" />
+                                    Apunts {theme.label}
                                 </h3>
                                 <button
                                     onClick={() => setIsMenuOpen(false)}
@@ -121,30 +123,33 @@ const Navigation: React.FC = () => {
 
                             <div className="flex-1 overflow-y-auto p-4 space-y-2">
                                 <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2">Temari del Curs</div>
-                                {[...allPersonalNotes].sort((a, b) => a.order - b.order).map((topic, i) => (
-                                    <Link
-                                        key={topic.slug}
-                                        to={`/tema/${topic.slug}`}
-                                        onClick={() => setIsMenuOpen(false)}
-                                        className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-800/50 border border-transparent hover:border-slate-700/50 transition-all group"
-                                    >
-                                        <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-500 font-mono text-xs group-hover:bg-sky-500 group-hover:text-white transition-colors">
-                                            {(() => {
-                                                const match = topic.title.match(/^Tema (\d+)/);
-                                                if (match) return match[1];
-                                                if (topic.title.toLowerCase().includes('parcial')) return 'P1';
-                                                if (topic.title.toLowerCase().includes('final')) return 'EF';
-                                                return i + 1;
-                                            })()}
-                                        </span>
-                                        <div className="flex-1 min-w-0">
-                                            <h4 className="text-slate-300 font-medium group-hover:text-white transition-colors truncate">
-                                                {topic.title}
-                                            </h4>
-                                        </div>
-                                        <ChevronRight size={16} className="text-slate-600 group-hover:text-sky-500 opacity-0 group-hover:opacity-100 transition-all" />
-                                    </Link>
-                                ))}
+                                {[...allPersonalNotes]
+                                    .filter(n => (n as any).subject === subject)
+                                    .sort((a, b) => a.order - b.order)
+                                    .map((topic, i) => (
+                                        <Link
+                                            key={topic.slug}
+                                            to={`/tema/${topic.slug}`}
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-800/50 border border-transparent hover:border-slate-700/50 transition-all group"
+                                        >
+                                            <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-500 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
+                                                {(() => {
+                                                    const match = topic.title.match(/^Tema (\d+)/);
+                                                    if (match) return match[1];
+                                                    if (topic.title.toLowerCase().includes('parcial')) return 'P1';
+                                                    if (topic.title.toLowerCase().includes('final')) return 'EF';
+                                                    return i + 1;
+                                                })()}
+                                            </span>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="text-slate-300 font-medium group-hover:text-white transition-colors truncate">
+                                                    {topic.title}
+                                                </h4>
+                                            </div>
+                                            <ChevronRight size={16} className="text-slate-600 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                                        </Link>
+                                    ))}
                             </div>
 
                             <div className="p-4 border-t border-white/5 text-center text-xs text-slate-600">

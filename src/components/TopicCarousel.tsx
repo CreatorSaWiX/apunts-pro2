@@ -1,7 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
+import { useSubject } from '../contexts/SubjectContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
-import { ArrowRight, Book, Terminal } from 'lucide-react';
+import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 
 function SpotlightCard({
@@ -18,6 +19,15 @@ function SpotlightCard({
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
+    // Fix: Hook must be at top level, not inside conditional
+    const backgroundStyle = useMotionTemplate`
+        radial-gradient(
+          650px circle at ${mouseX}px ${mouseY}px,
+          rgba(var(--primary-rgb), 0.15),
+          transparent 80%
+        )
+    `;
+
     function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
         const { left, top } = currentTarget.getBoundingClientRect();
         mouseX.set(clientX - left);
@@ -31,16 +41,8 @@ function SpotlightCard({
             {...props}
         >
             <motion.div
-                className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover/card:opacity-100"
-                style={{
-                    background: useMotionTemplate`
-            radial-gradient(
-              650px circle at ${mouseX}px ${mouseY}px,
-              rgba(56, 189, 248, 0.15),
-              transparent 80%
-            )
-          `,
-                }}
+                className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover/card:opacity-100 z-50"
+                style={{ background: backgroundStyle }}
             />
             {children}
         </div>
@@ -49,9 +51,12 @@ function SpotlightCard({
 
 const TopicCarousel: React.FC = () => {
     const navigate = useNavigate();
+    const { subject } = useSubject();
     const [activeIndex, setActiveIndex] = useState(0);
     const scrollRef = useRef<HTMLDivElement>(null);
-    const sortedTopics = [...allPersonalNotes].sort((a, b) => a.order - b.order);
+    const sortedTopics = [...allPersonalNotes]
+        .filter(note => (note as any).subject === subject)
+        .sort((a, b) => a.order - b.order);
 
     const scrollTo = (index: number) => {
         if (!scrollRef.current) return;
@@ -70,65 +75,79 @@ const TopicCarousel: React.FC = () => {
         }
     };
 
-    // Track active index based on scroll position using getBoundingClientRect for absolute precision
+    const handlePrev = () => {
+        if (activeIndex > 0) scrollTo(activeIndex - 1);
+    };
+
+    const handleNext = () => {
+        if (activeIndex < sortedTopics.length - 1) scrollTo(activeIndex + 1);
+    };
+
+    // Calculate the closest card to the center on scroll
     const handleScroll = () => {
         if (!scrollRef.current) return;
         const container = scrollRef.current;
-        const containerRect = container.getBoundingClientRect();
-        const containerCenter = containerRect.left + (containerRect.width / 2);
+        const scrollCenter = container.scrollLeft + container.clientWidth / 2;
 
-        let closestIndex = 0;
-        let minDistance = Number.MAX_VALUE;
+        let closestIndex = activeIndex;
+        let minDistance = Infinity;
 
-        // Find card closest to center
-        Array.from(container.children).forEach((child, index) => {
-            if (!child.classList.contains('carousel-card')) return;
+        const children = container.children;
+        for (let i = 0; i < children.length; i++) {
+            const child = children[i] as HTMLElement;
+            // Only process the actual carousel cards
+            if (child.classList.contains('carousel-card')) {
+                const childCenter = child.offsetLeft + child.clientWidth / 2;
+                const distance = Math.abs(childCenter - scrollCenter);
 
-            const card = child as HTMLElement;
-            const cardRect = card.getBoundingClientRect();
-            const cardCenter = cardRect.left + (cardRect.width / 2);
-            const distance = Math.abs(containerCenter - cardCenter);
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIndex = index;
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    const index = child.getAttribute('data-index');
+                    if (index !== null) {
+                        closestIndex = parseInt(index, 10);
+                    }
+                }
             }
-        });
+        }
 
         if (closestIndex !== activeIndex) {
             setActiveIndex(closestIndex);
         }
     };
 
-    // Keep active index updated on mount, scroll, and resize
-    useEffect(() => {
-        // Initial check
-        // Small timeout to ensure layout is stable especially with snaps
-        setTimeout(handleScroll, 100);
-
-        const container = scrollRef.current;
-        if (container) {
-            container.addEventListener('scroll', handleScroll, { passive: true });
-            window.addEventListener('resize', handleScroll, { passive: true });
-
-            return () => {
-                container.removeEventListener('scroll', handleScroll);
-                window.removeEventListener('resize', handleScroll);
-            };
-        }
-    }, [activeIndex]); // Depend on activeIndex to access latest state if needed, though mostly functional state
-
     return (
-        <div className="w-full flex-1 flex flex-col justify-center relative">
+        <div className="w-full flex-1 flex flex-col justify-center relative group/carousel">
+            {/* Desktop Navigation Arrows */}
+            {activeIndex > 0 && (
+                <button
+                    onClick={handlePrev}
+                    className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100"
+                    aria-label="Previous topic"
+                >
+                    <ChevronLeft size={28} />
+                </button>
+            )}
+
+            {activeIndex < sortedTopics.length - 1 && (
+                <button
+                    onClick={handleNext}
+                    className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100"
+                    aria-label="Next topic"
+                >
+                    <ChevronRight size={28} />
+                </button>
+            )}
+
             <div
                 ref={scrollRef}
+                onScroll={handleScroll}
                 className="
                     flex overflow-x-auto items-center
                     snap-x snap-mandatory 
                     scroll-smooth hide-scrollbar 
                     relative
-                    pt-12 pb-20
-                    px-[calc(50%-160px)] md:px-[calc(50%-190px)]
+                    pt-12 pb-20 md:pt-16 md:pb-24 gap-2 md:gap-3
+                    px-[calc(50%_-_160px)] md:px-[calc(50%_-_190px)]
                 "
             >
                 {sortedTopics.map((topic, i) => {
@@ -137,16 +156,14 @@ const TopicCarousel: React.FC = () => {
                     return (
                         <div
                             key={topic.slug}
-                            draggable="false"
                             data-index={i}
-                            className={`carousel-card flex-shrink-0 snap-center outline-none transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${isActive ? 'scale-100 z-10' : 'scale-90 opacity-40 blur-[2px] grayscale-[0.5] hover:opacity-60 hover:scale-95'
+                            className={`carousel-card flex-shrink-0 snap-center outline-none transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform-gpu ${isActive ? 'scale-100 z-10 opacity-100' : 'scale-90 opacity-40 hover:opacity-60 hover:scale-95'
                                 }`}
                             onClick={(e) => {
                                 if (!isActive) {
                                     e.preventDefault();
                                     scrollTo(i);
                                 } else {
-                                    // Navigate to topic on click
                                     navigate(`/tema/${topic.slug}`);
                                 }
                             }}
@@ -157,17 +174,15 @@ const TopicCarousel: React.FC = () => {
                                     w-[320px] md:w-[380px] h-[460px] md:h-[520px]
                                     rounded-[32px] md:rounded-[40px]
                                     flex flex-col justify-between
-                                    backdrop-blur-xl cursor-pointer
+                                    cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform-gpu
                                     ${isActive
-                                        ? 'bg-slate-900/80 border-sky-500/20 shadow-2xl shadow-sky-500/10 ring-1 ring-sky-500/20'
-                                        : 'bg-slate-900/40 border-white/5 shadow-none'
+                                        ? 'bg-slate-900/80 border-primary/20 shadow-2xl shadow-primary/10 ring-1 ring-primary/20 backdrop-blur-xl'
+                                        : 'bg-slate-900/40 border-white/5 shadow-none backdrop-blur-xl'
                                     }
                                 `}
                             >
                                 {/* Decorative Gradient Orb */}
-                                {isActive && (
-                                    <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-sky-500/20 rounded-full blur-3xl pointer-events-none" />
-                                )}
+                                <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary/20 rounded-full blur-3xl pointer-events-none transition-opacity duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${isActive ? 'opacity-100' : 'opacity-0'}`} />
 
                                 {/* Card Header */}
                                 <div className="p-8 md:p-10 relative z-20">
@@ -175,7 +190,7 @@ const TopicCarousel: React.FC = () => {
                                         <div className={`
                                             p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300
                                             ${isActive
-                                                ? 'bg-sky-500/10 border-sky-500/20 text-sky-400 shadow-lg shadow-sky-500/10'
+                                                ? 'bg-primary/10 border-primary/20 text-accent shadow-lg shadow-primary/10'
                                                 : 'bg-white/5 border-white/5 text-slate-500'
                                             }
                                         `}>
@@ -203,7 +218,7 @@ const TopicCarousel: React.FC = () => {
                                     </h3>
 
                                     <div className="flex items-center gap-2.5">
-                                        <div className={`h-px transition-all duration-500 ${isActive ? 'w-12 bg-sky-500' : 'w-6 bg-slate-700'}`} />
+                                        <div className={`h-px transition-all duration-500 ${isActive ? 'w-12 bg-primary' : 'w-6 bg-slate-700'}`} />
                                         <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">
                                             {topic.readTime || '10 Min'}
                                         </span>
@@ -223,8 +238,8 @@ const TopicCarousel: React.FC = () => {
                                     ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
                                 `}>
                                     <div className="flex flex-col gap-4">
-                                        <div className="group/btn flex items-center gap-3 text-sky-400 font-medium">
-                                            <span className="group-hover/btn:underline decoration-sky-500/30 underline-offset-4">Explorar tema</span>
+                                        <div className="group/btn flex items-center gap-3 text-accent font-medium">
+                                            <span className="group-hover/btn:underline decoration-primary/30 underline-offset-4">Explorar tema</span>
                                             <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                                         </div>
 
@@ -234,9 +249,9 @@ const TopicCarousel: React.FC = () => {
                                             className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol"
                                         >
                                             <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">
-                                                <Terminal size={12} />
+                                                {subject === 'm1' ? <Calculator size={12} /> : <Terminal size={12} />}
                                             </div>
-                                            <span>Solucionaris Jutge</span>
+                                            <span>{subject === 'm1' ? 'Solucionaris M1' : 'Solucionaris Jutge'}</span>
                                         </Link>
                                     </div>
                                 </div>
@@ -259,7 +274,7 @@ const TopicCarousel: React.FC = () => {
                         <div className={`
                             transition-all duration-500 rounded-full
                             ${activeIndex === i
-                                ? 'w-12 h-1.5 bg-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.6)]'
+                                ? 'w-12 h-1.5 bg-accent shadow-[0_0_15px_rgba(56,189,248,0.6)]'
                                 : 'w-2 h-2 bg-slate-600 group-hover:bg-slate-400'
                             }
                         `} />
@@ -271,4 +286,3 @@ const TopicCarousel: React.FC = () => {
 };
 
 export default TopicCarousel;
-
