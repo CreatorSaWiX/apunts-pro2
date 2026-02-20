@@ -11,6 +11,8 @@ import { remarkCodeMetadata } from "./remarkCodeMetadata";
 import CodeBlock from "../components/ui/CodeBlock";
 import GraphVisualizer from "../components/ui/GraphVisualizer";
 import Callout from "../components/ui/Callout";
+import AlgoPlayer from "../components/ui/AlgoPlayer";
+import OOPPlayer from "../components/ui/OOPPlayer";
 
 type MarkdownRendererProps = {
     content: string;
@@ -25,6 +27,12 @@ const defaultComponents: any = {
     // Callouts from ::note, ::tip, etc.
     callout: (props: any) => {
         return <Callout {...props} />;
+    },
+    algoviz: (props: any) => {
+        return <AlgoPlayer algorithm={props.algorithm} />;
+    },
+    oopviz: (props: any) => {
+        return <OOPPlayer simulation={props.simulation} />;
     },
     pre: ({ children }: any) => <>{children}</>,
     code(props: any) {

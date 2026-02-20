@@ -19,7 +19,9 @@ const TopicPage: React.FC = () => {
         restDelta: 0.001
     });
 
-    const sortedTopics = [...allPersonalNotes].sort((a, b) => a.order - b.order);
+    const sortedTopics = [...allPersonalNotes]
+        .filter(t => t.subject === topic?.subject)
+        .sort((a, b) => a.order - b.order);
     const currentIndex = sortedTopics.findIndex(t => t.slug === id);
     const prevTopic = currentIndex > 0 ? sortedTopics[currentIndex - 1] : undefined;
     const nextTopic = currentIndex < sortedTopics.length - 1 ? sortedTopics[currentIndex + 1] : undefined;

@@ -14,6 +14,9 @@ interface GraphVisualizerProps {
     nodes?: string;
     height?: number;
     showControls?: boolean;
+    updateTrigger?: any;
+    isAnimating?: boolean;
+    transparentBg?: boolean;
 }
 
 const defaultData = {
@@ -51,7 +54,10 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     nodes,
     height = 300,
     children,
-    showControls = true
+    showControls = true,
+    updateTrigger,
+    isAnimating,
+    transparentBg = false
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const fgRef = useRef<any>(null);
@@ -63,7 +69,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
 
     // Performance optimization: only render heavy 2D Canvas when visible.
     // We remove once: true so we can pause/resume simulation dynamically based on scroll.
-    const isInView = useInView(containerRef, { margin: "200px" });
+    const isInView = useInView(containerRef, { margin: "50px" });
     const [hasMounted, setHasMounted] = useState(false);
 
     // Initial mount flag
@@ -76,13 +82,25 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     // Pause canvas simulation when out of viewport to save 100% CPU loops on pages with many graphs
     useEffect(() => {
         if (fgRef.current && hasMounted) {
-            if (isInView) {
+            if (isInView || isAnimating) {
                 fgRef.current.resumeAnimation();
             } else {
                 fgRef.current.pauseAnimation();
             }
         }
-    }, [isInView, hasMounted]);
+    }, [isInView, hasMounted, isAnimating]);
+
+    // Force repaint when updateTrigger changes without reheating hot physics (Solves 100% CPU lockup)
+    const zoomToggle = useRef(false);
+    useEffect(() => {
+        if (fgRef.current && hasMounted && initialZoomDone.current) {
+            // We use a microscopic zoom delta to force a redraw of the canvas instantly
+            // without triggering the N-body physics simulation
+            const z = fgRef.current.zoom();
+            zoomToggle.current = !zoomToggle.current;
+            fgRef.current.zoom(zoomToggle.current ? z - 0.000001 : z + 0.000001);
+        }
+    }, [updateTrigger, hasMounted]);
 
     // Parse Data
     useEffect(() => {
@@ -123,7 +141,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
             });
 
             if (nodes) {
-                nodes.split(',').forEach(n => nodeList.add(n.trim()));
+                nodes.split(',').forEach((n: string) => nodeList.add(n.trim()));
             }
 
             setGraphData({
@@ -139,7 +157,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
             if (containerRef.current) {
                 setDimensions({
                     width: containerRef.current.clientWidth,
-                    height: numericHeight
+                    height: transparentBg ? (containerRef.current.clientHeight || numericHeight) : numericHeight
                 });
             }
         };
@@ -229,7 +247,8 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
 
     return (
         <div
-            className="my-2 relative group rounded-xl overflow-hidden border border-slate-700/50 bg-slate-900/80 md:bg-slate-900/40 shadow-xl md:backdrop-blur-sm transition-all hover:border-slate-600/50 ring-1 ring-white/5"
+            className={`relative group rounded-xl overflow-hidden ${transparentBg ? 'h-full w-full' : 'my-4 border border-slate-700/50 bg-slate-900/80 md:bg-slate-900/40 shadow-xl md:backdrop-blur-sm transition-all hover:border-slate-600/50 ring-1 ring-white/5'}`}
+            style={transparentBg ? {} : { height: numericHeight }}
             ref={containerRef}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

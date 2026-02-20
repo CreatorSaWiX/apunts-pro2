@@ -1,7 +1,7 @@
 ---
 title: "Tema 1: Classes i orientació a objectes"
 description: "Classes i disseny modular"
-readTime: "3 min"
+readTime: "4 min"
 order: 1
 ---
 
@@ -22,9 +22,9 @@ struct Rellotge {
     - **Lectura (`const` + `&`)**: Ràpid i segur. `void mostrar(const Rellotge& r);`
     - **Escriptura (`&`)**: Modifica l'original. `void avançar(Rellotge& r);`
 
-## 1.2 Classes i objectes
+## 1.2 Tipus Abstractes de Dades (TAD) i Classes
 
-Una **classe** és com una struct però conté les funcions que les manipulen anomenades **mètodes**.
+Un **TAD** agrupa dades (atributs) i les operacions (mètodes) per manipular-les, garantint la consistència interna i ocultant detalls innecessaris a l'usuari. En C++, això s'implementa amb una **classe**, que és com una *struct* però conté les pròpies funcions de manipulació integrades.
 
 ### L'encapsulació
 
@@ -114,3 +114,54 @@ int main() {
     cout << p.get_x(); // Correcte: accés via mètode públic
 }
 ```
+
+---
+
+## 1.3 Conceptes addicionals de classes
+
+- **Paràmetre implícit (`this`)**: Als mètodes (`Punt::moure`), l'objecte sobre el qual es crida la funció passa de forma automàtica. Tu no envies l'objecte; la funció ja hi és dins!
+- **Mètodes `inline`**: S'escriuen directament dins de l'`.hpp`. Permeten estalviar temps d'execució en mètodes molt petits i cridats freqüentment.
+- **Mètodes `static`**: Pertanyen a la classe general i no a un objecte concret (ex: `Dates::avui()`). Es poden cridar sense haver creat cap variable, però no tenen paràmetre implícit.
+
+### Genericitat (`template`)
+Els *templates* permeten que una classe funcioni de forma genèrica i independent per a diferents tipus de dades (ex: `vector<int>` o `vector<string>`), sense haver de repetir codi per a cada tipus.
+
+```cpp
+template <class T> // La 'T' es fixa quan l'usuari declara la variable
+class Capsa {
+    T contingut;
+public:
+    Capsa(T x) { contingut = x; } // El paràmetre 'x' depèn de 'T'
+};
+
+// Ús: Capsa<int> de_enters(5); Capsa<string> de_text("Hola");
+```
+
+---
+
+## 1.4 Compilació amb Makefile
+A PRO2 organitzem els programes en múltiples fitxers (`main.cc`, `Punt.hpp`...). Per evitar compilar manualment tots els fitxers a mà, creem un arxiu d'instruccions anomenat `Makefile` per establir-ne les regles i dependències (fitxers objecte `.o`).
+
+L'ordre `make` executa aquest fitxer de forma automàtica i eficient (només compila els fitxers modificats!).
+
+```makefile [Makefile]
+CXX = g++
+CXXFLAGS = -Wall -std=c++17
+
+# Regla final
+program: main.o Punt.o
+	$(CXX) -o program main.o Punt.o
+
+# Regles individuals de compilació modular
+main.o: main.cc Punt.hpp
+	$(CXX) $(CXXFLAGS) -c main.cc
+```
+
+---
+
+## 1.5 Simulació: Classes a Memòria
+
+Un exemple complet per veure què passa quan s'instancia i manipula un objecte interactuant en diferents fitxers. Prem el *Play* per explorar la construcció de l'objecte:
+
+:::oopviz{simulation="punt_basic"}
+:::
