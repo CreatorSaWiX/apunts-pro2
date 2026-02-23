@@ -1,86 +1,186 @@
 ---
-title: "Tema 2: Piles i Cues"
-description: "Estructures lineals d'accés restringit i trucs vitals per sobreviure al C++ de PRO2."
+title: "Tema 2: Piles i cues"
+description: "Estructures de dades lineals d'accés restringit i conceptes de programació en C++."
 readTime: "3 min"
 order: 2
 ---
 
-## 2.1 Supervivència en C++ (El llenguatge de la UPC)
+## 2.1 Convencions
 
-A les pràctiques de PRO2, el codi C++ agafa un estàndard molt estricte. Aquí tens les regles del joc:
+Durant el desenvolupament de codi C++, utilitzarem les següents convencions:
 
-*   **Identificar els secrets (`_`):** Totes les variables i mètodes `private` d'una classe sempre porten un guió baix al final (ex: `mida_`, `any_`). Així saps a l'instant, sense mirar el `.hh`, que allò és intocable des de fora.
-*   **Les llistes d'Inicialitzadors (`:`):** Quan construeixes una `Pila`, si a dins hi ha un `Vector`, aquest vector ha d'existir *abans* que la Pila. S'invoca just arran del constructor separant-ho amb dos punts:
+*   **Identificació de membres privats (`_`):** Totes les variables i mètodes `private` d'una classe inclouen un guió baix al final (ex: `mida_`, `any_`). Això permet diferenciar els atributs dels paràmetres ràpidament.
+*   **Llistes d'inicialitzadors (`:`):** Quan una classe conté objectes d'altres classes, cal inicialitzar-los abans del cos del constructor.
     ```cpp
-    Pila::Pila(int mida) : vector_intern_(mida) { /* Ja existeix! */ }
+    Pila::Pila(int mida) : vector_intern_(mida) { /* Bloc de codi */ }
     ```
-*   **Parar el cop (`assert`):** Oblida't dels `if (malament) return;`. Ara comprovem precondicions al vol. Si falla, el programa "peta" expressament on toca amb `assert`.
+*   **Les precondicions esdevenen `assert`:** Substituïm els condicionals llargs per `assert`. Si no es compleix la condició, el programa s'atura immediatament indicant l'error.
     ```cpp
     #include "assert.hh"
-    assert(posicio >= 0); // Peta a l'instant si intentes trencar el vector
+    assert(posicio >= 0); 
     ```
-*   **Mètodes Inscrustats (`inline`):** Si implementes el codi d'una funció just allà on la declares (dins de les claus `{}` de la classe al mateix `.hh`), el compilador ho marca com a `inline`, cridant el codi directament en comptes de saltar a memòria. Guanyes gran rendiment si són funcions curtes!
-*   **Les Plantilles Universals (`template <typename T>`):** Per no haver de programar una classe Pila per a cada tipus (`int`, `string`, `char`...), es posa un "forat" `T`. Quan tu declares la variable `Stack<int>`, C++ omple tots els forats fent que la teva estructura adquireixi exclusivament aquest tipatge de valors genèric.
+*   **Mètodes `inline`:** Qualsevol mètode implementat dins mateix de la declaració de la classe esdevé `inline`. El codi s'incrusta directament allà on es crida. Això augmenta el rendiment però només és recomanable per a mètodes molt curts.
+*   **Programació genèrica (`template <typename T>`):** L'ús de plantilles permet crear estructures que no depenen d'un tipus de dada concret (com només `int` o només `string`), sinó que el reben dinàmicament quan instancies la variable a través de la lletra genèrica referent `T`.
+
+:::oopviz{simulation="convencions_cpp"}
+:::
 
 ---
 
-## 2.2 La Pila (`stack`) - L'efecte LIFO
+## 2.2 La pila (`Stack`)
 
-Funciona idènticament a una **pila de plats nets**. No pots treure el plat de sota sense trencar-los tots. Només manipules el cim de la muntanya. 
+La pila és una estructura de dades on només podem manipular l'últim element introduït: tenint un model **LIFO (Last In, First Out)**. 
 
-És el regne del **LIFO (Last In, First Out)**: L'últim en entrar és el condemnat a ser el primer a sortir. *S'utilitza profundament per desfer accions (Ctrl+Z), l'historial d'una web o avaluacions d'equacions matemàtiques!*
+### Implementació de la classe externa 
+La implementació estàndard a C++ normalment encapsula un vector regular. Gràcies a què inserció i extracció es realitzen únicament per la cua del vector, la totalitat dels punts mantenen cost d'acció $\mathcal{O}(1)$.
 
-### Les úniques 3 regles de manipulació $\mathcal{O}(1)$
-- **`push(10)`**: Apila el número `10` al cim.
-- **`top()`**: T'ensenya quin element hi ha a dalt de tot. (Alerta: No l'esborra!).
-- **`pop()`**: Destrueix el plat de dalt de tot. (Alerta: No et retorna el valor, només el trenca!).
+<details>
+<summary>Veure detalls de <code>Stack.hh</code></summary>
+
+```cpp
+#ifndef STACK_HH
+#define STACK_HH
+#include <vector>
+#include "assert.hh"
+
+namespace pro2 {
+    template <typename T>
+    class Stack {
+        std::vector<T> elems_; 
+
+    public:
+        Stack() {}
+        Stack(const std::vector<T>& elems) : elems_(elems) {}
+        
+        int size() const { return elems_.size(); }
+        bool empty() const { return elems_.empty(); }
+        
+        void push(const T& x) { elems_.push_back(x); }
+        
+        const T& top() const {
+            assert(elems_.size() > 0);
+            return elems_.back();
+        }
+        
+        void pop() {
+            assert(elems_.size() > 0);
+            elems_.pop_back(); 
+        }
+    };
+}
+#endif
+```
+
+</details>
+
+**Mètodes principals de la llibreria `<stack>` $\mathcal{O}(1)$:**
+El codi habitual general utilitzat pels clients s'enfoca ràpidament als mètodes principals de funcionalitats LIFO. 
+*   **`push(x)`**: Afegeix un element `x` al cim de la pila.
+*   **`top()`**: Consulta visual només de l'element superior referenciat del cim sense esborrar-lo.
+*   **`pop()`**: Elimina automàticament l'element principal al cim.
 
 ```cpp
 #include <stack>
 
 stack<int> S;
-S.push(10);      // S = [10]
-S.push(20);      // S = [10, 20] <- Cim
+S.push(10);      // Estat: [10]
+S.push(20);      // Estat: [10, 20] <- Cim
 int x = S.top(); // Ens guardem x=20
-S.pop();         // Es destrueix el 20.  S = [10] <- Cim
+S.pop();         // S'extreu el 20. Estat: [10] <- Cim
 ```
+
+#### Exemple clàssic: avaluació d'expressions poloneses
+Un ús pràctic típic de les piles és iterar matrius i vectors per anar agafant les dades de manera progressiva i reajustant els valors obtinguts, tal com la Notació Postfixa (operadors darrere de les dades).
+
+<details>
+<summary>Consulta de solució a mode aplicació LIFO</summary>
+
+```cpp
+Stack<int> S;
+string token;
+
+while (cin >> token) {
+    if (token == "+") {
+        int a = pop(S), b = pop(S); // S'extreuen els valors prèviament afegits
+        S.push(a + b);
+    } else if (token == "-") {
+         int a = pop(S), b = pop(S); 
+         S.push(b - a);
+    } 
+}
+// a = S.top() El resultat final queda sol restat a la mateixa pila.
+```
+</details>
 
 :::oopviz{simulation="pila_cpp"}
 :::
 
 ---
 
-## 2.3 La Cua (`queue`) - L'efecte FIFO
+## 2.3 La cua (`Queue`) 
 
-Ja la coneixes. És la **cua de la peixateria**. El primer senyor avorrit que arriba a posar-se a la cua, tindrà el privilegi de ser el primer a sortir atès per la porta.
+La cua és una estructura de dades on s'afegeixen elements pel final i s'extreuen pel principi. Això el converteix en un comportament **FIFO (First In, First Out)**: el primer en arribar és el primer en sortir.
 
-És l'entorn **FIFO (First In, First Out)**. *S'utilitza absolutament per tot allò que requereixi processar en línia justa per ordre d'arribada (Servidors escoltant peticions web, i les cerques curtes de BFS que hem vist al Tema 4!).*
+### Complexitat i implementació: `vector` vs `deque` (important)
 
-### Les úniques 3 regles de manipulació $\mathcal{O}(1)$
-- **`push(10)`**: Afegeix un nou dependent al final fosc de la cua.
-- **`front()`**: T'ensenya qui és exactament el primer de la llista preparat a la caixa registradora.
-- **`pop()`**: El primer de la caixa ja ha pagat, i és eliminat feliçment de la cua!
+Tot i que piles i cues semblen molt similars a nivell funcional i d'ús, a nivell intern tenen requeriments diferents i no es poden usar els mateixos elements, doncs la complexitat varia directament. 
+
+Mentres que eliminar en una interfície un vector costa només cicles unitaris constants, extreure'n manualment al seu mateix inici mitjançant una utilitat `.erase(vector.begin())` produeix cost directe $\mathcal{O}(n)$, perquè els espais de les cèŀlules buides a la base han de cobrir-se remenant seqüencialment cap amunt.
+
+La solució consisteix a reemplaçar al vector pur amb una abstracció de vector desplaçable a tots dos extrems com és el `std::deque`. Aquets conté el propi mètode encarregat i dóna suport a la independència en `pop_front()` per extreure al principi a escala constant del tipus general constant $\mathcal{O}(1)$.
+
+
+<details>
+<summary>Veure detalls de l'abstracció a variables tipus `Queue.hh` usant Deque</summary>
+
+```cpp
+#ifndef QUEUE_HH
+#define QUEUE_HH
+#include <deque>
+#include "assert.hh"
+
+namespace pro2 {
+    template <typename T>
+    class Queue {
+        std::deque<T> elems_; // Implementat amb deques.
+
+    public:
+        Queue() {}
+        
+        int size() const { return elems_.size(); }
+        bool empty() const { return elems_.empty(); }
+        
+        void push(const T& x) { elems_.push_back(x); }
+        
+        const T& front() const {
+            assert(elems_.size() > 0);
+            return elems_.front();
+        }
+        
+        void pop() {
+            assert(elems_.size() > 0);
+            elems_.pop_front();
+        }
+    };
+}
+#endif
+```
+</details>
+
+**Mètodes principals de la llibreria `<queue>` $\mathcal{O}(1)$:**
+*   **`push(x)`**: Afegeix l'element `x` al final de la cua.
+*   **`front()`**: Consulta visual només de l'element superior referenciat del davant (principi) sense esborrar-lo.
+*   **`pop()`**: Elimina completament l'element principal i frontal davanter de l'element.
 
 ```cpp
 #include <queue>
 
 queue<int> Q;
-Q.push(10);        // Q = [10]
-Q.push(20);        // Q = [10, 20] <- 20 va al darrere fosc
-int x = Q.front(); // Ens fixem en x=10, fa massa que espera
-Q.pop();           // Adèu al 10! Q = [20]
+Q.push(10);        // Estat: [10]
+Q.push(20);        // Estat: [10, 20] <- El 20 se situa darrere
+int x = Q.front(); // Constatem que al davant hi ha el 10
+Q.pop();           // Q = [20] s'extreu el primer element en arribar (10)
 ```
 
 :::oopviz{simulation="cua_cpp"}
 :::
-
----
-
-## 2.4 El secret de rendiment: `vector` vs `deque` (OBLIGATORI)
-
-Dins d'aquestes llistes empaquetades per la UPC, el cost ocult ens pot fer suspendre per temps el Jutge si no entenem per què triem les peces:
-
-A una **Pila**, afegir i eliminar pel darrer calaix costa directament només **$\mathcal{O}(1)$**. La teva memòria d'escriptori respira tranquil·la, pot emprar un `vector` pur intern.
-
-### ⚠️ El parany de la Cua
-Saps quant li costa a la màquina eliminar el primer element d'un pur vector llarg perquè desaparegui i el següent avanci la tanda? Tot el bloc del darrere s'ha d'aixecar físicament i canviar d'escó. Costa un catastròfic **$\mathcal{O}(n)$**! Per a solucionar aquest drama mundial, la llibreria oculta **que s'encarrega de fer el teu objecte `std::queue` en memòria real utiliza el calaix màgic `std::deque`**, un vector multi bloc que permet esborrar pel nas i per la cua de manera asíncrona igualant finalment tot en temps $\mathcal{O}(1)$!

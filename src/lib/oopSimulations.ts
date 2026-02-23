@@ -193,6 +193,69 @@ int main() {
             ] as OOPStep[];
         }
     },
+    convencions_cpp: {
+        id: "convencions_cpp",
+        files: {
+            "main.cpp": `#include <iostream>
+#include "Caixa.hh"
+using namespace std;
+
+int main() {
+    Caixa c(10);
+    
+    c.afegir(5);
+    
+    cout << "Tenim: " << c.quantitat() << endl;
+    
+    // c.afegir(-3); // Descomentar faria petar l'assert
+    return 0;
+}`,
+            "Caixa.hh": `#ifndef CAIXA_HH
+#define CAIXA_HH
+
+class Caixa {
+    int valor_; // Convenció: membre privat porta '_' final.
+    
+public:
+    Caixa(int valor_inicial);
+    void afegir(int extra);
+    
+    // Mètode inline integrat:
+    inline int quantitat() const {
+        return valor_;
+    }
+};
+
+#endif`,
+            "Caixa.cpp": `#include "Caixa.hh"
+#include <cassert>
+
+// Usant la llista d'inicialitzadors (:)
+Caixa::Caixa(int valor_inicial) : valor_(valor_inicial) {
+    assert(valor_inicial >= 0);
+}
+
+void Caixa::afegir(int extra) {
+    // Control de qualitat intern amb l'assert
+    assert(extra >= 0); 
+    valor_ += extra;
+}`
+        },
+        generateSteps: () => {
+            return [
+                { activeFile: "main.cpp", line: 6, description: "Iniciem el programa. Creem un objecte Caixa anomenat 'c', passant el paràmetre 10.", terminalOutput: ["> Executant main.cpp..."], variables: {} },
+                { activeFile: "Caixa.cpp", line: 5, description: "Entrem al constructor de Caixa! IMPORTANT: Gràcies a la llista d'inicialitzadors (el ':' després del mètode), la variable interna es col·loca i assigna immediatament a memòria sense ni tan sols tocar el cos de la funció.", terminalOutput: ["> Executant main.cpp..."], variables: { "valor_inicial": "10", "c.valor_": "10" } },
+                { activeFile: "Caixa.cpp", line: 6, description: "Un cop el valor ja està preparat, obrim claus! Ara l'assert() revisa agressivament que l'ingrès fos superior a zero. Falla i cau si el número no fos correcte.", terminalOutput: ["> Executant main.cpp..."], variables: { "valor_inicial": "10", "c.valor_": "10" } },
+                { activeFile: "Caixa.hh", line: 5, description: "El valor ha quedat gravat a 'valor_'. El guió baix no afecta el codi compilat, ens serveix psicològicament purament per detectar d'un esguard que estem mirant atributs privats de la classe intocables des de fora.", terminalOutput: ["> Executant main.cpp..."], variables: { "c.valor_": "10" } },
+                { activeFile: "main.cpp", line: 8, description: "Tornem amb main, s'ha creat correctament sense cap 'crash'. Enviarem l'ordre de afegir 5!", terminalOutput: ["> Executant main.cpp..."], variables: { "c.valor_": "10" } },
+                { activeFile: "Caixa.cpp", line: 11, description: "El paràmetre rebut (extra=5) travessa a la seguretat en sec. Ens hem lliurat de l'if-return. L'assert diu que procedim tranquils perque tot compleix les matemàtiques assumides!", terminalOutput: ["> Executant main.cpp..."], variables: { "c.valor_": "10", "extra": "5" } },
+                { activeFile: "Caixa.cpp", line: 12, description: "S'efectua la modificació del valor central passant de tenir 10 a 15 de manera completament blindada.", terminalOutput: ["> Executant main.cpp..."], variables: { "c.valor_": "15" } },
+                { activeFile: "main.cpp", line: 10, description: "Tornant novament, invocarem la consulta 'quantitat()' i imprimirem a la terminal per llegir. Ves a on es troba el mètode!", terminalOutput: ["> Executant main.cpp..."], variables: { "c.valor_": "15" } },
+                { activeFile: "Caixa.hh", line: 12, description: "SORPRESA! El mètode quantitat està codificat literalment en l'interface de les capçaleres públiques .hh . Això es diu ser INLINE, un truc que incrustarà les instruccions en memòria sense gastar viatges de salt al mètode d'origen.", terminalOutput: ["> Executant main.cpp..."], variables: { "c.valor_": "15" } },
+                { activeFile: "main.cpp", line: 10, description: "Aconseguim imprimir formalment el valor blindat i tancat del guió baix! Fi pràctic de les convencions C++.", terminalOutput: ["> Executant main.cpp...", "Tenim: 15"], variables: { "c.valor_": "15" } },
+            ] as OOPStep[];
+        }
+    },
     arbre_bintree_immersio: {
         id: "arbre_bintree_immersio",
         files: {
@@ -248,6 +311,65 @@ int main() {
                 { activeFile: "main.cpp", line: 20, description: "Escrivim al terra l'Element Central. Com nosaltres no podem saltar baixant per sempre com l'altra fòrmula per trobar les onades: Invoquem la posició deixant-les apuntades segures de futur darrere la cua esperant el torn darrere meu amb respecte a ordre FIFO temporal!", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3", "Amplada: 1"], variables: { "c": "[1]", "cua": "buit" } },
                 { activeFile: "main.cpp", line: 21, description: "Fiquem l'estància Esquerra retallada [2] i darrere directament l'estància de la dreta [3] al fons de la Cua i completem bucle iterat i deixem oblidat per sempre ja la base esborrada '1'. En aquest moment concret, si mires la Cua virtual per fi ja tenim recarregats per ordre literal tota la línia horitzontal i única col·lectiva separada del pis de sota! Tècnica Cua perfecte.", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3", "Amplada: 1"], variables: { "c": "[1]", "cua": "->|[3], [2]|->" } },
                 { activeFile: "main.cpp", line: 18, description: "Seguiment segona i tercera tirada on es repeteix pas previ iterat, esborrant, imprimint '2' i '3' seguidament. Es tracta d'imprimir natural sense tornar cridar fons amunt com un boig perdent recursos.", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3", "Amplada: 1 2 3", "Programa finalitzat amb codi 0."], variables: { "cua": "buit" } },
+            ] as OOPStep[];
+        }
+    },
+    projecte_sencer_oop: {
+        id: "projecte_sencer_oop",
+        files: {
+            "Makefile": `CXX = g++
+CXXFLAGS = -Wall -std=c++17
+
+program: main.o
+	$(CXX) -o program main.o
+
+main.o: main.cc Capsa.hpp
+	$(CXX) $(CXXFLAGS) -c main.cc`,
+            "main.cc": `#include <iostream>
+#include "Capsa.hpp"
+
+using namespace std;
+
+int main() {
+    Capsa<int> c_entera(42);
+    Capsa<string> c_text("Hola!");
+    
+    cout << c_entera.llegir() << endl;
+    cout << c_text.llegir() << endl;
+    
+    return 0;
+}`,
+            "Capsa.hpp": `#ifndef CAPSA_HPP
+#define CAPSA_HPP
+
+template <class T>
+class Capsa {
+    T contingut_;
+public:
+    Capsa(T x) : contingut_(x) {}
+    
+    inline T llegir() const { 
+        return contingut_; 
+    }
+};
+
+#endif`
+        },
+        generateSteps: () => {
+            return [
+                { activeFile: "Makefile", line: 4, description: "Cridem a la terminal: '$ make'. El programa Makefile agafa el control per empaquetar tot aquest projecte de Múltiples Fitxers (Modular).", terminalOutput: ["> $ make"], variables: {} },
+                { activeFile: "Makefile", line: 8, description: "Muntem i compilem el fitxer c++ (main.cc) sabent que inclou Capsa.hpp, respectant el dialecte C++17 preparant '.o'", terminalOutput: ["> $ make", "g++ -Wall -std=c++17 -c main.cc"], variables: {} },
+                { activeFile: "Makefile", line: 5, description: "Finalment genera l'executable total unint tots els '.o' recollits. Codi font a punt per funcionar independent!", terminalOutput: ["> $ make", "g++ -Wall -std=c++17 -c main.cc", "g++ -o program main.o"], variables: {} },
+                { activeFile: "main.cc", line: 6, description: "L'usuari executa el seu codi (./program) i la traça comença dins del int main()", terminalOutput: ["> ./program"], variables: {} },
+                { activeFile: "main.cc", line: 7, description: "Creem un objecte abstracte tipus Capsa passant entre clàusules '< >' que aquesta variant de Capsa guardarà dades tipus int amb valor de 42.", terminalOutput: ["> ./program"], variables: { "c_entera": "buit" } },
+                { activeFile: "Capsa.hpp", line: 8, description: "Entrem al constructor on gràcies a T=int, C++ sap que haurà de traduir tot això creant memòria per a Enters. Es crida l'assignació automàtica del colon ':'", terminalOutput: ["> ./program"], variables: { "x": "42", "c_entera.contingut_": "42" } },
+                { activeFile: "main.cc", line: 8, description: "Al main, instanciem completament a la vegada una segona classe de tipus string. La Template T s'encarregarà per ell de crear exclusivament codi compilat per al 'hola'", terminalOutput: ["> ./program"], variables: { "c_text": "buit" } },
+                { activeFile: "Capsa.hpp", line: 8, description: "Aquest segon pas constructor llegeix i rep T=string al ser cridat, col·locant al ': continugut_' les referències per caràcters passats.", terminalOutput: ["> ./program"], variables: { "x": "Hola!", "c_text.contingut_": "Hola!" } },
+                { activeFile: "main.cc", line: 10, description: "Tornem! Les variables independents no competeixen per espai. Cridem al mètode d'extracció llegir() del primer contenidor.", terminalOutput: ["> ./program"], variables: {} },
+                { activeFile: "Capsa.hpp", line: 10, description: "Com ha estat guardat l'atribut privat _, ho retornem fora de l'àmbit public utilitzant memòries de procés curtes Inline O(1).", terminalOutput: ["> ./program"], variables: {} },
+                { activeFile: "main.cc", line: 11, description: "Rebem valor directament imprès. Llavors cridem analògicament i passem objectiu a la capsa número 2 de strings.", terminalOutput: ["> ./program", "42"], variables: {} },
+                { activeFile: "Capsa.hpp", line: 10, description: "Com haviem forjat una capsa amb una paraula, llegir resol en mode text de paraula! Genericitat complida a C++.", terminalOutput: ["> ./program", "42"], variables: {} },
+                { activeFile: "main.cc", line: 13, description: "Finalment, els canvis finalitzen programa donant imprès tant enter com text i buidant instàncies cridant Destructors.", terminalOutput: ["> ./program", "42", "Hola!", "> Programa finalitzat amb codi 0."], variables: {} }
             ] as OOPStep[];
         }
     }
