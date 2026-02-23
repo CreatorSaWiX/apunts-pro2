@@ -21,6 +21,7 @@
     "@types/prismjs": "^1.26.5",
     "@uiw/codemirror-theme-vscode": "^4.25.4",
     "@uiw/react-codemirror": "^4.25.4",
+    "@vercel/analytics": "^1.6.1",
     "@vercel/node": "^5.5.33",
     "cheerio": "^1.2.0",
     "clsx": "^2.1.1",

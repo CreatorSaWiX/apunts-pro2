@@ -59,3 +59,34 @@ El concepte clau: A cada visita s'intenta afegir un sol adjacent fresc de qui se
 
 :::algoviz{algorithm="dfs"}
 :::
+
+## 5 Cerca en amplada (BFS: Breadth First Search)
+
+Mentre que el DFS baixa en picat "caient" pel túnel, el **BFS** es propaga radialment per capes (com onades a l'aigua). A l'ordinador necessita purament estructurar memòria temporal al voltant d'una **Cua (FIFO)**.
+
+A la presentació teòrica s'exigeix que sàpigues com aquest algoritme registra alhora **la distància idònia** de cada barri. Si tenim un array `D` que ens guarda quants passos portem fets:
+1. Posar el node d'origen ($v$) a distància `0` dins de `D`. `D[v] = 0`.
+2. Encues i afegeixes el $v$ a la llista de Visitat ($W$).
+3. Quan extrems el primer de la cua (anomenat $x$), tots els nous adjacents inexplorats ($y$) prendran estrictament com a distància oficial el valor **$D[y] = D[x] + 1$**. I tu avances a un altre barri!
+
+> **Teorema 9:** Sigui el graf simple $G = (V,A)$ i el seu vèrtex $v \in V$. El vector resultori $D$ obtingut manualment durant **les rutines pures de l'algorisme BFS** garanteix esdevindre l'emmagatzematge real de la **distància mínima de camins del vèrtex original $v$ cap a qualsevol altre** ubicat a tota l'arrel de nodes connectats.
+
+:::algoviz{algorithm="bfs2"}
+:::
+
+---
+
+## 6. Caracterització dels Grafs Bipartits
+
+Més enllà de dir l'eslògan "és quan es divideixen en dos equips i no passa res internament", com ho podríem reconèixer programàticament o matemàticament des d'un paper ple de línies en diagonal a examen si es tracta purament d'un graf bipartit o amaga relliscades?
+
+:::tip{title="Lema 10 sobre les Longituds"}
+Dins d'un graf pur de base matemàtica $G = (V, A)$:
+1. Si a simple vista traces purament qualsevol **recorregut tancat donat que tingui just longitud senar**, podem firmar automàticament que llavors a les ombres de $G$ hi amaga com a mínim algun cert **cicle estricte de longitud senar**.
+2. **Parany Clandestí:** La presència massiva de recorreguts tancats fets de línies totals **parelles** escampats per algun $G$ no esdevindran capaços mai per sí sols d'implicar *segurament la forma oculta d'un cicle*.
+:::
+
+Amb aquest raonament de desxifrar si les seqüències de parades obligatòriament per força amaguen parelles o cicles trencastructures per sota, finalitza sent revelat el **Requisit Únic Universal de la matemàtica FM (Teorema 11)** que resumeix la caracterització dels sistemes bipartits i serà resposta segura a qüestionari:
+
+> **Teorema 11: Caracterització Màxima Bipartita** \
+> Qualsevol graf del planisfèri considerat d'ordre $\ge 2$ serà estrictament un pur **Graf Bipartit estructurat, si, i *només* si, NO té actiu a les seves ombres CAP cicle de longitud SENAR**. Si amaga cicles de 5 arestes o el clàssic Triangle rotacional, adéu equip doble, el graf Bipartit col·lapsarà inevitablement.

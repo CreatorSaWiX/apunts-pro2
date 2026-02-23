@@ -53,8 +53,9 @@ class Punt {
 
 public:
     // Constructors (inicialitzen l'objecte)
-    Punt();
-    Punt(double a, double b);
+    Punt();                           // Constructor per defecte
+    Punt(double a, double b);         // Constructor amb paràmetres
+    Punt(const Punt& altre);          // Constructor de còpia
 
     // Mètodes modificadors (canvien valors)
     void moure(double dx, double dy);
@@ -88,6 +89,11 @@ Punt::Punt(double a, double b) {
     x = a; y = b;
 }
 
+// Constructor de còpia: Crea un objecte idèntic a un altre existent
+Punt::Punt(const Punt& altre) {
+    x = altre.x; y = altre.y;
+}
+
 // Fixa't que NO posem p.x, accedim directament a x
 // Això és el "paràmetre implícit": som dins l'objecte!
 void Punt::moure(double dx, double dy) {
@@ -107,8 +113,10 @@ Així es crea i s'utilitza un objecte.
 #include "Punt.hpp"
 
 int main() {
-    Punt p(1, 2);   // Crea objecte (crida constructor)
-    p.moure(3, 3);  // Crida mètode (l'objecte p és l'implícit)
+    Punt p(1, 2);       // Crea objecte (crida constructor)
+    Punt p_copia(p);    // Crea objecte idèntic (crida constructor de còpia)
+    
+    p.moure(3, 3);      // Crida mètode (l'objecte p és l'implícit)
     
     // cout << p.x; // ERROR! x és privat
     cout << p.get_x(); // Correcte: accés via mètode públic

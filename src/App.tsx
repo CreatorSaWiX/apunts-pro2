@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Background from './components/Background';
-import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
+// import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -12,6 +12,7 @@ import SolutionDetailPage from './pages/SolutionDetailPage';
 import NewSolutionPage from './pages/NewSolutionPage';
 import { AuthProvider } from './contexts/AuthContext';
 import { SubjectProvider } from './contexts/SubjectContext';
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
 
           <Background />
-          <PerformanceMonitor />
+          {/* <PerformanceMonitor /> */}
           <Navigation />
 
           <Routes>
@@ -34,6 +35,7 @@ function App() {
             <Route path="/tema/:id/solucionaris/:problemId" element={<SolutionDetailPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Routes>
+          <Analytics />
         </div>
       </AuthProvider>
     </SubjectProvider>
