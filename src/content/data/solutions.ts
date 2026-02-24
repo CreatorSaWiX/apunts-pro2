@@ -16,8 +16,8 @@ export interface TopicSolutions {
     topicId: string;
     solutions: Solution[];
 }
-
-import { m1Solutions } from './solutions-m1';
+import { m1t1Solutions } from './solucionarisM1/t1/index';
+import { m1t2Solutions } from './solucionarisM1/t2/index';
 // Force reload
 
 export const allSolutions: TopicSolutions[] = [
@@ -27,7 +27,11 @@ export const allSolutions: TopicSolutions[] = [
     },
     {
         topicId: 'm1-tema-1',
-        solutions: m1Solutions
+        solutions: m1t1Solutions
+    },
+    {
+        topicId: 'm1-tema-2',
+        solutions: m1t2Solutions
     }
 ];
 

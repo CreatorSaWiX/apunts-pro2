@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, FileText, LayoutList, CheckCircle2 } from 'lucide-react';
 import type { Solution } from '../../content/data/solutions';
 import type { TopicDefinition } from '../../content/data/courseStructure';
-import CommentsSection from '../comments/CommentsSection';
 import { MarkdownRenderer } from '../../markdown/MarkdownRenderer';
 
 interface NotebookLayoutProps {
@@ -16,7 +15,6 @@ interface NotebookLayoutProps {
 const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
     // 1. Sidebar selection state
     const [selectedProblemId, setSelectedProblemId] = useState<string | null>(null);
-    const [showSolution, setShowSolution] = useState(false);
 
     // Initialize with first problem if available
     useEffect(() => {
@@ -48,7 +46,6 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
         if (currentIndex < topic.problems.length - 1) {
             const next = topic.problems[currentIndex + 1];
             setSelectedProblemId(typeof next === 'string' ? next : next.id);
-            setShowSolution(false);
         }
     };
 
@@ -56,7 +53,6 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
         if (currentIndex > 0) {
             const prev = topic.problems[currentIndex - 1];
             setSelectedProblemId(typeof prev === 'string' ? prev : prev.id);
-            setShowSolution(false);
         }
     };
 
@@ -111,7 +107,6 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                     key={pId}
                                     onClick={() => {
                                         setSelectedProblemId(pId);
-                                        setShowSolution(false);
                                         // Scroll to top of content
                                         const el = document.getElementById('problem-content');
                                         if (el) {
@@ -159,96 +154,68 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                     <div className="flex-1">
 
                                         {/* Statement Section */}
-                                        <div className="p-8 md:p-12 border-b border-white/5">
-                                            <div className="flex items-center gap-3 mb-6">
-                                                <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold border border-indigo-500/30 font-mono tracking-wider">
-                                                    {selectedProblemId}
-                                                </span>
+                                        <div className="p-8 md:p-12 relative overflow-hidden">
+                                            {/* Decorative Background Element */}
+                                            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+                                            <div className="flex flex-col gap-2 mb-8">
+                                                <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 tracking-tight leading-tight">
+                                                    {selectedProblemTitle}
+                                                </h2>
                                             </div>
 
-                                            <h2 className="text-2xl md:text-3xl font-bold text-white mb-8 tracking-tight leading-tight">
-                                                {selectedProblemTitle}
-                                            </h2>
-
-                                            <div className="prose prose-invert prose-lg max-w-none text-slate-300 leading-loose">
+                                            <div className="prose prose-invert prose-lg max-w-none text-slate-300 leading-relaxed font-sans mb-12 relative z-10">
                                                 {currentSolution?.statement ? (
                                                     <div className="markdown-statement">
                                                         <MarkdownRenderer content={currentSolution.statement} />
                                                     </div>
                                                 ) : (
-                                                    <p className="italic text-slate-500">
-                                                        Enunciat no disponible pel moment.
-                                                        {import.meta.env.DEV && <span className="text-xs ml-2 opacity-50 block mt-2 font-mono">(Debug: ID: {selectedProblemId}, Solved: {!!currentSolution}, Sols loaded: {solutions.length})</span>}
-                                                    </p>
+                                                    <div className="flex items-center gap-3 text-slate-500 bg-slate-900/50 border border-white/5 p-4 rounded-xl">
+                                                        <FileText size={20} className="opacity-50" />
+                                                        <p className="italic text-sm m-0">
+                                                            L'enunciat no està disponible actualment.
+                                                        </p>
+                                                    </div>
                                                 )}
                                             </div>
-                                        </div>
 
-                                        {/* Solution Section (Toggle) */}
-                                        <div className="p-8 md:p-12 bg-black/20 min-h-[300px]">
-                                            <div className="flex items-center justify-between mb-6">
-                                                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                                    Solució
-                                                </h3>
-                                                <button
-                                                    onClick={() => setShowSolution(!showSolution)}
-                                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border
-                                                        ${showSolution
-                                                            ? 'bg-slate-800 text-slate-300 border-white/10 hover:bg-slate-700'
-                                                            : 'bg-emerald-600 text-white border-emerald-500 hover:bg-emerald-500 shadow-lg shadow-emerald-500/20'
-                                                        }
-                                                    `}
+                                            {/* Solution Content */}
+                                            {currentSolution ? (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: 0.1 }}
+                                                    className="bg-slate-900/80 rounded-2xl p-6 md:p-10 border border-emerald-500/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] relative"
                                                 >
-                                                    {showSolution ? 'Amagar' : 'Mostrar Solució'}
-                                                </button>
-                                            </div>
+                                                    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-emerald-500/5 to-transparent rounded-t-2xl pointer-events-none"></div>
 
-                                            <AnimatePresence>
-                                                {showSolution && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, height: 0 }}
-                                                        animate={{ opacity: 1, height: 'auto' }}
-                                                        exit={{ opacity: 0, height: 0 }}
-                                                        className="overflow-hidden"
-                                                    >
-                                                        <div className="bg-slate-800/50 rounded-xl p-6 border border-white/5 shadow-inner">
-                                                            {/* Solution Content */}
-                                                            {currentSolution ? (
-                                                                <div className="text-slate-300">
-                                                                    {currentSolution.content ? (
-                                                                        <div className="prose prose-invert prose-emerald max-w-none heading-reset">
-                                                                            <MarkdownRenderer content={currentSolution.content} />
-                                                                        </div>
-                                                                    ) : (
-                                                                        <div className="font-mono text-sm">
-                                                                            {currentSolution.code ? (
-                                                                                <div className="p-4 bg-black/40 rounded-lg text-slate-300 whitespace-pre overflow-x-auto">
-                                                                                    {currentSolution.code}
-                                                                                </div>
-                                                                            ) : (
-                                                                                <p className="italic text-slate-500">Solució pendent.</p>
-                                                                            )}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            ) : (
-                                                                <div className="flex flex-col items-center justify-center py-12 text-slate-500">
-                                                                    <FileText size={48} className="mb-4 opacity-20" />
-                                                                    <p>Encara no hi ha solució disponible.</p>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </motion.div>
-                                                )}
-                                            </AnimatePresence>
-                                        </div>
-
-                                        {/* Comments Section */}
-                                        <div className="p-8 md:p-12 bg-slate-900/40 border-t border-white/5">
-                                            <CommentsSection
-                                                solutionId={selectedProblemId || ''}
-                                                solutionTitle={selectedProblemTitle}
-                                            />
+                                                    <div className="text-slate-200 relative z-10">
+                                                        {currentSolution.content ? (
+                                                            <div className="prose prose-invert prose-emerald max-w-none heading-reset text-lg">
+                                                                <MarkdownRenderer content={currentSolution.content} />
+                                                            </div>
+                                                        ) : (
+                                                            <div className="font-mono text-sm">
+                                                                {currentSolution.code ? (
+                                                                    <div className="p-4 bg-black/60 rounded-xl text-slate-300 whitespace-pre overflow-x-auto border border-white/5">
+                                                                        {currentSolution.code}
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="flex gap-3 text-slate-500 items-center justify-center p-8 bg-black/20 rounded-xl border border-white/5">
+                                                                        <CheckCircle2 size={18} className="opacity-40" />
+                                                                        <span className="italic text-sm">Aquesta solució encara està buida.</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </motion.div>
+                                            ) : (
+                                                <div className="flex flex-col items-center justify-center py-16 text-slate-500 bg-slate-900/40 rounded-2xl border border-dashed border-white/10">
+                                                    <FileText size={48} className="mb-4 opacity-20" />
+                                                    <p className="text-sm">Encara no hi ha una proposta de resolució penjada.</p>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 

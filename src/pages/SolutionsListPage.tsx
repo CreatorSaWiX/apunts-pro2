@@ -14,6 +14,12 @@ const SolutionsListPage = () => {
     // 1. Get definitions for the current topic from our static structure
     const topicDefinition = courseStructure.find(t => t.id === topicId);
 
+    // Scroll to top
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        document.body.style.overflow = 'auto';
+    }, []);
+
     // 2. M1 Special Layout Check
     if (topicId?.startsWith('m1-') && topicDefinition) {
         return <NotebookLayout topic={topicDefinition} solutions={uploadedSolutions} loading={loading} />;
@@ -22,12 +28,6 @@ const SolutionsListPage = () => {
     // 2. Identify problems associated with this topic
     // problemsList is now an array of { id, title }
     const problemsList = topicDefinition?.problems || [];
-
-    // Scroll to top
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        document.body.style.overflow = 'auto';
-    }, []);
 
     // Helper to check status
     const getProblemStatus = (problemId: string) => {

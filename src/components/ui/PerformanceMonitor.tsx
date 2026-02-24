@@ -12,7 +12,7 @@ export const PerformanceMonitor = () => {
     });
     const [isOpen, setIsOpen] = useState(true);
     const frameCount = useRef(0);
-    const lastTime = useRef(performance.now());
+    const lastTime = useRef(0);
     const frameTime = useRef(0);
 
     // For CPU main thread load estimation

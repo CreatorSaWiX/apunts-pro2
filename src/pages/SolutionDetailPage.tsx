@@ -99,12 +99,13 @@ const SolutionDetailPage = () => {
             console.log("Solution saved successfully!", canonicalTitle);
 
             // Update local state to reflect saved changes immediately
-            if (solution) {
+            // Note: Mutating state directly is bad practice, but handled efficiently by Firebase cache usually
+            /* if (solution) {
                 solution.code = currentCode;
                 solution.title = canonicalTitle;
                 solution.authorId = user.id;
                 solution.author = user.username;
-            }
+            } */
 
             setIsEditing(false);
         } catch (error) {

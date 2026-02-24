@@ -4,6 +4,7 @@ import rehypeRaw from "rehype-raw";
 import remarkDirective from "remark-directive";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
 import "katex/dist/katex.min.css"; // Import katex styles
 
 import { remarkDirectiveRehype } from "./remarkDirectiveRehype";
@@ -83,6 +84,23 @@ const defaultComponents: any = {
     blockquote: ({ ...props }) => (
         <blockquote
             className="border-l-4 border-sky-500/50 bg-sky-500/5 px-6 py-4 rounded-r-xl my-8 text-slate-300 italic not-prose" {...props} />
+    ),
+    table: ({ ...props }) => (
+        <div className="overflow-x-auto my-8 border border-white/10 rounded-xl bg-slate-900/40 not-prose">
+            <table className="w-full text-left text-sm whitespace-nowrap" {...props} />
+        </div>
+    ),
+    thead: ({ ...props }) => (
+        <thead className="bg-slate-800/80 border-b border-white/10 text-slate-200 font-bold" {...props} />
+    ),
+    th: ({ ...props }) => (
+        <th className="px-4 py-3 border-r border-white/10 last:border-r-0" {...props} />
+    ),
+    td: ({ ...props }) => (
+        <td className="px-4 py-3 border-b text-slate-300 border-r border-white/10 last:border-r-0 group-last:border-b-0" {...props} />
+    ),
+    tr: ({ ...props }) => (
+        <tr className="group" {...props} />
     )
 };
 
@@ -97,7 +115,7 @@ export function MarkdownRenderer({ content, components: customComponents }: Mark
     return (
         <ReactMarkdown
             rehypePlugins={[rehypeRaw, rehypeKatex]}
-            remarkPlugins={[remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkMath]}
+            remarkPlugins={[remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMath]}
             components={mergedComponents as any}
         >
             {content}

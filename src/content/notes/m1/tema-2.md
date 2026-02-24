@@ -1,11 +1,9 @@
 ---
-title: "Tema 2: Recorreguts, Connexió i DFS"
+title: "Tema 2: Recorreguts, connexió i DFS"
 description: "Camins, vèrtexs de tall, distàncies i l'algorisme de Cerca en Profunditat."
 readTime: "12 Min"
 order: 2
 ---
-
-Anem directes al gra per entendre com identificar parts del graf i mesurar-les ràpidament.
 
 ## 1. Com ens movem per un graf?
 

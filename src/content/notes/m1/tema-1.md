@@ -7,7 +7,7 @@ order: 1
 
 Benvinguts al món dels **Grafs**! 🕸️
 
-A *Fonaments de la Matemàtica* (FM), potser estem acostumats a notacions feixugues. Aquí la cosa canvia. La Teoria de Grafs és **visual**, és **tàngible** i és la base de tot: des de com Instagram et suggereix amics fins a com Google Maps troba el camí més ràpid a casa.
+A FM, potser estem acostumats a notacions feixugues. Aquí la cosa canvia. La Teoria de Grafs és **visual**, és **tàngible** i és la base de tot: des de com Instagram et suggereix amics fins a com Google Maps troba el camí més ràpid a casa.
 
 ## 1. Què és, realment, un graf?
 
@@ -91,7 +91,7 @@ Veiem que com les amistats són mútues, la matriu és **simètrica**. I la diag
 
 ## 4. Graus i el "lema de les encaixades"
 
-El **grau** d'un vèrtex ($g(v)$) és el nombre d'arestes que hi toquen. O sigui, el nombre d'amics que té.
+El **grau** d'un vèrtex $g(v)$ és el nombre d'arestes que hi toquen. O sigui, el nombre d'amics que té.
 
 :::graph
 ```json
@@ -123,13 +123,13 @@ $$
 \sum g(v) = 2m
 $$
 
-:::tip{title="Nota"}
+<!-- :::tip{title="Nota"}
 En aquest curs, tret que es digui el contrari, treballarem amb **Grafs Simples**:
 1.  Sense llaços (arestes d'un vèrtex a ell mateix).
 2.  Sense arestes múltiples (només una línia entre dos punts).
-:::
+::: -->
 
-> **Conseqüència vital (Corol·lari)**
+> **Corol·lari**
 >
 > Com que $2|A|$ sempre és un nombre PARELL, la suma dels graus ha de ser parella.
 > Això vol dir que és **impossible** que hi hagi un nombre senar de gent amb un nombre senar d'amics.
@@ -138,7 +138,7 @@ En aquest curs, tret que es digui el contrari, treballarem amb **Grafs Simples**
 
 Dos grafs són **isomorfs** si tenen la mateixa estructura interna, encara que tinguin etiquetes diferents o estiguin dibuixats de forma diferent.
 
-Mireu aquests dos grafs. El de l'esquerra és un cicle (un pentàgon) i el de la dreta és una estrella. **Són el mateix graf?**
+En aquests dos grafs, el de la dreta és un cicle (un pentàgon) i l'esquerre és una estrella. **Són el mateix graf?**
 
 ::::grid{cols=2}
 :::graph{height=220}
@@ -183,7 +183,7 @@ Si comprovem les arestes: al primer graf **1** toca **2**. Al segon, la traducci
 
 ## 6. Tipus de grafs
 
-Hi ha certs grafs que surten tants cops que tenen nom propi. Els hem de conèixer pel seu DNI.
+Hi ha certs grafs que surten tants cops que tenen nom propi.
 
 :::::grid{cols=2 class="gap-6"}
 
@@ -338,10 +338,6 @@ Hi ha dos tipus de "retalls" especials:
 ::::grid{cols=1 class="h-full border border-slate-700/50 rounded-xl p-3 bg-slate-900/20 hover:bg-slate-900/40 transition-all !my-0"}
 #### **Subgraf generador**
 Mantenim **TOTS els vèrtexs**, però esborrem algunes arestes.
-<ul class="!my-2 !space-y-0 text-sm">
-<li>$V' = V$.</li>
-<li>Només retallem línies.</li>
-</ul>
 
 :::graph{height=120}
 ```json
@@ -357,9 +353,6 @@ Mantenim **TOTS els vèrtexs**, però esborrem algunes arestes.
 ::::grid{cols=1 class="h-full border border-slate-700/50 rounded-xl p-3 bg-slate-900/20 hover:bg-slate-900/40 transition-all !my-0"}
 #### **Subgraf induït ($G[S]$)**
 Triem un "equip" de vèrtexs $S$ i ens quedem amb **TOTES** les seves arestes internes.
-<ul class="!my-2 !space-y-0 text-sm">
-<li>Si eren amics, ho continuen sent.</li>
-</ul>
 
 :::graph{height=120}
 ```json
@@ -433,7 +426,7 @@ Igual que sumem i multipliquem números, podem fer-ho amb grafs!
 ### Graf producte ($G \times G'$)
 Aquesta és una mica més complexa, però visualment xulíssima. El **Producte Cartesià** de grafs genera estructures tipus "reixa" o "xarxa". Imaginem-ho així: **Substituïm cada vèrtex del primer graf per una còpia del segon.**
 
-**Exemple Visual**:
+**Exemple**:
 Si multipliquem una línia de 3 punts ($P_3$) per una línia de 2 punts ($P_2$), obtenim una escala!
 
 1.  Agafem $P_3$ (l'esquelet vertical vermell).
