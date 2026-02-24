@@ -13,6 +13,7 @@ import NewSolutionPage from './pages/NewSolutionPage';
 import { AuthProvider } from './contexts/AuthContext';
 import { SubjectProvider } from './contexts/SubjectContext';
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
           </Routes>
           <Analytics />
+          <SpeedInsights />
         </div>
       </AuthProvider>
     </SubjectProvider>

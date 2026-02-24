@@ -272,16 +272,16 @@ void preordre(const BinTree<int>& t) {
     }
 }
 // L'Amplada per Onades sense baixar infinit! Tema 2 a l'atac BFS
-void amplada(const BinTree<int>& t) {
+void amplada(BinTree<int> t) {
+    if (t.empty()) return;
     queue<BinTree<int>> cua;
     cua.push(t);
     while (!cua.empty()) {
-        BinTree<int> c = cua.front(); cua.pop();
-        if (!c.empty()) {
-            cout << c.value() << " ";
-            cua.push(c.left());
-            cua.push(c.right());
-        }
+        BinTree<int> curr = cua.front(); 
+        cua.pop();
+        cout << curr.value() << " ";
+        if (!curr.left().empty()) cua.push(curr.left());
+        if (!curr.right().empty()) cua.push(curr.right());
     }
 }
 int main() {
@@ -297,20 +297,20 @@ int main() {
             return [
                 { activeFile: "main.cpp", line: 26, description: "Inicia el constructor general creant fulles aïllades en els diferents espais buits on després hauran de dependre. Creem la filla Num. 2", terminalOutput: ["> Executant main.cpp..."], variables: {} },
                 { activeFile: "main.cpp", line: 28, description: "Les agrupem dins l'autèntic arbre general, ell es crea a una instància Pare de Num. 1 i agafa com d'extrems els altres 2 lligats", terminalOutput: ["> Executant main.cpp..."], variables: { "ArbreTotal": "  1  \\n / \\ \\n2   3" } },
-                { activeFile: "main.cpp", line: 29, description: "Llamem a executar l'ordenació clàssica per Profunditat de temps recursiu descendent: Preordre DFS.", terminalOutput: ["> Executant main.cpp..."], variables: { "ArbreTotal": "  1  \\n / \\ \\n2   3" } },
+                { activeFile: "main.cpp", line: 29, description: "Cridem a executar l'ordenació clàssica per Profunditat de temps recursiu descendent: Preordre DFS.", terminalOutput: ["> Executant main.cpp..."], variables: { "ArbreTotal": "  1  \\n / \\ \\n2   3" } },
                 { activeFile: "main.cpp", line: 8, description: "L'arrel del top (1) no és Nul·la! L'escrivim la primera d'acord amb el protocol de lectura Arrel pre.", terminalOutput: ["> Executant main.cpp...", "Preorde: 1"], variables: { "t": "[1]" } },
                 { activeFile: "main.cpp", line: 9, description: "ATENCIÓ: La Recursivitat frena en sec l'execució temporal dreta principal. Fa un salt cego absolut enviant cap avall NOMÉS el paquet de l'esquerra t.left() cap a una vida paral·lela de memòria d'arrel única on '1' o el dret queden pausats i morits de contacte de variables! ", terminalOutput: ["> Executant main.cpp...", "Preorde: 1"], variables: { "t": "[2]" } },
-                { activeFile: "main.cpp", line: 8, description: "Dins la pròpia nova dimensió filla aïllada només formada de l'objecte tallat esquerre [2], no és nul, i el preordre demana imprimir-se ell ràpid primer abans the baixar.", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2"], variables: { "t": "[2]" } },
+                { activeFile: "main.cpp", line: 7, description: "Dins la pròpia nova dimensió filla aïllada només formada de l'objecte tallat esquerre [2], no és nul, i el preordre demana imprimir-se ell ràpid primer abans the baixar.", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2"], variables: { "t": "[2]" } },
                 { activeFile: "main.cpp", line: 9, description: "Torna a fallar, cridant l'esquerre d'ell mateix que ja sabem virtualment que val null/buit absolut en crear abans el constructor amb '2' simple. Això fa que 'empty' detecti l'error evitant crash retornant buit a la línia de vida general del segon pla on estavem i resola com acabada la ordre de baixar!", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2"], variables: { "t": "[2]" } },
                 { activeFile: "main.cpp", line: 10, description: "Llavors processa a cridar igual forma recursiva tallada dret [buit mort]. Resol i la branca 2 tanca la vida paral·lela donant llum verda al gran Pare '1' amunt congelat de continuar executant el que li falto...!", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2"], variables: { "t": "[2]" } },
                 { activeFile: "main.cpp", line: 10, description: "Tornem al cos viu! Ja varem visualitzar l'ordre esquerra general de la peli (1-2), crida tallant el recurs dret absolut baix al viatge paral·lel dretari del pare principal. (Ens dona una arrel on cau '3')", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2"], variables: { "t": "[3]" } },
                 { activeFile: "main.cpp", line: 8, description: "Dimensió dreta on es compleix amb el seu imprimir 3 local", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3"], variables: { "t": "[3]" } },
                 { activeFile: "main.cpp", line: 30, description: "Bucle Pre-Ordre totalment finalitzat amb retornats constants! Acabem d'imprimir tots els nodes recursivament profunds sense problemes, procedim amb l'extensió per a onades Cua [Amplada iterada de pis únic].", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3"], variables: { "ArbreTotal": "  1  \\n / \\ \\n2   3" } },
-                { activeFile: "main.cpp", line: 16, description: "Fiquem l'Abre sencer gegant exclusivament a la cua de rebot general amagada on viuran les tasques constants BFS. (El pis inicial de formació, el pis '0')", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3"], variables: { "ArbreTotal": "  1  \\n / \\ \\n2   3", "cua": "->|[1]|->" } },
-                { activeFile: "main.cpp", line: 18, description: "Al bucle, extraiem forçosament literal de la instància Cua el primer 'arribat' de cap (És l'arrel general). Analitzarem només d'ell.", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3"], variables: { "c": "[1]", "cua": "buit" } },
-                { activeFile: "main.cpp", line: 20, description: "Escrivim al terra l'Element Central. Com nosaltres no podem saltar baixant per sempre com l'altra fòrmula per trobar les onades: Invoquem la posició deixant-les apuntades segures de futur darrere la cua esperant el torn darrere meu amb respecte a ordre FIFO temporal!", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3", "Amplada: 1"], variables: { "c": "[1]", "cua": "buit" } },
-                { activeFile: "main.cpp", line: 21, description: "Fiquem l'estància Esquerra retallada [2] i darrere directament l'estància de la dreta [3] al fons de la Cua i completem bucle iterat i deixem oblidat per sempre ja la base esborrada '1'. En aquest moment concret, si mires la Cua virtual per fi ja tenim recarregats per ordre literal tota la línia horitzontal i única col·lectiva separada del pis de sota! Tècnica Cua perfecte.", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3", "Amplada: 1"], variables: { "c": "[1]", "cua": "->|[3], [2]|->" } },
-                { activeFile: "main.cpp", line: 18, description: "Seguiment segona i tercera tirada on es repeteix pas previ iterat, esborrant, imprimint '2' i '3' seguidament. Es tracta d'imprimir natural sense tornar cridar fons amunt com un boig perdent recursos.", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3", "Amplada: 1 2 3", "Programa finalitzat amb codi 0."], variables: { "cua": "buit" } },
+                { activeFile: "main.cpp", line: 17, description: "Fiquem l'Abre sencer gegant exclusivament a la cua de rebot general amagada on viuran les tasques constants BFS. (El pis inicial de formació, el pis '0')", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3"], variables: { "ArbreTotal": "  1  \\n / \\ \\n2   3", "cua": "->|[1]|->" } },
+                { activeFile: "main.cpp", line: 19, description: "Al bucle, extraiem forçosament de la cua el primer 'arribat' (És l'arrel general). L'anomenem 'curr' com vol el professorat!", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3"], variables: { "curr": "[1]", "cua": "buit" } },
+                { activeFile: "main.cpp", line: 20, description: "Escrivim al terra l'Element de l'onada que tenim central!", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3", "Amplada: 1"], variables: { "curr": "[1]", "cua": "buit" } },
+                { activeFile: "main.cpp", line: 21, description: "I aquí la perfecció: Mirem de debò que no estiguin buits (-!empty-) abans de reobrir la Cua i llavors entrem el 2 i el 3 assegurant seguretat tècnica al sistema iteratiu.", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3", "Amplada: 1"], variables: { "curr": "[1]", "cua": "->|[3], [2]|->" } },
+                { activeFile: "main.cpp", line: 18, description: "Seguiment segona i tercera tirada on es repeteix pas previ iterat, esborrant, imprimint '2' i '3' seguidament. Sense entrar cridades invàlides nul·les gràcies als condicionals curr.left(), acabem el projecte per sencer!", terminalOutput: ["> Executant main.cpp...", "Preorde: 1 2 3", "Amplada: 1 2 3", "Programa finalitzat amb codi 0."], variables: { "cua": "buit" } },
             ] as OOPStep[];
         }
     },
@@ -370,6 +370,45 @@ public:
                 { activeFile: "main.cc", line: 11, description: "Rebem valor directament imprès. Llavors cridem analògicament i passem objectiu a la capsa número 2 de strings.", terminalOutput: ["> ./program", "42"], variables: {} },
                 { activeFile: "Capsa.hpp", line: 10, description: "Com haviem forjat una capsa amb una paraula, llegir resol en mode text de paraula! Genericitat complida a C++.", terminalOutput: ["> ./program", "42"], variables: {} },
                 { activeFile: "main.cc", line: 13, description: "Finalment, els canvis finalitzen programa donant imprès tant enter com text i buidant instàncies cridant Destructors.", terminalOutput: ["> ./program", "42", "Hola!", "> Programa finalitzat amb codi 0."], variables: {} }
+            ] as OOPStep[];
+        }
+    },
+    iteradors_reversos: {
+        id: "iteradors_reversos",
+        files: {
+            "main.cpp": `#include <iostream>
+#include <list>
+using namespace std;
+
+int main() {
+    list<int> L = {10, 20, 30};
+    
+    // Malament: intent manual amb base normal
+    auto it = L.end();
+    it--; 
+    
+    // Bé: iteradors inversos (reverse_iterator)
+    auto rit = L.rbegin();
+    while (rit != L.rend()) {
+        *rit += 5;
+        rit++; // Avancem amb suma positiva (endarrere visual!)
+    }
+    
+    return 0;
+}`
+        },
+        generateSteps: () => {
+            return [
+                { activeFile: "main.cpp", line: 6, description: "Inicialitzem una llista d'enters senzilla [10, 20, 30]", terminalOutput: ["> Executant main.cpp..."], variables: { "L": " [10, 20, 30] " } },
+                { activeFile: "main.cpp", line: 9, description: "L'esquema de pensar de tothom... si vull anar endarrere demano final: L.end(). (Compte, end és BUIT absolut de memòria fora de llista).", terminalOutput: ["> Executant main.cpp..."], variables: { "L": " [10, 20, 30] |X|", "*it": "BUIT LAL" } },
+                { activeFile: "main.cpp", line: 10, description: "Retrocedim it-- per col·locar-nos just a l'últim existent. Quin horror per començar, no?", terminalOutput: ["> Executant main.cpp..."], variables: { "L": " [10, 20, 30] |X|", "*it": "30" } },
+                { activeFile: "main.cpp", line: 13, description: "Oblidat-t'hen! C++ et regala un de millor. Declarem L.rbegin() com a Reverse Iterator. Fica el cap del tren recte orientat a l'inreves.", terminalOutput: ["> Executant main.cpp..."], variables: { "L": " (Invers) <-[30, 20, 10]", "*rit": "30" } },
+                { activeFile: "main.cpp", line: 14, description: "Podem iterar netament com a l'exemple 1 comparant fins l'últim (creuat) rend()!", terminalOutput: ["> Executant main.cpp..."], variables: { "L": "<-[30, 20, 10]", "*rit": "30" } },
+                { activeFile: "main.cpp", line: 15, description: "Desreferenciem sumant +5 a la referència posicional real [30+5 = 35]", terminalOutput: ["> Executant main.cpp..."], variables: { "L": "<-[35, 20, 10]", "*rit": "35" } },
+                { activeFile: "main.cpp", line: 16, description: "I atenció, s'avança sumant! Demanar rit++ mou la fletxa en línia de la seva visió de conductor. Cap al 20 real.", terminalOutput: ["> Executant main.cpp..."], variables: { "L": "<-[35, 20, 10]", "*rit": "20" } },
+                { activeFile: "main.cpp", line: 15, description: "Sumem el 5 sobre el 20 i seguim avançant (rit++).", terminalOutput: ["> Executant main.cpp..."], variables: { "L": "<-[35, 25, 10]", "*rit": "25" } },
+                { activeFile: "main.cpp", line: 15, description: "Sumem el 5 sobre l'últim (de nom real index=0, però endavant de conductor).", terminalOutput: ["> Executant main.cpp..."], variables: { "L": "<-[35, 25, 15]", "*rit": "15" } },
+                { activeFile: "main.cpp", line: 20, description: "La llista inversa xoca feliç contra el buit de rend() al final de la línia, acabant el while de forma super orgànica. L= 15, 25, 35 reals.", terminalOutput: ["> Executant main.cpp...", "> Programa finalitzat amb codi 0."], variables: {} },
             ] as OOPStep[];
         }
     }

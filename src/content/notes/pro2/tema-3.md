@@ -7,9 +7,7 @@ order: 3
 
 ## 3.1 Llistes vs Vectors
 
-Els vectors emmagatzemen memòria seguida, i per això podem buscar ràpid la posició `v[i]`. Però si afegim alguna cosa al mig, tota la resta del vector s'ha d'ajustar, costant matemàticament $\mathcal{O}(n)$. 
-
-Les **Llistes (`list`)** solucionen això: estan formades per **nodes independents** enllaçats l'un rere l'altre. Afegir o esborrar qualsevol element on som val només $\mathcal{O}(1)$. 
+Les **Llistes (`list`)** solucionen l'alt cost d'inserció al mig dels vectors ($\mathcal{O}(n)$). Estan formades per nodes independents enllaçats. Afegir o esborrar un element intermig costa només $\mathcal{O}(1)$.
 
 :::graph
 ```json
@@ -31,98 +29,79 @@ Les **Llistes (`list`)** solucionen això: estan formades per **nodes independen
 ```
 :::
 
-Això comporta un gran preu a pagar per consultar:
-- **No tenen posicions.** Utilitzar `L[i]` genera error immediat!
-- Si vols arribar a l'element $n$, has de passar obligatòriament travessant tots els nodes anteriors.
+**Desavantatges algorísmics:**
+- **Sense posicions directes:** Utilitzar `L[i]` genera error de compilació.
+- **Cost de travessia:** Per arribar a $n$, cal recórrer seqüencialment tots els nodes anteriors.
 
-**Mètodes extrems ràpids $\mathcal{O}(1)$:** Com que els extrems sí que estan connectats directament als marcadors interns, tens disponibles: `push_back(x)`, `push_front(x)`, `pop_back()`, `pop_front()`, `front()` i `back()`.
+**Mètodes amb cost $\mathcal{O}(1)$ garantit:** `push_back()`, `push_front()`, `pop_back()`, `pop_front()`, `front()` i `back()`.
+
+> **💡 Realitat a la Indústria (CPU Cache)**
+> A l'entorn real, la indústria prioritza `std::vector`. Els blocs continus de memòria aprofiten la *Cache* del processador de l'ordinador, oferint velocitats molt superiors en rutes seqüencials. Les llistes resulten deficients per la càrrega de fragments esparcits a memòria.
 
 ---
 
-## 3.2 Iteradors (Els Pointers Intel·ligents)
+## 3.2 Iteradors
 
-Com que no tenim índexs, recorrem les llistes utilitzant **Iteradors**. Imagina un iterador com una "fletxa" temporal que assenyala just un element concret del contenidor.
+Davant la manca d'índexs, utilitzem **Iteradors**. Actuen com punters tàctics per recórrer les col·leccions.
 
-Tenen tres regles d'or principals:
-1. `L.begin()` assenyala el primer element real i `L.end()` és una parada d'emergència buida que senyalitza **després** del final.
-2. Et mous de node en node fent `it++` (avançar) i `it--` (recular). La funció `advance(it, 3)` avançarà l'iterador n posicions (cost intern $\mathcal{O}(N)$).
-3. Obtens o modifiques el valor travessant-lo en desreferència posant-li un asterisc al davant: `*it = 50`.
+1. `L.begin()` retorna el primer element, mentre que `L.end()` marca l'espai **buit després de l'últim**.
+2. Ens movem inter-element usant `it++` o salts en bloc amb `advance(it, n)`.
+3. Es desreferencia i accedeix al valor contingut iterat fent servir l'asterisc: `*it = 50`.
 
 ```cpp
 list<int> L = {10, 20, 30};
 
-// Usem 'auto' per a no haver d'escriure estúpidament list<int>::iterator
+// 'auto' simplifica codis excessivament llargs tipus 'list<int>::iterator'.
 for (auto it = L.begin(); it != L.end(); it++) {
-    *it += 5; // Ara tots valdran {15, 25, 35}
+    *it += 5; 
 }
 ```
 
-*I què passa si ens demanen coses diferents? Existeixen les **variacions**:*
-- **`const_iterator`:** Obligatori si reps la llista com a referència constant (`const list<T>& L`). Bloqueja l'escriptura (no pots fer `*it = 5`). Usa `cbegin()` i `cend()`.
-- **`reverse_iterator`:** Per recórrer del final al principi. Usa `rbegin()` i `rend()` (i també s'avança amb `it++`).
+**Variants principals:**
+- **`const_iterator`:** S'usa quan l'entorn restringeix alteracions (`const list<T>& L`). Bloqueja la mutabilitat interna (`cbegin`, `cend`).
+- **`reverse_iterator`:** Recorre i suma iteracions invertint trajecte (`rbegin`, `rend`). 
+
+Retrocedir manualment des de `L.end()` amb un iterador base genera cicles `for` complexos donat que la barrera assignada superior comença fora de rang per base. El model *reverse* integra el trajecte a l'inrevés mantenint el tradicional `it++`. Observa de tu mateix aquesta execució tècnica invertida amb l'ajuda del següent simulador:
+
+:::oopviz{simulation="iteradors_reversos"}
+:::
 
 ---
 
-## 3.3 Inserir elements (El perill del retrocés explícit)
+## 3.3 Alterar col·leccions: L'ús avançat de l'iterador
 
-La funció `L.insert(it, valor)` col·locarà el nou element a la memòria **just ABANS del lloc** on es trobi en aquest precís instant el teu `it`.
+El gran perill de treballar alterant espais iterables és que les adreces assignades sovint perden la seva traçabilitat interna a C++, resultant en els coneguts *Segmentation Faults*.
 
-El secret on tothom falla: **Insertar et fa "retrocedir" lògicament.** Donat que vas emplaçar els valors darrere, el bucle tornarà a passar pel referent que tens a no ser que prenguis mesures.
+- `L.insert(it, valor)`: Insereix l'element **abans** de la posició assignada.
+- `L.erase(it)`: Allibera la cel·la activa. Si el procés avança l'iterador després (`it++`), col·lapsarà perquè el contacte de posició de la memòria va quedar esborrat junt de l'element.
 
-**Exemple d'Examen:** Insertar un `'0'` previ a qualsevol dígit:
+Per resoldre-ho, ambdúes funcions **retornen l'iterador sà i re-assignat** per seguir utilitzant un patró basat a un `while` genèric format:
 
 ```cpp
-void zeros_abans_del_digit(list<char>& L) {
+void processar_llista(list<int>& L) {
     auto it = L.begin();
     
     while (it != L.end()) {
-        if (*it >= '1' && *it <= '9') {
-            // L.insert() retorna el iterador refent cap el nou valor afegit.
-            it = L.insert(it, '0'); 
-            
-            // Incrementem en dues instàncies: sobrepassem el '0' i travessem el original!
-            advance(it, 2); 
-        } else {
-            it++;
-        }
-    }
-}
-```
-
----
-
-## 3.4 Esborrar elements (La mort incontrolable)
-
-La destrucció en posició s'efectua pel contrari amb `L.erase(it)`. 
-
-El problema massiu? En esborrar de memòria el node on apuntaves... **l'iterador mor al moment**. Si al teu `while` provaves de fer un inofensiu `it++` al final per avançar, el programa enviarà un Segmentation Fault fatídic per provar trucar cap al buit.
-
-El truc infalible? L'`erase()` et retornarà sempre una fletxa sana, automàticament enganxada a **la següent baula**.
-
-```cpp
-void destrueix_parells(list<int>& L) {
-    auto it = L.begin();
-    
-    // El "for" tòxic mai s'utilitza. Usem només algorítmica While manual!
-    while (it != L.end()) {
-        if (*it % 2 == 0) {
-            // Substitueix a ell mateix per sobreviure a la mort
+        if (*it == 10) {
+            // L'esborrat salva memòria tornant l'enllaç del següent element segur per ser guardat l'iterador
             it = L.erase(it); 
-        } else {
-            // Nomes passa d'element natural si no ha tocat res i ha sobreviscut.
+        } 
+        else if (*it == -1) {
+            // Insertar desvia referència en retard constant. Sumem avançar '2' distàncies per no tornar a processar-lo al bucle!
+            it = L.insert(it, 0);
+            advance(it, 2); 
+        } 
+        else {
+            // Cicle complet normal d'una travessia per enllaç
             it++;
         }
     }
 }
 ```
 
-> **⚠️ Alerta per a Vectors:** Exactament aquesta mateixa lògica i bucles d'`insert`/`erase` funcionen de manera idèntica usant contenidors `std::vector`! Afegir o esborrar elements enmig d'un Vector **també invalida la resta d'iteradors vius**. Això és perquè un vector internament ha de desplaçar tots els elements endavant/endarrere o de vegades inclús re-ubicar-se ell sencer a una nova adreça de memòria. Utilitza la reassignació iterativa igualment!
+> **⚠️ Alerta Aplicada a `std::vector`:** Aquest mateix patró s'ha d'assumir estrictament als Vectors. Ampliar posicions internament reubica blocs de vectors modulars de memòries; trencant igualment els intercanvis que no hagin utilitzat la nova localització generada referent als retornables d'`erase()` o `insert()`. 
 
----
-
-## 3.5 Simulació visual a l'Execució
-
-Vols veure com les fletxetes dels iteradors actuen directament en RAM sense interrupcions al teu contenidor? Dona reproduir i avança-hi manualment!
+Interactua visualment amb aquest model de `L.insert` i `L.erase` per observar en primer plà el patró de re-engaxar a l'iterador la ruta de tornada intacte pas a pas.
 
 :::oopviz{simulation="llista_iteradors"}
 :::
