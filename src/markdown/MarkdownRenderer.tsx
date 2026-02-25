@@ -14,6 +14,8 @@ import GraphVisualizer from "../components/ui/GraphVisualizer";
 import Callout from "../components/ui/Callout";
 import AlgoPlayer from "../components/ui/AlgoPlayer";
 import OOPPlayer from "../components/ui/OOPPlayer";
+import StackVisualizer from "../components/ui/StackVisualizer";
+import QueueVisualizer from "../components/ui/QueueVisualizer";
 
 type MarkdownRendererProps = {
     content: string;
@@ -34,6 +36,12 @@ const defaultComponents: any = {
     },
     oopviz: (props: any) => {
         return <OOPPlayer simulation={props.simulation} />;
+    },
+    stackviz: () => {
+        return <StackVisualizer />;
+    },
+    queueviz: () => {
+        return <QueueVisualizer />;
     },
     pre: ({ children }: any) => <>{children}</>,
     code(props: any) {

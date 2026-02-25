@@ -54,17 +54,17 @@ double Punt::get_x() const {
         generateSteps: () => {
             return [
                 { activeFile: "main.cpp", line: 5, description: "Iniciem el programa al main. L'execució comença aquí.", terminalOutput: ["> Executant main.cpp..."], variables: {} },
-                { activeFile: "main.cpp", line: 6, description: "Declaració de la variable p de tipus Punt. Això crida el constructor amb els valors 1, 2.", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Creant objecte (buit)" } },
-                { activeFile: "Punt.cpp", line: 3, description: "Entrem al Punt.cpp: Som dins del constructor Punt::Punt. Rebem a=1, b=2.", terminalOutput: ["> Executant main.cpp..."], variables: { "p.x": "?", "p.y": "?", "a": "1", "b": "2" } },
-                { activeFile: "Punt.cpp", line: 4, description: "Assignem el paràmetre 'a' (1) a l'atribut privat 'x' de l'objecte actual (this->x = 1).", terminalOutput: ["> Executant main.cpp..."], variables: { "p.x": "1", "p.y": "?", "a": "1", "b": "2" } },
-                { activeFile: "Punt.cpp", line: 5, description: "Assignem el paràmetre 'b' (2) a l'atribut privat 'y' de l'objecte actual (this->y = 2).", terminalOutput: ["> Executant main.cpp..."], variables: { "p.x": "1", "p.y": "2" } },
-                { activeFile: "main.cpp", line: 8, description: "Tornem al main. L'objecte p ja està completament inicialitzat a memòria.", terminalOutput: ["> Executant main.cpp..."], variables: { "p.x": "1", "p.y": "2" } },
-                { activeFile: "main.cpp", line: 8, description: "Cridem el mètode moure() passant-hi 3 i 3. L'objecte 'p' es passa automàticament com a paràmetre implícit.", terminalOutput: ["> Executant main.cpp..."], variables: { "p.x": "1", "p.y": "2" } },
-                { activeFile: "Punt.cpp", line: 9, description: "Entrem a Punt::moure. Canviem el valor de x sumant-li dx (1 + 3 = 4).", terminalOutput: ["> Executant main.cpp..."], variables: { "p.x": "4", "p.y": "2", "dx": "3", "dy": "3" } },
-                { activeFile: "Punt.cpp", line: 10, description: "Canviem el valor de y sumant-li dy (2 + 3 = 5).", terminalOutput: ["> Executant main.cpp..."], variables: { "p.x": "4", "p.y": "5" } },
-                { activeFile: "main.cpp", line: 10, description: "Tornem al main. Cridem el mètode get_x() per obtenir la coordenada X protegida.", terminalOutput: ["> Executant main.cpp..."], variables: { "p.x": "4", "p.y": "5" } },
-                { activeFile: "Punt.cpp", line: 14, description: "La funció consultora llegeix l'atribut privat 'x' i en retorna el seu valor: 4.", terminalOutput: ["> Executant main.cpp..."], variables: { "p.x": "4", "p.y": "5" } },
-                { activeFile: "main.cpp", line: 10, description: "S'imprimeix pel terminal el resultat de la consulta.", terminalOutput: ["> Executant main.cpp...", "Coordenada X: 4"], variables: { "p.x": "4", "p.y": "5" } },
+                { activeFile: "main.cpp", line: 6, description: "Declaració de la variable p de tipus Punt. Això crida el constructor amb els valors 1, 2.", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: -858993460, y: -858993460}" } },
+                { activeFile: "Punt.cpp", line: 3, description: "Entrem al Punt.cpp: Som dins del constructor Punt::Punt. Rebem a=1, b=2.", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: -858993460, y: -858993460}", "a": "1", "b": "2", "this": "0x7fffffffe410" } },
+                { activeFile: "Punt.cpp", line: 4, description: "Assignem el paràmetre 'a' (1) a l'atribut privat 'x' de l'objecte actual (this->x = 1).", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: 1, y: -858993460}", "a": "1", "b": "2", "this": "0x7fffffffe410" } },
+                { activeFile: "Punt.cpp", line: 5, description: "Assignem el paràmetre 'b' (2) a l'atribut privat 'y' de l'objecte actual (this->y = 2).", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: 1, y: 2}", "a": "1", "b": "2", "this": "0x7fffffffe410" } },
+                { activeFile: "main.cpp", line: 6, description: "Tornem al main. L'objecte p ja està completament inicialitzat a memòria.", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: 1, y: 2}" } },
+                { activeFile: "main.cpp", line: 8, description: "Cridem el mètode moure() passant-hi 3 i 3. L'objecte 'p' es passa automàticament com a paràmetre implícit.", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: 1, y: 2}" } },
+                { activeFile: "Punt.cpp", line: 9, description: "Entrem a Punt::moure. Canviem el valor de x sumant-li dx (1 + 3 = 4).", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: 4, y: 2}", "dx": "3", "dy": "3", "this": "0x7fffffffe410" } },
+                { activeFile: "Punt.cpp", line: 10, description: "Canviem el valor de y sumant-li dy (2 + 3 = 5).", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: 4, y: 5}", "dx": "3", "dy": "3", "this": "0x7fffffffe410" } },
+                { activeFile: "main.cpp", line: 10, description: "Tornem al main. Cridem el mètode get_x() per obtenir la coordenada X protegida.", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: 4, y: 5}" } },
+                { activeFile: "Punt.cpp", line: 14, description: "La funció consultora llegeix l'atribut privat 'x' i en retorna el seu valor: 4.", terminalOutput: ["> Executant main.cpp..."], variables: { "p": "Punt {x: 4, y: 5}", "this": "0x7fffffffe410" } },
+                { activeFile: "main.cpp", line: 10, description: "S'imprimeix pel terminal el resultat de la consulta.", terminalOutput: ["> Executant main.cpp...", "Coordenada X: 4"], variables: { "p": "Punt {x: 4, y: 5}" } },
                 { activeFile: "main.cpp", line: 11, description: "Fi de l'execució. Es crida implícitament al destructor de p i la memòria de l'objecte s'allibera.", terminalOutput: ["> Executant main.cpp...", "Coordenada X: 4", "> Programa finalitzat amb codi 0."], variables: {} },
             ] as OOPStep[];
         }
@@ -320,56 +320,88 @@ int main() {
             "Makefile": `CXX = g++
 CXXFLAGS = -Wall -std=c++17
 
-program: main.o
-	$(CXX) -o program main.o
+program: main.o Punt.o
+	$(CXX) -o program main.o Punt.o
 
-main.o: main.cc Capsa.hpp
-	$(CXX) $(CXXFLAGS) -c main.cc`,
+main.o: main.cc Punt.hpp
+	$(CXX) $(CXXFLAGS) -c main.cc
+	
+Punt.o: Punt.cpp Punt.hpp
+	$(CXX) $(CXXFLAGS) -c Punt.cpp`,
             "main.cc": `#include <iostream>
-#include "Capsa.hpp"
-
+#include "Punt.hpp"
 using namespace std;
 
 int main() {
-    Capsa<int> c_entera(42);
-    Capsa<string> c_text("Hola!");
+    Punt p1(1, 2);
+    Punt p2(5, 5);
     
-    cout << c_entera.llegir() << endl;
-    cout << c_text.llegir() << endl;
+    p1.moure(2, 2);
+    
+    cout << "X de p1: " << p1.get_x() << endl;
+    cout << "Punts creats: " << Punt::quants_punts() << endl;
     
     return 0;
 }`,
-            "Capsa.hpp": `#ifndef CAPSA_HPP
-#define CAPSA_HPP
+            "Punt.hpp": `#ifndef PUNT_HPP
+#define PUNT_HPP
 
-template <class T>
-class Capsa {
-    T contingut_;
+class Punt {
+    double x, y;
+    static int comptador; // Compartit per tots els Punts
 public:
-    Capsa(T x) : contingut_(x) {}
+    Punt(double a, double b);
+    void moure(double dx, double dy);
     
-    inline T llegir() const { 
-        return contingut_; 
+    inline double get_x() const { 
+        // inline estalvia la crida de funció
+        return x; 
     }
+    
+    static int quants_punts();
 };
+#endif`,
+            "Punt.cpp": `#include "Punt.hpp"
 
-#endif`
+// Inicialitzem l'atribut static
+int Punt::comptador = 0;
+
+Punt::Punt(double a, double b) {
+    this->x = a; 
+    this->y = b;
+    comptador++;
+}
+
+void Punt::moure(double dx, double dy) {
+    // Utilitzem 'this->' explícitament (paràmetre implícit)
+    this->x += dx; 
+    this->y += dy;
+}
+
+int Punt::quants_punts() {
+    return comptador; // Accés a variable static
+}`
         },
         generateSteps: () => {
             return [
-                { activeFile: "Makefile", line: 4, description: "Cridem a la terminal: '$ make'. El programa Makefile agafa el control per empaquetar tot aquest projecte de Múltiples Fitxers (Modular).", terminalOutput: ["> $ make"], variables: {} },
-                { activeFile: "Makefile", line: 8, description: "Muntem i compilem el fitxer c++ (main.cc) sabent que inclou Capsa.hpp, respectant el dialecte C++17 preparant '.o'", terminalOutput: ["> $ make", "g++ -Wall -std=c++17 -c main.cc"], variables: {} },
-                { activeFile: "Makefile", line: 5, description: "Finalment genera l'executable total unint tots els '.o' recollits. Codi font a punt per funcionar independent!", terminalOutput: ["> $ make", "g++ -Wall -std=c++17 -c main.cc", "g++ -o program main.o"], variables: {} },
-                { activeFile: "main.cc", line: 6, description: "L'usuari executa el seu codi (./program) i la traça comença dins del int main()", terminalOutput: ["> ./program"], variables: {} },
-                { activeFile: "main.cc", line: 7, description: "Creem un objecte abstracte tipus Capsa passant entre clàusules '< >' que aquesta variant de Capsa guardarà dades tipus int amb valor de 42.", terminalOutput: ["> ./program"], variables: { "c_entera": "buit" } },
-                { activeFile: "Capsa.hpp", line: 8, description: "Entrem al constructor on gràcies a T=int, C++ sap que haurà de traduir tot això creant memòria per a Enters. Es crida l'assignació automàtica del colon ':'", terminalOutput: ["> ./program"], variables: { "x": "42", "c_entera.contingut_": "42" } },
-                { activeFile: "main.cc", line: 8, description: "Al main, instanciem completament a la vegada una segona classe de tipus string. La Template T s'encarregarà per ell de crear exclusivament codi compilat per al 'hola'", terminalOutput: ["> ./program"], variables: { "c_text": "buit" } },
-                { activeFile: "Capsa.hpp", line: 8, description: "Aquest segon pas constructor llegeix i rep T=string al ser cridat, col·locant al ': continugut_' les referències per caràcters passats.", terminalOutput: ["> ./program"], variables: { "x": "Hola!", "c_text.contingut_": "Hola!" } },
-                { activeFile: "main.cc", line: 10, description: "Tornem! Les variables independents no competeixen per espai. Cridem al mètode d'extracció llegir() del primer contenidor.", terminalOutput: ["> ./program"], variables: {} },
-                { activeFile: "Capsa.hpp", line: 10, description: "Com ha estat guardat l'atribut privat _, ho retornem fora de l'àmbit public utilitzant memòries de procés curtes Inline O(1).", terminalOutput: ["> ./program"], variables: {} },
-                { activeFile: "main.cc", line: 11, description: "Rebem valor directament imprès. Llavors cridem analògicament i passem objectiu a la capsa número 2 de strings.", terminalOutput: ["> ./program", "42"], variables: {} },
-                { activeFile: "Capsa.hpp", line: 10, description: "Com haviem forjat una capsa amb una paraula, llegir resol en mode text de paraula! Genericitat complida a C++.", terminalOutput: ["> ./program", "42"], variables: {} },
-                { activeFile: "main.cc", line: 13, description: "Finalment, els canvis finalitzen programa donant imprès tant enter com text i buidant instàncies cridant Destructors.", terminalOutput: ["> ./program", "42", "Hola!", "> Programa finalitzat amb codi 0."], variables: {} }
+                { activeFile: "Makefile", line: 4, description: "Executem '$ make' a la terminal. El Makefile automatitzarà la compilació dels múltiples fitxers (Modular).", terminalOutput: ["> $ make"], variables: {} },
+                { activeFile: "Makefile", line: 11, description: "Primer compila 'Punt.cpp' per generar 'Punt.o' aplicant els flags de C++17.", terminalOutput: ["> $ make", "g++ -Wall -std=c++17 -c Punt.cpp"], variables: {} },
+                { activeFile: "Makefile", line: 8, description: "Després compila 'main.cc' per generar 'main.o'.", terminalOutput: ["> $ make", "g++ -Wall -std=c++17 -c Punt.cpp", "g++ -Wall -std=c++17 -c main.cc"], variables: {} },
+                { activeFile: "Makefile", line: 5, description: "Finalment, enllaça (links) els dos fitxers '.o' per produir l'executable 'program'.", terminalOutput: ["> $ make", "g++ -Wall -std=c++17 -c Punt.cpp", "g++ -Wall -std=c++17 -c main.cc", "g++ -o program main.o Punt.o"], variables: {} },
+                { activeFile: "main.cc", line: 6, description: "L'usuari executa el seu codi (./program) i l'execució entra al main. L'atribut static 'comptador' ja val 0 des del principi.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "0" } },
+                { activeFile: "main.cc", line: 6, description: "Es declararà i emmagatzemarà la instància p1. Això saltarà al constructor de Punt.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "0", "p1": "Punt {x: -858993460, y: -858993460}" } },
+                { activeFile: "Punt.cpp", line: 6, description: "Ens trobem a dintre del constructor. Gràcies a què sabem sobre qui cridem aquest constructor, 'this' apunta la memòria de l'objecte original p1 automàticament.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "0", "p1": "Punt {x: -858993460, y: -858993460}", "this": "0x7ffe1020" } },
+                { activeFile: "Punt.cpp", line: 9, description: "S'han assignat els paràmetres a l'objecte amb this->. Ara sumem 1 al comptador global i únic compartit.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "1", "p1": "Punt {x: 1, y: 2}", "this": "0x7ffe1020" } },
+                { activeFile: "main.cc", line: 7, description: "Tornem al main. Creem un segon Punt de diferent naturalesa: p2.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "1", "p1": "Punt {x: 1, y: 2}", "p2": "Punt {x: -858993460, y: -858993460}" } },
+                { activeFile: "Punt.cpp", line: 6, description: "El paràmetre implícit 'this' ara no apunta a p1, per naturalesa apunta al qui l'ha cridat (p2).", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "1", "p1": "Punt {x: 1, y: 2}", "p2": "Punt {x: -858993460, y: -858993460}", "this": "0x7ffe1030" } },
+                { activeFile: "Punt.cpp", line: 9, description: "Si bé els Punts de p2 acaben de ser assignats independentment, el comptador global va pujant i ara ascendeix a 2 actius.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "2", "p1": "Punt {x: 1, y: 2}", "p2": "Punt {x: 5, y: 5}", "this": "0x7ffe1030" } },
+                { activeFile: "main.cc", line: 9, description: "Toca moure p1 usant dx=2 i dy=2. Invocació de mètode simple amb prefix explícit a l'objecte base.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "2", "p1": "Punt {x: 1, y: 2}", "p2": "Punt {x: 5, y: 5}" } },
+                { activeFile: "Punt.cpp", line: 14, description: "A dintre el moure(), usem explícitament 'this->' per ensenyar-vos quin 'x' o 'y' exactament canvien al pas de fer +=. Evidentment p2(5, 5) queda 100% lliure.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "2", "p1": "Punt {x: 3, y: 4}", "p2": "Punt {x: 5, y: 5}", "dx": "2", "dy": "2", "this": "0x7ffe1020" } },
+                { activeFile: "main.cc", line: 11, description: "Fem una crida i impressió pel 'get_x()' del p1.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "2", "p1": "Punt {x: 3, y: 4}", "p2": "Punt {x: 5, y: 5}" } },
+                { activeFile: "Punt.hpp", line: 11, description: "Aquest viatge ràpid no executa un autèntic 'call function' a la CPU sinó que resol eficaç inline, llegint que p1.x és 3 directament dins l'etapa compilada.", terminalOutput: ["> ./program"], variables: { "Punt::comptador": "2", "p1": "Punt {x: 3, y: 4}", "p2": "Punt {x: 5, y: 5}", "this": "0x7ffe1020" } },
+                { activeFile: "main.cc", line: 12, description: "Com podeu veure val 3! Llavors finalment, comprovarem en temps real quants objectes s'han encriptat cridant Punt::quants_punts(). És un mètode static.", terminalOutput: ["> ./program", "X de p1: 3"], variables: { "Punt::comptador": "2", "p1": "Punt {x: 3, y: 4}", "p2": "Punt {x: 5, y: 5}" } },
+                { activeFile: "Punt.cpp", line: 18, description: "Evidentment al mètode static se'n porta exclusivament i retorna una sortida a variables que tampoc tenen context original particular (com el comptador de tots elements). No hi ha 'this'.", terminalOutput: ["> ./program", "X de p1: 3"], variables: { "Punt::comptador": "2", "p1": "Punt {x: 3, y: 4}", "p2": "Punt {x: 5, y: 5}" } },
+                { activeFile: "main.cc", line: 15, description: "Ja ho haureu vist! Es tanca amb resums finals on quants punts acaba determinant de l'ús general en 2. El programa conclou amb èxit desat i tots els elements s'alliberen.", terminalOutput: ["> ./program", "X de p1: 3", "Punts creats: 2", "> Programa finalitzat amb codi 0."], variables: { "Punt::comptador": "2" } },
             ] as OOPStep[];
         }
     },

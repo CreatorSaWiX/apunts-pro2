@@ -102,7 +102,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
                     </div>
 
                     {/* Code Tab Header */}
-                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] pl-20 overflow-x-auto custom-scrollbar">
+                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] pl-20 overflow-hidden">
                         {Object.keys(sim.files).map(filename => (
                             <div key={filename} className={`px-4 py-2 border-t border-x rounded-t-xl text-[10px] font-mono tracking-wider flex gap-2 items-center shadow-sm relative top-[1px] z-10 transition-colors cursor-default whitespace-nowrap
                                 ${step.activeFile === filename ? 'bg-[#0d1117] border-slate-800/80 text-emerald-400' : 'bg-[#161b22] border-transparent text-slate-500 border-b-slate-800/80'}`}>
@@ -158,12 +158,11 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
                                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400">Objectes a Memòria</span>
                             </div>
                         </div>
-                        <div className="flex-1 overflow-auto custom-scrollbar p-2 sm:p-3 grid grid-cols-2 lg:grid-cols-2 gap-1 content-start">
+                        <div className="flex-1 overflow-auto custom-scrollbar p-2 flex flex-col gap-0.5 content-start">
                             {Object.entries(step.variables).map(([k, v]) => (
-                                <div key={k} className="flex text-[11px] sm:text-xs group hover:bg-slate-800/50 px-2 flex-wrap sm:flex-nowrap sm:px-3 py-1.5 rounded-lg border border-transparent hover:border-white/5 transition-all">
-                                    <span className="text-sky-400 font-mono font-medium w-full lg:w-16 flex-shrink-0 tracking-wide block lg:inline">{k}</span>
-                                    <span className="text-slate-600 mr-2 sm:mr-3 font-mono hidden lg:inline">=</span>
-                                    <span className="text-emerald-300 font-mono break-all">{v}</span>
+                                <div key={k} className="flex text-[11px] sm:text-xs group hover:bg-[#2a2d2e] px-2 py-1 rounded transition-none">
+                                    <span className="text-[#9cdcfe] font-mono mr-2 shrink-0">{k}:</span>
+                                    <span className="text-[#b5cea8] font-mono break-all">{v}</span>
                                 </div>
                             ))}
                         </div>

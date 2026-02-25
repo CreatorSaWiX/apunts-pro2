@@ -5,14 +5,14 @@ readTime: "12 Min"
 order: 2
 ---
 
-## 1. Com ens movem per un graf?
+## 1. Conceptes
 
 *   **Recorregut**: Viatjar d'un vèrtex a un altre mitjançant arestes (pots repetir llocs com vulguis).
 *   **Camí**: Un recorregut on **no repetim cap vèrtex** (tampoc cap aresta).
 *   **Cicle**: Un camí tancat (inici = final) de longitud $\ge 3$. Un graf sense cicles s'anomena **graf acíclic**.
 *   **Longitud**: És exactament el nombre d'arestes que creuem, no els vèrtexs. El viatge d'un vèrtex a si mateix (sense moure's) té longitud 0.
 
-## 2. Punts de fallida: Talls i Ponts
+## 2. Talls i ponts
 
 Un graf és **connex** si sempre hi ha algun camí entre qualsevol parella de vèrtexs. Si algun no hi arriba, es fragmenta en **components connexos** separats. Qualsevol graf connex de mida real exigeix com a mínim l'ús estricte d'$n - 1$ arestes.
 Però, com de fràgil és el nostre graf connex?
@@ -35,9 +35,9 @@ Però, com de fràgil és el nostre graf connex?
 }
 ```
 :::
-<div class="text-xs text-center text-slate-400 mt-2 mb-4">El vèrtex de <b>Tall</b> és vital. L'aresta groga és exclusivament un <b>Pont</b>.</div>
+<div class="text-xs text-center text-slate-400 mt-2 mb-4">El vèrtex de <b>Tall</b> és vital. L'aresta groga és exclusivament un <b>Pont</b>.</div> <!-- No hi ha arestes grogues.. -->
 
-## 3. Mètriques de Distància
+## 3. Mètriques de distància
 Siguin dos vèrtexs que viuen en un mateix component connex $u$ i $v$:
 *   **Distància $d(u,v)$**: El valor *mínim* referent a la longitud de tota la varietat de camins per anar d'$u$ a $v$. Si no hi ha camí possible, es considera $\infty$.
 
@@ -47,22 +47,23 @@ A nivell global de graf tenim 4 definicions claus a avaluar depenent d'aquesta $
 3.  **Radi $r(G)$**: Si cerquem el punt més eficient del mapa... La menor excentricitat disponible obtinguda per algun vèrtex es diu radi.
 4.  **Centre del Graf**: Qualsevol i tots els vèrtexs on hagin calculat tenir de forma miraculosa justament l'excentricitat exactament igual al dit **radi**.
 
+<!-- Necessitem posar un/uns grafs per entendre millor -->
 ---
 
-## 4. DFS: Cerca en Profunditat (Depth-First Search)
+## 4. DFS: Cerca en profunditat (Depth-First Search)
 
-L'algoritme de demostració oficial **DFS** permet trobar absolutament tot el component connex al qual pertany un inici donat $v$. Descobreix les profunditats abans de mirar pels costats contigus i es basa nativament en emprar una Especie de **Pila (LIFO)**. 
+L'algoritme de demostració oficial **DFS** permet trobar absolutament tot el component connex al qual pertany un inici donat $v$. Descobreix les profunditats abans de mirar pels costats contigus i es basa nativament en emprar una especie de **pila (LIFO)**. 
 
-El concepte clau: A cada visita s'intenta afegir un sol adjacent fresc de qui seguir-se enfonsant (push). Només si ens quedem acorralats (tots els veí revisats), fa marxa enrere desfent des de la pròpia pila per explorar per on vam venir (pop).
+A cada visita s'intenta afegir un sol adjacent fresc de qui seguir-se enfonsant (push). Només si ens quedem acorralats (tots els veí revisats), fa marxa enrere desfent des de la pròpia pila per explorar per on vam venir (pop).
 
 :::algoviz{algorithm="dfs"}
 :::
 
 ## 5 Cerca en amplada (BFS: Breadth First Search)
 
-Mentre que el DFS baixa en picat "caient" pel túnel, el **BFS** es propaga radialment per capes (com onades a l'aigua). A l'ordinador necessita purament estructurar memòria temporal al voltant d'una **Cua (FIFO)**.
+Mentre que el DFS baixa en picat "caient", el **BFS** es propaga radialment per capes (com onades a l'aigua). A l'ordinador necessita purament estructurar memòria temporal al voltant d'una **cua (FIFO)**.
 
-A la presentació teòrica s'exigeix que sàpigues com aquest algoritme registra alhora **la distància idònia** de cada barri. Si tenim un array `D` que ens guarda quants passos portem fets:
+Si tenim un array `D` que ens guarda quants passos portem fets:
 1. Posar el node d'origen ($v$) a distància `0` dins de `D`. `D[v] = 0`.
 2. Encues i afegeixes el $v$ a la llista de Visitat ($W$).
 3. Quan extrems el primer de la cua (anomenat $x$), tots els nous adjacents inexplorats ($y$) prendran estrictament com a distància oficial el valor **$D[y] = D[x] + 1$**. I tu avances a un altre barri!
@@ -74,7 +75,7 @@ A la presentació teòrica s'exigeix que sàpigues com aquest algoritme registra
 
 ---
 
-## 6. Caracterització dels Grafs Bipartits
+## 6. Caracterització dels grafs bipartits <!-- Cal explicar-lo més visual, no s'entén llegint el text-->
 
 Més enllà de dir l'eslògan "és quan es divideixen en dos equips i no passa res internament", com ho podríem reconèixer programàticament o matemàticament des d'un paper ple de línies en diagonal a examen si es tracta purament d'un graf bipartit o amaga relliscades?
 

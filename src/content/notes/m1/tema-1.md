@@ -367,7 +367,7 @@ Triem un "equip" de vèrtexs $S$ i ens quedem amb **TOTES** les seves arestes in
 
 :::::
 
-## 8. El Graf complementari ($G^c$)
+## 8. El graf complementari ($G^c$)
 
 Imagineu l'univers paral·lel del graf. És el **negatiu** de la foto.
 
@@ -403,7 +403,7 @@ Ara els amics es barallen, i els desconeguts es fan amics.
 }
 ```
 :::
-<div class="text-xs text-center text-slate-400 mt-2">Les arestes d'aquí són les que <b>faltaven</b> a l'esquerra.</div>
+
 ::::
 
 :::::
@@ -424,12 +424,12 @@ Igual que sumem i multipliquem números, podem fer-ho amb grafs!
 > Si els grafs no tenien cap vèrtex en comú ($V \cap V' = \emptyset$), l'ordre total és la suma dels ordres ($|V| + |V'|$).
 
 ### Graf producte ($G \times G'$)
-Aquesta és una mica més complexa, però visualment xulíssima. El **Producte Cartesià** de grafs genera estructures tipus "reixa" o "xarxa". Imaginem-ho així: **Substituïm cada vèrtex del primer graf per una còpia del segon.**
+Aquesta és una mica més complexa, però visualment xulíssima. El **producte cartesià** de grafs genera estructures tipus "reixa" o "xarxa". Imaginem-ho així: **Substituïm cada vèrtex del primer graf per una còpia del segon.**
 
 **Exemple**:
 Si multipliquem una línia de 3 punts ($P_3$) per una línia de 2 punts ($P_2$), obtenim una escala!
 
-1.  Agafem $P_3$ (l'esquelet vertical vermell).
+ 1.  Agafem $P_3$ (l'esquelet vertical vermell). <!-- A graf tot son vertexs lila, arestes blanques  -->
 2.  A cada pis posem una còpia de $P_2$ (horitzontal blau).
 3.  Connectem els pisos seguint l'esquelet.
 
