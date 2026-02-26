@@ -186,7 +186,7 @@ const Navigation: React.FC = () => {
                             <div className="flex-1 overflow-y-auto p-4 space-y-2">
                                 <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2">Temari del Curs</div>
                                 {[...allPersonalNotes]
-                                    .filter(n => (n as any).subject === subject)
+                                    .filter(n => (n as any).subject === subject && !n.slug.includes('-lab-'))
                                     .sort((a, b) => a.order - b.order)
                                     .map((topic, i) => (
                                         <Link
@@ -212,6 +212,33 @@ const Navigation: React.FC = () => {
                                             <ChevronRight size={16} className="text-slate-600 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
                                         </Link>
                                     ))}
+
+                                {[...allPersonalNotes].some(n => (n as any).subject === subject && n.slug.includes('-lab-')) && (
+                                    <>
+                                        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2 mt-8">Laboratoris</div>
+                                        {[...allPersonalNotes]
+                                            .filter(n => (n as any).subject === subject && n.slug.includes('-lab-'))
+                                            .sort((a, b) => a.order - b.order)
+                                            .map((topic, i) => (
+                                                <Link
+                                                    key={topic.slug}
+                                                    to={`/tema/${topic.slug}`}
+                                                    onClick={() => setIsMenuOpen(false)}
+                                                    className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-800/50 border border-transparent hover:border-slate-700/50 transition-all group"
+                                                >
+                                                    <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-500 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
+                                                        L{i + 1}
+                                                    </span>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h4 className="text-slate-300 font-medium group-hover:text-white transition-colors truncate">
+                                                            {topic.title}
+                                                        </h4>
+                                                    </div>
+                                                    <ChevronRight size={16} className="text-slate-600 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                                                </Link>
+                                            ))}
+                                    </>
+                                )}
                             </div>
 
                             <div className="p-4 border-t border-white/5 text-center text-xs text-slate-600">

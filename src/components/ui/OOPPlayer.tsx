@@ -92,7 +92,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
 
             <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
                 {/* Left Panel: Code & Environment */}
-                <div className={`flex-1 flex flex-col relative bg-[#0d1117] h-full shadow-[15px_0_30px_rgba(0,0,0,0.3)] lg:border-r border-white/5 ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
+                <div className={`flex-1 min-w-0 flex flex-col relative bg-[#0d1117] h-full shadow-[15px_0_30px_rgba(0,0,0,0.3)] lg:border-r border-white/5 ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
 
                     {/* Simulated Window Controls */}
                     <div className="absolute top-3 left-3 flex items-center gap-1.5 z-30 opacity-50 hidden sm:flex">
@@ -170,7 +170,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
                 </div>
 
                 {/* Right Panel: Terminal & Controls */}
-                <div className={`lg:w-[450px] xl:w-[480px] flex-col relative z-20 bg-gradient-to-br from-[#0B0F17] via-[#0F1420] to-[#0A0D14] h-full ${activeTab === 'term' ? 'flex' : 'hidden'} lg:flex`}>
+                <div className={`lg:w-[450px] xl:w-[480px] shrink-0 flex-col relative z-20 bg-gradient-to-br from-[#0B0F17] via-[#0F1420] to-[#0A0D14] h-full ${activeTab === 'term' ? 'flex' : 'hidden'} lg:flex`}>
 
                     <div className="flex-1 flex flex-col p-4 sm:p-6 pb-[160px] relative overflow-hidden">
 

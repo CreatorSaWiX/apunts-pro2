@@ -42,6 +42,18 @@ export const courseStructure: TopicDefinition[] = [
         problems: []
     },
     {
+        id: "pro2-lab-1",
+        title: "Lab 1: Struct a class",
+        description: "Sessió de laboratori resolta. Salt a la programació orientada a objectes.",
+        problems: []
+    },
+    {
+        id: "pro2-lab-2",
+        title: "Lab 2: Contenidors Lineals",
+        description: "Sessió de laboratori resolta. Stacks i Queues (Piles i Cues).",
+        problems: []
+    },
+    {
         id: "pro2-tema-4",
         title: "Tema 4: Arbres",
         description: "Arbres binaris, recorreguts i arbres generals.",

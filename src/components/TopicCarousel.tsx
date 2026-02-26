@@ -55,7 +55,7 @@ const TopicCarousel: React.FC = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const scrollRef = useRef<HTMLDivElement>(null);
     const sortedTopics = [...allPersonalNotes]
-        .filter(note => (note as any).subject === subject)
+        .filter(note => (note as any).subject === subject && !note.slug.includes('-lab-'))
         .sort((a, b) => a.order - b.order);
 
     const scrollTo = (index: number) => {
@@ -244,14 +244,14 @@ const TopicCarousel: React.FC = () => {
                                         </div>
 
                                         <Link
-                                            to={`/tema/${topic.slug}/solucionaris`}
+                                            to={subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : `/tema/${topic.slug}/solucionaris`}
                                             onClick={(e) => e.stopPropagation()}
                                             className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol"
                                         >
                                             <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">
                                                 {subject === 'm1' ? <Calculator size={12} /> : <Terminal size={12} />}
                                             </div>
-                                            <span>{subject === 'm1' ? 'Solucionaris M1' : 'Solucionaris Jutge'}</span>
+                                            <span>{subject === 'm1' ? 'Solucionaris M1' : (subject === 'pro2' && (topic.slug === 'pro2-tema-1' || topic.slug === 'pro2-tema-2') ? 'Solucionaris Lab' : 'Solucionaris Jutge')}</span>
                                         </Link>
                                     </div>
                                 </div>

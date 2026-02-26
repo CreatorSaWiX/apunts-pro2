@@ -17,6 +17,7 @@ interface GraphVisualizerProps {
     updateTrigger?: any;
     isAnimating?: boolean;
     transparentBg?: boolean;
+    autoCenter?: boolean;
 }
 
 const defaultData = {
@@ -57,7 +58,8 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     showControls = true,
     updateTrigger,
     isAnimating,
-    transparentBg = false
+    transparentBg = false,
+    autoCenter = false
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const fgRef = useRef<any>(null);
@@ -90,17 +92,25 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         }
     }, [isInView, hasMounted, isAnimating]);
 
-    // Force repaint when updateTrigger changes without reheating hot physics (Solves 100% CPU lockup)
+    // Force repaint or request auto-center when updateTrigger changes
     const zoomToggle = useRef(false);
+    const needsFit = useRef(false);
+
     useEffect(() => {
         if (fgRef.current && hasMounted && initialZoomDone.current) {
-            // We use a microscopic zoom delta to force a redraw of the canvas instantly
-            // without triggering the N-body physics simulation
-            const z = fgRef.current.zoom();
-            zoomToggle.current = !zoomToggle.current;
-            fgRef.current.zoom(zoomToggle.current ? z - 0.000001 : z + 0.000001);
+            if (autoCenter) {
+                needsFit.current = true;
+                // Force physics to run so engineStop will definitely fire
+                fgRef.current.d3ReheatSimulation();
+            } else {
+                // We use a microscopic zoom delta to force a redraw of the canvas instantly
+                // without triggering the N-body physics simulation
+                const z = fgRef.current.zoom();
+                zoomToggle.current = !zoomToggle.current;
+                fgRef.current.zoom(zoomToggle.current ? z - 0.000001 : z + 0.000001);
+            }
         }
-    }, [updateTrigger, hasMounted]);
+    }, [updateTrigger, hasMounted, autoCenter]);
 
     // Parse Data
     useEffect(() => {
@@ -221,10 +231,13 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     const getLinkColor = useCallback(() => '#475569', []);
 
     const handleEngineStop = useCallback(() => {
-        if (!initialZoomDone.current && fgRef.current) {
-            // First time the layout settles, fit to view
-            fgRef.current.zoomToFit(400, 20);
-            initialZoomDone.current = true;
+        if (fgRef.current) {
+            if (!initialZoomDone.current || needsFit.current) {
+                // When layout settles, fit to view
+                fgRef.current.zoomToFit(400, 30);
+                initialZoomDone.current = true;
+                needsFit.current = false;
+            }
         }
     }, []);
 

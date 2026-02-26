@@ -16,6 +16,7 @@ import AlgoPlayer from "../components/ui/AlgoPlayer";
 import OOPPlayer from "../components/ui/OOPPlayer";
 import StackVisualizer from "../components/ui/StackVisualizer";
 import QueueVisualizer from "../components/ui/QueueVisualizer";
+import ListGraphVisualizer from "../components/ui/ListGraphVisualizer";
 
 type MarkdownRendererProps = {
     content: string;
@@ -42,6 +43,9 @@ const defaultComponents: any = {
     },
     queueviz: () => {
         return <QueueVisualizer />;
+    },
+    listviz: () => {
+        return <ListGraphVisualizer />;
     },
     pre: ({ children }: any) => <>{children}</>,
     code(props: any) {

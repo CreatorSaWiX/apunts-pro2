@@ -19,9 +19,16 @@ const TopicPage: React.FC = () => {
         restDelta: 0.001
     });
 
+    const isLab = topic?.slug.includes('-lab-');
+
     const sortedTopics = [...allPersonalNotes]
         .filter(t => t.subject === topic?.subject)
+        .filter(t => {
+            const tIsLab = t.slug.includes('-lab-');
+            return isLab ? tIsLab : !tIsLab;
+        })
         .sort((a, b) => a.order - b.order);
+
     const currentIndex = sortedTopics.findIndex(t => t.slug === id);
     const prevTopic = currentIndex > 0 ? sortedTopics[currentIndex - 1] : undefined;
     const nextTopic = currentIndex < sortedTopics.length - 1 ? sortedTopics[currentIndex + 1] : undefined;

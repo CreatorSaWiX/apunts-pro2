@@ -5,6 +5,8 @@ readTime: "8 min"
 order: 4
 ---
 
+Aquí és quan l'assignatura de M1 i PRO2 fusionen
+
 ## 4.1 La Immersió (I el cost dels Frames)
 
 Quan una funció es crida a si mateixa de forma recursiva, la memòria demana un nou bloc (*frame*) per executar la seva instància particular. En C++, això vol dir que **les variables locals d'una execució no es poden compartir naturalment amb la següent crida a sota**. 
