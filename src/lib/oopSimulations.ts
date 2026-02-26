@@ -567,15 +567,15 @@ Data Data::suma_dies(int dies) const {
                 { activeFile: "data.cc", line: 6, description: "Saltem al constructor buit de Data. El paràmetre ocult 'this' apunta a l'instància 'd'.", terminalOutput: ["./demo_data"], variables: { "this": "->d" } },
                 { activeFile: "data.cc", line: 7, description: "Assignació dels paràmetres ('1', '1', '0') en l'àmbit de d.", terminalOutput: ["./demo_data"], variables: { "this": "->d", "dia": "1", "mes": "1", "any": "0" } },
                 { activeFile: "main.cc", line: 8, description: "El flux torna a la funció principal declarant la variable enter 'n'.", terminalOutput: ["./demo_data"], variables: { "d": "1/1/0", "n": "?" } },
-                { activeFile: "main.cc", line: 10, description: "L'objecte 'd' executa una captura prèvia `.llegeix()` seguint l'estàndard Jutge per preparar condicions.", terminalOutput: ["(El sistema roman aturat demanant Console Input)"], variables: { "d": "1/1/0", "n": "?" } },
-                { activeFile: "data.cc", line: 20, description: "Al mètode, 'cin' llegeix ignorant char '/' i omple les components de l'objecte 'this'.", terminalOutput: ["28/02/2024"], variables: { "this": "->d" } },
-                { activeFile: "data.cc", line: 21, description: "L'element actualitza variables en memòria. Fi del mètode de lectura.", terminalOutput: ["28/02/2024"], variables: { "this": "->d", "dia": "28", "mes": "2", "any": "2024" } },
-                { activeFile: "main.cc", line: 11, description: "Condicional 'while' avalúa veritat al extraure de cin el desplaçament requerit ('n').", terminalOutput: ["28/02/2024 1"], variables: { "d": "28/02/2024", "n": "1" } },
+                { activeFile: "main.cc", line: 10, description: "L'objecte 'd' executa una captura prèvia `.llegeix()` per preparar condicions.", terminalOutput: ["(El sistema roman aturat demanant Console Input)"], variables: { "d": "1/1/0", "n": "?" } },
+                { activeFile: "data.cc", line: 21, description: "Al mètode, 'cin' llegeix ignorant char '/' i omple les components de l'objecte 'this'.", terminalOutput: ["28/02/2024"], variables: { "this": "->d" } },
+                { activeFile: "data.cc", line: 22, description: "L'element actualitza variables en memòria. Fi del mètode de lectura.", terminalOutput: ["28/02/2024"], variables: { "this": "->d", "dia": "28", "mes": "2", "any": "2024" } },
+                { activeFile: "main.cc", line: 11, description: "Condicional 'while' avalúa cert al extraure de cin el desplaçament requerit ('n').", terminalOutput: ["28/02/2024 1"], variables: { "d": "28/02/2024", "n": "1" } },
                 { activeFile: "main.cc", line: 12, description: "S'invoca el mètode 'suma_dies(n)', passant l'enter al context exclusiu de 'd'.", terminalOutput: ["28/02/2024 1"], variables: { "d": "28/02/2024", "n": "1" } },
-                { activeFile: "data.cc", line: 31, description: "S'executa clonació d'estat (*this) creant l'entitat local asimptòtica 'res'.", terminalOutput: ["28/02/2024 1"], variables: { "this": "->d", "dies": "1", "res": "28/02/2024" } },
-                { activeFile: "data.cc", line: 32, description: "Operació abstracta modificant directament el dia iteratiu de 'res' (+1).", terminalOutput: ["28/02/2024 1"], variables: { "this": "->d", "dies": "1", "res": "29/02/2024" } },
+                { activeFile: "data.cc", line: 32, description: "S'executa clonació d'estat (*this) creant l'entitat local asimptòtica 'res'.", terminalOutput: ["28/02/2024 1"], variables: { "this": "->d", "dies": "1", "res": "28/02/2024" } },
+                { activeFile: "data.cc", line: 34, description: "Operació abstracta modificant directament el dia iteratiu de 'res' (+1).", terminalOutput: ["28/02/2024 1"], variables: { "this": "->d", "dies": "1", "res": "29/02/2024" } },
                 { activeFile: "data.cc", line: 10, description: "Ús de mètode avaluador limitador d'anys traspàs retornant el topall d'estabilitat del mes (29).", terminalOutput: ["28/02/2024 1"], variables: { "this": "->res", "res_retorn_dies": "29" } },
-                { activeFile: "data.cc", line: 33, description: "El camp 'res.dia' es troba dins rang operatiu. Tancament de salts al Bucle matemàtic.", terminalOutput: ["28/02/2024 1"], variables: { "this": "->d", "dies": "1", "res": "29/02/2024" } },
+                { activeFile: "data.cc", line: 34, description: "El camp 'res.dia' es troba dins rang operatiu. Tancament de salts al Bucle matemàtic.", terminalOutput: ["28/02/2024 1"], variables: { "this": "->d", "dies": "1", "res": "29/02/2024" } },
                 { activeFile: "data.cc", line: 42, description: "Sortida valor de mètode. L'entorn local es destrueix i passem el bloc sencer resultant.", terminalOutput: ["28/02/2024 1"], variables: { "this": "->d", "res": "29/02/2024" } },
                 { activeFile: "main.cc", line: 12, description: "A Main la variable receptora 'resultat' captura l'assignació estructurada d'origen.", terminalOutput: ["28/02/2024 1"], variables: { "d": "28/02/2024", "n": "1", "resultat": "29/02/2024" } },
                 { activeFile: "main.cc", line: 13, description: "Invocació directa a sortida genèrica C++ usant el '.escriu()' del bloc resultant.", terminalOutput: ["28/02/2024 1"], variables: { "d": "28/02/2024", "n": "1", "resultat": "29/02/2024" } },
@@ -705,33 +705,56 @@ Racional Racional::suma(const Racional &b) const {
                 { activeFile: "Makefile", line: 12, description: "Compilació de 'racional.cc' cap a codi objecte '.o', aïllant complexitats.", terminalOutput: ["make", "g++ -D_JUDGE_... -c racional.cc"], variables: {} },
                 { activeFile: "Makefile", line: 15, description: "L'escriptura procedeix compilant la matriu de 'main.cc' sense vinculació final.", terminalOutput: ["make", "g++ -D_JUDGE_... -c racional.cc", "g++ -D_JUDGE_... -c main.cc"], variables: {} },
                 { activeFile: "Makefile", line: 9, description: "S'invoca l'enllaç de C++ produint l'executable 'calc_racionals' resolut.", terminalOutput: ["make", "g++ -D_JUDGE_... -c racional.cc", "g++ -D_JUDGE_... -c main.cc", "g++ -D_JUDGE_... -o calc_racionals racional.o main.o"], variables: {} },
-                { activeFile: "main.cc", line: 9, description: "Comanda d'execució `./calc_racionals` al local shell per iniciar simulació.", terminalOutput: ["./calc_racionals"], variables: {} },
-                { activeFile: "main.cc", line: 10, description: "Inicialitzem recurs Racional actiu 'r' usat en fase de captures temporal.", terminalOutput: ["./calc_racionals"], variables: {} },
-                { activeFile: "main.cc", line: 11, description: "Incorporem la declaració de l'acumulador persistint ('acum') de càlculs C++.", terminalOutput: ["./calc_racionals"], variables: { "r": "Ref?", "acum": "Ref?" } },
-                { activeFile: "racional.cc", line: 24, description: "Salt d'scope a 'Racional::Racional()' delegant variables a simplificadors.", terminalOutput: ["./calc_racionals"], variables: { "this": "->acum" } },
-                { activeFile: "racional.cc", line: 19, description: "Garantitzem memòries locals fixant elements abstractes en 0 num i 1 den segurant control.", terminalOutput: ["./calc_racionals"], variables: { "this": "->acum", "num": "0", "den": "1" } },
+                { activeFile: "main.cc", line: 8, description: "Comanda d'execució `./calc_racionals` al local shell per iniciar simulació.", terminalOutput: ["./calc_racionals"], variables: {} },
+                { activeFile: "main.cc", line: 9, description: "Inicialitzem recurs Racional actiu 'r' usat en fase de captures temporal.", terminalOutput: ["./calc_racionals"], variables: {} },
+                { activeFile: "main.cc", line: 10, description: "Incorporem la declaració de l'acumulador persistint ('acum') de càlculs C++.", terminalOutput: ["./calc_racionals"], variables: { "r": "Ref?", "acum": "Ref?" } },
+                { activeFile: "racional.cc", line: 23, description: "Salt d'scope a 'Racional::Racional()' delegant variables a simplificadors.", terminalOutput: ["./calc_racionals"], variables: { "this": "->acum" } },
+                { activeFile: "racional.cc", line: 15, description: "Garantitzem memòries locals fixant elements abstractes en 0 num i 1 den segurant control.", terminalOutput: ["./calc_racionals"], variables: { "this": "->acum", "num": "0", "den": "1" } },
                 { activeFile: "main.cc", line: 13, description: "Tornant, l'objecte 'acum' resol execució `.llegeix()` cridant lectura d'origen estàndard.", terminalOutput: ["(Mode Consola Cin demant input inicial: '1/2')"], variables: { "r": "0/1", "acum": "0/1" } },
                 { activeFile: "racional.cc", line: 28, description: "Flux a mètode 'llegeix()' enclou format d'acció exclusiu. La variable drecera descarta `/` extra.", terminalOutput: ["1/2"], variables: { "this": "->acum" } },
                 { activeFile: "racional.cc", line: 29, description: "Extracció de constants referenciant mòduls directes per filtratge d'operativitat interna.", terminalOutput: ["1/2"], variables: { "this": "->acum", "n": "1", "d": "2" } },
                 { activeFile: "racional.cc", line: 19, description: "Pre-factoritzador llegeix i redueix errors matemàtics adaptant directes subrutinades i variables.", terminalOutput: ["1/2"], variables: { "this": "->acum", "num": "1", "den": "2" } },
                 { activeFile: "main.cc", line: 14, description: "Tornament d'stream: 'acum.escriu()' imprimeix instància inicial sense modificadors de crida.", terminalOutput: ["1/2"], variables: { "r": "0/1", "acum": "1/2" } },
-                { activeFile: "main.cc", line: 18, description: "Bucle while(cin >> op) actua sobre loop extreient el char relacional directament en cadena (string '+').", terminalOutput: ["1/2", "+"], variables: { "acum": "1/2", "op": "+" } },
-                { activeFile: "main.cc", line: 19, description: "S'executa fons 'r.llegeix()' avaluant el paràmetre volàtil 'r' via operatiu stream darrera l'anàlisi.", terminalOutput: ["1/2", "+", "(Espera valor numèric complet)"], variables: { "acum": "1/2", "op": "+", "r": "0/1" } },
+                { activeFile: "main.cc", line: 17, description: "Bucle while(cin >> op) actua sobre loop extreient el char relacional directament en cadena (string '+').", terminalOutput: ["1/2", "+"], variables: { "acum": "1/2", "op": "+" } },
+                { activeFile: "main.cc", line: 18, description: "S'executa fons 'r.llegeix()' avaluant el paràmetre volàtil 'r' via operatiu stream darrera l'anàlisi.", terminalOutput: ["1/2", "+", "(Espera valor numèric complet)"], variables: { "acum": "1/2", "op": "+", "r": "0/1" } },
                 { activeFile: "racional.cc", line: 29, description: "Variables lliures acoplen a capturació 3/4 introduint paràmetre cec dins de memòria temporal blindada.", terminalOutput: ["3/4"], variables: { "this": "->r", "n": "3", "d": "4" } },
-                { activeFile: "main.cc", line: 21, description: "Condicional orientat resol base del mode de crida direccional sobre string pre-capturat de subrútina (+).", terminalOutput: ["3/4"], variables: { "acum": "1/2", "op": "+", "r": "3/4" } },
-                { activeFile: "main.cc", line: 22, description: "Acció invocada. La base 'acum' (.suma(r)) llança execució directriu passant l'invasor passiu exclusivament via argument.", terminalOutput: ["3/4"], variables: { "acum": "1/2", "op": "+", "r": "3/4" } },
-                { activeFile: "racional.cc", line: 36, description: "A aïllament d'operador privat de creuada (->acum). Les instàncies asimètriques calculen sense dany (1*4+3*2).", terminalOutput: ["3/4"], variables: { "this(->acum)": "1/2", "B(->r)": "3/4" } },
-                { activeFile: "racional.cc", line: 37, description: "Retorn constructor passiu processa Racional(10, 8) resolent el forjament i sortint instànciada directa en emissió.", terminalOutput: ["3/4"], variables: { "this(->acum)": "1/2", "result": "Racional(10, 8)" } },
+                { activeFile: "main.cc", line: 20, description: "Condicional orientat resol base del mode de crida direccional sobre string pre-capturat de subrútina (+).", terminalOutput: ["3/4"], variables: { "acum": "1/2", "op": "+", "r": "3/4" } },
+                { activeFile: "main.cc", line: 21, description: "Acció invocada. La base 'acum' (.suma(r)) llança execució directriu passant l'invasor passiu exclusivament via argument.", terminalOutput: ["3/4"], variables: { "acum": "1/2", "op": "+", "r": "3/4" } },
+                { activeFile: "racional.cc", line: 37, description: "A aïllament d'operador privat de creuada (->acum). Les instàncies asimètriques calculen sense dany (1*4+3*2).", terminalOutput: ["3/4"], variables: { "this(->acum)": "1/2", "B(->r)": "3/4" } },
+                { activeFile: "racional.cc", line: 38, description: "Retorn constructor passiu processa Racional(10, 8) resolent el forjament i sortint instànciada directa en emissió.", terminalOutput: ["3/4"], variables: { "this(->acum)": "1/2", "result": "Racional(10, 8)" } },
                 { activeFile: "racional.cc", line: 20, description: "Subcomponents deleguen a rutines (MCD) reduint complexitas base 10 i 8 depurades lliurades i seguritzades a 5/4.", terminalOutput: ["3/4"], variables: { "this(->acum)": "1/2", "result": "5/4" } },
-                { activeFile: "main.cc", line: 22, description: "Sobreescriptura original final de variable 'acum', on nodes s'identifiquen resolts de desmemòries i el return pur lligant resultats globals.", terminalOutput: ["3/4"], variables: { "acum": "5/4", "op": "+", "r": "3/4" } },
+                { activeFile: "main.cc", line: 21, description: "Sobreescriptura original final de variable 'acum', on nodes s'identifiquen resolts de desmemòries i el return pur lligant resultats globals.", terminalOutput: ["3/4"], variables: { "acum": "5/4", "op": "+", "r": "3/4" } },
                 { activeFile: "main.cc", line: 27, description: "Darreres seqüències mostren la consola resolt pur per a externalitat '.escriu()' demostrant pur d'etapa complet avaluació '5/4'.", terminalOutput: ["3/4", "5/4"], variables: { "acum": "5/4", "op": "+", "r": "3/4" } },
-                { activeFile: "main.cc", line: 18, description: "Verificació en condicional if fallida. Stream es buida trencat pel loop a final tancant l'operació asimptòticament de memòria assolejada.", terminalOutput: ["... (EOF tancant)", "> Programa finalitzat i processaments alliberats."], variables: {} },
+                { activeFile: "main.cc", line: 17, description: "Verificació en condicional if fallida. Stream es buida trencat pel loop a final tancant l'operació asimptòticament de memòria assolejada.", terminalOutput: ["... (EOF tancant)", "> Programa finalitzat i processaments alliberats."], variables: {} },
             ] as OOPStep[];
         }
     },
     stack_reverse: {
         id: "stack_reverse",
         files: {
+            "Makefile": `CXX = g++
+CXX_FLAGS = -std=c++17
+
+test: test_reverse
+	@./test_reverse -ni
+
+test_reverse: test_reverse.cc reverse.cc
+	$(CXX) $(CXX_FLAGS) -o test_reverse test_reverse.cc reverse.cc`,
+            "test_reverse.cc": `#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+#include <iostream>
+using namespace std;
+
+void reverse(istream& in, ostream& out);
+
+TEST_CASE("dos elements") {
+    istringstream sin("7 3");
+    ostringstream sout;
+
+    reverse(sin, sout);
+
+    CHECK(sout.str() == "3 7\\n");
+}`,
             "reverse.cc": `#include <iostream>
 using namespace std;
 #include "stack.hh"
@@ -755,25 +778,55 @@ void reverse(istream& in, ostream& out) {
         },
         generateSteps: () => {
             return [
-                { activeFile: "reverse.cc", line: 7, description: "Instanciació d'una Pila (Stack) de tipus enter, inicialment buida. Mantenim estat `n` lliure.", terminalOutput: [], variables: { "s": "[]", "n": "?" } },
-                { activeFile: "reverse.cc", line: 9, description: "El bucle cin entra l'entrada des de la consola pur iteratiu. Llegim el primer enter: 3.", terminalOutput: ["S'han llegit dades d'entrada: 3"], variables: { "s": "[]", "n": "3" } },
-                { activeFile: "reverse.cc", line: 10, description: "Cridem `s.push(n)`. S'incorpora l'element al cim (top) de la Pila actual abstractament instanciant.", terminalOutput: [], variables: { "s": "[3] <- top", "n": "3" } },
-                { activeFile: "reverse.cc", line: 9, description: "El bucle rep una segona instància al vol entrant a format d'anàlisi de cua base de seqüències: Llegim 4.", terminalOutput: ["Lectura contínua: 4"], variables: { "s": "[3] <- top", "n": "4" } },
-                { activeFile: "reverse.cc", line: 10, description: "S'apila el 4, directament situat damunt del valor anterior ja respectat sense interrupcions.", terminalOutput: [], variables: { "s": "[3, 4] <- top", "n": "4" } },
-                { activeFile: "reverse.cc", line: 9, description: "Simulem que l'arxiu/entrada no entrega més resultats pur de seqüència, assolit fi de paràmetres (EOF).", terminalOutput: ["Entrada: EOF tancant lectura"], variables: { "s": "[3, 4] <- top", "n": "4" } },
-                { activeFile: "reverse.cc", line: 14, description: "Ara validem bucles fins que la Pila es vacüi processant els valors a l'invers a base d'escriure el cim actual.", terminalOutput: [], variables: {} },
-                { activeFile: "reverse.cc", line: 15, description: "La sortida avalua instància local pel valor extret del top de l'objecte: 4 (va ser l'últim a entrar, pel principi LIFO).", terminalOutput: ["Sortida extreta: 4"], variables: { "s": "[3, 4] <- top" } },
-                { activeFile: "reverse.cc", line: 16, description: "Límit destructiu: Desemparem valor consumit mitjançant `.pop()`, el cim actual rellisca i actualitza cap a baix.", terminalOutput: [], variables: { "s": "[3] <- top" } },
-                { activeFile: "reverse.cc", line: 14, description: "Processant bucle en cas d'estrès asimptòtic: la condició assevera Pila no empty().", terminalOutput: [], variables: { "s": "[3] <- top" } },
-                { activeFile: "reverse.cc", line: 15, description: "Cridant consultora s.top() que subministra l'antic inicialment entrat 3 directament entregat a instància impresa terminal purament al llarg de cadena resolta.", terminalOutput: ["Sortides concatenades completades: 4 3"], variables: {} },
-                { activeFile: "reverse.cc", line: 16, description: "S.pop() pur final destrueix contingut i ens entrega una Pila resolta idèntica com buidada original abstracta respectiva i assecurant pur limit.", terminalOutput: [], variables: { "s": "[]" } },
-                { activeFile: "reverse.cc", line: 14, description: "Fallida lògica empty(): L'estructura ha escopit tot al revés instintivament iteratiu lineal asimptòticament de solució complerta.", terminalOutput: ["Escriptura invers emesa resolutiva!"], variables: {} }
+                { activeFile: "Makefile", line: 4, description: "Introduïm 'make test' directament al terminal per automatitzar la comprovació.", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_reverse test_reverse.cc reverse.cc"], variables: {} },
+                { activeFile: "test_reverse.cc", line: 8, description: "L'executable interactiu arrenca en silenci avaluant el primer bloc autònom definint 'dos elements'.", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_reverse test_reverse.cc reverse.cc", "[doctest] doctest version is 2.4.11"], variables: {} },
+                { activeFile: "test_reverse.cc", line: 9, description: "Doctest fabrica una entrada de dades artificial ('7 3') simulant un teclat escrit per l'humà i prepara la sortida sintètica on capturar.", terminalOutput: [], variables: { "sin": "istringstream", "sout": "ostringstream" } },
+                { activeFile: "test_reverse.cc", line: 12, description: "La prova crida la teva solució 'reverse()', lliurant falsos canals com 'in' de lectura i 'out' d'escriptura.", terminalOutput: [], variables: {} },
+                { activeFile: "reverse.cc", line: 7, description: "Saltant al teu codi: Inicieu una Pila (Stack) buida per encabir-hi enters, costat a costat de variable passatgera 'n'.", terminalOutput: [], variables: { "s": "[]", "n": "?" } },
+                { activeFile: "reverse.cc", line: 9, description: "Comença la lectura i en extreure el codi es rep el valor abocat primer de la prova, llegint-se el 7.", terminalOutput: [], variables: { "s": "[]", "n": "7" } },
+                { activeFile: "reverse.cc", line: 10, description: "Immediat empilament damunt top (base).", terminalOutput: [], variables: { "s": "[7] <- top", "n": "7" } },
+                { activeFile: "reverse.cc", line: 9, description: "La lectura contínua actua abans que faltin fluxos al teclat artificial. Entra l'últim proveït asimptòtic de seqüència: 3", terminalOutput: [], variables: { "s": "[7] <- top", "n": "3" } },
+                { activeFile: "reverse.cc", line: 10, description: "Inicidem damunt d'anterior! Segon valor '3' trepitja directament col·locat en mode LIFO base format capdamunt.", terminalOutput: [], variables: { "s": "[7, 3] <- top", "n": "3" } },
+                { activeFile: "reverse.cc", line: 9, description: "El validador doctest detecta absència i final de lectures. Sense paràmetres, el cicle col·lapsa ometent interrupció externa.", terminalOutput: [], variables: { "s": "[7, 3] <- top", "n": "3" } },
+                { activeFile: "reverse.cc", line: 14, description: "A priori ens garantitzem d'entrar bucle mentre quedi memòria a extreure o elements retinguts vius.", terminalOutput: [], variables: { "s": "[7, 3] <- top" } },
+                { activeFile: "reverse.cc", line: 15, description: "Enviat out captura dalt del cim (.top): L'emès element base 3 abandona l'habitació abocant el contingut!", terminalOutput: ["Sortiment passiu capturat externament: 3"], variables: { "s": "[7, 3] <- top" } },
+                { activeFile: "reverse.cc", line: 16, description: "Executem depurador desmemoria i .pop() aniquila la presència viva d'un 3; assovistant el vell element!", terminalOutput: [], variables: { "s": "[7] <- top" } },
+                { activeFile: "reverse.cc", line: 14, description: "Resta comprovada presència numèrica un cop validat.", terminalOutput: [], variables: { "s": "[7] <- top" } },
+                { activeFile: "reverse.cc", line: 15, description: "Consum directe enviat a 'out' la presència activa '7'!", terminalOutput: ["Sortiment capturat concatenat: 3 7"], variables: { "s": "[7] <- top" } },
+                { activeFile: "reverse.cc", line: 16, description: "Extirpat per .pop! Resolent el fons complet.", terminalOutput: [], variables: { "s": "[]" } },
+                { activeFile: "reverse.cc", line: 14, description: "Ens constata .empty() satisfet absolut! Ja pur sense dades no ingressa de cap al següent passatge de C++.", terminalOutput: [], variables: { "s": "[]" } },
+                { activeFile: "reverse.cc", line: 19, description: "La funció envia resolutiva asimètrica formatar el retorn del tab salt de línia '\\\\n' passiu complint.", terminalOutput: ["Sortiment capturat resolt al string: 3 7\\\\n"], variables: { "s": "[]" } },
+                { activeFile: "test_reverse.cc", line: 14, description: "Retorn asimètric saltant a Doctest pur base! Emparella resposta calculada contra allò emmagatzemat estricnament correcte '3 7\\\\n'. Satisfà idènticament!", terminalOutput: [], variables: { "sout.str()": "3 7\\n" } },
+                { activeFile: "test_reverse.cc", line: 15, description: "Success report. Terminat execució iterativa validat correctament i asimptòtic de dades d'entorn al teu favor.", terminalOutput: ["===============================================================================", "SUCCESS: reverse.cc passed 1 test cases.", "[doctest] Status: SUCCESS!"], variables: {} }
             ] as OOPStep[];
         }
     },
     stack_parentesis: {
         id: "stack_parentesis",
         files: {
+            "Makefile": `CXX = g++
+CXX_FLAGS = -std=c++17
+
+test: test_parentesis
+	@./test_parentesis -ni
+
+test_parentesis: test_parentesis.cc parentesis.cc
+	$(CXX) $(CXX_FLAGS) -o test_parentesis test_parentesis.cc parentesis.cc`,
+            "test_parentesis.cc": `#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+#include <iostream>
+using namespace std;
+
+void parentesis(istream& in, ostream& out);
+
+TEST_CASE("seqüència correcta amb claudàtors") {
+    istringstream sin("(()[[]]).");
+    ostringstream sout;
+
+    parentesis(sin, sout);
+
+    CHECK(sout.str() == "Correcte\\n");
+}`,
             "parentesis.cc": `#include <iostream>
 using namespace std;
 #include "stack.hh"
@@ -810,26 +863,61 @@ void parentesis(istream& in, ostream& out) {
         },
         generateSteps: () => {
             return [
-                { activeFile: "parentesis.cc", line: 7, description: "S'inicia el programa apilador instanciant objecte Stack destinat a paràmetres locals char abstractes buidats. Còpia exemple d'entrada usat simulat: '([])'", terminalOutput: [], variables: { "s": "[]", "pos": "1" } },
-                { activeFile: "parentesis.cc", line: 11, description: "Avaluació contínua capturant primers símbols evitant buidat o espais via directiva. Caràcter llegit actualment: '(' pur respectat.", terminalOutput: ["Llegit element d'instància formativa: '('"], variables: { "s": "[]", "c": "(", "pos": "1" } },
-                { activeFile: "parentesis.cc", line: 13, description: "Operador d'avaluació es troba ser Obertura! Inyectem al mur iteratiu lliure (Push emès localment i absolut format top intern).", terminalOutput: [], variables: { "s": "[(]", "c": "(" } },
-                { activeFile: "parentesis.cc", line: 28, description: "Inicidem posició analítica i retornem darrer asimptòtic salt avaluant base local respectiu directament linealitzat de crida d'avanç.", terminalOutput: [], variables: { "s": "[(]", "pos": "2" } },
-                { activeFile: "parentesis.cc", line: 11, description: "Segment segon pur d'instàncies llegeix del mur de seqüències entrant a subrútina següent: Captació claudàtor pur '['", terminalOutput: ["Element atrapat en posició asimètica 2: '['"], variables: { "s": "[(]", "c": "[" } },
-                { activeFile: "parentesis.cc", line: 13, description: "L'entitat segueix representant tipus obridor de fletxa amunt apilada dalt sobre anterior pur i resolt local de referència top base tancada.", terminalOutput: [], variables: { "s": "[(, [] <- top", "c": "[" } },
-                { activeFile: "parentesis.cc", line: 11, description: "Després del respectiu ++, el sistema engoleix ara un tercer símbol: L'extret tancament claudàtor ']'. Inici dualitat test d'equitat base!", terminalOutput: ["Tercer caràcter extret corrent instància: ']'"], variables: { "s": "[(, [] <- top", "c": "]", "pos": "3" } },
-                { activeFile: "parentesis.cc", line: 15, description: "Assolim bloc Else-If: Ens plantem a mode destructor verificant asimetries absolutes d'entrada externa directrius contra mur de bloc apilat respectat", terminalOutput: [], variables: {} },
-                { activeFile: "parentesis.cc", line: 20, description: "Consulta passiva al magatzem de variables actual emmagatzemat s.top() que extreu per simple informació local pur limit el top '[' a comparar i resoldre asimètriques constants.", terminalOutput: [], variables: { "top": "[" } },
-                { activeFile: "parentesis.cc", line: 21, description: "Miracle matching respectiu. Validació creuada (']==[') satisfà identitats igualant naturaleses resoltes correctament.", terminalOutput: ["Subavaluació respectiva local asseverada d'èxit: parella asimètrica encert"], variables: {} },
-                { activeFile: "parentesis.cc", line: 22, description: "Executem destructor intern lliurant desmemorat pop(). Deslliura darrer claudàtor destruït, retrocedint en posició base cim deixat lliurat només l'obertura '( mur extern.", terminalOutput: [], variables: { "s": "[(] <- top" } },
-                { activeFile: "parentesis.cc", line: 11, description: "S'atrapen elements de base successora restants d'avaluar tancament pur del bucle amb caràcter finalista llegit: ')'", terminalOutput: ["Final element entrat directe: ')'"], variables: { "c": ")" } },
-                { activeFile: "parentesis.cc", line: 22, description: "Anàlogament com testejador l'evalua idèntic s.top()==='(' contra extret darrerament lliurat i llença el consumidor local destruint parell pur abstracte intern complet asimètricament resolt.", terminalOutput: ["Validacions completades de successió paràmetres locals!"], variables: { "s": "[]", "c": ")" } },
-                { activeFile: "parentesis.cc", line: 31, description: "L'esquema for finalitza a priori. Testejos directius evaluan s.empty() de memòria viva comprovant cap parell solitari amagat actiu restat intern i donant Ok global per sortida!", terminalOutput: ["Anàlisi Resoluta Pila = OK", "Correcte"], variables: { "s": "[]" } }
+                { activeFile: "Makefile", line: 4, description: "Introduïm 'make test' al terminal per verificar la solució automàticament.", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_parentesis test_parentesis.cc parentesis.cc"], variables: {} },
+                { activeFile: "test_parentesis.cc", line: 10, description: "Doctest inicia el robot avaluador pel cas 'seqüència correcta amb claudàtors'.", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_parentesis test_parentesis.cc parentesis.cc", "[doctest] doctest version is 2.4.11"], variables: {} },
+                { activeFile: "test_parentesis.cc", line: 11, description: "S'injecta la línia de caràcters '(()[[]]).' per l'stream d'entrada simulant un usuari i es prepara la sortida de captura.", terminalOutput: [], variables: { "sin": "istringstream", "sout": "ostringstream" } },
+                { activeFile: "test_parentesis.cc", line: 14, description: "Es crida la nostra funció pare per validar si aprova el control automàtic de qualitat.", terminalOutput: [], variables: {} },
+                { activeFile: "parentesis.cc", line: 7, description: "Aterrem al codi: Inicieu una Pila (Stack) buida dissenyada per encabir lletres de caràcter (char).", terminalOutput: [], variables: { "s": "[]", "pos": "1" } },
+                { activeFile: "parentesis.cc", line: 11, description: "Mentre tinguem dades a llegir i no sigui la fi per delimitador de punt ('.'), extreiem el primer caràcter '('.", terminalOutput: [], variables: { "s": "[]", "c": "(", "pos": "1" } },
+                { activeFile: "parentesis.cc", line: 12, description: "Operador comprova que estem tractant amb una obertura '('.", terminalOutput: [], variables: { "s": "[]", "c": "(", "pos": "1" } },
+                { activeFile: "parentesis.cc", line: 13, description: "S'empeny (push) directament al fons actiu de la nostra Pila de memòria.", terminalOutput: [], variables: { "s": "[(] <- top", "c": "(", "pos": "1" } },
+                { activeFile: "parentesis.cc", line: 28, description: "S'avança la instància d'índex per mesurar pas (pos = 2).", terminalOutput: [], variables: { "s": "[(]", "c": "(", "pos": "2" } },
+                { activeFile: "parentesis.cc", line: 11, description: "Nova extracció iterativa pel teclat robot: Atrapat el segon paràntesi obridor '('.", terminalOutput: [], variables: { "s": "[(]", "c": "(", "pos": "2" } },
+                { activeFile: "parentesis.cc", line: 13, description: "Més del mateix: S'apila immediatament dalt de tot previ.", terminalOutput: [], variables: { "s": "[(, (] <- top", "c": "(", "pos": "2" } },
+                { activeFile: "parentesis.cc", line: 28, description: "El motor continua comptant l'historial (pos = 3).", terminalOutput: [], variables: { "s": "[(, (]", "c": "(", "pos": "3" } },
+                { activeFile: "parentesis.cc", line: 11, description: "Reprenem el tercer caràcter entregat pel Doctest: ')'! (Tancador).", terminalOutput: [], variables: { "s": "[(, (] <- top", "c": ")", "pos": "3" } },
+                { activeFile: "parentesis.cc", line: 16, description: "Aquest cop detectem tancament en el bloc else-if.", terminalOutput: [], variables: { "s": "[(, (] <- top", "c": ")" } },
+                { activeFile: "parentesis.cc", line: 17, description: "La pila no està absolutament buida, així que evadem condició fallida per continuar resolent correctament.", terminalOutput: [], variables: { "s": "[(, (] <- top", "c": ")" } },
+                { activeFile: "parentesis.cc", line: 21, description: "Mirem qui descansa a dalt de tot de l'Stack. El .top() ens recupera l'últim empilat '(' sense destruir-lo.", terminalOutput: [], variables: { "s": "[(, (] <- top", "top": "(" } },
+                { activeFile: "parentesis.cc", line: 22, description: "L'esquema d'emparellament valida el Matching: Tenim caràcter entrada ')' i top '(' -> Parella detectada formalment!.", terminalOutput: [], variables: { "c": ")", "top": "(" } },
+                { activeFile: "parentesis.cc", line: 23, description: "Per concloure la reconciliació asimètrica, usem el .pop() matant els residuals lliurats i fent minvar l'Stack!", terminalOutput: [], variables: { "s": "[(] <- top" } },
+                { activeFile: "parentesis.cc", line: 28, description: "Evolucionem final i pugem instàncies amunt (pos = 4).", terminalOutput: [], variables: { "s": "[(] <- top", "pos": "4" } },
+                { activeFile: "parentesis.cc", line: 11, description: "Fem pas ràpid obrint claudàtors simètrics de l'entrada '[[]]'. Les anidacions es destrueixen seguidament idèntiques als parentesis. Es va buidant ràpid.", terminalOutput: ["S'han llegit i tancat '[', '[', ']', ']' satisfactòriament i s'han fet pops"], variables: { "s": "[(] <- top", "pos": "8", "c": "]" } },
+                { activeFile: "parentesis.cc", line: 11, description: "I el darrer caràcter recollit fora del claudàtor final és un ')', tancant literal la cadena base original d'arrel.", terminalOutput: ["Últim parell rebut per tancar l'expressió primària ')'"], variables: { "s": "[(] <- top", "pos": "9", "c": ")" } },
+                { activeFile: "parentesis.cc", line: 23, description: "El .pop() s'aplica i resol per pur tot format llistat quedat com caduca abstracta buidada pura complet.", terminalOutput: [], variables: { "s": "[]", "pos": "9" } },
+                { activeFile: "parentesis.cc", line: 11, description: "El bloc llegeix finalment i descobreix el '.' limitador, tallant d'arrel la condició de lectura del bucle cin de forma instintiva.", terminalOutput: [], variables: { "s": "[]", "c": "." } },
+                { activeFile: "parentesis.cc", line: 31, description: "Testejos directius avalúen s.empty(); ja buida i assegurant absència d'elements col·lapsats oblidats i asimètrics!", terminalOutput: [], variables: { "s": "[]" } },
+                { activeFile: "parentesis.cc", line: 31, description: "S'emiteix la línia de format correcte pur al corrent de captura out del robot Doctest.", terminalOutput: ["Sortiment passiu escriptura: 'Correcte\\n'"], variables: { "s": "[]" } },
+                { activeFile: "test_parentesis.cc", line: 16, description: "El robot captura el flux. La teva funció respon: 'Correcte\\\\n'. Compara a les proves mestres de l'Avaluador, coincidència total.", terminalOutput: [], variables: { "sout.str()": "Correcte\\n" } },
+                { activeFile: "test_parentesis.cc", line: 17, description: "Success report. Verificat idènticament pel marc! Es poden passar totes les altres 29 regles de joc superades per certs!", terminalOutput: ["===============================================================================", "SUCCESS: parentesis.cc passed tests.", "[doctest] Status: SUCCESS!"], variables: {} }
             ] as OOPStep[];
         }
     },
     stack_recursivitat: {
         id: "stack_recursivitat",
         files: {
+            "Makefile": `CXX = g++
+CXX_FLAGS = -std=c++17
+
+test: test_recursivitat
+	@./test_recursivitat -ni
+
+test_recursivitat: test_recursivitat.cc recursivitat.cc
+	$(CXX) $(CXX_FLAGS) -o test_recursivitat test_recursivitat.cc recursivitat.cc`,
+            "test_recursivitat.cc": `#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+#include <iostream>
+using namespace std;
+
+void escriu(int n, ostream& out);
+
+TEST_CASE("n = 2") {
+    ostringstream sout;
+
+    escriu(2, sout);
+
+    CHECK(sout.str() == " 2 1 1");
+}`,
             "recursivitat.cc": `#include <iostream>
 using namespace std;
 #include "stack.hh"
@@ -839,15 +927,15 @@ void escriu(int n, ostream& out) {
     Stack<int> s;
     s.push(n);
 
-    // Iterant contínuament fins haver desapilat per pur tota acció virtual
+    // Iterant contínuament fins haver desapilat tota acció virtual
     while (!s.empty()) {
         int v = s.top();
         s.pop();
         
         if (v > 0) {
             out << ' ' << v;
-            // Instanciem instint base C++, cap endarrere ja que el següent pas voldrà 
-            // fer 'pop' i consumir el "MÉS NOU"
+            // El simulador real apila dreta i després esquerra. Aquí ho
+            // adaptem a la recursivitat pura de dalt a baix iterativa.
             s.push(v - 1);
             s.push(v - 1);
         }
@@ -856,28 +944,69 @@ void escriu(int n, ostream& out) {
         },
         generateSteps: () => {
             return [
-                { activeFile: "recursivitat.cc", line: 7, description: "Inici d'Escriu! Disenyant un stack manual limit base de sistema en local processant n=2 com a exemple de la simulació de funcionament recursiu.", terminalOutput: [], variables: { "n": "2", "s": "[]" } },
-                { activeFile: "recursivitat.cc", line: 8, description: "Pre-crida paral·lela original d'inici respectant instint stack OS empeny factor pur inicial (2) dins al top. Crida base apilada preparativa inici", terminalOutput: [], variables: { "s": "[2] <- top" } },
-                { activeFile: "recursivitat.cc", line: 11, description: "Mentrestant resten peticions actives resoludes OS abstraç, iterador d'activitats de context entra a lliurar funcions pendents de l'arbre abstracte empaquetades per Pila", terminalOutput: [], variables: {} },
-                { activeFile: "recursivitat.cc", line: 12, description: "Dalt cim Pila resol dóna prioritat constant darrera d'activitat V=2 de procediment local abstracte lliure completament i l'apressa a base d'utilitzar local. ", terminalOutput: [], variables: { "v": "2" } },
-                { activeFile: "recursivitat.cc", line: 13, description: "Pila desmembra d'actitud el Top llistant procediments i crides ja asseverades (simula extracció per treball present local en actiu complet base i fora pur de memòria viva)", terminalOutput: [], variables: { "s": "[]" } },
-                { activeFile: "recursivitat.cc", line: 16, description: "Escriu lliurement i processa base d'acció de nivell actual del full. Element imprimit: '2' pur respectant lògiques asimètiques de branca abstracta recursiva de teoria C++ pures.", terminalOutput: ["Simulació externa imprès pur consolida resultat abstracte actiu: 2"], variables: {} },
-                { activeFile: "recursivitat.cc", line: 19, description: "Preparant bifurcacions de fulls inferiors: apilem full n-1 crida dual recursiva dual primera crida (Push d'escenificació d'ordre abstracte cap endarrere simulat OS asimètric).", terminalOutput: [], variables: { "s": "[1]" } },
-                { activeFile: "recursivitat.cc", line: 20, description: "I una altra crida subratllada simulat igualada apresa en profunditat asseverada empaquetant germà com full complet dual virtual de descendiment apilada lliure al Top absolut iteratiu", terminalOutput: [], variables: { "s": "[1, 1] <- top" } },
-                { activeFile: "recursivitat.cc", line: 11, description: "Torna asimetria principal a buscar fons actiu, Top absolut actualitza memòria crida priorita profunditat de recursivitat com PC.", terminalOutput: [], variables: { "s": "[1, 1] <- top" } },
-                { activeFile: "recursivitat.cc", line: 12, description: "Treu per pur funcionament full esquerra actiu respectitiu, V passa en ser subrutina de 1 constant apilada, pop buidant local actual per processació interna asimètica de memòries.", terminalOutput: ["Recepció darrer node branca lliurada a procés"], variables: { "s": "[1]", "v": "1" } },
-                { activeFile: "recursivitat.cc", line: 16, description: "S'entreguen ordres bases de sistema pur respectant funcio abstracta escurant instint asimptòtic: Imprès valor 1 per seqüència lineal base pre-order de lliurament format consolar pur.", terminalOutput: ["Imprimint consolar pre-order simulació resolt OS: 2, 1"], variables: {} },
-                { activeFile: "recursivitat.cc", line: 19, description: "Aquesta funció v=1 afegeix zeros morts! Simula apilar branca de condicional trencat asimptòticament amb duplicador línia abstracte push 0 per dalt OS lligant condicional mort", terminalOutput: [], variables: { "s": "[1, 0, 0] <- top" } },
-                { activeFile: "recursivitat.cc", line: 12, description: "El bloc en silenci iteratiu consumeix i vacua tots dos 0, on condicional (v>0) purament fallit base asimptòtica talla cap branca descendents. El top OS queda pur format solitari germanal 1 local restat del node antic arrel primer...", terminalOutput: ["Zeros morts destruïts pel if de base local instanciada"], variables: { "s": "[1] <- top" } },
-                { activeFile: "recursivitat.cc", line: 12, description: "Consolida instància germana 1 que finalment treu cap a terminal acabant asimetria completa imprimint-s'hi format resolut", terminalOutput: ["Impressió final tancament OS: 2, 1, 1"], variables: { "s": "[]" } },
-                { activeFile: "recursivitat.cc", line: 11, description: "Memòria buida. L'arbre ha processat branques. Execució iterativa fi per simular retorns infinits call-stack d'OS absoluts instància completa.", terminalOutput: ["Alliberant crida de memòries Call-Stack PC pur a resolució d'èxits globals."], variables: {} }
+                { activeFile: "Makefile", line: 4, description: "Introduïm 'make test' al terminal per automatitzar la comprovació iterativa.", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_recursivitat test_recursivitat.cc recursivitat.cc"], variables: {} },
+                { activeFile: "test_recursivitat.cc", line: 8, description: "S'inicia el programa ocult de prova avaluadora pel cas particular de 'n = 2'.", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_recursivitat test_recursivitat.cc recursivitat.cc", "[doctest] doctest version is 2.4.11"], variables: {} },
+                { activeFile: "test_recursivitat.cc", line: 9, description: "Aquest exercici no llegeix seqüències ('in') per dades, així que simplement creem un 'sout' on el nostre codi pugui escriure els números directament.", terminalOutput: [], variables: { "sout": "ostringstream" } },
+                { activeFile: "test_recursivitat.cc", line: 11, description: "El validador crida la teva solució injectant directament un 2 i passant-li la línia de recollida de resultats 'sout'.", terminalOutput: [], variables: {} },
+                { activeFile: "recursivitat.cc", line: 7, description: "Aterrem a la nostra funció escriu(2). Creem una Pila buida i al primer torn hi guardem per obligació el valor inicial!", terminalOutput: [], variables: { "n": "2", "s": "[]" } },
+                { activeFile: "recursivitat.cc", line: 8, description: "Inicidem el número 2 (la primera crida recursiva virtual si la imaginem com l'OS del PC) a dins l'Stack.", terminalOutput: [], variables: { "s": "[2] <- top", "n": "2" } },
+                { activeFile: "recursivitat.cc", line: 11, description: "Mentre l'Stack no quedi buit vol dir que encara tenim funcions recursives asimètriques programades i no resoltes pendents per processar.", terminalOutput: [], variables: { "s": "[2] <- top" } },
+                { activeFile: "recursivitat.cc", line: 12, description: "Mirem el sostre .top(). És l'última fulla o instància que ens crida. Ara val '2'.", terminalOutput: [], variables: { "s": "[2] <- top", "v": "2" } },
+                { activeFile: "recursivitat.cc", line: 13, description: "La descartem amb .pop() ja que ens en farem càrrec ara mateix nosaltres.", terminalOutput: [], variables: { "s": "[]", "v": "2" } },
+                { activeFile: "recursivitat.cc", line: 15, description: "Com v és més gran que zero (2 > 0), el nostre programa continua viu i pot fer coses.", terminalOutput: [], variables: { "s": "[]", "v": "2" } },
+                { activeFile: "recursivitat.cc", line: 16, description: "L'Ordre d'enunciat demana imprimir l'espai el propi número processat avui (v = 2). Ho bolquem a l'out.", terminalOutput: ["Captura robot: ' 2'"], variables: { "s": "[]", "v": "2" } },
+                { activeFile: "recursivitat.cc", line: 19, description: "Atenció! Una funció f(2) al paper teòric obre Dues sub-branques cridant-se a si mateixa repetit com f(2-1).", terminalOutput: [], variables: { "s": "[]", "v": "2" } },
+                { activeFile: "recursivitat.cc", line: 20, description: "Traduït iterativament com que fem pop(). Hi col·loquem DOS 1 a la base. Un darrere de l'altre simulats paral·lels de forma seqüencial.", terminalOutput: [], variables: { "s": "[1, 1] <- top", "v": "2" } },
+                { activeFile: "recursivitat.cc", line: 11, description: "S'acaba el procés virtual de l'antic i desaparegut pare 2. Tornem al bucle observant quines peticions noves estan amuntegades a l'espera!", terminalOutput: [], variables: { "s": "[1, 1] <- top" } },
+                { activeFile: "recursivitat.cc", line: 12, description: "Traiem només el capdamunt del top (representa la subrutina f(1) superior primera prioritària asimètrica de l'esquerra de branques teòriques iterades).", terminalOutput: [], variables: { "s": "[1, 1] <- top", "v": "1" } },
+                { activeFile: "recursivitat.cc", line: 13, description: "Fem pop i extreiem aquest fill 1 fora lliurant accés asimptòtic base de treball.", terminalOutput: [], variables: { "s": "[1] <- top", "v": "1" } },
+                { activeFile: "recursivitat.cc", line: 16, description: "Toca imprimir-lo. S'envia l'imprès concatenat: 1.", terminalOutput: ["Concatenació pas sortida: ' 2 1'"], variables: { "s": "[1] <- top", "v": "1" } },
+                { activeFile: "recursivitat.cc", line: 20, description: "I compte que aquest node subrutina val 1 (v>0), pel que també li pertoca engendrar per simetria dos fills '0' de zeros! Així ho mana el paper (1-1).", terminalOutput: [], variables: { "s": "[1, 0, 0] <- top", "v": "1" } },
+                { activeFile: "recursivitat.cc", line: 12, description: "Iterant de nou ràpid... Surt del top el primer '0' afegit frescament d'avaluació en silenci bucle...", terminalOutput: [], variables: { "s": "[1, 0, 0] <- top", "v": "0" } },
+                { activeFile: "recursivitat.cc", line: 13, description: "El retirem. (v=0). El codi passa a mirar condicional > 0, falseja asimptòtic, i sense fer absolutament res salta de nou. La Pila neteja subrutines mortes instantàniament netes al Call OS sense palles mentals.", terminalOutput: [], variables: { "s": "[1, 0] <- top", "v": "0" } },
+                { activeFile: "recursivitat.cc", line: 13, description: "Fem pas ràpid, treu i valida exactament la mateixa defacta història idèntica per l'altre bessó en silenci, morint tots dos zeros.", terminalOutput: [], variables: { "s": "[1] <- top" } },
+                { activeFile: "recursivitat.cc", line: 12, description: "Súper netejat tot, reprenem on anàvem! Toca el torn a la llista d'activitats pendents reals de l'altre germà 1 original, arrel de tot el procés esperant adormida el seu torn respectiu a la base top!", terminalOutput: [], variables: { "s": "[1] <- top", "v": "1" } },
+                { activeFile: "recursivitat.cc", line: 13, description: "Ho traiem asseverant memòria global pura absolut final cap avern de neteja.", terminalOutput: [], variables: { "s": "[]", "v": "1" } },
+                { activeFile: "recursivitat.cc", line: 16, description: "L'imprimim per donar pas concatenat per últim cop. Tenim un full pur complet imprimit seqüencial ' 2 1 1'.", terminalOutput: ["Extracció final per Doctest enviada passiva: ' 2 1 1'"], variables: { "s": "[]", "v": "1" } },
+                { activeFile: "recursivitat.cc", line: 20, description: "El germà posa en instint base dos nous '0', que automàticament seran consumits al top iterativament el·liminant memòria ràpida a condició v>0 tallada morta.", terminalOutput: [], variables: { "s": "[0, 0] -> []", "v": "1" } },
+                { activeFile: "recursivitat.cc", line: 11, description: "A priori ens garantitzem haver completat cada branca i cada simulació de subrutines manuals virtualitzades! El buit resol el retorn final.", terminalOutput: [], variables: { "s": "[]" } },
+                { activeFile: "test_recursivitat.cc", line: 13, description: "Emmagatzemant respostes el marc de l'arxiu salta de retorn al test mestre principal en C++ exterior local de crida inicial de programa original.", terminalOutput: [], variables: {} },
+                { activeFile: "test_recursivitat.cc", line: 13, description: "Doctest valora igualtat: L'string atrapat per nosaltres calculat pur iteratiu s'iguala directament a l'oficial ' 2 1 1'. Clavat a la perfecció. Exit global asimètric complet.", terminalOutput: ["===============================================================================", "SUCCESS: recursivitat.cc passed 1 test cases.", "[doctest] Status: SUCCESS!"], variables: {} }
             ] as OOPStep[];
         }
     },
     queue_patata: {
         id: "queue_patata",
         files: {
-            "patata.cc": `void patata_calenta(istream& in, ostream& out) {
+            "Makefile": `CXX = g++
+CXX_FLAGS = -std=c++17
+
+test: test_patata_calenta
+	@./test_patata_calenta -ni
+
+test_patata_calenta: test_patata_calenta.cc patata_calenta.cc
+	$(CXX) $(CXX_FLAGS) -o test_patata_calenta test_patata_calenta.cc patata_calenta.cc`,
+            "test_patata_calenta.cc": `#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+#include <iostream>
+using namespace std;
+
+void patata_calenta(istream& in, ostream& out);
+
+TEST_CASE("N=3, k=1") {
+    istringstream sin("3 1");
+    ostringstream sout;
+
+    patata_calenta(sin, sout);
+
+    CHECK(sout.str() == "2 1\\nSupervivent: 3\\n");
+}`,
+            "patata.cc": `#include <iostream>
+using namespace std;
+#include "queue.hh"
+using namespace pro2;
+
+void patata_calenta(istream& in, ostream& out) {
     int N, k;
     if (in >> N >> k) {
         Queue<int> q;
@@ -886,8 +1015,8 @@ void escriu(int n, ostream& out) {
         }
         
         bool first = true;
-        while (q.size() > 1) { // Fins que sobrevisqui només pur 1 individu
-            // Fem K girs o "passos de patates calents" cap a fi del cicle
+        while (q.size() > 1) { // Fins que sobrevisqui només 1 individu
+            // Fem K girs cap a fi de la cua
             for (int i = 0; i < k; ++i) {
                 int front = q.front();
                 q.pop();
@@ -895,7 +1024,7 @@ void escriu(int n, ostream& out) {
             }
             
             if (!first) out << " ";
-            // La pobra anima davantera que acaba tocant rep l'expulsió immediata
+            // La pobra anima davantera rep l'expulsió immediata
             out << q.front();
             q.pop(); 
             first = false;
@@ -910,23 +1039,63 @@ void escriu(int n, ostream& out) {
         },
         generateSteps: () => {
             return [
-                { activeFile: "patata.cc", line: 3, description: "Inici simulaciò Patata Calenta prenent exemple de paràmetres asimètrics locals d'avaluació externa N=3 nens inscrits saltant K=1 cops bomba explosivitat rotatori", terminalOutput: ["Cua pre-assolida instanciada. Exemple local 3 persones i bomba 1 salt de K exclusiu de respectar llistats purs."], variables: { "N": "3", "k": "1", "q": "front [] back" } },
-                { activeFile: "patata.cc", line: 6, description: "Iteradors inseridors afegeixen els diferents participants nens d'enrere cap a davant asimètricament al joc", terminalOutput: [], variables: { "q": "front [1, 2, 3] back" } },
-                { activeFile: "patata.cc", line: 10, description: "Validador assevera la mida. Com es > 1 i hi juguen nens vius de competivitat s'entra l'espera lliscant natural asimptòtic base exclusiu purament!", terminalOutput: [], variables: {} },
-                { activeFile: "patata.cc", line: 14, description: "S'activa procediment cíclic de moviment rotacional que aïlla valors de front a back desprès d'esperes base completades en temps instint linear limit actiu! Traiem el front '1' de reubicant instàncies ràpides i efectives a Cua llunyana abstracta.", terminalOutput: ["Bomba roda passant per primer salt cap endavant esquivant cap a esquerra rotatori..."], variables: { "q": "front [2, 3, 1] back" } },
-                { activeFile: "patata.cc", line: 20, description: "Assoleix bomba k cops pur respectat tall d'animació limitat i explota en posició frontal per extracció externa fatal cap de jugador!", terminalOutput: [], variables: { "q": "front [2, 3, 1] back" } },
-                { activeFile: "patata.cc", line: 21, description: "Tragèdia emesa terminal asimètric emetent expulsador pur. Nen número '2' resulta destruït perdut asseverant respectant sistema lineal", terminalOutput: ["Bum! Jugador expulsat destruït sortida patata lliurada: 2"], variables: { "q": "front [3, 1] back" } },
-                { activeFile: "patata.cc", line: 10, description: "La nova ronda avalua mides de cues limit i procedeix amb salt asimètric i exclusivament iterador a base de K passades front rotat respectiu (nen 3 extret al final abstractament asseverant i guardat localment instint)...", terminalOutput: ["Bomba segona ronda torna rotant"], variables: { "q": "front [1, 3] back" } },
-                { activeFile: "patata.cc", line: 21, description: "Eliminació mort de front resol el company asseverant pop a nen '1', directament mostrat a esquerides sortides externes directrius...", terminalOutput: ["Bum local encertat: jugador perdut 1 empaquetant..."], variables: { "q": "front [3] back" } },
-                { activeFile: "patata.cc", line: 10, description: "Bucles desmuntats! Validador de mort assegura el sistema compeletat i només en queda l'únic integrant exclusiu asimètric abstractiu limit base viu a joc de la Cua: size == 1 tanca bloc Battle!", terminalOutput: [], variables: { "q": "front [3] back" } },
-                { activeFile: "patata.cc", line: 27, description: "Últim print resolut entregant l'èxit de prova pur al respectat Supervívencia en base a front asimètric lliure al top!", terminalOutput: ["Bum! Sortides de resultats globals: 2 1", "Supervivent: 3"], variables: { "q": "front [3]" } }
+                { activeFile: "Makefile", line: 4, description: "Introduïm 'make test' al terminal. La competició comença!", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_patata_calenta test_patata_calenta.cc patata.cc"], variables: {} },
+                { activeFile: "test_patata_calenta.cc", line: 8, description: "Doctest entra i busca el test case on hi haran 3 nens (N=3) i la patata farà 1 salt rotacional en cada volta (K=1).", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_patata_calenta patata_calenta.cc test_patata_calenta.cc", "[doctest] doctest version is 2.4.11"], variables: {} },
+                { activeFile: "test_patata_calenta.cc", line: 9, description: "Es genera la seqüència oculta de prova i s'estableix un recipient buit de sortida 'sout'.", terminalOutput: [], variables: { "sin": "istringstream", "sout": "ostringstream" } },
+                { activeFile: "test_patata_calenta.cc", line: 12, description: "Cridem la teva solució 'patata_calenta()', passant-li la línia robòtica preparada.", terminalOutput: [], variables: {} },
+                { activeFile: "patata.cc", line: 7, description: "Inici simulació DINS el teu codi! S'instancia el lector inicial amb N=3 i K=1 del flux.", terminalOutput: [], variables: { "N": "3", "k": "1", "q": "front [] back" } },
+                { activeFile: "patata.cc", line: 10, description: "Els iteradors preparen el joc i afegeixen successivament els 3 nens cap a la cua en línia base.", terminalOutput: [], variables: { "q": "front [1, 2, 3] back", "N": "3", "k": "1" } },
+                { activeFile: "patata.cc", line: 14, description: "El validador comprova quanten queden. Hi ha més d'un amic actiu? (size > 1). Sí, en són 3, per tant arrenca el bucle rodador d'estrés!", terminalOutput: [], variables: { "q": "front [1, 2, 3] back" } },
+                { activeFile: "patata.cc", line: 16, description: "La patata farà tants salts com k (en el nostre cas només 1). Agafarem l'amic d'al davant, el retirarem temporalment...", terminalOutput: [], variables: { "q": "front [1, 2, 3] back" } },
+                { activeFile: "patata.cc", line: 17, description: "Traiem l''1' del cap de cua...", terminalOutput: [], variables: { "q": "front [2, 3] back", "front": "1" } },
+                { activeFile: "patata.cc", line: 19, description: "I corre cap enrere ràpid posant-se el final de la línia. El cercle s'ha mogut sencer!", terminalOutput: ["La patata fa 1 cop de salt..."], variables: { "q": "front [2, 3, 1] back" } },
+                { activeFile: "patata.cc", line: 25, description: "Els girs ordenats K s'acaben. Tragèdia imminent asimetríca! Aquell pobre nen del capdavant ha estat atrapat per la patata final!", terminalOutput: [], variables: { "q": "front [2, 3, 1] back" } },
+                { activeFile: "patata.cc", line: 26, description: "L'escupim per l'out: el jugador '2'. Ell mor!", terminalOutput: ["Sortiment actiu del primer eliminat!"], variables: { "q": "front [2, 3, 1] back" } },
+                { activeFile: "patata.cc", line: 27, description: "Per descomptat el buidem amb depriment del grup (.pop) asseverant la seva aniquilació.", terminalOutput: [], variables: { "q": "front [3, 1] back" } },
+                { activeFile: "patata.cc", line: 14, description: "Retorna cap a dalt, el size segueix asssent superior a 1 perquè encara viuen el 3 i l'1. Preparats de nou...", terminalOutput: [], variables: { "q": "front [3, 1] back" } },
+                { activeFile: "patata.cc", line: 16, description: "Salt únic rotacional iteratiu pur!", terminalOutput: [], variables: { "q": "front [3, 1] back" } },
+                { activeFile: "patata.cc", line: 17, description: "El 3 agafa el frontal per la retirada momentània...", terminalOutput: [], variables: { "q": "front [1] back", "front": "3" } },
+                { activeFile: "patata.cc", line: 19, description: "Més del mateix. Torna a l'equador del darrere passant-se la patata un darrer torn més.", terminalOutput: [], variables: { "q": "front [1, 3] back" } },
+                { activeFile: "patata.cc", line: 25, description: "I el que havia fugit a l'inici, esclata! La sortida ens crida l''1'.", terminalOutput: ["Expulsió del següent desgraciat: l' '1'"], variables: { "q": "front [1, 3] back" } },
+                { activeFile: "patata.cc", line: 27, description: "Aquest abandona el món destruit literal per memòria del .pop!", terminalOutput: [], variables: { "q": "front [3] back" } },
+                { activeFile: "patata.cc", line: 14, description: "Es valora (size() > 1)? FALS asimptòtic. Sol en queda UN. I trenca el bucle.", terminalOutput: ["Fi del joc. Un únic lluitador dret."], variables: { "q": "front [3] back" } },
+                { activeFile: "patata.cc", line: 31, description: "Emet final la victòria assignda capturant base supervivència pur .front() absolut encertat de terminal!", terminalOutput: ["Emisari consolar tancament: respostes finals: 2 1", "Supervivent: 3\\\\n"], variables: { "q": "front [3]" } },
+                { activeFile: "test_patata_calenta.cc", line: 14, description: "Finalitzem la fase del Doctest, verificant que estigui '2 1\\\\nSupervivent: 3\\\\n'. Èxit rodó rotacional! Complet amb bona nota el problema!", terminalOutput: ["===============================================================================", "SUCCESS: patata_calenta.cc passed 1 test cases.", "[doctest] Status: SUCCESS!"], variables: {} }
             ] as OOPStep[];
         }
     },
     queue_recents: {
         id: "queue_recents",
         files: {
-            "recents.cc": `void compta_recents(istream& in, ostream& out) {
+            "Makefile": `CXX = g++
+CXX_FLAGS = -std=c++17
+
+test: test_compta_recents
+	@./test_compta_recents -ni
+
+test_compta_recents: test_compta_recents.cc compta_recents.cc
+	$(CXX) $(CXX_FLAGS) -o test_compta_recents test_compta_recents.cc compta_recents.cc`,
+            "test_compta_recents.cc": `#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+#include <iostream>
+using namespace std;
+
+void compta_recents(istream& in, ostream& out);
+
+TEST_CASE("frontera exacta de la finestra") {
+    istringstream sin("3 10\\n0 10 20");
+    ostringstream sout;
+
+    compta_recents(sin, sout);
+
+    CHECK(sout.str() == "1 2 2\\n");
+}`,
+            "recents.cc": `#include <iostream>
+using namespace std;
+#include "queue.hh"
+using namespace pro2;
+
+void compta_recents(istream& in, ostream& out) {
     int N, T;
     if (in >> N >> T) {
         Queue<int> q;
@@ -937,14 +1106,13 @@ void escriu(int n, ostream& out) {
             in >> t;
             q.push(t);
             
-            // Evaluador extern caducant antics vells emmagatzemats d'espant 
-            // que queden enlloc pel rang de temps i de Cua fora:
+            // Evaluador extern caducant peticions antigues fora de la finestra
             while (!q.empty() && q.front() < t - T) {
                 q.pop();
             }
             
             if (!first) out << " ";
-            out << q.size(); // Mostra base actius vius
+            out << q.size(); // Mostra quants en queden de vius (size)
             first = false;
         }
         out << endl;
@@ -953,18 +1121,27 @@ void escriu(int n, ostream& out) {
         },
         generateSteps: () => {
             return [
-                { activeFile: "recents.cc", line: 3, description: "Inici Comptador Temporal (Sliding Window)! Provem configurant N=3 peticions limit i Temps T=10 lliure asimètric referencial de mostra.", terminalOutput: [], variables: { "N": "3", "T": "10", "q": "front [] back" } },
-                { activeFile: "recents.cc", line: 8, description: "Es produeix primera petició en relleu temporal t=5 extret des del cin purament referencial enlligant directiu a variables i cap a push cua abstracte!", terminalOutput: ["Arriba connexió emesa seqüencial amb crides asimptòtiques: T=5"], variables: { "t": "5", "q": "front [5] back" } },
-                { activeFile: "recents.cc", line: 14, description: "Verificador front < 5 - 10 (-5). Asimètric no es dispara en haver instància valides i empaquetada amb èxit totalment! Base intacta de Window viva asseveradora locals respectant temps caduca.", terminalOutput: [], variables: {} },
-                { activeFile: "recents.cc", line: 19, description: "Processament size envia compte absolut viu! Cua acull una integrant d'actitud correcta instint iteratiu actuant pur extern respectiu de format consolar i resolut d'apunts.", terminalOutput: ["Elements en validesa històrica activa emesos: 1 completades"], variables: {} },
-                { activeFile: "recents.cc", line: 8, description: "Entra segon temps local a t=10 referenciat per cua a esquemes històrics actius de back push...", terminalOutput: ["Arribada t=10 apunts respectius d'entrada passades..."], variables: { "t": "10", "q": "front [5, 10] back" } },
-                { activeFile: "recents.cc", line: 14, description: "Test Window evalua: l'antiga sota lupa front(5). El tall màxim per T=10 referència 10-10 = 0 base abstractiva. Com no queda inferior, es passa a pur respectat sense pop completament actiu", terminalOutput: [], variables: {} },
-                { activeFile: "recents.cc", line: 19, description: "Escriu mida actúal assolejant i verificant el size directiu d'èxit de temps respectat complet respecte local lliure a 2 instàncies actives absolutes pures", terminalOutput: ["Extracció actual 2 vius"], variables: {} },
-                { activeFile: "recents.cc", line: 8, description: "Enorme assalt extern: salt abismal arribant al t=20 al terminal base de recents cua absolut instaurant-se endarrere actiu darrer element viu abstractiu formatiu d'exemples!", terminalOutput: ["Irrupció massiva entrada T=20 asimètica!"], variables: { "t": "20", "q": "front [5, 10, 20] back" } },
-                { activeFile: "recents.cc", line: 14, description: "Alarma! La validació Sliding processa temps màxim legal darrer 20 - 10 = 10 asimètric local caduc absolut limit viu.", terminalOutput: ["Validant fons neteja caducitats front!"], variables: { "T_Mort": "< 10" } },
-                { activeFile: "recents.cc", line: 15, description: "El front (5) compleix que es vell (és < 10 absolutes local)! L'empaquetem per netejar i consumim asseverant el `pop()`", terminalOutput: ["Emmagatzemant 5, descart pur a fora per limit! Netejant i passant al 10 asseverat."], variables: { "q": "front [10, 20] back" } },
-                { activeFile: "recents.cc", line: 14, description: "Treu següent lupa front(10). El límit per rebuig <10 és abstracte fals! Resistent respecta viu referencial sencer. Simulacio tall bucle while lliscament...", terminalOutput: [], variables: {} },
-                { activeFile: "recents.cc", line: 19, description: "Sol·licitud extreu final total d'actius Q.size() resolut darrer actual limit encertat amb restat de valors! Asimptotic resultat 2 respecte a l'emès llarg local.", terminalOutput: ["Estat respost absoluts vius recents locals = 2. Cadenes completes extretes: 1 2 2", "> Neteja OS desmemoria Pura instint."], variables: {} }
+                { activeFile: "Makefile", line: 4, description: "Cridem l'automatització amb el 'make test'.", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_compta_recents test_compta_recents.cc recents.cc"], variables: {} },
+                { activeFile: "test_compta_recents.cc", line: 8, description: "Doctest obre el cas d'estudi preparat que emularà el teclat d'un humà i on la finestra (T) durarà 10, entrant N=3 elements: el '0', el '10' i el '20'.", terminalOutput: ["$ make test", "g++ -std=c++17 -o test_compta_recents recents.cc test_compta_recents.cc", "[doctest] doctest version is 2.4.11"], variables: {} },
+                { activeFile: "test_compta_recents.cc", line: 9, description: "S'organitzen els fils falsos (sout, sin).", terminalOutput: [], variables: { "sin": "istringstream", "sout": "ostringstream" } },
+                { activeFile: "test_compta_recents.cc", line: 12, description: "Es llança a executar el teu codi!", terminalOutput: [], variables: {} },
+                { activeFile: "recents.cc", line: 7, description: "Inici Comptador Temporal (Sliding Window)! S'inicia amb compte de nens a N=3 i la finestra estricta de caducitat a T=10.", terminalOutput: [], variables: { "N": "3", "T": "10", "q": "front [] back" } },
+                { activeFile: "recents.cc", line: 12, description: "S'inicia el bucle que iterarà exclusivament N cops (hi hauran 3 números al cin). Ara a per la t=0.", terminalOutput: [], variables: { "N": "3", "T": "10", "q": "front [] back" } },
+                { activeFile: "recents.cc", line: 14, description: "Es llegeix el primer element d'arribada (t=0) i s'emmagatzema a base instint de Cua cap a dins.", terminalOutput: ["Arriba la primera connexió: t=0"], variables: { "t": "0", "q": "front [0] back" } },
+                { activeFile: "recents.cc", line: 18, description: "Verificador front comprova si el més antic emmagatzemat hauria d'estar mort. Condició: front (0) < t(0) - T(10) -> (0 < -10)? No, per tant la petició 0 sobreviu en la finestra.", terminalOutput: [], variables: { "q": "front [0] back" } },
+                { activeFile: "recents.cc", line: 23, description: "Quantes en tenim de vàlides recentment? Mirem quants queden actius vius un cop extirpats els morts, i ho publiquem = 1!", terminalOutput: ["Sortiment d'actius inicial encertat actiu: '1'"], variables: { "q": "front [0] back" } },
+                { activeFile: "recents.cc", line: 12, description: "Torna a arrencar el segon pas del For. Ve un altre número en cua d'arribada!", terminalOutput: [], variables: { "q": "front [0] back" } },
+                { activeFile: "recents.cc", line: 14, description: "Agafa l'entrada t=10! Apilem immediat.", terminalOutput: ["El segon número entra al tall: t=10"], variables: { "t": "10", "q": "front [0, 10] back" } },
+                { activeFile: "recents.cc", line: 18, description: "Alerta Window evalua caducats mirant el rei de sota el front(). Mida frontera: t(10) - T(10) = 0 limit exclusiu abstracte. Avaluem: 0 < 0? No, és just igual a la frontera però inferior no pas! Es salva per un pèl!", terminalOutput: [], variables: { "q": "front [0, 10] back" } },
+                { activeFile: "recents.cc", line: 23, description: "Escrivim quantes queden vives sense morir de forma activa. Són dues ara! En tenim 2.", terminalOutput: ["Mida actual de vius enviat concatenador cap a consola: ' 2'"], variables: { "q": "front [0, 10] back" } },
+                { activeFile: "recents.cc", line: 12, description: "Darrer bloc! L'últim número espera ser processat. Iteració final!", terminalOutput: [], variables: { "q": "front [0, 10] back" } },
+                { activeFile: "recents.cc", line: 14, description: "Entrada robada terminal darrera a t=20!", terminalOutput: ["Ultima connexió en salt abismal t=20"], variables: { "t": "20", "q": "front [0, 10, 20] back" } },
+                { activeFile: "recents.cc", line: 18, description: "La validació Sliding mira antics. Ara el marge perillos caduc ha canviat dur a t(20) - T(10) = 10 asimètric local caduc. Mirem si hi ha morts pel front de la cua!", terminalOutput: ["Calculant neteja sobre < 10"], variables: { "q": "front [0, 10, 20] back" } },
+                { activeFile: "recents.cc", line: 19, description: "Alarma! El front (0) compleix finalment que es vell i està fora comtal (< 10 absolutes local)! Es mor i pop!", terminalOutput: ["El nombre '0' ha passat els limitadors antics fora finestra, aplicat descart pur."], variables: { "q": "front [10, 20] back" } },
+                { activeFile: "recents.cc", line: 18, description: "El while encara dura i mira el següent per si de cas! Lupa front a (10). Avalua si 10 < 10. FALS de front resistent. Es sobreviu!", terminalOutput: [], variables: { "q": "front [10, 20] back" } },
+                { activeFile: "recents.cc", line: 23, description: "I compte quants queden actius realment un cop netejada l'antiguitat. L'anterior ens ha dit que només en queden vius 2 de les 3 vistes actives.", terminalOutput: ["Mida enviada pura com a darrer concatenat base: ' 2'"], variables: { "q": "front [10, 20] back" } },
+                { activeFile: "recents.cc", line: 26, description: "El Bucle acaba. Tanquem el Joc net i segur enviant un salt de línia al validador final.", terminalOutput: ["Processament absolut d'assignacions iteradores satisfet."], variables: { "q": "front [10, 20] back" } },
+                { activeFile: "test_compta_recents.cc", line: 14, description: "Validador comprova que efectivament doni '1 2 2\\\\n'. Resultat exitós asseverant OS respectiu emès sense interrupcions humanes d'EOF!", terminalOutput: ["===============================================================================", "SUCCESS: compta_recents.cc passed 1 test cases.", "[doctest] Status: SUCCESS!"], variables: {} }
             ] as OOPStep[];
         }
     }

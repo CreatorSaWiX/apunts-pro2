@@ -207,3 +207,42 @@ body {
 .jutge-content .MathJax_Display {
   @apply overflow-x-auto overflow-y-hidden py-2 my-2 text-slate-200;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                  TEST CASES (Jutge Bootstrap Equivalent)                   */
+/* -------------------------------------------------------------------------- */
+
+.jutge-content .list-group {
+  @apply flex flex-col gap-6 mt-6;
+}
+
+.jutge-content .list-group-item {
+  @apply bg-slate-900/60 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all hover:border-sky-500/20;
+}
+
+.jutge-content .horizontal-view .container-fluid {
+  @apply grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/5;
+}
+
+.jutge-content .col-sm-6,
+.jutge-content .col-sm-12 {
+  @apply p-5 lg:p-6 flex flex-col gap-3;
+}
+
+/* Els rètols Input/Output de cada panell de test */
+.jutge-content .col-sm-6 > p > b,
+.jutge-content .col-sm-12 > p > b {
+  @apply text-xs font-bold uppercase tracking-widest text-slate-500 bg-white/5 border border-white/5 shadow-sm px-2.5 py-1.5 rounded-lg inline-block w-fit;
+}
+
+/* Els blocs de codi dels test cases - colors especials per distingir fàcilment */
+.jutge-content .col-sm-6 > pre,
+.jutge-content .col-sm-12 > pre {
+  @apply m-0 flex-1 bg-[#050B14] border border-black/50 shadow-inner rounded-xl p-4 md:p-5 font-mono text-[13px] md:text-sm overflow-x-auto whitespace-pre;
+  color: #A3E635; /* Un llima d'alta visibilitat que encaixa molt bé. */
+}
+
+/* Fix per si Jutge usa la vista vertical (display block) */
+.jutge-content .vertical-view {
+  display: block;
+}

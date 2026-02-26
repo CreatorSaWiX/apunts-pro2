@@ -13,9 +13,8 @@ export interface JutgeProblem {
 export const fetchJutgeProblem = async (problemId: string, lang: string = 'ca'): Promise<JutgeProblem | null> => {
     try {
         // En producció, això crida a /api/jutge-proxy
-        // En local (npm run dev), això fallarà si no estem usant 'vercel dev'
-        // Per robustesa, gestionem l'error.
-        const response = await fetch(`/api/jutge-proxy?id=${problemId}&lang=${lang}`);
+        // Eliminem cache de service worker localitzada (PWA) afegint un query rand
+        const response = await fetch(`/api/jutge-proxy?id=${problemId}&lang=${lang}&v=${Date.now()}`);
 
         if (!response.ok) {
             throw new Error(`API Proxy Error: ${response.status}`);

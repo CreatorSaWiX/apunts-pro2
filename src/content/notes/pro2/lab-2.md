@@ -1,34 +1,61 @@
 ---
-title: "Lab 2: Contenidors Lineals"
-description: "Sessió de laboratori resolta. Stacks i Queues (Piles i Cues)."
+title: "Lab 2: Estructures de dades lineals"
+description: "Sessió de laboratori resolta. Stacks i queues (piles i cues)."
 readTime: "12 min"
 order: 2.5
 ---
 
-## 1. Piles (Stacks) i Cues (Queues) de la STL
+## 1. Piles (stacks) i cues (queues) de la STL
 
-El segon laboratori ens posa a prova amb *Data Structures* lineals. Utilitzarem l'equivalent de la Standard Template Library (STL) per als contenidors `Stack` i `Queue`. Si alguna vegada has vist apilar plats (l'últim plat que fiques és el primer a rentar) o posar-te en una fila al supermercat (el primer a arribar és el primer en sortir), acabes d'entendre al 100% que és una Pila i una Cua.
+El segon laboratori ens posa a prova amb *Data Structures* lineals. Utilitzarem l'equivalent de la Standard Template Library (STL) per als contenidors `Stack` i `Queue`. Si alguna vegada has vist apilar plats (l'últim plat que fiques és el primer a rentar) o posar-te en una fila al supermercat (el primer a arribar és el primer en sortir), acabes d'entendre al 100% que és una pila i una cua.
 
 ### Interfícies: `Stack` i `Queue`
 
-```cpp [Interface del Jutge (Reduïda)]
-// Pila (Stack)              // Cua (Queue)
-s.push(x) // Posa dalt.      q.push(x) // Posa a darrere.
-s.top()   // Mira el dalt.   q.front() // Mira el davant.
-s.pop()   // Treu de dalt.   q.pop()   // Treu de davant.
-s.empty() // Està buida?     q.empty() // Està buida?
-s.size()  // Elements.       q.size()  // Elements.
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-6">
+<div>
+
+```cpp [Interface Pila (Stack)]
+s.push(x) // Posa dalt.
+s.top()   // Mira el dalt.
+s.pop()   // Treu de dalt.
+s.empty() // Està buida?
+s.size()  // Elements.
 ```
+</div>
+<div>
+
+```cpp [Interface Cua (Queue)]
+q.push(x) // Posa a darrere.
+q.front() // Mira el davant.
+q.pop()   // Treu de davant.
+q.empty() // Està buida?
+q.size()  // Elements.
+```
+</div>
+</div>
 
 ---
 
-## 2. Piles (Stacks)
+<!-- 2. Doctest -->
 
-Garanteixen el sistema **LIFO: Last In, First Out** (Últim a entrar, primer a sortir). Tot el que hem après de l'Stack en recursivitat és el que simula precisament.
+## 2. Testos automàtics amb Doctest
+
+El jutge realitza múltiples proves introduint dades al teu codi per esborranar si té algun error. Aquestes proves automàtiques s'emparen en C++ sota el framework **Doctest**. Un cop has programat la teva solució (ex. `reverse.cc`), se t'inclou al laboratori el `Doctest` i el `Makefile`. Només caldrà executar la comanda:
+
+```bash
+make test
+```
+
+
+---
+
+## 3. Piles (Stacks)
+
+Garanteixen el sistema **LIFO: Last In, First Out** (Últim a entrar, primer a sortir).
 
 ### Exercici 1: Reverse
 
-Consisteix en donar la volta a les seqüències a mesura que entren i després treure-les. Una Pila hi fa la volta automàticament! Introduim seqüencialment nombres en la nostra Pila fins fer EOF. A mesura que cridem `top()` i desapilem amb `pop()`, sortiran en ordre invers màgicament.
+Consisteix en llegir números constants i imprimir-los a l'inrevés. L'apilament ho fa automàticament! Introduirem els nombres un rere l'altre asimètricament al top de la Pila fins que no hi hagi dades a llegir de la cadena d'entrada (`while (cin >> n)`). Un cop plens, només anem imprimint els cim de l'actual recurs(`top()`) i desapilem (`pop()`) fins fons.
 
 <details>
 <summary>Codi solució: reverse.cc</summary>
@@ -62,7 +89,7 @@ void reverse(istream& in, ostream& out) {
 
 ### Exercici 2: Validar Parèntesis
 
-Validar el tancament de parentització i claudàtors és el problema clàssic universitari. Les instruccions dicten: Tota obertura `(` o `[` s'enfila a l'Stack. Quan ens trobem una tancada `)` o `]`, avaluarem i consumirem (amb `pop()`) si coincideix i emparella completament amb el capdamunt pur actual de la nostra Pila (`top()`). Si la pila és buida d'imprevist abans de finalitzar la cadena o el tancament no quadra, considerarem la nostra avaluació `Incorrecte`.
+Apilem només les obertures (`(` o `[`). Quan arriba un tancament (`)` o `]`), comprovem si quadra amb el darrer obert emmagatzemat al cim de la pila (`top()`). Si quadren, el retirem amb `.pop()`. Qualsevol discrepància o parèntesi que quedi penjat significa seqüència l'incorrecta.
 
 <details>
 <summary>Codi solució: parentesis.cc</summary>
@@ -113,15 +140,8 @@ void parentesis(istream& in, ostream& out) {
 :::
 
 ### Exercici 3: Recursivitat simulada amb Piles
-Com bé hem après a la teòrica de la UB i UPC, l'Stack del Frame OS permet aïllar instàncies de funcions recursives. Com el laboratori ens exigia convertir:
-```cpp
-       if (n > 0) {   
-           cout << ' ' << n;
-           escriu(n - 1);  // 1a crida recursiva
-           escriu(n - 1);  // 2a crida recursiva
-       }
-```
-Atenció: **L'ordre apilat és invers a l'OS per mantenir execució natural del flux.** 
+
+L'ordinador utilitza una pila oculta (el Call-Stack) per processar funcions recursives. Aquest exercici ens demostra com qualsevol funció recursiva del tipus $f(n-1)$ pot traduir-se a codi iteratiu. Al bucle iteratiu prenem el `.top()`, i si compleix la condició de viabilitat ($v > 0$), simulem la creació teòrica d'activitats afegint manualment dues operacions més petites a la pila.
 
 <details>
 <summary>Codi solució: recursivitat.cc</summary>
@@ -158,15 +178,13 @@ void escriu(int n, ostream& out) {
 
 ---
 
-## 3. Cues (Queues)
+## 4. Cues (Queues)
 
-Les cues garanteixen l'estàndard **FIFO: First In, First Out**. Usarem `front` per mirar el primer i extraure'l exclusivament a la sortida general. Oblida el `top`.
+Les cues garanteixen l'estàndard **FIFO: First In, First Out**. Usarem `front` al revés per albirar exclusiu sortides lineals present!
 
 ### Exercici 5: La Patata Calenta
 
-Ens demanen aplicar el clàssic joc mortal de Josefus! Hi ha `N` individus creant un cercle. Es van passant els cops `k` a la següent persona de la *cua*, i qui la tingui passats els cops saltats mor i se l'expulsa directament! 
-
-La simulació amb cua consisteix en un cicle iteratiu on passem endarrere el front de la cua `q.push(q.front())` i finalment desmembrant `pop()`. Això emula girar el rodet en passades infinites completament lineals!
+Resol el problema cíclic de Josephus de $N$ participants utilitzant només una Cua. Per simular passades rotatives d'1 en 1 de la patata caducable a pas de $K$, agafem repetidament el jugador del `front()`, el purguem `.pop()` del cap de la línia i l'enviem immediatament sa-i-estalvi cap on no l'hi toqui `.push()`. Passats $K$ girs, el qui romangui al cap s'esborra de la partida per sempre fins que només quedi 1.
 
 <details>
 <summary>Codi solució: patata.cc</summary>
@@ -210,7 +228,7 @@ void patata_calenta(istream& in, ostream& out) {
 
 ### Exercici 6: Comptador Recents (Sliding Window)
 
-Se't dona una seqüència de peticions estrictament creixents per `t_i` en un marge `T` de segons de retrospectiva actual. És a dir, per cada instant, quants dels passats queden encara respectant-se el rang `[A - T, A]`? Ens caldrà una cua perquè el que va passar fa masses T's, ha sortit abans. Si entrem a avaluar `front` (el més vell actiu emmagatzemat), i la caducitat del mateix supera l'última petició menys els `T`, ja la podrem llençar a les escombraries mitjançant un desempilonat!
+Atès un llindar base de tolerància de temps $T$, quants anteriors segueixen "vius" passat el temps? Aquest patró es coneix com a finestra lliscant ("Sliding Window") i és la principal propietat vitalícies útil d'una cua. Al llegir un nou instant ($actual$), caduquem els més vells utilitzats mirant el `front()`: Si és menor que $actual - T$, ho podem donar per prescrit. Acabada la purga seqüencial, demanem simple quin `size()` actiu tenim!
 
 <details>
 <summary>Codi solució: recents.cc</summary>

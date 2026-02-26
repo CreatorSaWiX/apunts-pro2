@@ -11,23 +11,7 @@ export const courseStructure: TopicDefinition[] = [
         id: "pro2-tema-1",
         title: "Tema 1: Iteracions 1 (Simulació)",
         description: "Exercicis bàsics d'iteracions i bucles extrets de PRO1 per a pràctica.",
-        problems: [
-            { id: "P37500", title: "Primers nombres" },
-            { id: "P59539", title: "Nombres harmònics (1)" },
-            { id: "P59875", title: "Cap avall" },
-            { id: "P97969", title: "Comptant as (1)" },
-            { id: "P97156", title: "Nombres en un interval" },
-            { id: "P28754", title: "Número del revés en binari" },
-            { id: "P60816", title: "Número del revés en hexadecimal" },
-            { id: "P55622", title: "Nombre de dígits (1)" },
-            { id: "P74398", title: "Número de cifras 1" },
-            { id: "P50327", title: "Número del revés" },
-            { id: "X50286", title: "Quàntes hola?" },
-            { id: "P39057", title: "Càlcul d'àrees" },
-            { id: "P67723", title: "Màxim comú divisor" },
-            { id: "P29448", title: "Dates correctes" },
-            { id: "P85370", title: "Interessos (1)" }
-        ]
+        problems: []
     },
     {
         id: "pro2-tema-2",
@@ -37,9 +21,22 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "pro2-tema-3",
-        title: "Tema 3: Estructures de Dades Lineals",
-        description: "Piles, cues i llistes.",
-        problems: []
+        title: "Tema 3: Llistes i iteracions",
+        description: "Exercicis de jutge",
+        problems: [
+            { id: "W84371", title: "Ajuntar Paraules" },
+            { id: "U61590", title: "Paraula més llarga" },
+            { id: "S92412", title: "Guanyadors" },
+            { id: "T65668", title: "Don Camilo" },
+            { id: "X88100", title: "Inserta per Ordre" },
+            { id: "S54195", title: "Ordenació per Selecció amb Iteradors" },
+            { id: "S97463", title: "Fusió de llistes ordenades" },
+            { id: "T58713", title: "Intersecció de llistes ordenades" },
+            { id: "S39735", title: "Operacions sobre una seqüència" },
+            { id: "Y29996", title: "Matrius esparses (1): conversió" },
+            { id: "Y91345", title: "Matrius esparses (2): transposició" },
+            { id: "T33423", title: "Matrius esparses (3): suma" }
+        ]
     },
     {
         id: "pro2-lab-1",
