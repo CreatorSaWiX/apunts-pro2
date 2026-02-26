@@ -149,7 +149,7 @@ export const useSolution = (topicId: string, problemId: string, lang: string = '
         if (topicId && problemId) fetchSolution();
     }, [topicId, problemId, lang]);
 
-    return { solution, loading };
+    return { solution, loading, setSolution };
 };
 
 export const useUserSolutions = (userId: string) => {

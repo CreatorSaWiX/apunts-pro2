@@ -14,7 +14,7 @@ import { db } from '../lib/firebase';
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();
     const [lang, setLang] = useState('ca');
-    const { solution, loading } = useSolution(topicId || '', problemId || '', lang);
+    const { solution, loading, setSolution } = useSolution(topicId || '', problemId || '', lang);
     const { solutions } = useSolutions(topicId || '');
     const [authorData, setAuthorData] = useState<{ avatar?: string; username?: string; } | null>(null);
 
@@ -99,13 +99,15 @@ const SolutionDetailPage = () => {
             console.log("Solution saved successfully!", canonicalTitle);
 
             // Update local state to reflect saved changes immediately
-            // Note: Mutating state directly is bad practice, but handled efficiently by Firebase cache usually
-            /* if (solution) {
-                solution.code = currentCode;
-                solution.title = canonicalTitle;
-                solution.authorId = user.id;
-                solution.author = user.username;
-            } */
+            if (setSolution) {
+                setSolution((prev: any) => ({
+                    ...prev,
+                    code: currentCode,
+                    title: canonicalTitle,
+                    authorId: user.id,
+                    author: user.username
+                }));
+            }
 
             setIsEditing(false);
         } catch (error) {
