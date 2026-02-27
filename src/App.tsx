@@ -10,6 +10,7 @@ import TopicPage from './pages/TopicPage';
 import SolutionsListPage from './pages/SolutionsListPage';
 import SolutionDetailPage from './pages/SolutionDetailPage';
 import NewSolutionPage from './pages/NewSolutionPage';
+import QuizPage from './pages/QuizPage';
 import { AuthProvider } from './contexts/AuthContext';
 import { SubjectProvider } from './contexts/SubjectContext';
 import { Analytics } from "@vercel/analytics/react";
@@ -32,6 +33,7 @@ function App() {
             <Route path="/profile/:uid" element={<ProfilePage />} />
             <Route path="/new-solution" element={<NewSolutionPage />} />
             <Route path="/tema/:id" element={<TopicPage />} />
+            <Route path="/tema/:id/test" element={<QuizPage />} />
             <Route path="/tema/:id/solucionaris" element={<SolutionsListPage />} />
             <Route path="/tema/:id/solucionaris/:problemId" element={<SolutionDetailPage />} />
             <Route path="/register" element={<RegisterPage />} />

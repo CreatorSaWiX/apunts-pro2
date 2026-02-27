@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
-import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 
 function SpotlightCard({
@@ -242,6 +242,17 @@ const TopicCarousel: React.FC = () => {
                                             <span className="group-hover/btn:underline decoration-primary/30 underline-offset-4">Explorar tema</span>
                                             <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                                         </div>
+
+                                        <Link
+                                            to={`/tema/${topic.slug}/test`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="text-slate-500 hover:text-amber-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/test"
+                                        >
+                                            <div className="p-1 rounded bg-white/5 group-hover/test:bg-amber-500/10 transition-colors">
+                                                <RefreshCw size={12} className="group-hover/test:rotate-180 transition-transform duration-500" />
+                                            </div>
+                                            <span>Test</span>
+                                        </Link>
 
                                         <Link
                                             to={subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : `/tema/${topic.slug}/solucionaris`}
