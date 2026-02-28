@@ -16,9 +16,9 @@ Amb poques arestes, podem simplement llistar les configuracions de connexió pos
 
 Tenim només 2 arestes. Hi ha exactament dues formes d'ubicar-les respecte l'adjacència:
 
-1. **Arestes Adjacents (Comparteixen un vèrtex)**
+1. **Arestes adjacents**
    Es forma un camí de 3 vèrtexs i ens queda sempre un vèrtex aïllat.
-   **Classe isomorfa:** $P_3 \\cup K_1$ (Trajecte de longitud 2 i un vèrtex isolat).
+   **Classe isomorfa:** $T_3 \\cup K_1$ (Trajecte de longitud 2 i un vèrtex isolat).
 
 :::graph{height=150}
 \`\`\`json
@@ -29,7 +29,7 @@ Tenim només 2 arestes. Hi ha exactament dues formes d'ubicar-les respecte l'adj
 \`\`\`
 :::
 
-2. **Arestes Independents (No es toquen)**
+2. **Arestes independents**
    Són dues parelles de vèrtexs connectats separadament.
    **Classe isomorfa:** $2K_2$ (Dues còpies del graf complet de 2 vèrtexs).
 

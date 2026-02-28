@@ -177,7 +177,7 @@ void breadth_first(BinTree<T> t) {
 
 Si demanen una condició doble a una pregunta genèrica (exemple: Retornem que a l'hora estigui equilibrat *i donem també quina altura tenia* o *Retorna'ns ja la Mitjana sencera dividint la seva suma pels sub-nodes comptats*), ens trobarem amb un problema extrem: Iterar un sumatori un per un cridant sobre crides iteratives on el teu `left` i `right` et multipliquen la carrega pel processament creant costs absoluts llastimosos d'escala de bucles ineficients matemàtics en $\Theta(N^2)$.
 
-Solució oficial UPC? Introducció directa pels laboratoris d'assignar la classe tupla `std::pair` amb sub-crides per realitzar retorn multitasca dins instàncies $\Theta(N)$.
+Introducció directa pels laboratoris d'assignar la classe tupla `std::pair` amb sub-crides per realitzar retorn multitasca dins instàncies $\Theta(N)$.
 
 ```cpp
 // First -> Sumatori valors 

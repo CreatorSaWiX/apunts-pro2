@@ -6,7 +6,7 @@ export const ex1_22: Solution = {
   author: 'Profe',
   code: '',
   type: 'notebook',
-  statement: `Sigui $V = \\{a, b, c, d\\}$ i $A = \\{ab, ac, ad, dc\\}$. Determineu, llevat d'isomorfismes, tots els subgrafs del graf $G = (V, A)$.`,
+  statement: `Sigui $V = \\{a, b, c, d\\}$ i $A = \\{ab, ac, ad, dc\\}$. Determineu, llevat d'isomorfismes, tots els subgrafs del graf $G = (V, A)$`,
   content: `
 Analitzem el graf $G=(V,A)$ donat: $V = \\{a,b,c,d\\}$ i $A = \\{ab, ac, ad, dc\\}$.
 $G$ és essencialment un triangle ($a, c, d$) amb una aresta penjant ($a, b$).

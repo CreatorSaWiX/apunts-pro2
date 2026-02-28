@@ -8,11 +8,6 @@ export const ex1_19: Solution = {
   type: 'notebook',
   statement: `Sigui $G$ un graf d'ordre 9 tal que tots els vèrtexs tenen grau 5 o 6. Proveu que hi ha un mínim de 5 vèrtexs de grau 6 o un mínim de 6 vèrtexs de grau 5.`,
   content: `
-:::info{title="Lema de les Encaixades"}
-La suma dels graus de tots els vèrtexs és igual al doble del nombre d'arestes:
-$ \\sum_{v \\in V} \g(v) = 2m $
-:::
-
 Sabem que $n = 9$ i $\g(v) \\in \\{5, 6\\}$. 
 Sigui $x$ el nombre de vèrtexs de grau 5, i $y$ el nombre de vèrtexs de grau 6.
 Llavors tenim el següent sistema d'equacions:

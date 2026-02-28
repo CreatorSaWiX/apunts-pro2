@@ -11,10 +11,10 @@ export const ex1_1: Solution = {
 1. Una representació gràfica per a $n=4$ i $n=6$.
 2. La matriu d'adjacència per a $n=5$.
 3. L'ordre, la mida, el grau màxim i el grau mínim en funció de $n$.`,
-  content: `
-### 1. Representació Gràfica ($n=4$ i $n=6$)
+  // A grafs s'ha de posar en un grid de 2 cols, ja que falta per n=6
+content: `
 
-Aquí teniu com es veuen aquestes famílies. Fixeu-vos en com creixen!
+  ### 1. Representació Gràfica ($n=4$ i $n=6$)
 
 #### $N_n$ (Graf Nul)
 Només vèrtexs, cap aresta. La soledat absoluta.

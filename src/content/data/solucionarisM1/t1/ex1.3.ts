@@ -8,8 +8,6 @@ export const ex1_3: Solution = {
     type: 'notebook',
     statement: `Esbrineu si els grafs complet ($K_n$), trajecte ($T_n$) i cicle ($C_n$) d'ordre $n$, amb $n \\ge 1$ o $n \\ge 3$ segons el cas, són bipartits i/o regulars.`,
     content: `
-Anem a analitzar cada cas com si fóssim detectius.
-
 #### 1. Graf Complet ($K_n$)
 *   **Regular?** **SÍ**. Tothom està connectat a tothom. Grau $n-1$ per a tots.
 *   **Bipartit?**
@@ -32,4 +30,4 @@ Anem a analitzar cada cas com si fóssim detectius.
     *   Si $n$ és **senar** (ex: triangle, pentàgon): **NO**. Quan tornem a l'inici del cicle, els colors xoquin.
         `,
     availableLanguages: ['ca']
-  };
+};

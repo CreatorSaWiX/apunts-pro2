@@ -2,13 +2,13 @@ import type { Solution } from '../../solutions';
 
 export const ex1_8: Solution = {
     id: 'M1-T1-Ex1.8',
-    title: 'Exercici 1.8: Ordre i Mida',
+    title: 'Exercici 1.8: Ordre i mida',
     author: 'Profe',
     code: '',
     type: 'notebook',
     statement: `Considereu un graf $G = (V, A)$ d'ordre $n$ i mida $m$. Siguin $v$ un vèrtex i $a$ una aresta de $G$. Doneu l'ordre i la mida de $G^c$, $G - v$ i $G - a$.`,
     content: `
-Aquí tenim les fórmules generals per com canvien l'ordre (vèrtexs) i la mida (arestes) amb operacions bàsiques.
+*Notació: $n$ = nombre de vèrtexs (ordre), $m$ = nombre d'arestes (mida).*
 
 #### 1. Complementari ($G^c$)
 *   **Ordre**: $n$ (Manté els mateixos vèrtexs).
@@ -26,4 +26,4 @@ Només tallem un cable. Els vèrtexs es queden igual.
 *   **Mida**: $m - 1$ (Una aresta menys).
         `,
     availableLanguages: ['ca']
-  };
+};

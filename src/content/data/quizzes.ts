@@ -31,7 +31,7 @@ export const quizzes: TopicQuiz[] = [
                     { id: 'd', text: 'Produirà un error d\'execució (Runtime Error) al moment d\'ubicar la memòria.' }
                 ],
                 correctOptionId: 'b',
-                explanation: 'En C++, si defineixes QUALSEVOL constructor, el compilador deixa de generar automàticament el constructor buit (default constructor). Si intentes instanciar sense paràmetres donarà error de compilació. Això és clau en entrevistes per demostrar coneixement de regles d\'instanciació.'
+                explanation: 'En C++, si defineixes QUALSEVOL constructor, el compilador deixa de generar automàticament el constructor buit (default constructor). Si intentes instanciar sense paràmetres donarà error de compilació.'
             },
             {
                 id: 'q1-2',
@@ -97,7 +97,7 @@ export const quizzes: TopicQuiz[] = [
                     { id: 'd', text: 'No és possible fer en O(1) amb una Pila, s\'hauria d\'usar una Priority_Queue (B-Tree).' }
                 ],
                 correctOptionId: 'c',
-                explanation: 'Aquest és el famós problema de LeetCode de "MinStack" (Entrevistes FAANG). Mantenir una pila paral·lela que aliniada per dimensions guarda el mínim trobat FINS a aquell moment, permet consultar en O(1) i suportar pop en O(1) tirant pop a ambdues piles.'
+                explanation: 'Aquest és el famós problema de LeetCode de "MinStack" . Mantenir una pila paral·lela que aliniada per dimensions guarda el mínim trobat FINS a aquell moment, permet consultar en O(1) i suportar pop en O(1) tirant pop a ambdues piles.'
             },
             {
                 id: 'q2-2',
@@ -164,7 +164,7 @@ export const quizzes: TopicQuiz[] = [
                     { id: 'd', text: 'No donarà cap error si usem c++11 o superior (std::list resol això de forma automàtica per compatibilitat).' }
                 ],
                 correctOptionId: 'b',
-                explanation: 'Pregunta MÍTICA d\'entrevista i trampa del Jutge! L\'Erase allibera el node cap a l\'estratosfera, destruint `it`. Has der refer: `it = L.erase(it);` (Llegir sempre la següent ref vàlida retornada) o avançar a un iterador auxiliar just abans d\'esborrar.'
+                explanation: 'L\'Erase allibera el node cap a l\'estratosfera, destruint `it`. Has der refer: `it = L.erase(it);` (Llegir sempre la següent ref vàlida retornada) o avançar a un iterador auxiliar just abans d\'esborrar.'
             },
             {
                 id: 'q3-2',
@@ -189,7 +189,7 @@ export const quizzes: TopicQuiz[] = [
                     { id: 'd', text: 'Modificant la matriu adjacent de Floyd-Warshall.' }
                 ],
                 correctOptionId: 'c',
-                explanation: 'Un altre clàssic monstruós d\'entrevista FAANG - Algoritme "Llebre i tortuga". Un es mou a 2 nodes per pas i l\'ultre a 1. Si algun cop es toquen, matemàticament és perquè hi ha un "Llaç infinit" tancat. Memòria = O(1), màxim O(N) Iteracions.'
+                explanation: 'Algoritme "Llebre i tortuga". Un es mou a 2 nodes per pas i l\'ultre a 1. Si algun cop es toquen, matemàticament és perquè hi ha un "Llaç infinit" tancat. Memòria = O(1), màxim O(N) Iteracions.'
             },
             {
                 id: 'q3-4',
@@ -201,7 +201,7 @@ export const quizzes: TopicQuiz[] = [
                     { id: 'd', text: 'La llista no permet fer push_back si ja té iteradors actius.' }
                 ],
                 correctOptionId: 'b',
-                explanation: 'Això separa els juniors dels seniors en C++. El vector és un bloc contigu. Si creix i no hi ha espai, es mou TOT a una altra adreça de RAM, per tant els teus punters/iteradors antics apunten a "escombraries". La llista, al ser nodes dispersos, mai mou els nodes vells; només n\'afegeix de nous.'
+                explanation: 'El vector és un bloc contigu. Si creix i no hi ha espai, es mou TOT a una altra adreça de RAM, per tant els teus punters/iteradors antics apunten a "escombraries". La llista, al ser nodes dispersos, mai mou els nodes vells; només n\'afegeix de nous.'
             },
             {
                 id: 'q3-5',

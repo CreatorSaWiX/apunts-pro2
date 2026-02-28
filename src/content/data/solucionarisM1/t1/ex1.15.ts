@@ -30,10 +30,7 @@ Analitzem cas per cas ($n=5$):
 **2) 4, 4, 3, 2, 1**
 *   Suma: $4+4+3+2+1 = 14$ (Parell). OK.
 *   Exemple: Havel-Hakimi.
-    *   Trec 4: resta 1 als 4 següents $\\to$ 3, 2, 1, 0.
-    *   Seqüència 3, 2, 1, 0. Suma $6$. Prova de treure 3: resta 1 als 3 següents $\\to$ 1, 0, 0.
-    *   Seqüència 1, 0, 0. Suma imparella? No, 1. Wait. Un graf amb un node de grau 1 i dos de grau 0 no pot ser (suma imparella 1).
-    *   *Correcció*: En Havel-Hakimi ordenem. 4,4,3,2,1.
+    *   Ordenem. 4,4,3,2,1.
     *   Trec 4 $\\to$ (resta 1 a 4,3,2,1) $\\to$ 3, 2, 1, 0.
     *   De 3,2,1,0 $\\to$ Trec 3 $\\to$ (resta 1 a 2,1,0) $\\to$ 1, 0, -1. **IMPOSSIBLE**.
     *   **NO EXISTEIX**.
@@ -54,10 +51,7 @@ Analitzem cas per cas ($n=5$):
 
 **5) 3, 3, 3, 3, 2**
 *   Suma: $3+3+3+3+2 = 14$. (Parell). OK.
-*   Exemple: $K_5$ menys algunes arestes? $K_5$ és 4,4,4,4,4.
-    *   Trec una aresta: 4,4,4,3,3. No.
-    *   Això sembla un graf quasi-regular.
-    *   Havel-Hakimi: $3, 3, 3, 3, 2 \\xrightarrow{-3} 2, 2, 2, 2$. (Trec un 3, en queden tres 2 i el 2 final).
+*   Exemple: Havel-Hakimi: $3, 3, 3, 3, 2 \\xrightarrow{-3} 2, 2, 2, 2$. (Trec un 3, en queden tres 2 i el 2 final).
     *   $2, 2, 2, 2$ és un cicle $C_4$. Existeix.
     *   **EXISTEIX**.
 
@@ -67,4 +61,4 @@ Analitzem cas per cas ($n=5$):
 *   **NO EXISTEIX** (Grau $\\ge n$).
         `,
     availableLanguages: ['ca']
-  };
+};

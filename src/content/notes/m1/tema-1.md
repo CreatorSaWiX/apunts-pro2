@@ -1,6 +1,6 @@
 ---
 title: "Tema 1: Conceptes bàsics de grafs"
-description: "Introducció a la teoria de grafs: vèrtexs, arestes, graus i representacions. Aprèn els fonaments sense adormir-te."
+description: "Introducció a la teoria de grafs: vèrtexs, arestes, graus i representacions."
 readTime: "15 Min"
 order: 1
 ---
