@@ -5,7 +5,7 @@ import { useSubject } from '../contexts/SubjectContext';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const APP_DATA: Record<string, { version: string; updated: string }> = {
-    pro2: { version: 'v1.0.5', updated: '01/03/2026' },
+    pro2: { version: 'v1.0.6', updated: '04/03/2026' },
     m1: { version: 'v1.0.1', updated: '01/03/2026' }
 };
 

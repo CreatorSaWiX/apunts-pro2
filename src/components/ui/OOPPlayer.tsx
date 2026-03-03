@@ -18,6 +18,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
     const [currentStep, setCurrentStep] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [activeTab, setActiveTab] = useState<'term' | 'code'>('code');
+    const [userSelectedFile, setUserSelectedFile] = useState<string | null>(null);
     const speed = 1500; // Slower for OOP to read descriptions
 
     useEffect(() => {
@@ -37,6 +38,11 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
     }, [isPlaying, steps.length, speed]);
 
     const step = steps[currentStep];
+    const displayFile = userSelectedFile || step.activeFile;
+
+    useEffect(() => {
+        setUserSelectedFile(null);
+    }, [step.activeFile]);
 
     const handlePlayPause = () => setIsPlaying(!isPlaying);
     const handleNext = () => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
@@ -58,7 +64,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
 
     // Ensure the active line is scrolled into view (smooth implementation)
     useEffect(() => {
-        if (codeContainerRef.current) {
+        if (codeContainerRef.current && displayFile === step.activeFile) {
             const activeOffset = (step.line - 1) * LINE_HEIGHT;
             const containerHeight = codeContainerRef.current.clientHeight;
             const currentScroll = codeContainerRef.current.scrollTop;
@@ -70,7 +76,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
                 });
             }
         }
-    }, [step.line, step.activeFile, activeTab]);
+    }, [step.line, step.activeFile, activeTab, displayFile]);
 
     return (
         <div className="not-prose my-12 flex flex-col w-full rounded-2xl border border-white/10 bg-[#0B0F17] overflow-hidden shadow-2xl relative z-10 font-sans group/player h-[500px] lg:h-[550px] max-h-[85vh] xl:max-h-[600px]">
@@ -93,46 +99,42 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
             <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
                 {/* Left Panel: Code & Environment */}
                 <div className={`flex-1 min-w-0 flex flex-col relative bg-[#0d1117] h-full shadow-[15px_0_30px_rgba(0,0,0,0.3)] lg:border-r border-white/5 ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
-
-                    {/* Simulated Window Controls */}
-                    <div className="absolute top-3 left-3 flex items-center gap-1.5 z-30 opacity-50 hidden sm:flex">
-                        <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                    </div>
-
                     {/* Code Tab Header */}
-                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] pl-20 overflow-hidden">
+                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {Object.keys(sim.files).map(filename => (
-                            <div key={filename} className={`px-4 py-2 border-t border-x rounded-t-xl text-[10px] font-mono tracking-wider flex gap-2 items-center shadow-sm relative top-[1px] z-10 transition-colors cursor-default whitespace-nowrap
-                                ${step.activeFile === filename ? 'bg-[#0d1117] border-slate-800/80 text-emerald-400' : 'bg-[#161b22] border-transparent text-slate-500 border-b-slate-800/80'}`}>
-                                <Code2 size={12} className={step.activeFile === filename ? "text-emerald-500" : "text-slate-600"} />
+                            <div key={filename}
+                                onClick={() => setUserSelectedFile(filename)}
+                                className={`px-4 py-2 border-t border-x rounded-t-xl text-[10px] font-mono tracking-wider flex gap-2 items-center shadow-sm relative top-[1px] z-10 transition-colors cursor-pointer whitespace-nowrap
+                                ${displayFile === filename ? 'bg-[#0d1117] border-slate-800/80 text-emerald-400' : 'bg-[#161b22] border-transparent text-slate-500 border-b-slate-800/80 hover:bg-[#1f262e]'}`}>
+                                <Code2 size={12} className={displayFile === filename ? "text-emerald-500" : "text-slate-600"} />
                                 <span>{filename}</span>
                             </div>
                         ))}
-                        <div className="flex-1 border-b border-slate-800/80 h-full relative -z-0"></div>
+                        <div className="flex-1 border-b border-slate-800/80 h-full relative -z-0 min-w-[20px]"></div>
                     </div>
 
                     {/* IDE Viewport */}
                     <div className="flex-1 relative overflow-auto custom-scrollbar bg-[#0d1117] text-[12px] sm:text-[13px] pt-4 pb-6 min-h-[50%]" ref={codeContainerRef}>
                         <div className="relative min-w-max">
                             {/* Smooth Active Line Indicator */}
-                            <div
-                                className="absolute left-0 right-0 bg-gradient-to-r from-emerald-500/10 to-transparent border-l-[3px] border-emerald-500 pointer-events-none transition-all duration-300 ease-out"
-                                style={{
-                                    top: `${(step.line - 1) * LINE_HEIGHT}px`,
-                                    height: `${LINE_HEIGHT}px`
-                                }}
-                            />
+                            {displayFile === step.activeFile && (
+                                <div
+                                    className="absolute left-0 right-0 bg-gradient-to-r from-emerald-500/10 to-transparent border-l-[3px] border-emerald-500 pointer-events-none transition-all duration-300 ease-out"
+                                    style={{
+                                        top: `${(step.line - 1) * LINE_HEIGHT}px`,
+                                        height: `${LINE_HEIGHT}px`
+                                    }}
+                                />
+                            )}
 
                             {/* Rendering Code & Line numbers */}
                             <div className="flex">
                                 {/* Line Numbers */}
                                 <div className="w-10 flex-shrink-0 text-right pr-3 select-none border-r border-slate-800/50">
-                                    {String(sim.files[step.activeFile] || '').split('\n').map((_: string, i: number) => (
+                                    {String(sim.files[displayFile] || '').split('\n').map((_: string, i: number) => (
                                         <div
                                             key={i}
-                                            className={`flex items-center justify-end font-mono text-[10px] transition-colors duration-200 ${step.line === i + 1 ? 'text-emerald-400 font-bold' : 'text-slate-600/70'}`}
+                                            className={`flex items-center justify-end font-mono text-[10px] transition-colors duration-200 ${displayFile === step.activeFile && step.line === i + 1 ? 'text-emerald-400 font-bold' : 'text-slate-600/70'}`}
                                             style={{ height: `${LINE_HEIGHT}px` }}
                                         >
                                             {i + 1}
@@ -142,7 +144,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
                                 <pre className="pl-3 sm:pl-4 m-0 !bg-transparent text-slate-300 font-mono tracking-tight flex-1">
                                     <code
                                         className="language-cpp block"
-                                        dangerouslySetInnerHTML={{ __html: String(highlightedFiles[step.activeFile] || '') }}
+                                        dangerouslySetInnerHTML={{ __html: String(highlightedFiles[displayFile] || '') }}
                                         style={{ lineHeight: `${LINE_HEIGHT}px`, whiteSpace: 'pre' }}
                                     />
                                 </pre>
