@@ -17,6 +17,7 @@ import OOPPlayer from "../components/ui/OOPPlayer";
 import StackVisualizer from "../components/ui/StackVisualizer";
 import QueueVisualizer from "../components/ui/QueueVisualizer";
 import ListGraphVisualizer from "../components/ui/ListGraphVisualizer";
+import BinTreeVisualizer from "../components/ui/BinTreeVisualizer";
 
 type MarkdownRendererProps = {
     content: string;
@@ -46,6 +47,9 @@ const defaultComponents: any = {
     },
     listviz: () => {
         return <ListGraphVisualizer />;
+    },
+    bintreeviz: () => {
+        return <BinTreeVisualizer />;
     },
     pre: ({ children }: any) => <>{children}</>,
     code(props: any) {

@@ -7,7 +7,9 @@ order: 3
 
 ## 3.1 Llistes vs vectors
 
-Les **llistes (`list`)** solucionen l'alt cost d'inserció al mig dels vectors ($\mathcal{O}(n)$). Estan formades per nodes independents enllaçats. Afegir o esborrar un element intermig costa només $\mathcal{O}(1)$.
+Les **llistes (`list`)** solucionen l'alt cost d'inserció al mig dels vectors $\mathcal{O}(n)$. Estan formades per nodes independents enllaçats. Afegir o esborrar un element intermig costa només $\mathcal{O}(1)$.
+
+> En algorísmia, $\mathcal{O}(n)$ (es pronuncia "O de n") significa que **el temps o cost d'execució creix de manera lineal** a mesura que entren més dades. Per exemple: `cout << "Hello World" << endl;` és $\mathcal{O}(1)$, un element constant. Una pitjor: $\mathcal{O}(n^2)$ `for (int i = 0; i < n; i++) { for (int j = 0; j < n; j++) { ... } }`.
 
 **Desavantatges algorísmics:**
 - **Sense posicions directes:** Utilitzar `L[i]` genera error de compilació.

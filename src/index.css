@@ -73,6 +73,12 @@ body {
   overflow-x: hidden;
 }
 
+body.player-fullscreen .nav-pill-container {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0 !important;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -99,6 +105,14 @@ body {
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                        MARKDOWN PROSE CONFIGURATION                        */
+/* -------------------------------------------------------------------------- */
+.prose p,
+.prose li {
+  @apply text-justify;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -230,16 +244,17 @@ body {
 }
 
 /* Els rètols Input/Output de cada panell de test */
-.jutge-content .col-sm-6 > p > b,
-.jutge-content .col-sm-12 > p > b {
+.jutge-content .col-sm-6>p>b,
+.jutge-content .col-sm-12>p>b {
   @apply text-xs font-bold uppercase tracking-widest text-slate-500 bg-white/5 border border-white/5 shadow-sm px-2.5 py-1.5 rounded-lg inline-block w-fit;
 }
 
 /* Els blocs de codi dels test cases - colors especials per distingir fàcilment */
-.jutge-content .col-sm-6 > pre,
-.jutge-content .col-sm-12 > pre {
+.jutge-content .col-sm-6>pre,
+.jutge-content .col-sm-12>pre {
   @apply m-0 flex-1 bg-[#050B14] border border-black/50 shadow-inner rounded-xl p-4 md:p-5 font-mono text-[13px] md:text-sm overflow-x-auto whitespace-pre;
-  color: #A3E635; /* Un llima d'alta visibilitat que encaixa molt bé. */
+  color: #A3E635;
+  /* Un llima d'alta visibilitat que encaixa molt bé. */
 }
 
 /* Fix per si Jutge usa la vista vertical (display block) */

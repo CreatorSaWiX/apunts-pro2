@@ -173,10 +173,22 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         };
 
         window.addEventListener('resize', updateDimensions);
+
+        let observer: ResizeObserver | null = null;
+        if (containerRef.current) {
+            observer = new ResizeObserver(() => {
+                updateDimensions();
+            });
+            observer.observe(containerRef.current);
+        }
+
         updateDimensions();
 
-        return () => window.removeEventListener('resize', updateDimensions);
-    }, [numericHeight]);
+        return () => {
+            window.removeEventListener('resize', updateDimensions);
+            if (observer) observer.disconnect();
+        };
+    }, [numericHeight, transparentBg]);
 
     // Custom Node Rendering (We only draw outlines and text, let the library handle the node-body for perfect hit-detection)
     const drawNode = useCallback((node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {

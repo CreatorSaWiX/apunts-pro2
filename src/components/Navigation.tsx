@@ -88,7 +88,7 @@ const Navigation: React.FC = () => {
     return (
         <>
             {/* Top-Left Floating Navigation Pill */}
-            <div ref={navRef} className={`fixed top-5 md:top-6 z-50 transition-all duration-300 ease-out ${showCompact ? 'left-0' : 'left-4 sm:left-6'}`}>
+            <div ref={navRef} className={`nav-pill-container fixed top-5 md:top-6 z-50 transition-all duration-300 ease-out ${showCompact ? 'left-0' : 'left-4 sm:left-6'}`}>
                 {showCompact ? (
                     <button
                         onClick={() => setIsPillExpanded(true)}
