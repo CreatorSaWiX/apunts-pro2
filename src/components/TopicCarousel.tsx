@@ -53,6 +53,7 @@ const TopicCarousel: React.FC = () => {
     const navigate = useNavigate();
     const { subject } = useSubject();
     const [activeIndex, setActiveIndex] = useState(0);
+    const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const sortedTopics = [...allPersonalNotes]
         .filter(note => (note as any).subject === subject && !note.slug.includes('-lab-'))
@@ -84,35 +85,42 @@ const TopicCarousel: React.FC = () => {
     };
 
     // Calculate the closest card to the center on scroll
+    // Debounced to prevent severe layout thrashing (forced reflow) on the main thread
     const handleScroll = () => {
-        if (!scrollRef.current) return;
-        const container = scrollRef.current;
-        const scrollCenter = container.scrollLeft + container.clientWidth / 2;
+        if (scrollTimeoutRef.current) {
+            clearTimeout(scrollTimeoutRef.current);
+        }
 
-        let closestIndex = activeIndex;
-        let minDistance = Infinity;
+        scrollTimeoutRef.current = setTimeout(() => {
+            if (!scrollRef.current) return;
+            const container = scrollRef.current;
+            const scrollCenter = container.scrollLeft + container.clientWidth / 2;
 
-        const children = container.children;
-        for (let i = 0; i < children.length; i++) {
-            const child = children[i] as HTMLElement;
-            // Only process the actual carousel cards
-            if (child.classList.contains('carousel-card')) {
-                const childCenter = child.offsetLeft + child.clientWidth / 2;
-                const distance = Math.abs(childCenter - scrollCenter);
+            let closestIndex = activeIndex;
+            let minDistance = Infinity;
 
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    const index = child.getAttribute('data-index');
-                    if (index !== null) {
-                        closestIndex = parseInt(index, 10);
+            const children = container.children;
+            for (let i = 0; i < children.length; i++) {
+                const child = children[i] as HTMLElement;
+                // Only process the actual carousel cards
+                if (child.classList.contains('carousel-card')) {
+                    const childCenter = child.offsetLeft + child.clientWidth / 2;
+                    const distance = Math.abs(childCenter - scrollCenter);
+
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        const index = child.getAttribute('data-index');
+                        if (index !== null) {
+                            closestIndex = parseInt(index, 10);
+                        }
                     }
                 }
             }
-        }
 
-        if (closestIndex !== activeIndex) {
-            setActiveIndex(closestIndex);
-        }
+            if (closestIndex !== activeIndex) {
+                setActiveIndex(closestIndex);
+            }
+        }, 50); // Small 50ms buffer to aggregate fast scroll events
     };
 
     return (

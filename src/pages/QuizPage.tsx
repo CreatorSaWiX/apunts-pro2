@@ -59,6 +59,8 @@ const QuizPage: React.FC = () => {
         }
     }, [topicId]);
 
+
+
     useEffect(() => {
         if (!isFinished) {
             sessionStorage.setItem(`quiz_${topicId}`, JSON.stringify({
@@ -97,6 +99,35 @@ const QuizPage: React.FC = () => {
         setSelectedAnswers(prev => ({ ...prev, [quiz!.questions[currentQuestionIdx].id]: optionId }));
     }, [isFinished, currentQuestionIdx, quiz]);
 
+    const finishQuiz = useCallback(() => {
+        setIsFinished(true);
+        if (!quiz) return;
+        const finalScore = quiz.questions.reduce((acc, q) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
+        if (finalScore === quiz.questions.length) {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#0ea5e9', '#38bdf8', '#ffffff']
+            });
+        }
+    }, [quiz, selectedAnswers]);
+
+    const handleNext = useCallback(() => {
+        if (!quiz) return;
+        if (currentQuestionIdx < quiz.questions.length - 1) {
+            setCurrentQuestionIdx(prev => prev + 1);
+        } else {
+            finishQuiz();
+        }
+    }, [quiz, currentQuestionIdx, finishQuiz]);
+
+    const handlePrev = useCallback(() => {
+        if (currentQuestionIdx > 0) {
+            setCurrentQuestionIdx(prev => prev - 1);
+        }
+    }, [currentQuestionIdx]);
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (isFinished || !quiz) return;
@@ -120,7 +151,7 @@ const QuizPage: React.FC = () => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isFinished, quiz, currentQuestionIdx, selectedAnswers, handleSelectOption]);
+    }, [isFinished, quiz, currentQuestionIdx, selectedAnswers, handleSelectOption, handleNext, handlePrev]);
 
     if (!quiz) {
         return (
@@ -137,32 +168,11 @@ const QuizPage: React.FC = () => {
 
     const currentQ = quiz.questions[currentQuestionIdx];
 
-    const handleNext = () => {
-        if (currentQuestionIdx < quiz.questions.length - 1) {
-            setCurrentQuestionIdx(prev => prev + 1);
-        } else {
-            finishQuiz();
-        }
-    };
-
-    const handlePrev = () => {
-        if (currentQuestionIdx > 0) {
-            setCurrentQuestionIdx(prev => prev - 1);
-        }
-    };
-
-    const finishQuiz = () => {
-        setIsFinished(true);
-        const finalScore = quiz.questions.reduce((acc, q) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
-        if (finalScore === quiz.questions.length) {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#0ea5e9', '#38bdf8', '#ffffff']
-            });
-        }
-    };
+    // MEMOIZED PRE-HIGHLIGHTING TO AVOID SYNCHRONOUS DOM-FREEZES
+    const highlightedCode = useMemo(() => {
+        if (!currentQ.codeSnippet) return '';
+        return Prism.highlight(currentQ.codeSnippet, Prism.languages.cpp, 'cpp');
+    }, [currentQ.codeSnippet]);
 
     const score = quiz.questions.reduce((acc, q) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
 
@@ -365,7 +375,7 @@ const QuizPage: React.FC = () => {
                                         <pre className="!mx-0 !my-0 !p-4 xl:!p-6 !bg-transparent">
                                             <code
                                                 className="language-cpp font-mono text-xs xl:text-sm leading-relaxed"
-                                                dangerouslySetInnerHTML={{ __html: Prism.highlight(currentQ.codeSnippet, Prism.languages.cpp, 'cpp') }}
+                                                dangerouslySetInnerHTML={{ __html: highlightedCode }}
                                             />
                                         </pre>
                                     </div>

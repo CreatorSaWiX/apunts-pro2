@@ -266,7 +266,6 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
                                         max={steps.length - 1}
                                         value={currentStep}
                                         onChange={(e) => setCurrentStep(parseInt(e.target.value))}
-                                        onInput={(e) => setCurrentStep(parseInt((e.target as HTMLInputElement).value))}
                                         className="flex-1 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
                                     />
                                     <span className="text-[10px] sm:text-[11px] text-slate-500 font-mono font-medium w-6">{steps.length - 1}</span>
