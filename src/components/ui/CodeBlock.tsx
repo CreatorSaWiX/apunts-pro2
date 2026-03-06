@@ -1,42 +1,58 @@
 import { Copy, Check } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-c';
-import 'prismjs/components/prism-cpp';
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-json';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-css';
-import 'prismjs/components/prism-markup'; // HTML
+import React, { useState } from 'react';
+import ReactCodeMirror from '@uiw/react-codemirror';
+import { vscodeDark } from '@uiw/codemirror-theme-vscode';
+import { EditorView } from '@codemirror/view';
+import { cpp } from '@codemirror/lang-cpp';
+import { javascript } from '@codemirror/lang-javascript';
+import { html } from '@codemirror/lang-html';
+import { css } from '@codemirror/lang-css';
+import { json } from '@codemirror/lang-json';
 
 interface LanguageConfig {
     name: string;
     color: string;
+    bg: string;
+    border: string;
 }
 
 const LANGUAGES: Record<string, LanguageConfig> = {
-    'cpp': { name: 'C++', color: 'text-blue-400' },
-    'c++': { name: 'C++', color: 'text-blue-400' },
-    'js': { name: 'JavaScript', color: 'text-yellow-400' },
-    'javascript': { name: 'JavaScript', color: 'text-yellow-400' },
-    'ts': { name: 'TypeScript', color: 'text-blue-400' },
-    'typescript': { name: 'TypeScript', color: 'text-blue-400' },
-    'css': { name: 'CSS', color: 'text-sky-300' },
-    'html': { name: 'HTML', color: 'text-orange-400' },
-    'bash': { name: 'Terminal', color: 'text-emerald-400' },
-    'sh': { name: 'Terminal', color: 'text-emerald-400' },
-    'json': { name: 'JSON', color: 'text-amber-400' },
+    'cpp': { name: 'C++', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    'c++': { name: 'C++', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    'js': { name: 'JS', color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
+    'javascript': { name: 'JS', color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
+    'ts': { name: 'TS', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    'typescript': { name: 'TS', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    'css': { name: 'CSS', color: 'text-sky-300', bg: 'bg-sky-500/10', border: 'border-sky-500/20' },
+    'html': { name: 'HTML', color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
+    'bash': { name: 'Terminal', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
+    'sh': { name: 'Terminal', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
+    'json': { name: 'JSON', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
+};
+
+const getLanguageExtension = (langKey: string) => {
+    switch (langKey) {
+        case 'cpp':
+        case 'c++': return cpp();
+        case 'js':
+        case 'javascript':
+        case 'ts':
+        case 'typescript': return javascript({ jsx: true, typescript: langKey.includes('ts') });
+        case 'css': return css();
+        case 'html': return html();
+        case 'json': return json();
+        default: return [];
+    }
 };
 
 interface CodeBlockProps {
     code: string;
     title?: string;
     language?: string;
-    className?: string; // Allow custom classes
-    variant?: 'default' | 'minimal'; // Allow styling variants
-    showHeader?: boolean; // Toggle header visibility
+    className?: string;
+    variant?: 'default' | 'minimal';
+    showHeader?: boolean;
+    headerActions?: React.ReactNode;
 }
 
 const CodeBlock: React.FC<CodeBlockProps> = ({
@@ -45,22 +61,12 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
     language = 'text',
     className = '',
     variant = 'default',
-    showHeader = true
+    showHeader = true,
+    headerActions,
 }) => {
     const [copied, setCopied] = useState(false);
-    const codeRef = React.useRef<HTMLElement>(null);
-    const containerRef = React.useRef<HTMLDivElement>(null);
-
-    // Normalize language
     const langKey = language.toLowerCase();
-    const config = LANGUAGES[langKey] || { name: language, color: 'text-slate-400' };
-    const prismLanguage = langKey === 'c++' ? 'cpp' : langKey;
-
-    useEffect(() => {
-        if (codeRef.current) {
-            Prism.highlightElement(codeRef.current);
-        }
-    }, [code, prismLanguage]);
+    const config = LANGUAGES[langKey] || { name: language, color: 'text-slate-400', bg: 'bg-slate-500/10', border: 'border-slate-500/20' };
 
     const handleCopy = () => {
         navigator.clipboard.writeText(code);
@@ -70,51 +76,109 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
 
     const isMinimal = variant === 'minimal';
 
+    // Custom theme matching the approved mockup design
+    const codeTheme = EditorView.theme({
+        "&": {
+            backgroundColor: "transparent !important",
+            fontSize: "14px",
+            lineHeight: "1.7",
+        },
+        ".cm-scroller": {
+            padding: "16px 20px 16px 0",
+            fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace",
+            overflow: "auto",
+            scrollbarWidth: "none",
+        },
+        ".cm-scroller::-webkit-scrollbar": {
+            display: "none",
+        },
+        ".cm-gutters": {
+            backgroundColor: "transparent !important",
+            borderRight: "1px solid rgba(255,255,255,0.06) !important",
+            paddingRight: "12px",
+            marginRight: "16px",
+            paddingLeft: "8px",
+        },
+        ".cm-lineNumbers .cm-gutterElement": {
+            color: "rgba(148, 163, 184, 0.25)",
+            minWidth: "2.5em",
+            textAlign: "right",
+            fontSize: "13px",
+            fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace",
+        },
+        ".cm-content": {
+            padding: "0",
+        },
+        ".cm-line": {
+            padding: "0 16px 0 0",
+        },
+        ".cm-activeLine": {
+            backgroundColor: "transparent !important",
+        },
+        ".cm-activeLineGutter": {
+            backgroundColor: "transparent !important",
+        },
+        ".cm-cursor, .cm-dropCursor": {
+            display: "none !important",
+        },
+        ".cm-selectionBackground": {
+            backgroundColor: "transparent !important",
+        },
+    });
+
     return (
         <div
-            ref={containerRef}
             className={`relative group overflow-hidden not-prose ${isMinimal
                 ? ''
-                : 'bg-slate-900/50 border border-white/10 rounded-xl my-6 backdrop-blur-sm'
+                : 'border border-white/[0.07] rounded-2xl my-6'
                 } ${className}`}
         >
-            {/* Header: Title + Language + Copy */}
+            {/* Header: filename + language badge + copy */}
             {showHeader && (
-                <div className={`flex items-center justify-between px-4 py-3 ${isMinimal ? '' : 'bg-white/5 border-b border-white/5'
-                    }`}>
+                <div className="px-5 py-3 bg-white/[0.03] border-b border-white/[0.06] flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         {title && (
-                            <span className="text-xs font-medium text-slate-400 font-mono">
-                                {title}
-                            </span>
+                            <span className="text-sm font-mono text-slate-400">{title}</span>
                         )}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <span className={`text-[10px] font-bold ${config.color} uppercase tracking-wider opacity-60`}>
+                        <span className={`text-xs font-medium ${config.color} ${config.bg} px-2 py-0.5 rounded border ${config.border}`}>
                             {config.name}
                         </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        {headerActions}
                         <button
                             onClick={handleCopy}
-                            className="p-1.5 rounded-md text-slate-500 hover:text-white hover:bg-white/10 transition-all focus:outline-none"
+                            className="p-1.5 text-slate-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                             title="Copiar codi"
                         >
-                            {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                            {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
                         </button>
                     </div>
                 </div>
             )}
 
             {/* Code Content */}
-            <div className={`overflow-x-auto custom-scrollbar ${isMinimal ? 'h-full' : ''}`}>
-                <pre className={`!bg-transparent !m-0 !p-4 font-mono text-[13px] leading-relaxed ${isMinimal ? 'h-full' : ''}`}>
-                    <code ref={codeRef} className={`language-${prismLanguage}`}>
-                        {code}
-                    </code>
-                </pre>
+            <div className={`overflow-hidden flex-1 ${isMinimal ? 'h-full' : ''}`}>
+                <ReactCodeMirror
+                    value={code}
+                    readOnly={true}
+                    editable={false}
+                    theme={[vscodeDark, codeTheme]}
+                    extensions={[getLanguageExtension(langKey)]}
+                    className={`!bg-transparent ${isMinimal ? 'h-full' : ''}`}
+                    basicSetup={{
+                        lineNumbers: !isMinimal,
+                        foldGutter: false,
+                        highlightActiveLine: false,
+                        highlightSelectionMatches: false,
+                        syntaxHighlighting: true,
+                        drawSelection: false,
+                    }}
+                />
             </div>
         </div>
     );
 };
 
 export default CodeBlock;
+

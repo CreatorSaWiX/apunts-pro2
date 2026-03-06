@@ -10,14 +10,24 @@ import "katex/dist/katex.min.css"; // Import katex styles
 import { remarkDirectiveRehype } from "./remarkDirectiveRehype";
 import { remarkCodeMetadata } from "./remarkCodeMetadata";
 import CodeBlock from "../components/ui/CodeBlock";
-import GraphVisualizer from "../components/ui/GraphVisualizer";
 import Callout from "../components/ui/Callout";
-import AlgoPlayer from "../components/ui/AlgoPlayer";
-import OOPPlayer from "../components/ui/OOPPlayer";
-import StackVisualizer from "../components/ui/StackVisualizer";
-import QueueVisualizer from "../components/ui/QueueVisualizer";
-import ListGraphVisualizer from "../components/ui/ListGraphVisualizer";
-import BinTreeVisualizer from "../components/ui/BinTreeVisualizer";
+
+const GraphVisualizer = React.lazy(() => import("../components/ui/GraphVisualizer"));
+const AlgoPlayer = React.lazy(() => import("../components/ui/AlgoPlayer"));
+const OOPPlayer = React.lazy(() => import("../components/ui/OOPPlayer"));
+const StackVisualizer = React.lazy(() => import("../components/ui/StackVisualizer"));
+const QueueVisualizer = React.lazy(() => import("../components/ui/QueueVisualizer"));
+const ListGraphVisualizer = React.lazy(() => import("../components/ui/ListGraphVisualizer"));
+const BinTreeVisualizer = React.lazy(() => import("../components/ui/BinTreeVisualizer"));
+
+const VizFallback = () => (
+    <div className="h-64 animate-pulse bg-slate-900/40 border border-white/5 rounded-2xl w-full my-12 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+            <div className="w-8 h-8 rounded-full border-2 border-emerald-500/30 border-t-emerald-500 animate-spin"></div>
+            <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">Carregant motor gràfic...</span>
+        </div>
+    </div>
+);
 
 type MarkdownRendererProps = {
     content: string;
@@ -27,29 +37,57 @@ type MarkdownRendererProps = {
 const defaultComponents: any = {
     // Custom directive for graphs: ::graph
     graph: (props: any) => {
-        return <GraphVisualizer {...props} />;
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <GraphVisualizer {...props} />
+            </React.Suspense>
+        );
     },
     // Callouts from ::note, ::tip, etc.
     callout: (props: any) => {
         return <Callout {...props} />;
     },
     algoviz: (props: any) => {
-        return <AlgoPlayer algorithm={props.algorithm} />;
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <AlgoPlayer algorithm={props.algorithm} />
+            </React.Suspense>
+        );
     },
     oopviz: (props: any) => {
-        return <OOPPlayer simulation={props.simulation} />;
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <OOPPlayer simulation={props.simulation} />
+            </React.Suspense>
+        );
     },
-    stackviz: () => {
-        return <StackVisualizer />;
+    stackviz: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <StackVisualizer {...props} />
+            </React.Suspense>
+        );
     },
-    queueviz: () => {
-        return <QueueVisualizer />;
+    queueviz: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <QueueVisualizer {...props} />
+            </React.Suspense>
+        );
     },
-    listviz: () => {
-        return <ListGraphVisualizer />;
+    listviz: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <ListGraphVisualizer {...props} />
+            </React.Suspense>
+        );
     },
-    bintreeviz: () => {
-        return <BinTreeVisualizer />;
+    bintreeviz: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <BinTreeVisualizer {...props} />
+            </React.Suspense>
+        );
     },
     pre: ({ children }: any) => <>{children}</>,
     code(props: any) {

@@ -202,13 +202,24 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     const drawNode = useCallback((node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
         const label = node.label || node.id;
         const fontSize = 12 / globalScale;
-        const r = 5;
+        const r = 6;
+        const color = node.color || theme.primary || '#8b5cf6';
 
-        // Draw Border
+        // Add soft glow effect via drop-shadow
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = color;
+
         ctx.beginPath();
         ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 1.5 / globalScale;
-        ctx.strokeStyle = '#fff';
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        // Draw Border
+        ctx.shadowBlur = 0; // Reset shadow for outline
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
+        ctx.lineWidth = 2 / globalScale;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
         ctx.stroke();
 
         // Draw Label
@@ -324,16 +335,16 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                     width={dimensions.width}
                     height={dimensions.height}
                     graphData={graphData}
-                    nodeRelSize={5} // Exact visual radius
-                    nodeColor={getNodeColor} // Native property to color circles
-                    nodeCanvasObjectMode={getNodeCanvasObjectMode} // Let the library draw the colored hit-detectable circles, we only add text and stroke
-                    nodeCanvasObject={drawNode} // We draw ONLY outline and text over the built-in hit-detected nodes
+                    nodeRelSize={6} // Increased size
+                    nodeColor={getNodeColor}
+                    nodeCanvasObjectMode={getNodeCanvasObjectMode}
+                    nodeCanvasObject={drawNode}
                     onNodeHover={handleNodeHover}
-                    nodeLabel="label" // Tooltip as fallback
+                    nodeLabel="label"
                     linkColor={getLinkColor}
                     backgroundColor="rgba(0,0,0,0)"
-                    linkWidth={1.5}
-                    d3VelocityDecay={0.2} // Slightly lower decay for smoother movement
+                    linkWidth={2.5} // Thicker connections
+                    d3VelocityDecay={0.15} // Slightly more floaty
                     cooldownTicks={100}
                     onEngineStop={handleEngineStop}
                 />

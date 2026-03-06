@@ -2,9 +2,11 @@ import { useEffect } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import Hero from '../components/Hero';
 import TopicCarousel from '../components/TopicCarousel';
+import { motion } from 'framer-motion';
 
 const HomePage = () => {
     const { subject, setSubject } = useSubject();
+
     // Lock scroll on mount
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -15,20 +17,32 @@ const HomePage = () => {
 
     return (
         <div className="h-screen w-full relative z-10 flex flex-col overflow-hidden">
-            {/* Subject Switcher */}
-            {/* Subject Switcher - Responsive Positioning */}
-            <div className="absolute top-4 right-4 md:top-6 md:right-6 z-50 flex items-center p-1 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl scale-90 md:scale-100 origin-top-right">
+            {/* Subject Switcher - Premium Animated Pill */}
+            <div className="absolute top-4 right-4 md:top-6 md:right-8 z-50 flex items-center p-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.5)] scale-90 md:scale-100 origin-top-right transition-all hover:bg-slate-900/90 hover:border-white/20">
                 <button
                     onClick={() => setSubject('pro2')}
-                    className={`px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold tracking-wider transition-all duration-300 ${subject === 'pro2' ? 'bg-[#0ea5e9] text-white shadow-lg shadow-sky-500/25 scale-105' : 'text-slate-400 hover:text-white'}`}
+                    className={`relative px-4 py-1.5 md:px-5 md:py-2 rounded-full text-[11px] md:text-[13px] font-black tracking-widest transition-all duration-300 z-10 ${subject === 'pro2' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                 >
+                    {subject === 'pro2' && (
+                        <motion.div
+                            layoutId="active-pill"
+                            className="absolute inset-0 bg-gradient-to-r from-sky-400 to-blue-500 rounded-full shadow-[0_0_15px_rgba(56,189,248,0.5)] z-[-1]"
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                    )}
                     PRO2
                 </button>
-                <div className="w-px h-3 md:h-4 bg-white/10 mx-1"></div>
                 <button
                     onClick={() => setSubject('m1')}
-                    className={`px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold tracking-wider transition-all duration-300 ${subject === 'm1' ? 'bg-[#8b5cf6] text-white shadow-lg shadow-violet-500/25 scale-105' : 'text-slate-400 hover:text-white'}`}
+                    className={`relative px-4 py-1.5 md:px-5 md:py-2 rounded-full text-[11px] md:text-[13px] font-black tracking-widest transition-all duration-300 z-10 ${subject === 'm1' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                 >
+                    {subject === 'm1' && (
+                        <motion.div
+                            layoutId="active-pill"
+                            className="absolute inset-0 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full shadow-[0_0_15px_rgba(139,92,246,0.5)] z-[-1]"
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                    )}
                     M1
                 </button>
             </div>

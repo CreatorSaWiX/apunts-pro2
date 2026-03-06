@@ -6,7 +6,7 @@ import Background from './components/Background';
 
 // LACY LOADING PAGES: Split the gigantic React bundle into tiny specific chunks 
 // This allows the browser to show the initial HTML / FCP (First Contentful Paint) immediately on mobile
-const HomePage = lazy(() => import('./pages/HomePage'));
+import HomePage from './pages/HomePage';
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));

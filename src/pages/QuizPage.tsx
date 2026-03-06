@@ -4,9 +4,10 @@ import { ChevronLeft, ChevronRight, CheckCircle, XCircle, Clock, AlertTriangle, 
 import { motion, AnimatePresence } from 'framer-motion';
 import { quizzes } from '../content/data/quizzes';
 import confetti from 'canvas-confetti';
-import Prism from 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css';
-import 'prismjs/components/prism-cpp';
+import ReactCodeMirror from '@uiw/react-codemirror';
+import { vscodeDark } from '@uiw/codemirror-theme-vscode';
+import { EditorView } from '@codemirror/view';
+import { cpp } from '@codemirror/lang-cpp';
 
 const renderInlineCode = (text: string) => {
     if (!text.includes('`')) return text;
@@ -169,10 +170,7 @@ const QuizPage: React.FC = () => {
     const currentQ = quiz.questions[currentQuestionIdx];
 
     // MEMOIZED PRE-HIGHLIGHTING TO AVOID SYNCHRONOUS DOM-FREEZES
-    const highlightedCode = useMemo(() => {
-        if (!currentQ.codeSnippet) return '';
-        return Prism.highlight(currentQ.codeSnippet, Prism.languages.cpp, 'cpp');
-    }, [currentQ.codeSnippet]);
+    // Migrated fully to CodeMirror below, eliminating the need for string manipulation and manual DOM freezing in React.
 
     const score = quiz.questions.reduce((acc, q) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
 
@@ -183,7 +181,7 @@ const QuizPage: React.FC = () => {
     };
 
     return (
-        <div className="h-screen pt-8 md:pt-10 pb-6 px-4 max-w-4xl mx-auto flex flex-col relative z-10 overflow-hidden">
+        <div className="h-screen pt-8 md:pt-10 pb-6 px-4 max-w-4xl mx-auto flex flex-col relative z-10 overflow-hidden overflow-x-hidden">
             {/* Elegant Header */}
             <div className="flex items-center justify-between mb-4 xl:mb-6 pb-3 border-b border-white/5 shrink-0">
                 <Link
@@ -354,7 +352,7 @@ const QuizPage: React.FC = () => {
                             </div> */}
 
                             {/* Question Content Wrapper - Scrollable if extremely long, else flex content */}
-                            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto pr-2 pb-2 custom-scrollbar">
+                            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto overflow-x-hidden pr-2 pb-2 custom-scrollbar">
                                 <h2 className="text-xl xl:text-2xl text-white font-bold leading-tight mb-4 xl:mb-6 shrink-0">
                                     {renderInlineCode(currentQ.question)}
                                 </h2>
@@ -372,12 +370,29 @@ const QuizPage: React.FC = () => {
                                                 <span className="text-primary/70">⌘</span> snippet.cpp
                                             </div>
                                         </div>
-                                        <pre className="!mx-0 !my-0 !p-4 xl:!p-6 !bg-transparent">
-                                            <code
-                                                className="language-cpp font-mono text-xs xl:text-sm leading-relaxed"
-                                                dangerouslySetInnerHTML={{ __html: highlightedCode }}
+                                        <div className="p-4 xl:p-6 text-xs xl:text-sm">
+                                            <ReactCodeMirror
+                                                value={currentQ.codeSnippet}
+                                                readOnly={true}
+                                                editable={false}
+                                                theme={[vscodeDark, EditorView.theme({
+                                                    "&": { backgroundColor: "transparent !important" },
+                                                    ".cm-gutters": { backgroundColor: "transparent !important", borderRight: "none !important", color: "rgba(255,255,255,0.3)" },
+                                                    ".cm-scroller": { fontFamily: "inherit" }
+                                                })]}
+                                                extensions={[cpp()]}
+                                                className="font-mono leading-relaxed tracking-tight !bg-transparent"
+                                                basicSetup={{
+                                                    lineNumbers: true,
+                                                    foldGutter: false,
+                                                    highlightActiveLine: false,
+                                                    highlightSelectionMatches: false,
+                                                    syntaxHighlighting: true,
+                                                    drawSelection: false,
+                                                    dropCursor: false,
+                                                }}
                                             />
-                                        </pre>
+                                        </div>
                                     </div>
                                 )}
 

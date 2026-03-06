@@ -123,25 +123,29 @@ const SolutionsListPage = () => {
                                     to={`/tema/${topicId}/solucionaris/${problemId}`}
                                     className="group relative block h-full"
                                 >
-                                    <div className={`h-full backdrop-blur-sm rounded-2xl border p-6 transition-all duration-300 relative overflow-hidden group-hover:shadow-lg group-hover:-translate-y-1 pl-6
+                                    <div className={`h-full backdrop-blur-sm rounded-3xl border p-6 transition-all duration-300 relative overflow-hidden group-hover:shadow-2xl group-hover:-translate-y-1 group-active:scale-95
                                         ${isSolved
-                                            ? 'bg-slate-900/40 border-emerald-500/20 hover:border-emerald-500/40 hover:bg-slate-800/60'
-                                            : 'bg-slate-900/20 border-white/5 hover:border-white/10 hover:bg-slate-900/40 opacity-80 hover:opacity-100'
+                                            ? 'bg-gradient-to-br from-slate-900/80 to-slate-800/80 border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-emerald-500/10'
+                                            : 'bg-slate-900/40 border-white/5 hover:border-white/20 hover:bg-slate-800/40 opacity-90 hover:opacity-100'
                                         }
                                     `}>
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition-colors
-                                                ${isSolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-800 text-slate-400 border-white/5'}
+                                        {/* Decorative glow for solved problems */}
+                                        {isSolved && (
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none transition-transform duration-700 ease-out group-hover:scale-150" />
+                                        )}
+
+                                        <div className="relative z-10 flex items-start justify-between mb-4">
+                                            <div className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition-colors shadow-sm
+                                                ${isSolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-white/10'}
                                             `}>
                                                 {problemId}
                                             </div>
-                                            {isSolved && (
-                                                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-500/5 px-2 py-1 rounded-full border border-emerald-500/10">
-                                                    <Check size={10} strokeWidth={4} /> Fet
+                                            {isSolved ? (
+                                                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1.5 rounded-full border border-emerald-500/20 shadow-sm backdrop-blur-md">
+                                                    <Check size={12} strokeWidth={3} /> Fet
                                                 </div>
-                                            )}
-                                            {!isSolved && (
-                                                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-500/10 px-2 py-1 rounded-full border border-white/5">
+                                            ) : (
+                                                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-800/50 px-2.5 py-1.5 rounded-full border border-white/5">
                                                     Pendent
                                                 </div>
                                             )}
