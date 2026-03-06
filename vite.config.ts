@@ -322,7 +322,8 @@ export default defineConfig(({ mode }) => {
             'vendor-react': ['react', 'react-dom', 'react-router-dom'],
             'vendor-graphs': ['react-force-graph-2d'],
             'vendor-markdown': ['react-markdown', 'rehype-raw', 'rehype-katex', 'remark-math', 'remark-directive'],
-            'vendor-utils': ['framer-motion', 'lucide-react', 'date-fns']
+            'vendor-utils': ['framer-motion', 'lucide-react', 'date-fns'],
+            'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore']
           }
         }
       }
