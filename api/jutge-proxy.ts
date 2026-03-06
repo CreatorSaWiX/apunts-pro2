@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getProblemInfo } from '../src/lib/jutgeScraper';
+import { getProblemInfo } from '../src/lib/jutgeScraper.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Add CORS headers so we can access from the frontend in local development / prod
