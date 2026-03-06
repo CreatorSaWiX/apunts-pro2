@@ -163,6 +163,8 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
 
     // Resize Handler
     useEffect(() => {
+        let timeoutId: any;
+
         const updateDimensions = () => {
             if (containerRef.current) {
                 setDimensions({
@@ -172,20 +174,26 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
             }
         };
 
-        window.addEventListener('resize', updateDimensions);
+        const debouncedUpdate = () => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => updateDimensions(), 100);
+        };
+
+        window.addEventListener('resize', debouncedUpdate);
 
         let observer: ResizeObserver | null = null;
         if (containerRef.current) {
             observer = new ResizeObserver(() => {
-                updateDimensions();
+                debouncedUpdate();
             });
             observer.observe(containerRef.current);
         }
 
-        updateDimensions();
+        updateDimensions(); // Set immediately on mount
 
         return () => {
-            window.removeEventListener('resize', updateDimensions);
+            clearTimeout(timeoutId);
+            window.removeEventListener('resize', debouncedUpdate);
             if (observer) observer.disconnect();
         };
     }, [numericHeight, transparentBg]);

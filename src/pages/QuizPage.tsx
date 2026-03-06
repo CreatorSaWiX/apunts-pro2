@@ -72,9 +72,8 @@ const QuizPage: React.FC = () => {
     }, [currentQuestionIdx, selectedAnswers, timeLeft, isFinished, topicId]);
 
     // 3. Code highlighting (Senior: Visual Quality)
-    useEffect(() => {
-        if (!isFinished) Prism.highlightAll();
-    }, [currentQuestionIdx, isFinished]);
+    // Removed Prism.highlightAll() which caused severe INP bottlenecks due to full DOM scanning.
+    // Highlighting is now localized dynamically per code snippet using Prism.highlight.
 
     // Timer Logic with visual warnings
     useEffect(() => {
@@ -364,9 +363,10 @@ const QuizPage: React.FC = () => {
                                             </div>
                                         </div>
                                         <pre className="!mx-0 !my-0 !p-4 xl:!p-6 !bg-transparent">
-                                            <code className="language-cpp font-mono text-xs xl:text-sm leading-relaxed">
-                                                {currentQ.codeSnippet}
-                                            </code>
+                                            <code
+                                                className="language-cpp font-mono text-xs xl:text-sm leading-relaxed"
+                                                dangerouslySetInnerHTML={{ __html: Prism.highlight(currentQ.codeSnippet, Prism.languages.cpp, 'cpp') }}
+                                            />
                                         </pre>
                                     </div>
                                 )}

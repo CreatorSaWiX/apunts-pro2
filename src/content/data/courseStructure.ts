@@ -54,13 +54,37 @@ export const courseStructure: TopicDefinition[] = [
         id: "pro2-tema-4",
         title: "Tema 4: Arbres",
         description: "Arbres binaris, recorreguts i arbres generals.",
-        problems: []
+        problems: [
+            { id: "S42599", title: "Alçada d'un arbre binari" },
+            { id: "T93544", title: "Suma valors d'un arbre binari" },
+            { id: "Z53201", title: "Cerca un valor en un arbre binari" },
+            { id: "W72736", title: "Arbre binari de sumes" },
+            { id: "Z17905", title: "Arbre binari de mides" },
+            { id: "T78145", title: "Mirall d'un arbre binari" },
+            { id: "U38461", title: "Avaluar expressions binàries (1)" },
+            { id: "Z78925", title: "Avaluar expressions binàries amb variables" },
+            { id: "V80619", title: "Podar un arbre binari" },
+            { id: "U38261", title: "Podar un arbre binari sense repeticions" },
+            { id: "W90730", title: "Ordenar un arbre binari per sumes de subarbres" },
+            { id: "V22704", title: "Camí més llarg en un arbre binari" }
+        ]
     },
     {
         id: "pro2-tema-5",
-        title: "Tema 5: Arbres Generals",
-        description: "Estructures arborescents no lineals.",
-        problems: []
+        title: "Tema 5: Cues de prioritat i arbres generals",
+        description: "Exercicis de cues de prioritat (Heaps) i arbres generals.",
+        problems: [
+            { id: "X20428", title: "Ordena amb Heap" },
+            { id: "Y13945", title: "K Més Grans" },
+            { id: "T85801", title: "Paquets de Xarxa" },
+            { id: "Z80280", title: "Alçada d'un arbre" },
+            { id: "W23082", title: "Cerca un valor en un arbre" },
+            { id: "V21234", title: "Arbre mirall" },
+            { id: "Z82639", title: "Avaluar expressions Booleanes" },
+            { id: "Z14339", title: "Imprimir expressions" },
+            { id: "W37576", title: "Màxim en Finestra" },
+            { id: "S84123", title: "Exercici restringit (S84123)" }
+        ]
     },
     {
         id: "pro2-tema-6",
