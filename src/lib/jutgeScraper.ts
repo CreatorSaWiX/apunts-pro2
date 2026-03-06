@@ -97,6 +97,13 @@ export async function getProblemInfo(id: string, reqLang: string | null, _env?: 
 
     // 3. Post-processat HTML
     const $ = cheerio.load(statementHtml, null, false);
+
+    // IMPORTANT!!! TailwindCSS té definit `.collapse { visibility: collapse; }`
+    // El HTML de Jutge utilitza Bootstrap i ve amb `<div id="txt" class="collapse in">`
+    // Això feia que tot l'enunciat fos invisible!!
+    $('.collapse').removeClass('collapse');
+    $('.in').removeClass('in');
+
     $('a[href^="problem://"]').each((_, el) => {
         const parts = ($(el).attr('href') || '').split('/');
         const lastPart = parts[parts.length - 1];
