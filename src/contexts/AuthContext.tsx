@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile, deleteUser } from 'firebase/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../lib/firebase';
 
 interface User {
     id: string;
@@ -27,53 +24,79 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
-            if (firebaseUser) {
-                // Fetch extra data from Firestore
-                let role = 'user';
-                let firestoreData: any = {};
+        let unsubscribe: (() => void) | undefined;
 
-                try {
-                    const docSnap = await getDoc(doc(db, 'users', firebaseUser.uid));
-                    if (docSnap.exists()) {
-                        firestoreData = docSnap.data();
-                        role = firestoreData.role || 'user';
+        const initAuth = async () => {
+            try {
+                const { auth, db } = await import('../lib/firebase');
+                const { onAuthStateChanged } = await import('firebase/auth');
+                const { doc, getDoc } = await import('firebase/firestore');
+
+                unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
+                    if (firebaseUser) {
+                        let role = 'user';
+                        let firestoreData: any = {};
+
+                        try {
+                            const docSnap = await getDoc(doc(db, 'users', firebaseUser.uid));
+                            if (docSnap.exists()) {
+                                firestoreData = docSnap.data();
+                                role = firestoreData.role || 'user';
+                            }
+                        } catch (e) {
+                            console.error("Error fetching user role", e);
+                        }
+
+                        const username = firestoreData.username || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
+
+                        setUser({
+                            id: firebaseUser.uid,
+                            username: username,
+                            email: firebaseUser.email || '',
+                            avatar: firestoreData.avatar || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${username}`,
+                            role: role
+                        });
+                    } else {
+                        setUser(null);
                     }
-                } catch (e) {
-                    console.error("Error fetching user role", e);
-                }
-
-                const username = firestoreData.username || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
-
-                setUser({
-                    id: firebaseUser.uid,
-                    username: username,
-                    email: firebaseUser.email || '',
-                    avatar: firestoreData.avatar || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${username}`,
-                    role: role
+                    setIsLoading(false);
                 });
-            } else {
-                setUser(null);
+            } catch (error) {
+                console.error("Failed to initialize Firebase Auth", error);
+                setIsLoading(false);
             }
-            setIsLoading(false);
-        });
+        };
 
-        return () => unsubscribe();
+        // Delay firebase initialization slightly so it doesn't compete with React hydration
+        const timer = setTimeout(() => {
+            initAuth();
+        }, 100);
+
+        return () => {
+            clearTimeout(timer);
+            if (unsubscribe) unsubscribe();
+        };
     }, []);
 
     const login = async (email: string, password: string) => {
+        const { auth } = await import('../lib/firebase');
+        const { signInWithEmailAndPassword } = await import('firebase/auth');
         await signInWithEmailAndPassword(auth, email, password);
     };
 
     const signup = async (email: string, password: string, username: string, inviteCode?: string) => {
+        const { auth, db } = await import('../lib/firebase');
+        const { createUserWithEmailAndPassword, updateProfile, deleteUser } = await import('firebase/auth');
+        const { doc, setDoc } = await import('firebase/firestore');
+
         // 1. Create User (Auth)
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+        const firebaseUser = userCredential.user;
 
         try {
             // 2. Update Profile
             const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${username}`;
-            await updateProfile(user, {
+            await updateProfile(firebaseUser, {
                 displayName: username,
                 photoURL: avatarUrl
             });
@@ -87,17 +110,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 createdAt: new Date().toISOString()
             };
 
-            // Only add inviteCode if provided (triggers validation rules for editors)
+            // Only add inviteCode if provided
             if (inviteCode) {
                 userData.inviteCode = inviteCode;
             }
 
             // 4. Create Firestore Document
-            await setDoc(doc(db, 'users', user.uid), userData);
+            await setDoc(doc(db, 'users', firebaseUser.uid), userData);
 
-            // 5. Force update local state (fix race condition with onAuthStateChanged)
+            // 5. Force update local state
             setUser({
-                id: user.uid,
+                id: firebaseUser.uid,
                 username: username,
                 email: email,
                 avatar: avatarUrl,
@@ -105,14 +128,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
 
         } catch (error) {
-            // If Firestore creation fails (e.g., invalid code), rollback Auth creation
             console.error("Error creating user profile:", error);
-            await deleteUser(user);
+            await deleteUser(firebaseUser);
             throw new Error(inviteCode ? "Codi d'invitació no vàlid o error del sistema." : "Error al crear el perfil d'usuari.");
         }
     };
 
     const logout = async () => {
+        const { auth } = await import('../lib/firebase');
+        const { signOut } = await import('firebase/auth');
         await signOut(auth);
     };
 
