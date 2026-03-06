@@ -31,10 +31,10 @@ export const fetchJutgeProblem = async (problemId: string, lang: string = 'ca'):
             id: problemId,
             title: `Error carregant ${problemId}`,
             statement: `<div class="p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
-                <p class="font-bold">No s'ha pogut carregar l'enunciat.</p>
-                <p class="text-sm opacity-80 mt-2">Verifica les credencials del servidor (JUTGE_EMAIL).</p>
+                <p class="font-bold">No s'ha pogut carregar l'enunciat des del portal web.</p>
+                <p class="text-sm opacity-80 mt-2">És possible que el problema no estigui disponible públicament o hi hagi un error de connexió.</p>
                 <a href="https://jutge.org/problems/${problemId}" target="_blank" class="block mt-4 text-emerald-400 hover:underline">
-                    Veure a Jutge.org &rarr;
+                    Veure manualment a Jutge.org &rarr;
                 </a>
             </div>`,
             url: `https://jutge.org/problems/${problemId}`,

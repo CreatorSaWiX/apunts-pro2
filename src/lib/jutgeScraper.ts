@@ -6,66 +6,30 @@ interface JutgeEnv {
     JUTGE_COOKIE?: string; // For testing in some environments
 }
 
-export async function getProblemInfo(id: string, reqLang: string | null, env: JutgeEnv) {
+export async function getProblemInfo(id: string, reqLang: string | null, _env?: JutgeEnv) {
     let cleanId = id.replace(/[^a-zA-Z0-9_]/g, '');
     let statementHtml = '';
     let title = cleanId;
     let source = 'scraping';
     let availableLanguages = ['ca', 'en', 'es'];
 
-    async function jsonRpc(endpoint: string, method: string, params: any, token?: string | null) {
-        const headers: any = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-        if (env.JUTGE_COOKIE) headers['Cookie'] = env.JUTGE_COOKIE;
-
-        const response = await fetch(`https://api.jutge.org/api/${endpoint}/${method}`, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({ params, version: "1.0", id: 1 })
-        });
-
-        if (!response.ok) throw new Error(`API Error ${response.status}: ${response.statusText}`);
-        const data: any = await response.json();
-        if (data.error) throw new Error(data.error.message || 'Unknown API Error');
-        return data.result;
-    }
-
-    async function getJutgeToken() {
-        if (env.JUTGE_EMAIL && env.JUTGE_PASSWORD) {
-            try {
-                const token = await jsonRpc('auth', 'login', {
-                    email: env.JUTGE_EMAIL,
-                    password: env.JUTGE_PASSWORD
-                });
-                return token;
-            } catch (e) {
-                console.error("[JutgeScraper] Login failed:", e);
-            }
-        }
-        return null;
-    }
-
-    const token = await getJutgeToken();
-
     const priority = reqLang ? [reqLang, 'ca', 'en', 'es'] : ['ca', 'en', 'es'];
     const uniqueLangs = Array.from(new Set(priority));
-
-    const fetchStatementApi = async (l: string) => {
-        if (!token) return null;
-        try {
-            return await jsonRpc('problems', 'getHtmlStatement', { problem_nm: cleanId, lang: l }, token);
-        } catch (e) { return null; }
-    };
 
     const fetchScraping = async (l: string) => {
         try {
             const urlId = l ? `${cleanId}_${l}` : cleanId;
             const url = `https://jutge.org/problems/${urlId}`;
-            const headers: any = { 'User-Agent': 'Mozilla/5.0 (compatible; ApuntsBot/1.0)' };
-            if (token) headers['Cookie'] = `PHPSESSID=${token}`;
+            // IMPORTANT: Fem servir User-Agent estàndard per a que Vercel IPs no siguin bloquejats pel WAF de Cloudflare
+            const headers: any = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            };
 
             const resp = await fetch(url, { headers });
-            if (!resp.ok) return null;
+            if (!resp.ok) {
+                console.error(`Fetch Jutge Fallit: ${resp.status}`);
+                return null;
+            }
 
             const html = await resp.text();
             if (html.includes('Login') || html.includes('Wrong URL')) return null;
@@ -113,33 +77,20 @@ export async function getProblemInfo(id: string, reqLang: string | null, env: Ju
 
             if (combinedContent.children().length > 0) return { html: combinedContent.html() || '', langs: availableLanguages };
             return null;
-        } catch (ex) { return null; }
+        } catch (ex) {
+            console.error("Scrape Error:", ex);
+            return null;
+        }
     };
 
-    // 1. Scraping (Primary)
+    // 1. Scraping directament, res de JWT/Tokens
     for (const l of uniqueLangs) {
         const scraped = await fetchScraping(l);
-        if (scraped) { statementHtml = scraped.html; availableLanguages = scraped.langs; source = 'scraping-primary'; break; }
+        if (scraped) { statementHtml = scraped.html; availableLanguages = scraped.langs; source = 'scraping-direct'; break; }
     }
     if (!statementHtml && uniqueLangs.length === 0) {
         const scraped = await fetchScraping('');
-        if (scraped) { statementHtml = scraped.html; availableLanguages = scraped.langs; source = 'scraping-primary'; }
-    }
-
-    // 2. API (Fallback)
-    if (!statementHtml && token) {
-        source = 'api-fallback';
-        for (const l of uniqueLangs) {
-            const html = await fetchStatementApi(l);
-            if (html) {
-                statementHtml = html;
-                try {
-                    const pData = await jsonRpc('problems', 'getProblem', { problem_nm: cleanId }, token);
-                    if (pData?.title) title = pData.title;
-                } catch (e) { }
-                break;
-            }
-        }
+        if (scraped) { statementHtml = scraped.html; availableLanguages = scraped.langs; source = 'scraping-direct'; }
     }
 
     if (!statementHtml) throw new Error('Problem content not found or unable to scrape.');
