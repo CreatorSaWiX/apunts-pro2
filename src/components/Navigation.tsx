@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, ArrowLeft, LogIn } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { db } from '../lib/firebase';
 
 const LazyNavigationMenu = lazy(() => import('./NavigationMenu'));
 
@@ -24,7 +23,10 @@ const Navigation: React.FC = () => {
         let unsubscribe = () => { };
 
         // Import Firestore dynamically to avoid blocking the main bundle FCP
-        import('firebase/firestore').then(({ collection, query, where, onSnapshot }) => {
+        Promise.all([
+            import('firebase/firestore'),
+            import('../lib/firebase')
+        ]).then(([{ collection, query, where, onSnapshot }, { db }]) => {
             const q = query(
                 collection(db, 'messages'),
                 where('receiverId', '==', user.id),
@@ -36,7 +38,7 @@ const Navigation: React.FC = () => {
             });
         }).catch(err => console.error("Failed to load firestore in navigation", err));
 
-        return () => unsubscribe();
+        return () => { unsubscribe() };
     }, [user]);
 
     // Mobile Navbar states
