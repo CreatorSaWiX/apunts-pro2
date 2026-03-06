@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import Hero from '../components/Hero';
-import TopicCarousel from '../components/TopicCarousel';
 import { motion } from 'framer-motion';
+import TopicCarousel from '../components/TopicCarousel';
 
 const HomePage = () => {
     const { subject, setSubject } = useSubject();

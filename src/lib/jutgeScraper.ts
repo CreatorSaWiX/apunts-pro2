@@ -48,7 +48,7 @@ export async function getProblemInfo(id: string, reqLang: string | null, env: Ju
     const token = await getJutgeToken();
 
     const priority = reqLang ? [reqLang, 'ca', 'en', 'es'] : ['ca', 'en', 'es'];
-    const uniqueLangs = [...new Set(priority)];
+    const uniqueLangs = Array.from(new Set(priority));
 
     const fetchStatementApi = async (l: string) => {
         if (!token) return null;

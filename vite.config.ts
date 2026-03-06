@@ -104,11 +104,16 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-            'vendor-graphs': ['react-force-graph-2d'],
-            'vendor-markdown': ['react-markdown', 'rehype-raw', 'rehype-katex', 'remark-math', 'remark-directive'],
-            'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore']
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('firebase')) return 'vendor-firebase';
+              if (id.includes('@uiw') || id.includes('@codemirror')) return 'vendor-codemirror';
+              if (id.includes('react-force-graph')) return 'vendor-graphs';
+              if (id.includes('react-markdown') || id.includes('rehype') || id.includes('remark')) return 'vendor-markdown';
+              if (id.includes('lucide-react')) return 'vendor-icons';
+              if (id.includes('framer-motion')) return 'vendor-framer';
+              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) return 'vendor-react';
+            }
           }
         }
       }

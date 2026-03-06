@@ -6,7 +6,8 @@ service cloud.firestore {
     // - Create: Només si l'usuari està autenticat I proporciona un codi d'invitació vàlid (que existeixi a la col·lecció 'invites')
     // - Read/Update: Només el propi usuari
     match /users/{userId} {
-      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow read: if true;
+      allow update: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId
                     && exists(/databases/$(database)/documents/invites/$(request.resource.data.inviteCode));
     }

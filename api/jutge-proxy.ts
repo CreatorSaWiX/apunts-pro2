@@ -2,31 +2,38 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getProblemInfo } from '../src/lib/jutgeScraper';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-    const { id, lang } = req.query;
+    // Add CORS headers so we can access from the frontend in local development / prod
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    );
 
-    if (!id || typeof id !== 'string') {
-        return res.status(400).json({ error: 'Missing or invalid problem ID' });
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
     }
 
-    const reqLang = typeof lang === 'string' ? lang : null;
-
     try {
-        const result = await getProblemInfo(id, reqLang, {
+        const id = req.query.id as string;
+        const lang = (req.query.lang as string) || null;
+
+        if (!id) {
+            return res.status(400).json({ error: 'Missing Problem ID' });
+        }
+
+        const result = await getProblemInfo(id, lang, {
             JUTGE_EMAIL: process.env.JUTGE_EMAIL,
-            JUTGE_PASSWORD: process.env.JUTGE_PASSWORD,
-            JUTGE_COOKIE: process.env.JUTGE_COOKIE
+            JUTGE_PASSWORD: process.env.JUTGE_PASSWORD
         });
 
-        // Cache for 1 day (CDN) and up to 1 week stale-while-revalidate
-        res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
-
-        return res.status(200).json(result);
-
-    } catch (error) {
-        console.error('Error fetching from Jutge API:', error);
-        return res.status(500).json({
-            error: 'Failed to fetch problem data',
-            details: error instanceof Error ? error.message : String(error)
-        });
+        // Set caching headers for the edge CDN
+        res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=43200');
+        res.status(200).json(result);
+    } catch (e: any) {
+        console.error("[Vercel API] Proxy Error:", e);
+        res.status(500).json({ error: String(e.message || e) });
     }
 }

@@ -132,7 +132,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
 
 const ProfilePage = () => {
     const { uid } = useParams();
-    const { user: authUser, logout } = useAuth();
+    const { user: authUser, logout, isLoading: authLoading } = useAuth();
 
     const userIdToFetch = uid || authUser?.id;
     const isOwnProfile = !uid || (authUser && authUser.id === uid);
@@ -225,7 +225,15 @@ const ProfilePage = () => {
         }
     };
 
-    if (!userIdToFetch) {
+    if (authLoading && !uid) {
+        return (
+            <div className="min-h-screen flex items-center justify-center pt-24 relative z-10 w-full">
+                <Loader size={32} className="text-sky-500 animate-spin" />
+            </div>
+        );
+    }
+
+    if (!userIdToFetch && !authLoading) {
         return <Navigate to="/login" replace />;
     }
 
