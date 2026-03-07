@@ -60,21 +60,6 @@ export async function getProblemInfo(id: string, reqLang: string | null, _env?: 
                 combinedContent.append(content.html() || '');
             }
 
-            $('.panel.panel-default').each((_, el) => {
-                const heading = $(el).find('.panel-heading').text().trim().toLowerCase();
-                if (heading.includes('public test cases') || heading.includes('jocs de prova') || heading.includes('casos de prueba')) {
-                    const testCasePanel = $(el).clone();
-                    testCasePanel.find('.panel-heading, .pull-right, .vertical-view, button, script, style').remove();
-
-                    combinedContent.append('<div class="mt-12 pt-8 border-t border-sky-500/10"></div>');
-                    combinedContent.append('<h2 class="text-xl font-bold mb-6 text-sky-400">Exemples (Jocs de proves públics)</h2>');
-
-                    const listGroup = testCasePanel.find('.list-group');
-                    if (listGroup.length) combinedContent.append(listGroup.html() || '');
-                    else combinedContent.append(testCasePanel.html() || '');
-                }
-            });
-
             if (combinedContent.children().length > 0) return { html: combinedContent.html() || '', langs: availableLanguages };
             return null;
         } catch (ex) {
@@ -98,9 +83,6 @@ export async function getProblemInfo(id: string, reqLang: string | null, _env?: 
     // 3. Post-processat HTML
     const $ = cheerio.load(statementHtml, null, false);
 
-    // IMPORTANT!!! TailwindCSS té definit `.collapse { visibility: collapse; }`
-    // El HTML de Jutge utilitza Bootstrap i ve amb `<div id="txt" class="collapse in">`
-    // Això feia que tot l'enunciat fos invisible!!
     $('.collapse').removeClass('collapse');
     $('.in').removeClass('in');
 
