@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Code2, Database, TerminalSquare, ChevronDown, ChevronUp } from 'lucide-react';
 import { oopSimulations } from '../../lib/oopSimulations';
 import ReactCodeMirror from '@uiw/react-codemirror';
@@ -48,16 +48,13 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
     }, [currentStep]);
 
     const handlePlayPause = () => {
-        if (!isPlaying) {
-            // Auto-switch to code tab when starting playback
-            setActiveTab('code');
-        }
+        if (!isPlaying) setActiveTab('code');
         setIsPlaying(!isPlaying);
     };
-    const handleNext = () => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
-    const handlePrev = () => setCurrentStep(prev => Math.max(prev - 1, 0));
-    const handleReset = () => { setIsPlaying(false); setCurrentStep(0); setActiveTab('code'); };
-    const handleFullEnd = () => { setIsPlaying(false); setCurrentStep(steps.length - 1); };
+    const handleNext = () => React.startTransition(() => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1)));
+    const handlePrev = () => React.startTransition(() => setCurrentStep(prev => Math.max(prev - 1, 0)));
+    const handleReset = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(0); setActiveTab('code'); }); };
+    const handleFullEnd = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(steps.length - 1); }); };
 
     const customTheme = EditorView.theme({
         "&": { backgroundColor: "transparent !important", height: "100%" },

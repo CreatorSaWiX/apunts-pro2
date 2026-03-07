@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Code2, Database, LayoutTemplate } from 'lucide-react';
 import GraphVisualizer from './GraphVisualizer';
 import { algorithms } from '../../lib/algorithms';
@@ -48,10 +48,10 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
     const step = steps[currentStep];
 
     const handlePlayPause = () => setIsPlaying(!isPlaying);
-    const handleNext = () => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
-    const handlePrev = () => setCurrentStep(prev => Math.max(prev - 1, 0));
-    const handleReset = () => { setIsPlaying(false); setCurrentStep(0); };
-    const handleFullEnd = () => { setIsPlaying(false); setCurrentStep(steps.length - 1); };
+    const handleNext = () => React.startTransition(() => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1)));
+    const handlePrev = () => React.startTransition(() => setCurrentStep(prev => Math.max(prev - 1, 0)));
+    const handleReset = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(0); }); };
+    const handleFullEnd = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(steps.length - 1); }); };
 
     // Update node colors dynamically without changing graph array reference
     graphData.nodes.forEach((n: any) => {

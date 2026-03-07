@@ -148,7 +148,9 @@ const TopicCarousel: React.FC = () => {
 
             if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
             scrollTimeoutRef.current = setTimeout(() => {
-                setActiveIndex((prev) => prev !== closestIndex ? closestIndex : prev);
+                React.startTransition(() => {
+                    setActiveIndex((prev) => prev !== closestIndex ? closestIndex : prev);
+                });
             }, 10); // Ultra-short debounce for instant activation feedback
         });
     };
