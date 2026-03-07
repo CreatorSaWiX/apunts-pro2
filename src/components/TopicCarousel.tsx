@@ -55,16 +55,55 @@ const TopicCarousel: React.FC = () => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const requestRef = useRef<number>(0);
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const restoringRef = useRef(true);
 
     const sortedTopics = [...allPersonalNotes]
         .filter(note => (note as any).subject === subject && !note.slug.includes('-lab-'))
         .sort((a, b) => a.order - b.order);
 
-    // Initialize layout scales on mount
+    // Save activeIndex to session storage whenever it updates (skip during restoration)
     useEffect(() => {
-        const timer = setTimeout(() => handleScroll(), 50);
+        if (restoringRef.current) return;
+        sessionStorage.setItem(`topic-carousel-${subject}`, activeIndex.toString());
+    }, [activeIndex, subject]);
+
+    // Initialize layout scales on mount & restore saved position
+    useEffect(() => {
+        const saved = sessionStorage.getItem(`topic-carousel-${subject}`);
+        const savedIndex = saved ? parseInt(saved, 10) : 0;
+
+        if (savedIndex > 0) {
+            restoringRef.current = true;
+            setActiveIndex(savedIndex);
+        }
+
+        // Use a double-rAF to ensure DOM is fully laid out before scrolling
+        const restoreScroll = () => {
+            if (scrollRef.current && savedIndex > 0) {
+                const container = scrollRef.current;
+                const targetCard = Array.from(container.children).find(child =>
+                    child.classList.contains('carousel-card') && child.getAttribute('data-index') === savedIndex.toString()
+                ) as HTMLElement;
+
+                if (targetCard) {
+                    const containerWidth = container.clientWidth;
+                    const cardWidth = targetCard.offsetWidth;
+                    const centerPosition = targetCard.offsetLeft - (containerWidth / 2) + (cardWidth / 2);
+                    container.scrollTo({ left: centerPosition, behavior: 'instant' as ScrollBehavior });
+                }
+            }
+
+            // Allow handleScroll to run AFTER scroll position is applied
+            setTimeout(() => {
+                restoringRef.current = false;
+                handleScroll();
+            }, 100);
+        };
+
+        // Double rAF ensures layout is complete before measuring
+        requestAnimationFrame(() => requestAnimationFrame(restoreScroll));
+
         return () => {
-            clearTimeout(timer);
             if (requestRef.current) cancelAnimationFrame(requestRef.current);
             if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
         };
@@ -98,6 +137,7 @@ const TopicCarousel: React.FC = () => {
     // Optimized with requestAnimationFrame + Direct DOM Mutation for 120fps Zero-Lag Sync
     // CRITICAL: Strict separation of DOM Reads and Writes to avoid Forced Synchronous Layouts
     const handleScroll = () => {
+        if (restoringRef.current) return;
         if (requestRef.current) cancelAnimationFrame(requestRef.current);
 
         requestRef.current = requestAnimationFrame(() => {

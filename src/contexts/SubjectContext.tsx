@@ -39,7 +39,14 @@ interface SubjectContextType {
 const SubjectContext = createContext<SubjectContextType | undefined>(undefined);
 
 export function SubjectProvider({ children }: { children: React.ReactNode }) {
-    const [subject, setSubject] = useState<Subject>('pro2');
+    const [subject, setSubject] = useState<Subject>(() => {
+        const saved = localStorage.getItem('app-subject');
+        return (saved === 'pro2' || saved === 'm1') ? saved : 'pro2';
+    });
+
+    useEffect(() => {
+        localStorage.setItem('app-subject', subject);
+    }, [subject]);
 
     // Apply theme colors to CSS variables for global transition
     useEffect(() => {

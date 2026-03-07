@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Code2, Database, LayoutTemplate } from 'lucide-react';
+import { Code2, Database, LayoutTemplate, ChevronDown, ChevronUp } from 'lucide-react';
 import GraphVisualizer from './GraphVisualizer';
 import { algorithms } from '../../lib/algorithms';
 import ReactCodeMirror from '@uiw/react-codemirror';
@@ -21,6 +21,7 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
     const [currentStep, setCurrentStep] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [activeTab, setActiveTab] = useState<'viz' | 'code'>('viz');
+    const [isMemoryExpanded, setIsMemoryExpanded] = useState(true);
     const speed = 1000;
 
     // Stable graph initial data to prevent nodes from exploding/remounting
@@ -60,23 +61,46 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
 
     const customTheme = EditorView.theme({
         "&": { backgroundColor: "transparent !important", height: "100%" },
-        ".cm-scroller": { fontFamily: "inherit" },
+        ".cm-scroller": {
+            fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace",
+            scrollbarWidth: "none",
+            overscrollBehavior: "contain",
+        },
+        ".cm-scroller::-webkit-scrollbar": {
+            display: "none",
+        },
         ".cm-gutters": {
             backgroundColor: "transparent !important",
-            borderRight: "1px solid rgba(30, 41, 59, 0.5) !important",
+            borderRight: "1px solid rgba(255,255,255,0.06) !important",
+            paddingRight: "8px",
+            marginRight: "12px",
+            paddingLeft: "16px",
         },
+        ".cm-lineNumbers .cm-gutterElement": {
+            color: "rgba(148, 163, 184, 0.3)",
+            fontSize: "12px",
+        },
+        // Disable CM's built-in active line highlight — we use our custom overlay
         ".cm-activeLine": {
-            background: "linear-gradient(90deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0) 100%) !important",
-            borderLeft: "3px solid #10b981 !important",
+            backgroundColor: "transparent !important",
+            background: "none !important",
         },
         ".cm-activeLineGutter": {
             backgroundColor: "transparent !important",
             color: "#34d399 !important",
             fontWeight: "bold"
-        }
+        },
+        ".cm-content": {
+            padding: "4px 0",
+        },
+        ".cm-line": {
+            padding: "0 12px 0 0",
+        },
     });
 
     const editorRef = useRef<any>(null);
+    const highlightRef = useRef<HTMLDivElement>(null);
+    const [highlightStyle, setHighlightStyle] = useState<{ top: number; height: number; opacity: number }>({ top: 0, height: 20, opacity: 0 });
 
     useEffect(() => {
         if (editorRef.current?.view) {
@@ -84,10 +108,46 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
             const docLines = view.state.doc.lines;
             const targetLine = Math.min(Math.max(1, step.line), docLines);
             const line = view.state.doc.line(targetLine);
+
+            // Save page scroll
+            const savedScrollY = window.scrollY;
+
+            // dispatch side effects: scroll into view
             view.dispatch({
                 selection: { anchor: line.from },
                 effects: EditorView.scrollIntoView(line.from, { y: "center" })
             });
+
+            // Calculate line position for our custom overlay
+            const lineBlock = view.lineBlockAt(line.from);
+            const scroller = view.scrollDOM;
+
+            setHighlightStyle({
+                top: lineBlock.top,
+                height: lineBlock.height,
+                opacity: 1,
+            });
+
+            if (scroller) {
+                const handleScroll = () => {
+                    if (highlightRef.current) {
+                        highlightRef.current.style.transform = `translateY(-${scroller.scrollTop}px)`;
+                    }
+                };
+
+                handleScroll();
+                scroller.addEventListener('scroll', handleScroll, { passive: true });
+
+                // Restore page scroll
+                window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
+                requestAnimationFrame(() => {
+                    window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
+                });
+
+                return () => {
+                    scroller.removeEventListener('scroll', handleScroll);
+                };
+            }
         }
     }, [step.line, activeTab]);
 
@@ -137,8 +197,8 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
             rightPanel={
                 <div className={`lg:w-[460px] xl:w-[500px] flex-col bg-[#0d1117] relative z-20 shadow-[-15px_0_30px_rgba(0,0,0,0.3)] lg:border-l border-white/5 h-full ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
                     {/* Code Tab Header */}
-                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0">
-                        <div className="px-4 py-2 border-t border-x border-slate-800/80 rounded-t-xl text-slate-200 text-[10px] font-mono tracking-wider flex gap-2 items-center bg-[#161b22] shadow-sm relative top-[1px] z-10">
+                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] overflow-hidden">
+                        <div className="px-4 py-2 border-t border-x border-slate-800/80 rounded-t-xl text-emerald-400 text-[10px] font-mono tracking-wider flex gap-2 items-center bg-[#0d1117] shadow-sm relative top-[1px] z-10">
                             <Code2 size={12} className="text-emerald-500" />
                             <span>source.cpp</span>
                         </div>
@@ -146,7 +206,20 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
                     </div>
 
                     {/* IDE Viewport */}
-                    <div className="flex-1 overflow-hidden relative bg-[#0d1117] text-[12px] sm:text-[13px] pt-4 pb-6 min-h-[50%] flex flex-col">
+                    <div className="flex-1 overflow-auto relative bg-[#0d1117] text-[12px] sm:text-[13px] pt-4 pb-6 min-h-[50%] flex flex-col" style={{ overscrollBehavior: 'contain' }}>
+                        {/* Animated highlight overlay */}
+                        <div
+                            ref={highlightRef}
+                            className="absolute left-0 right-0 z-10 pointer-events-none"
+                            style={{
+                                top: `${highlightStyle.top + 20}px`,
+                                height: `${highlightStyle.height}px`,
+                                opacity: highlightStyle.opacity,
+                                transition: 'top 0.35s cubic-bezier(0.0, 0.0, 0.2, 1), opacity 0.2s ease',
+                                background: 'linear-gradient(90deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0) 70%)',
+                                borderLeft: '3px solid #10b981',
+                            }}
+                        />
                         <ReactCodeMirror
                             ref={editorRef}
                             value={algo.code}
@@ -181,22 +254,29 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
                     </div>
 
                     {/* Environment Variables Panel */}
-                    <div className="h-[35%] min-h-[140px] max-h-[220px] bg-[#090b10] border-t border-slate-800/80 flex flex-col relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] flex-shrink-0">
-                        <div className="px-4 py-1.5 sm:py-2 bg-[#0d1117] border-b border-slate-800/50 flex items-center justify-between">
+                    <div className={`${isMemoryExpanded ? 'h-[35%] min-h-[140px] max-h-[200px]' : 'h-auto'} bg-[#090b10] border-t border-slate-800/80 flex flex-col relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] flex-shrink-0 transition-all duration-300`}>
+                        <div
+                            className="px-4 py-1.5 sm:py-2 bg-[#0d1117] border-b border-slate-800/50 flex items-center justify-between cursor-pointer hover:bg-[#161b22] transition-colors"
+                            onClick={() => setIsMemoryExpanded(!isMemoryExpanded)}
+                        >
                             <div className="flex items-center gap-2">
                                 <Database size={11} className="text-sky-500" />
-                                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400">Memory State</span>
+                                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400 select-none">Estat de Memòria</span>
                             </div>
+                            <button className="text-slate-500 hover:text-slate-300">
+                                {isMemoryExpanded ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+                            </button>
                         </div>
-                        <div className="flex-1 overflow-auto custom-scrollbar p-2 sm:p-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-1 content-start">
-                            {Object.entries(step.variables).map(([k, v]) => (
-                                <div key={k} className="flex text-[11px] sm:text-xs group hover:bg-slate-800/50 px-2 flex-wrap sm:flex-nowrap sm:px-3 py-1.5 rounded-lg border border-transparent hover:border-white/5 transition-all">
-                                    <span className="text-sky-400 font-mono font-medium w-full lg:w-28 flex-shrink-0 tracking-wide block lg:inline">{k}</span>
-                                    <span className="text-slate-600 mr-2 sm:mr-3 font-mono hidden lg:inline">=</span>
-                                    <span className="text-emerald-300 font-mono break-all">{v}</span>
-                                </div>
-                            ))}
-                        </div>
+                        {isMemoryExpanded && (
+                            <div className="flex-1 overflow-auto custom-scrollbar p-2 mt-1 flex flex-col gap-0.5 content-start">
+                                {Object.entries(step.variables).map(([k, v]) => (
+                                    <div key={k} className="flex text-[11px] sm:text-xs group hover:bg-[#2a2d2e] px-2 py-1 rounded transition-colors duration-200">
+                                        <span className="text-[#9cdcfe] font-mono mr-2 shrink-0">{k}:</span>
+                                        <span className="text-[#b5cea8] font-mono break-all">{String(v)}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             }

@@ -109,25 +109,41 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
             const savedScrollY = window.scrollY;
 
             // Set selection for cursor position
-            view.dispatch({ selection: { anchor: line.from } });
+            view.dispatch({
+                selection: { anchor: line.from },
+                effects: EditorView.scrollIntoView(line.from, { y: "center" })
+            });
 
             // Calculate line position for our custom overlay
             const lineBlock = view.lineBlockAt(line.from);
             const scroller = view.scrollDOM;
-            if (scroller) {
-                // Position relative to the scroller
-                setHighlightStyle({
-                    top: lineBlock.top - scroller.scrollTop,
-                    height: lineBlock.height,
-                    opacity: 1,
-                });
-            }
 
-            // Restore page scroll
-            window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
-            requestAnimationFrame(() => {
-                window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
+            setHighlightStyle({
+                top: lineBlock.top,
+                height: lineBlock.height,
+                opacity: 1,
             });
+
+            if (scroller) {
+                const handleScroll = () => {
+                    if (highlightRef.current) {
+                        highlightRef.current.style.transform = `translateY(-${scroller.scrollTop}px)`;
+                    }
+                };
+
+                handleScroll();
+                scroller.addEventListener('scroll', handleScroll, { passive: true });
+
+                // Restore page scroll
+                window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
+                requestAnimationFrame(() => {
+                    window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
+                });
+
+                return () => {
+                    scroller.removeEventListener('scroll', handleScroll);
+                };
+            }
         } else {
             setHighlightStyle(prev => ({ ...prev, opacity: 0 }));
         }
@@ -144,7 +160,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
             leftPanel={
                 <div className={`flex-1 min-w-0 flex flex-col relative bg-[#0d1117] h-full shadow-[15px_0_30px_rgba(0,0,0,0.3)] lg:border-r border-white/5 ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
                     {/* Code Tab Header */}
-                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] overflow-hidden">
                         {Object.keys(sim.files).map(filename => (
                             <div key={filename}
                                 onClick={() => setUserSelectedFile(filename)}
