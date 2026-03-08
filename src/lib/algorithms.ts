@@ -253,6 +253,53 @@ const pruferRebuildCode = `vector<pair<int, int>> rebuild_prufer(const vector<in
     return edges;
 }`;
 
+const heapPushCode = `template <typename T>
+void Heap<T>::push(const T& x) {
+    resize_(1);
+    elems_[size_] = x;
+    flow_up_(size_);
+}
+
+template <typename T>
+void Heap<T>::flow_up_(int i) {
+    while (i > 1 && elems_[i] > elems_[i / 2]) {
+        std::swap(elems_[i], elems_[i / 2]);
+        i /= 2;
+    }
+}`;
+
+const heapPopCode = `template <typename T>
+void Heap<T>::pop() {
+    elems_[1] = elems_[size_];
+    resize_(-1);
+    flow_down_(1);
+}
+
+template <typename T>
+void Heap<T>::flow_down_(int i) {
+    int left = 2 * i, right = 2 * i + 1;
+    int max = i;
+    if (left <= size_ && elems_[left] > elems_[max]) max = left;
+    if (right <= size_ && elems_[right] > elems_[max]) max = right;
+    
+    if (max != i) {
+        std::swap(elems_[i], elems_[max]);
+        flow_down_(max);
+    }
+}`;
+
+const treeSearchCode = `bool tree_search(Tree<int> t, int x) {
+    if (t.empty()) return false;
+    if (t.value() == x) return true;
+    
+    for (int i = 0; i < t.num_children(); i++) {
+        if (tree_search(t.child(i), x)) {
+            return true;
+        }
+    }
+    return false;
+}`;
+
 const treeGraph = {
     nodes: [
         { id: 1, label: "1", fx: 0, fy: -100 },
@@ -1122,6 +1169,175 @@ export const algorithms: Record<string, Algorithm> = {
             st(11, "Els dos fills 14 de buits absorbits validen que la màquina té l'arbre 10 unit integral...", "L_buida2", "#64748b");
             st(11, "Lligat tot, torna la Corona general instanciada tancant i alliberant Stream Input.", "R_buida2", "#64748b");
             st(12, "L'Arbre Pre-Ordre construït i llest a temps matemàtic perfecte i en ordre pur O(N).", "10", "#22c55e");
+
+            return steps;
+        }
+    },
+    heap_push: {
+        id: "heap_push",
+        code: heapPushCode,
+        initialGraph: {
+            nodes: [
+                { id: 1, label: "1 (50)", fx: 0, fy: -100 },
+                { id: 2, label: "2 (40)", fx: -60, fy: -20 },
+                { id: 3, label: "3 (30)", fx: 60, fy: -20 },
+                { id: 4, label: "4 (10)", fx: -90, fy: 60 },
+                { id: 5, label: "5 (20)", fx: -30, fy: 60 },
+                { id: 6, label: "6", fx: 30, fy: 60, color: "transparent" }
+            ],
+            links: [
+                { source: 1, target: 2 },
+                { source: 1, target: 3 },
+                { source: 2, target: 4 },
+                { source: 2, target: 5 },
+                { source: 3, target: 6, label: "buit" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            let hl: Record<number, string> = {};
+            const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
+                steps.push({ line, description: desc, highlights: { ...hl }, variables: vars });
+            };
+
+            addStep(2, "Invoquem push(45).", { x: "45", size_: "5" });
+            hl[6] = "#10b981";
+            addStep(3, "Augmentem el vector i el size_ a 6 i copiem el target a l'última posició.", { x: "45", size_: "6" });
+            addStep(4, "Cridem a flow_up_(6) per elevar aquest 45 al seu forat jeràrquic.", { i: "6" });
+            hl[6] = "#3b82f6";
+            addStep(10, "Inici de flow_up_: loop on comparem 45 (pos 6) amb el Pare a 6/2=3 (valor 30).", { i: "6", pare_val: "30", me_val: "45" });
+            hl[3] = "#ef4444";
+            addStep(11, "El 45 és major que el 30! Intercanviem (swap).", { i: "6" });
+            hl[3] = "#10b981"; hl[6] = "#facc15";
+            addStep(12, "Refem l'identificador iterador de i=6 a i=3.", { i: "3" });
+            hl[3] = "#3b82f6"; delete hl[6];
+            addStep(10, "Revaluem a posició 3. El Pare ara és 3/2=1 (valor 50). 45 contra 50.", { i: "3", pare_val: "50", me_val: "45" });
+            hl[1] = "#10b981";
+            addStep(14, "Com val 45 que no és major a 50 falla condició while, ja estem assentats i sortim.", { success: "Done" });
+
+            return steps;
+        }
+    },
+    heap_pop: {
+        id: "heap_pop",
+        code: heapPopCode,
+        initialGraph: {
+            nodes: [
+                { id: 1, label: "1 (50)", fx: 0, fy: -100 },
+                { id: 2, label: "2 (40)", fx: -60, fy: -20 },
+                { id: 3, label: "3 (45)", fx: 60, fy: -20 },
+                { id: 4, label: "4 (10)", fx: -90, fy: 60 },
+                { id: 5, label: "5 (20)", fx: -30, fy: 60 },
+                { id: 6, label: "6 (30)", fx: 30, fy: 60 }
+            ],
+            links: [
+                { source: 1, target: 2 },
+                { source: 1, target: 3 },
+                { source: 2, target: 4 },
+                { source: 2, target: 5 },
+                { source: 3, target: 6 }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            let hl: Record<number, string> = {};
+            const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
+                steps.push({ line, description: desc, highlights: { ...hl }, variables: vars });
+            };
+
+            hl[1] = "#facc15"; hl[6] = "#3b82f6";
+            addStep(2, "Ens demanen fer pop! A la posició dominant 1 es mor l'Arrel de 50 sent reemplaçada bruscament pel pringat de la cua al 6 (el 30).", { size_: "6" });
+
+            hl[6] = "transparent";
+            addStep(3, "Eliminem el lloc 6 retallant array (size_ - 1).", { size_: "5" });
+
+            addStep(4, "Cridem la recursió salvadora flow_down_(1) a l'arrel on resideix aquest fals rei 30.", { i: "1", arrel_val: "30" });
+
+            hl[1] = "#ef4444"; delete hl[6];
+            addStep(10, "Busquem fills per sota, esquerra 1*2=2 i dret 1*2+1=3. El màxim arrenca sent jo, l'1.", { i: "1", max_escollit: "1" });
+
+            hl[2] = "#10b981";
+            addStep(12, "Comparem amb l'element esquerre L (40). Com 40 > 30, marquem màxim el fill esquerre.", { cond: "40 > 30", max_escollit: "2" });
+
+            hl[3] = "#facc15";
+            addStep(13, "Comparem amb l'element dret R (45). Com 45 és fins i tot més elevat dominant, guanya.", { cond: "45 > 40", max_escollit: "3" });
+
+            addStep(15, "El max final (3) != meu (1). Baixem fent-me swap amb ell!", { swap: "Pos(1) <-> Pos(3)" });
+
+            delete hl[2]; hl[1] = "#3b82f6"; hl[3] = "#ef4444";
+            addStep(17, "Continuem baixant executant de nou flow_down_(3)", { i: "3", my_val: "30" });
+
+            hl[6] = "#10b981";
+            addStep(10, "Fills de la posició 3: el 6 (força 30). Però com la grandària total es va reduir abans a 5!", { size_: "5" });
+            addStep(12, "Condicional detecta que index left 6 excedeix els límits i no hi ha canvi possible.", { cond: "left <= size_ -> False" });
+            addStep(15, "Me clavo aquí (max == i) frenant sense intercanvis per una fulla cega. Array restaurat Heap!", { success: "Done" });
+
+            return steps;
+        }
+    },
+    tree_general_search: {
+        id: "tree_general_search",
+        code: treeSearchCode,
+        initialGraph: {
+            nodes: [
+                { id: 1, label: "50", fx: 0, fy: -100 },
+                { id: 2, label: "20", fx: -60, fy: 0 },
+                { id: 3, label: "30", fx: 0, fy: 0 },
+                { id: 4, label: "80", fx: 60, fy: 0 },
+                { id: 5, label: "10", fx: 30, fy: 100 },
+                { id: 6, label: "90", fx: 90, fy: 100 }
+            ],
+            links: [
+                { source: 1, target: 2 },
+                { source: 1, target: 3 },
+                { source: 1, target: 4 },
+                { source: 4, target: 5 },
+                { source: 4, target: 6 }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            let hl: Record<number, string> = {};
+            const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
+                steps.push({ line, description: desc, highlights: { ...hl }, variables: vars });
+            };
+
+            addStep(1, "Volem cercar x=90 des de l'arrel C general superior.", { x: "90", node_actual: "50" });
+            hl[1] = "#facc15";
+            addStep(2, "L'arrel 50 no està buida. Passem if.", { cond: "empty()" });
+            addStep(3, "El valor interior (50) no és el nostre premi (90).", { cond: "50 == 90 (F)" });
+
+            addStep(5, "Iniciem iterador de bucle for: n_fills = 3. Primer cap child(0) a esquerra el valor 20.", { iter: "0 de 3" });
+            hl[2] = "#facc15";
+            addStep(6, "Cridem la recurrència en 20 i ens enfonsem allà com una sub-instància...", { recursiu: "child(0)" });
+
+            hl[2] = "#ef4444";
+            addStep(2, "Node [20] falla les dues comprovacions inicials perquè tampoc no fa match 20 != 90, com que no té fills al for no entra.", { estat: "Mort", num_child: "0" });
+            addStep(10, "Torna i ens avisa False. Falla el primer subarbol sencer tornant el cop a 50.", { retorn: "False" });
+
+            hl[3] = "#facc15"; delete hl[2];
+            addStep(6, "Bucle (1 de 3). Child central (1), cridem node valor 30.", { iter: "1 de 3" });
+            hl[3] = "#ef4444";
+            addStep(2, "Repeteix final sec, torna sense èxits lliurant False igual al germà i avisant al Gran Pare 50.", { node_actual: "30", num_child: "0", retorn: "False" });
+
+            hl[4] = "#facc15"; delete hl[3];
+            addStep(6, "La fe no acaba al 50: Bucle (2 de 3). Arrenca la cerca des del poderós Child '80'.", { iter: "2 de 3" });
+            addStep(3, "A dins: 80 != 90, però obre iteració de fills: per dos subarbres, va a child(0) d'ell (el que seria node 10).", { node_actual: "80", num_child: "2" });
+
+            hl[5] = "#ef4444";
+            addStep(2, "El fill node 10 nega match total... False cap a 80 de retorn amunt.", { node_actual: "10", retorn: "False" });
+
+            hl[6] = "#10b981"; delete hl[5];
+            addStep(6, "El for del Gran 80 salta al child 1: El glorificat node '90'!! Envia un raig cercador cap aquest lloc...", { the_node: "90" });
+
+            hl[6] = "#22c55e";
+            addStep(3, "Subarbol pur 90 val un cert incontestable gràcies al t.value() == x. Talla absolut de cadena subministrant Return True com a bandera cap a adalt.", { node_actual: "90", bool: "TRUE" });
+
+            hl[4] = "#22c55e";
+            addStep(7, "El 80 sent la notícia amb exultació de cop rebent l'if veritat tallant literalment el bucle que estava calculant i sense remordiments retorna True propagant pel forat del for en cadena recursiva d'alegria suprema.", { bool: "TRUE" });
+
+            hl[1] = "#22c55e";
+            addStep(7, "Resultat total acabat al main. Tota la resta ha estat ignorada gràcies a aquest curtcircuit salvador estalviant N processaments al final O(logN).", { return_final: "TRUE" });
 
             return steps;
         }
