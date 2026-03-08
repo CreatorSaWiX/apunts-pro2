@@ -1,39 +1,52 @@
 import type { Solution } from '../../solutions';
 
 export const ex2_7: Solution = {
-    id: 'M1-T2-Ex2.7',
-    title: 'Exercici 2.7: Extrems de Mida segons Components Connexos i Arbres',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Sigui $G$ un graf d'ordre $n$ amb exactament $k$ components connexos. Demostreu que la mida de $G$ és més gran o igual que $n - k$.`,
-    content: `
-Recordem una dada vital de la Teoria fonamental:
-Per a poder lligar i interconnectar d'unió tota informació en l'àmbit general de grups de vèrtexs que composen cadascun com a lliure unitat un "Component connex de mida particular" respectant a la reducció i manteniment d'estendre un cas ben minimalista global, l'estructura de ponts base complet objectius òptims segons la minimització total possible de cost lligat o quantitat total estricta d'arestes es nomena sempre **Arbre**.
+  id: 'M1-T2-Ex2.7',
+  title: 'Exercici 2.7: Extrems de Mida segons Components Connexos i Arbres',
+  author: 'Profe',
+  code: '',
+  type: 'notebook',
+  statement: `Sigui $G$ un graf d'ordre $n$ amb exactament $k$ components connexos. Demostreu que la mida de $G$ és més gran o igual que $n - k$.`,
+  content: `
+Aquest és un teorema clàssic que es demostra en dos simples passos analitzant el graf des de l'estructura més minimalista possible: els arbres.
 
-En qualsevol *Arbre* independent formatiu de la base simple, un component connex particular d'una illa isolada s'uneix absolut amb el seu límit d'inferior on pretenem la fita estricte i exacta oficial per defecte on:  
-$ m_{arbre} = n_{\\text{illa}} - 1 $
+**Intuïció visual:** Per connectar un component amb la mínima despesa d'arestes possible (sense cicles), formem un **arbre**, que sempre requereix exactament tantes arestes com vèrtexs menys u ($n_i - 1$).
 
-Doncs veient la teoria pel qual el nostre sencer complet absolut gràfic $G$ principal només formatiu a referències absolutes constants de grup tancant on consta no del general lliurat de tot referent o global exclus a unit o sencer de base de 1 només illa separada o absolut pur com components general, sinó just dividida literal a subregions d'illes pur formatiu estables components limitats pur objectivament aglutinats per natural format de constant lliurat a valor exclusiu total nombre $k$. Sabem amb fons teòric com el d'abans base fons per limit a subregions autònomes formades i independents en paral·lel de Boscos units autònom sense unificació (nom agrupant un Bosc base fons on formarien les variables on prenguéssim limit minimal exclus total d'elements illes tancats de fita limitades components):
-* Component 1: format per $n_1$ vèrtexs. Per fer connectar tot l'equips pur sense separació al tancat es faran falta de limit teòric mínim un recurs sumatori predeterminat donant forces absolutes arestes sumades i lliurades a relacions base unitari d $\\ge n_1 - 1$
-* Component 2: format de $n_2$ vèrtexs referents i base que suma un mínim a resultat global i total $\\ge n_2 - 1$
-* I destacant directriu per darrer general pas exclus seguint unió fins tancat i passat referint fins extrem per omissió el final i llunyà general limit formant base extrema Component $k$: total $\\ge n_k - 1$.
+:::graph{height=220}
+\`\`\`json
+{
+  "nodes": [
+    { "id": "1", "color": "#ef4444" }, { "id": "2", "color": "#ef4444" }, { "id": "3", "color": "#ef4444" },
+    { "id": "4", "color": "#3b82f6" }, { "id": "5", "color": "#3b82f6" }, { "id": "6", "color": "#3b82f6" }, { "id": "7", "color": "#3b82f6" },
+    { "id": "8", "color": "#facc15" }
+  ],
+  "links": [
+    { "source": "1", "target": "2" }, { "source": "2", "target": "3" },
+    { "source": "4", "target": "5" }, { "source": "5", "target": "6" }, { "source": "6", "target": "7" }
+  ]
+}
+\`\`\`
+:::
+<div class="text-xs text-center text-slate-400 mt-1 mb-4">Exemple amb n=8 i k=3. Mínim d'arestes = (3-1) + (4-1) + (1-1) = 2 + 3 + 0 = 5. I efectivament 8 - 3 = 5.</div>
 
-Llavors tenint clar la via si aglutinem i lliurem directament agrupar la sumatòria al sumatori relatiu complet global sumari general base total del graf total unitari:
-$$
-m(G) = \\sum_{i=1}^k m_i \\ge \\sum_{i=1}^k (n_i - 1)
-$$
+**1. L'estructura mínima d'un component**
+Un component connex d'ordre $n_i$ assoleix el **mínim nombre d'arestes possible** únicament quan no té cicles, és a dir, quan adopta la forma d'un **arbre**.
+Si el component és un arbre, la seva mida és exactament:
+$$ m_i \\ge n_i - 1 $$
 
-Desglossem l'expressió pura en components relacional sumes extretes i obertes purament donant:
-$$
-\\ge (n_1 + n_2 + \\cdots + n_k) - (1 + 1 + \\cdots + 1 \\text{ un total absolut repetiu pur vegades segons } k \\text{ elements unitats sumats base})
-$$
+**2. Sumatori sobre els $k$ components**
+Sigui $G$ desglossat en $k$ components independents d'ordres $n_1, n_2, \\dots, n_k$.
+Sabem que la suma de tots els vèrtexs ens dona l'ordre total del graf: $\\sum_{i=1}^k n_i = n$.
 
-Com tenim en fons clars de condicions d'hipòtesis per bases fixades sumant que la agrupació general on ens sumatòria per elements lliurar cèl·lules internes base globals dels paràmetres suma l'estructura limit constant o universal i general on es declara que en tot graf sempre es fa la constat complet absolut unió per equacions generals donades que el pes del total de nodes a elements parcials i conjunts lliurats i llistats fa factor l'arrel original lliurant d: $(n_1 + \\dots + n_k) = n$, la nostra conversió d'incògnita obre base directa i substitueix pur del sistema generant sense pas a base més i directriu final que assoleix sent resoluble amb absolut garant en fita demostratiu de factor!!
-$$
-m(G) \\ge n - k
-$$
+Si sumem les arestes mínimes requerides per tots i cadascun dels components:
+$$ m(G) = \\sum_{i=1}^k m_i \\ge \\sum_{i=1}^k (n_i - 1) $$
+
+Si expandim el sumatori partint el parèntesi:
+$$ m(G) \\ge \\left( \\sum_{i=1}^k n_i \\right) - \\left( \\sum_{i=1}^k 1 \\right) $$
+
+Substituint el primer bloc per $n$ i el segon per sumar \`1\` exactament $k$ vegades:
+$$ m(G) \\ge n - k $$
 $\\square$
   `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

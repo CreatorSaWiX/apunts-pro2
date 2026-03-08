@@ -265,7 +265,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         if (fgRef.current) {
             if (!initialZoomDone.current || needsFit.current) {
                 // When layout settles, fit to view
-                fgRef.current.zoomToFit(400, 30);
+                fgRef.current.zoomToFit(400, numericHeight <= 150 ? 12 : 30);
                 initialZoomDone.current = true;
                 needsFit.current = false;
             }
@@ -274,7 +274,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
 
     const handleReset = () => {
         if (fgRef.current) {
-            fgRef.current.zoomToFit(400, 20);
+            fgRef.current.zoomToFit(400, numericHeight <= 150 ? 12 : 20);
             fgRef.current.d3ReheatSimulation();
         }
     };

@@ -14,9 +14,21 @@ interface NotebookLayoutProps {
 
 const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
     // 1. Sidebar selection state
-    const [selectedProblemId, setSelectedProblemId] = useState<string | null>(null);
+    const STORAGE_KEY = `notebook-last-problem-${topic.id}`;
+    const [selectedProblemId, _setSelectedProblemId] = useState<string | null>(() => {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored && topic.problems.some(p => (typeof p === 'string' ? p : p.id) === stored)) {
+            return stored;
+        }
+        return null;
+    });
 
-    // Initialize with first problem if available
+    const setSelectedProblemId = (id: string) => {
+        _setSelectedProblemId(id);
+        localStorage.setItem(STORAGE_KEY, id);
+    };
+
+    // Initialize with first problem if available OR nothing fetched
     useEffect(() => {
         if (topic.problems.length > 0 && !selectedProblemId) {
             const firstId = typeof topic.problems[0] === 'string' ? topic.problems[0] : topic.problems[0].id;

@@ -183,7 +183,17 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M1-T2-Ex2.5", title: "Exercici 2.5: Dos Vèrtexs Senars connectats per un Camí" },
             { id: "M1-T2-Ex2.6", title: "Exercici 2.6: Mida en Dos Components Complets" },
             { id: "M1-T2-Ex2.7", title: "Exercici 2.7: Extrems de Mida segons Components Connexos i Arbres" },
-            { id: "M1-T2-Ex2.8", title: "Exercici 2.8: Construcció Fita Superior (Mida i Connexió)" }
+            { id: "M1-T2-Ex2.8", title: "Exercici 2.8: Construcció Fita Superior (Mida i Connexió)" },
+            { id: "M1-T2-Ex2.9", title: "Exercici 2.9: Vèrtexs de tall i arestes pont" },
+            { id: "M1-T2-Ex2.10", title: "Exercici 2.10: Graf estrella adherent G+z" },
+            { id: "M1-T2-Ex2.11", title: "Exercici 2.11: Graf regular més petit amb pont" },
+            { id: "M1-T2-Ex2.12", title: "Exercici 2.12: Ponts i Talls dependents als regulars" },
+            { id: "M1-T2-Ex2.13", title: "Exercici 2.13: Propietats del Complementari i els talls" },
+            { id: "M1-T2-Ex2.14", title: "Exercici 2.14: Distàncies amb algorisme BFS" },
+            { id: "M1-T2-Ex2.15", title: "Exercici 2.15: Càlcul de Diàmetres" },
+            { id: "M1-T2-Ex2.16", title: "Exercici 2.16: Impacte del tall al Diàmetre" },
+            { id: "M1-T2-Ex2.17", title: "Exercici 2.17: Centre, Radi i Diàmetre" },
+            { id: "M1-T2-Ex2.18", title: "Exercici 2.18: Diàmetre Mínim per Densitat Alta" }
         ]
     },
     {

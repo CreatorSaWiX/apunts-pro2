@@ -1,6 +1,6 @@
 ---
 title: "Tema 5: Cues de Prioritat i Arbres Generals"
-description: "Estructures avançades: de Binary Heaps per cues VIP a arbres amb ramificacions infinites."
+description: "Estructures avançades de Binary Heaps per cues i arbres generals."
 readTime: "8 min"
 order: 5
 ---

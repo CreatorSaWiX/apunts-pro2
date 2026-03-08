@@ -120,6 +120,9 @@ const defaultComponents: any = {
     h3: ({ ...props }) => (
         <h3 className="text-xl font-semibold text-white mt-10 mb-4 scroll-mt-28" {...props} />
     ),
+    h4: ({ ...props }) => (
+        <h4 className="text-sm font-bold -mb-4 text-slate-100" {...props} />
+    ),
     p: ({ ...props }) => (
         <p className="text-slate-300 leading-8 mb-6 text-lg" {...props} />
     ),
@@ -141,7 +144,7 @@ const defaultComponents: any = {
     ),
     table: ({ ...props }) => (
         <div className="overflow-x-auto my-8 border border-white/10 rounded-xl bg-slate-900/40 not-prose">
-            <table className="w-full text-left text-sm whitespace-nowrap" {...props} />
+            <table className="w-full text-left text-sm" {...props} />
         </div>
     ),
     thead: ({ ...props }) => (

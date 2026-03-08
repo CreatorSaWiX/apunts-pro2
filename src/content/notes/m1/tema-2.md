@@ -14,8 +14,7 @@ order: 2
 
 ## 2. Talls i ponts
 
-Un graf és **connex** si sempre hi ha algun camí entre qualsevol parella de vèrtexs. Si algun no hi arriba, es fragmenta en **components connexos** separats. Qualsevol graf connex de mida real exigeix com a mínim l'ús estricte d'$n - 1$ arestes.
-Però, com de fràgil és el nostre graf connex?
+Un graf és **connex** si sempre hi ha algun camí entre qualsevol parella de vèrtexs. Si algun no hi arriba, es fragmenta en **components connexos** separats. Qualsevol graf connex de mida real exigeix com a mínim l'ús estricte $n - 1$ arestes (si tenim un graf connex de 5 vèrtexs, aleshores té exactament 4 arestes).
 
 *   **Vèrtex de tall**: Si esborrem aquest sol vèrtex, tallem tantes connexions que el graf es divideix instantàniament en MÉS components connexos.
 *   **Aresta pont**: Si esborrem aquesta aresta en solitari, trenquem el graf en **exactament 2** components connexos.
@@ -37,10 +36,8 @@ Però, com de fràgil és el nostre graf connex?
 :::
 <div class="text-xs text-center text-slate-400 mt-2 mb-4">El vèrtex de <b>Tall</b> és vital. L'aresta groga és exclusivament un <b>Pont</b>.</div> <!-- No hi ha arestes grogues.. -->
 
-:::tip{title="Truc d'Examen: La Fal·làcia d'Arestes i Vèrtexs"}
-És cert que "un graf connex amb vèrtexs de tall sempre té alguna aresta pont"? **FALS**. A l'examen de l'15-04-2021 cau justament això. El millor contraexemple: **Dos triangles units exclusivament per un 1 vèrtex central exclusiu (Graf Papallona)**. Aquest node central és un vèrtex de tall evident i decisiu, però atès que tot conforma cicles cap de les seves arestes adjacents pures actua i funciona com una aresta de separació com a pont.
-
-Per contra el sentit matemàtic invers sempre serà cert i afirmat positiu de resoldre ràpid: "Els extrems formals d'una *aresta pont* central lligada en si, sempre acaben de desencadenar per obligació ser vèrtexs de tall reals (a excepció només evidentment i senzilla  si algun o ambdós resulten ser tristes fulles sense relació lligada final de frontera natural)."
+:::tip{title="La fal·làcia d'arestes i vèrtexs"}
+"Un graf connex amb vèrtexs de tall sempre té alguna aresta pont"? **FALS**. Contraexemple: el **graf papallona** (dos triangles units per un sol vèrtex). El vèrtex central és de tall, però cap aresta és pont perquè totes formen part d'un cicle. En canvi, el **recíproc sí que és cert**: si una aresta és pont, els seus extrems són vèrtexs de tall (excepte si algun extrem té grau 1, és a dir, és una fulla).
 :::
 
 ## 3. Mètriques de distància
@@ -53,7 +50,19 @@ A nivell global de graf tenim 4 definicions claus a avaluar depenent d'aquesta $
 3.  **Radi $r(G)$**: Si cerquem el punt més eficient del mapa... La menor excentricitat disponible obtinguda per algun vèrtex es diu radi.
 4.  **Centre del Graf**: Qualsevol i tots els vèrtexs on hagin calculat tenir de forma miraculosa justament l'excentricitat exactament igual al dit **radi**.
 
-<!-- Necessitem posar un/uns grafs per entendre millor -->
+**Exemple:** Considerem el camí $a - b - c - d$:
+
+| | $d(\cdot, a)$ | $d(\cdot, b)$ | $d(\cdot, c)$ | $d(\cdot, d)$ | **Excentricitat** |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| **a** | 0 | 1 | 2 | 3 | **3** |
+| **b** | 1 | 0 | 1 | 2 | **2** |
+| **c** | 2 | 1 | 0 | 1 | **2** |
+| **d** | 3 | 2 | 1 | 0 | **3** |
+
+*   **Diàmetre** $D(G) = \max(3,2,2,3) = 3$
+*   **Radi** $r(G) = \min(3,2,2,3) = 2$
+*   **Centre** = $\{b, c\}$ (els vèrtexs amb excentricitat $= r$)
+
 ---
 
 ## 4. DFS: Cerca en profunditat (Depth-First Search)
@@ -65,16 +74,16 @@ A cada visita s'intenta afegir un sol adjacent fresc de qui seguir-se enfonsant 
 :::algoviz{algorithm="dfs"}
 :::
 
-## 5 Cerca en amplada (BFS: Breadth First Search)
+## 5. BFS: Cerca en amplada (Breadth-First Search)
 
-Mentre que el DFS baixa en picat "caient", el **BFS** es propaga radialment per capes (com onades a l'aigua). A l'ordinador necessita purament estructurar memòria temporal al voltant d'una **cua (FIFO)**.
+Mentre que el DFS baixa en picat "caient", el **BFS** es propaga radialment per capes. A l'ordinador necessita purament estructurar memòria temporal al voltant d'una **cua (FIFO)**.
 
 Si tenim un array `D` que ens guarda quants passos portem fets:
 1. Posar el node d'origen ($v$) a distància `0` dins de `D`. `D[v] = 0`.
 2. Encues i afegeixes el $v$ a la llista de Visitat ($W$).
 3. Quan extrems el primer de la cua (anomenat $x$), tots els nous adjacents inexplorats ($y$) prendran estrictament com a distància oficial el valor **$D[y] = D[x] + 1$**. I tu avances a un altre barri!
 
-> **Teorema 9:** Sigui el graf simple $G = (V,A)$ i el seu vèrtex $v \in V$. El vector resultori $D$ obtingut manualment durant **les rutines pures de l'algorisme BFS** garanteix esdevindre l'emmagatzematge real de la **distància mínima de camins del vèrtex original $v$ cap a qualsevol altre** ubicat a tota l'arrel de nodes connectats.
+> Sigui el graf simple $G = (V,A)$ i el seu vèrtex $v \in V$. El vector resultori $D$ obtingut manualment durant **les rutines pures de l'algorisme BFS** garanteix esdevindre l'emmagatzematge real de la **distància mínima de camins del vèrtex original $v$ cap a qualsevol altre** ubicat a tota l'arrel de nodes connectats.
 
 :::algoviz{algorithm="bfs2"}
 :::
@@ -88,20 +97,58 @@ Sovint demanaran llistar explícit i de memòria sobre "l'ordre d'addició de v�
 
 ---
 
-## 6. Caracterització dels grafs bipartits <!-- Cal explicar-lo més visual, no s'entén llegint el text-->
+## 6. Com saber si un graf és Bipartit?
 
-Més enllà de dir l'eslògan "és quan es divideixen en dos equips i no passa res internament", com ho podríem reconèixer programàticament o matemàticament des d'un paper ple de línies en diagonal a examen si es tracta purament d'un graf bipartit o amaga relliscades?
+Un graf és **bipartit** si podem pintar els seus vèrtexs amb **2 colors** (ex: Vermell i Blau) de manera que cap parell de vèrtexs del mateix color estiguin connectats entre sí.
 
-:::tip{title="Lema 10 sobre les Longituds"}
-Dins d'un graf pur de base matemàtica $G = (V, A)$:
-1. Si a simple vista traces purament qualsevol **recorregut tancat donat que tingui just longitud senar**, podem firmar automàticament que llavors a les ombres de $G$ hi amaga com a mínim algun cert **cicle estricte de longitud senar**.
-2. **Parany Clandestí:** La presència massiva de recorreguts tancats fets de línies totals **parelles** escampats per algun $G$ no esdevindran capaços mai per sí sols d'implicar *segurament la forma oculta d'un cicle*.
+:::tip{title="Regla d'or d'examen"}
+Un graf és **Bipartit** $\iff$ **NO té cap cicle de longitud SENAR** (com un triangle $C_3$ o un pentàgon $C_5$).
 :::
 
-Amb aquest raonament de desxifrar si les seqüències de parades obligatòriament per força amaguen parelles o cicles trencastructures per sota, finalitza sent revelat el **Requisit Únic Universal de la matemàtica FM (Teorema 11)** que resumeix la caracterització dels sistemes bipartits i serà resposta segura a qüestionari:
+### Visualització: el mètode del "pintat"
+Imagina que intentes pintar el graf alternant colors. Si en algun moment et veus obligat a connectar dos nodes del mateix color, és que hi ha un cicle senar i **no** és bipartit.
 
-> **Teorema 11: Caracterització Màxima Bipartita** \
-> Un graf senzill d'ordre $n \ge 2$ és un pur **Graf Bipartit** $\iff$ **NO té absolutament CAP cicle de longitud SENAR**.
-> 
-> *Això és una arma de puríssima reducció a l'absurd als exàmens de paper:*
-> *Si tractant relacions abstractes sumant longituds deduïu que hi ha cert "cicle de 5 o d'un pur Triangle C3"... adéu bipartit.*
+:::::grid{cols=2 class="gap-4"}
+
+::::grid{cols=1 class="bg-slate-900/40 p-4 rounded-xl border border-emerald-500/20"}
+**Bipartit**
+Tots els camins tancats són parells ($C_4$). Podem separar en dos grups.
+
+:::graph{height=150}
+```json
+{
+  "nodes": [
+    { "id": 1, "color": "#ef4444" }, { "id": 2, "color": "#3b82f6" },
+    { "id": 3, "color": "#ef4444" }, { "id": 4, "color": "#3b82f6" }
+  ],
+  "links": [
+    { "source": 1, "target": 2 }, { "source": 2, "target": 3 },
+    { "source": 3, "target": 4 }, { "source": 4, "target": 1 }
+  ]
+}
+```
+:::
+::::
+
+::::grid{cols=1 class="bg-slate-900/40 p-4 rounded-xl border border-red-500/20"}
+**No bipartit (Cicle $C_3$)**
+Té un triangle. És impossible pintar-lo amb 2 colors sense repetir en una aresta.
+
+:::graph{height=150}
+```json
+{
+  "nodes": [
+    { "id": 1, "color": "#ef4444" }, { "id": 2, "color": "#3b82f6" },
+    { "id": 3, "color": "#facc15" }
+  ],
+  "links": [
+    { "source": 1, "target": 2 }, { "source": 2, "target": 3 },
+    { "source": 3, "target": 1 }
+  ]
+}
+```
+:::
+::::
+
+:::::
+
