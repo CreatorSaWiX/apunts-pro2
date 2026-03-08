@@ -21,6 +21,7 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
     if (cols === 2) className += " md:grid-cols-2";
     else if (cols === 3) className += " md:grid-cols-3";
     else if (cols === 4) className += " md:grid-cols-4";
+    else if (cols === 5) className += " md:grid-cols-3 lg:grid-cols-5";
     else if (cols > 1) className += " md:grid-cols-2";
 
     if (attrs.class) className += ` ${attrs.class}`;

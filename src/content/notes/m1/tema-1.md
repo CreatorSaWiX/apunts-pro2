@@ -89,6 +89,12 @@ $$
 
 Veiem que com les amistats són mútues, la matriu és **simètrica**. I la diagonal tot zeros, perquè ningú és amic d'ell mateix (no hi ha llaços).
 
+:::tip{title="Graus a la Matriu"}
+La suma numèrica dels valors d'una fila $i$ (o columna) és **exactament el grau** d'aquell vèrtex.
+$$ \sum_{j=1}^n (M_A)_{ij} = g(v_i) $$
+*Si a l'examen et diuen: "Tenim una matriu d'adjacència on cada fila suma 5", t'estan dient que estem davant d'un graf **5-regular**.*
+:::
+
 ## 4. Graus i el "lema de les encaixades"
 
 El **grau** d'un vèrtex $g(v)$ és el nombre d'arestes que hi toquen. O sigui, el nombre d'amics que té.
@@ -113,32 +119,23 @@ El **grau** d'un vèrtex $g(v)$ és el nombre d'arestes que hi toquen. O sigui, 
 
 Al graf de dalt, el vèrtex central té grau 3. Els altres, grau 1.
 
-Ara la pregunta clau: **Si sumem els graus de TOTS els vèrtexs, què ens dóna?**
+**Si sumem els graus de TOTS els vèrtexs, què ens dóna?**
 
-Imaginem una festa. Cada vegada que dues persones es donen la mà (una aresta), hi ha **dues** mans implicades. Si al final comptem quantes mans ha donat cadascú i ho sumem tot, estarem comptant **el doble** de les encaixades reals (una vegada per cada persona).
-
-Això és el **lema de les encaixades**:
+Imaginem una festa. Cada vegada que dues persones es donen la mà (una aresta), hi ha **dues** mans implicades. Si al final comptem quantes mans ha donat cadascú i ho sumem tot, estarem comptant **el doble** de les encaixades reals. Això és el **lema de les encaixades**:
 
 $$
 \sum g(v) = 2m
 $$
 
-<!-- :::tip{title="Nota"}
-En aquest curs, tret que es digui el contrari, treballarem amb **Grafs Simples**:
-1.  Sense llaços (arestes d'un vèrtex a ell mateix).
-2.  Sense arestes múltiples (només una línia entre dos punts).
-::: -->
+> **Seqüència de graus**:
+> És simplement fer una llista amb els graus de tots els vèrtexs, endreçada generalment de més gran a més petit.
+> Ex: Un graf "triangle amb una cua penjant" té llista de graus $S = (3, 2, 2, 1)$.
 
-> **Corol·lari**
->
-> Com que $2|A|$ sempre és un nombre PARELL, la suma dels graus ha de ser parella.
-> Això vol dir que és **impossible** que hi hagi un nombre senar de gent amb un nombre senar d'amics.
+Com que $2|A|$ sempre és un nombre PARELL, la suma dels graus ha de ser parella. Això vol dir que és **impossible** que hi hagi un nombre senar de gent amb un nombre senar d'amics.
 
 ## 5. Isomorfisme
 
-Dos grafs són **isomorfs** si tenen la mateixa estructura interna, encara que tinguin etiquetes diferents o estiguin dibuixats de forma diferent.
-
-En aquests dos grafs, el de la dreta és un cicle (un pentàgon) i l'esquerre és una estrella. **Són el mateix graf?**
+Dos grafs són **isomorfs** si tenen la mateixa estructura interna, encara que tinguin etiquetes diferents o estiguin dibuixats de forma diferent. En aquests dos grafs, el de la dreta és un cicle (un pentàgon) i l'esquerre és una estrella. **Són el mateix graf?**
 
 ::::grid{cols=2}
 :::graph{height=220}
@@ -168,7 +165,7 @@ En aquests dos grafs, el de la dreta és un cicle (un pentàgon) i l'esquerre é
 :::
 ::::
 
-La resposta és **SÍ**. Són isomorfs. Per què? Perquè podem trobar un **diccionari de traducció** (una bijecció) que converteix un en l'altre sense trencar cap connexió.
+La resposta és **sí**. Són isomorfs. Perquè podem trobar un **diccionari de traducció** (una bijecció) que converteix un en l'altre sense trencar cap connexió.
 
 **El diccionari**:
 *   $1 \to A$
@@ -177,134 +174,127 @@ La resposta és **SÍ**. Són isomorfs. Per què? Perquè podem trobar un **dicc
 *   $4 \to B$
 *   $5 \to D$
 
-Si comprovem les arestes: al primer graf **1** toca **2**. Al segon, la traducció de 1 (**A**) toca la traducció de 2 (**C**)? Sí! I així amb tots.
+Comprovem: al primer graf **1** toca **2**. Al segon, la traducció de 1 (**A**) toca la traducció de 2 (**C**)? Sí. I així amb tots.
 
-**Definició pràctica**: Un isomorfisme és simplement **reetiquetar** els vèrtexs. Si canviant els noms dels vèrtexs d'un graf puc obtenir exactament l'altre, són isomorfs. No importa com els dibuixi (la forma visual enganya), importa qui està connectat amb qui.
+Un isomorfisme és simplement **reetiquetar** els vèrtexs. Si canviant els noms dels vèrtexs d'un graf puc obtenir exactament l'altre, són isomorfs. No importa com dibuixi (la forma visual enganya), importa qui està connectat amb qui.
 
 ## 6. Tipus de grafs
 
-Hi ha certs grafs que surten tants cops que tenen nom propi.
+Hi ha certs grafs que surten tants cops que tenen nom propi:
 
-:::::grid{cols=2 class="gap-6"}
+::::::grid{cols=5 class="gap-3"}
 
-::::grid{cols=1 class="h-full border border-slate-700/50 rounded-2xl p-6 bg-slate-900/20 hover:bg-slate-900/40 transition-all"}
-#### **1. Graf nul ($N_n$)**
-El graf minimalista. Té $n$ vèrtexs i **0 arestes**. Està buit de relacions.
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">Nul $N_n$</div>
 
-*   **Mida**: 0.
-*   **Grau**: 0 (0-regular).
-
-:::graph{height=150}
+:::graph{height=100}
 ```json
 { "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 } ], "links": [] }
 ```
 :::
-::::
+<div class="text-xs text-slate-400 mt-1">$m = 0$ · Grau $0$</div>
+:::::
 
-::::grid{cols=1 class="h-full border border-slate-700/50 rounded-2xl p-6 bg-slate-900/20 hover:bg-slate-900/40 transition-all"}
-#### **2. Graf trivial ($N_1$)**
-El cas més simple possible. Un sol punt a l'univers.
-*   **Ordre**: 1.
-*   **Mida**: 0.
-*   És la "partícula elemental" dels grafs.
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">Trajecte $T_n$</div>
 
-:::graph{height=150}
-```json
-{ "nodes": [ { "id": 1, "label": "Jo sol", "color": "#facc15" } ], "links": [] }
-```
-:::
-::::
-
-::::grid{cols=1 class="h-full border border-slate-700/50 rounded-2xl p-6 bg-slate-900/20 hover:bg-slate-900/40 transition-all"}
-#### **3. Graf trajecte ($T_n$)**
-Una línia de punts, sense tancar. Com una cua del supermercat.
-*   **Mida**: $n-1$.
-*   **Grau**: Extrems 1, Interiors 2.
-
-:::graph{height=150}
+:::graph{height=100}
 ```json
 { "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 } ], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 } ] }
 ```
 :::
-::::
+<div class="text-xs text-slate-400 mt-1">$m = n{-}1$ · Extrems 1, int. 2</div>
+:::::
 
-::::grid{cols=1 class="h-full border border-slate-700/50 rounded-2xl p-6 bg-slate-900/20 hover:bg-slate-900/40 transition-all"}
-#### **4. Graf cicle ($C_n$)**
-Una rotllana tancada ($n \ge 3$).
-*   **Mida**: $n$.
-*   **Grau**: 2 (2-regular). Tothom té un veí a esquerra i dreta.
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">Cicle $C_n$</div>
 
-:::graph{height=150}
+:::graph{height=100}
 ```json
 { "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }, { "id": 5 } ], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 }, { "source": 4, "target": 5 }, { "source": 5, "target": 1 } ] }
 ```
 :::
-::::
+<div class="text-xs text-slate-400 mt-1">$m = n$ · Grau $2$ (2-regular)</div>
+:::::
 
-::::grid{cols=1 class="h-full border border-slate-700/50 rounded-2xl p-6 bg-slate-900/20 hover:bg-slate-900/40 transition-all"}
-#### **5. Graf roda ($W_n$)**
-Un cicle ($n-1$) més un centre connectat a tots ("The Hub").
-*   **Mida**: $2n-2$.
-*   **Graus**: Centre $n-1$, Perifèria 3.
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">Roda $W_n$</div>
 
-:::graph{height=150}
+:::graph{height=100}
 ```json
 { "nodes": [ { "id": "C", "color": "#facc15" }, { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 } ], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 }, { "source": 4, "target": 1 }, { "source": "C", "target": 1 }, { "source": "C", "target": 2 }, { "source": "C", "target": 3 }, { "source": "C", "target": 4 } ] }
 ```
 :::
-::::
+<div class="text-xs text-slate-400 mt-1">$m = 2(n{-}1)$ · Hub $n{-}1$, ext. $3$</div>
+:::::
 
-::::grid{cols=1 class="h-full border border-slate-700/50 rounded-2xl p-6 bg-slate-900/20 hover:bg-slate-900/40 transition-all"}
-#### **6. Graf complet ($K_n$)**
-La "festa perfecta". **Tothom** és amic de **tothom**.
-*   **Mida**: $n(n-1)/2$. (Màxim possible).
-*   **Grau**: $n-1$ ($(n-1)$-regular).
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">Complet $K_n$</div>
 
-:::graph{height=150}
+:::graph{height=100}
 ```json
 { "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }, { "id": 5 } ], "links": [ { "source": 1, "target": 2 }, { "source": 1, "target": 3 }, { "source": 1, "target": 4 }, { "source": 1, "target": 5 }, { "source": 2, "target": 3 }, { "source": 2, "target": 4 }, { "source": 2, "target": 5 }, { "source": 3, "target": 4 }, { "source": 3, "target": 5 }, { "source": 4, "target": 5 } ] }
 ```
 :::
-::::
+<div class="text-xs text-slate-400 mt-1">$m = n(n{-}1)/2$ · Grau $n{-}1$</div>
+:::::
 
-::::grid{cols=1 class="h-full border border-slate-700/50 rounded-2xl p-6 bg-slate-900/20 hover:bg-slate-900/40 transition-all"}
-#### **7. Graf $r$-Regular**
-L'equitat total: tots els vèrtexs tenen exactament el mateix grau $r$.
-*   $K_n$ i $C_n$ en són exemples.
-*   Aquí sota, un graf **3-regular** (Cúbic).
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">$r$-Regular</div>
 
-:::graph{height=150}
+:::graph{height=100}
 ```json
 { "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 } ], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 }, { "source": 4, "target": 1 }, { "source": 1, "target": 3 }, { "source": 2, "target": 4 } ] }
 ```
 :::
-::::
-
-::::grid{cols=1 class="h-full border border-slate-700/50 rounded-2xl p-6 bg-slate-900/20 hover:bg-slate-900/40 transition-all"}
-#### **8. Graf bipartit**
-Els vèrtexs es divideixen en dos equips ($V_1, V_2$). Les arestes només van d'un equip a l'altre. **Mai** entre membres del mateix equip.
-
-:::graph{height=150}
-```json
-{ "nodes": [ { "id": "A1", "group": 1, "color": "#ef4444" }, { "id": "A2", "group": 1, "color": "#ef4444" }, { "id": "B1", "group": 2, "color": "#3b82f6" }, { "id": "B2", "group": 2, "color": "#3b82f6" } ], "links": [ { "source": "A1", "target": "B1" }, { "source": "A2", "target": "B2" }, { "source": "A1", "target": "B2" } ] }
-```
-:::
-::::
-
-::::grid{cols=1 class="h-full border border-slate-700/50 rounded-2xl p-6 bg-slate-900/20 hover:bg-slate-900/40 transition-all"}
-#### **9. Bipartit complet ($K_{r,s}$)**
-Dos equips on **tots** els de l'equip A juguen contra **tots** els de l'equip B.
-*   **Mida**: $r \cdot s$.
-*   Si $r=1$, és un **Graf Estrella**.
-
-:::graph{height=150}
-```json
-{ "nodes": [ { "id": "A1", "group": 1, "color": "#ef4444" }, { "id": "B1", "group": 2, "color": "#3b82f6" }, { "id": "B2", "group": 2, "color": "#3b82f6" }, { "id": "B3", "group": 2, "color": "#3b82f6" } ], "links": [ { "source": "A1", "target": "B1" }, { "source": "A1", "target": "B2" }, { "source": "A1", "target": "B3" } ] }
-```
-:::
-::::
-
+<div class="text-xs text-slate-400 mt-1">$m = rn/2$ · Tot grau $= r$</div>
 :::::
+
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">Bipartit</div>
+
+:::graph{height=100}
+```json
+{ "nodes": [ { "id": "A1", "color": "#ef4444" }, { "id": "A2", "color": "#ef4444" }, { "id": "B1", "color": "#3b82f6" }, { "id": "B2", "color": "#3b82f6" } ], "links": [ { "source": "A1", "target": "B1" }, { "source": "A2", "target": "B2" }, { "source": "A1", "target": "B2" } ] }
+```
+:::
+<div class="text-xs text-slate-400 mt-1">2 equips, arestes entre ells</div>
+:::::
+
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">Bip. complet $K_{r,s}$</div>
+
+:::graph{height=100}
+```json
+{ "nodes": [ { "id": "A1", "color": "#ef4444" }, { "id": "B1", "color": "#3b82f6" }, { "id": "B2", "color": "#3b82f6" }, { "id": "B3", "color": "#3b82f6" } ], "links": [ { "source": "A1", "target": "B1" }, { "source": "A1", "target": "B2" }, { "source": "A1", "target": "B3" } ] }
+```
+:::
+<div class="text-xs text-slate-400 mt-1">$m = r \cdot s$ · Si $r{=}1$: Estrella</div>
+:::::
+
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">$r$-Partit $G(r,k)$</div>
+
+:::graph{height=100}
+```json
+{ "nodes": [ { "id": "A1", "color": "#ef4444" }, { "id": "A2", "color": "#ef4444" }, { "id": "B1", "color": "#3b82f6" }, { "id": "B2", "color": "#3b82f6" }, { "id": "C1", "color": "#10b981" }, { "id": "C2", "color": "#10b981" } ], "links": [ { "source": "A1", "target": "B1" }, { "source": "A1", "target": "B2" }, { "source": "A1", "target": "C1" }, { "source": "A1", "target": "C2" }, { "source": "A2", "target": "B1" }, { "source": "A2", "target": "B2" }, { "source": "A2", "target": "C1" }, { "source": "A2", "target": "C2" }, { "source": "B1", "target": "C1" }, { "source": "B1", "target": "C2" }, { "source": "B2", "target": "C1" }, { "source": "B2", "target": "C2" } ] }
+```
+:::
+<div class="text-xs text-slate-400 mt-1">$p(G)$: mínim $r$. $p(K_n) = n$</div>
+:::::
+
+:::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-3 bg-slate-900/20"}
+<div class="text-sm font-bold mb-1">Trivial $N_1$</div>
+
+:::graph{height=100}
+```json
+{ "nodes": [ { "id": 1, "color": "#facc15" } ], "links": [] }
+```
+:::
+<div class="text-xs text-slate-400 mt-1">$n = 1$, $m = 0$</div>
+:::::
+
+::::::
 
 ## 7. Subgrafs
 
@@ -412,6 +402,20 @@ Ara els amics es barallen, i els desconeguts es fan amics.
 Hi ha grafs que són **autocomplementaris**: són idèntics al seu "negatiu" ($G \cong G^c$). El pentàgon ($C_5$) n'és un!
 :::
 
+:::tip{title="Truc d'Examen: Àlgebra del Complementari"}
+No intentis dibuixar el complementari si a l'examen et demanen números. L'ordinador de la teva ment ha d'usar aquestes 3 regles d'or:
+1.  **Ordre igual:** $n_{G^c} = n$
+2.  **Mida invertida:** $m_{G^c} = \frac{n(n-1)}{2} - m$  (Són les arestes totals possibles menys les que ja tens a $G$).
+3.  **Grau invertit (Imprescindible):** El nou grau d'un vèrtex és tot allò amb el que no estava connectat a la teva xarxa original. Aquesta fórmula s'usa contínuament:
+    $$ g_{G^c}(v) = (n - 1) - g_G(v) $$
+:::
+
+:::note{title="Nombre d'Independència ind(G)"}
+Un **conjunt independent** de vèrtexs és un grup on **CAP** d'ells és vèrtex adjacent de cap altre de l'equip (0 arestes entre ells, oposat diametral a una secta Completa).
+El **nombre d'independència $ind(G)$** o $\alpha(G)$ és el càlcul pur de la mida del conjunt independent més gran possible d'aconseguir en aquell graf.
+*(Fixa-t'hi bé: Un conjunt independent a $G$ correspon visualment a ser precisament un subgraf complet pur ($K_r$) a l'univers de $G^c$!)*
+:::
+
 ## 9. Operacions amb grafs
 
 Igual que sumem i multipliquem números, podem fer-ho amb grafs!
@@ -422,6 +426,14 @@ Igual que sumem i multipliquem números, podem fer-ho amb grafs!
 *   **Arestes**: Totes les que hi havia.
 
 > Si els grafs no tenien cap vèrtex en comú ($V \cap V' = \emptyset$), l'ordre total és la suma dels ordres ($|V| + |V'|$).
+
+### Potència de Grafs ($G^2$ al Quadrat)
+L'estrella destructora dels parcials moderns i el gran filtre "P1" pur per notes.  Avaluar un Graf al Quadrat significa mantenir absolutament íntegre l'univers de nodes, conservar de regal les seves arestes originals i a més atorgar lligams propis nous exclusius referent als **amics dels amics!**  Dues vèrtexs se certifiquen a tenir aresta de xarxa nova si només es trobaven pur i oficialment visual separats a "distància de 2 línies d'aresta de viatge" a dins l'original G! 
+
+:::tip{title="Truc d'Examen: Propietats directes i immediates de G²"}
+No t'endinsis directament mai generadores a mà el dibuix genèric complet en paper excepte pur en bucles petits que sumis de rutes de pocs nens. Deduïu la sentència lògica prèvia:
+*   **Connexió Indestructible:** Si a la prova diu genèrica "el pur gràfic $G$ de condició referent resultava ja per sí connex lligat en bloc", assegureu en tot pur honor a dita norma referent general d'opció de l'examen que l'estructura originada de cop resultada total de $G^2$ assoleix la certificada condició completament per igual referencial del disseny ser **Connex on tota llibertat genèrica real ho manté**. (Fins i tot acostumarà per si un sol cas atrevit, a reduir dràsticament on es de natural un gran valor alt en diàmetre abstracte en menors referents i àgils salts). 
+:::
 
 ### Graf producte ($G \times G'$)
 Aquesta és una mica més complexa, però visualment xulíssima. El **producte cartesià** de grafs genera estructures tipus "reixa" o "xarxa". Imaginem-ho així: **Substituïm cada vèrtex del primer graf per una còpia del segon.**
@@ -462,3 +474,15 @@ $$
 $$
 \text{Mida Total} = |V| \cdot |A'| + |V'| \cdot |A|
 $$
+
+:::tip{title="Truc d'Examen: Distàncies al Producte Cartesià"}
+Si et pregunten per radis o diàmetres de grafs cartesians ($G \times H$), mai no dibuixis l'estructura final per llarga i absurda! La distància viatjant per la "reixa" conformada és exactament l'addició lliure de les dimensions pures originals:
+$$ d_{G \times H}((u_1, v_1), (u_2, v_2)) = d_G(u_1, u_2) + d_H(v_1, v_2) $$
+Per tant, respostes de qüestionaris complexos esdevenen sumes de P3:
+$$ \text{Diàmetre}(G \times H) = \text{Diàmetre}(G) + \text{Diàmetre}(H) $$
+:::
+
+### Combinació Estranya Coronal Mítica ($G \circ H$)
+Només surt els pitjors dies plujosos (Examen P1, 2022/2021), a vegades presenten relacions on l'acció s'enuncia com **"Considerem penjar de cadascun pur vèrtex elemental pertanyent de la $G$ totalment una còpia natural i directa pura sota seu en la base totalment el cas de pur disseny genèric de resguards propis $H$"**. Literalment has posat pur a cadascú de l'$n$ element, l'exhibició pur referent on t'atrapen totes sota lligam genèric tots i absoluts.  No el demanaran que ho dibuixes si no us donar formatives variables equacions simples d'estadístiques: 
+$$ |V_{G \circ H}| = |V_G| + |V_G| \cdot |V_H| $$  
+Els graus pugen exponencialment! El nou absolut grau lligat assignat generalment al l'element original originat esdevé $\text{nou grau} = g_G(v) + |V_H|$. És brutal.

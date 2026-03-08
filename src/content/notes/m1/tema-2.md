@@ -37,6 +37,12 @@ Però, com de fràgil és el nostre graf connex?
 :::
 <div class="text-xs text-center text-slate-400 mt-2 mb-4">El vèrtex de <b>Tall</b> és vital. L'aresta groga és exclusivament un <b>Pont</b>.</div> <!-- No hi ha arestes grogues.. -->
 
+:::tip{title="Truc d'Examen: La Fal·làcia d'Arestes i Vèrtexs"}
+És cert que "un graf connex amb vèrtexs de tall sempre té alguna aresta pont"? **FALS**. A l'examen de l'15-04-2021 cau justament això. El millor contraexemple: **Dos triangles units exclusivament per un 1 vèrtex central exclusiu (Graf Papallona)**. Aquest node central és un vèrtex de tall evident i decisiu, però atès que tot conforma cicles cap de les seves arestes adjacents pures actua i funciona com una aresta de separació com a pont.
+
+Per contra el sentit matemàtic invers sempre serà cert i afirmat positiu de resoldre ràpid: "Els extrems formals d'una *aresta pont* central lligada en si, sempre acaben de desencadenar per obligació ser vèrtexs de tall reals (a excepció només evidentment i senzilla  si algun o ambdós resulten ser tristes fulles sense relació lligada final de frontera natural)."
+:::
+
 ## 3. Mètriques de distància
 Siguin dos vèrtexs que viuen en un mateix component connex $u$ i $v$:
 *   **Distància $d(u,v)$**: El valor *mínim* referent a la longitud de tota la varietat de camins per anar d'$u$ a $v$. Si no hi ha camí possible, es considera $\infty$.
@@ -73,6 +79,13 @@ Si tenim un array `D` que ens guarda quants passos portem fets:
 :::algoviz{algorithm="bfs2"}
 :::
 
+:::tip{title="Truc d'Examen: Executar Recorreguts a Paper"}
+Sovint demanaran llistar explícit i de memòria sobre "l'ordre d'addició de vèrtexs a l'arbre generador BFS/DFS prioritzant estrictament amb ordre numèric petit de frontera". És clau no fallar ni liar-se:
+*   **Arestes Generadores:** La canonada mestra o *aresta de descobriment* prové únicament des de quin vèrtex anterior has conquerit de primera l'altre desconegut!  I mai entre adjacents descoberts des d'uns mateixos fons.
+*   **Ordre BFS Paper:** Llisteu els de distància 1 (ordenats de menor id a major), poseu les branquetes, feu d'origen un a un i afegiu els de distància 2. No salteu branques!
+*   **Ordre DFS Paper:** Segueix la línia sense tancar fins l'últim racó menor possible. Un cop tallat el pas sense ruta (tots veïns actuals visitats), desfés darrera i busca rutes verges paral·leles descartades com recurs.
+:::
+
 ---
 
 ## 6. Caracterització dels grafs bipartits <!-- Cal explicar-lo més visual, no s'entén llegint el text-->
@@ -88,4 +101,7 @@ Dins d'un graf pur de base matemàtica $G = (V, A)$:
 Amb aquest raonament de desxifrar si les seqüències de parades obligatòriament per força amaguen parelles o cicles trencastructures per sota, finalitza sent revelat el **Requisit Únic Universal de la matemàtica FM (Teorema 11)** que resumeix la caracterització dels sistemes bipartits i serà resposta segura a qüestionari:
 
 > **Teorema 11: Caracterització Màxima Bipartita** \
-> Qualsevol graf del planisfèri considerat d'ordre $\ge 2$ serà estrictament un pur **Graf Bipartit estructurat, si, i *només* si, NO té actiu a les seves ombres CAP cicle de longitud SENAR**. Si amaga cicles de 5 arestes o el clàssic Triangle rotacional, adéu equip doble, el graf Bipartit col·lapsarà inevitablement.
+> Un graf senzill d'ordre $n \ge 2$ és un pur **Graf Bipartit** $\iff$ **NO té absolutament CAP cicle de longitud SENAR**.
+> 
+> *Això és una arma de puríssima reducció a l'absurd als exàmens de paper:*
+> *Si tractant relacions abstractes sumant longituds deduïu que hi ha cert "cicle de 5 o d'un pur Triangle C3"... adéu bipartit.*

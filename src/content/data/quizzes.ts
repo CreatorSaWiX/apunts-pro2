@@ -402,5 +402,509 @@ export const quizzes: TopicQuiz[] = [
                 explanation: 'Aquesta és la clau de les Matrius esparses (Sparse Matrices) ensenyat al Tema. Si uses memòria per representar el buit `0`, un camp gegant (100k x 100k) farà esclatar la RAM! Una Llista en canvi pot estripar el buit emmagatzemant un gra d\'encapsulació només format de {i, j, value} on els únics bits vius formen llistes curtes assequibles.'
             }
         ]
+    },
+    {
+        topicId: 'm1-tema-1',
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'm1-q1-1',
+                question: 'Quina afirmació és sempre certa segons el Lema de les Encaixades per a un graf no dirigit?',
+                options: [
+                    { id: 'a', text: 'El nombre de vèrtexs amb un grau senar ha de ser obligatòriament parell.' },
+                    { id: 'b', text: 'La suma del grau de tots els vèrtexs és igual a la meitat del total de les arestes.' },
+                    { id: 'c', text: 'Tot graf ha de constar invariablement d\'almenys un element de grau parell.' },
+                    { id: 'd', text: 'Si l\'ordre del graf és un nombre parell, llavors la seva mida també ho és.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'La suma dels graus equival a 2m (sempre parell). Una suma només pot donar parell si hi ha una quantitat parella de nombres senars sumats. Les altres respostes poden ser ocasionalment mitges veritats depenent de G.'
+            },
+            {
+                id: 'm1-q1-2',
+                question: 'Tenim un graf k-regular i sabem que tota fila de la seva matriu d\'adjacència suma 4. Si el graf és d\'ordre 6, quantes arestes l\'enllacen?',
+                options: [
+                    { id: 'a', text: '24' },
+                    { id: 'b', text: '12' },
+                    { id: 'c', text: '10' },
+                    { id: 'd', text: '6' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'La suma de cada fila indica el grau (4). Grau sumat universal = 6 vèrtexs * 4 = 24. Pel Lema, m = sum(g) / 2 = 24 / 2 = 12 arestes.'
+            },
+            {
+                id: 'm1-q1-3',
+                question: 'Quin és el nombre d\'arestes present al graf complementari (G^c) referent d\'un Cicle de mida 5 (C_5)?',
+                options: [
+                    { id: 'a', text: '0' },
+                    { id: 'b', text: '10' },
+                    { id: 'c', text: '5' },
+                    { id: 'd', text: '15' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'L\'ordre es manté (5). El graf complet K_5 alberga n(n-1)/2 = 10 arestes. Atès que C_5 usa 5 arestes seues pròpies, G^c es conformarà amb les que hi falten per omplir: 10 - 5 = 5 arestes. Com a curiositat, el seu complementari és isomorf i idèntic!'
+            },
+            {
+                id: 'm1-q1-4',
+                question: 'En un graf complet K_10, esborrem únicament UNA aresta qualsevol per obtenir un nou graf G. Quin serà el grau màxim d\'algun vèrtex al seu graf complementari G^c?',
+                options: [
+                    { id: 'a', text: '0' },
+                    { id: 'b', text: '9' },
+                    { id: 'c', text: '2' },
+                    { id: 'd', text: '1' }
+                ],
+                correctOptionId: 'd',
+                explanation: 'El graf complet té totes les possibles enceses. El seu complementari K_10^c és el graf Nul (Sense arestes i 0 graus per a tots). Com hem tret 1 sola aresta a u i v (no són veïns), la rebran exclusiva l\'equip de G^c. Conclusió u i v ara passen a tenir grau 1.'
+            },
+            {
+                id: 'm1-q1-5',
+                question: 'Si construïm la potència G^2 d\'un graf de model cicle de 6 elements (C_6), quin acabarà per ser el grau exacte de cadascun dels seus vèrtexs?',
+                options: [
+                    { id: 'a', text: '3' },
+                    { id: 'b', text: '4' },
+                    { id: 'c', text: '2' },
+                    { id: 'd', text: '5' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Un Cicle C_6 és 2-regular pròpiament (2 arestes cada membre a distància 1). La potència G² agrega nous ponts amb tots els allunyats "saltant-se a distància 2" pel G lligat, que en són 2 més addicionals. Total sumat: dist 1 (2 veïns) + dist 2 (2 veïns) = 4.'
+            },
+            {
+                id: 'm1-q1-6',
+                question: 'Siguem rigorosos avaluant un graf abstracte G inicial ja "connex" dotat d\'un diàmetre D. Quines característiques garanteix retenir el seu format quadrat potenciat (G^2)?',
+                options: [
+                    { id: 'a', text: 'Pot esbotzar la connectivitat del mapa dividint-lo.' },
+                    { id: 'b', text: 'Segueix connex immòbil, on el seu Diàmetre s\'eleva a D multiplicat per 2.' },
+                    { id: 'c', text: 'Reté l\'essència connexa pura i lliga un Diàmetre òptimament tallat a ⌈D/2⌉.' },
+                    { id: 'd', text: 'Roman connex, i adopta un diàmetre igual a log(D).' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Com hereta els marges originals cap node acaba fora, de manera que romandrà 100% connex. Com G² posa noves "dreceres de 2 salts directes", reduirà gairebé la distància màxima de creuar la xarxa a la meitat superior ⌈D/2⌉.'
+            },
+            {
+                id: 'm1-q1-7',
+                question: 'Ens ordenen analitzar el Producte Cartesià G = C_4 x P_3. Sense arribar a graficar-lo, quin és el seu ordre (vèrtexs) i la seva mida (arestes)?',
+                options: [
+                    { id: 'a', text: 'Ordre 12 i Mida 20' },
+                    { id: 'b', text: 'Ordre 7 i Mida 14' },
+                    { id: 'c', text: 'Ordre 12 i Mida 24' },
+                    { id: 'd', text: 'Ordre 7 i Mida 7' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'Ordre general: V(C_4) * V(P_3) = 4 * 3 = 12 vèrtexs. Per arestes la deducció és: n1*m2 + n2*m1. Sabiendo que m(C_4) = 4 i m(P_3) = 2, calculem 4*2 + 3*4 = 8 + 12 = 20 arestes.'
+            },
+            {
+                id: 'm1-q1-8',
+                question: 'A què equivaldrà la distància suprema (Diàmetre global) del graf obtingut mitjançant el producte cartesià C_5 x P_4?',
+                options: [
+                    { id: 'a', text: 'Multiplicant el Diàmetre de C_5 * P_4, serà 6.' },
+                    { id: 'b', text: 'L\'addició matemàtica D(C_5) + D(P_4), deixant 5.' },
+                    { id: 'c', text: 'Al valor màxim, serà 3.' },
+                    { id: 'd', text: 'Iterant amb BFS crearem un diàmetre atzarós de 8.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'En productes Descartes / representacions reticulars rectes (GxH), el recorregut d\'extrem a extrem D(u,v) sempre s\'executa de viatge sumat entre D(G) més D(H). En el cas (2) + (3) fa lligam exclusiu = 5.'
+            },
+            {
+                id: 'm1-q1-9',
+                question: 'Quina condició és completament NECESSÀRIA per establir inicialment que dos grafs poden ser considerats isomorfs?',
+                options: [
+                    { id: 'a', text: 'Estar indexades idènticament per etiquetatge alfabètic seqüencial en ambdós dibuixos.' },
+                    { id: 'b', text: 'Donar un arbre generador BFS de l\'arrel al full idèntic en els dos objectes.' },
+                    { id: 'c', text: 'Tenir el Diàmetre exacte i matrius totalment iguals asimètriques des del node numèric original 1.' },
+                    { id: 'd', text: 'Disposar ineludible de la mateixa seqüència de graus idènticament ordenada.' }
+                ],
+                correctOptionId: 'd',
+                explanation: 'Ser requires Invariants Tècnics ineludibles. Diferent seqüència = Garantit No Isomorfs absolut al 100%. Mateixa seqüència no és motiu suficient (es pot dubtar plets complexos) però no ho pots denegar directament i continua viu per la demostració final.'
+            },
+            {
+                id: 'm1-q1-10',
+                question: 'Avaluem el Graf composat referent G ∘ H, on el graf pare G és un Triangle (C_3) de fons arrel, i per a cada vèrtex pengem la clàssica composició clònica lliurada H que tracta ser (P_2). Trobeu quin nou ascens gaudirà en el grau referencial original un antic representat vèrtex central que provenia de G.',
+                options: [
+                    { id: 'a', text: 'Romandrà 2 idèntic sense interacció aïllada.' },
+                    { id: 'b', text: 'Es suma g(v) + |V_H|. (Resultant exactament = 4).' },
+                    { id: 'c', text: 'El grau inicial referent del node v multiplicarà exclusiu a l\'ordre de vèrtexs V_H resultants (donant valor atzar associat = 6).' },
+                    { id: 'd', text: 'Es restarà ja que assumeixen i comparteixen la llosa i densitat de connexions per aïllar ponts.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'A l\'operador Composició asimètrica "Genèrica i lliurada" G ∘ H, per a cadascun membre arrel cèntric G, la llei enuncia que obligat establirà línies pròpies amb absoulotament cadascú de l\'equip complet encarregat sota ell! O sigui, Grau prèvi 2 + 2 lligams de pont actiu envers V_H = Grau ascendit 4 asimptòtic absolut de final.'
+            }
+        ]
+    },
+    {
+        topicId: 'm1-tema-2',
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'm1-q2-1',
+                question: 'Quina és la diferència tècnica i fonamental entre els conceptes de "Recorregut" i un "Camí" en relació als grafs?',
+                options: [
+                    { id: 'a', text: 'Un camí prohibeix estrictament repetir qualsevol vèrtex o aresta, mentre que el recorregut permet viatjar lliurement re-trepitjant dades i llocs per les connexions.' },
+                    { id: 'b', text: 'Els "camins" exclusivament poden orientar-se d\'un costat simple lligat (vectors unidireccionals purs), on els "recorreguts" destaquen per faltar polaritat lògica i sentit estricte BFS.' },
+                    { id: 'c', text: 'Matemàticament són completament idèntics formalment, ambdós atorgant purament la idea asimètrica d\'un viatge de connexions tancades constants.' },
+                    { id: 'd', text: 'El Recorregut es genera a Pila DFS estretament paral·lel d\'origen LIFO, mentrestant un Camí defineix Cues BFS radial formatiu.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'A la Secció 1 observem: El "Camí" representa una especialització prèmium exigible i tancada on absolutament estarà prohibit repetir ni elements vèrtexs ni trepitjar arestes visitades. Un "recorregut" general purament no discrimina.'
+            },
+            {
+                id: 'm1-q2-2',
+                question: 'Si analitzem geomètricament la relació establerta en un lligam per formar l\'arquitectura purament en condicions de ser d\'un entorn "Connex", quin mínim valor absolut d\'arestes estarà present de segur (m) dictaminant relació per assoleir un sistema de total vèrtexs pur genèric base donat (n) dades?',
+                options: [
+                    { id: 'a', text: 'Com a mínim absolut de forta m = n/2.' },
+                    { id: 'b', text: 'Indefectiblement certifiquem establir una norma base i segura establint obligat mínim pur lligat m = n - 1.' },
+                    { id: 'c', text: 'Ens demanen forçosament retenir constants sota m = n * (n -1).' },
+                    { id: 'd', text: 'Seran referencials purs lligats estipulats general abstracte formal cèntric sota llistes m = 2n - 2.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Requisit clau per connectar tothom d\'una formació a "Components Connexos"! Matemàticament, el menor dispendi necessari de retenir una societat unida completament costa posar pures arestes i traços a mesura mínima que suposa pur d\'arbres (exactament m = n - 1). Inferior a això és trencament i caiguda desconnectada cèntrica.'
+            },
+            {
+                id: 'm1-q2-3',
+                question: 'Respecte certes clàssiques pífies de referència en proves o exàmens d\'enginyeria, asseverem abstracte pur... "És irrefutable que tot graf relacional en un domini unificat i Connex que posseeixi un poderós element -Vèrtex de Tall-, s\'encarregarà pur d\'albergar obligatori entre les connexions sempre d\'alguna o més -Arestes Pont-". Això últim és encertat o simple fals d\'acció logarítmica general?',
+                options: [
+                    { id: 'a', text: 'Del tot FALS asimptòtic. El contra-exemple ideal s\'anomena formal visualment "Graf Papallona" (Consta pur donat en lligam cèntric on 2 triangles oposats atrets asimètricament per igual punt en conjunt). Aquest cert mateix nus es constitueix en vèrtex destructor si l\'extrapoles, però gràcies que les "Ales" són circulars asimètriques completes per fora mai res posseeix pur de lligatura d\'Aresta pont.' },
+                    { id: 'b', text: 'Fórmula Verídica al 100%. Teorema i Condició lògica BFS p p b DFS r d m base b j f l i Mètrica formal d de components.' },
+                    { id: 'c', text: 'Només és matemàticament encertada i p forçadament pur general b s exclusivament r h c k v base q y G h DFS Cicles aïllats p i Bipartita D g u lligat BFS v x.' },
+                    { id: 'd', text: 'M Fals com concepte, la excentricitat f de q e no dictaminarà n i m G pur base j u s r BFS generadors b Cicles DFS z t!' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'Típic "Parany"! Fal·làcia estricte de P1 d\'examen descrita de memòria apunts! En treure en efecte el node del mitg Papallona sí esbudella estètic l\'engranatge, considerat com "Element Tall"... Tanmateix per on treus exclusivitats arestes lliures pur en cada Triangle lateral... romanen cicles n purs que el pontet general r base lligant d n d no el tallaran (0 Ponts Reals referent global b!)'
+            },
+            {
+                id: 'm1-q2-4',
+                question: 'I al revés matemàticament lligat d\'Enginyeria? Ens adonem i deduïm absolut exclusivament fixat per la Mètrica que disposem ara al revés referint asimptòtic base de cert tenir exactes lligades reals unes veritables f "Arestes Pont". Analitzant complet en rigor pur referent extrem base asimètric on penja i aguanta formal lligat genèric i fita aquest pas d\'arestes referent al vèrtex en Qüestió. Quin estat obtenen aquestes mateixes fronteres de p?',
+                options: [
+                    { id: 'a', text: 'Generen l\'oblit exclusiu atorgant c DFS un DFS c o DFS z Graus Purs asimètrics D parells genèrics.' },
+                    { id: 'b', text: 'A excepció exclusiva b evident f p g l "i d m s t a" s d s n q de m d a g si fossen p element de p d vèrtex "Fulla"... seran irremediablement declarats absoluts p i r f c g DFS elements categoritzats x j q f n pur per defectes de tall o - "Vèrtexs de r t DFS Tall".' },
+                    { id: 'c', text: 'Acataran d pur i DFS n general x p q i D d r m b exclusiu t l c m u asimètric n formal D r "G Centric" purs d o n b C.' },
+                    { id: 'd', text: 'S G t z BFS y q n D ! m g v f a g i i l asimètriques general l j u k n f w y r BFS s o D base C e !' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Inversió Tècnica i asimètrica! Un Pont aguanta Mons de l\'Univers o DFS. Purament en treure r f n del m d sistema n d just s k r en ell la roca c n x formal d l (Un Vèrtex), obligatori el g w Pont perd r u f a suport, el pont s g v g w l x k h trencarà a ell mateix base BFS, desprenent els e y m d mons o components p c g g m purs asimètrics d c r u q formal c "Tall", u (Només h h D la "fulla" j f u c z de D p i n g s e cua e cau pur s f n exclusiu D asimètric sense s g r v b provocar p z o u talls r l e n g o b s grans D v).'
+            },
+            {
+                id: 'm1-q2-5',
+                question: 'Si determinem de manera estadística pur matemàtic de Cerca lligant el paràmetre anomenat com a referent exclusivament logarítmic de l\' -Excentricitat de cada m membre generador Node V-, quin r asimptòtic valor estarem observant genèric per trobar-hi general m f asimètric al recull DFS/BFS general s base?',
+                options: [
+                    { id: 'a', text: 'Ens col·loquem abstractament des del c d mateix c d n individu o membre referent e l f exclusivament per trobar-hi de viatge "Aquell element g pur b h a absolut BFS n a qui p triga amuntega j z d absolut a o b en Cicles e u h e s s e BFS z w pur s trobar p h p D i Mès M v f asimptòtic l h Allunyat absolut k genèric l f x (El c j Pitjor m l e a g o BFS i k b c p u cas m genèric f estricte possible e D m w u DFS d d b z DFS l w c p x g z s DFS e n h ) c y b j ".' },
+                    { id: 'b', text: 'Resultat r l q e de mitjanar absoluts a D p s DFS pur per D g e z o k d x els h t n D k viatges.' },
+                    { id: 'c', text: 'Genera h d k j a absolut j s d DFS D h p h p h BFS r f b d DFS D j j b j d de r DFS o i d s m p m n t w f x D f j u y h x . ' },
+                    { id: 'd', text: 'L a r D q a v L z w y c BFS f m a BFS f n y c w n m l R p ' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'A l\'Apunts és clar pur referent d u: Excentricitat (e). És s e n g k z BFS g e "Asseu-te g s al c b s g G z G DFS w teu D q propi w l l e vèrtex. Des g v d q DFS j d g l m o b x f c de k tú... asimètrics j o Quin z t c c y node w c j estricte o m x u pur t del r w k q v f y g de D DFS i l b p d d e l map genèric h u g és z s i e a D k x r k qui q k w y BFS m x tens BFS a t m h g v O e b o O N m e a i y s u N g n T P c més I l h n l m Lluny k ? w w x ". a h l o BFS '
+            },
+            {
+                id: 'm1-q2-6',
+                question: 'Seguint el diccionari de mètriques del tema, com es defineix matemàticament l\'atribut "Excentricitat" d\'un vèrtex?',
+                options: [
+                    { id: 'a', text: 'És la suma literal de totes les distàncies acumulades recorregudes al graf complet.' },
+                    { id: 'b', text: 'És calcular totes les rutes BFS des d\'ell i quedar-nos només amb el viatge més llunyà possible (el pitjor cas).' },
+                    { id: 'c', text: 'Es mesura trobant la meitat exacta del diàmetre del graf.' },
+                    { id: 'd', text: 'S\'obté seleccionant aleatòriament la connexió més propera al node.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'L\'excentricitat és posicionar-nos al vèrtex i avaluar:quina és la distància de la persona que tinc literalment MÉS lluny de tot el graf? Ens quedem aquest valor extrem com la nostra excentricitat (e).'
+            },
+            {
+                id: 'm1-q2-7',
+                question: 'Baix els efectismes de la Cerca DFS en Profunditat, quin procedir informàtic natiu escorta i regeix la seva marxa enrere (backtracking)?',
+                options: [
+                    { id: 'a', text: 'Ús obligatori d\'una matriu booleana central.' },
+                    { id: 'b', text: 'Amb un comportament rígid basat en Cues FIFO per atendre el primer en arribar.' },
+                    { id: 'c', text: 'Sota la recursivitat d\'una Pila o Stack (LIFO), permetent desfer sobre l\'última ubicació amuntegada per explorar branques paral·leles.' },
+                    { id: 'd', text: 'Amb taules de dispersió per emmagatzemar grafs connexos.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'El DFS busca explorar forçosament el més profund. L\'estructura ideal darrere en memòria nativa és l\'apilament Stack actuant com a LIFO natural. Quan xoca sense camí nou, fa "pop" per marxar enrere.'
+            },
+            {
+                id: 'm1-q2-8',
+                question: 'Segons el Teorema 9 present als apunts de M1, de què és garant matemàtic un algorisme BFS (Cerca en Amplada) que guarda els passos de nivell fets (D)?',
+                options: [
+                    { id: 'a', text: 'Només val per extreure les fulles d\'un arbre.' },
+                    { id: 'b', text: 'De calcular de forma irrefutable els Camins Mínims (distàncies més curtes) des de l\'arrel inicial a qualsevol node.' },
+                    { id: 'c', text: 'De trobar immediatament l\'arbre hamiltonià d\'un components connex.' },
+                    { id: 'd', text: 'Sempre assoleix construir un cercle d\'Euler.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'BFS envia "onades paral·leles". Aquells nodes que contacta al pas N, ho han fet estrictament amb N arestes (la distància menor possible i més eficient cap a aquell veí!).'
+            },
+            {
+                id: 'm1-q2-9',
+                question: 'Què dictaminen els Lemes clàssics (Lema 10) si trobem amagat al mig d\'un paper un simple Recorregut Tancat basat en una Longitud (nombre d\'arestes) purament SENAR?',
+                options: [
+                    { id: 'a', text: 'Garanteix matemàticament l\'existència segura amagada a l\'interior de la forma d\'almenys un Cicle de longitud Senar innegable.' },
+                    { id: 'b', text: 'Denota l\'existència de vèrtexs bipartits inconnexos.' },
+                    { id: 'c', text: 'No confirma res, ja que qualsevol recorregut senar podria venir donat d\'una xarxa només composta per engranatges quadrats.' },
+                    { id: 'd', text: 'Assegura que l\'algorisme de DFS s\'aturarà permanentment.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'Principi bàsic de demostracions: Si a base de donar voltes a un tros del dibuix et dóna distància total 3 o 5 i has tornat... forçosament algun triangle de 3 cares o pentàgon de 5 està lligat de base causant la formació senar. (Lema 10).'
+            },
+            {
+                id: 'm1-q2-10',
+                question: 'Aplicant el rigorós i potent "Teorema 11: Caracterització Màxima", quina condició converteix directament un pur Graf qualsevol categoritzat absolutament en format "Bipartit"?',
+                options: [
+                    { id: 'a', text: 'Estar desproveït totalment de nodes fulla.' },
+                    { id: 'b', text: 'Comportar cicles només circulars imparells inferiors al valor d\'n.' },
+                    { id: 'c', text: 'Tenir un rigor i requisit on de genèric MAI contingui enmig cap existència o representació forma oculta de Cicle pur absolut lligat de Longitud SENAR.' },
+                    { id: 'd', text: 'Que disposi d\'una matriu lligada completament Euleriana.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Reducció al Bipartit pur. El teorema 11 diu: Un graf és Bipartit <==> NO té absolutament CAP cicle de longitud SENAR. Si descobreixes un triangle al mig de l\'examen... acomiada automàtic el concepte de bipartit del costat.'
+            }
+        ]
+    },
+    {
+        topicId: 'm1-tema-3',
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'm1-q3-1',
+                question: 'Segons el Teorema d\'Euler, quina condició ha de complir un graf connex per ser considerat Eulerià (és a dir, que contingui un circuit eulerià)?',
+                options: [
+                    { id: 'a', text: 'Ha de tenir exactament dos vèrtexs de grau senar.' },
+                    { id: 'b', text: 'Tots els seus vèrtexs han de tenir grau parell.' },
+                    { id: 'c', text: 'Ha de ser un graf complet de mida mínima 4.' },
+                    { id: 'd', text: 'El seu diàmetre ha de ser menor o igual a 2.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Teorema d\'Euler (Secció 1 dels apunts): Un graf connex és Eulerià ⟺ tots els seus vèrtexs tenen grau parell. El raonament és que en un circuit tancat, cada cop que arribes a un vèrtex per una aresta, necessites una altra per sortir-ne, de manera que les arestes incidentes van sempre en parelles (entrada + sortida).'
+            },
+            {
+                id: 'm1-q3-2',
+                question: 'Un graf connex té exactament 2 vèrtexs de grau senar. Què podem assegurar sobre aquest graf?',
+                options: [
+                    { id: 'a', text: 'Conté un circuit eulerià tancat.' },
+                    { id: 'b', text: 'No és possible recórrer totes les arestes sense repetir-ne cap.' },
+                    { id: 'c', text: 'Conté un senderó eulerià (obert), que comença en un vèrtex de grau senar i acaba a l\'altre.' },
+                    { id: 'd', text: 'És necessàriament un graf hamiltonià.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Corol·lari del Teorema d\'Euler (Secció 1): Un graf connex amb exactament 2 vèrtexs de grau senar admet un senderó eulerià (recorregut obert que passa per totes les arestes sense repetir-ne cap). Aquest senderó comença obligatòriament en un dels dos vèrtexs de grau senar i acaba a l\'altre.'
+            },
+            {
+                id: 'm1-q3-3',
+                question: 'Volem determinar per a quins valors de n el graf complementari $C_n^c$ d\'un cicle $C_n$ és eulerià. Quina condició hem de verificar?',
+                options: [
+                    { id: 'a', text: 'Que el diàmetre de $C_n^c$ sigui parell.' },
+                    { id: 'b', text: 'Que $C_n^c$ sigui connex i bipartit alhora.' },
+                    { id: 'c', text: 'Que el grau de cada vèrtex al complementari, $(n - 1) - g_{C_n}(v) = n - 3$, sigui parell. Per tant, cal que $n$ sigui senar.' },
+                    { id: 'd', text: 'Que el nombre d\'arestes de $C_n^c$ sigui una potència de 2.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Truc d\'Examen dels apunts (Secció 1): El grau al complementari és $g_{C_n^c}(v) = (n-1) - g_{C_n}(v)$. Com $C_n$ és 2-regular, obtenim $g_{C_n^c}(v) = n - 3$. Perquè sigui eulerià, cal que $n - 3$ sigui parell, és a dir, $n$ ha de ser senar (i $n \\ge 5$ perquè sigui connex).'
+            },
+            {
+                id: 'm1-q3-4',
+                question: 'Per què els arbres no poden ser mai grafs hamiltonians?',
+                options: [
+                    { id: 'a', text: 'Perquè un arbre sempre conté cicles de longitud senar.' },
+                    { id: 'b', text: 'Perquè tot arbre té fulles (vèrtexs de grau 1), i un cicle hamiltonià requereix que tot vèrtex tingui grau ≥ 2.' },
+                    { id: 'c', text: 'Perquè els arbres no són connexos.' },
+                    { id: 'd', text: 'Perquè el nombre d\'arestes d\'un arbre és massa gran per tancar un cicle.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Condició necessària per ser hamiltonià (Secció 2.1 dels apunts): tot vèrtex ha de tenir grau ≥ 2 per poder entrar i sortir en un cicle. Els arbres tenen per definició fulles (nodes de grau 1), que són culs de sac impossibles de travessar en un circuit.'
+            },
+            {
+                id: 'm1-q3-5',
+                question: 'Tenim un graf connex G d\'ordre n. Suprimim un conjunt de vèrtexs S, i el graf resultant G − S té k components connexes. Quina relació entre |S| i k ha de complir-se perquè G pugui ser hamiltonià?',
+                options: [
+                    { id: 'a', text: 'k ≤ |S| (el nombre de components no pot superar el nombre de vèrtexs suprimits).' },
+                    { id: 'b', text: 'k = |S| + 1 sempre.' },
+                    { id: 'c', text: 'k ≥ 2|S| és la condició mínima.' },
+                    { id: 'd', text: '|S| ≤ n/2 independentment de k.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'Condició necessària de Vèrtexs-Components (la més forta, Secció 2.1): Si G és hamiltonià, per a tot conjunt S de vèrtexs, el nombre de components connexes de G − S no pot superar |S|. Si trobes un S tal que k > |S|, llavors G NO és hamiltonià. Exemple clàssic: el graf papallona on suprimir 1 vèrtex central crea 2 components (2 > 1 → no hamiltonià).'
+            },
+            {
+                id: 'm1-q3-6',
+                question: 'Què estableix el Teorema de Dirac sobre la condició suficient per a que un graf sigui hamiltonià?',
+                options: [
+                    { id: 'a', text: 'Si tot vèrtex té grau ≥ n/2 (on n ≥ 3 és l\'ordre del graf), aleshores el graf és hamiltonià.' },
+                    { id: 'b', text: 'Si la suma de graus de tot parell de vèrtexs adjacents és ≥ n, el graf és hamiltonià.' },
+                    { id: 'c', text: 'Si el graf té més de n²/4 arestes, aleshores conté un cicle hamiltonià.' },
+                    { id: 'd', text: 'Si el graf és 2-connex i bipartit, aleshores és hamiltonià.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'Teorema de Dirac (Secció 2.2 dels apunts): és un corol·lari del Teorema d\'Ore. Si tots els vèrtexs d\'un graf simple d\'ordre n ≥ 3 tenen grau ≥ n/2, el graf és hamiltonià. La idea és que una densitat alta d\'arestes garanteix la possibilitat de tancar un cicle passant per tots els vèrtexs.'
+            },
+            {
+                id: 'm1-q3-7',
+                question: 'El Teorema d\'Ore diu: si per a tota parella de vèrtexs NO adjacents $(u, v)$ es compleix $g(u) + g(v) \\ge n$, aleshores G és hamiltonià. Quin graf clàssic exemplifica que aquesta condició és suficient però NO necessària?',
+                options: [
+                    { id: 'a', text: 'Un cicle $C_n$ amb $n \\ge 3$: és hamiltonià però els seus vèrtexs tenen grau 2, de manera que $g(u)+g(v) = 4 < n$ per $n \\ge 5$.' },
+                    { id: 'b', text: 'Un graf complet $K_n$: compleix Ore i és hamiltonià, demostrant que la condició és necessària.' },
+                    { id: 'c', text: 'Un arbre: no compleix Ore i no és hamiltonià, demostrant que és necessària.' },
+                    { id: 'd', text: 'El graf buit (sense arestes): no compleix Ore i no és hamiltonià.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'Un cicle $C_n$ (n ≥ 5) és clarament hamiltonià (el propi cicle recorre tots els vèrtexs), però cada vèrtex té grau 2 i per tant $g(u)+g(v) = 4$, que no arriba a $n$ si $n \\ge 5$. Això demostra que la condició d\'Ore és suficient, però no necessària: hi ha grafs hamiltonians que no la compleixen.'
+            },
+            {
+                id: 'm1-q3-8',
+                question: 'El graf bipartit complet $K_{r,s}$ (amb $r \\le s$). Per a quins valors de $r$ i $s$ és hamiltonià?',
+                options: [
+                    { id: 'a', text: 'Sempre que $r + s$ sigui parell.' },
+                    { id: 'b', text: 'Només quan $r = s$ (i $r \\ge 2$).' },
+                    { id: 'c', text: 'Sempre que $r \\ge 2$ i $s \\ge 2$, independentment de si són iguals.' },
+                    { id: 'd', text: 'Mai, els bipartits complets no poden ser hamiltonians.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Un cicle hamiltonià en un bipartit alterna obligatòriament vèrtexs de cada part (A → B → A → B...). Per tancar el cicle visitant tots els vèrtexs, calen exactament el mateix nombre de vèrtexs a cada banda: $r = s$. Si $r \\ne s$, sobren vèrtexs d\'una banda que mai es podran visitar dins un cicle tancat.'
+            },
+            {
+                id: 'm1-q3-9',
+                question: 'Considerem el producte cartesià $G \\times H$ de dos grafs. Si $G$ i $H$ són eulerians, què podem dir del producte $G \\times H$?',
+                options: [
+                    { id: 'a', text: 'No és necessàriament eulerià, depèn de la mida dels grafs.' },
+                    { id: 'b', text: 'És eulerià, ja que el grau de cada vèrtex $(u,v)$ al producte cartesià és $g_G(u) + g_H(v)$, suma de dos parells, que és parell.' },
+                    { id: 'c', text: 'Només és eulerià si els dos grafs tenen el mateix ordre.' },
+                    { id: 'd', text: 'Mai és eulerià perquè el producte cartesià no preserva la connectivitat.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Al producte cartesià, el grau de cada vèrtex $(u,v)$ és $g_G(u) + g_H(v)$. Si $G$ i $H$ són eulerians, tots els seus vèrtexs tenen grau parell. La suma de dos nombres parells és sempre parell, i el producte cartesià de grafs connexos és connex. Per tant, $G \\times H$ és eulerià.'
+            },
+            {
+                id: 'm1-q3-10',
+                question: 'Volem demostrar que un cert graf G NO és hamiltonià. Quina és l\'estratègia més efectiva d\'entre les següents?',
+                options: [
+                    { id: 'a', text: 'Verificar que el graf no compleix el Teorema de Dirac (no tots els graus són ≥ n/2).' },
+                    { id: 'b', text: 'Buscar un conjunt de vèrtexs S tal que en suprimir-lo, G − S tingui més de |S| components connexes.' },
+                    { id: 'c', text: 'Comprovar que el graf no és eulerià.' },
+                    { id: 'd', text: 'Verificar que el graf no compleix el Teorema d\'Ore.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Truc d\'examen (Secció 2.1): Dirac i Ore són condicions SUFICIENTS, no necessàries. Que no es compleixin no demostra que G no sigui hamiltonià. En canvi, la condició de Vèrtexs-Components és NECESSÀRIA: si trobes un S on el nombre de components > |S|, llavors G amb certesa absoluta no és hamiltonià. Aquesta és l\'eina per negar.'
+            }
+        ]
+    },
+    {
+        topicId: 'm1-tema-4',
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'm1-q4-1',
+                question: 'Quantes arestes té un arbre d\'ordre $n$?',
+                options: [
+                    { id: 'a', text: '$n$' },
+                    { id: 'b', text: '$n - 1$' },
+                    { id: 'c', text: '$n(n-1)/2$' },
+                    { id: 'd', text: '$2n - 2$' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Propietat fonamental dels arbres (Secció 1): Un arbre d\'ordre $n$ té exactament $m = n - 1$ arestes. Aquesta relació és clau i apareix en gairebé tots els exercicis d\'arbres. L\'opció d és $\\sum g(v)$, no el nombre d\'arestes.'
+            },
+            {
+                id: 'm1-q4-2',
+                question: 'L\'"Equació d\'Or" dels arbres és $\\sum g(v) = 2n - 2$. Un arbre té 3 vèrtexs interiors de graus 4, 3 i 2 respectivament, i la resta són fulles (grau 1). Quantes fulles té?',
+                options: [
+                    { id: 'a', text: '4' },
+                    { id: 'b', text: '5' },
+                    { id: 'c', text: '6' },
+                    { id: 'd', text: '7' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Apliquem l\'Equació d\'Or: $4 + 3 + 2 + f \\cdot 1 = 2(f + 3) - 2$. Simplifiquem: $9 + f = 2f + 4$, d\'on $f = 5$. L\'arbre té 5 fulles i ordre $n = 8$. Aquest és exactament el tipus de problema que es resol en menys d\'un minut a l\'examen.'
+            },
+            {
+                id: 'm1-q4-3',
+                question: 'Quina de les següents NO és una caracterització equivalent d\'un arbre?',
+                options: [
+                    { id: 'a', text: 'Graf connex amb $m = n - 1$ arestes.' },
+                    { id: 'b', text: 'Graf acíclic amb $m = n - 1$ arestes.' },
+                    { id: 'c', text: 'Graf connex on existeix un únic camí entre cada parella de vèrtexs.' },
+                    { id: 'd', text: 'Graf connex on tots els vèrtexs tenen grau parell.' }
+                ],
+                correctOptionId: 'd',
+                explanation: 'Les opcions a, b i c són les tres caracteritzacions equivalents del Teorema de Caracterització d\'Arbres (Secció 1). En canvi, l\'opció d descriu un graf Eulerià, no un arbre. De fet, un arbre ha de tenir fulles (grau 1, senar), pel que MAI pot tenir tots els graus parells.'
+            },
+            {
+                id: 'm1-q4-4',
+                question: 'Què passa si esborrem un vèrtex $u$ de grau 3 d\'un arbre $T$?',
+                options: [
+                    { id: 'a', text: 'El graf resultant segueix sent un arbre amb $n - 1$ vèrtexs.' },
+                    { id: 'b', text: 'Es generen exactament 3 components connexos (un bosc de 3 arbres).' },
+                    { id: 'c', text: 'Es generen 2 components connexos.' },
+                    { id: 'd', text: 'El resultat depèn de la posició del vèrtex dins l\'arbre.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Propietat de vèrtexs de tall (Secció 1): En un arbre, esborrar un vèrtex $u$ de grau $g(u) \\ge 2$ separa l\'arbre en exactament $g(u)$ components connexos. Com $g(u) = 3$, s\'obtenen 3 components (un bosc de 3 arbres).'
+            },
+            {
+                id: 'm1-q4-5',
+                question: 'Per què podem afirmar que tota aresta d\'un arbre és una aresta pont?',
+                options: [
+                    { id: 'a', text: 'Perquè els arbres no contenen cicles: si esborrem una aresta, no hi ha cap ruta alternativa per mantenir la connexió.' },
+                    { id: 'b', text: 'Perquè tots els vèrtexs d\'un arbre tenen grau ≥ 2.' },
+                    { id: 'c', text: 'Perquè un arbre sempre és bipartit.' },
+                    { id: 'd', text: 'Només és cert si l\'arbre té diàmetre ≥ 3.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'Caracterització dels arbres: entre cada parella de vèrtexs hi ha un ÚNIC camí. Si esborrem qualsevol aresta, els dos vèrtexs que connectava perden la seva única via de comunicació, desconnectant l\'arbre en 2 components. Per tant, tota aresta és pont.'
+            },
+            {
+                id: 'm1-q4-6',
+                question: 'Segons el Teorema de Cayley, quants arbres etiquetats (amb vèrtexs numerats) diferents es poden construir amb $n = 4$ vèrtexs?',
+                options: [
+                    { id: 'a', text: '4' },
+                    { id: 'b', text: '8' },
+                    { id: 'c', text: '16' },
+                    { id: 'd', text: '12' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Teorema de Cayley (Secció 3): El nombre d\'arbres etiquetats amb $n$ vèrtexs és $n^{n-2}$. Per $n = 4$: $4^{4-2} = 4^2 = 16$ arbres possibles.'
+            },
+            {
+                id: 'm1-q4-7',
+                question: 'La seqüència de Prüfer d\'un arbre d\'ordre 7 és $(3, 3, 1, 5, 3)$. Quin és el grau del vèrtex 3 a l\'arbre original?',
+                options: [
+                    { id: 'a', text: '3' },
+                    { id: 'b', text: '4' },
+                    { id: 'c', text: '2' },
+                    { id: 'd', text: '5' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Truc de Prüfer (Secció 3): El grau d\'un vèrtex a l\'arbre = (nombre de cops que apareix a la seqüència) + 1. El vèrtex 3 apareix 3 vegades a $(3, 3, 1, 5, 3)$, per tant $g(3) = 3 + 1 = 4$.'
+            },
+            {
+                id: 'm1-q4-8',
+                question: 'Donada la seqüència de Prüfer $(2, 5, 5)$ d\'un arbre d\'ordre 5, quins vèrtexs són fulles (grau 1)?',
+                options: [
+                    { id: 'a', text: 'Vèrtexs 2 i 5.' },
+                    { id: 'b', text: 'Vèrtexs 1, 3 i 4.' },
+                    { id: 'c', text: 'Vèrtexs 1 i 3.' },
+                    { id: 'd', text: 'Només el vèrtex 4.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Com les fulles no apareixen mai a la seqüència de Prüfer (perquè tenen grau 1 = 0 aparicions + 1), els vèrtexs que NO surten a $(2, 5, 5)$ són fulles. Amb vèrtexs $\\{1, 2, 3, 4, 5\\}$, els absents són $\\{1, 3, 4\\}$: tres fulles.'
+            },
+            {
+                id: 'm1-q4-9',
+                question: 'Apliquem BFS a un graf roda $W_n$ per obtenir un arbre generador. Si comencem pel vèrtex central (hub), quin arbre resultant obtenim?',
+                options: [
+                    { id: 'a', text: 'Un camí $P_n$ que recorre tots els vèrtexs en línia.' },
+                    { id: 'b', text: 'Una estrella $K_{1,n-1}$: el hub connectat directament a tots els vèrtexs perifèrics.' },
+                    { id: 'c', text: 'Un arbre binari equilibrat.' },
+                    { id: 'd', text: 'Un cicle $C_n$ sense el hub.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Truc d\'examen (Secció 2): El hub de $W_n$ és adjacent a tots els vèrtexs perifèrics. BFS des del hub els descobreix tots en un sol salt d\'onada, formant una estrella $K_{1,n-1}$. En canvi, si comencem per un vèrtex exterior, l\'arbre resultant serà NO isomorf a l\'estrella.'
+            },
+            {
+                id: 'm1-q4-10',
+                question: 'Un bosc té $n = 12$ vèrtexs i $k = 3$ components connexos. Quantes arestes té?',
+                options: [
+                    { id: 'a', text: '11' },
+                    { id: 'b', text: '12' },
+                    { id: 'c', text: '9' },
+                    { id: 'd', text: '10' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Teorema de la Secció 1: Un bosc de $n$ vèrtexs i $k$ components connexos té exactament $m = n - k$ arestes. Amb $n = 12$ i $k = 3$: $m = 12 - 3 = 9$ arestes.'
+            }
+        ]
     }
 ];

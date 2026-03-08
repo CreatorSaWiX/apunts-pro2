@@ -291,7 +291,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
 
     return (
         <div
-            className={`relative group rounded-xl overflow-hidden ${transparentBg ? 'h-full w-full' : 'my-4 border border-slate-700/50 bg-slate-900/80 md:bg-slate-900/40 shadow-xl md:backdrop-blur-sm transition-all hover:border-slate-600/50 ring-1 ring-white/5'}`}
+            className={`relative group rounded-xl overflow-hidden ${transparentBg ? 'h-full w-full' : 'my-2 bg-slate-900/40 shadow-sm transition-all'}`}
             style={transparentBg ? {} : { height: numericHeight }}
             ref={containerRef}
             onMouseEnter={() => setIsHovered(true)}

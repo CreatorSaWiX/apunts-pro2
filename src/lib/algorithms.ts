@@ -157,6 +157,102 @@ pro2::BinTree<T> build_preorder(istream& cin) {
     return pro2::BinTree<T>(value, left, right);
 }`;
 
+const eulerianCheckCode = `bool is_eulerian(const vector<vector<int>>& G) {
+    int odd_count = 0;
+    
+    for (int i = 0; i < G.size(); i++) {
+        if (G[i].size() % 2 != 0) {
+            odd_count++;
+        }
+    }
+    
+    // Si tots parells -> Circuit Eulerià
+    if (odd_count == 0) return true; 
+    
+    // Si exactament 2 senars -> Senderó Eulerià
+    if (odd_count == 2) return true; 
+    
+    return false;
+}`;
+
+const hamiltonianBacktrackCode = `bool hamiltonian_path(int u, int count, int n,
+                      const vector<vector<int>>& G,
+                      vector<bool>& visitat, vector<int>& path) {
+    if (count == n) return true;
+    
+    for (int v : G[u]) {
+        if (!visitat[v]) {
+            visitat[v] = true;
+            path.push_back(v);
+            
+            if (hamiltonian_path(v, count + 1, n, G, visitat, path)) {
+                return true;
+            }
+            
+            // Backtracking: Aquest camí no té sortida final, desfem iteració
+            visitat[v] = false;
+            path.pop_back();
+        }
+    }
+    return false;
+}`;
+
+const pruferBuildCode = `vector<int> build_prufer(const vector<vector<int>>& G) {
+    int n = G.size();
+    vector<int> degree(n);
+    vector<bool> actiu(n, true);
+    for(int i=0; i<n; i++) degree[i] = G[i].size();
+    
+    vector<int> prufer;
+    for(int step=0; step < n-2; step++) {
+        int leaf = -1;
+        for(int i=0; i<n; i++) {
+            if(degree[i] == 1 && actiu[i]) { leaf = i; break; }
+        }
+        
+        int neighbor = -1;
+        for(int v : G[leaf]) {
+            if(actiu[v]) { neighbor = v; break; }
+        }
+        
+        prufer.push_back(neighbor);
+        actiu[leaf] = false;
+        degree[leaf]--;
+        degree[neighbor]--;
+    }
+    return prufer;
+}`;
+
+const pruferRebuildCode = `vector<pair<int, int>> rebuild_prufer(const vector<int>& P, int n) {
+    vector<int> degree(n, 1);
+    for(int v : P) degree[v]++;
+    
+    vector<pair<int, int>> edges;
+    vector<bool> actiu(n, true);
+    
+    for(int p_node : P) {
+        int leaf = -1;
+        for(int i=0; i<n; i++) {
+            if(degree[i] == 1 && actiu[i]) { leaf = i; break; }
+        }
+        
+        edges.push_back({leaf, p_node});
+        actiu[leaf] = false;
+        degree[leaf]--;
+        degree[p_node]--;
+    }
+    
+    int u = -1, v = -1;
+    for(int i=0; i<n; i++) {
+        if(actiu[i]) {
+            if(u == -1) u = i;
+            else v = i;
+        }
+    }
+    edges.push_back({u, v});
+    return edges;
+}`;
+
 const treeGraph = {
     nodes: [
         { id: 1, label: "1", fx: 0, fy: -100 },
@@ -181,6 +277,297 @@ const treeLeft: Record<number, number | null> = { 1: 2, 2: 4, 3: 6, 4: null, 5: 
 const treeRight: Record<number, number | null> = { 1: 3, 2: 5, 3: 7, 4: null, 5: null, 6: null, 7: null };
 
 export const algorithms: Record<string, Algorithm> = {
+    eulerian_check: {
+        id: "eulerian_check",
+        code: eulerianCheckCode,
+        initialGraph: {
+            nodes: [
+                { id: 0, label: "0 (Gr 2)", fx: -60, fy: -40 },
+                { id: 1, label: "1 (Gr 3)", fx: 60, fy: -40 },
+                { id: 2, label: "2 (Gr 3)", fx: -60, fy: 40 },
+                { id: 3, label: "3 (Gr 2)", fx: 60, fy: 40 }
+            ],
+            links: [
+                { source: 0, target: 1 },
+                { source: 0, target: 2 },
+                { source: 1, target: 2 },
+                { source: 1, target: 3 },
+                { source: 2, target: 3 }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const adj = [[1, 2], [0, 2, 3], [0, 1, 3], [1, 2]];
+            let odd_count = 0;
+            const hl: Record<number, string> = {};
+
+            const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
+                steps.push({ line, description: desc, highlights: { ...hl }, variables: vars });
+            };
+
+            addStep(2, "Iniciem el comptador de vèrtexs amb un grau senar.", { odd_count: "0" });
+
+            for (let i = 0; i < adj.length; i++) {
+                hl[i] = "#facc15"; // yellow
+                const degree = adj[i].length;
+                addStep(5, `Avaluem el grau del vèrtex ${i}. Grau = ${degree}.`, { i: i.toString(), degree: degree.toString(), odd_count: odd_count.toString() });
+                if (degree % 2 !== 0) {
+                    odd_count++;
+                    hl[i] = "#ef4444"; // red meaning odd
+                    addStep(6, `El grau és senar! Incrementem el comptador d'anomalies.`, { i: i.toString(), odd_count: odd_count.toString() });
+                } else {
+                    hl[i] = "#10b981"; // green meaning even
+                    addStep(9, `El grau és parell, passem al següent vèrtex sense alterar res.`, { i: i.toString(), odd_count: odd_count.toString() });
+                }
+            }
+
+            addStep(11, "Avaluació final! Hem acabat el recorregut.", { odd_count: odd_count.toString() });
+
+            if (odd_count === 0) {
+                addStep(12, "0 anomalies (tots parell)! El graf permet un Circuit Eulerià perfecte.", { odd_count: odd_count.toString() });
+            } else if (odd_count === 2) {
+                addStep(15, "Exactament 2 nodes senars. El graf té Senderó Eulerià, obligant origen/destí.", { odd_count: odd_count.toString() });
+            } else {
+                addStep(17, "NO ÉS EULERIÀ. Com hi ha 2 nodes senars, el recorregut complet fallarà segur.", { odd_count: odd_count.toString() });
+            }
+            return steps;
+        }
+    },
+    hamiltonian_backtrack: {
+        id: "hamiltonian_backtrack",
+        code: hamiltonianBacktrackCode,
+        initialGraph: {
+            nodes: [
+                { id: 0, label: "0", fx: 0, fy: -80 },
+                { id: 1, label: "1", fx: -60, fy: 0 },
+                { id: 2, label: "2", fx: 60, fy: 0 },
+                { id: 3, label: "3", fx: 0, fy: 60 }
+            ],
+            links: [
+                { source: 0, target: 1 },
+                { source: 0, target: 2 },
+                { source: 1, target: 2 },
+                { source: 1, target: 3 },
+                { source: 2, target: 3 }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const adj = [[1, 2], [0, 2, 3], [0, 1, 3], [1, 2]];
+            const visitat = [false, false, false, false];
+            const path: number[] = [];
+            const hl: Record<number, string> = {};
+
+            const addStep = (line: number, desc: string, overrideVars: Record<string, string> = {}) => {
+                steps.push({ line, description: desc, highlights: { ...hl }, variables: { path: `[${path.join(', ')}]`, ...overrideVars } });
+            };
+
+            const solve = (u: number, count: number): boolean => {
+                addStep(1, `Entrem al vèrtex ${u}. Nodes visitats (count) = ${count}.`, { u: u.toString(), count: count.toString() });
+
+                if (count === 4) {
+                    addStep(2, "ÈXIT! count == n (4). Hem trobat un camí per tots els vèrtexs d'una passada.", { count: count.toString() });
+                    for (let i = 0; i < 4; i++) hl[i] = "#22c55e"; // bright green
+                    return true;
+                }
+
+                for (const v of adj[u]) {
+                    addStep(5, `Des del vèrtex ${u}, explorem anar cap al veí ${v}.`, { u: u.toString(), v: v.toString() });
+                    if (!visitat[v]) {
+                        visitat[v] = true;
+                        path.push(v);
+                        const oldColor = hl[v];
+                        hl[v] = "#3b82f6"; // blue in path
+
+                        addStep(7, `Veí ${v} inèdit! L'afegim al camí i marquem com visitat. Truquem recursivitat.`, { u: u.toString(), v: v.toString() });
+
+                        if (solve(v, count + 1)) {
+                            addStep(11, `La branca explorada retorna true. Propaguem l'èxit i sortim.`, { u: u.toString(), v: v.toString() });
+                            return true;
+                        }
+
+                        // Backtracking
+                        visitat[v] = false;
+                        path.pop();
+                        if (oldColor) hl[v] = oldColor;
+                        else delete hl[v];
+
+                        hl[u] = "#ef4444"; // Backtracked warning logic
+                        addStep(15, `BACKTRACKING! Arribem a un atzucac visitant ${v}. Desfem els registres (marxa enrere).`, { u: u.toString(), v: v.toString() });
+                        hl[u] = "#3b82f6"; // Restore
+                    } else {
+                        addStep(6, `El veí ${v} ja és al camí. Ignorem per no repetir.`, { u: u.toString(), v: v.toString() });
+                    }
+                }
+
+                addStep(20, `Cap opció des de ${u} funciona completament. Aquest camí falla.`, { u: u.toString() });
+                return false;
+            };
+
+            visitat[0] = true;
+            path.push(0);
+            hl[0] = "#3b82f6";
+            addStep(1, `Iniciem l'algorisme des de l'arrel Origen (0).`, { u: "0", count: "1" });
+            solve(0, 1);
+
+            return steps;
+        }
+    },
+    prufer_build: {
+        id: "prufer_build",
+        code: pruferBuildCode,
+        initialGraph: {
+            nodes: [
+                { id: 0, label: "0", fx: -60, fy: 0 }, { id: 1, label: "1", fx: -120, fy: -40 },
+                { id: 2, label: "2", fx: 0, fy: 0 }, { id: 3, label: "3", fx: -40, fy: 60 },
+                { id: 4, label: "4", fx: 60, fy: 0 }, { id: 5, label: "5", fx: 120, fy: 40 }
+            ],
+            links: [
+                { source: 0, target: 1 }, { source: 0, target: 2 },
+                { source: 2, target: 3 }, { source: 2, target: 4 },
+                { source: 4, target: 5 }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const hl: Record<number, string> = {};
+            const prufer: number[] = [];
+            const adj = [[1, 2], [0], [0, 3, 4], [2], [2, 5], [4]];
+            const degree = [2, 1, 3, 1, 2, 1];
+            const actiu = [true, true, true, true, true, true];
+            const n = 6;
+
+            const formatVars = () => {
+                let degStr = "[";
+                for (let i = 0; i < n; i++) degStr += (actiu[i] ? degree[i] : "-") + (i < n - 1 ? ", " : "");
+                degStr += "]";
+                return { prufer: `[${prufer.join(', ')}]`, degree: degStr };
+            };
+
+            const addStep = (line: number, desc: string, ov: Record<string, string> = {}) => {
+                steps.push({ line, description: desc, highlights: { ...hl }, variables: { ...formatVars(), ...ov } });
+            };
+
+            addStep(2, "Iniciem els graus (degree) i activem tots els nodes (actiu).", { n: "6" });
+
+            for (let step = 0; step < n - 2; step++) {
+                addStep(8, `Inici del pas ${step + 1} de ${n - 2}: Busquem la fulla (activa) amb la ID més petita.`, { step: step.toString() });
+                let leaf = -1;
+                for (let i = 0; i < n; i++) {
+                    if (degree[i] === 1 && actiu[i]) {
+                        leaf = i;
+                        break;
+                    }
+                }
+                hl[leaf] = "#facc15"; // yellow for current leaf
+                addStep(11, `Fulla més petita trobada! És la número ${leaf}.`, { leaf: leaf.toString() });
+
+                let neighbor = -1;
+                for (const v of adj[leaf]) {
+                    if (actiu[v]) {
+                        neighbor = v;
+                        break;
+                    }
+                }
+                hl[neighbor] = "#3b82f6"; // blue for neighbor
+                addStep(16, `Mirem l'únic veí associat que encara està actiu. És en ${neighbor}.`, { leaf: leaf.toString(), neighbor: neighbor.toString() });
+
+                prufer.push(neighbor);
+                hl[leaf] = "#ef4444"; // red meaning deleted
+                addStep(19, `Afegim el veí ${neighbor} a la seqüència de Prüfer!`, { leaf: leaf.toString(), neighbor: neighbor.toString() });
+
+                actiu[leaf] = false;
+                degree[leaf]--;
+                degree[neighbor]--;
+                addStep(20, `Esborrem la fulla ${leaf} de l'arbre (física i del registre de graus). El veí ${neighbor} ara té un grau menys!`, { leaf: leaf.toString(), neighbor: neighbor.toString() });
+
+                hl[leaf] = "rgba(0,0,0,0.2)"; // Set as ghost
+                delete hl[neighbor]; // remove highlight from neighbor, keep ghost
+            }
+
+            addStep(24, "Hem fet exactament n-2 passos. L'arbre queda retallat a 2 nodes únics. Seqüència Acabada!", {});
+
+            return steps;
+        }
+    },
+    prufer_rebuild: {
+        id: "prufer_rebuild",
+        code: pruferRebuildCode,
+        initialGraph: {
+            nodes: [
+                { id: 0, label: "0", fx: -60, fy: 0 }, { id: 1, label: "1", fx: -120, fy: -40 },
+                { id: 2, label: "2", fx: 0, fy: 0 }, { id: 3, label: "3", fx: -40, fy: 60 },
+                { id: 4, label: "4", fx: 60, fy: 0 }, { id: 5, label: "5", fx: 120, fy: 40 }
+            ],
+            links: [] // initially empty
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const hl: Record<number, string> = {};
+            const P = [0, 2, 2, 4]; // prufer seq for the same graph
+            const n = 6;
+            const degree = [1, 1, 1, 1, 1, 1];
+            for (const v of P) degree[v]++;
+
+            const actiu = [true, true, true, true, true, true];
+            const edges: { source: number, target: number }[] = [];
+
+            const formatVars = () => {
+                let degStr = "[";
+                for (let i = 0; i < n; i++) degStr += (actiu[i] ? degree[i] : "-") + (i < n - 1 ? ", " : "");
+                degStr += "]";
+                return { P: `[0, 2, 2, 4]`, degree: degStr, out_edges: edges.length.toString() };
+            };
+
+            const addStep = (line: number, desc: string, ov: Record<string, string> = {}) => {
+                steps.push({ line, description: desc, highlights: { ...hl }, variables: { ...formatVars(), ...ov } });
+            };
+
+            addStep(2, "Iniciem tots als graus a 1. Com que 0, 2, 2, i 4 surten a P, els sumem els seus graus respectius.", {});
+
+            for (const p_node of P) {
+                addStep(8, `Extreiem el primer element pendent de P: ${p_node}`, { p_node: p_node.toString() });
+
+                let leaf = -1;
+                for (let i = 0; i < n; i++) {
+                    if (degree[i] === 1 && actiu[i]) {
+                        leaf = i;
+                        break;
+                    }
+                }
+                hl[leaf] = "#facc15"; // yellow
+                addStep(11, `Busquem la ID més petita (activa) que tingui grau 1 avui. És la número ${leaf}.`, { p_node: p_node.toString(), leaf: leaf.toString() });
+
+                edges.push({ source: leaf, target: p_node });
+                hl[p_node] = "#3b82f6"; // blue
+                addStep(14, `Hem confimat que la fulla ${leaf} penjava del node ${p_node}!! Afegim una nova aresta per muntar l'arbre final.`, { p_node: p_node.toString(), leaf: leaf.toString() });
+
+                actiu[leaf] = false;
+                degree[leaf]--;
+                degree[p_node]--;
+
+                hl[leaf] = "#10b981"; // green connected
+                addStep(15, `Node ${leaf} ja està lligat i resolt. El desactivem per no lligar-lo de nou. Deg[${p_node}] baixa també per l'ús.`, { p_node: p_node.toString(), leaf: leaf.toString() });
+                delete hl[p_node];
+                delete hl[leaf];
+            }
+
+            addStep(21, "Hem esgotat P. Sempre i obligatoriament quedaran exactament 2 elements encara actius al sistema.", {});
+
+            let u = -1, v = -1;
+            for (let i = 0; i < n; i++) {
+                if (actiu[i]) {
+                    if (u === -1) u = i;
+                    else v = i;
+                }
+            }
+            hl[u] = hl[v] = "#ef4444"; // red final
+            edges.push({ source: u, target: v });
+            addStep(26, `Aquests últims elements residuals mai s'esborren i sempre seran veïns mutus. Els enllacem: ${u} i ${v}!`, { u: u.toString(), v: v.toString() });
+
+            return steps;
+        }
+    },
     cerca_height: {
         id: "cerca_height",
         code: cercaHeightCode,
@@ -300,7 +687,7 @@ export const algorithms: Record<string, Algorithm> = {
                 const x = P[P.length - 1];
                 for (const key in highlights) if (highlights[key] === "#facc15") highlights[key] = "#10b981";
                 highlights[x] = "#facc15";
-                addStep(11, `Mirem el cim de la pila. x = ${x}`, { x: x.toString() });
+                addStep(11, `Mirem el cim de la pila.x = ${x} `, { x: x.toString() });
 
                 let hi_ha_nou = false;
                 for (const y of adj[x]) {
@@ -310,12 +697,12 @@ export const algorithms: Record<string, Algorithm> = {
                         W.push(y);
                         hi_ha_nou = true;
                         highlights[y] = "#10b981";
-                        addStep(16, `Veí ${y} de ${x} no visitat. Ens hi enfonsem (break)!`, { x: x.toString(), y: y.toString() });
+                        addStep(16, `Veí ${y} de ${x} no visitat.Ens hi enfonsem(break) !`, { x: x.toString(), y: y.toString() });
                         break;
                     }
                 }
                 if (!hi_ha_nou) {
-                    addStep(24, `No hi ha veïns nous des de ${x}. Fem pop() desempilant.`);
+                    addStep(24, `No hi ha veïns nous des de ${x}.Fem pop() desempilant.`);
                     const popped = P.pop();
                     if (popped !== undefined) highlights[popped] = "#3b82f6";
                 }
@@ -401,7 +788,7 @@ export const algorithms: Record<string, Algorithm> = {
             const steps: AlgoStep[] = [];
             const adj = [[1, 2], [0, 3, 4], [0, 5], [1], [1], [2]];
             const C: number[] = [];
-            let W: number[] = [];
+            const W: number[] = [];
             const D: number[] = [0, 0, 0, 0, 0, 0];
             const visitat = [false, false, false, false, false, false];
             const highlights: Record<number, string> = {};
@@ -427,13 +814,13 @@ export const algorithms: Record<string, Algorithm> = {
 
             while (C.length > 0) {
                 const x = C[0];
-                for (let key in highlights) if (highlights[key] === "#facc15") highlights[key] = "#10b981";
+                for (const key in highlights) if (highlights[key] === "#facc15") highlights[key] = "#10b981";
                 if (highlights[x] !== "#3b82f6") highlights[x] = "#facc15"; // currently checking x
 
                 addStep(12, `Mirem el primer element de la cua sense treure'l: x=${x}.`, { x: String(x) });
 
                 let y = -1;
-                for (let vehi of adj[x]) {
+                for (const vehi of adj[x]) {
                     if (!visitat[vehi]) {
                         y = vehi;
                         break;
@@ -454,7 +841,7 @@ export const algorithms: Record<string, Algorithm> = {
                 }
             }
 
-            for (let key in highlights) highlights[key] = "#3b82f6";
+            for (const key in highlights) highlights[key] = "#3b82f6";
             addStep(31, "Cua buida! L'algorisme BFS ha acabat i tenim totes les distàncies.");
             return steps;
         }
