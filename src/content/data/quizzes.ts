@@ -281,125 +281,123 @@ export const quizzes: TopicQuiz[] = [
         questions: [
             {
                 id: 'q3-1',
-                question: 'Ens trobem resolent l\'exercici "Don Camilo" (Inserir "Don" abans de "Camilo" en una `std::list`). A dins del bucle if detectes "Camilo" i fas `L.insert(it, "Don");`. Què ocorreria si després fas un simple `++it` convencional per continuar llegint?',
+                question: 'Quina és l\'avantatge principal de les llistes (`list`) sobre els vectors pel que fa a la inserció d\'elements?',
                 options: [
-                    { id: 'a', text: 'Saltaries el següent nom autèntic de la llista, ja que el `.insert()` desvia l\'iterador dues posicions asincrònicament.' },
-                    { id: 'b', text: 'El programa continuaria correctament iterant el següent element original sense cap inconvenient, atès que insert posa l\'element ABANS i "it" continua lligat al "Camilo".' },
-                    { id: 'c', text: 'Es genera un bucle infinit o error, perquè `insert` s\'incrusta just al te lloc actiu, deixant a "it" apuntant al de darrere asimptomàticament tancat.' },
-                    { id: 'd', text: 'Una excepció de `Segmentation Fault` atès que tot element inserit causa que la llista es dispersi i l\'iterador quedi esclafat.' }
+                    { id: 'a', text: 'Permeten accés directe a qualsevol posició en temps O(1).' },
+                    { id: 'b', text: 'Afegir o esborrar un element en una posició intermèdia té un cost de O(1).' },
+                    { id: 'c', text: 'Ocupen menys memòria perquè no necessiten enllaços entre nodes.' },
+                    { id: 'd', text: 'Són més ràpides de recórrer seqüencialment que un vector.' }
                 ],
                 correctOptionId: 'b',
-                explanation: 'Enllaçat al problema T65668 del Jutge referent a "Camilo". En llistes de C++, `L.insert(it, valor)` s\'insereix **ABANS** de l\'element actiu. L\'afegiment no mata ni desplaça on apuntava el punter previ (el "Camilo" original). Llavors fer un pas iteratiu `++it` saltarà tranquil·lament a la paraula seqüent passat el "Camilo" evitant bucles infinits de revisar l\'element inserit!'
+                explanation: 'A la secció 3.1 s\'explica que, a diferència dels vectors (cost O(n)), les llistes permeten inserir o esborrar en qualsevol punt amb cost constant O(1).'
             },
             {
                 id: 'q3-2',
-                codeSnippet: 'void elimina_nombres(list<int>& L) {\n    auto it = L.begin();\n    while (it != L.end()) {\n        if (*it == 0) L.erase(it);\n        else it++;\n    }\n}',
-                question: 'Identifica la gravíssima avaria present en aquest codi si l\'element actiu en avaluació iterativa arriba a ser pròpiament el número `0`.',
+                question: 'Què succeeix si intentem utilitzar l\'operador de claudàtors (ex: `L[i]`) en una llista de C++?',
                 options: [
-                    { id: 'a', text: 'Compilació fallida. La paraula "auto" de C++11 és incompatible per declarar un `list<int>::iterator` de lectura dinàmica pura.' },
-                    { id: 'b', text: 'Fallada d\'execució (`Segmentation Fault`). Fer `.erase(it)` foragita el node íntegre a l\'oblit de la RAM, destruint la base on residia l\'iterador i incapaç d\'enllaçar el següent cop a bucle general del while de temps on.' },
-                    { id: 'c', text: 'L\'iterador tornarà a revisar el zero immediat com si fos el punt esborrat de darrera asimptomàtica passiva!' },
-                    { id: 'd', text: 'Només provocarà saltar-se nodes consecutius en bucles for i while pur, mai fent Segfault donat que list resol bucle buit temporal a L.end() estricte c !' }
+                    { id: 'a', text: 'Funciona correctament i retorna l\'element en temps O(1).' },
+                    { id: 'b', text: 'Funciona però té un cost de O(n).' },
+                    { id: 'c', text: 'Produeix un error de compilació perquè les llistes no tenen accés directe per posició.' },
+                    { id: 'd', text: 'Sempre retorna el primer element de la llista.' }
                 ],
-                correctOptionId: 'b',
-                explanation: 'Apunts 3.3 El perill mortal! Mètodes destructors `erase()`. L\'esborrar allibera la petita casella física a la memòria destruint el punter virtual actiu. Un segon després el bucle general intente fer acció al node caigut. Obligatori és capturar el retorn: `it = L.erase(it);` (que s\'encarrega per tu de pescar enllaçar ja el bloc endavant pur de sobte)!'
+                correctOptionId: 'c',
+                explanation: 'Com s\'indica als desavantatges (3.1), l\'accés directe `L[i]` genera un error de compilació. Cal utilitzar iteradors per moure\'s per la llista.'
             },
             {
                 id: 'q3-3',
-                question: 'Al resoldre seqüències controlades amb cursor asíncron virtual (Jutge S39735), tenim l\'iterador fixat just "ABANS" del primer passiu (`it = L.begin()`). Què passarà matemàticament pel pur C++ si l\'estudiant envia la comanda `it--` ?',
+                question: 'A què apunta exactament l\'iterador obtingut mitjançant `L.end()`?',
                 options: [
-                    { id: 'a', text: 'S\'allotjarà fora d\'abast a posicions darreres del final (emulant una espècie de xarxa en L.rbegin virtual pur generada c).' },
-                    { id: 'b', text: 'Res dolent, `std::list` protegirà el gir donant una condició bucla "it == L.begin()" repetidament tancat per darrer bucle iterat.' },
-                    { id: 'c', text: 'L\'iterador serà enllaçat literalment amb el node Sentinel actiu en el buit on retrocedirà sense avisar referint memòria aleatòria fora del rang (`Undefined Behavior`).' },
-                    { id: 'd', text: 'Garanteix que el pas O(LogN) encadenat s converteixi iteratiu iterat al buit de rbegin asíncrona v !' }
+                    { id: 'a', text: 'A l\'últim element real de la llista.' },
+                    { id: 'b', text: 'Al primer element de la llista.' },
+                    { id: 'c', text: 'A una cel·la virtual situada just després de l\'últim element real.' },
+                    { id: 'd', text: 'Al node que conté la mida total de la llista.' }
                 ],
                 correctOptionId: 'c',
-                explanation: 'Un error fatal dels estudiants (Tema 3.2). A diferència d\'usar limitadors de for segur i les instruccions d\'una reverse list (`rbegin`). Un iterador avançat que trenca el rang esquerrà absolut cap per avall explota al cap avall i acaba apuntant dades brossa no lligades del programa general sencer. Ens toca verificar un blindatge pur i dur abans: `if (it != L.begin()) --it;`'
+                explanation: 'Segons la secció 3.2, `L.end()` assenyala la posició virtual "després de l\'últim" element, marcant el final del rang vàlid.'
             },
             {
                 id: 'q3-4',
-                question: 'Sincerament i segons l\'avís intern de Tema 3.1.. Si ambdues tenen O(1) al cost d\'afegir/llevar al punt final de base... perquè globalment ens faran prioritzar el temible `std::vector` en lloc de la flamant `std::list`?',
+                question: 'Com s\'accedeix al valor d\'un element de la llista un cop tenim un iterador `it` apuntant-hi?',
                 options: [
-                    { id: 'a', text: 'Perquè la Llista no pot allotjar mai struct i classes de dades abstractes d dins amagada.' },
-                    { id: 'b', text: 'Perquè `std::vector` amaga una millor compatibilitat C++ general si programem pre-compiladors o pre .hh constants generats en f t s .' },
-                    { id: 'c', text: 'El vector manté la memòria asíncrona pur c per bucle passiu donat temps O(N^2) l iterada s en la c u !' },
-                    { id: 'd', text: 'La Llista no disposa d\'accés aleatori numèric indexat. I a causa de la fragmentació física aïllada d\'enllaços i punters, destrueix totalment el rendiment asimptomàtic de "Cache Locality" de la CPU vs un Vector contigu ràpid.' }
+                    { id: 'a', text: 'Utilitzant l\'asterisc com a desreferenciació: `*it`.' },
+                    { id: 'b', text: 'Mitjançant el mètode `it.get_value()`.' },
+                    { id: 'c', text: 'Simplement escrivint el nom de l\'iterador `it`.' },
+                    { id: 'd', text: 'Llegint la posició `L[it]`.' }
                 ],
-                correctOptionId: 'd',
-                explanation: 'Sempre cau als exàmens. Els Vectors al ser Contigüus ocupen i descarreguen dades massives senceres als nivells memòria L1/L2 apropant els nodes per Cache Locality del Hardware general. Les Llistes pateixen a cada unió un perillós viatge (O(1) "lent") de CPU pel bus ja que els fragments són caòtics a la RAM desordenats amuntegat i separats on no s\'ofereix tampoc l\'indicador índex de v[i].'
+                correctOptionId: 'a',
+                explanation: 'L\'iterador actua com un punter conceptual; per accedir o modificar el valor del node cal usar `*it` (3.2).'
             },
             {
                 id: 'q3-5',
-                codeSnippet: 'list<string>::const_iterator cercar(const list<string>& dades) {\n   for(auto it = dades.begin(); it != dades.end(); it++) {\n     /* ... */ ',
-                question: 'En implementar l\'exercici del Jutge U61590 `Paraula més llarga`, es fa passar la matriu per referència constant `const list`. Quin detall iteratiu bloquejarà la pauta alçada i donarà un flagrant Error pur a Compilació de dades?',
+                question: 'Si estem recorrent una llista amb un iterador `it` i volem passar al següent element, quina operació hem de fer?',
                 options: [
-                    { id: 'a', text: 'Quan forcem llista pur Const c , els iteradors de `begin()` passen a retornar internament passivaments `const_iterator`, els quals el C++11 rebutja lligar al clàssic asíncrones if d de auto l it global v n.' },
-                    { id: 'b', text: 'El problema és tractar `*it` a posteriori. Cap const_iterator deixa que demanis quin element tenen lligat (Són opacs pur cecs de temps f iterat e q d ).' },
-                    { id: 'c', text: 'Tot l\'algorisme de base d\'afegir pas a l\'avanç i retrocés (El `it++` i `--it`) es bloqueja en read_only evitant asíncrons passos passiu b constants globals t h !' },
-                    { id: 'd', text: 'L\'error amagat real és que no s\'usa `auto it = dades.cbegin()` de capçalera pura que obliga a complir regles C++ de bloqueig i de seguretat de cap mena per p constant o !' }
+                    { id: 'a', text: '`it = it + 1;`' },
+                    { id: 'b', text: '`it++;`' },
+                    { id: 'c', text: '`L.next(it);`' },
+                    { id: 'd', text: '`it = L.begin() + 1;`' }
                 ],
-                correctOptionId: 'd',
-                explanation: 'Apunts 3.2: Tot paràmetre d llista encapsulat constant c obliga exclusiu referir explorable iteradors constants passats. El problema de `dades.begin()` sota `const` és que encara pot cridar per error de compatibilitat lligams mutables i ser bloquejat pels IDEs de C++ rigorosos moderns referint `cbegin()` t i pass i constants!'
+                correctOptionId: 'b',
+                explanation: 'El pas al següent element es fa amb l\'operador d\'increment `it++` (3.2). Atenció: en llistes no es pot sumar un enter directament (ex: `it + 5` fallaria).'
             },
             {
                 id: 'q3-6',
-                question: 'Com solucionaríem sota cost amagat pur constant l d d\'eficiència algorísmica abstracte O(1) de CPU voler adreçar i llegir per pura màniga l\'element ubicat just al davant del mig e en Llista on base l m p (`L[500]` en 1000 nodes n iterats n virtual l p )?',
+                question: 'Per què és necessari utilitzar `const_iterator` (o `cbegin`/`cend`) en algunes funcions?',
                 options: [
-                    { id: 'a', text: 'Mitjançant e d la funció `std::advance(it, 500)` de la llibreria clàssica t general l c !' },
-                    { id: 'b', text: 'Matemàticament utilitzant `auto it = L.begin() + 500`, que aplica les operacions logarítmiques s pre de suma t f n !' },
-                    { id: 'c', text: 'És tècnicament impossible de fer matemàtic en e t O(1) donat referir f n l std::list no ofereix Accessos o constants base aleatoris n . Costarà l b de d temps h sempre d y asimptòtic O(N) c on i c f recórrer seqüencial u cada pas pur h it++ q !' },
-                    { id: 'd', text: 'El m t l mètode `.middle()` a C++ amaga el x pointer c base passiu en q O(1) r virtual.' }
+                    { id: 'a', text: 'Perquè és un 15% més ràpid que l\'iterador normal.' },
+                    { id: 'b', text: 'Per poder recórrer la llista en sentit invers.' },
+                    { id: 'c', text: 'Quan la llista és constant (`const`), per assegurar que només podem llegir i no modificar les dades.' },
+                    { id: 'd', text: 'Per evitar l\'ús de la paraula clau `auto`.' }
                 ],
                 correctOptionId: 'c',
-                explanation: 'Fictici total error (Lliçó 3.1 r p d r) ! Ojo de l\'examen x on u! En el bucle abstracte p del iterat d i C++ list amagades d h k a v n s L g M f x les Double Ended o Linked list c no suporten f accés O(1). Les úniques mides d O(1) són `front()` i `back()`. Saltar a una b l c i d casella concreta w k j q s N sempre l requereix que u iteris amagat j el n d d temps amuntegat pass on m j N!'
+                explanation: 'La secció 3.2 detalla que el `const_iterator` és obligatori si la llista està blindada com a `const`, impedint mutacions accidentals.'
             },
             {
                 id: 'q3-7',
-                question: 'Ens disposen la missió clàssica `S97463: Fusió de Llistes Ordenades`. Donades Llistes A i B (n i m) ordenades previament. Quina complexitat donarà crear la llista fusionada si programes una iteració purament lineal en paral·lel de punters iteradors?',
+                question: 'Quin és el risc principal d\'esborrar un element (`L.erase(it)`) mentre recorrem una llista?',
                 options: [
-                    { id: 'a', text: 'O(N * M) atès que l\'avançar un costat demana repassar el sencer cantó de B des de principi per comparar.' },
-                    { id: 'b', text: 'O(N * Log(M)) utilitzant mètodes de cerca binària per punters.' },
-                    { id: 'c', text: 'O(N^2) perquè cada std::list llança inserits constants a temps complet global.' },
-                    { id: 'd', text: 'O(N + M) Temps lligat lineal de base garantizada. Avançar un element iterat i triar només ocupa O(1) constant.' }
+                    { id: 'a', text: 'La llista es buida completament de forma accidental.' },
+                    { id: 'b', text: 'L\'iterador `it` queda invalidat ("mort") i intentar usar-lo (ex: `it++`) provocarà un Segmentation Fault.' },
+                    { id: 'c', text: 'L\'element següent a l\'esborrat també s\'elimina automàticament.' },
+                    { id: 'd', text: 'Cap, C++ gestiona la reubicació de l\'iterador de forma automàtica.' }
                 ],
-                correctOptionId: 'd',
-                explanation: 'Aquest comportament en C++ és conegut com el "Zipper". Obremallera d\'iteradorA i iteradorB.  Dins el loop es llegeixen O(1), es clonen O(1) i es fa ++it O(1). D\'això deduïm matemàticament un O(N+M) global sense haver de fer repesques ni recórrer cadenes múltiples de cerques!'
+                correctOptionId: 'b',
+                explanation: 'La secció 3.3 avisa que esborrar el node on està l\'iterador el deixa apuntant a memòria alliberada, perdent l\'enllaç al següent.'
             },
             {
                 id: 'q3-8',
-                question: 'A Jutge vam fer l\'exercici Ajuntar Paraules `W84371` amb els Iteradors de Principi i Final. Per quina raó tècnica s\'ha de fer servir com a condició de bucle cert un `while (begin != end)` enlloc d\'un estàndard `>=` que sí que usem iterant nombres lliures C++ matemàtics?',
+                question: 'Com s\'ha de gestionar correctament l\'esborrat d\'un element en un bucle per no perdre l\'orientació?',
                 options: [
-                    { id: 'a', text: 'Perquè la mida dels vectors depèn de la versió del compilador amagat i el `end()` no podria sumar indexacions lliures.' },
-                    { id: 'b', text: 'Els operadors relacionals en cru (<, >, <=, >=) NO existeixen abstractament per als Bidirectional Iterators (llevat que siguin Contigus com el Vector), el compilador C++ demanarà disseny estricte i invocarà l\'únic comparador segur de llistes deslligades: referents d\'Igualtat pur d\'adreces (!=, ==).' },
-                    { id: 'c', text: 'Fer bucle While trenca el paradigma abstracte O(N) establint el retorn infinit constant general si comparem línies pures amagades.' },
-                    { id: 'd', text: 'Es generen problemes asímptotes a memòria dinàmica atès que el C++ tanca les regles iteratives per defecte davant les instàncies generals del Heap global que puguin estar lliurement tancades a vectors dinàmics simples.' }
+                    { id: 'a', text: '`L.erase(it); it = L.begin();`' },
+                    { id: 'b', text: '`it = L.erase(it);` aprofitant que `erase` retorna l\'iterador al següent element vàlid.' },
+                    { id: 'c', text: '`delete it; it++;`' },
+                    { id: 'd', text: 'No es pot esborrar elements mentre es recorre; cal crear una llista nova.' }
                 ],
                 correctOptionId: 'b',
-                explanation: 'Una joia tècnica sota control! Si utilitzes un List Iterator `std::list::iterator`, la memòria viu completament escampada. El llenguatge C++ t\'impedirà fer i avaluar distàncies abstractes com `it < L.end()`. L\'enginyeria obliga usar única i rigorosament condició d\'igualtat: "Mentre un iterador cert sigui diferent referencialment al del Final `it != end()`".'
+                explanation: 'Tal com mostra l\'exemple de codi a la secció 3.3, és vital capturar el retorn de `erase()` per reengantxar l\'iterador a la seqüència correctament.'
             },
             {
                 id: 'q3-9',
-                question: 'Donat un iterador Constant `const_iterator` de lectura C++11 pur o cridat via `cbegin()`. Què respondrà el nostre sistema informàtic si es crida l\'ordre forçada destructora al mig de la seqüència `L.erase(const_iterator)`?',
+                question: 'On col·loca el nou element la funció `L.insert(it, valor)` i on queda situat l\'iterador `it` després de la crida?',
                 options: [
-                    { id: 'a', text: 'Error flagrant en temps de compilació abans d\'executar g++. El disseny lligat a `std::list::erase` només atén i rep signatures estrictes `iterator` pur mutables i rebutja paràmetres de llibreria blindats `const_iterator`.' },
-                    { id: 'b', text: 'Acatarà destruint l\'instància modernament omplint l\'adreça re-acoblant en un estalvi de temps asíncron general O(1).' },
-                    { id: 'c', text: 'L\'enrutament intern llençaria directament una advertència per paràmetre Constant generant un enllaç trencat que cal adreçar cap on la pila del programa operava memòria d\'excepció.' },
-                    { id: 'd', text: 'Cap error visual de compilador, simplement ho executa destruint el node lliurement ja que C++ destrueix Nodes sense revisar la constant de punters locals a la funció externa.' }
+                    { id: 'a', text: 'El col·loca DESPRÉS de `it`, i `it` passa a apuntar al nou element.' },
+                    { id: 'b', text: 'El col·loca ABANS de `it`, i `it` continua apuntant al mateix element original.' },
+                    { id: 'c', text: 'El col·loca al final de la llista independentment de `it`.' },
+                    { id: 'd', text: 'Substitueix l\'element on apuntava `it` pel nou valor.' }
                 ],
-                correctOptionId: 'a',
-                explanation: 'A dades estructurades constants s\'aplica un blindatge impenetrable! Un "const iterator" et dóna permís únic i lliure només per observar, no pas destruir la matriu que el forma. Així, `.erase()` rebutjaria en compilació abans d\'executar atès el tipatge intern forçat de prevenció mútua C++.'
+                correctOptionId: 'b',
+                explanation: 'Segons la secció 3.3, la inserció es fa ABANS de la posició actual i l\'iterador original es manté ancorat on estava, sense patir danys.'
             },
             {
                 id: 'q3-10',
-                question: 'Respecte el Jutge de Matrius Esparses (convertir Matriu de zéros massiu a una llista `std::list<Casella>` recollint només elements no nuls). Si la matriu global tingués 5 Milions de zéros buits i només 2 elements útils! Quin gran guany d\'arquitectura suposa exactament referir-ho mitjançant llistes?',
+                question: 'Tot i que les llistes tenen cost O(1) d\'inserció, per què se sol preferir el `std::vector` en termes d\'eficiència general?',
                 options: [
-                    { id: 'a', text: 'La Matriu abstracte ocuparia idèntic espai, ja que les llistes guarden l\'índex de fila i columna que equival físicament als zéros omesos globalment en la representació.' },
-                    { id: 'b', text: 'Les Matrius normals instanciades d\'array `vector<vector>` crearien memòria activa RAM per tots i cadascun dels 5 Milions de caselles causant un inútil malbaratament GBs. Mentrestant la `std::list` emmagatzemarà exclusivament aquells 2 únics elements gastant un pur parell de Bytes.' },
-                    { id: 'c', text: 'C++ no permet llistes d\'objectes complexes propis `Casella`, pel que forçar una matriu a llistes O(N) farà créixer el temps local de recerca per la CPU rebotant excepció general.' },
-                    { id: 'd', text: 'Les dues consumeixen memòria asimptòtica directa bastant similar donat que la llibreria lliga blocs pre-assignats de memòria a través de vectors interiors darrere el teló de les llistes std.' }
+                    { id: 'a', text: 'Perquè el vector utilitza menys variables internes.' },
+                    { id: 'b', text: 'Pel "Cache Locality": el vector emmagatzema dades en blocs contigus que la CPU llegeix molt més ràpid.' },
+                    { id: 'c', text: 'Perquè les llistes només poden guardar enters.' },
+                    { id: 'd', text: 'Perquè el vector és estructuralment més modern que la llista.' }
                 ],
                 correctOptionId: 'b',
-                explanation: 'Aquesta és la clau de les Matrius esparses (Sparse Matrices) ensenyat al Tema. Si uses memòria per representar el buit `0`, un camp gegant (100k x 100k) farà esclatar la RAM! Una Llista en canvi pot estripar el buit emmagatzemant un gra d\'encapsulació només format de {i, j, value} on els únics bits vius formen llistes curtes assequibles.'
+                explanation: 'L\'apartat d\'info (3.1) destaca que la memòria contigua del vector el fa molt més eficient per a recorreguts a causa de com funciona el hardware del processador.'
             }
         ]
     },
@@ -535,123 +533,123 @@ export const quizzes: TopicQuiz[] = [
         questions: [
             {
                 id: 'm1-q2-1',
-                question: 'Quina és la diferència tècnica i fonamental entre els conceptes de "Recorregut" i un "Camí" en relació als grafs?',
+                question: 'Quina és la diferència fonamental entre un "Recorregut" i un "Camí" segons la secció 1 dels apunts?',
                 options: [
-                    { id: 'a', text: 'Un camí prohibeix estrictament repetir qualsevol vèrtex o aresta, mentre que el recorregut permet viatjar lliurement re-trepitjant dades i llocs per les connexions.' },
-                    { id: 'b', text: 'Els "camins" exclusivament poden orientar-se d\'un costat simple lligat (vectors unidireccionals purs), on els "recorreguts" destaquen per faltar polaritat lògica i sentit estricte BFS.' },
-                    { id: 'c', text: 'Matemàticament són completament idèntics formalment, ambdós atorgant purament la idea asimètrica d\'un viatge de connexions tancades constants.' },
-                    { id: 'd', text: 'El Recorregut es genera a Pila DFS estretament paral·lel d\'origen LIFO, mentrestant un Camí defineix Cues BFS radial formatiu.' }
+                    { id: 'a', text: 'Un recorregut és més curt que un camí.' },
+                    { id: 'b', text: 'En un camí no es pot repetir cap vèrtex (i per tant cap aresta), mentre que en un recorregut sí.' },
+                    { id: 'c', text: 'Els camins només es donen en grafs dirigits.' },
+                    { id: 'd', text: 'Un recorregut ha de ser obligatòriament tancat.' }
                 ],
-                correctOptionId: 'a',
-                explanation: 'A la Secció 1 observem: El "Camí" representa una especialització prèmium exigible i tancada on absolutament estarà prohibit repetir ni elements vèrtexs ni trepitjar arestes visitades. Un "recorregut" general purament no discrimina.'
+                correctOptionId: 'b',
+                explanation: 'A la secció 1 es detalla que el Camí és un tipus especial de recorregut restrictiu on està prohibit tornar a passar per un mateix vèrtex.'
             },
             {
                 id: 'm1-q2-2',
-                question: 'Si analitzem geomètricament la relació establerta en un lligam per formar l\'arquitectura purament en condicions de ser d\'un entorn "Connex", quin mínim valor absolut d\'arestes estarà present de segur (m) dictaminant relació per assoleir un sistema de total vèrtexs pur genèric base donat (n) dades?',
+                question: 'Quin és el nombre mínim d\'arestes ($m$) necessari per a que un graf de $n$ vèrtexs pugui ser connex?',
                 options: [
-                    { id: 'a', text: 'Com a mínim absolut de forta m = n/2.' },
-                    { id: 'b', text: 'Indefectiblement certifiquem establir una norma base i segura establint obligat mínim pur lligat m = n - 1.' },
-                    { id: 'c', text: 'Ens demanen forçosament retenir constants sota m = n * (n -1).' },
-                    { id: 'd', text: 'Seran referencials purs lligats estipulats general abstracte formal cèntric sota llistes m = 2n - 2.' }
+                    { id: 'a', text: 'm = n' },
+                    { id: 'b', text: 'm = n + 1' },
+                    { id: 'c', text: 'm = n - 1' },
+                    { id: 'd', text: 'm = 2n' }
                 ],
-                correctOptionId: 'b',
-                explanation: 'Requisit clau per connectar tothom d\'una formació a "Components Connexos"! Matemàticament, el menor dispendi necessari de retenir una societat unida completament costa posar pures arestes i traços a mesura mínima que suposa pur d\'arbres (exactament m = n - 1). Inferior a això és trencament i caiguda desconnectada cèntrica.'
+                correctOptionId: 'c',
+                explanation: 'Com s\'indica a la secció 2, l\'estructura mínima de connexió és l\'arbre, que té exactament $n-1$ arestes.'
             },
             {
                 id: 'm1-q2-3',
-                question: 'Respecte certes clàssiques pífies de referència en proves o exàmens d\'enginyeria, asseverem abstracte pur... "És irrefutable que tot graf relacional en un domini unificat i Connex que posseeixi un poderós element -Vèrtex de Tall-, s\'encarregarà pur d\'albergar obligatori entre les connexions sempre d\'alguna o més -Arestes Pont-". Això últim és encertat o simple fals d\'acció logarítmica general?',
+                question: 'Què és un "Vèrtex de tall"?',
                 options: [
-                    { id: 'a', text: 'Del tot FALS asimptòtic. El contra-exemple ideal s\'anomena formal visualment "Graf Papallona" (Consta pur donat en lligam cèntric on 2 triangles oposats atrets asimètricament per igual punt en conjunt). Aquest cert mateix nus es constitueix en vèrtex destructor si l\'extrapoles, però gràcies que les "Ales" són circulars asimètriques completes per fora mai res posseeix pur de lligatura d\'Aresta pont.' },
-                    { id: 'b', text: 'Fórmula Verídica al 100%. Teorema i Condició lògica BFS p p b DFS r d m base b j f l i Mètrica formal d de components.' },
-                    { id: 'c', text: 'Només és matemàticament encertada i p forçadament pur general b s exclusivament r h c k v base q y G h DFS Cicles aïllats p i Bipartita D g u lligat BFS v x.' },
-                    { id: 'd', text: 'M Fals com concepte, la excentricitat f de q e no dictaminarà n i m G pur base j u s r BFS generadors b Cicles DFS z t!' }
+                    { id: 'a', text: 'Un vèrtex que té un grau superior a la mitjana del graf.' },
+                    { id: 'b', text: 'Un vèrtex que, si s\'esborra, augmenta el nombre de components connexos del graf.' },
+                    { id: 'c', text: 'Un vèrtex situat exactament al centre del graf.' },
+                    { id: 'd', text: 'L\'extrem d\'una aresta pont que té grau 1.' }
                 ],
-                correctOptionId: 'a',
-                explanation: 'Típic "Parany"! Fal·làcia estricte de P1 d\'examen descrita de memòria apunts! En treure en efecte el node del mitg Papallona sí esbudella estètic l\'engranatge, considerat com "Element Tall"... Tanmateix per on treus exclusivitats arestes lliures pur en cada Triangle lateral... romanen cicles n purs que el pontet general r base lligant d n d no el tallaran (0 Ponts Reals referent global b!)'
+                correctOptionId: 'b',
+                explanation: 'La definició (secció 2) estableix que esborrar un vèrtex de tall fragmenta el graf en més peces (components) de les que hi havia originalment.'
             },
             {
                 id: 'm1-q2-4',
-                question: 'I al revés matemàticament lligat d\'Enginyeria? Ens adonem i deduïm absolut exclusivament fixat per la Mètrica que disposem ara al revés referint asimptòtic base de cert tenir exactes lligades reals unes veritables f "Arestes Pont". Analitzant complet en rigor pur referent extrem base asimètric on penja i aguanta formal lligat genèric i fita aquest pas d\'arestes referent al vèrtex en Qüestió. Quin estat obtenen aquestes mateixes fronteres de p?',
+                question: 'Analitza l\'afirmació: "Un graf connex amb vèrtexs de tall sempre conté alguna aresta pont". És certa?',
                 options: [
-                    { id: 'a', text: 'Generen l\'oblit exclusiu atorgant c DFS un DFS c o DFS z Graus Purs asimètrics D parells genèrics.' },
-                    { id: 'b', text: 'A excepció exclusiva b evident f p g l "i d m s t a" s d s n q de m d a g si fossen p element de p d vèrtex "Fulla"... seran irremediablement declarats absoluts p i r f c g DFS elements categoritzats x j q f n pur per defectes de tall o - "Vèrtexs de r t DFS Tall".' },
-                    { id: 'c', text: 'Acataran d pur i DFS n general x p q i D d r m b exclusiu t l c m u asimètric n formal D r "G Centric" purs d o n b C.' },
-                    { id: 'd', text: 'S G t z BFS y q n D ! m g v f a g i i l asimètriques general l j u k n f w y r BFS s o D base C e !' }
+                    { id: 'a', text: 'Sí, és un teorema fonamental dels grafs.' },
+                    { id: 'b', text: 'No. El graf papallona (dos triangles units per un vèrtex) té un vèrtex de tall però cap aresta pont.' },
+                    { id: 'c', text: 'Només és cert si el graf no té cicles.' },
+                    { id: 'd', text: 'Sí, sempre que el diàmetre del graf sigui superior a 2.' }
                 ],
                 correctOptionId: 'b',
-                explanation: 'Inversió Tècnica i asimètrica! Un Pont aguanta Mons de l\'Univers o DFS. Purament en treure r f n del m d sistema n d just s k r en ell la roca c n x formal d l (Un Vèrtex), obligatori el g w Pont perd r u f a suport, el pont s g v g w l x k h trencarà a ell mateix base BFS, desprenent els e y m d mons o components p c g g m purs asimètrics d c r u q formal c "Tall", u (Només h h D la "fulla" j f u c z de D p i n g s e cua e cau pur s f n exclusiu D asimètric sense s g r v b provocar p z o u talls r l e n g o b s grans D v).'
+                explanation: 'El tip "La fal·làcia d\'arestes i vèrtexs" aclareix que el graf papallona és el contraexemple ideal: el nus central és de tall però cap aresta és pont perquè totes estan en cicles.'
             },
             {
                 id: 'm1-q2-5',
-                question: 'Si determinem de manera estadística pur matemàtic de Cerca lligant el paràmetre anomenat com a referent exclusivament logarítmic de l\' -Excentricitat de cada m membre generador Node V-, quin r asimptòtic valor estarem observant genèric per trobar-hi general m f asimètric al recull DFS/BFS general s base?',
+                question: 'Com es defineix l\'Excentricitat $e(u)$ d\'un vèrtex?',
                 options: [
-                    { id: 'a', text: 'Ens col·loquem abstractament des del c d mateix c d n individu o membre referent e l f exclusivament per trobar-hi de viatge "Aquell element g pur b h a absolut BFS n a qui p triga amuntega j z d absolut a o b en Cicles e u h e s s e BFS z w pur s trobar p h p D i Mès M v f asimptòtic l h Allunyat absolut k genèric l f x (El c j Pitjor m l e a g o BFS i k b c p u cas m genèric f estricte possible e D m w u DFS d d b z DFS l w c p x g z s DFS e n h ) c y b j ".' },
-                    { id: 'b', text: 'Resultat r l q e de mitjanar absoluts a D p s DFS pur per D g e z o k d x els h t n D k viatges.' },
-                    { id: 'c', text: 'Genera h d k j a absolut j s d DFS D h p h p h BFS r f b d DFS D j j b j d de r DFS o i d s m p m n t w f x D f j u y h x . ' },
-                    { id: 'd', text: 'L a r D q a v L z w y c BFS f m a BFS f n y c w n m l R p ' }
+                    { id: 'a', text: 'És la suma de totes les distàncies des de $u$.' },
+                    { id: 'b', text: 'És la distància al vèrtex més proper.' },
+                    { id: 'c', text: 'És la distància al vèrtex que està més lluny de $u$ (el pitjor dels casos).' },
+                    { id: 'd', text: 'És el nombre de cicles als quals pertany $u$.' }
                 ],
-                correctOptionId: 'a',
-                explanation: 'A l\'Apunts és clar pur referent d u: Excentricitat (e). És s e n g k z BFS g e "Asseu-te g s al c b s g G z G DFS w teu D q propi w l l e vèrtex. Des g v d q DFS j d g l m o b x f c de k tú... asimètrics j o Quin z t c c y node w c j estricte o m x u pur t del r w k q v f y g de D DFS i l b p d d e l map genèric h u g és z s i e a D k x r k qui q k w y BFS m x tens BFS a t m h g v O e b o O N m e a i y s u N g n T P c més I l h n l m Lluny k ? w w x ". a h l o BFS '
+                correctOptionId: 'c',
+                explanation: 'L\'excentricitat mesura la "distància màxima" des d\'un punt, avaluant quin és el node més allunyat d\'ell (Secció 3).'
             },
             {
                 id: 'm1-q2-6',
-                question: 'Seguint el diccionari de mètriques del tema, com es defineix matemàticament l\'atribut "Excentricitat" d\'un vèrtex?',
+                question: 'Quina relació hi ha entre el Diàmetre $D(G)$ i el Radi $r(G)$ d\'un graf?',
                 options: [
-                    { id: 'a', text: 'És la suma literal de totes les distàncies acumulades recorregudes al graf complet.' },
-                    { id: 'b', text: 'És calcular totes les rutes BFS des d\'ell i quedar-nos només amb el viatge més llunyà possible (el pitjor cas).' },
-                    { id: 'c', text: 'Es mesura trobant la meitat exacta del diàmetre del graf.' },
-                    { id: 'd', text: 'S\'obté seleccionant aleatòriament la connexió més propera al node.' }
+                    { id: 'a', text: 'El diàmetre és sempre exactament el doble del radi.' },
+                    { id: 'b', text: 'El diàmetre és la màxima excentricitat del graf, i el radi és la mínima.' },
+                    { id: 'c', text: 'El radi sempre és més gran que el diàmetre.' },
+                    { id: 'd', text: 'Són valors independents que no tenen res a veure amb l\'excentricitat.' }
                 ],
                 correctOptionId: 'b',
-                explanation: 'L\'excentricitat és posicionar-nos al vèrtex i avaluar:quina és la distància de la persona que tinc literalment MÉS lluny de tot el graf? Ens quedem aquest valor extrem com la nostra excentricitat (e).'
+                explanation: 'A la secció 3 es defineix el diàmetre com el màxim de les excentricitats i el radi com el mínim.'
             },
             {
                 id: 'm1-q2-7',
-                question: 'Baix els efectismes de la Cerca DFS en Profunditat, quin procedir informàtic natiu escorta i regeix la seva marxa enrere (backtracking)?',
+                question: 'Quina estructura de dades utilitza l\'ordinador per gestionar una cerca DFS (en profunditat) i el seu backtracking?',
                 options: [
-                    { id: 'a', text: 'Ús obligatori d\'una matriu booleana central.' },
-                    { id: 'b', text: 'Amb un comportament rígid basat en Cues FIFO per atendre el primer en arribar.' },
-                    { id: 'c', text: 'Sota la recursivitat d\'una Pila o Stack (LIFO), permetent desfer sobre l\'última ubicació amuntegada per explorar branques paral·leles.' },
-                    { id: 'd', text: 'Amb taules de dispersió per emmagatzemar grafs connexos.' }
+                    { id: 'a', text: 'Una Cua (Queue - FIFO).' },
+                    { id: 'b', text: 'Una Pila (Stack - LIFO).' },
+                    { id: 'c', text: 'Una taula hash.' },
+                    { id: 'd', text: 'Un arbre binari balancejat.' }
                 ],
-                correctOptionId: 'c',
-                explanation: 'El DFS busca explorar forçosament el més profund. L\'estructura ideal darrere en memòria nativa és l\'apilament Stack actuant com a LIFO natural. Quan xoca sense camí nou, fa "pop" per marxar enrere.'
+                correctOptionId: 'b',
+                explanation: 'El DFS (Secció 4) utilitza la recursivitat d\'una Pila (LIFO) per enfonsar-se i després desfer el camí (pop) quan troba un cul de sac.'
             },
             {
                 id: 'm1-q2-8',
-                question: 'Segons el Teorema 9 present als apunts de M1, de què és garant matemàtic un algorisme BFS (Cerca en Amplada) que guarda els passos de nivell fets (D)?',
+                question: 'Quina garantia ofereix l\'algorisme BFS (Cerca en amplada) respecte a les distàncies recorregudes?',
                 options: [
-                    { id: 'a', text: 'Només val per extreure les fulles d\'un arbre.' },
-                    { id: 'b', text: 'De calcular de forma irrefutable els Camins Mínims (distàncies més curtes) des de l\'arrel inicial a qualsevol node.' },
-                    { id: 'c', text: 'De trobar immediatament l\'arbre hamiltonià d\'un components connex.' },
-                    { id: 'd', text: 'Sempre assoleix construir un cercle d\'Euler.' }
+                    { id: 'a', text: 'Garanteix trobar el camí més llarg del graf.' },
+                    { id: 'b', text: 'Troba tots els cicles hamiltonians.' },
+                    { id: 'c', text: 'Garanteix que el valor $D[y]$ és la distància més curta (mínim d\'arestes) des de l\'arrel al node $y$.' },
+                    { id: 'd', text: 'No ofereix cap garantia de distància mínimes.' }
                 ],
-                correctOptionId: 'b',
-                explanation: 'BFS envia "onades paral·leles". Aquells nodes que contacta al pas N, ho han fet estrictament amb N arestes (la distància menor possible i més eficient cap a aquell veí!).'
+                correctOptionId: 'c',
+                explanation: 'El benefici principal del BFS (Secció 5) és que, en propagar-se per capes, sempre arriba a cada node per la ruta més curta possible.'
             },
             {
                 id: 'm1-q2-9',
-                question: 'Què dictaminen els Lemes clàssics (Lema 10) si trobem amagat al mig d\'un paper un simple Recorregut Tancat basat en una Longitud (nombre d\'arestes) purament SENAR?',
+                question: 'Quina és la "Regla d\'or" per saber si un graf és Bipartit sense haver d\'intentar pintar-lo?',
                 options: [
-                    { id: 'a', text: 'Garanteix matemàticament l\'existència segura amagada a l\'interior de la forma d\'almenys un Cicle de longitud Senar innegable.' },
-                    { id: 'b', text: 'Denota l\'existència de vèrtexs bipartits inconnexos.' },
-                    { id: 'c', text: 'No confirma res, ja que qualsevol recorregut senar podria venir donat d\'una xarxa només composta per engranatges quadrats.' },
-                    { id: 'd', text: 'Assegura que l\'algorisme de DFS s\'aturarà permanentment.' }
+                    { id: 'a', text: 'El graf ha de tenir un nombre parell de vèrtexs.' },
+                    { id: 'b', text: 'El graf no ha de tenir cap cicle de longitud SENAR.' },
+                    { id: 'c', text: 'El graf ha de ser un cicle $C_n$.' },
+                    { id: 'd', text: 'Totes les excentricitats han de ser iguals.' }
                 ],
-                correctOptionId: 'a',
-                explanation: 'Principi bàsic de demostracions: Si a base de donar voltes a un tros del dibuix et dóna distància total 3 o 5 i has tornat... forçosament algun triangle de 3 cares o pentàgon de 5 està lligat de base causant la formació senar. (Lema 10).'
+                correctOptionId: 'b',
+                explanation: 'Com diu la secció 6, un graf és bipartit $\iff$ no té cap cicle de longitud senar (triangles, pentàgons, etc.).'
             },
             {
                 id: 'm1-q2-10',
-                question: 'Aplicant el rigorós i potent "Teorema 11: Caracterització Màxima", quina condició converteix directament un pur Graf qualsevol categoritzat absolutament en format "Bipartit"?',
+                question: 'En un graf camí $a - b - c - d - e$, quin és el Diàmetre?',
                 options: [
-                    { id: 'a', text: 'Estar desproveït totalment de nodes fulla.' },
-                    { id: 'b', text: 'Comportar cicles només circulars imparells inferiors al valor d\'n.' },
-                    { id: 'c', text: 'Tenir un rigor i requisit on de genèric MAI contingui enmig cap existència o representació forma oculta de Cicle pur absolut lligat de Longitud SENAR.' },
-                    { id: 'd', text: 'Que disposi d\'una matriu lligada completament Euleriana.' }
+                    { id: 'a', text: '2' },
+                    { id: 'b', text: '5' },
+                    { id: 'c', text: '4' },
+                    { id: 'd', text: '10' }
                 ],
                 correctOptionId: 'c',
-                explanation: 'Reducció al Bipartit pur. El teorema 11 diu: Un graf és Bipartit <==> NO té absolutament CAP cicle de longitud SENAR. Si descobreixes un triangle al mig de l\'examen... acomiada automàtic el concepte de bipartit del costat.'
+                explanation: 'El diàmetre és la distància més llarga entre dues puntes ($a$ i $e$). Hi ha 4 arestes de distància, per tant $D(G) = 4$.'
             }
         ]
     },

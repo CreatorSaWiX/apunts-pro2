@@ -1,16 +1,16 @@
 import type { Solution } from '../../solutions';
 
 export const ex1_12: Solution = {
-    id: 'M1-T1-Ex1.12',
-    title: 'Exercici 1.12: Teoria de Productes',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Proveu o refuteu les afirmacions següents:
+  id: 'M1-T1-Ex1.12',
+  title: 'Exercici 1.12: Teoria de Productes',
+  author: 'Profe',
+  code: '',
+  type: 'notebook',
+  statement: `Proveu o refuteu les afirmacions següents:
 
 1. Si $G_1$ i $G_2$ són grafs regulars, aleshores $G_1 \\times G_2$ és regular.
 2. Si $G_1$ i $G_2$ són grafs bipartits, aleshores $G_1 \\times G_2$ és bipartit.`,
-    content: `
+  content: `
 ### 1) $G_1, G_2$ regular $\\implies G_1 \\times G_2$ regular?
 
 **Sí. Demostració:**
@@ -19,48 +19,31 @@ export const ex1_12: Solution = {
 *   El grau en el producte: $\\text{grau}(u,v) = r_1 + r_2$ (constant per a tots els vèrtexs).
 *   El producte és $(r_1+r_2)$-regular. $\\square$
 
-### 2) $G_1, G_2$ bipartit $\\implies G_1 \\times G_2$ bipartit?
+**Exemple Visual ($K_3 \\times K_2$):**
+A $K_3$ cada vèrtex té grau 2. A $K_2$ cada vèrtex té grau 1. El producte és un prisma triangular on cada vèrtex té grau $2+1=3$.
 
-**Sí. Demostració:**
-
-<details>
-<summary><strong>Recomanació: llegir aquest exemple abans de la demostració</strong></summary>
-
-<div style="display:none; justify-content:center; margin: 1rem 0;">
-  <img src="/apunts/IMG_1449.JPG" alt="Explicació visual" style="max-width:420px; width:100%; border-radius:16px; border: 2px solid #334155; box-shadow: 0 4px 24px rgba(0,0,0,0.4);" />
-</div>
-
-- $G_1 = K_2$: vèrtexs A (part $X_1$) i B (part $Y_1$). Aresta A–B.
-- $G_2 = K_2$: vèrtexs 1 (part $X_2$) i 2 (part $Y_2$). Aresta 1–2.
-
-Partició del producte: $A = \\{(A,1),(B,2)\\}$, $B = \\{(A,2),(B,1)\\}$.
-
-| Vèrtex | Part $G_1$ | Part $G_2$ | Part |
-|--------|-----------|-----------|------|
-| (A,1)  | $X_1$ | $X_2$ | ⬜ (Tots dos a X) |
-| (A,2)  | $X_1$ | $Y_2$ | ⬛ (Un a X, un a Y) |
-| (B,1)  | $Y_1$ | $X_2$ | ⬛ (Un a Y, un a X) |
-| (B,2)  | $Y_1$ | $Y_2$ | ⬜ (Tots dos a Y) |
-
-$K_2 \\times K_2 = C_4$ — totes les arestes van de ⬜ ($A$) a ⬛ ($B$):
 :::graph
 \`\`\`json
 {
   "nodes": [
-    { "id": "(A,1)", "color": "#e2e8f0" }, { "id": "(A,2)", "color": "#1e293b" },
-    { "id": "(B,1)", "color": "#1e293b" }, { "id": "(B,2)", "color": "#e2e8f0" }
+    { "id": "A1", "label": "(A,1)", "group": 1 }, { "id": "B1", "label": "(B,1)", "group": 1 }, { "id": "C1", "label": "(C,1)", "group": 1 },
+    { "id": "A2", "label": "(A,2)", "group": 2 }, { "id": "B2", "label": "(B,2)", "group": 2 }, { "id": "C2", "label": "(C,2)", "group": 2 }
   ],
   "links": [
-    { "source": "(A,1)", "target": "(B,1)" }, { "source": "(A,1)", "target": "(A,2)" },
-    { "source": "(B,2)", "target": "(A,2)" }, { "source": "(B,2)", "target": "(B,1)" }
+    { "source": "A1", "target": "B1" }, { "source": "B1", "target": "C1" }, { "source": "C1", "target": "A1" },
+    { "source": "A2", "target": "B2" }, { "source": "B2", "target": "C2" }, { "source": "C2", "target": "A2" },
+    { "source": "A1", "target": "A2" }, { "source": "B1", "target": "B2" }, { "source": "C1", "target": "C2" }
   ]
 }
 \`\`\`
 :::
 
-Bipartit ✓
+### 2) $G_1, G_2$ bipartit $\\implies G_1 \\times G_2$ bipartit?
 
-</details>
+**Sí. Demostració:**
+
+::proofviz{proof="bipartite_product"}
+
 
 Com $G_1$ és bipartit, existeix una partició $V_1 = X_1 \\cup Y_1$ tal que totes les arestes de $G_1$ van de $X_1$ a $Y_1$.
 Com $G_2$ és bipartit, existeix una partició $V_2 = X_2 \\cup Y_2$ tal que totes les arestes de $G_2$ van de $X_2$ a $Y_2$.
@@ -75,5 +58,5 @@ Sigui $\\{(u,v),(u',v')\\}$ una aresta del producte. Per definició, o bé $u \\
 
 En ambdós casos, els extrems de cada aresta pertanyen a parts distintes de $\\{A, B\\}$. Per tant, $G_1 \\times G_2$ és bipartit. $\\square$
         `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

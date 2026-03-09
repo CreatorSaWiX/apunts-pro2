@@ -19,6 +19,7 @@ const StackVisualizer = React.lazy(() => import("../components/ui/StackVisualize
 const QueueVisualizer = React.lazy(() => import("../components/ui/QueueVisualizer"));
 const ListGraphVisualizer = React.lazy(() => import("../components/ui/ListGraphVisualizer"));
 const BinTreeVisualizer = React.lazy(() => import("../components/ui/BinTreeVisualizer"));
+const ProofPlayer = React.lazy(() => import("../components/ui/ProofPlayer"));
 
 const VizFallback = () => (
     <div className="h-64 animate-pulse bg-slate-900/40 border border-white/5 rounded-2xl w-full my-12 flex items-center justify-center">
@@ -86,6 +87,13 @@ const defaultComponents: any = {
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <BinTreeVisualizer {...props} />
+            </React.Suspense>
+        );
+    },
+    proofviz: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <ProofPlayer proofId={props.proof} />
             </React.Suspense>
         );
     },
