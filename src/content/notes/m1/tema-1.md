@@ -133,6 +133,22 @@ $$
 
 Com que $2|A|$ sempre és un nombre PARELL, la suma dels graus ha de ser parella. Això vol dir que és **impossible** que hi hagi un nombre senar de gent amb un nombre senar d'amics.
 
+:::tip{title="Havel-Hakimi: Comprovar la seqüència de graus"}
+El Lema de les encaixades és necessari (suma parella), però no suficient per garantir que un graf existeix. Per saber si una seqüència és **gràfica**, usem l'algorisme de **Havel-Hakimi**:
+
+1.  **Ordena** la seqüència de major a menor.
+2.  **Elimina** el primer element ($d_1$).
+3.  **Resta 1** als següents $d_1$ elements.
+4.  **Si apareix un negatiu**, la seqüència NO és gràfica.
+5.  **Repeteix** fins que només quedin zeros ($\exists$) o fallis ($\nexists$).
+
+**Exemple: S = (3, 3, 2, 2, 1, 1)**
+*   Treiem el **3**: Restem 1 als 3 següents $\to$ (3-1, 2-1, 2-1, 1, 1) = **(2, 1, 1, 1, 1)**
+*   Treiem el **2**: Restem 1 als 2 següents $\to$ (1-1, 1-1, 1, 1) = **(0, 0, 1, 1)**
+*   Ordenem $\to$ **(1, 1, 0, 0)**
+*   Treiem l'**1**: Restem 1 al següent $\to$ (1-1, 0, 0) = **(0, 0, 0)** $\to$ **SÍ és gràfica!**
+:::
+
 ## 5. Isomorfisme
 
 Dos grafs són **isomorfs** si tenen la mateixa estructura interna, encara que tinguin etiquetes diferents o estiguin dibuixats de forma diferent. En aquests dos grafs, el de la dreta és un cicle (un pentàgon) i l'esquerre és una estrella.

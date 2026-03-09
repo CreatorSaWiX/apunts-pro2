@@ -12,26 +12,32 @@ export const ex1_1: Solution = {
 2. La matriu d'adjacència per a $n=5$.
 3. L'ordre, la mida, el grau màxim i el grau mínim en funció de $n$.`,
   // A grafs s'ha de posar en un grid de 2 cols, ja que falta per n=6
-content: `
+  content: `
 
-  ### 1. Representació Gràfica ($n=4$ i $n=6$)
+  ### 1. Representacions i Matrius ($n=4, 5, 6$)
 
-#### $N_n$ (Graf Nul)
-Només vèrtexs, cap aresta. La soledat absoluta.
-
-:::graph
+### $N_n$ (Graf Nul)
+::::grid{cols=3}
+:::graph{height=150}
 \`\`\`json
-{
-  "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 } ],
-  "links": []
-}
+{ "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 } ], "links": [] }
 \`\`\`
 :::
 
-#### $K_n$ (Graf Complet)
-Tothom connectat amb tothom. El màxim d'arestes possible.
+:::graph{height=150}
+\`\`\`json
+{ "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }, { "id": 5 }, { "id": 6 } ], "links": [] }
+\`\`\`
+:::
 
-:::graph
+$$
+\\begin{pmatrix} 0 & 0 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 \\end{pmatrix}
+$$
+::::
+
+### $K_n$ (Graf Complet)
+::::grid{cols=3}
+:::graph{height=150}
 \`\`\`json
 {
   "nodes": [{ "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }],
@@ -43,83 +49,82 @@ Tothom connectat amb tothom. El màxim d'arestes possible.
 \`\`\`
 :::
 
-#### $T_n$ (Trajecte)
-Una línia simple.
-
-:::graph
+:::graph{height=150}
 \`\`\`json
 {
-  "nodes": [{ "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }],
+  "nodes": [{ "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }, { "id": 5 }, { "id": 6 }],
   "links": [
-    { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 }
+    { "source": 1, "target": 2 }, { "source": 1, "target": 3 }, { "source": 1, "target": 4 }, { "source": 1, "target": 5 }, { "source": 1, "target": 6 },
+    { "source": 2, "target": 3 }, { "source": 2, "target": 4 }, { "source": 2, "target": 5 }, { "source": 2, "target": 6 },
+    { "source": 3, "target": 4 }, { "source": 3, "target": 5 }, { "source": 3, "target": 6 },
+    { "source": 4, "target": 5 }, { "source": 4, "target": 6 }, { "source": 5, "target": 6 }
   ]
 }
 \`\`\`
 :::
 
-#### $C_n$ (Cicle)
-Un cercle tancat.
-
-:::graph
-\`\`\`json
-{
-  "nodes": [{ "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }],
-  "links": [
-    { "source": 1, "target": 2 }, { "source": 2, "target": 3 },
-    { "source": 3, "target": 4 }, { "source": 4, "target": 1 }
-  ]
-}
-\`\`\`
-:::
-
-#### $W_n$ (Roda)
-Un cicle de $n-1$ vèrtexs més un centre connectat a tots. (Per $n=4$: triangle + centre).
-
-:::graph{height=200}
-\`\`\`json
-{
-  "nodes": [{ "id": "C", "color": "#facc15" }, { "id": 1 }, { "id": 2 }, { "id": 3 }],
-  "links": [
-    { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 1 },
-    { "source": "C", "target": 1 }, { "source": "C", "target": 2 }, { "source": "C", "target": 3 }
-  ]
-}
-\`\`\`
-:::
-
----
-
-### 2. Matriu d'Adjacència ($n=5$)
-
-Recordeu: $1$ si hi ha aresta, $0$ si no.
-
-**$N_5$ (Nul)**: Tot zeros.
-$$
-\\begin{pmatrix} 0 & 0 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 \\end{pmatrix}
-$$
-
-**$K_5$ (Complet)**: Tot uns excepte la diagonal.
 $$
 \\begin{pmatrix} 0 & 1 & 1 & 1 & 1 \\\\ 1 & 0 & 1 & 1 & 1 \\\\ 1 & 1 & 0 & 1 & 1 \\\\ 1 & 1 & 1 & 0 & 1 \\\\ 1 & 1 & 1 & 1 & 0 \\end{pmatrix}
 $$
+::::
 
-**$T_5$ (Trajecte)**: Una línia just sobre i sota la diagonal principal.
+### $T_n$ (Trajecte)
+::::grid{cols=3}
+:::graph{height=150}
+\`\`\`json
+{ "nodes": [{ "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 } ] }
+\`\`\`
+:::
+
+:::graph{height=150}
+\`\`\`json
+{ "nodes": [{ "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }, { "id": 5 }, { "id": 6 }], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 }, { "source": 4, "target": 5 }, { "source": 5, "target": 6 } ] }
+\`\`\`
+:::
+
 $$
 \\begin{pmatrix} 0 & 1 & 0 & 0 & 0 \\\\ 1 & 0 & 1 & 0 & 0 \\\\ 0 & 1 & 0 & 1 & 0 \\\\ 0 & 0 & 1 & 0 & 1 \\\\ 0 & 0 & 0 & 1 & 0 \\end{pmatrix}
 $$
+::::
 
-**$C_5$ (Cicle)**: Com $T_5$ però amb les cantonades $(1,5)$ i $(5,1)$ a 1.
+### $C_n$ (Cicle)
+::::grid{cols=3}
+:::graph{height=150}
+\`\`\`json
+{ "nodes": [{ "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 }, { "source": 4, "target": 1 } ] }
+\`\`\`
+:::
+
+:::graph{height=150}
+\`\`\`json
+{ "nodes": [{ "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }, { "id": 5 }, { "id": 6 }], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 }, { "source": 4, "target": 5 }, { "source": 5, "target": 6 }, { "source": 6, "target": 1 } ] }
+\`\`\`
+:::
+
 $$
 \\begin{pmatrix} 0 & 1 & 0 & 0 & 1 \\\\ 1 & 0 & 1 & 0 & 0 \\\\ 0 & 1 & 0 & 1 & 0 \\\\ 0 & 0 & 1 & 0 & 1 \\\\ 1 & 0 & 0 & 1 & 0 \\end{pmatrix}
 $$
+::::
 
-**$W_5$ (Roda)**: Centre connectat a tots (fila/cal 1 plena d'uns), i la resta un cicle $C_4$.
-*Assumim vèrtex 1 és el centre*.
+### $W_n$ (Roda)
+::::grid{cols=3}
+:::graph{height=150}
+\`\`\`json
+{ "nodes": [{ "id": "C", "color": "#facc15" }, { "id": 1 }, { "id": 2 }, { "id": 3 }], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 1 }, { "source": "C", "target": 1 }, { "source": "C", "target": 2 }, { "source": "C", "target": 3 } ] }
+\`\`\`
+:::
+
+:::graph{height=150}
+\`\`\`json
+{ "nodes": [{ "id": "C", "color": "#facc15" }, { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 }, { "id": 5 }], "links": [ { "source": 1, "target": 2 }, { "source": 2, "target": 3 }, { "source": 3, "target": 4 }, { "source": 4, "target": 5 }, { "source": 5, "target": 1 }, { "source": "C", "target": 1 }, { "source": "C", "target": 2 }, { "source": "C", "target": 3 }, { "source": "C", "target": 4 }, { "source": "C", "target": 5 } ] }
+\`\`\`
+:::
+
 $$
 \\begin{pmatrix} 0 & 1 & 1 & 1 & 1 \\\\ 1 & 0 & 1 & 0 & 1 \\\\ 1 & 1 & 0 & 1 & 0 \\\\ 1 & 0 & 1 & 0 & 1 \\\\ 1 & 1 & 0 & 1 & 0 \\end{pmatrix}
 $$
+::::
 
----
 
 ### 3. Propietats en funció de $n$
 
