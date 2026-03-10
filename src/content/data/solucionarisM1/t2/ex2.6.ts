@@ -58,21 +58,36 @@ Tenim un graf $G$ amb $n$ vèrtexs format per dos components complets: $K_{n_1}$
 
 **1. Mida total en funció de $n_1$**
 
+La suma d'arestes és la combinació de les arestes de $K_{n_1}$ i $K_{n_2}$:
+
 $$ m = \\frac{n_1(n_1-1)}{2} + \\frac{n_2(n_2-1)}{2} $$
 
-Substituïm $n_2 = n - n_1$ i simplifiquem:
+Substituïm $n_2 = n - n_1$:
+
+$$ m(n_1) = \\frac{n_1^2 - n_1 + (n-n_1)(n-n_1-1)}{2} = \\frac{n_1^2 - n_1 + (n^2 - 2nn_1 + n_1^2 - n + n_1)}{2} $$
+
+Si agrupem termes, la fórmula es simplifica en una funció quadràtica:
 
 $$ m(n_1) = \\frac{2n_1^2 - 2n \\cdot n_1 + n^2 - n}{2} $$
 
-**2. On és el mínim?**
+**2. El mínim**
 
-Aquesta és una paràbola en $n_1$ (coeficient positiu → forma de U). El mínim és al vèrtex: $n_1 = \\frac{n}{2}$.
+L'enunciat ens demana demostrar que la mida $m$ és **almenys** un valor determinat. Per provar que $m \\ge \\text{fita}$ per a qualsevol combinació de $n_1$ i $n_2$, només ens cal trobar el cas que dóna menys arestes (el mínim global) i veure que fins i tot aquest cas compleix la condició.
+
+La funció $m(n_1) = \\frac{1}{2}(2n_1^2 - 2nn_1 + n^2 - n)$ és una **paràbola** amb el coeficient de $n_1^2$ positiu, el que significa que té forma de "U" i el seu vèrtex és el punt mínim. Podem trobar-lo de dues maneres:
+
+*   **Pel vèrtex d'una paràbola:** En una equació $ax^2 + bx + c$, el vèrtex és a $x = -b/2a$. Aquí, $n_1 = \\frac{-(-2n)}{2(2)} = \\frac{2n}{4} = \\frac{n}{2}$.
+*   **Per la derivada:** Si derivem respecte a $n_1$ i igualem a zero:
+    $m'(n_1) = \\frac{1}{2}(4n_1 - 2n) = 0 \\implies 4n_1 = 2n \\implies n_1 = \\frac{n}{2}$.
+
+Ambdós mètodes confirmen que el mínim es dóna quan els dos components estan **equilibrats** ($n_1 = n_2 = n/2$).
 
 **3. Avaluem al mínim** ($n_1 = n/2$):
 
-$$ m_{min} = \\frac{ 2 \\cdot \\frac{n^2}{4} - 2n \\cdot \\frac{n}{2} + n^2 - n }{2} = \\frac{ \\frac{n^2}{2} - n^2 + n^2 - n }{2} = \\frac{n^2 - 2n}{4} $$
+$$ m_{min} = \\frac{ 2(\\frac{n}{2})^2 - 2n(\\frac{n}{2}) + n^2 - n }{2} = \\frac{ \\frac{n^2}{2} - n^2 + n^2 - n }{2} $$
+$$ m_{min} = \\frac{ \\frac{n^2}{2} - n }{2} = \\frac{n^2 - 2n}{4} $$
 
-Com que el mínim de la funció és $\\frac{n^2 - 2n}{4}$, qualsevol repartiment compleix $m \\ge \\frac{n^2 - 2n}{4}$. $\\square$
+Com que el mínim de la funció és $\\frac{n^2 - 2n}{4}$, qualsevol repartiment de $n_1, n_2$ compleix $m \\ge \\frac{n^2 - 2n}{4}$. $\\square$
   `,
   availableLanguages: ['ca']
 };

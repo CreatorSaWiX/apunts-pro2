@@ -108,11 +108,21 @@ export default defineConfig(({ mode }) => {
             if (id.includes('node_modules')) {
               if (id.includes('firebase')) return 'vendor-firebase';
               if (id.includes('@uiw') || id.includes('@codemirror')) return 'vendor-codemirror';
-              if (id.includes('react-force-graph')) return 'vendor-graphs';
+              if (id.includes('react-force-graph') || id.includes('d3-') || id.includes('kapsule')) return 'vendor-graphs';
               if (id.includes('react-markdown') || id.includes('rehype') || id.includes('remark')) return 'vendor-markdown';
               if (id.includes('lucide-react')) return 'vendor-icons';
               if (id.includes('framer-motion')) return 'vendor-framer';
-              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) return 'vendor-react';
+              // Be more specific with React core to avoid circular dependencies
+              if (
+                id.includes('node_modules/react/') ||
+                id.includes('node_modules/react-dom/') ||
+                id.includes('node_modules/react-router/') ||
+                id.includes('node_modules/react-router-dom/') ||
+                id.includes('node_modules/scheduler/') ||
+                id.includes('node_modules/@remix-run/')
+              ) {
+                return 'vendor-react';
+              }
             }
           }
         }

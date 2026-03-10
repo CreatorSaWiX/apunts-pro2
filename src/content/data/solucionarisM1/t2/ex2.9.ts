@@ -8,7 +8,9 @@ export const ex2_9: Solution = {
   type: 'notebook',
   statement: `Trobeu tots els vèrtexs de tall i arestes pont dels grafs següents.`,
   content: `
-| Graf | Vèrtexs de tall | Arestes pont |
+**Foto exercici**
+
+  | Graf | Vèrtexs de tall | Arestes pont |
 | :---: | :---: | :---: |
 | **$G_1$** | $\\emptyset$ | $\\emptyset$ |
 | **$G_2$** | $\\emptyset$ | $\\emptyset$ |
@@ -16,8 +18,7 @@ export const ex2_9: Solution = {
 
 <br/>
 
-**Per què $G_3$ té ponts i talls?**
-L'única via de comunicació entre el triangle superior i l'inferior és l'aresta $(3, 6)$. Si es trenca, el graf sencer es desconnecta en dos.
+**Exercici mal fet**
 
 :::graph{height=220}
 \`\`\`json
@@ -35,7 +36,6 @@ L'única via de comunicació entre el triangle superior i l'inferior és l'arest
 \`\`\`
 :::
 <div class="text-xs text-center text-slate-400 mt-1 mb-4">Graf G₃: El node 3 i 6 són vitals (colls d'ampolla) encadenats pel pont letal (3,6)</div>
-$\\square$
   `,
   availableLanguages: ['ca']
 };

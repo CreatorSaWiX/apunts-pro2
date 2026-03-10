@@ -1,26 +1,70 @@
 import type { Solution } from '../../solutions';
 
 export const ex2_16: Solution = {
-    id: 'M1-T2-Ex2.16',
-    title: 'Exercici 2.16: Impacte del tall al Diàmetre',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Per a cadascuna de les relacions següents sobre el diàmetre, doneu un graf $G = (V, A)$ connex i un vèrtex $u \\in V$ que les satisfacin:\n1) $D(G) = D(G - u)$.\n2) $D(G) < D(G - u)$.\n3) $D(G) > D(G - u)$.`,
-    content: `
-Anem a visualitzar cada escenari escollint l'exemple més pur i ximple que ho faci evident a primer cop d'ull:
+  id: 'M1-T2-Ex2.16',
+  title: 'Exercici 2.16: Impacte del tall al Diàmetre',
+  author: 'Profe',
+  code: '',
+  type: 'notebook',
+  statement: `Per a cadascuna de les relacions següents sobre el diàmetre, doneu un graf $G = (V, A)$ connex i un vèrtex $u \\in V$ que les satisfacin:\n1) $D(G) = D(G - u)$.\n2) $D(G) < D(G - u)$.\n3) $D(G) > D(G - u)$.`,
+  content: `
+L'eliminació d'un vèrtex pot afectar el diàmetre del graf depenent de si aquest vèrtex formava part dels camins més llargs o si servia de "drecera" entre els altres nodes.
 
-**1) SENSE CAP AFECTACIÓ**: $D(G) = D(G - u)$
-*   **Agafa un:** $G = K_4$ (complet de 4 vèrtexs), $u =$ qualsevol.
-*   **Lògica pura:** El complet originari $K_4$ és tot veí amb amics llavors té diàmetre absolut $1$. Al morir-se $u$, el grup restant queda $K_3$ de 3 nodes amb la mateixa força de grup complint idèntica distància de diàmetre perfecte $1$. Res canvia.
+**1) El diàmetre es manté igual**: $D(G) = D(G - u)$
+*   **Exemple:** Un graf complet $G = K_4$ i qualsevol vèrtex $u$.
+*   **Raonament:** En $K_4$, la distància entre qualsevol parell és $1$. Si eliminem $u$, ens queda $K_3$, on la distància segueix sent $1$.
 
-**2) EL MÓN ES TORNARÀ MÉS LLARG**: $D(G) < D(G - u)$
-*   **Agafa un:** $G = W_7$ (una roda amb l'exterior anell de 6, lligada al cor intern) i elimines just precisament el del mig de referència vital $u = \\text{centre}$.
-*   **Lògica pura:**  Al caure el nucli $u$ (drecera natural universal, gràcies a la qual $D=2$), la gent del vot voltant demana rutes a dit exterior! Al no haver cor drecera el mapa final ($C_6$ a les palpentes) ha d'allargar viatges amb diàmetre pesat de radi llunyà $\\lfloor 6/2 \\rfloor = 3$. ($2 < 3$). Hem perdut la nostra gran drecera vital central.
+:::graph{height=150}
+\`\`\`json
+{
+  "nodes": [
+    { "id": "u", "color": "#ef4444" }, { "id": "1" }, { "id": "2" }, { "id": "3" }
+  ],
+  "links": [
+    { "source": "u", "target": "1" }, { "source": "u", "target": "2" }, { "source": "u", "target": "3" },
+    { "source": "1", "target": "2" }, { "source": "2", "target": "3" }, { "source": "3", "target": "1" }
+  ]
+}
+\`\`\`
+:::
 
-**3) EL MÓN ES DISMINUIRÀ**: $D(G) > D(G - u)$
-*   **Agafa un:** Camí estirat clàssic $G = P_4$ ($A-B-C-D$) i un de l'extrem es limitats morts complets com actius: $u = A$.
-*   **Lògica pura:** Teníem el camí que dictava i encarnava tot el destí sencer per a desplaçaments llunyans asolint el seu topall teòric extrem pel viatge llargària d'$A-D$ fins a un temps tardat $D=3$. Esborrem el seu pes terminal de dret fonamental d'últim de l'aeroport (eliminem final extrem d'$a$). Qüestió llavors: la nova carretera del nou ordre ($B-C-D$) viu curta en viatge teòric màxim llarg on només fa la seva mida diàmetre just i just reduït natural a de temps de pas $2$. Tret el final del final, la vida té per límits estats curts obligats! ($3 > 2$). $\\square$
+**2) El diàmetre augmenta**: $D(G) < D(G - u)$
+*   **Exemple:** El graf roda $G = W_7$ i el vèrtex central $u$.
+*   **Raonament:** El vèrtex $u$ connecta a tothom ($D=2$). Sense ell, queda $C_6$ on el diàmetre puja a $3$.
+
+:::graph{height=180}
+\`\`\`json
+{
+  "nodes": [
+    { "id": "u", "color": "#ef4444" },
+    { "id": "1" }, { "id": "2" }, { "id": "3" }, { "id": "4" }, { "id": "5" }, { "id": "6" }
+  ],
+  "links": [
+    { "source": "u", "target": "1" }, { "source": "u", "target": "2" }, { "source": "u", "target": "3" },
+    { "source": "u", "target": "4" }, { "source": "u", "target": "5" }, { "source": "u", "target": "6" },
+    { "source": "1", "target": "2" }, { "source": "2", "target": "3" }, { "source": "3", "target": "4" },
+    { "source": "4", "target": "5" }, { "source": "5", "target": "6" }, { "source": "6", "target": "1" }
+  ]
+}
+\`\`\`
+:::
+
+**3) El diàmetre disminueix**: $D(G) > D(G - u)$
+*   **Exemple:** Un camí $G = P_4$ i un vèrtex extrem $u$.
+*   **Raonament:** En $P_4$, la distància màxima és $3$. Si eliminem un extrem, el camí $P_3$ resultant té diàmetre $2$.
+
+:::graph{height=120}
+\`\`\`json
+{
+  "nodes": [
+    { "id": "u", "color": "#ef4444" }, { "id": "1" }, { "id": "2" }, { "id": "3" }
+  ],
+  "links": [
+    { "source": "u", "target": "1" }, { "source": "1", "target": "2" }, { "source": "2", "target": "3" }
+  ]
+}
+\`\`\`
+:::
   `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

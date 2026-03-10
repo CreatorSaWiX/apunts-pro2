@@ -11,18 +11,19 @@ export const ex2_12: Solution = {
 Demostració de doble via ($\\iff$):
 
 **1) Pont $\\implies$ Tall**  
-Propietat del tema: els extrems d'un pont sempre resulten vèrtexs de tall, amb excepció que si l'extrem posseeix grau 1 ("fulla simple final"). Però l'enunciat assegura que un **3-regular** (tots connecten exactament $3$). Llavors l'excepció està morta. Hi ha vèrtex de tall.
+Sabem que els extrems d'un pont són vèrtexs de tall, **a menys** que el vèrtex tingui grau 1 (sigui una fulla). Com que el nostre graf és **3-regular**, cada vèrtex té grau 3. Per tant, l'excepció no es pot donar i qualsevol extrem d'un pont serà un vèrtex de tall.
 
 **2) Tall $\\implies$ Pont**  
-Suposem l'existència d'un vèrtex passiu de tall $v$.
-Si l'extirpéssim en trossos, el graf base inicial és fragmenta obligat per pròpia definició en $\\ge 2$ subcomponents desconnectades lliures. 
-Farem recompte de rutes: atès que $\\deg(v) = 3$, nosaltres teníem solament repartides **3 arestes** prèvies sortint seu cap al món per ajuntar trossos.
-*   **El Repartiment Numèric** per distribuir $3$ fils entre $\\ge 2$ mons exigeix les pautes exclusives: 
-    *   $1 + 1 + 1$
-    *   $2 + 1$
+Aquesta part és més subtil. Si $v$ és un vèrtex de tall, la seva eliminació desconnecta el graf en $k \\ge 2$ components.
 
-Absolutament sempre i en totes les variants numèriques per paritat, apareixerà forçosament un món sencer rebent **només $1$ aresta lliure de $v$**.
-I segons definim clarament, aquesta ruta fina, per on l'illa solia penjar de via única, actua netejanet per complet de **Pont**. $\\square$
+::proofviz{proof="three_regular_cut_bridge"}
+
+**Raonament algebraic:**
+1. Sigui $v$ el vèrtex de tall. Com que el graf és 3-regular, d'ell surten exactament **3 arestes** cap als seus veïns $x, y, z$.
+2. En eliminar $v$, aquestes 3 arestes desapareixen i el graf queda dividit en components connexos (per exemple, $C_1$ i $C_2$).
+3. Els vèrtexs $x, y, z$ han de quedar repartits entre aquests components. Pel principi del colomar (3 veïns a repartir en $\\ge 2$ components), algun component (diguem $C_1$) ha de contenir **exactament un** d'aquests veïns (diguem $x$).
+4. Si $x$ és l'únic vèrtex de $C_1$ que estava connectat a $v$, llavors l'aresta $xv$ era l'única connexió entre $C_1$ i la resta del graf.
+5. Si una aresta és l'única connexió entre un component i el vèrtex $v$, la seva eliminació desconnectarà el graf. Per tant, **$xv$ és una aresta pont**. $\\square$
   `,
   availableLanguages: ['ca']
 };
