@@ -2,6 +2,7 @@ export interface AlgoStep {
     line: number;
     description: string;
     highlights: Record<string | number, string>; // nodeId -> color
+    nodeLabels?: Record<string | number, string>; // nodeId -> label text
     variables: Record<string, string>;
 }
 
@@ -1196,24 +1197,44 @@ export const algorithms: Record<string, Algorithm> = {
         generateSteps: () => {
             const steps: AlgoStep[] = [];
             let hl: Record<number, string> = {};
+            let labels: Record<number, string> = {
+                1: "1 (50)", 2: "2 (40)", 3: "3 (30)", 4: "4 (10)", 5: "5 (20)", 6: "6"
+            };
             const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
-                steps.push({ line, description: desc, highlights: { ...hl }, variables: vars });
+                steps.push({ line, description: desc, highlights: { ...hl }, nodeLabels: { ...labels }, variables: vars });
             };
 
             addStep(2, "Invoquem push(45).", { x: "45", size_: "5" });
-            hl[6] = "#10b981";
+            
+            hl[6] = "#10b981"; // green: target
+            labels[6] = "6 (45)";
             addStep(3, "Augmentem el vector i el size_ a 6 i copiem el target a l'última posició.", { x: "45", size_: "6" });
+            
             addStep(4, "Cridem a flow_up_(6) per elevar aquest 45 al seu forat jeràrquic.", { i: "6" });
-            hl[6] = "#3b82f6";
+            
+            hl[6] = "#3b82f6"; // blue: current moving node
             addStep(10, "Inici de flow_up_: loop on comparem 45 (pos 6) amb el Pare a 6/2=3 (valor 30).", { i: "6", pare_val: "30", me_val: "45" });
-            hl[3] = "#ef4444";
-            addStep(11, "El 45 és major que el 30! Intercanviem (swap).", { i: "6" });
-            hl[3] = "#10b981"; hl[6] = "#facc15";
-            addStep(12, "Refem l'identificador iterador de i=6 a i=3.", { i: "3" });
-            hl[3] = "#3b82f6"; delete hl[6];
-            addStep(10, "Revaluem a posició 3. El Pare ara és 3/2=1 (valor 50). 45 contra 50.", { i: "3", pare_val: "50", me_val: "45" });
-            hl[1] = "#10b981";
-            addStep(14, "Com val 45 que no és major a 50 falla condició while, ja estem assentats i sortim.", { success: "Done" });
+            
+            hl[3] = "#facc15"; // yellow: parent to compare
+            addStep(10, "Comprovem la condició: 45 > 30? Sí!", { cond: "45 > 30 (T)" });
+            
+            labels[3] = "3 (45)";
+            labels[6] = "6 (30)";
+            hl[3] = "#3b82f6";
+            hl[6] = "#10b981";
+            addStep(11, "Intercanviem (swap) el 45 amb el seu pare 30.", { i: "6" });
+            
+            delete hl[6]; // clean up 
+            addStep(12, "Actualitzem l'índex: ara estem a la posició i=3.", { i: "3" });
+            
+            hl[1] = "#facc15"; // yellow: new parent
+            addStep(10, "Revaluem el bucle a i=3. El Pare ara és 3/2=1 (valor 50).", { i: "3", pare_val: "50", me_val: "45" });
+            
+            addStep(10, "Comprovem condició: 45 > 50? No.", { cond: "45 > 50 (F)" });
+            
+            hl[3] = "#22c55e"; // bright green: final position
+            delete hl[1];
+            addStep(14, "Sortim del bucle: el 45 ja és més petit que el seu pare. Procés acabat.", { success: "Done" });
 
             return steps;
         }
@@ -1241,36 +1262,64 @@ export const algorithms: Record<string, Algorithm> = {
         generateSteps: () => {
             const steps: AlgoStep[] = [];
             let hl: Record<number, string> = {};
+            let labels: Record<number, string> = {
+                1: "1 (50)", 2: "2 (40)", 3: "3 (45)", 4: "4 (10)", 5: "5 (20)", 6: "6 (30)"
+            };
             const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
-                steps.push({ line, description: desc, highlights: { ...hl }, variables: vars });
+                steps.push({ line, description: desc, highlights: { ...hl }, nodeLabels: { ...labels }, variables: vars });
             };
 
-            hl[1] = "#facc15"; hl[6] = "#3b82f6";
-            addStep(2, "Ens demanen fer pop! A la posició dominant 1 es mor l'Arrel de 50 sent reemplaçada bruscament pel pringat de la cua al 6 (el 30).", { size_: "6" });
-
+            hl[1] = "#facc15"; // yellow: target to remove
+            addStep(2, "Volem eliminar l'element màxim (l'arrel 50).", { size_: "6" });
+            
+            hl[6] = "#3b82f6"; // blue: element that will move
+            addStep(3, "Primer pas: movem l'últim element (30) a la posició de l'arrel.", { size_: "6" });
+            
+            labels[1] = "1 (30)";
+            labels[6] = "6";
             hl[6] = "transparent";
-            addStep(3, "Eliminem el lloc 6 retallant array (size_ - 1).", { size_: "5" });
+            hl[1] = "#3b82f6";
+            addStep(3, "L'arrel ara conté el valor 30. El 50 ha desaparegut.", { size_: "6" });
+            
+            addStep(4, "Reduïm la mida del vector: el node 6 ja no existeix.", { size_: "5" });
+            
+            addStep(5, "Cridem flow_down(1) per reordenar l'arbre des de l'arrel.", { i: "1" });
+            
+            addStep(9, "Entrem a flow_down. i=1 (valor 30).", { i: "1" });
+            
+            hl[2] = "#facc15"; hl[3] = "#facc15"; // yellow: children to compare
+            addStep(10, "Calculem índexs dels fills: 2*1=2 i 2*1+1=3.", { i: "1", left: "2", right: "3" });
+            
+            addStep(11, "Inicialment el màxim provisional és el propi node 1.", { max: "1" });
+            
+            hl[2] = "#10b981"; // green: current winner
+            addStep(12, "Comparem amb fill esquerre (40). 40 > 30? Sí. Ara max=2.", { max: "2" });
+            
+            hl[2] = "#facc15"; // back to yellow
+            hl[3] = "#10b981"; // new winner
+            addStep(13, "Comparem amb fill dret (45). 45 > 40? Sí. Ara max=3.", { max: "3" });
+            
+            hl[3] = "#ef4444"; // red: swap confirmed
+            addStep(15, "Check: max (3) != i (1). Cal fer un intercanvi cap a la dreta.", { i: "1", max: "3" });
+            
+            // Swap labels BEFORE the next step
+            labels[1] = "1 (45)";
+            labels[3] = "3 (30)";
+            hl[1] = "#10b981";
+            hl[3] = "#3b82f6";
+            addStep(16, "Fem swap(1, 3). El 45 puja i el 30 baixa.", { i: "1", max: "3" });
+            
+            addStep(17, "Recursivitat: cridem flow_down(3) per continuar reordenant des de la posició 3.", { i: "3" });
 
-            addStep(4, "Cridem la recursió salvadora flow_down_(1) a l'arrel on resideix aquest fals rei 30.", { i: "1", arrel_val: "30" });
-
-            hl[1] = "#ef4444"; delete hl[6];
-            addStep(10, "Busquem fills per sota, esquerra 1*2=2 i dret 1*2+1=3. El màxim arrenca sent jo, l'1.", { i: "1", max_escollit: "1" });
-
-            hl[2] = "#10b981";
-            addStep(12, "Comparem amb l'element esquerre L (40). Com 40 > 30, marquem màxim el fill esquerre.", { cond: "40 > 30", max_escollit: "2" });
-
-            hl[3] = "#facc15";
-            addStep(13, "Comparem amb l'element dret R (45). Com 45 és fins i tot més elevat dominant, guanya.", { cond: "45 > 40", max_escollit: "3" });
-
-            addStep(15, "El max final (3) != meu (1). Baixem fent-me swap amb ell!", { swap: "Pos(1) <-> Pos(3)" });
-
-            delete hl[2]; hl[1] = "#3b82f6"; hl[3] = "#ef4444";
-            addStep(17, "Continuem baixant executant de nou flow_down_(3)", { i: "3", my_val: "30" });
-
-            hl[6] = "#10b981";
-            addStep(10, "Fills de la posició 3: el 6 (força 30). Però com la grandària total es va reduir abans a 5!", { size_: "5" });
-            addStep(12, "Condicional detecta que index left 6 excedeix els límits i no hi ha canvi possible.", { cond: "left <= size_ -> False" });
-            addStep(15, "Me clavo aquí (max == i) frenant sense intercanvis per una fulla cega. Array restaurat Heap!", { success: "Done" });
+            hl = { 3: "#3b82f6" };
+            addStep(9, "Entrem a la nova crida: i=3.", { i: "3" });
+            addStep(10, "Calculem fills de 3: 6 i 7. Però mid_size és 5!", { left: "6", size: "5" });
+            addStep(12, "L'índex 6 supera la mida del heap. No hi ha fills reals.", { cond: "left <= size (F)" });
+            
+            hl[3] = "#22c55e"; // bright green
+            addStep(15, "max (3) == i (3). L'element 30 ha trobat el seu lloc.", { max: "3", i: "3" });
+            
+            addStep(19, "Fi de la reordenació. El Heap torna a ser vàlid.", { success: "Done" });
 
             return steps;
         }
@@ -1298,8 +1347,11 @@ export const algorithms: Record<string, Algorithm> = {
         generateSteps: () => {
             const steps: AlgoStep[] = [];
             let hl: Record<number, string> = {};
+            let labels: Record<number, string> = {
+                1: "50", 2: "20", 3: "30", 4: "80", 5: "10", 6: "90"
+            };
             const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
-                steps.push({ line, description: desc, highlights: { ...hl }, variables: vars });
+                steps.push({ line, description: desc, highlights: { ...hl }, nodeLabels: { ...labels }, variables: vars });
             };
 
             addStep(1, "Volem cercar x=90 des de l'arrel C general superior.", { x: "90", node_actual: "50" });

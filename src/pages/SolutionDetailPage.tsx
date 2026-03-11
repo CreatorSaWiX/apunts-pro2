@@ -319,7 +319,7 @@ const SolutionDetailPage = () => {
                                     className="!m-0 h-full !bg-transparent !rounded-none !shadow-none !border-0 flex-1 flex flex-col"
                                     headerActions={
                                         <div className="flex items-center gap-2">
-                                            {user && user.role === 'editor' && (
+                                            {user && (user.role === 'moderador' || user.role === 'editor') && (
                                                 <button
                                                     onClick={() => setIsEditing(true)}
                                                     className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"

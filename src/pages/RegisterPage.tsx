@@ -28,10 +28,13 @@ const RegisterPage = () => {
                 setError('Aquest correu electrònic ja està registrat.');
             } else if (err.code === 'auth/weak-password') {
                 setError('La contrasenya ha de tenir almenys 6 caràcters.');
-            } else if (err.message && err.message.includes('validació')) {
+            } else if (err.code === 'auth/invalid-email') {
+                setError('El correu electrònic no és vàlid.');
+            } else if (err.message) {
+                // Show the raw error message to help debug why it fails
                 setError(err.message);
             } else {
-                setError('Error al registrar-se. Verifica el codi d\'invitació.');
+                setError('Error al registrar-se. Verifica les dades introduïdes.');
             }
         } finally {
             setIsLoading(false);
@@ -115,7 +118,7 @@ const RegisterPage = () => {
                                 value={inviteCode}
                                 onChange={(e) => setInviteCode(e.target.value)}
                                 className="w-full bg-slate-950/50 border border-emerald-500/30 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-center tracking-widest font-mono"
-                                placeholder="Només editors"
+                                placeholder="Només moderadors"
                             />
                         </div>
                     </div>

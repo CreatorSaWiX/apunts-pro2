@@ -1,6 +1,6 @@
 ---
-title: "Tema 5: Cues de Prioritat i Arbres Generals"
-description: "Estructures avançades de Binary Heaps per cues i arbres generals."
+title: "Tema 5: Cues de prioritat i arbres generals"
+description: "Estructures avançades de binary heaps per cues i arbres generals."
 readTime: "8 min"
 order: 5
 ---
@@ -18,15 +18,45 @@ Si ho fem en un simple vector ordenat, el `push` és absurdament lent $\mathcal{
 És un **arbre binari complet** modelat a dins d'un *simple vector pla*. L'arrel sempre és l'element màxim absolut de tota l'estructura.
 
 L'arbre ignora la posició 0. L'arrel dominant viu coronada en la posició 1. 
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
+<div>
+
 Per a qualsevol node a la posició $i$:
 - **Pare:** `i / 2`
 - **Fill Esquerre:** `2 * i`
 - **Fill Dret:** `2 * i + 1`
 
+</div>
+<div>
+
+:::graph
+```json
+{
+  "nodes": [
+    { "id": "0", "label": "Pare (i/2)", "color": "#facc15" },
+    { "id": "1", "label": "Node (i)", "color": "#10b981" },
+    { "id": "2", "label": "Fill Esq (2i)", "color": "#3b82f6" },
+    { "id": "3", "label": "Fill Dre (2i+1)", "color": "#3b82f6" },
+    { "id": "4", "label": " ", "color": "#facc15" }
+  ],
+  "links": [
+    { "source": "0", "target": "1" },
+    { "source": "4", "target": "0" },
+    { "source": "1", "target": "2" },
+    { "source": "1", "target": "3" }
+  ]
+}
+```
+:::
+
+</div>
+</div>
+
+
 No calen punters ni regles complexes, tot és aritmètica fulgurant $\mathcal{O}(1)$.
 
 ### `push()` - inserir i pujar (flow up)
-L'element entra per l'última posició del vector. Llavors s'avalua de baix a dalt: *Soc més gran que el meu cap?* Si sí, intercanvi (`swap`) de posició amb ell cap amunt, iterant la pujada fins trobar el seu lloc jeràrquic.
+L'element entra per l'última posició del vector. Llavors s'avalua de baix a dalt: *Soc més gran que el meu cap?* Si sí, intercanvi (`swap`) de posició amb ell cap amunt, iterant la pujada fins trobar el seu lloc jeràrquic. Exemple:
 
 :::algoviz{algorithm="heap_push"}
 :::

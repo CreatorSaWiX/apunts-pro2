@@ -34,14 +34,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
                 unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
                     if (firebaseUser) {
-                        let role = 'user';
+                        let role = 'invitat';
                         let firestoreData: any = {};
 
                         try {
                             const docSnap = await getDoc(doc(db, 'users', firebaseUser.uid));
                             if (docSnap.exists()) {
                                 firestoreData = docSnap.data();
-                                role = firestoreData.role || 'user';
+                                role = firestoreData.role || 'invitat';
                             }
                         } catch (e) {
                             console.error("Error fetching user role", e);
@@ -102,18 +102,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
 
             // 3. Determine Role and Data
+            let finalRole = 'invitat';
+            if (inviteCode) {
+                if (inviteCode === import.meta.env.VITE_REGISTRATION_CODE) {
+                    finalRole = 'moderador';
+                } else {
+                    await updateProfile(firebaseUser, { displayName: username }); // fallback cleanup
+                    await deleteUser(firebaseUser);
+                    throw new Error("El codi d'invitació introduït no és correcte.");
+                }
+            }
+
             const userData: any = {
                 username: username,
                 email: email,
                 avatar: avatarUrl,
-                role: inviteCode ? 'editor' : 'user',
+                role: finalRole,
                 createdAt: new Date().toISOString()
             };
-
-            // Only add inviteCode if provided
-            if (inviteCode) {
-                userData.inviteCode = inviteCode;
-            }
 
             // 4. Create Firestore Document
             await setDoc(doc(db, 'users', firebaseUser.uid), userData);
@@ -129,8 +135,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         } catch (error) {
             console.error("Error creating user profile:", error);
-            await deleteUser(firebaseUser);
-            throw new Error(inviteCode ? "Codi d'invitació no vàlid o error del sistema." : "Error al crear el perfil d'usuari.");
+            throw new Error(error instanceof Error ? error.message : "Error al crear el perfil d'usuari.");
         }
     };
 

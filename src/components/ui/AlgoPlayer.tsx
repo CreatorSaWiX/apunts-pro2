@@ -54,9 +54,12 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
     const handleReset = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(0); }); };
     const handleFullEnd = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(steps.length - 1); }); };
 
-    // Update node colors dynamically without changing graph array reference
+    // Update node colors and labels dynamically without changing graph array reference
     graphData.nodes.forEach((n: any) => {
-        n.color = step.highlights[n.id] || '#334155'; // Use a sleeker unvisited slate color
+        n.color = step.highlights[n.id] || '#334155';
+        if (step.nodeLabels && step.nodeLabels[n.id]) {
+            n.label = step.nodeLabels[n.id];
+        }
     });
 
     const customTheme = EditorView.theme({

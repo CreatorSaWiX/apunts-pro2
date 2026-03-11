@@ -2,36 +2,43 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Usuaris:
-    // - Create: Només si l'usuari està autenticat I proporciona un codi d'invitació vàlid (que existeixi a la col·lecció 'invites')
-    // - Read/Update: Només el propi usuari
+    // Funció per comprovar si l'usuari és moderador
+    function isModerator() {
+      return request.auth != null && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'moderador' || 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor');
+    }
+
+    // Usuaris
     match /users/{userId} {
       allow read: if true;
       allow update: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId
-                    && exists(/databases/$(database)/documents/invites/$(request.resource.data.inviteCode));
+                    && (request.resource.data.role == 'invitat' || request.resource.data.role == 'moderador');
     }
 
-    // Invites:
-    // - Tancat al públic. Només accessible internament per la regla 'exists' de dalt.
-    // - Cal crear manualment els documents aquí (el ID del document ha de ser el codi).
     match /invites/{code} {
       allow read, write: if false;
     }
 
-    // Solucions:
-    // - Lectura: Pública (tothom pot veure)
-    // - Escriptura: Només autenticats (create, update)
+    // Missatges: permetre llegir els propis missatges, o enviar a qualsevol si estàs autenticat
+    match /messages/{document=**} {
+      allow read, update, delete: if request.auth != null && resource.data.receiverId == request.auth.uid;
+      allow create: if request.auth != null;
+    }
+
+    // Solucions i Notificacions: els moderadors fan i desfan
     match /solutions/{document=**} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isModerator();
     }
 
     match /notifications/{document=**} {
-      allow read, write: if request.auth != null;
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow write: if isModerator();
     }
 
-    // Dades generals (fallback)
+    // Fallback
     match /{document=**} {
       allow read: if request.auth != null;
       allow write: if false; 
