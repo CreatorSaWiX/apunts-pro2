@@ -27,15 +27,23 @@ service cloud.firestore {
       allow create: if request.auth != null;
     }
 
-    // Solucions i Notificacions: els moderadors fan i desfan
-    match /solutions/{document=**} {
+    // Solucions i Notificacions: els moderadors fan i desfan la base, però tothom autenticat pot comentar
+    match /solutions/{solutionId} {
       allow read: if true;
       allow write: if isModerator();
+      
+      // Subcol·lecció de comentaris oberta per a tots els autenticats
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create, update: if request.auth != null;
+        // Només l'autor original o l'administrador pot esborrar els missatges
+        allow delete: if request.auth != null && (request.auth.uid == resource.data.userId || isModerator());
+      }
     }
 
     match /notifications/{document=**} {
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-      allow write: if isModerator();
+      allow read, update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isModerator());
+      allow create: if request.auth != null;
     }
 
     // Fallback

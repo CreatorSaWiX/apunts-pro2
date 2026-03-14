@@ -74,10 +74,6 @@ const QuizPage: React.FC = () => {
         }
     }, [currentQuestionIdx, selectedAnswers, timeLeft, isFinished, topicId]);
 
-    // 3. Code highlighting (Senior: Visual Quality)
-    // Removed Prism.highlightAll() which caused severe INP bottlenecks due to full DOM scanning.
-    // Highlighting is now localized dynamically per code snippet using Prism.highlight.
-
     // Timer Logic with visual warnings
     useEffect(() => {
         if (!quiz || isFinished) return;

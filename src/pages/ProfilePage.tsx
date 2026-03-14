@@ -188,9 +188,6 @@ const ProfilePage = () => {
     const { uid } = useParams();
     const { user: authUser, logout, isLoading: authLoading } = useAuth();
 
-    // Fallback UI matching dark minimalist style
-    const bgAppColor = '#0B0F19';
-
     const userIdToFetch = uid || authUser?.id;
     const isOwnProfile = !uid || (authUser && authUser.id === uid);
 
@@ -455,33 +452,33 @@ const ProfilePage = () => {
                             </SpotlightCard>
                         </motion.div>
 
-                {/* Portfolio Card */}
-                <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="h-full">
-                    <SpotlightCard className={`h-full min-h-[220px] rounded-[24px] md:rounded-[36px] p-6 lg:p-8 flex flex-col justify-between transition-colors ${extendedUser?.portfolio ? 'group/metric hover:bg-slate-900/60 hover:border-primary/20 cursor-pointer' : 'opacity-60 isolate border-[0.5px] border-white/5'}`}>
-                        {extendedUser?.portfolio ? (
-                            <a
-                                href={extendedUser.portfolio}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="absolute inset-0 z-10"
-                            />
-                        ) : null}
+                        {/* Portfolio Card */}
+                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="h-full">
+                            <SpotlightCard className={`h-full min-h-[220px] rounded-[24px] md:rounded-[36px] p-6 lg:p-8 flex flex-col justify-between transition-colors ${extendedUser?.portfolio ? 'group/metric hover:bg-slate-900/60 hover:border-primary/20 cursor-pointer' : 'opacity-60 isolate border-[0.5px] border-white/5'}`}>
+                                {extendedUser?.portfolio ? (
+                                    <a
+                                        href={extendedUser.portfolio}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="absolute inset-0 z-10"
+                                    />
+                                ) : null}
 
-                        <div className="flex justify-between items-start mb-6">
-                            <div className={`p-3.5 rounded-2xl bg-white/5 border border-white/5 text-slate-500 transition-all duration-300 ${extendedUser?.portfolio ? 'group-hover/metric:bg-primary/10 group-hover/metric:border-primary/20 group-hover/metric:text-accent group-hover/metric:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]' : ''}`}>
-                                <Globe size={24} strokeWidth={1.5} />
-                            </div>
-                        </div>
-                        <div className="mt-8 relative z-20 pointer-events-none">
-                            <span className="block text-2xl lg:text-3xl font-bold leading-tight tracking-tight text-white mb-4 truncate">
-                                {extendedUser?.portfolio ? displayUrl(extendedUser.portfolio) : 'Sense vincular'}
-                            </span>
-                            <span className="text-xs font-mono text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                <div className={`h-px bg-slate-700 transition-all duration-300 ${extendedUser?.portfolio ? 'w-6 group-hover/metric:w-12 group-hover/metric:bg-primary' : 'w-6'}`} />
-                                PORTFOLI
-                            </span>
-                        </div>
-                    </SpotlightCard>
+                                <div className="flex justify-between items-start mb-6">
+                                    <div className={`p-3.5 rounded-2xl bg-white/5 border border-white/5 text-slate-500 transition-all duration-300 ${extendedUser?.portfolio ? 'group-hover/metric:bg-primary/10 group-hover/metric:border-primary/20 group-hover/metric:text-accent group-hover/metric:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]' : ''}`}>
+                                        <Globe size={24} strokeWidth={1.5} />
+                                    </div>
+                                </div>
+                                <div className="mt-8 relative z-20 pointer-events-none">
+                                    <span className="block text-2xl lg:text-3xl font-bold leading-tight tracking-tight text-white mb-4 truncate">
+                                        {extendedUser?.portfolio ? displayUrl(extendedUser.portfolio) : 'Sense vincular'}
+                                    </span>
+                                    <span className="text-xs font-mono text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                        <div className={`h-px bg-slate-700 transition-all duration-300 ${extendedUser?.portfolio ? 'w-6 group-hover/metric:w-12 group-hover/metric:bg-primary' : 'w-6'}`} />
+                                        PORTFOLI
+                                    </span>
+                                </div>
+                            </SpotlightCard>
                         </motion.div>
                     </>
                 )}
