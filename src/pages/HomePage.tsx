@@ -26,7 +26,7 @@ const HomePage = () => {
                     {subject === 'pro2' && (
                         <motion.div
                             layoutId="active-pill"
-                            className="absolute inset-0 bg-gradient-to-r from-sky-400 to-blue-500 rounded-full shadow-[0_0_15px_rgba(56,189,248,0.5)] z-[-1]"
+                            className="absolute inset-0 bg-linear-to-r from-sky-400 to-blue-500 rounded-full shadow-[0_0_15px_rgba(56,189,248,0.5)] z-[-1]"
                             transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                     )}
@@ -39,7 +39,7 @@ const HomePage = () => {
                     {subject === 'm1' && (
                         <motion.div
                             layoutId="active-pill"
-                            className="absolute inset-0 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full shadow-[0_0_15px_rgba(139,92,246,0.5)] z-[-1]"
+                            className="absolute inset-0 bg-linear-to-r from-violet-500 to-fuchsia-500 rounded-full shadow-[0_0_15px_rgba(139,92,246,0.5)] z-[-1]"
                             transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                     )}
@@ -52,7 +52,7 @@ const HomePage = () => {
                     {subject === 'm2' && (
                         <motion.div
                             layoutId="active-pill"
-                            className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] z-[-1]"
+                            className="absolute inset-0 bg-linear-to-r from-emerald-500 to-teal-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] z-[-1]"
                             transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                     )}

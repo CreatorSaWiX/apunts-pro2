@@ -205,56 +205,132 @@ export const courseStructure: TopicDefinition[] = [
 
     // --- M2 (Càlcul i Optimitació) ---
     {
-        id: "m2-tema-1-successions",
-        title: "Tema 1: Successions numèriques",
+        id: "m2-tema-1-reals",
+        title: "Tema 1: Nombres reals i complexos",
+        description: "Valor absoluts, desigualtats i nombres complexos. Propietats bàsiques.",
+        problems: [
+            { id: "M2-T1-Ex1", title: "Problema 1: Desigualtats fraccionàries i polinòmiques" },
+            { id: "M2-T1-Ex2", title: "Problema 2: Desigualtats amb valor absolut" },
+            { id: "M2-T1-Ex3", title: "Problema 3: Suprem, Ínfim de subconjunts" },
+            { id: "M2-T1-Ex4", title: "Problema 4: Desigualtats de segon grau" },
+            { id: "M2-T1-Ex5", title: "Problema 5: Inequacions de tercer grau" },
+            { id: "M2-T1-Ex6", title: "Problema 6: Inequacions amb múltiples valors absoluts" },
+            { id: "M2-T1-Ex7", title: "Problema 7: Demostració amb desigualtats" },
+            { id: "M2-T1-Ex8", title: "Problema 8: Expressions sense valors absoluts" },
+            { id: "M2-T1-Ex9", title: "Problema 9: Demostració de la suma de valors absoluts" },
+            { id: "M2-T1-Ex10", title: "Problema 10: Inequacions combinades" },
+            { id: "M2-T1-Ex11", title: "Problema 11: Taller de desigualtats (A-F)" },
+            { id: "M2-T1-Ex12", title: "Problema 12: Interseccions i unions de conjunts" }
+        ]
+    },
+    {
+        id: "m2-tema-2-successions",
+        title: "Tema 2: Successions numèriques",
         description: "Definicions. Successions convergents, divergents i oscil·lants. Criteris de convergència. Successions recurrents.",
-        problems: []
+        problems: [
+            { id: "M2-T2-Ex1", title: "Problema 1: Càlcul de límits bàsics" },
+            { id: "M2-T2-Ex2", title: "Problema 2: Indeterminacions als límits" },
+            { id: "M2-T2-Ex3", title: "Problema 3: Criteri del sandvitx" },
+            { id: "M2-T2-Ex4", title: "Problema 4: Jerarquia d'infinits" },
+            { id: "M2-T2-Ex5", title: "Problema 5: Límits avançats i constants" },
+            { id: "M2-T2-Ex6", title: "Problema 6: Successions recurrents" },
+            { id: "M2-T2-Ex7", title: "Problema 7: Taller de límits (I)" },
+            { id: "M2-T2-Ex8", title: "Problema 8: Sèries de sumatoris" },
+            { id: "M2-T2-Ex9", title: "Problema 9: Taller de límits (II)" },
+            { id: "M2-T2-Ex10", title: "Problema 10: Demostracions de recurrència" },
+            { id: "M2-T2-Ex11", title: "Problema 11: Successions factorials" },
+            { id: "M2-T2-Ex12", title: "Problema 12: Equacions de límits" },
+            { id: "M2-T2-Ex13", title: "Problema 13: Variables en límits d'arrels" },
+            { id: "M2-T2-Ex14", title: "Problema 14: Límits de longitud i sumatoris" },
+            { id: "M2-T2-Ex15", title: "Problema 15: Successió d'arrels infinites" }
+        ]
     },
     {
-        id: "m2-tema-2-funcions-continues",
-        title: "Tema 2: Teoremes de funcions contínues d'una variable",
-        description: "Teorema del signe, Bolzano, Weierstrass, valor mitjà. Mètodes de bissecció i secant.",
-        problems: []
+        id: "m2-tema-3-continuitat",
+        title: "Tema 3: Continuïtat",
+        description: "Teoremes de Bolzano i Weierstrass. Mètodes de bissecció, secant i Newton-Raphson.",
+        problems: [
+            { id: "M2-T3-Ex1", title: "Problema 1: Existència de solució a [0, 2]" },
+            { id: "M2-T3-Ex2", title: "Problema 2: Intersecció de dues funcions contínues" },
+            { id: "M2-T3-Ex3", title: "Problema 3: Teorema dels Valors Intermedis" },
+            { id: "M2-T3-Ex4", title: "Problema 4: Solució de e^{-x^2} = 2x" },
+            { id: "M2-T3-Ex5", title: "Problema 5: Solucions de x - 3 ln x = 0" },
+            { id: "M2-T3-Ex6", title: "Problema 6: Existència d'arrels reals" },
+            { id: "M2-T3-Ex7", title: "Problema 7: Aplicabilitat de Bolzano" },
+            { id: "M2-T3-Ex8", title: "Problema 8: Aproximació d'arrels múltiples mètodes" },
+            { id: "M2-T3-Ex9", title: "Problema 9: Demostració d'una igualtat real" },
+            { id: "M2-T3-Ex10", title: "Problema 10: Trobada de totes les solucions" },
+            { id: "M2-T3-Ex11", title: "Problema 11: Demostracions d'arrels" }
+        ]
     },
     {
-        id: "m2-tema-3-funcions-derivables",
-        title: "Tema 3: Teoremes de funcions derivables d'una variable",
-        description: "Rolle, Lagrange, L'Hôpital. Mètode de Newton-Raphson.",
-        problems: []
+        id: "m2-tema-4-funcions-derivables",
+        title: "Tema 4: Teoremes de funcions derivables d'una variable",
+        description: "Rolle, Lagrange, L'Hôpital. Mètode de Newton-Raphson i aplicacions de la derivada.",
+        problems: [
+            // { id: "M2-T4-Ex1", title: "Problema 1: Penden de la recta tangent paral·lela" },
+            // { id: "M2-T4-Ex2", title: "Problema 2: Unicitat de solució per 3^{-x} = x" },
+            // { id: "M2-T4-Ex3", title: "Problema 3: Zeros de funció polinòmica" },
+            // { id: "M2-T4-Ex4", title: "Problema 4: Equació e^{-x} = ln x" },
+            // { id: "M2-T4-Ex5", title: "Problema 5: Límits de tipus ∞/∞ i 0 · ∞" },
+            // { id: "M2-T4-Ex6", title: "Problema 6: Existència de punt fix f(x)=x" },
+            // { id: "M2-T4-Ex7", title: "Problema 7: Equació e^x = x/2 + 2" },
+            // { id: "M2-T4-Ex8", title: "Problema 8: Regla de l'Hôpital (Diversos)" },
+            // { id: "M2-T4-Ex9", title: "Problema 9: Límits varis" },
+            // { id: "M2-T4-Ex10", title: "Problema 10: Teorema del valor mitjà" },
+            // { id: "M2-T4-Ex11", title: "Problema 11: Nombre d'arrels reals" },
+            // { id: "M2-T4-Ex12", title: "Problema 12: Gràfica talla exactament un cop l'eix" },
+            // { id: "M2-T4-Ex13", title: "Problema 13: Mètode iteratiu de Newton-Raphson" },
+            // { id: "M2-T4-Ex14", title: "Problema 14: Resolució per Newton-Raphson de diverses equacions" },
+            // { id: "M2-T4-Ex15", title: "Problema 15: Punt de la gràfica amb tangent perpendicular" },
+            // { id: "M2-T4-Ex16", title: "Problema 16: Punts on es tallen dues gràfiques amb la mateixa tangent" },
+            // { id: "M2-T4-Ex17", title: "Problema 17: Derivades i simplificació" },
+            // { id: "M2-T4-Ex18", title: "Problema 18: Punts crítics, classificació i asímptotes" },
+            // { id: "M2-T4-Ex19", title: "Problema 19: Problema d'optimització (suma de cubs mínima)" },
+            // { id: "M2-T4-Ex20", title: "Problema 20: Extrems absoluts en intervals tancats" },
+            // { id: "M2-T4-Ex21", title: "Problema 21: Intervals de creixement i extrems relatius" },
+            // { id: "M2-T4-Ex22", title: "Problema 22: Intervals de creixement, concavitat i convexitat" }
+        ]
     },
     {
-        id: "m2-tema-4-taylor",
-        title: "Tema 4: Fórmula de Taylor per a funcions d'una variable",
-        description: "Polinomi de Taylor. Fórmula de Lagrange del residu. Propagació de l'error.",
-        problems: []
+        id: "m2-tema-5-taylor",
+        title: "Tema 5: Fórmula de Taylor per a funcions d'una variable",
+        description: "Polinomi de Taylor. Fórmula de Lagrange del residu. Propagació de l'error i aplicacions.",
+        problems: [
+            // { id: "M2-T5-Ex1", title: "Problema 1: Polinomi de Taylor i resta de Lagrange" },
+            // { id: "M2-T5-Ex2", title: "Problema 2: Aproximació de valors i acotació de l'error" },
+            // { id: "M2-T5-Ex3", title: "Problema 3: Càlcul de límits mitjançant Taylor" },
+            // { id: "M2-T5-Ex4", title: "Problema 4: Estudi local (extrems i curvatura)" },
+            // { id: "M2-T5-Ex5", title: "Problema 5: Polinomi de Maclaurin de funcions elementals" }
+        ]
     },
     {
-        id: "m2-tema-5-integracio",
-        title: "Tema 5: Integració de funcions d'una variable",
+        id: "m2-tema-6-integracio",
+        title: "Tema 6: Integració de funcions d'una variable",
         description: "Teorema Fonamental del Càlcul. Regla de Barrow. Àrees i volums. Trapezis i Simpson.",
         problems: []
     },
     {
-        id: "m2-tema-6-funcions-diverses",
-        title: "Tema 6: Funcions de diverses variables",
+        id: "m2-tema-7-funcions-diverses",
+        title: "Tema 7: Funcions de diverses variables",
         description: "Domini, gràfica, conjunts de nivell, interpretació geomètrica. Funcions contínues.",
         problems: []
     },
     {
-        id: "m2-tema-7-derivades-parcials",
-        title: "Tema 7: Derivades parcials i direccionals. Vector Gradient",
+        id: "m2-tema-8-derivades-parcials",
+        title: "Tema 8: Derivades parcials i direccionals. Vector Gradient",
         description: "Derivada direccional i parcial. Vector Gradient. Pla tangent a una superfície.",
         problems: []
     },
     {
-        id: "m2-tema-8-taylor-diverses",
-        title: "Tema 8: Polinomi de Taylor en diverses variables",
+        id: "m2-tema-9-taylor-diverses",
+        title: "Tema 9: Polinomi de Taylor en diverses variables",
         description: "Derivades parcials d'ordre superior. Matriu Hessiana. Polinomi de Taylor i residu.",
         problems: []
     },
     {
-        id: "m2-tema-9-optimitzacio",
-        title: "Tema 9: Optimització de funcions de diverses variables",
+        id: "m2-tema-10-optimitzacio",
+        title: "Tema 10: Optimització de funcions de diverses variables",
         description: "Weierstrass. Multiplicadors de Lagrange. Extrems relatius, condicionats i absoluts.",
         problems: []
     }

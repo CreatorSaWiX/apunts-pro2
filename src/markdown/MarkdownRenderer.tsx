@@ -6,6 +6,8 @@ import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
 import "katex/dist/katex.min.css"; // Import katex styles
+import "mafs/core.css"; // Mafs core CSS
+import "mafs/font.css"; // Mafs fonts 
 
 import { remarkDirectiveRehype } from "./remarkDirectiveRehype";
 import { remarkCodeMetadata } from "./remarkCodeMetadata";
@@ -20,6 +22,8 @@ const QueueVisualizer = React.lazy(() => import("../components/ui/QueueVisualize
 const ListGraphVisualizer = React.lazy(() => import("../components/ui/ListGraphVisualizer"));
 const BinTreeVisualizer = React.lazy(() => import("../components/ui/BinTreeVisualizer"));
 const ProofPlayer = React.lazy(() => import("../components/ui/ProofPlayer"));
+const MafsVisualizer = React.lazy(() => import("../components/ui/MafsVisualizer"));
+const VideoPlayer = React.lazy(() => import("../components/ui/VideoPlayer"));
 
 const VizFallback = () => (
     <div className="h-64 animate-pulse bg-slate-900/40 border border-white/5 rounded-2xl w-full my-12 flex items-center justify-center">
@@ -36,6 +40,14 @@ type MarkdownRendererProps = {
 };
 
 const defaultComponents: any = {
+    // Custom directive for videos: ::videoviz[src="/m2/video.webm" delay="3500"]
+    videoviz: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <VideoPlayer {...props} />
+            </React.Suspense>
+        );
+    },
     // Custom directive for graphs: ::graph
     graph: (props: any) => {
         return (
@@ -94,6 +106,13 @@ const defaultComponents: any = {
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <ProofPlayer proofId={props.proof} />
+            </React.Suspense>
+        );
+    },
+    mafs: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <MafsVisualizer type={props.type} />
             </React.Suspense>
         );
     },

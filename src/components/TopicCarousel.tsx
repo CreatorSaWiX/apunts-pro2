@@ -221,14 +221,7 @@ const TopicCarousel: React.FC = () => {
             <div
                 ref={scrollRef}
                 onScroll={handleScroll}
-                className="
-                    flex overflow-x-auto items-center
-                    snap-x snap-mandatory 
-                    scroll-smooth hide-scrollbar 
-                    relative
-                    pt-12 pb-20 md:pt-16 md:pb-24 gap-2 md:gap-3
-                    px-[calc(50%_-_160px)] md:px-[calc(50%_-_190px)]
-                "
+                className="flex gap-2 md:gap-3 overflow-x-auto pb-20 pt-12 md:pb-24 md:pt-16 hide-scrollbar snap-x snap-mandatory px-[calc(50%-160px)] md:px-[calc(50%-190px)] scroll-smooth"
             >
                 {sortedTopics.map((topic, i) => {
                     const isActive = activeIndex === i;
@@ -237,7 +230,7 @@ const TopicCarousel: React.FC = () => {
                         <div
                             key={topic.slug}
                             data-index={i}
-                            className="carousel-card flex-shrink-0 snap-center outline-none"
+                            className="carousel-card shrink-0 snap-center outline-none"
                             style={{
                                 // Initial styles explicitly set to prevent flash before JS kicks in
                                 transform: isActive ? 'scale(1)' : 'scale(0.85)',
@@ -322,10 +315,13 @@ const TopicCarousel: React.FC = () => {
                                     ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
                                 `}>
                                     <div className="flex flex-col gap-4">
-                                        <div className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-gradient-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-4 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 text-sm">
+                                        <Link
+                                            to={`/tema/${topic.slug}`}
+                                            className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-4 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 text-sm"
+                                        >
                                             <span>Explorar tema</span>
                                             <ArrowRight size={16} className="group-hover/btn:translate-x-1 group-hover/btn:scale-110 transition-all duration-300" />
-                                        </div>
+                                        </Link>
 
                                         <Link
                                             to={`/tema/${topic.slug}/test`}
@@ -344,9 +340,9 @@ const TopicCarousel: React.FC = () => {
                                             className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol"
                                         >
                                             <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">
-                                                {subject === 'm1' ? <Calculator size={12} /> : <Terminal size={12} />}
+                                                {subject === 'pro2' ? <Terminal size={12} /> : <Calculator size={12} />}
                                             </div>
-                                            <span>{subject === 'm1' ? 'Solucionaris M1' : (subject === 'pro2' && (topic.slug === 'pro2-tema-1' || topic.slug === 'pro2-tema-2') ? 'Solucionaris Lab' : 'Solucionaris Jutge')}</span>
+                                            <span>{subject === 'm1' ? 'Solucionaris M1' : subject === 'm2' ? 'Solucionaris M2' : (subject === 'pro2' && (topic.slug === 'pro2-tema-1' || topic.slug === 'pro2-tema-2') ? 'Solucionaris Lab' : 'Solucionaris Jutge')}</span>
                                         </Link>
                                     </div>
                                 </div>

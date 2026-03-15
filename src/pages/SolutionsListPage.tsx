@@ -20,8 +20,8 @@ const SolutionsListPage = () => {
         document.body.style.overflow = 'auto';
     }, []);
 
-    // 2. M1 Special Layout Check
-    if (topicId?.startsWith('m1-') && topicDefinition) {
+    // 2. M1 & M2 Special Layout Check
+    if ((topicId?.startsWith('m1-') || topicId?.startsWith('m2-')) && topicDefinition) {
         return <NotebookLayout topic={topicDefinition} solutions={uploadedSolutions} loading={loading} />;
     }
 
@@ -125,7 +125,7 @@ const SolutionsListPage = () => {
                                 >
                                     <div className={`h-full backdrop-blur-sm rounded-3xl border p-6 transition-all duration-300 relative overflow-hidden group-hover:shadow-2xl group-hover:-translate-y-1 group-active:scale-95
                                         ${isSolved
-                                            ? 'bg-gradient-to-br from-slate-900/80 to-slate-800/80 border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-emerald-500/10'
+                                            ? 'bg-linear-to-br from-slate-900/80 to-slate-800/80 border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-emerald-500/10'
                                             : 'bg-slate-900/40 border-white/5 hover:border-white/20 hover:bg-slate-800/40 opacity-90 hover:opacity-100'
                                         }
                                     `}>
