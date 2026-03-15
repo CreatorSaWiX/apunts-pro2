@@ -200,7 +200,21 @@ export const courseStructure: TopicDefinition[] = [
         id: "m1-tema-3",
         title: "Tema 3: Grafs Eulerians i Hamiltonians",
         description: "Camins i cicles eulerians i hamiltonians.",
-        problems: []
+        problems: [
+            { id: "M1-T3-Ex3.1", title: "Exercici 3.1: Circuits Eulerians" },
+            { id: "M1-T3-Ex3.4", title: "Exercici 3.4: Eulerianitat en Bipartits" },
+            { id: "M1-T3-Ex3.5", title: "Exercici 3.5: Unir components eulerians" },
+            { id: "M1-T3-Ex3.6", title: "Exercici 3.6: Ponts i Graus Parells" },
+            { id: "M1-T3-Ex3.7", title: "Exercici 3.7: El Problema del Dòmino" },
+            { id: "M1-T3-Ex3.8", title: "Exercici 3.8: El Graf n-cub (Qn)" },
+            { id: "M1-T3-Ex3.9", title: "Exercici 3.9: Cicles Hamiltonians" },
+            { id: "M1-T3-Ex3.10", title: "Exercici 3.10: Bipartits i Hamiltonians" },
+            { id: "M1-T3-Ex3.11", title: "Exercici 3.11: Hamiltonianitat en Bipartits Complets" },
+            { id: "M1-T3-Ex3.12", title: "Exercici 3.12: Unir components hamiltonians" },
+            { id: "M1-T3-Ex3.13", title: "Exercici 3.13: Graus en Grafs Hamiltonians" },
+            { id: "M1-T3-Ex3.15", title: "Exercici 3.15: Hamiltonianitat del Graf Complementari" },
+            { id: "M1-T3-Ex3.16", title: "Exercici 3.16: Existència de Camí Hamiltonià" }
+        ]
     },
 
     // --- M2 (Càlcul i Optimitació) ---

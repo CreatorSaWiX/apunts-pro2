@@ -18,6 +18,7 @@ export interface TopicSolutions {
 }
 import { m1t1Solutions } from './solucionarisM1/t1/index';
 import { m1t2Solutions } from './solucionarisM1/t2/index';
+import { m1t3Solutions } from './solucionarisM1/t3/index';
 
 import { m2t1Solutions } from './solucionarisM2/t1/index';
 import { m2t2Solutions } from './solucionarisM2/t2/index';
@@ -33,6 +34,10 @@ export const allSolutions: TopicSolutions[] = [
     {
         topicId: 'm1-tema-2',
         solutions: m1t2Solutions
+    },
+    {
+        topicId: 'm1-tema-3',
+        solutions: m1t3Solutions
     },
     {
         topicId: 'm2-tema-1-reals',

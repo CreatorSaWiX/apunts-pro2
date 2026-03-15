@@ -6,7 +6,7 @@ import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const APP_DATA: Record<string, { version: string; updated: string }> = {
     pro2: { version: 'v1.2.0', updated: '15/03/2026' },
-    m1: { version: 'v1.2.2', updated: '10/03/2026' },
+    m1: { version: 'v1.2.3', updated: '16/03/2026' },
     m2: { version: 'v1.0.1', updated: '15/03/2026' }
 };
 
