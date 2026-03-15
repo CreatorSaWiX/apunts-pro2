@@ -324,6 +324,55 @@ const treeGraph = {
 const treeLeft: Record<number, number | null> = { 1: 2, 2: 4, 3: 6, 4: null, 5: null, 6: null, 7: null };
 const treeRight: Record<number, number | null> = { 1: 3, 2: 5, 3: 7, 4: null, 5: null, 6: null, 7: null };
 
+// BST: nodes are labeled with actual values. Tree: 50(arrel), 20(esq), 80(dre), 10(esq-esq), 30(esq-dre), 70(dre-esq), 90(dre-dre)
+// Node IDs: 1=50, 2=20, 3=80, 4=10, 5=30, 6=70, 7=90
+const bstGraph = {
+    nodes: [
+        { id: 1, label: "50", fx: 0,    fy: -120 },
+        { id: 2, label: "20", fx: -80,  fy: -40  },
+        { id: 3, label: "80", fx: 80,   fy: -40  },
+        { id: 4, label: "10", fx: -120, fy: 60   },
+        { id: 5, label: "30", fx: -40,  fy: 60   },
+        { id: 6, label: "70", fx: 40,   fy: 60   },
+        { id: 7, label: "90", fx: 120,  fy: 60   },
+    ],
+    links: [
+        { source: 1, target: 2 },
+        { source: 1, target: 3 },
+        { source: 2, target: 4 },
+        { source: 2, target: 5 },
+        { source: 3, target: 6 },
+        { source: 3, target: 7 },
+    ]
+};
+
+// BST values per node id
+const bstVal: Record<number, number> = { 1: 50, 2: 20, 3: 80, 4: 10, 5: 30, 6: 70, 7: 90 };
+
+
+const bstSearchCode = `bool bst_search(const BinTree<int>& a, int x) {
+    if (a.empty()) return false;
+    if (x == a.value()) return true;
+    if (x < a.value())
+        return bst_search(a.left(), x);
+    return bst_search(a.right(), x);
+}`;
+
+const bstInsertCode = `BinTree<int> bst_insert(const BinTree<int>& a, int x) {
+    if (a.empty())
+        return BinTree<int>(x);
+    if (x == a.value()) return a; // ja existeix
+    if (x < a.value())
+        return BinTree<int>(a.value(),
+                            bst_insert(a.left(), x),
+                            a.right());
+    return BinTree<int>(a.value(),
+                        a.left(),
+                        bst_insert(a.right(), x));
+}`;
+
+
+
 export const algorithms: Record<string, Algorithm> = {
     eulerian_check: {
         id: "eulerian_check",
@@ -1393,5 +1442,114 @@ export const algorithms: Record<string, Algorithm> = {
 
             return steps;
         }
-    }
+    },
+    bst_search: {
+        id: "bst_search",
+        code: bstSearchCode,
+        initialGraph: bstGraph,
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const hl: Record<number, string> = {};
+            // Cercar x = 30. Camí: 50 -> 20 -> 30 (TROBAT)
+            const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
+                steps.push({ line, description: desc, highlights: { ...hl }, nodeLabels: { ...Object.fromEntries(Object.entries(bstVal).map(([k,v]) => [k, String(v)])) }, variables: vars });
+            };
+
+            addStep(1, "Iniciem la cerca de x=30 des de l'arrel del BST.", { x: "30", node: "arrel" });
+
+            // Pas 1: node 50
+            hl[1] = "#facc15";
+            addStep(2, "El node actual (50) no és buit, continuem.", { node: "50", x: "30" });
+            addStep(3, "30 ≠ 50, no és el valor buscat.", { node: "50", x: "30", cond: "30 == 50 → F" });
+            addStep(4, "30 < 50! Baixem pel SUBARBRE ESQUERRE. Descartem tot el subarbre dret (80, 70, 90).", { node: "50", x: "30", cond: "30 < 50 → T" });
+            hl[1] = "#475569"; // grey: descarded direction
+            hl[3] = "#1e293b"; hl[6] = "#1e293b"; hl[7] = "#1e293b"; // grey out right subtree
+
+            // Pas 2: node 20
+            hl[2] = "#facc15";
+            addStep(2, "Entrem al subarbre esquerre. Node actual: 20.", { node: "20", x: "30" });
+            addStep(3, "30 ≠ 20, no és el valor buscat.", { node: "20", x: "30", cond: "30 == 20 → F" });
+            addStep(4, "30 > 20 (no compleix x < a.value()). Baixem pel SUBARBRE DRET del 20.", { node: "20", x: "30", cond: "30 < 20 → F" });
+            hl[2] = "#475569";
+            hl[4] = "#1e293b"; // grey out left (10)
+
+            // Pas 3: node 30 - TROBAT!
+            hl[5] = "#facc15";
+            addStep(2, "Entrem al subarbre dret del 20. Node actual: 30.", { node: "30", x: "30" });
+            hl[5] = "#22c55e";
+            addStep(3, "30 == 30! La condició és certa. Retornem TRUE i tota la pila de crida propaga l'èxit.", { node: "30", x: "30", cond: "30 == 30 → T", return: "true" });
+            hl[2] = "#22c55e";
+            hl[1] = "#22c55e";
+            addStep(6, "BST Search finalitzat en O(log n) = 3 comparacions per a 7 nodes. Un cerca seqüencial hauria requerit fins a 7.", { comparacions: "3", cost: "O(log n)" });
+
+            return steps;
+        }
+    },
+    bst_insert: {
+        id: "bst_insert",
+        code: bstInsertCode,
+        initialGraph: {
+            nodes: [
+                { id: 1, label: "50", fx: 0,    fy: -120 },
+                { id: 2, label: "20", fx: -80,  fy: -40  },
+                { id: 3, label: "80", fx: 80,   fy: -40  },
+                { id: 4, label: "10", fx: -120, fy: 60   },
+                { id: 5, label: "30", fx: -40,  fy: 60   },
+                { id: 6, label: "70", fx: 40,   fy: 60   },
+                { id: 7, label: "90", fx: 120,  fy: 60   },
+            ],
+            links: [
+                { source: 1, target: 2 },
+                { source: 1, target: 3 },
+                { source: 2, target: 4 },
+                { source: 2, target: 5 },
+                { source: 3, target: 6 },
+                { source: 3, target: 7 },
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const hl: Record<number, string> = {};
+            // Inserir x=25. Camí: 50->20->30->fulla esquerra de 30
+            const labels: Record<number, string> = { 1:"50", 2:"20", 3:"80", 4:"10", 5:"30", 6:"70", 7:"90" };
+            const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
+                steps.push({ line, description: desc, highlights: { ...hl }, nodeLabels: { ...labels }, variables: vars });
+            };
+
+            addStep(1, "Inserim x=25 al BST. L'arbre BST és immutable: reconstruïm el camí fins al punt d'inserció.", { x: "25" });
+
+            // Pas 1: Arrel 50
+            hl[1] = "#facc15";
+            addStep(3, "Node 50 no és buit. 25 ≠ 50, passem.", { node: "50", x: "25", cond: "buit→F, 25≠50" });
+            addStep(4, "25 < 50! Descenidm recursivament al SUBARBRE ESQUERRE. El subarbre dret es reutilitza tal qual.", { node: "50", decision: "25 < 50 → T" });
+            hl[1] = "#0ea5e9"; // blue: being reconstructed
+
+            // Pas 2: node 20
+            hl[2] = "#facc15";
+            addStep(3, "Node 20 no és buit. 25 ≠ 20, passem.", { node: "20", x: "25" });
+            addStep(4, "25 > 20 (no compleix x < a.value()). Descendim al SUBARBRE DRET del 20.", { node: "20", decision: "25 < 20 → F" });
+            hl[2] = "#0ea5e9";
+
+            // Pas 3: node 30
+            hl[5] = "#facc15";
+            addStep(3, "Node 30 no és buit. 25 ≠ 30, passem.", { node: "30", x: "25" });
+            addStep(4, "25 < 30! Descenidm al SUBARBRE ESQUERRE del 30 (que és buit).", { node: "30", decision: "25 < 30 → T" });
+            hl[5] = "#0ea5e9";
+
+            // Pas 4: Cas base - buit -> crear nou node!
+            hl[8] = "#22c55e";
+            labels[8] = "25 ✦";
+            addStep(2, "ARBRE BUIT! Cas base de la recursió. Creem un nou node BinTree<int>(25). Aquí s'insereix el nou element.", { node_nou: "25", acció: "return BinTree<int>(25)" });
+
+            // Propagar reconstrucció cap amunt
+            hl[5] = "#22c55e";
+            addStep(7, "Tornem a node 30. Es reconstrueix amb la nova branca esquerra que conté 25. La resta (subarbre dret → null) es reutilitza.", { reconstruint: "BinTree(30, [25], null)" });
+            hl[2] = "#22c55e";
+            addStep(7, "Tornem a node 20. Es reconstrueix amb la nova branca dreta (que conte 30 i 25). L'esquerra (10) es reutilitza.", { reconstruint: "BinTree(20, [10], [30→25])" });
+            hl[1] = "#22c55e";
+            addStep(7, "Tornem a l'arrel. Nou BST reconstruït amb el node 25 al seu lloc. Cost total: O(log n).", { cost: "O(log n)", arbre_final: "50{20{10,30{25,NULL}},80{70,90}}" });
+
+            return steps;
+        }
+    },
 };

@@ -5,8 +5,9 @@ import { useSubject } from '../contexts/SubjectContext';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const APP_DATA: Record<string, { version: string; updated: string }> = {
-    pro2: { version: 'v1.1.0', updated: '08/03/2026' },
-    m1: { version: 'v1.2.2', updated: '10/03/2026' }
+    pro2: { version: 'v1.2.0', updated: '15/03/2026' },
+    m1: { version: 'v1.2.2', updated: '10/03/2026' },
+    m2: { version: 'v1.0.1', updated: '15/03/2026' }
 };
 
 const letterContainerVariants = {
@@ -82,7 +83,7 @@ const Hero: React.FC = () => {
                     >
                         <GitCommitVertical size={12} className="text-accent group-hover:rotate-12 transition-transform duration-300" />
                         <span className="text-[10px] uppercase tracking-widest text-accent font-semibold transition-colors group-hover:text-white">
-                            {subject === 'pro2' ? 'PRO2' : 'M1'} {currentData.version}
+                            {subject.toUpperCase()} {currentData.version}
                         </span>
 
                         {/* Tooltip Last Update Date */}
