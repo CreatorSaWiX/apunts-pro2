@@ -45,6 +45,19 @@ const HomePage = () => {
                     )}
                     M1
                 </button>
+                <button
+                    onClick={() => setSubject('m2')}
+                    className={`relative px-4 py-1.5 md:px-5 md:py-2 rounded-full text-[11px] md:text-[13px] font-black tracking-widest transition-all duration-300 z-10 ${subject === 'm2' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                >
+                    {subject === 'm2' && (
+                        <motion.div
+                            layoutId="active-pill"
+                            className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] z-[-1]"
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                    )}
+                    M2
+                </button>
             </div>
 
             <div className="flex-none pt-10 z-20 pointer-events-none">

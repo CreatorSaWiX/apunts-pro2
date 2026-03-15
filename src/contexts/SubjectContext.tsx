@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type Subject = 'pro2' | 'm1';
+type Subject = 'pro2' | 'm1' | 'm2';
 
 interface Theme {
     primary: string;
@@ -27,6 +27,14 @@ const themes: Record<Subject, Theme> = {
         accent_rgb: '167, 139, 250',
         background: '#0f172a', // slate-900 (same base)
         label: 'M1'
+    },
+    m2: {
+        primary: '#10b981', // emerald-500
+        primary_rgb: '16, 185, 129',
+        accent: '#34d399', // emerald-400
+        accent_rgb: '52, 211, 153',
+        background: '#0f172a', // slate-900 (same base)
+        label: 'M2'
     }
 };
 
@@ -41,7 +49,7 @@ const SubjectContext = createContext<SubjectContextType | undefined>(undefined);
 export function SubjectProvider({ children }: { children: React.ReactNode }) {
     const [subject, setSubject] = useState<Subject>(() => {
         const saved = localStorage.getItem('app-subject');
-        return (saved === 'pro2' || saved === 'm1') ? saved : 'pro2';
+        return (saved === 'pro2' || saved === 'm1' || saved === 'm2') ? saved as Subject : 'pro2';
     });
 
     useEffect(() => {

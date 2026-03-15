@@ -5,19 +5,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import { Smile, Trash2, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
-// Custom emotes from /public/emojis
-const CUSTOM_EMOTES = [
-    'neko.png', 'Neko_pout.png', 'catfire.PNG', 'neko_blep.PNG', 'Neko_Cat_Ok87.PNG',
-    'cat_omg_ty.PNG', 'nekosmug.png', 'neko_giggle5.PNG', 'nekostress.png',
-    'catafraid14.PNG', 'catdrama.PNG', 'nekoshy69.PNG', 'nekocandy.PNG',
-    'neko_sleep8.PNG', 'nekogiveup.png', 'nekodumb.png', 'nekofat.png',
-    'nekodrunk.PNG', 'nekocatmummy.PNG', 'nekosimp.png', 'nekosmirk17.PNG',
-    'Neko3.png', 'cat_think.PNG', 'catpeek.png', 'cathammer.PNG',
-    'cutieanger.PNG', 'neko_aw.PNG', 'neko_expect.PNG', 'neko_peak60.PNG',
-    'nekocat_lie.PNG', 'nekocatshrug19.PNG', 'Lick.png', 'neko cat.webp',
-    'emoji120.PNG', 'file35511.PNG', 'michifasha84.PNG', 'need73.PNG'
-].map(file => `/emojis/${file}`);
+const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, as: 'url' });
+const CUSTOM_EMOTES = Object.values(emojiModules);
 
 export interface Comment {
     id: string;
@@ -144,7 +136,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                     </div>
 
                     {/* Text / Content */}
-                    <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap break-words">
+                    <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap wrap-break-word">
                         {isGif(comment.content) ? (
                             <div className="mt-2 mb-2">
                                 <img
@@ -155,7 +147,22 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                                 />
                             </div>
                         ) : (
-                            comment.content
+                            <div className="prose prose-sm prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-950 prose-pre:border prose-pre:border-white/5 prose-code:text-sky-300 prose-code:bg-sky-500/10 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-a:text-sky-400 hover:prose-a:text-sky-300">
+                                <ReactMarkdown 
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                        img: ({ ...props }) => (
+                                            <img 
+                                                {...props} 
+                                                className="inline-block w-6 h-6 m-0 align-text-bottom object-contain" 
+                                                loading="lazy"
+                                            />
+                                        )
+                                    }}
+                                >
+                                    {comment.content}
+                                </ReactMarkdown>
+                            </div>
                         )}
                     </div>
 
@@ -215,11 +222,11 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                             {showPicker && createPortal(
                                 <>
                                     <div
-                                        className="fixed inset-0 z-[9990]"
+                                        className="fixed inset-0 z-9990"
                                         onClick={() => setShowPicker(false)}
                                     />
                                     <div
-                                        className="fixed z-[10000] p-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl grid grid-cols-6 gap-1 w-72 max-h-64 overflow-y-auto custom-scrollbar overscroll-contain origin-top-left"
+                                        className="fixed z-10000 p-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl grid grid-cols-6 gap-1 w-72 max-h-64 overflow-y-auto custom-scrollbar overscroll-contain origin-top-left"
                                         style={{
                                             top: pickerPosition.top,
                                             left: pickerPosition.left,
@@ -255,7 +262,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                             onClick={() => setAreRepliesVisible(true)}
                             className="flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors group"
                         >
-                            <div className="w-6 h-[1px] bg-slate-700 group-hover:bg-slate-500"></div>
+                            <div className="w-6 h-px bg-slate-700 group-hover:bg-slate-500"></div>
                             <span>Veure {comment.replies.length} respostes</span>
                             <ChevronDown size={14} />
                         </button>
@@ -277,7 +284,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                                 onClick={() => setAreRepliesVisible(false)}
                                 className="flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors mt-3 group"
                             >
-                                <div className="w-6 h-[1px] bg-slate-700 group-hover:bg-slate-500"></div>
+                                <div className="w-6 h-px bg-slate-700 group-hover:bg-slate-500"></div>
                                 <span>Amagar respostes</span>
                             </button>
                         </div>

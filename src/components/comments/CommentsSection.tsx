@@ -7,10 +7,13 @@ import {
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import CommentItem, { type Comment } from './CommentItem';
-import { Send, Loader, MessageCircle, Info, Image as ImageIcon } from 'lucide-react';
+import { Send, Loader, MessageCircle, Info, Image as ImageIcon, Smile } from 'lucide-react';
 import ConfirmModal from '../ui/ConfirmModal';
 import GifPicker from '../ui/GifPicker';
 import { AnimatePresence } from 'framer-motion';
+
+const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, as: 'url' });
+const CUSTOM_EMOTES = Object.values(emojiModules);
 
 interface CommentsSectionProps {
     solutionId: string; // The ID of the solution (parent document)
@@ -25,6 +28,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
     const [newComment, setNewComment] = useState('');
     const [replyingTo, setReplyingTo] = useState<any | null>(null);
     const [showGifPicker, setShowGifPicker] = useState(false);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [visibleCount, setVisibleCount] = useState(20);
     const commentsEndRef = useRef<HTMLDivElement>(null);
 
@@ -157,6 +161,12 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
         setShowGifPicker(false);
         await submitComment(gifUrl, replyingTo);
         setReplyingTo(null);
+    };
+
+    const handleEmojiSelect = (emojiUrl: string) => {
+        const emojiName = emojiUrl.split('/').pop()?.split('.')[0] || 'emoji';
+        setNewComment(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `![${emojiName}](${emojiUrl}) `);
+        setShowEmojiPicker(false);
     };
 
     const handleReaction = async (commentId: string, emoji: string) => {
@@ -307,12 +317,13 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                                     </button>
                                 </div>
                             )}
+                            
                             <div className="relative flex items-center gap-2">
                                 {/* GIF Picker Button */}
                                 <div className="relative">
                                     <button
                                         type="button"
-                                        onClick={() => setShowGifPicker(!showGifPicker)}
+                                        onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); }}
                                         className={`p-2 rounded-lg transition-colors ${showGifPicker ? 'bg-sky-500/20 text-sky-400' : 'text-slate-500 hover:text-white hover:bg-white/5'}`}
                                         title="Enviar GIF"
                                     >
@@ -332,11 +343,41 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                                     )}
                                 </div>
 
+                                {/* Emoji Picker Button */}
+                                <div className="relative">
+                                    <button
+                                        type="button"
+                                        onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); }}
+                                        className={`p-2 rounded-lg transition-colors ${showEmojiPicker ? 'bg-sky-500/20 text-sky-400' : 'text-slate-500 hover:text-white hover:bg-white/5'}`}
+                                        title="Inserir Emoji"
+                                    >
+                                        <Smile size={20} />
+                                    </button>
+
+                                    {showEmojiPicker && (
+                                        <div className="absolute bottom-full left-0 mb-2 z-50">
+                                            <div className="fixed inset-0 z-40" onClick={() => setShowEmojiPicker(false)} />
+                                            <div className="relative z-50 p-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl grid grid-cols-6 gap-1 w-72 max-h-64 overflow-y-auto custom-scrollbar overscroll-contain">
+                                                {CUSTOM_EMOTES.map(emoji => (
+                                                    <button
+                                                        key={emoji}
+                                                        type="button"
+                                                        onClick={() => handleEmojiSelect(emoji)}
+                                                        className="p-1 rounded-lg hover:bg-slate-800 transition-transform hover:scale-110 flex items-center justify-center"
+                                                    >
+                                                        <img src={emoji} alt="emoji" className="w-6 h-6 object-contain" loading="lazy" />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
                                 <input
                                     type="text"
                                     value={newComment}
                                     onChange={(e) => setNewComment(e.target.value)}
-                                    placeholder={`Escriu un comentari${replyingTo ? ' de resposta...' : '...'}`}
+                                    placeholder={`Escriu un comentari...`}
                                     className="w-full bg-slate-900 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all"
                                 />
                                 <button
@@ -347,6 +388,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                                     <Send size={16} />
                                 </button>
                             </div>
+                            
                             <div className="mt-2 text-[10px] text-slate-500 flex items-center gap-1.5 opacity-60 pl-1">
                                 <Info size={10} />
                                 <span>Pots utilitzar Markdown bàsic. Sigues respectuós.</span>

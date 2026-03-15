@@ -201,5 +201,61 @@ export const courseStructure: TopicDefinition[] = [
         title: "Tema 3: Grafs Eulerians i Hamiltonians",
         description: "Camins i cicles eulerians i hamiltonians.",
         problems: []
+    },
+
+    // --- M2 (Càlcul i Optimitació) ---
+    {
+        id: "m2-tema-1-successions",
+        title: "Tema 1: Successions numèriques",
+        description: "Definicions. Successions convergents, divergents i oscil·lants. Criteris de convergència. Successions recurrents.",
+        problems: []
+    },
+    {
+        id: "m2-tema-2-funcions-continues",
+        title: "Tema 2: Teoremes de funcions contínues d'una variable",
+        description: "Teorema del signe, Bolzano, Weierstrass, valor mitjà. Mètodes de bissecció i secant.",
+        problems: []
+    },
+    {
+        id: "m2-tema-3-funcions-derivables",
+        title: "Tema 3: Teoremes de funcions derivables d'una variable",
+        description: "Rolle, Lagrange, L'Hôpital. Mètode de Newton-Raphson.",
+        problems: []
+    },
+    {
+        id: "m2-tema-4-taylor",
+        title: "Tema 4: Fórmula de Taylor per a funcions d'una variable",
+        description: "Polinomi de Taylor. Fórmula de Lagrange del residu. Propagació de l'error.",
+        problems: []
+    },
+    {
+        id: "m2-tema-5-integracio",
+        title: "Tema 5: Integració de funcions d'una variable",
+        description: "Teorema Fonamental del Càlcul. Regla de Barrow. Àrees i volums. Trapezis i Simpson.",
+        problems: []
+    },
+    {
+        id: "m2-tema-6-funcions-diverses",
+        title: "Tema 6: Funcions de diverses variables",
+        description: "Domini, gràfica, conjunts de nivell, interpretació geomètrica. Funcions contínues.",
+        problems: []
+    },
+    {
+        id: "m2-tema-7-derivades-parcials",
+        title: "Tema 7: Derivades parcials i direccionals. Vector Gradient",
+        description: "Derivada direccional i parcial. Vector Gradient. Pla tangent a una superfície.",
+        problems: []
+    },
+    {
+        id: "m2-tema-8-taylor-diverses",
+        title: "Tema 8: Polinomi de Taylor en diverses variables",
+        description: "Derivades parcials d'ordre superior. Matriu Hessiana. Polinomi de Taylor i residu.",
+        problems: []
+    },
+    {
+        id: "m2-tema-9-optimitzacio",
+        title: "Tema 9: Optimització de funcions de diverses variables",
+        description: "Weierstrass. Multiplicadors de Lagrange. Extrems relatius, condicionats i absoluts.",
+        problems: []
     }
 ];
