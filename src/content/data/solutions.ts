@@ -43,7 +43,7 @@ export const allSolutions: TopicSolutions[] = [
         solutions: m2t2Solutions
     },
     {
-        topicId: 'm2-tema-3-continuitat',
+        topicId: 'm2-tema-3-continuïtat',
         solutions: m2t3Solutions
     },
     {

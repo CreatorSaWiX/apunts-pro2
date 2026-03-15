@@ -6,11 +6,7 @@ readTime: "10 min"
 subject: "m2"
 ---
 
-# Tema 1: Nombres reals
-
 ## 1.1 Definició
-Imaginem una línia recta infinita. Cada punt d'aquesta línia correspon a un número real. Però, com hem arribat fins aquí?
-
 Primer teníem els **naturals** $\mathbb{N} = \{1, 2, 3, \dots\}$. Després els **enters** $\mathbb{Z} = \{\dots, -2, -1, 0, 1, 2, \dots\}$. Ara ja tenim el zero i els negatius. Arriben els **racionals** $\mathbb{Q}$, són les fraccions $a/b$.
 
 Sembla que ja omplim tota la línia. Els grecs van descobrir que hi ha forats. Per exemple, la diagonal d'un quadrat de costat 1 és $\sqrt{2}$, i aquest número no es pot escriure com una fracció. És un **irracional**. El conjunt dels nombres **reals** $\mathbb{R}$ és la unió de **racionals** i **irracionals**.
