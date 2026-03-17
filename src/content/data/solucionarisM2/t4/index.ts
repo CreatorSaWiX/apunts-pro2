@@ -21,8 +21,13 @@ Atès que $f(0) \\cdot f(1) < 0$, pel **Teorema de Bolzano** existeix almenys un
 **2. Unicitat:**
 Derivem la funció:
 $$f'(x) = -3^{-x} \\ln(3) - 1$$
+
 Com que $3^{-x} > 0$ i $\\ln(3) > 1$, aleshores $f'(x) < 0$ per a tot $x$. 
-Al ser $f$ una funció **estrictament decreixent**, l'equació només té una **única solució**.`
+Al ser $f$ una funció **estrictament decreixent**, l'equació només té una **única solució**.
+
+::mafs{type="unicitat_3x"}
+`
+
     },
     {
         id: "M2-T4-Ex4",
@@ -31,9 +36,13 @@ Al ser $f$ una funció **estrictament decreixent**, l'equació només té una **
         type: "notebook",
         code: "",
         statement: `Considerem l'equació $e^{-x} = \\ln x$.
+
 a) Demostreu que l'equació té una solució en el conjunt $[1, +\\infty)$.
+
 b) Doneu un interval de longitud $0.1$ que contingui aquesta solució.
+
 c) Raoneu perquè l'equació donada no pot tenir dues solucions en $[1, +\\infty)$.
+
 d) Apliqueu Newton-Raphson amb el valor inicial $x_0 = 1$ per a determinar l'arrel positiva. Atureu el càlcul quan la diferència entre dos iterats consecutius sigui menor que $10^{-4}$. Quantes iteracions calen en aquest cas?`,
         content: `Definim $f(x) = e^{-x} - \\ln(x)$, contínua a $(0, +\\infty)$.
 
@@ -114,22 +123,46 @@ $(n-1) \\ln 2 > 8 \\ln 10 \\implies n > 27.57$. Calen **28 iteracions**.`
         type: "notebook",
         code: "",
         statement: `Calculeu, utilitzant la regla de l'Hôpital, els límits següents:
-a) $\\lim_{x \\to +\\infty} \\frac{e^x}{x^5}$; 
-b) $\\lim_{x \\to +\\infty} x^{1/x}$; 
-c) $\\lim_{x \\to 0^+} x^{\\sin x}$; 
-d) $\\lim_{x \\to 0} (\\frac{a^x + b^x}{2})^{1/x}$;
-f) $\\lim_{x \\to 0} \\frac{1}{x} \\ln \\sqrt{\\frac{1+x}{1-x}}$;
-g) $\\lim_{x \\to 0^+} (\\cos x)^{1/x}$;
-h) $\\lim_{x \\to +\\infty} x^{\\tan(1/x)}$;
-i) $\\lim_{x \\to +\\infty} \\frac{\\ln(1+x^\\alpha)}{\\ln(1+x^\\beta)}$.`,
-        content: `*   **a)** Indeterminació $\\infty/\\infty$. Apliquem Hôpital 5 cops: $\\lim \\frac{e^x}{5x^4} = \\dots = \\lim \\frac{e^x}{120} = \\mathbf{+\\infty}$.
-*   **b)** Sigui $L$ el límit. $\\ln L = \\lim \\frac{\\ln x}{x} \\xrightarrow{H} \\lim \\frac{1/x}{1} = 0 \\implies L = e^0 = \\mathbf{1}$.
-*   **c)** $\\ln L = \\lim \\sin x \\ln x = \\lim \\frac{\\ln x}{1/\\sin x} \\xrightarrow{H} \\lim \\frac{1/x}{-\\cos x/\\sin^2 x} = \\lim \\frac{-\\sin^2 x}{x \\cos x} = 0 \\implies L = \\mathbf{1}$.
-*   **d)** $\\ln L = \\lim \\frac{\\ln(a^x+b^x) - \\ln 2}{x} \\xrightarrow{H} \\lim \\frac{a^x \\ln a + b^x \\ln b}{a^x + b^x} = \\frac{\\ln a + \\ln b}{2} = \\ln \\sqrt{ab} \\implies L = \\mathbf{\\sqrt{ab}}$.
-*   **f)** $\\lim \\frac{\\ln(1+x) - \\ln(1-x)}{2x} \\xrightarrow{H} \\lim \\frac{\\frac{1}{1+x} + \\frac{1}{1-x}}{2} = \\frac{2}{2} = \\mathbf{1}$.
-*   **g)** $\\ln L = \\lim \\frac{\\ln(\\cos x)}{x} \\xrightarrow{H} \\lim \\frac{-\\tan x}{1} = 0 \\implies L = \\mathbf{1}$.
-*   **h)** $\\ln L = \\lim \\frac{\\ln x}{\\cot(1/x)} \\xrightarrow{H} \\lim \\frac{1/x}{\\csc^2(1/x) \\cdot (1/x^2)} = \\lim \\frac{x}{\\csc^2(1/x)} = 0 \\implies L = \\mathbf{1}$.
-*   **i)** $\\lim \\frac{\\frac{\\alpha x^{\\alpha-1}}{1+x^\\alpha}}{\\frac{\\beta x^{\\beta-1}}{1+x^\\beta}} = \\frac{\\alpha}{\\beta} \\lim \\frac{x^\\alpha + x^{\\alpha+\\beta-1}}{x^\\beta + x^{\\alpha+\\beta-1}} = \\mathbf{\\frac{\\alpha}{\\beta}}$ ($x \\to \\infty$).`
+
+a) $\\lim_{x \\to +\\infty} \\frac{e^x}{x^5}$; $\\quad$ b) $\\lim_{x \\to +\\infty} x^{1/x}$; $\\quad$ c) $\\lim_{x \\to 0^+} x^{\\sin x}$; $\\quad$ d) $\\lim_{x \\to 0} (\\frac{a^x + b^x}{2})^{1/x}$; $\\quad$ 
+
+f) $\\lim_{x \\to 0} \\frac{1}{x} \\ln \\sqrt{\\frac{1+x}{1-x}}$; $\\quad$ g) $\\lim_{x \\to 0^+} (\\cos x)^{1/x}$; $\\quad$ h) $\\lim_{x \\to +\\infty} x^{\\tan(1/x)}$;
+$\\quad$ i) $\\lim_{x \\to +\\infty} \\frac{\\ln(1+x^\\alpha)}{\\ln(1+x^\\beta)}$.`,
+        content: `**a)** Indeterminació de tipus $\\frac{\\infty}{\\infty}$. 
+
+$$\\lim_{x \\to \\infty} \\frac{e^x}{x^5} \\xrightarrow{H} \\lim_{x \\to \\infty} \\frac{e^x}{5x^4} \\xrightarrow{H} \\lim_{x \\to \\infty} \\frac{e^x}{20x^3} \\xrightarrow{H} \\lim_{x \\to \\infty} \\frac{e^x}{60x^2} \\xrightarrow{H} \\lim_{x \\to \\infty} \\frac{e^x}{120x} \\xrightarrow{H} \\lim_{x \\to \\infty} \\frac{e^x}{120} = \\mathbf{+\\infty}$$
+
+**b)** Indeterminació de tipus $\\infty^0$. Per poder aplicar Hôpital, fem servir la identitat $A^B = e^{B \\ln A}$ per transformar la potència en una exponencial:
+$$x^{1/x} = e^{\\frac{1}{x} \\ln x}$$. 
+Sigui $L = \\lim_{x \\to \\infty} e^{\\frac{\\ln x}{x}}$. Calculem primer el límit de l'exponent (que és de tipus $\\frac{\\infty}{\\infty}$):
+$$\\lim_{x \\to \\infty} \\frac{\\ln x}{x} \\xrightarrow{H} \\lim_{x \\to \\infty} \\frac{1/x}{1} = 0 \\implies L = e^0 = \\mathbf{1}$$
+
+**c)** Indeterminació de tipus $0^0$. Escrivim $L = \\lim e^{\\sin x \\ln x}$. Estudiem l'exponent ($\\sin x \\ln x$ és del tipus $0 \\cdot (-\\infty)$):
+$$\\lim_{x \\to 0^+} \\frac{\\ln x}{\\frac{1}{\\sin x}} \\xrightarrow{H} \\lim_{x \\to 0^+} \\frac{\\frac{1}{x}}{-\\frac{\\cos x}{\\sin^2 x}} = \\lim_{x \\to 0^+} \\frac{-\\sin^2 x}{x \\cos x} = \\lim_{x \\to 0^+} \\left( \\frac{\\sin x}{x} \\right) \\left( \\frac{-\\sin x}{\\cos x} \\right) = 1 \\cdot 0 = 0$$
+Per tant, $L = e^0 = \\mathbf{1}$.
+
+**d) $\\lim_{x \\to 0} (\\frac{a^x + b^x}{2})^{1/x}$:**
+Indeterminació $1^\\infty$. Sigui $L$ el límit, llavors $\\ln L = \\lim_{x \\to 0} \\frac{\\ln(a^x + b^x) - \\ln 2}{x}$. Apliquem Hôpital ($\\frac{0}{0}$):
+$$\\ln L = \\lim_{x \\to 0} \\frac{\\frac{a^x \\ln a + b^x \\ln b}{a^x + b^x}}{1} = \\frac{1 \\cdot \\ln a + 1 \\cdot \\ln b}{1+1} = \\frac{\\ln(ab)}{2} = \\ln \\sqrt{ab} \\implies L = \\mathbf{\\sqrt{ab}}$$
+
+**f) $\\lim_{x \\to 0} \\frac{1}{x} \\ln \\sqrt{\\frac{1+x}{1-x}}$:**
+Simplifiquem el logaritme: $\\ln \\sqrt{\\frac{1+x}{1-x}} = \\frac{1}{2} (\\ln(1+x) - \\ln(1-x))$. El límit és del tipus $\\frac{0}{0}$:
+$$\\lim_{x \\to 0} \\frac{\\ln(1+x) - \\ln(1-x)}{2x} \\xrightarrow{H} \\lim_{x \\to 0} \\frac{\\frac{1}{1+x} - \\frac{-1}{1-x}}{2} = \\frac{\\frac{1}{1} + \\frac{1}{1}}{2} = \\frac{2}{2} = \\mathbf{1}$$
+
+**g) $\\lim_{x \\to 0^+} (\\cos x)^{1/x}$:**
+Indeterminació $1^\\infty$. Escrivim $L = e^{\\lim \\frac{\\ln(\\cos x)}{x}}$. Calculem l'exponent per Hôpital ($\\frac{0}{0}$):
+$$\\lim_{x \\to 0^+} \\frac{\\ln(\\cos x)}{x} \\xrightarrow{H} \\lim_{x \\to 0^+} \\frac{\\frac{-\\sin x}{\\cos x}}{1} = \\lim_{x \\to 0^+} -\\tan x = 0 \\implies L = e^0 = \\mathbf{1}$$
+
+**h) $\\lim_{x \\to +\\infty} x^{\\tan(1/x)}$:**
+Indeterminació $\\infty^0$. Sigui $\\ln L = \\lim_{x \\to \\infty} \\tan(1/x) \\ln x = \\lim_{x \\to \\infty} \\frac{\\ln x}{\\cot(1/x)}$. Apliquem Hôpital ($\\frac{\\infty}{\\infty}$):
+$$\\lim_{x \\to \\infty} \\frac{1/x}{-\\csc^2(1/x) \\cdot (-1/x^2)} = \\lim_{x \\to \\infty} \\frac{1/x}{\\frac{1}{\\sin^2(1/x)} \\cdot \\frac{1}{x^2}} = \\lim_{x \\to \\infty} \\frac{x^2}{x \\cdot \\frac{1}{\\sin^2(1/x)}} = \\lim_{x \\to \\infty} \\frac{\\sin^2(1/x)}{1/x}$$
+Fent el canvi $t = 1/x$: $\\lim_{t \\to 0^+} \\frac{\\sin^2 t}{t} = \\lim_{t \\to 0} \\frac{\\sin t}{t} \\cdot \\sin t = 1 \\cdot 0 = 0$. Així, $L = e^0 = \\mathbf{1}$.
+
+**i) $\\lim_{x \\to +\\infty} \\frac{\\ln(1+x^\\alpha)}{\\ln(1+x^\\beta)}$:**
+Indeterminació $\\frac{\\infty}{\\infty}$. Apliquem Hôpital:
+$$\\lim_{x \\to \\infty} \\frac{\\frac{\\alpha x^{\\alpha-1}}{1+x^\\alpha}}{\\frac{\\beta x^{\\beta-1}}{1+x^\\beta}} = \\frac{\\alpha}{\\beta} \\lim_{x \\to \\infty} \\frac{x^{\\alpha-1} (1+x^\\beta)}{x^\\beta-1 (1+x^\\alpha)} = \\frac{\\alpha}{\\beta} \\lim_{x \\to \\infty} \\frac{x^{\\alpha-1} + x^{\\alpha+\\beta-1}}{x^{\\beta-1} + x^{\\alpha+\\beta-1}}$$
+Dividint numerador i denominador per $x^{\\alpha+\\beta-1}$:
+$$\\frac{\\alpha}{\\beta} \\lim_{x \\to \\infty} \\frac{x^{-\\beta} + 1}{x^{-\\alpha} + 1} = \\frac{\\alpha}{\\beta} \\cdot \\frac{0+1}{0+1} = \\mathbf{\\frac{\\alpha}{\\beta}}$$`
     },
     {
         id: "M2-T4-Ex9",
@@ -141,9 +174,23 @@ i) $\\lim_{x \\to +\\infty} \\frac{\\ln(1+x^\\alpha)}{\\ln(1+x^\\beta)}$.`,
 a) $\\lim_{x \\to 0} \\frac{x^2 \\sin(1/x)}{\\sin x}$;
 b) $\\lim_{x \\to \\infty} \\frac{x + \\sin x}{x - \\sin x}$;
 c) $\\lim_{x \\to 0} \\frac{\\ln(1+x)}{x}$.`,
-        content: `*   **a)** $\\lim \\frac{x}{\\sin x} \\cdot x \\sin(1/x) = 1 \\cdot 0 = \\mathbf{0}$ (Infinitesimal per acotada).
-*   **b)** $\\lim \\frac{1 + \\frac{\\sin x}{x}}{1 - \\frac{\\sin x}{x}} = \\frac{1+0}{1-0} = \\mathbf{1}$.
-*   **c)** Directament per infinitèsims o Hôpital: $\\lim \\frac{1/(1+x)}{1} = \\mathbf{1}$.`
+        content: `*   **a) $\\lim_{x \\to 0} \\frac{x^2 \\sin(1/x)}{\\sin x}$:**
+Separem el límit en dos:
+$$\\lim_{x \\to 0} \\left( \\frac{x}{\\sin x} \\right) \\cdot \\left( x \\sin(1/x) \\right)$$
+Avaluem cada part:
+1. $\\lim_{x \\to 0} \\frac{x}{\\sin x} = 1$.
+2. $\\lim_{x \\to 0} x \\sin(1/x) = 0$ (infinitèsim per funció acotada, ja que $-1 \\leq \\sin(1/x) \\leq 1$).
+Per tant, $1 \\cdot 0 = \\mathbf{0}$.
+
+*   **b) $\\lim_{x \\to \\infty} \\frac{x + \\sin x}{x - \\sin x}$:**
+Per resoldre l'indeterminació $\\frac{\\infty}{\\infty}$, dividim numerador i denominador per $x$:
+$$\\lim_{x \\to \\infty} \\frac{1 + \\frac{\\sin x}{x}}{1 - \\frac{\\sin x}{x}}$$
+Com que $\\lim_{x \\to \\infty} \\frac{\\sin x}{x} = 0$, el límit queda:
+$$\\frac{1 + 0}{1 - 0} = \\mathbf{1}$$
+
+*   **c) $\\lim_{x \\to 0} \\frac{\\ln(1+x)}{x}$:**
+Indeterminació $\\frac{0}{0}$. Apliquem la regla de l'Hôpital:
+$$\\lim_{x \\to 0} \\frac{\\frac{d}{dx} \\ln(1+x)}{\\frac{d}{dx} x} = \\lim_{x \\to 0} \\frac{\\frac{1}{1+x}}{1} = \\mathbf{1}$$`
     },
     {
         id: "M2-T4-Ex10",
@@ -165,24 +212,35 @@ En conclusió, $\\ln(1+x) \\leq x$ per a tot $x \\geq 0$.`
         author: "Apunts",
         type: "notebook",
         code: "",
-        statement: `Determineu i classifiqueu els punts crítics de la funció $f(x) = e^{8x - a(x^2 + 16)}$ segons els valors del paràmetre $a$ ($a \in \\mathbb{R}$). Té asímptotes? Calculeu-les en funció de $a$.`,
+        statement: `Determineu i classifiqueu els punts crítics de la funció $f(x) = e^{8x - a(x^2 + 16)}$ segons els valors del paràmetre $a$ ($a \\in \\mathbb{R}$). Té asímptotes? Calculeu-les en funció de $a$.`,
         content: `**1. Punts crítics:**
-$f'(x) = e^{8x - a(x^2 + 16)} (8 - 2ax)$.
-$f'(x) = 0 \\implies 8 - 2ax = 0 \\implies ax = 4$.
-*   Si $a = 0$: No hi ha punts crítics ($f(x) = e^{8x}$ creixent).
-*   Si $a \\neq 0$: Punt crític a $x_c = 4/a$.
+Per trobar els punts crítics, derivem aplicant la regla de la cadena:
+$$f(x) = e^{g(x)} \\implies f'(x) = e^{g(x)} \\cdot g'(x)$$
+on $g(x) = 8x - a(x^2 + 16)$. La seva derivada és $g'(x) = 8 - 2ax$.
+$$f'(x) = e^{8x - a(x^2 + 16)} (8 - 2ax)$$
+
+Com que l'exponencial mai s'anul·la ($e^{g(x)} > 0$), els punts crítics només depenen del factor $(8 - 2ax)$:
+*   Si $a = 0$: $f'(x) = 8e^{8x}$, que sempre és $>0$. No hi ha punts crítics ($f$ és sempre creixent).
+*   Si $a \\neq 0$: $8 - 2ax = 0 \\implies x_c = \\frac{4}{a}$.
 
 **2. Classificació:**
-$f''(x_c) = e^{\\dots} (-2a)$. 
-*   Si $a > 0$: $f''(x_c) < 0 \\implies$ **Màxim**.
-*   Si $a < 0$: $f''(x_c) > 0 \\implies$ **Mínim**.
+Avaluem la segona derivada en el punt crític $x_c$. Com que $f'(x_c) = 0$, la regla de la cadena simplificada ens dóna $f''(x_c) = f(x_c) \\cdot g''(x_c)$.
+
+$$g''(x) = -2a \\implies f''(x_c) = e^{g(x_c)} \\cdot (-2a)$$
+*   Si **$a > 0$**: $f''(x_c) < 0 \\implies$ **Màxim relatiu** en $x = 4/a$.
+*   Si **$a < 0$**: $f''(x_c) > 0 \\implies$ **Mínim relatiu** en $x = 4/a$.
 
 **3. Asímptotes:**
-No hi ha asímptotes verticals ($D = \\mathbb{R}$).
-Estudiem $\\lim_{x \\to \\pm\\infty} e^{-ax^2 + 8x - 16a}$:
-*   **$a > 0$**: $\\lim = e^{-\\infty} = 0$. Asímptota horitzontal **$y = 0$**.
-*   **$a < 0$**: $\\lim = e^{+\\infty} = +\\infty$. No n'hi ha.
-*   **$a = 0$**: $y=0$ quan $x \\to -\\infty$ (exponencial standard).`
+No hi ha asímptotes verticals perquè el domini és tot $\\mathbb{R}$. Estudiem les asímptotes horitzontals mirant el comportament a l'infinit segons el grau del polinomi de l'exponent:
+$$f(x) = e^{-ax^2 + 8x - 16a}$$
+*   **Si $a > 0$**: L'exponent tendeix a $-\\infty$ tant per $x \\to +\\infty$ com per $x \\to -\\infty$ (paràbola cap avall).
+    $$\\lim_{x \\to \\pm\\infty} f(x) = e^{-\\infty} = 0 \\implies \\text{Asímptota } \\mathbf{y = 0}$$
+*   **Si $a < 0$**: L'exponent tendeix a $+\\infty$ (paràbola cap amunt). La funció creix sense límit i **no té asímptotes horitzontals**.
+*   **Si $a = 0$**: $f(x) = e^{8x}$.
+    $$\\lim_{x \\to -\\infty} e^{8x} = 0 \\implies \\text{Asímptota } \\mathbf{y = 0} \\text{ només per l'esquerra.}$$
+
+::mafs{type="parametrizada_exp"}
+`
     },
     {
         id: "M2-T4-Ex12",
@@ -208,20 +266,47 @@ Al ser $f$ **estrictament creixent**, el tall amb l'eix és únic.`
         type: "notebook",
         code: "",
         statement: `Determineu els intervals de creixement i decreixement i els extrems relatius, si existeixen, de cada una de les funcions següents en els dominis de definició:
-a) $f(x) = \\ln(x^2 - 9), \\quad |x| > 3$
-b) $f(x) = x^{2/3}(x - 1)^4, \\quad 0 \\leq x \\leq 1$`,
-        content: `**a) $f(x) = \\ln(x^2 - 9)$ ($|x| > 3$):**
-$f'(x) = \\frac{2x}{x^2 - 9}$. El punt crític $x=0$ no pertany al domini.
-*   $(-\\infty, -3)$: $f'(-4) < 0 \\implies$ **Decreixent**.
-*   $(3, +\\infty)$: $f'(4) > 0 \\implies$ **Creixent**.
-No té extrems relatius al domini.
+
+a) $f(x) = \\ln(x^2 - 9), \\quad |x| > 3$ $\\quad$ b) $f(x) = x^{2/3}(x - 1)^4, \\quad 0 \\leq x \\leq 1$`,
+        content: `**a) $f(x) = \ln(x^2 - 9)$ ($|x| > 3$):**
+
+**Derivada:**
+$f'(x) = \\frac{2x}{x^2 - 9}$. 
+El punt on $f'(x) = 0$ és $x=0$, però aquest punt **no pertany** al domini $|x| > 3$.
+
+**Signe de la derivada:**
+Com que el denominador $x^2 - 9$ és sempre **positiu** en el domini, el signe depèn de $2x$:
+*   En $(-\\infty, -3)$: $2x < 0 \\implies f'(x) < 0 \\implies$ **Decreixent**.
+*   En $(3, +\\infty)$: $2x > 0 \\implies f'(x) > 0 \\implies$ **Creixent**.
+
 
 **b) $f(x) = x^{2/3}(x - 1)^4$ ($x \\in [0, 1]$):**
-$f'(x) = \\frac{2(x-1)^3(7x-1)}{3x^{1/3}}$. Punts crítics a $x=0, 1/7, 1$.
-*   $(0, 1/7)$: $f'(0.1) > 0 \\implies$ **Creixent**.
-*   $(1/7, 1)$: $f'(0.5) < 0 \\implies$ **Decreixent**.
-Extrems:
-*   $x=0, x=1$: **Mínims relatius** ($f=0$).
-*   $x=1/7$: **Màxim relatiu**.`
+
+**Derivada:** $$f'(x) = \\frac{2}{3}x^{-1/3}(x-1)^4 + 4x^{2/3}(x-1)^3$$
+
+Per simplificar, voldrem treure $\\frac{2(x-1)^3}{3x^{1/3}}$ factor comú:
+1.  **Primer terme:** $\\frac{2}{3}x^{-1/3}(x-1)^4 = \\frac{2(x-1)^3 \\cdot (x-1)}{3x^{1/3}}$
+2.  **Segon terme:** $4x^{2/3}(x-1)^3$. Per poder treure el denominador $3x^{1/3}$, multipliquem i dividim per ell:
+    $$4x^{2/3}(x-1)^3 = \\frac{4x^{2/3} \\cdot 3x^{1/3} \\cdot (x-1)^3}{3x^{1/3}} = \\frac{12x(x-1)^3}{3x^{1/3}}$$
+    *(Recorda que $x^{2/3} \\cdot x^{1/3} = x^{2/3+1/3} = x^1$)*
+
+Ara ja podem ajuntar-ho tot:
+$$f'(x) = \\frac{2(x-1)^3(x-1) + 12x(x-1)^3}{3x^{1/3}} = \\frac{2(x-1)^3 [ (x-1) + 6x ]}{3x^{1/3}} = \\frac{2(x-1)^3(7x-1)}{3x^{1/3}}$$
+
+**Punts crítics ($f'(x) = 0$):**
+Trobem zero al numerador quan $x=1$ o $x=1/7$. 
+També cal notar que a $x=0$ la derivada no existeix (divisió per zero).
+
+**Intervals:**
+*   $(0, 1/7)$: $f' > 0$ (per exemple $f'(0.1) > 0$) $\\implies$ **Creixent**.
+*   $(1/7, 1)$: $f' < 0$ (per exemple $f'(0.5) < 0$) $\\implies$ **Decreixent**.
+
+**Extrems relatius:**
+*   $x=0$: **Mínim** (la funció comença a créixer).
+*   $x=1/7$: **Màxim relatiu** (canvi de creixent a decreixent).
+*   $x=1$: **Mínim** (la funció acaba de decréixer).
+
+::mafs{type="extrems_relatius"}
+`
     }
 ];

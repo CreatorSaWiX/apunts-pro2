@@ -20,11 +20,11 @@ Recordem que un **cicle hamiltonià** és un camí tancat que visita **tots els 
 3. **$G_3$**: **És Hamiltonià**. Similar a $G_2$, el fet de tenir arestes creuades a l'interior només dona més opcions.
 4. **$G_4$**: **No és Hamiltonià**. 
    - Observem que és un graf bipartit. Si comptem els vèrtexs, tenim 2 vèrtexs "centrals" i 4 vèrtexs "externs". 
-   - En un graf bipartit $(V_1, V_2)$, per tenir un cicle hamiltonià cal que $|V_1| = |V_2|$. Aquí tenim $2 \neq 4$, per tant és impossible.
-5. **$G_5$**: **És Hamiltonià**. Té un node central i un perímetre. Podem recórrer tot el perímetre i deixar el node central pel final? No, el node central ha d'estar "encastat" entre dos veïns. Anar de $A \to \text{Centre} \to B$ i seguir pel perímetre funciona.
+   - En un graf bipartit $(V_1, V_2)$, per tenir un cicle hamiltonià cal que $|V_1| = |V_2|$. Aquí tenim $2 \\neq 4$, per tant és impossible.
+5. **$G_5$**: **És Hamiltonià**. Podem recórrer en ziga-zaga: avall a amunt, avall amunt..
 6. **$G_6$**: **És Hamiltonià**. És una estructura molt simètrica (octaedre amb subdivisions).
 7. **$G_7$**: **No és Hamiltonià**. 
-   - Podem aplicar la **condició de tall de vèrtexs**: $c(G-S) \le |S|$.
+   - Podem aplicar la **condició de tall de vèrtexs**: $c(G-S) \\le |S|$.
    - Si traiem els 3 vèrtexs que formen el triangle central (conjunt $S$), el graf es divideix en 4 components aïllades (els vèrtexs exteriors o les puntes).
    - Com que $4 > 3$, el graf no pot ser hamiltonià.
 8. **$G_8$**: **És Hamiltonià**. Té molta densitat d'arestes. El node central es pot integrar en el recorregut fàcilment.
@@ -40,9 +40,9 @@ Recordem que un **cicle hamiltonià** és un camí tancat que visita **tots els 
 | $G_4$ | **NO** | Bipartit amb subconjunts de mida desigual (2 vs 4). |
 | $G_5$ | **SÍ** | Es pot trobar el cicle. |
 | $G_6$ | **SÍ** | Estructura simètrica puntejada. |
-| $G_7$ | **NO** | Condició de tall: $c(G-S) > |S|$ amb $|S|=3$. |
+| $G_7$ | **NO** | Condició de tall: c(G-S) > S amb S=3. |
 | $G_8, G_9$ | **SÍ** | Existeixen cicles explícits. |
-| $G_{10}$ | **NO** | Graf de Petersen (clàssic non-hamiltonià). |
+| $G_{10}$ | **NO** | Graf de Petersen (clàssic no-hamiltonià). |
   `,
   availableLanguages: ['ca']
 };

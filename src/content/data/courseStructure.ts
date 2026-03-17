@@ -88,9 +88,24 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "pro2-tema-6",
-        title: "Tema 6: Arbres Binaris",
-        description: "Propietats i recorreguts d'arbres binaris.",
-        problems: []
+        title: "Tema 6: Arbres de Cerca i Maps",
+        description: "BSTs, diccionaris (maps) i conjunts (sets).",
+        problems: [
+            { id: "X16157", title: "Divisió i Mòdul" },
+            { id: "X18027", title: "Llista de Parelles" },
+            { id: "V12327", title: "Mostra els valors d'un BST per ordre" },
+            { id: "Y96513", title: "Mínim i màxim d'un BST" },
+            { id: "W75159", title: "Cerca a un BST" },
+            { id: "Y74034", title: "Inserció a un BST" },
+            { id: "X47779", title: "Morse" },
+            { id: "X59118", title: "Diccionari" },
+            { id: "X34352", title: "Freqüència de paraules amb diccionaris" },
+            { id: "X10844", title: "Suma Fruites" },
+            { id: "X79905", title: "Freqüència de paraules amb diccionaris (amb esborrat)" },
+            { id: "X80993", title: "Ok Cupid" },
+            { id: "X83904", title: "Activitats esportives (sets)" },
+            { id: "X51146", title: "Activitats esportives ordenades (sets)" }
+        ]
     },
     {
         id: "pro2-parcial-pro2",
@@ -278,7 +293,7 @@ export const courseStructure: TopicDefinition[] = [
         description: "Rolle, Lagrange, L'Hôpital. Mètode de Newton-Raphson i aplicacions de la derivada.",
         problems: [
             // { id: "M2-T4-Ex1", title: "Problema 1: Penden de la recta tangent paral·lela" },
-            { id: "M2-T4-Ex2", title: "Problema 2: Unicitat de solució per 3^{-x} = x" },
+            { id: "M2-T4-Ex2", title: "Problema 2: Unicitat de solució per 3^-x = x" },
             // { id: "M2-T4-Ex3", title: "Problema 3: Zeros de funció polinòmica" },
             { id: "M2-T4-Ex4", title: "Problema 4: Equació e^{-x} = ln x" },
             // { id: "M2-T4-Ex5", title: "Problema 5: Límits de tipus ∞/∞ i 0 · ∞" },

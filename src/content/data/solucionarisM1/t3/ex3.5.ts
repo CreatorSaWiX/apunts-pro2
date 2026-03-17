@@ -13,50 +13,83 @@ Perquè un graf sigui eulerià, ha de complir dues condicions:
 2. Que tots els seus vèrtexs tinguin **grau parell**.
 
 ### Anàlisi Inicial
-Tenim dos components connexos $C_1$ i $C_2$. Com que ambdós són eulerians per separat:
-- Tots els vèrtexs de $C_1$ tenen grau parell.
-- Tots els vèrtexs de $C_2$ tenen grau parell.
-- El graf global $G$ **no és connex** (té 2 components).
-
-### Quantes arestes cal afegir?
-
-1. **Amb 1 aresta**: Si afegim una aresta $e = (u, v)$ amb $u \in C_1$ i $v \in C_2$:
-   - El graf passa a ser **connex**.
-   - Però els vèrtexs $u$ i $v$ passen a tenir **grau senar** (parell + 1). El graf deixaria de ser eulerià (seria semi-eulerià).
-
-2. **Amb 2 arestes**: 
-   - **Opció Multigraf**: Si afegim dues arestes entre els mateixos vèrtexs, $e_1 = (u, v)$ i $e_2 = (u, v)$:
-     - El graf és connex.
-     - Els graus de $u$ i $v$ augmenten en 2, així que **segueixen sent parells**.
-     - El mínim absolut és **2 arestes**.
-   
-   - **Opció Graf Simple**: Si no permetem arestes paral·leles, amb 2 arestes no podem mantenir la paritat i connectar-los (necessitaríem un cicle que passés pels dos components). El mínim en un graf simple seria **3 arestes** (formant un triangle entre components, per exemple: $(u, v), (u, w), (v, w)$ amb $u \in C_1$ i $v, w \in C_2$).
-
-### Conclusió
-
-> El nombre mínim d'arestes és **2**. 
-
-*(Nota: En el context de camins eulerians, sovint es permeten multigrafs. Si s'exigeix que el graf sigui simple, el mínim seria 3).*
+Tenim dos components connexos $C_1$ i $C_2$. Com que ambdós són eulerians per separat, tots els seus vèrtexs tenen grau parell. El problema és que el graf global **no és connex**.
 
 ---
 
-### Visualització (Cas Multigraf, $n=2$)
+### Intent amb 1 aresta
+Si afegim una sola aresta $e = (u, v)$ amb $u \\in C_1$ i $v \\in C_2$:
+- El graf passa a ser **connex**.
+- Però els vèrtexs $u$ i $v$ passen a tenir **grau senar** (parell + 1).
 
-:::graph{height=200}
+:::graph{height=150}
 \`\`\`json
 {
   "nodes": [
-    { "id": "u", "label": "C1", "color": "#3b82f6" },
-    { "id": "v", "label": "C2", "color": "#ef4444" }
+    { "id": "u", "label": "u (C1)", "color": "#3b82f6", "x": 100, "y": 75 },
+    { "id": "v", "label": "v (C2)", "color": "#ef4444", "x": 300, "y": 75 }
   ],
   "links": [
-    { "source": "u", "target": "v", "label": "e1" },
-    { "source": "u", "target": "v", "label": "e2" }
+    { "source": "u", "target": "v", "label": "+1 (imparell!)", "color": "#f59e0b" }
   ]
 }
 \`\`\`
 :::
-<div class="text-center text-xs text-slate-400 mt-2">Dues arestes connecten els components i mantenen els graus parells (+2).</div>
-  `,
+
+---
+
+### Cas A: Algun component NO és complet (3 arestes)
+
+Si $C_2$ no és complet, podem trobar dos vèrtexs $v_1, v_2 \\in C_2$ que **no** estiguin connectats entre ells. Aleshores afegim un "triangle" que connecti els components:
+1. $(u, v_1)$
+2. $(u, v_2)$
+3. $(v_1, v_2)$ (aresta nova interna a $C_2$)
+
+Així, $u, v_1, v_2$ augmenten el seu grau en 2 i es mantenen parells.
+
+:::graph{height=180}
+\`\`\`json
+{
+  "nodes": [
+    { "id": "u", "label": "u (C1)", "color": "#3b82f6", "x": 100, "y": 90 },
+    { "id": "v1", "label": "v1 (C2)", "color": "#ef4444", "x": 300, "y": 50 },
+    { "id": "v2", "label": "v2 (C2)", "color": "#ef4444", "x": 300, "y": 130 }
+  ],
+  "links": [
+    { "source": "u", "target": "v1" },
+    { "source": "u", "target": "v2" },
+    { "source": "v1", "target": "v2", "label": "nova", "dash": [5, 5] }
+  ]
+}
+\`\`\`
+:::
+
+### Cas B: Ambdós components SÓN complets (4 arestes)
+
+Si $C_1$ i $C_2$ ja són grafs complets, no podem afegir cap aresta interna. Per mantenir la paritat, hem d'afegir arestes entre parelles de vèrtexs diferents dels dos components (una "creu" o rectangle):
+1. $(u_1, v_1)$ i $(u_1, v_2)$
+2. $(u_2, v_1)$ i $(u_2, v_2)$
+
+Tots quatre vèrtexs augmenten el seu grau en 2.
+
+:::graph{height=180}
+\`\`\`json
+{
+  "nodes": [
+    { "id": "u1", "label": "u1", "color": "#3b82f6", "x": 100, "y": 50 },
+    { "id": "u2", "label": "u2", "color": "#3b82f6", "x": 100, "y": 130 },
+    { "id": "v1", "label": "v1", "color": "#ef4444", "x": 300, "y": 50 },
+    { "id": "v2", "label": "v2", "color": "#ef4444", "x": 300, "y": 130 }
+  ],
+  "links": [
+    { "source": "u1", "target": "v1" },
+    { "source": "u1", "target": "v2" },
+    { "source": "u2", "target": "v1" },
+    { "source": "u2", "target": "v2" }
+  ]
+}
+\`\`\`
+:::
+`,
   availableLanguages: ['ca']
 };

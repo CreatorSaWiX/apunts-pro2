@@ -93,6 +93,7 @@ c) l'equació $2x^3 - 6x^2 + 3 = 0$ té totes les seves arrels a l'interval $[-1
         content: `**a)** $f(x) = \\ln x - x^2 + 4x$ a $[1, +\\infty)$.
 - $f(1) = \\ln(1) - 1 + 4 = 3 > 0$.
 - Per $x \\to +\\infty$, el terme $-x^2$ domina: $\\lim_{x \\to +\\infty} f(x) = -\\infty$.
+
 Com que $f$ és contínua i canvia de signe (p. ex. $f(7) \\approx \\ln 7 - 49 + 28 < 0$), pel **Teorema de Bolzano** existeix una solució a $[1, +\\infty)$.
 
 **b)** $f(x) = x^2 - x \\sin x - \\cos x$.
@@ -105,6 +106,7 @@ Com que $f$ és contínua i canvia de signe (p. ex. $f(7) \\approx \\ln 7 - 49 +
 - $f(0) = 3 > 0$
 - $f(1) = -1 < 0$
 - $f(3) = 3 > 0$
+
 Hi ha canvi de signe als intervals $[-1, 0]$, $[0, 1]$ i $[1, 3]$. Com que és un polinomi de grau 3, té exactament 3 arrels, totes contingudes a $[-1, 3]$.`
 
     },

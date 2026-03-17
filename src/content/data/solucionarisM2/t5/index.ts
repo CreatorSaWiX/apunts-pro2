@@ -40,7 +40,9 @@ export const m2t5Solutions: Solution[] = [
         type: "notebook",
         code: "",
         statement: `Considereu la funció $f(x) = \\ln(1 - x)$.
+
 a) Determineu els cinc primers termes no nuls del polinomi de Taylor centrat a l'origen i l'expressió del residu corresponent en la forma de Lagrange de la funció $f(x)$.
+
 b) Determineu el grau del polinomi de Taylor de la funció $f(x)$ per obtenir el valor de $\\ln 0.75$ amb error més petit que $10^{-3}$.`,
         content: `**a) Taylor fins a grau 5 a $a = 0$:**
 Calculem les derivades:
@@ -100,8 +102,11 @@ $$ \\text{Error} \\leq \\frac{e^1}{120} < \\frac{3}{120} = 0.025 $$`
         type: "notebook",
         code: "",
         statement: `Sigui $f(x) = \\sqrt{x}$.
+
 a) Obteniu el polinomi de Taylor de grau dos de la funció $f(x)$ en $x_0 = 1$.
+
 b) Fent ús del polinomi de l'apartat a) calculeu un valor aproximat de $\\sqrt{1.02}$.
+
 c) Doneu una fita superior de l'error comès en el càlcul de l'apartat b).`,
         content: `**a) Polinomi a $x_0 = 1$:**
 Calculem derivades:
@@ -112,6 +117,7 @@ Calculem derivades:
 $$ P_2(x) = 1 + \\frac{1}{2}(x-1) - \\frac{1}{8}(x-1)^2 $$
 
 **b) Aproximació de $\\sqrt{1.02}$:**
+
 Usem $x = 1.02$, per tant $x-1 = 0.02$:
 
 $$ \\sqrt{1.02} \\approx P_2(1.02) = 1 + \\frac{0.02}{2} - \\frac{0.0004}{8} = 1 + 0.01 - 0.00005 = 1.00995 $$
@@ -131,8 +137,10 @@ $$ |R_2(1.02)| \\leq \\frac{3/8 \\cdot 1^{-5/2}}{6} (0.02)^3 = \\frac{1}{16} (0.
         type: "notebook",
         code: "",
         statement: `Avalueu amb tres decimals correctes (error $\\leq \\frac{1}{2}10^{-3}$) les quantitats següents:
-a) $e^{0.25}$; b) $\\sin(-0.2)$; c) $\\cos(0.9)$; d) $\\ln(1.1)$;
-e) $\\ln(0.9)$; f) $\\sqrt{1.05}$; g) $\\sqrt{0.97}$; h) $1/\\sqrt{e}$.`,
+
+a) $e^{0.25}$; $\\quad$ b) $\\sin(-0.2)$; $\\quad$ c) $\\cos(0.9)$; 
+
+d) $\\ln(1.1)$; $\\quad$ e) $\\ln(0.9)$; $\\quad$ f) $\\sqrt{1.05}$; $\\quad$ g) $\\sqrt{0.97}$; $\\quad$ h) $1/\\sqrt{e}$.`,
         content: `Volem error $\\leq 0.0005$.
 
 * **a) $e^{0.25}$:** $a=0$. $R_n(x) = \\frac{e^c}{(n+1)!}x^{n+1}$. Per $x=0.25$ i $n=3$, l'error és $\\leq \\frac{e^{0.25}}{24} (0.25)^4 < 0.0005$.

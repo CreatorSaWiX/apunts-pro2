@@ -11,12 +11,12 @@ export const ex3_12: Solution = {
 Per resoldre aquest problema, hem d'entendre què necessitem per formar un **cicle hamiltonià** que recorri tots els vèrtexs de dues components separades, $C_1$ i $C_2$.
 
 ### 1. Per què 1 aresta no és suficient?
-Si afegim només una aresta entre un vèrtex $u \in C_1$ i un vèrtex $v \in C_2$, l'aresta resultant seria un **pont**.
+Si afegim només una aresta entre un vèrtex $u \\in C_1$ i un vèrtex $v \\in C_2$, l'aresta resultant seria un **pont**.
 - Qualsevol cicle en un graf no pot contenir cap aresta pont (ja que per tancar el cicle hauries de tornar a creuar el pont, repetint una aresta o un vèrtex).
 - Per tant, amb 1 sola aresta el graf seria connex, però no podria tenir cap cicle que passés per vèrtexs de les dues components alhora.
 
 ### 2. Amb 2 arestes és suficient
-Si afegim dues arestes, podem "cosir" els dos cicles originals per formar-ne un de sol més gran. Siguin els vèrtexs $u, u' \in C_1$ i $v, v' \in C_2$.
+Si afegim dues arestes, podem "cosir" els dos cicles originals per formar-ne un de sol més gran. Siguin els vèrtexs $u, u' \\in C_1$ i $v, v' \\in C_2$.
 
 **Estratègia de construcció:**
 1. Com que $C_1$ és hamiltonià, té un cicle que passa per tots els seus vèrtexs. Escollim una aresta d'aquest cicle, per exemple $(u, u')$, i la "deixem d'utilitzar".

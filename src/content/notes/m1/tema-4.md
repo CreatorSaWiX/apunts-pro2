@@ -46,9 +46,8 @@ Un arbre és l'estructura preferida de la informàtica per representar jerarquie
     { "source": "4", "target": "5" }
   ]
 }
-<div class="text-center text-sm mt-1 mb-4"><b class="text-sky-400">Exemple de Bosc</b><br/>No hi ha cicles, però té 2 components connexos separats.</div>
-
 :::
+<div class="text-center text-sm mt-1 mb-4"><b class="text-sky-400">Exemple de Bosc</b><br/>No hi ha cicles, però té 2 components connexos separats.</div>
 
 ::::
 

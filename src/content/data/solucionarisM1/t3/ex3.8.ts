@@ -6,9 +6,9 @@ export const ex3_8: Solution = {
   author: 'Profe',
   code: '',
   type: 'notebook',
-  statement: `El graf $n$-cub $Q_n$ té per conjunt de vèrtexs $\{0, 1\}^n$ i dos vèrtexs $(x_1, x_2, \dots, x_n), (y_1, y_2, \dots, y_n)$ són adjacents si difereixen en exactament una coordenada.
+  statement: `El graf $n$-cub $Q_n$ té per conjunt de vèrtexs $\{0, 1\}^n$ i dos vèrtexs $(x_1, x_2, \\dots, x_n), (y_1, y_2, \\dots, y_n)$ són adjacents si difereixen en exactament una coordenada.
   
-1. Representeu $Q_i$ per $1 \le i \le 4$.
+1. Representeu $Q_i$ per $1 \\le i \\le 4$.
 2. Determineu l'ordre, la mida i la seqüència de graus de $Q_n$.
 3. Trobeu els valors de $n$ tals que $Q_n$ és eulerià.`,
   content: `
@@ -53,10 +53,11 @@ El graf $Q_n$ es pot veure com la generalització d'un cub en $n$ dimensions.
 }
 \`\`\`
 :::
-<div class="text-center text-xs text-slate-400">$Q_1$ (Segment)</div>
-<div class="text-center text-xs text-slate-400">$Q_2$ (Quadrat)</div>
-<div class="text-center text-xs text-slate-400">$Q_3$ (Cub)</div>
+<div class="text-center text-xs text-slate-400">Q_1 (Segment)</div>
+<div class="text-center text-xs text-slate-400">Q_2 (Quadrat)</div>
+<div class="text-center text-xs text-slate-400">Q_3 (Cub)</div>
 ::::
+
 
 *Nota: $Q_4$ (l'hipercub) té 16 vèrtexs i 32 arestes. Es pot visualitzar com dos cubs $Q_3$ connectats vèrtex a vèrtex.*
 
@@ -64,22 +65,18 @@ El graf $Q_n$ es pot veure com la generalització d'un cub en $n$ dimensions.
 
 - **Ordre ($n$ vèrtexs)**: El nombre de cadenes binàries de longitud $n$ és $|V| = 2^n$.
 - **Grau**: Cada vèrtex té exactament **$n$** veïns (podem canviar qualsevol de les $n$ coordenades per obtenir un veí). És un graf **$n$-regular**.
-- **Seqüència de graus**: $(n, n, \dots, n)$ repetit $2^n$ vegades.
-- **Mida ($m$ arestes)**: Aplicant el Lema de la naperada ($2m = \sum g(v)$):
-  $$2m = n \cdot 2^n \implies m = n \cdot 2^{n-1}$$
+- **Seqüència de graus**: $(n, n, \\dots, n)$ repetit $2^n$ vegades.
+- **Mida ($m$ arestes)**: Aplicant el Lema de les encaixades ($2m = \\sum g(v)$):
+  $$2m = n \\cdot 2^n \\implies m = n \\cdot 2^{n-1}$$
 
 ### 3. Eulerianitat de $Q_n$
 
 Segons el Teorema d'Euler, un graf connex és eulerià si i només si tots els seus vèrtexs tenen grau parell.
 - El grau de cada vèrtex a $Q_n$ és $n$.
-- Per tant, $Q_n$ serà eulerià si i només si **$n$ és un nombre parell**.
+- Per tant, $Q_n$ serà eulerià si i només si **$n$ és un nombre parell**. **$Q_n$ és eulerià $\\iff n \\in \\{2, 4, 6, \\dots\\}$**
 
-> **$Q_n$ és eulerià $\iff n \in \{2, 4, 6, \dots\}$**
-
----
-
-### Curiositat: Hamiltonianitat
-Tot i que només és eulerià per a $n$ parells, es pot demostrar que el graf $Q_n$ és **hamiltonià** per a tot $n \ge 2$ (existeix el codi de Gray, que recorre tots els vèrtexs sense repetir-ne cap).
-  `,
+> Tot i que només és eulerià per a $n$ parells, es pot demostrar que el graf $Q_n$ és **hamiltonià** per a tot $n \\ge 2$.
+  
+`,
   availableLanguages: ['ca']
 };

@@ -110,9 +110,10 @@ const defaultComponents: any = {
         );
     },
     mafs: (props: any) => {
+        const { node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <MafsVisualizer type={props.type} />
+                <MafsVisualizer {...rest} />
             </React.Suspense>
         );
     },

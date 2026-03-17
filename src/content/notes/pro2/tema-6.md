@@ -63,9 +63,7 @@ La cerca és l'operació més directa i eficient. A cada pas **descartem la meit
 bool bst_search(const BinTree<int>& a, int x) {
     if (a.empty()) return false;
     if (x == a.value()) return true;
-    if (x < a.value())
-        return bst_search(a.left(), x);
-    return bst_search(a.right(), x);
+    return bst_search(a.value() < x ? a.left() : a.right(), x);
 }
 ```
 
@@ -84,8 +82,15 @@ El valor mínim és sempre el node més a l'esquerra (baixem tot el camí cap a 
 
 ```cpp
 int bst_min(const BinTree<int>& a) {
+    assert(!bst.empty());
     if (a.left().empty()) return a.value();
     return bst_min(a.left());
+}
+
+int bst_max(const BinTree<int>& a) {
+    assert(!bst.empty());
+    if (a.right().empty()) return a.value();
+    return bst_min(a.right());
 }
 ```
 
