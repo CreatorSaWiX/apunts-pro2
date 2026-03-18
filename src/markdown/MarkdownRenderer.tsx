@@ -24,6 +24,7 @@ const BinTreeVisualizer = React.lazy(() => import("../components/ui/BinTreeVisua
 const ProofPlayer = React.lazy(() => import("../components/ui/ProofPlayer"));
 const MafsVisualizer = React.lazy(() => import("../components/ui/MafsVisualizer"));
 const VideoPlayer = React.lazy(() => import("../components/ui/VideoPlayer"));
+const ThreeVisualizer = React.lazy(() => import("../components/ui/ThreeVisualizer"));
 
 const VizFallback = () => (
     <div className="h-64 animate-pulse bg-slate-900/40 border border-white/5 rounded-2xl w-full my-12 flex items-center justify-center">
@@ -114,6 +115,14 @@ const defaultComponents: any = {
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <MafsVisualizer {...rest} />
+            </React.Suspense>
+        );
+    },
+    threeviz: (props: any) => {
+        const { node, ...rest } = props;
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <ThreeVisualizer {...rest} />
             </React.Suspense>
         );
     },

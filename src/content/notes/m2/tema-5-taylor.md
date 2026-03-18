@@ -8,6 +8,8 @@ subject: "m2"
 
 L'objectiu d'aquest tema és aproximar funcions complicades mitjançant funcions molt senzilles: els polinomis. Això ens permet calcular valors aproximats, límits difícils i estudiar el comportament local d'una funció.
 
+::videoviz{url="/m2/taylor_master_tema5.webm"}
+
 ## 1. El Polinomi de Taylor
 
 Sigui $f$ una funció $n$ vegades derivable en el punt $a$. El **polinomi de Taylor de grau $n$** per a $f$ en el punt $a$ es defineix com:
