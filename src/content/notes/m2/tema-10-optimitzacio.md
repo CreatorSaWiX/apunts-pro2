@@ -1,4 +1,4 @@
----
+<!-- ---
 title: "Tema 10: Optimització de Vàries Variables"
 description: "Cerca de màxims i mínims: extrems relatius, punts de sella, multiplicadors de Lagrange i extrems absoluts."
 order: 10
@@ -63,4 +63,4 @@ Cal fer una llista de "candidats" i agafar el més gran i el més petit:
 - Primer: Calcula les parcials i iguala a zero.
 - Segon: Classifica amb la Hessiana (mira bé els signes!).
 - Tercer: Si hi ha restriccions, usa Lagrange.
-- Quart: Compara valors per decidir els absoluts.
+- Quart: Compara valors per decidir els absoluts. -->

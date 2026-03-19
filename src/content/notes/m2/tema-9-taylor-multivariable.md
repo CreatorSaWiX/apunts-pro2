@@ -1,4 +1,4 @@
----
+<!-- ---
 title: "Tema 9: Taylor per a Vàries Variables"
 description: "Derivades d'ordre superior, Teorema de Schwarz i l'aproximació de superfícies mitjançant polinomis de Taylor de grau n."
 order: 9
@@ -56,4 +56,4 @@ Aquesta matriu és la que defineix la part quadràtica del polinomi i serà la c
 
 ## 4. El Resta de Taylor
 Igual que en una variable, l'error de l'aproximació s'expressa mitjançant el resta $R_n(\mathbf{x})$. Per a funcions diferenciables, aquest error tendeix a zero més ràpidament que la distància al punt elevada a $n$:
-$$\lim_{\mathbf{x} \to \mathbf{a}} \frac{R_n(\mathbf{x})}{\|\mathbf{x} - \mathbf{a}\|^n} = 0$$
+$$\lim_{\mathbf{x} \to \mathbf{a}} \frac{R_n(\mathbf{x})}{\|\mathbf{x} - \mathbf{a}\|^n} = 0$$ -->
