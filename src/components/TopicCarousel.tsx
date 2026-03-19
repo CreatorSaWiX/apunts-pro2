@@ -58,7 +58,16 @@ const TopicCarousel: React.FC = () => {
     const restoringRef = useRef(true);
 
     const sortedTopics = [...allPersonalNotes]
-        .filter(note => (note as any).subject === subject && !note.slug.includes('-lab-'))
+        .filter(note => {
+            const isMatch = (note as any).subject === subject && !note.slug.includes('-lab-');
+            if (!isMatch) return false;
+            
+            // Hide notes marked as draft
+            if ((note as any).draft) {
+                return false;
+            }
+            return true;
+        })
         .sort((a, b) => a.order - b.order);
 
     // Save activeIndex to session storage whenever it updates (skip during restoration)

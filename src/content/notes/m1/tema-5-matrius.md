@@ -1,9 +1,10 @@
-<!-- ---
+---
 title: "Tema 5: Àlgebra de Matrius"
 description: "Repàs fonamental: definicions, operacions, matriu inversa i propietats de l'espai de matrius."
 order: 5
 readTime: "25 min"
 subject: "m1"
+draft: true
 ---
 
 ## 0. Repàs d'Àlgebra de Matrius
@@ -203,5 +204,3 @@ Gràcies als determinants, podem definir la invertibilitat de manera molt direct
 D'aquest teorema se'n deriven un corol·lari i una aplicació al rang:
 1. **Inversibilitat i Rang**: Una matriu té rang màxim ($n$) si i només si el seu determinant és no nul.
 2. **Definició de Rang per Menors**: El rang d'una matriu $A$ (no cal que sigui quadrada) és $r$ si i només si el **menor més gran** de $A$ amb determinant no nul és de mida $r \times r$.
-
- -->

@@ -1,9 +1,10 @@
-<!-- ---
+---
 title: "Tema 7: Funcions de Vàries Variables"
 description: "Introducció a l'espai euclidi Rn, topologia bàsica (oberts, tancats, compactes), gràfiques de superfícies i corbes de nivell."
 order: 7
 readTime: "30 min"
 subject: "m2"
+draft: true
 ---
 
 Fins ara hem estudiat funcions d'una sola variable $f(x)$. En aquest tema estenem el càlcul a funcions on el domini és un subconjunt de l'espai $n$-dimensional: $f(x_1, x_2, \dots, x_n)$.
@@ -65,4 +66,4 @@ El límit en vàries variables és més complex que en una variable, perquè ens
 Si $f$ és una funció real contínua definida en un conjunt **compacte** $K \subseteq \mathbb{R}^n$:
 1. $f$ està acotada en $K$.
 2. Existeixen $\mathbf{a}, \mathbf{b} \in K$ tals que $f(\mathbf{a}) \leq f(\mathbf{x}) \leq f(\mathbf{b})$ per a tot $\mathbf{x} \in K$.
-*(En altres paraules: hi ha un màxim i un mínim absolut).* -->
+*(En altres paraules: hi ha un màxim i un mínim absolut).*

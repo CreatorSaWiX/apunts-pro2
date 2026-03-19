@@ -21,11 +21,21 @@ const TopicPage: React.FC = () => {
 
     const isLab = topic?.slug.includes('-lab-');
 
+    // Redirigir si el tema no existeix o està en draft sempre
+    if (!topic || (topic as any).draft) {
+        return <Navigate to="/" replace />;
+    }
+
     const sortedTopics = [...allPersonalNotes]
         .filter(t => t.subject === topic?.subject)
         .filter(t => {
             const tIsLab = t.slug.includes('-lab-');
-            return isLab ? tIsLab : !tIsLab;
+            const isMatch = isLab ? tIsLab : !tIsLab;
+            if (!isMatch) return false;
+
+            // Hide notes marked as draft
+            if ((t as any).draft) return false;
+            return true;
         })
         .sort((a, b) => a.order - b.order);
 
@@ -45,7 +55,7 @@ const TopicPage: React.FC = () => {
         <div className="min-h-screen relative z-10">
             {/* Reading Progress Bar - Sticky Top */}
             <motion.div
-                className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-400 to-indigo-500 origin-left z-50 shadow-[0_0_10px_rgba(56,189,248,0.5)]"
+                className="fixed top-0 left-0 right-0 h-1 bg-linear-to-r from-sky-400 to-indigo-500 origin-left z-50 shadow-[0_0_10px_rgba(56,189,248,0.5)]"
                 style={{ scaleX }}
             />
 
@@ -80,10 +90,10 @@ const TopicPage: React.FC = () => {
                     {prevTopic ? (
                         <Link
                             to={`/tema/${prevTopic.slug}`}
-                            className="group relative p-6 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all overflow-hidden"
+                            className="group relative p-6 rounded-3xl border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition-all overflow-hidden"
                         >
                             <div
-                                className="absolute inset-0 bg-gradient-to-r from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500" />
+                                className="absolute inset-0 bg-linear-to-r from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500" />
                             <div className="relative z-10">
                                 <div
                                     className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
@@ -100,10 +110,10 @@ const TopicPage: React.FC = () => {
                     {nextTopic ? (
                         <Link
                             to={`/tema/${nextTopic.slug}`}
-                            className="group relative p-6 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all overflow-hidden text-right"
+                            className="group relative p-6 rounded-3xl border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition-all overflow-hidden text-right"
                         >
                             <div
-                                className="absolute inset-0 bg-gradient-to-l from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500" />
+                                className="absolute inset-0 bg-linear-to-l from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500" />
                             <div className="relative z-10">
                                 <div
                                     className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-end gap-2">
