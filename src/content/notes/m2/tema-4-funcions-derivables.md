@@ -41,6 +41,9 @@ Quan tenim funcions tipus $f(x) = u(x)^{v(x)}$ (on tant la base com l'exponent d
 3. Aïllem $f'(x)$:
 $$f'(x) = u(x)^{v(x)} \left( v'(x) \ln u(x) + v(x) \frac{u'(x)}{u(x)} \right)$$
 
+::mafs{type="derivacio_logaritmica"}
+
+
 ---
 
 ## 3. Teoremes del Càlcul
@@ -52,10 +55,16 @@ Si $f$ és contínua en $[a, b]$, derivable a $(a, b)$ i **$f(a) = f(b)$**, llav
 $$f'(c) = 0$$
 *Intuïció: Si puges una muntanya i tornes a baixar a la mateixa alçada, en algun moment el teu pendent ha hagut de ser zero (el cim).*
 
+::mafs{type="teorema_rolle"}
+
+
 ### Teorema del Valor Mitjà (Lagrange)
 És una versió "inclinada" del de Rolle. Si $f$ és contínua en $[a, b]$ i derivable a $(a, b)$, existeix un punt $c \in (a, b)$ tal que:
 $$f'(c) = \frac{f(b) - f(a)}{b - a}$$
 *Significat: Hi ha un instant on el pendent de la tangent és paral·lel a la recta que uneix els punts d'inici i final.*
+
+::mafs{type="teorema_valor_mitja"}
+
 
 ---
 
@@ -75,6 +84,9 @@ Per trobar **màxims i mínims relatius**:
 ### Regla de l'Hôpital
 Molt útil per resoldre indeterminacions del tipus $0/0$ o $\infty/\infty$ en límits:
 $$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$$
+
+::mafs{type="regla_hopital"}
+
 
 ### Curvatura (Concavitat i Convexitat)
 Veiem la curvatura mirant el signe de la **segona derivada**:

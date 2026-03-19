@@ -1,6 +1,7 @@
 import React from 'react';
-import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon } from 'mafs';
+import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon, MovablePoint, Line, Circle, Vector } from 'mafs';
 import 'katex/dist/katex.min.css';
+import { InlineMath } from 'react-katex';
 
 type MafsVisualizerProps = {
     type: string;
@@ -156,33 +157,133 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
         );
     }
 
-    if (type === 'taylor_ln') {
-        const f = (x: number) => Math.log(x);
-        const p1 = (x: number) => (x - 1);
-        const p2 = (x: number) => (x - 1) - 0.5 * Math.pow(x - 1, 2);
-        const p3 = (x: number) => (x - 1) - 0.5 * Math.pow(x - 1, 2) + (1 / 3) * Math.pow(x - 1, 3);
+    if (type === 'taylor_centrat') {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [a, setA] = React.useState([0, 0]);
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [n, setN] = React.useState(3);
+
+        const f = (x: number) => Math.sin(x) + 0.5 * x;
+        const df = [
+            (x: number) => Math.sin(x) + 0.5 * x,
+            (x: number) => Math.cos(x) + 0.5,
+            (x: number) => -Math.sin(x),
+            (x: number) => -Math.cos(x),
+            (x: number) => Math.sin(x),
+            (x: number) => Math.cos(x),
+            (x: number) => -Math.sin(x)
+        ];
+
+        const taylor = (x: number) => {
+            let sum = 0;
+            const fact = [1, 1, 2, 6, 24, 120, 720];
+            for (let i = 0; i <= n; i++) {
+                sum += (df[i](a[0]) / fact[i]) * Math.pow(x - a[0], i);
+            }
+            return sum;
+        };
 
         return (
             <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
-                <Mafs viewBox={{ x: [0, 4], y: [-2, 2] }} pan={true} zoom={true} preserveAspectRatio={false}>
-                    <Coordinates.Cartesian subdivisions={5} />
-                    <Plot.OfX y={f} color={Theme.red} weight={4} />
-                    <Plot.OfX y={p1} color={Theme.blue} weight={2} opacity={0.6} />
-                    <Plot.OfX y={p2} color={Theme.green} weight={2} opacity={0.6} />
-                    <Plot.OfX y={p3} color={Theme.yellow} weight={2} opacity={0.6} />
-
-                    <circle cx={1} cy={0} r={0.1} fill="white" />
-
-                    <LaTeX at={[0.5, 1.5]} tex="f(x) = \ln(x)" color={Theme.red} />
-                    <LaTeX at={[3, 1.8]} tex="P_1" color={Theme.blue} />
-                    <LaTeX at={[3, 0.5]} tex="P_2" color={Theme.green} />
-                    <LaTeX at={[2.5, 1.2]} tex="P_3" color={Theme.yellow} />
+                <Mafs viewBox={{ x: [-5, 5], y: [-3, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} opacity={0.4} />
+                    <Plot.OfX y={taylor} color={Theme.yellow} weight={3} />
+                    
+                    <MovablePoint point={[a[0], f(a[0])]} onMove={(p) => setA([p[0], 0])} color={Theme.blue} />
+                    
+                    <LaTeX at={[a[0], f(a[0]) + 0.4]} tex="a" color={Theme.blue} />
+                    <LaTeX at={[-4, 2]} tex={`P_{${n}}(x)`} color={Theme.yellow} />
                 </Mafs>
-                <div className="bg-slate-800/80 p-4 border-t border-white/10 flex flex-wrap justify-center gap-4 md:gap-8 text-[10px] md:text-xs font-mono">
-                    <span className="flex items-center gap-2"><div className="w-3 h-3 bg-red-500 rounded-full" /> Funció Real</span>
-                    <span className="flex items-center gap-2"><div className="w-3 h-3 bg-blue-500 rounded-full" /> Grau 1 (Tangent)</span>
-                    <span className="flex items-center gap-2"><div className="w-3 h-3 bg-green-500 rounded-full" /> Grau 2 (Paràbola)</span>
-                    <span className="flex items-center gap-2"><div className="w-3 h-3 bg-yellow-500 rounded-full" /> Grau 3</span>
+                <div className="bg-slate-800/80 p-5 border-t border-white/10">
+                    <div className="flex items-center gap-6 mb-4">
+                        <div className="flex-1">
+                            <span className="text-xs text-slate-400 block mb-1 uppercase font-bold tracking-wider">Grau del polinomi (n):</span>
+                            <div className="flex items-center gap-4">
+                                <input type="range" min="0" max="6" step="1" value={n} onChange={(e) => setN(parseInt(e.target.value))} className="flex-1 accent-yellow-400" />
+                                <span className="font-mono text-sm bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded w-8 text-center">{n}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p className="text-xs text-slate-400 italic">
+                        Arrossega el punt <InlineMath math="a" /> per la corba. El polinomi de Taylor es "centra" en aquest valor i s'adapta a la forma local de la funció en aquell punt exacte.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'taylor_error') {
+        const f = (x: number) => Math.exp(x / 2);
+        // P2 centrat a 0: f(0) + f'(0)x + f''(0)/2 x^2 = 1 + 0.5x + 0.125x^2
+        const p2 = (x: number) => 1 + 0.5 * x + 0.125 * x * x;
+        const errorLimit = 0.2;
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-2, 2], y: [0, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    
+                    {/* Zona d'error admissible */}
+                    <Polygon
+                        points={[
+                            ...Array.from({ length: 41 }, (_, i) => {
+                                const x = -2 + (i / 40) * 4;
+                                return [x, f(x) + errorLimit] as [number, number];
+                            }),
+                            ...Array.from({ length: 41 }, (_, i) => {
+                                const x = 2 - (i / 40) * 4;
+                                return [x, f(x) - errorLimit] as [number, number];
+                            })
+                        ]}
+                        color={Theme.green}
+                        fillOpacity={0.15}
+                        weight={0}
+                    />
+                    
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    <Plot.OfX y={p2} color={Theme.yellow} weight={3} />
+                    
+                    <LaTeX at={[0, 1.3]} tex="a=0" color={Theme.blue} />
+                    <LaTeX at={[1, 2.5]} tex="|R_2| \le 0.2" color={Theme.green} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-xs text-slate-400 leading-relaxed">
+                    La franja <span className="text-green-400 font-bold">verda</span> representa un error màxim permès de <InlineMath math="\pm 0.2" />. 
+                    Observa que el polinomi groc és una bona aproximació només mentre es manté dins d'aquesta franja. 
+                    Quan <InlineMath math="|x-a|" /> creix, l'error es dispara.
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'taylor_comportament') {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [n, setN] = React.useState(2);
+        const f = (x: number) => Math.cos(x);
+        
+        const p_even = (x: number) => 1 - 0.5 * x * x; // Grau 2 (M\u00e0xim)
+        const p_odd = (x: number) => 1 - 0.5 * x * x - (1/6) * Math.pow(x, 3); // Imaginem un f'''(0) != 0 per veure punt d'inflexi\u00f3
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-2, 2], y: [-1, 2] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    <Plot.OfX y={f} color={Theme.blue} weight={2} opacity={0.3} />
+                    <Plot.OfX y={n === 2 ? p_even : p_odd} color={n === 2 ? Theme.red : Theme.indigo} weight={4} />
+                    
+                    <Circle center={[0, 1]} radius={0.1} color={Theme.yellow} />
+                    <LaTeX at={[0, 1.4]} tex="a=0" color={Theme.yellow} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10">
+                    <div className="flex justify-center gap-4 mb-3">
+                        <button onClick={() => setN(2)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 2 ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 2 (Parell)</button>
+                        <button onClick={() => setN(3)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 3 ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 3 (Senar)</button>
+                    </div>
+                    <p className="text-xs text-slate-400 text-center italic">
+                        {n === 2 
+                            ? "Si la primera derivada no nul·la és parell, tenim un extrem (màxim o mínim)." 
+                            : "Si la primera derivada no nul·la és senar, tenim un punt d'inflexió."}
+                    </p>
                 </div>
             </div>
         );
@@ -199,19 +300,302 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 <Mafs viewBox={{ x: [-0.2, 1.2], y: [-0.05, 0.3] }} pan={true} zoom={true} preserveAspectRatio={false}>
                     <Coordinates.Cartesian subdivisions={5} />
                     <Plot.OfX y={f} color={Theme.blue} weight={4} />
-
-                    {/* Màxim a 1/7 ≈ 0.14 */}
                     <circle cx={1 / 7} cy={f(1 / 7)} r={0.02} fill={Theme.red} stroke="white" strokeWidth={0.01} />
-                    {/* Mínims a 0 i 1 */}
                     <circle cx={0} cy={0} r={0.02} fill={Theme.green} stroke="white" strokeWidth={0.01} />
                     <circle cx={1} cy={0} r={0.02} fill={Theme.green} stroke="white" strokeWidth={0.01} />
 
                     <LaTeX at={[1 / 7, f(1 / 7) + 0.03]} tex="M(1/7, f(1/7))" color={Theme.red} />
-                    <LaTeX at={[0.6, -0.1]} tex="x^{2/3}(x-1)^4" color={Theme.blue} />
                 </Mafs>
                 <div className="bg-slate-800/80 p-4 border-t border-white/10 flex justify-center gap-8 text-xs font-mono">
-                    <span className="flex items-center gap-2"><div className="w-3 h-3 bg-green-500 rounded-full" /> Mínims (f=0)</span>
-                    <span className="flex items-center gap-2"><div className="w-3 h-3 bg-red-500 rounded-full" /> Màxim relatiu</span>
+                    <span className="flex items-center gap-2 font-bold text-green-400">Mínims (f=0)</span>
+                    <span className="flex items-center gap-2 font-bold text-red-400">Màxim relatiu</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'taylor_teorema') {
+        const [x, setX] = React.useState([1.5, 0]);
+        const f = (val: number) => Math.exp(val / 2);
+        const p1 = (val: number) => 1 + 0.5 * val; // Tangent a 0
+        
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-1, 3], y: [0, 5] }} pan={false} zoom={false}>
+                    <Coordinates.Cartesian />
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    <Plot.OfX y={p1} color={Theme.yellow} weight={3} opacity={0.6} />
+                    
+                    <Line.Segment point1={[x[0], f(x[0])]} point2={[x[0], p1(x[0])]} color={Theme.red} weight={4} />
+                    <Circle center={[x[0], f(x[0])]} radius={0.08} color={Theme.red} />
+                    <Circle center={[x[0], p1(x[0])]} radius={0.08} color={Theme.red} />
+                    
+                    <MovablePoint point={[x[0], 0]} onMove={(p) => setX([Math.max(-0.5, Math.min(2.5, p[0])), 0])} color={Theme.red} />
+                    
+                    <LaTeX at={[x[0] + 0.2, (f(x[0]) + p1(x[0]))/2]} tex="R_n(x)" color={Theme.red} />
+                    <LaTeX at={[0, 1.3]} tex="a" color={Theme.blue} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-sm text-slate-300">
+                    El <span className="text-red-400 font-bold italic">Resta de Taylor</span> <InlineMath math="R_n(x)" /> és la distància vertical real entre la funció i el polinomi aproximat.
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'taylor_lagrange') {
+        const [x, setX] = React.useState([2, 0]);
+        const f = (val: number) => Math.sin(val);
+        const p1 = (val: number) => val; // P1 a x=0 \u00e9s y=x
+        
+        // Per a sin(x) i P1(x)=x, l'error \u00e9s sin(x) - x. 
+        // El resta de Lagrange \u00e9s f''(c)/2! * x^2 = -sin(c)/2 * x^2.
+        // Trobem c tal que -sin(c)/2 * x^2 = sin(x) - x  =>  sin(c) = 2(x - sin(x)) / x^2
+        const cVal = x[0] === 0 ? 0 : Math.asin(Math.max(-1, Math.min(1, 2 * (x[0] - Math.sin(x[0])) / (x[0] * x[0]))));
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-1, 4], y: [-1, 2] }} pan={false}>
+                    <Coordinates.Cartesian />
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    <Plot.OfX y={p1} color={Theme.yellow} weight={3} opacity={0.4} />
+                    
+                    {/* Punt c de Lagrange */}
+                    <Vector tail={[0, 0]} tip={[cVal, 0]} color={Theme.green} weight={3} opacity={0.5} />
+                    <Circle center={[cVal, f(cVal)]} radius={0.1} color={Theme.green} />
+                    <LaTeX at={[cVal, -0.4]} tex="c" color={Theme.green} />
+                    
+                    <MovablePoint point={[x[0], 0]} onMove={(p) => setX([Math.max(0.1, Math.min(Math.PI, p[0])), 0])} color={Theme.red} />
+                    <LaTeX at={[x[0], -0.4]} tex="x" color={Theme.red} />
+                    
+                    <Line.Segment point1={[x[0], f(x[0])]} point2={[x[0], p1(x[0])]} color={Theme.red} weight={2} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-xs text-slate-400">
+                    El Teorema de Lagrange ens garanteix que existeix un punt <span className="text-green-400 font-bold"><InlineMath math="c \in (a,x)" /></span> on la derivada de la funció "explica" l'error comès.
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'taylor_maclaurin') {
+        const [mode, setMode] = React.useState(0);
+        const [n, setN] = React.useState(2);
+        
+        const configs = [
+            { 
+                label: 'exp(x)', 
+                f: (x: number) => Math.exp(x), 
+                p: (x: number, n: number) => {
+                    let s = 0; let f = 1;
+                    for(let i=0; i<=n; i++) { if(i>0) f*=i; s += Math.pow(x, i)/f; }
+                    return s;
+                },
+                view: { x: [-3, 3], y: [-1, 5] }
+            },
+            {
+                label: 'sin(x)',
+                f: (x: number) => Math.sin(x),
+                p: (x: number, n: number) => {
+                    let s = 0; let f = 1;
+                    for(let i=0; i<=n; i++) {
+                        if(i>0) f*=i;
+                        if(i%2===1) s += (Math.pow(-1, (i-1)/2) * Math.pow(x, i)) / f;
+                    }
+                    return s;
+                },
+                view: { x: [-5, 5], y: [-2, 2] }
+            },
+            {
+                label: 'cos(x)',
+                f: (x: number) => Math.cos(x),
+                p: (x: number, n: number) => {
+                    let s = 0; let f = 1;
+                    for(let i=0; i<=n; i++) {
+                        if(i>0) f*=i;
+                        if(i%2===0) s += (Math.pow(-1, i/2) * Math.pow(x, i)) / f;
+                    }
+                    return s;
+                },
+                view: { x: [-5, 5], y: [-2, 2] }
+            },
+            {
+                label: 'ln(1+x)',
+                f: (x: number) => Math.log(1+x),
+                p: (x: number, n: number) => {
+                    let s = 0;
+                    for(let i=1; i<=n; i++) {
+                        s += (Math.pow(-1, i-1) * Math.pow(x, i)) / i;
+                    }
+                    return s;
+                },
+                view: { x: [-0.9, 3], y: [-2, 2] }
+            },
+            {
+                label: '1/(1-x)',
+                f: (x: number) => 1/(1-x),
+                p: (x: number, n: number) => {
+                    let s = 0;
+                    for(let i=0; i<=n; i++) s += Math.pow(x, i);
+                    return s;
+                },
+                view: { x: [-1.5, 0.9], y: [-1, 5] }
+            }
+        ];
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
+                    {configs.map((c, i) => (
+                        <button key={i} onClick={() => setMode(i)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === i ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-700'}`}>{c.label}</button>
+                    ))}
+                </div>
+                <Mafs viewBox={{ x: configs[mode].view.x as [number, number], y: configs[mode].view.y as [number, number] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    <Plot.OfX y={configs[mode].f} color={Theme.blue} weight={3} opacity={0.3} />
+                    <Plot.OfX y={(x) => configs[mode].p(x, n)} color={Theme.yellow} weight={3} />
+                    <Circle center={[0, configs[mode].f(0)]} radius={0.1} color={Theme.blue} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10">
+                    <div className="flex items-center gap-4">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase w-12 text-center">Grau {n}</span>
+                        <input type="range" min="0" max="15" step="1" value={n} onChange={(e) => setN(parseInt(e.target.value))} className="flex-1 accent-blue-500 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'derivacio_logaritmica') {
+        const [xVal, setXVal] = React.useState([1.5, 0]);
+        // f(x) = x^x. \u00c9s una funci\u00f3 que creix molt r\u00e0pid.
+        const f = (x: number) => x > 0 ? Math.pow(x, x) : 0;
+        // ln(f(x)) = x ln(x)
+        const logF = (x: number) => x > 0 ? x * Math.log(x) : -5;
+        
+        return (
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
+                <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 p-2">
+                    <Mafs viewBox={{ x: [0, 3], y: [0, 5] }} pan={false} preserveAspectRatio={false}>
+                        <Coordinates.Cartesian />
+                        <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                        <Circle center={[xVal[0], f(xVal[0])]} radius={0.1} color={Theme.blue} />
+                        <LaTeX at={[xVal[0], f(xVal[0]) + 0.5]} tex="x^x" color={Theme.blue} />
+                        <MovablePoint point={[xVal[0], 0]} onMove={(p) => setXVal([Math.max(0.1, Math.min(2.5, p[0])), 0])} color={Theme.yellow} />
+                    </Mafs>
+                    <div className="p-2 text-center text-[10px] text-slate-400 uppercase font-bold tracking-widest">Funció Original <InlineMath math="f(x) = x^x" /></div>
+                </div>
+                <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 p-2">
+                    <Mafs viewBox={{ x: [0, 3], y: [-1, 2] }} pan={false} preserveAspectRatio={false}>
+                        <Coordinates.Cartesian />
+                        <Plot.OfX y={logF} color={Theme.green} weight={3} />
+                        <Circle center={[xVal[0], logF(xVal[0])]} radius={0.1} color={Theme.green} />
+                        <LaTeX at={[xVal[0], logF(xVal[0]) + 0.4]} tex="\ln(f)" color={Theme.green} />
+                    </Mafs>
+                    <div className="p-2 text-center text-[10px] text-slate-400 uppercase font-bold tracking-widest italic">Transformada <InlineMath math="\ln f(x) = x \ln x" /></div>
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'teorema_rolle') {
+        const [a, setA] = React.useState(-2);
+        const [b, setB] = React.useState(2);
+        
+        // Funci\u00f3 f(x) = -(x-a)(x-b) + 1. Aix\u00f2 garanteix f(a)=1 i f(b)=1.
+        const f = (x: number) => -(x - a) * (x - b) + 1;
+        const c = (a + b) / 2; // El punt on f'(c)=0 per una par\u00e0bola
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-4, 4], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    
+                    {/* Linia horitzontal f(a)=f(b) */}
+                    <Line.Segment point1={[a, 1]} point2={[b, 1]} color="white" opacity={0.3} weight={2} />
+                    
+                    {/* Tangent horitzontal a c */}
+                    <Line.Segment point1={[c - 1, f(c)]} point2={[c + 1, f(c)]} color={Theme.yellow} weight={4} />
+                    <Circle center={[c, f(c)]} radius={0.12} color={Theme.yellow} />
+                    
+                    <MovablePoint point={[a, 1]} onMove={(p) => setA(Math.min(p[0], b - 1.2))} color={Theme.red} />
+                    <MovablePoint point={[b, 1]} onMove={(p) => setB(Math.max(p[0], a + 1.2))} color={Theme.red} />
+                    
+                    <LaTeX at={[c, f(c) + 0.5]} tex="f'(c) = 0" color={Theme.yellow} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-xs text-slate-400 text-center italic leading-relaxed">
+                    Si <InlineMath math="f(a) = f(b)" />, obligat\u00f2riament hi ha un punt <InlineMath math="c \in (a, b)" /> on la corba "gira" i la tangent \u00e9s perfectament **horitzontal**.
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'teorema_valor_mitja') {
+        const [a, setA] = React.useState(-2);
+        const [b, setB] = React.useState(2);
+        
+        const f = (x: number) => 0.1 * Math.pow(x, 3) - 0.2 * x + 1;
+        const slope = (f(b) - f(a)) / (b - a);
+        
+        // Trobem c tal que f'(c) = 0.3c^2 - 0.2 = slope => c = sqrt((slope + 0.2)/0.3)
+        const cVal = Math.sqrt(Math.abs((slope + 0.2) / 0.3)) * (slope < 0 ? -1 : 1);
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-4, 4], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    
+                    {/* Secant */}
+                    <Line.Segment point1={[a, f(a)]} point2={[b, f(b)]} color="white" opacity={0.3} weight={2} />
+                    
+                    {/* Tangent paral\u00b7lela */}
+                    <Line.ThroughPoints 
+                        point1={[cVal - 1, f(cVal) - slope]} 
+                        point2={[cVal + 1, f(cVal) + slope]} 
+                        color={Theme.yellow} 
+                        weight={4} 
+                    />
+                    <Circle center={[cVal, f(cVal)]} radius={0.12} color={Theme.yellow} />
+                    
+                    <MovablePoint point={[a, f(a)]} onMove={(p) => setA(Math.min(p[0], b - 1.2))} color={Theme.red} />
+                    <MovablePoint point={[b, f(b)]} onMove={(p) => setB(Math.max(p[0], a + 1.2))} color={Theme.red} />
+                    
+                    <LaTeX at={[cVal, f(cVal) + 0.7]} tex="f'(c) = \frac{f(b)-f(a)}{b-a}" color={Theme.yellow} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-xs text-slate-400 text-center italic leading-relaxed">
+                    El pendent de la **secant** (blanca) \u00e9s igual al pendent de la **tangent** (groga) en algun punt interior <InlineMath math="c" />.
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'regla_hopital') {
+        const [x, setX] = React.useState([0.5, 0]);
+        // Dues funcions que van a 0 quan x -> 0
+        const f = (xVal: number) => Math.sin(2 * xVal);
+        const g = (xVal: number) => Math.sin(xVal);
+        
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-1, 1.5], y: [-1, 2.5] }} pan={false} zoom={true}>
+                    <Coordinates.Cartesian />
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    <Plot.OfX y={g} color={Theme.red} weight={3} />
+                    
+                    {/* Tangents a l'origen */}
+                    <Line.ThroughPoints point1={[-0.5, -1]} point2={[0.5, 1]} color={Theme.blue} opacity={0.3} weight={1} />
+                    <Line.ThroughPoints point1={[-1, -1]} point2={[1, 1]} color={Theme.red} opacity={0.3} weight={1} />
+                    
+                    <MovablePoint point={[x[0], 0]} onMove={(p) => setX([Math.max(0.05, Math.min(1.2, p[0])), 0])} color={Theme.yellow} />
+                    
+                    <Line.Segment point1={[x[0], 0]} point2={[x[0], f(x[0])]} color={Theme.blue} weight={2} />
+                    <Line.Segment point1={[x[0], 0]} point2={[x[0], g(x[0])]} color={Theme.red} weight={2} />
+                    
+                    <LaTeX at={[1.2, f(1.2)]} tex="f(x)" color={Theme.blue} />
+                    <LaTeX at={[1.2, g(1.2)]} tex="g(x)" color={Theme.red} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-xs text-slate-300 italic text-center">
+                    A prop de l'origen (<InlineMath math="x \to a" />), el quocient <span className="text-blue-400 font-bold">f(x)</span> / <span className="text-red-400 font-bold">g(x)</span> és pràcticament el mateix que el quocient entre les seves **velocitats (tangents)**.
                 </div>
             </div>
         );
@@ -302,8 +686,231 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
         );
     }
 
-    if (type === 'integracio_trapezi') {
+    if (type === 'teorema_fonamental') {
         // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [x, setX] = React.useState([2, 0]);
+        const f = (t: number) => 0.25 * t * t + 0.5;
+        
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-1, 5], y: [-1, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    
+                    {/* Àrea des de 0 fins a x */}
+                    <Polygon
+                        points={[
+                            [0, 0],
+                            ...Array.from({ length: 40 }, (_, i) => {
+                                const t = (i / 39) * x[0];
+                                return [t, f(t)] as [number, number];
+                            }),
+                            [x[0], 0]
+                        ]}
+                        color={Theme.blue}
+                        fillOpacity={0.4}
+                    />
+
+                    {/* Línia de la funció f(t) */}
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+
+                    {/* El rectangle diferencial dF ≈ f(x) * dx */}
+                    <Polygon 
+                        points={[
+                            [x[0], 0],
+                            [x[0] + 0.4, 0],
+                            [x[0] + 0.4, f(x[0])],
+                            [x[0], f(x[0])]
+                        ]}
+                        color={Theme.yellow}
+                        fillOpacity={0.6}
+                    />
+
+                    <MovablePoint
+                        point={[x[0], 0]}
+                        onMove={(p: [number, number]) => setX([Math.max(0, Math.min(4.4, p[0])), 0])}
+                        color={Theme.yellow}
+                    />
+
+                    {/* Annotacions */}
+                    <LaTeX at={[x[0]/2, f(x[0]/2)/2]} tex="F(x) = \small \int_0^x f" color="white" />
+                    <LaTeX at={[x[0] + 0.2, f(x[0]) + 0.4]} tex="f(x)" color={Theme.yellow} />
+                    <LaTeX at={[x[0] + 0.2, -0.4]} tex="dx" color={Theme.yellow} />
+                    
+                    <LaTeX at={[3, 4.5]} tex={`F(x) = \\int_0^x f(t) dt`} color={Theme.blue} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-sm text-slate-300">
+                    A mesura que incrementem <InlineMath math="x" /> per un trosset <InlineMath math="dx" />, l'àrea augmenta exactament en <InlineMath math="f(x) \cdot dx" />. 
+                    <br/><span className="text-yellow-400 font-bold mt-1 inline-block">És a dir, el ritme de canvi de l'àrea és l'alçada de la funció!</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'primitiva_familia') {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [C, setC] = React.useState(0);
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [x, setX] = React.useState([1, 0]);
+        
+        const f = (t: number) => Math.cos(t);
+        const F = (t: number, c: number) => Math.sin(t) + c;
+        const df = (t: number) => Math.cos(t);
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-4, 4], y: [-3, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    
+                    {/* Dibuixem 5 línies de la família de primitives */}
+                    {[-1.5, -0.75, 0, 0.75, 1.5].map((val) => (
+                        <Plot.OfX 
+                            key={val} 
+                            y={(t) => F(t, val)} 
+                            color={Theme.green} 
+                            opacity={Math.abs(val - C) < 0.1 ? 1 : 0.2} 
+                            weight={Math.abs(val - C) < 0.1 ? 3 : 1}
+                        />
+                    ))}
+
+                    <Plot.OfX y={f} color={Theme.orange} weight={3} />
+                    
+                    {/* Tangent interactiva */}
+                    <Line.ThroughPoints 
+                        point1={[x[0] - 0.7, F(x[0], C) - 0.7 * df(x[0])]} 
+                        point2={[x[0] + 0.7, F(x[0], C) + 0.7 * df(x[0])]} 
+                        color={Theme.yellow} 
+                        weight={3}
+                    />
+
+                    <Circle center={[x[0], F(x[0], C)]} radius={0.12} color={Theme.yellow} />
+                    <Vector tail={[x[0], 0]} tip={[x[0], f(x[0])]} color={Theme.orange} weight={3} />
+
+                    <MovablePoint point={[x[0], 0]} onMove={(p: [number, number]) => setX([p[0], 0])} color={Theme.orange} />
+
+                    <LaTeX at={[-3, 2.5]} tex="F(x) = \sin(x) + C" color={Theme.green} />
+                    <LaTeX at={[-3, -2]} tex="f(x) = \cos(x)" color={Theme.orange} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-6 border-t border-white/10">
+                    <div className="flex items-center gap-4 mb-4">
+                        <span className="text-sm text-slate-300 w-32 font-medium">Constant <InlineMath math="C" />:</span>
+                        <input type="range" min="-1.5" max="1.5" step="0.75" value={C} onChange={(e) => setC(parseFloat(e.target.value))} className="flex-1 accent-green-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" />
+                        <span className="font-mono text-sm w-12 text-center bg-green-500/20 text-green-400 py-1 rounded">{C}</span>
+                    </div>
+                    <p className="text-xs text-slate-400 italic leading-relaxed">
+                        Observa com el pendent de la tangent (groga) a la primitiva és sempre igual al valor de la funció taronja a sota. 
+                        No importa quina vertical (<InlineMath math="C" />) triem, la "forma" de de la corba (el pendent) només depèn de <InlineMath math="f(x)" />.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'regla_barrow') {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [interval, setInterval] = React.useState({ a: 1, b: 3 });
+        const f = (x: number) => 0.4 * x + 0.8;
+        const F = (x: number) => 0.2 * x * x + 0.8 * x;
+
+        return (
+            <div className="w-full flex flex-col gap-4 my-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 p-2">
+                        <Mafs viewBox={{ x: [-0.5, 4.5], y: [-0.5, 3.5] }} pan={false} preserveAspectRatio={false}>
+                            <Coordinates.Cartesian />
+                            <Polygon 
+                                points={[[interval.a, 0], [interval.b, 0], [interval.b, f(interval.b)], [interval.a, f(interval.a)]]} 
+                                color={Theme.blue} fillOpacity={0.4} 
+                            />
+                            <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                            <MovablePoint point={[interval.a, 0]} onMove={(p: [number, number]) => setInterval(prev => ({ ...prev, a: Math.max(0, Math.min(p[0], interval.b - 0.2)) }))} color={Theme.blue} />
+                            <MovablePoint point={[interval.b, 0]} onMove={(p: [number, number]) => setInterval(prev => ({ ...prev, b: Math.min(4, Math.max(p[0], interval.a + 0.2)) }))} color={Theme.blue} />
+                            <LaTeX at={[(interval.a + interval.b)/2, 0.4]} tex="\int_a^b f" color="white" />
+                        </Mafs>
+                    </div>
+
+                    <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 p-2">
+                        <Mafs viewBox={{ x: [-0.5, 4.5], y: [-0.5, 7] }} pan={false} preserveAspectRatio={false}>
+                            <Coordinates.Cartesian />
+                            <Plot.OfX y={F} color={Theme.red} weight={3} />
+                            
+                            <Circle center={[interval.a, F(interval.a)]} radius={0.12} color={Theme.red} />
+                            <Circle center={[interval.b, F(interval.b)]} radius={0.12} color={Theme.red} />
+                            
+                            <Vector tail={[interval.b, F(interval.a)]} tip={[interval.b, F(interval.b)]} color={Theme.yellow} weight={3} />
+                            <Line.Segment point1={[interval.a, F(interval.a)]} point2={[interval.b, F(interval.a)]} color="white" opacity={0.3} />
+                            
+                            <LaTeX at={[interval.b + 0.6, (F(interval.a) + F(interval.b))/2]} tex="F(b)-F(a)" color={Theme.yellow} />
+                        </Mafs>
+                    </div>
+                </div>
+                <div className="bg-slate-800/80 p-4 rounded-xl text-center text-sm border border-white/10 shadow-inner">
+                    <p className="font-light text-slate-200">
+                        La <span className="text-blue-400 font-bold uppercase tracking-tighter">Àrea</span> sota la corba representa el guany total. 
+                        Aquest guany és exactament igual al <span className="text-yellow-400 font-bold uppercase tracking-tighter">Salt Vertical</span> en la funció primitiva.
+                    </p>
+                    <div className="mt-2 text-xl font-serif text-white italic">
+                        <InlineMath math="\int_a^b f(x) dx = F(b) - F(a)" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'limits_integracio') {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [x, setX] = React.useState([1.5, 0]);
+        const f = (t: number) => 1.8 + 1.2 * Math.sin(1.5 * t);
+        const u = (val: number) => val * 0.4;
+        const v = (val: number) => val + 1.5;
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-0.2, 5.5], y: [-0.2, 4.5] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    
+                    <Polygon
+                        points={[
+                            [u(x[0]), 0],
+                            ...Array.from({ length: 40 }, (_, i) => {
+                                const t = u(x[0]) + (i / 39) * (v(x[0]) - u(x[0]));
+                                return [t, f(t)] as [number, number];
+                            }),
+                            [v(x[0]), 0]
+                        ]}
+                        color={Theme.indigo}
+                        fillOpacity={0.4}
+                    />
+
+                    <Plot.OfX y={f} color={Theme.blue} weight={2} opacity={0.3} />
+
+                    <MovablePoint point={[x[0], 0]} onMove={(p) => setX([Math.max(0.2, Math.min(3.5, p[0])), 0])} color={Theme.yellow} />
+                    
+                    {/* Vectors Velocitat del límit / Derivades */}
+                    <Vector tail={[v(x[0]), f(v(x[0]))/2]} tip={[v(x[0]) + 1.2, f(v(x[0]))/2]} color={Theme.green} weight={3} />
+                    <Vector tail={[u(x[0]), f(u(x[0]))/2]} tip={[u(x[0]) + 0.5, f(u(x[0]))/2]} color={Theme.red} weight={3} />
+
+                    <LaTeX at={[u(x[0]), -0.5]} tex="u(x)" color={Theme.red} />
+                    <LaTeX at={[v(x[0]), -0.5]} tex="v(x)" color={Theme.green} />
+                    
+                    <LaTeX at={[2.5, 4]} tex="F'(x) = f(v(x)) \cdot v'(x) - f(u(x)) \cdot u'(x)" color={Theme.indigo} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-5 border-t border-white/10">
+                    <div className="grid grid-cols-2 gap-4 text-[10px] md:text-xs">
+                        <div className="bg-green-500/10 p-2 rounded border border-green-500/20">
+                            <span className="text-green-400 font-bold">Límit Superior (v):</span> Al moure <InlineMath math="x" />, el límit dret corre cap endavant, sumant àrea proporcional a la seva velocitat <InlineMath math="v'(x)" />.
+                        </div>
+                        <div className="bg-red-500/10 p-2 rounded border border-red-500/20">
+                            <span className="text-red-400 font-bold">Límit Inferior (u):</span> El límit esquerre també es mou, restant àrea al seu pas segons la velocitat <InlineMath math="u'(x)" />.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (type === 'integracio_trapezi') {
+
         const [n, setN] = React.useState(4);
         const f = (x: number) => Math.sin(x) + 2;
         const a = 0;

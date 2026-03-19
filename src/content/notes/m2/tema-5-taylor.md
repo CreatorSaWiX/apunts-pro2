@@ -21,24 +21,30 @@ $$P_n(f, a, x) = f(a) + \frac{f'(a)}{1!}(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \dots
 2. Totes les seves derivades fins a ordre $n$ també coincideixen en el punt $a$: $P_n^{(k)}(a) = f^{(k)}(a)$.
 3. El polinomi de Taylor de grau 1 coincideix amb l'equació de la **recta tangent**.
 
-::mafs{type="taylor_ln"}
+::mafs{type="taylor_centrat"}
 
 ---
 
 ## 2. Teorema de Taylor i Resta de Lagrange
 
 Aproximar una funció té un cost: l'error. Definim el **resta de Taylor** com la diferència entre la funció real i el polinomi:
-$$R_n(f, a, x) = f(x) - P_n(f, a, x)$$
+$$R_n(f,a,x) = f(x) - P_n(f,a,x)$$
+
+::mafs{type="taylor_teorema"}
 
 > **Teorema de Taylor**: Si $f$ és $n+1$ vegades derivable, existeix un punt $c$ entre $a$ i $x$ tal que:
-> $$R_n(f, a, x) = \frac{f^{(n+1)}(c)}{(n+1)!}(x-a)^{n+1}$$
+> $$R_n(f,a,x) = \frac{f^{(n+1)}(c)}{(n+1)!}(x-a)^{n+1}$$
 > Aquesta expressió s'anomena **Resta de Lagrange**.
+
+::mafs{type="taylor_lagrange"}
 
 ---
 
 ## 3. Desenvolupaments de Maclaurin (a = 0)
 
 Són els polinomis de Taylor centrats a l'origen més comuns:
+
+::mafs{type="taylor_maclaurin"}
 
 | Funció | Desenvolupament ($a=0$) |
 | :--- | :--- |
@@ -56,6 +62,8 @@ Per saber com de bona és la nostra aproximació, busquem una fita superior del 
 
 $$|R_n(x)| \leq \frac{K}{(n+1)!} |x-a|^{n+1}$$
 
+::mafs{type="taylor_error"}
+
 Això ens permet determinar el grau $n$ necessari per a una precisió desitjada (per exemple, error $< 10^{-4}$).
 
 ---
@@ -70,6 +78,8 @@ Si $f'(a) = f''(a) = \dots = f^{(n-1)}(a) = 0$ i $f^{(n)}(a) \neq 0$:
   - $f^{(n)}(a) > 0 \implies$ **Mínim** relatiu.
   - $f^{(n)}(a) < 0 \implies$ **Màxim** relatiu.
 - **Si $n$ és senar**: No és un extrem (és un punt d'inflexió amb tangent horitzontal).
+
+::mafs{type="taylor_comportament"}
 
 ### Curvatura i Inflexió
 Si $f''(a) = f'''(a) = \dots = f^{(n-1)}(a) = 0$ i $f^{(n)}(a) \neq 0$:

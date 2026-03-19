@@ -8,19 +8,21 @@ subject: "m2"
 
 L'objectiu principal d'aquest tema és estudiar l'àrea sota la corba d'una funció mitjançant diferents mètodes analítics i numèrics, i relacionar la integració amb la derivació.
 
-## 1. El Teorema Fonamental del Càlcul
+## 1. El teorema fonamental del càlcul (TFC)
 
-El teorema fonamental del càlcul enllaça certs temes aparentment llunyans i sense relació directa: la integració i les derivades.
+**Teorema fonamental del càlcul**: Sigui $f$ una funció integrable en $[a,b]$ i definim una funció $F: [a,b] \to \mathbb{R}$ per
+$$F(x) = \int_a^x f(t) dt$$
+llavors es compleix que:
+1. $F$ és contínua en l'interval $[a,b]$.
+2. Si $f$ és contínua en algun punt $c \in (a,b)$, llavors la funció àrea $F$ és derivable en $c$ i $F'(c) = f(c)$.
 
-> **Teorema fonamental del càlcul**: Sigui $f$ una funció integrable en $[a,b]$ i definim una funció $F: [a,b] \to \mathbb{R}$ per
-> $$F(x) = \int_a^x f(t) dt$$
-> Llavors es compleix que:
-> 1. $F$ és contínua en l'interval $[a,b]$.
-> 2. Si $f$ és contínua en algun punt $c \in (a,b)$, llavors la funció area $F$ és derivable en $c$ i $F'(c) = f(c)$.
+::mafs{type="teorema_fonamental"}
 
 ### Primitiva i Regla de Barrow
 
 Si tenim dues funcions $f$ i $F$ definides en l'interval $(a,b)$ tal que $F'(x) = f(x)$ per a tot $x \in (a,b)$, es diu que $F$ és una **primitiva** de $f$ en l'interval $(a,b)$.
+
+::mafs{type="primitiva_familia"}
 
 * **Corol·lari**: Si $f$ és contínua en $[a,b]$ i definim $F(x) = \int_a^x f$, aleshores $F$ és derivable en $[a,b]$ i és una primitiva de $f$ en $(a,b)$.
 
@@ -28,6 +30,8 @@ Aquest concepte ens introdueix una de les eines més importants i pràctiques pe
 
 > **Regla de Barrow**: Si $f$ és contínua en $[a,b]$ i $F$ és contínua en $[a,b]$ i derivable en $(a,b)$ sent una primitiva ($F'(x) = f(x)$), llavors:
 > $$\int_a^b f(x) dx = F(b) - F(a)$$
+
+::mafs{type="regla_barrow"}
 
 ### Estudi de funcions definides per integrals (Límits funcionals)
 
@@ -37,6 +41,8 @@ De vegades podem tenir límits d'integració que depenen d'una variable $x$. Com
 > $$F(x) = \int_{u(x)}^{v(x)} f(t)dt$$
 > Aleshores $F$ és derivable en $x_0$ i la seva derivada en $x$ s'avalúa aplicant la Regla de la Cadena a Barrow:
 > $$F'(x_0) = f(v(x_0)) \cdot v'(x_0) - f(u(x_0)) \cdot u'(x_0)$$
+
+::mafs{type="limits_integracio"}
 
 ---
 

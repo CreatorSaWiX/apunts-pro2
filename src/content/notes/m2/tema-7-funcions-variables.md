@@ -15,7 +15,7 @@ Els elements de $\mathbb{R}^n$ s'anomenen **vectors** o **punts**. Tenen estruct
 ### Producte Escalar i Norma
 Donats dos vectors $\mathbf{u} = (u_1, \dots, u_n)$ i $\mathbf{v} = (v_1, \dots, v_n)$:
 - **Producte Escalar**: $\mathbf{u} \cdot \mathbf{v} = u_1v_1 + \dots + u_nv_n$.
-- **Norma (Mòdul)**: $\|\mathbf{u}\| = \sqrt{\mathbf{u} \cdot \mathbf{u}} = \sqrt{u_1^2 + \dots + u_n^2}$.
+- **Normal (Mòdul)**: $\|\mathbf{u}\| = \sqrt{\mathbf{u} \cdot \mathbf{u}} = \sqrt{u_1^2 + \dots + u_n^2}$.
 - **Distància**: $d(\mathbf{x}, \mathbf{y}) = \|\mathbf{y} - \mathbf{x}\|$.
 
 ## 2. Topologia en $\mathbb{R}^n$
@@ -29,7 +29,7 @@ La topologia ens permet definir formalment el concepte de "proximitat".
 Un subconjunt $A \subseteq \mathbb{R}^n$ pot ser:
 - **Obert**: Si per a tot punt $\mathbf{a} \in A$, existeix una bola $B_r(\mathbf{a}) \subseteq A$.
 - **Tancat**: Si el seu complementari és obert (o si conté tots els seus punts frontera).
-- **Compacte**: Molt important en M2. Un conjunt és compacte si és **tancat i acotat**. (Teorema de Weierstrass: una funció contínua en un compacte sempre assoleix un màxim i un mínim absoluts).
+- **Compacte**: Un conjunt és compacte si és **tancat i acotat**. (Teorema de Weierstrass: una funció contínua en un compacte sempre assoleix un màxim i un mínim absoluts).
 
 ---
 
