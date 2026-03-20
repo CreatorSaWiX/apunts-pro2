@@ -73,12 +73,9 @@ const Point = ({ position, color = "white" }: { position: [number, number, numbe
     </mesh>
 );
 
-const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
-    let content = null;
-
-    if (type === 'punts_sella') {
+const VisPuntsSella = () => {
         const f = (x: number, y: number) => (x * x - y * y) * 0.1;
-        content = (
+        return (
             <>
                 <FunctionSurface f={f} />
                 <Text position={[0, 2, 0]} color="white" fontSize={0.5} maxWidth={200} textAlign="center">
@@ -86,11 +83,11 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
                 </Text>
             </>
         );
-    }
+    };
 
-    if (type === 'paraboloide') {
+const VisParaboloide = () => {
         const f = (x: number, y: number) => (x * x + y * y) * 0.1;
-        content = (
+        return (
             <>
                 <FunctionSurface f={f} />
                 <Text position={[0, 3, 0]} color="white" fontSize={0.5}>
@@ -98,9 +95,9 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
                 </Text>
             </>
         );
-    }
+    };
 
-    if (type === 'pla_tangent') {
+const VisPlaTangent = () => {
         const f = (x: number, y: number) => 0.05 * (x * x + y * y);
         // Punt de tangència a (2, 2) -> f(2,2) = 0.05 * 8 = 0.4
         // f_x = 0.1x -> f_x(2,2) = 0.2
@@ -110,7 +107,7 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
         const fa = 0.4;
         const dfx = 0.2, dfy = 0.2;
 
-        content = (
+        return (
             <>
                 <FunctionSurface f={f} />
                 <Point position={[a, fa, b]} color="#00ff88" />
@@ -126,11 +123,11 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
                 </Text>
             </>
         );
-    }
+    };
 
-    if (type === 'vector_gradient') {
+const VisVectorGradient = () => {
         const f = (x: number, y: number) => 3 * Math.sin(0.3 * x) * Math.cos(0.3 * y);
-        content = (
+        return (
             <>
                 <FunctionSurface f={f} />
                 {/* Vectors gradient en punts clau */}
@@ -152,11 +149,11 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
                 </Text>
             </>
         );
-    }
+    };
 
-    if (type === 'maxim_local') {
+const VisMaximLocal = () => {
         const f = (x: number, y: number) => 4 - 0.2 * (x * x + y * y);
-        content = (
+        return (
             <>
                 <FunctionSurface f={f} colorScale={4} />
                 <Point position={[0, 4, 0]} color="#ff4400" />
@@ -165,11 +162,11 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
                 </Text>
             </>
         );
-    }
+    };
 
-    if (type === 'minim_local') {
+const VisMinimLocal = () => {
         const f = (x: number, y: number) => 0.2 * (x * x + y * y);
-        content = (
+        return (
             <>
                 <FunctionSurface f={f} colorScale={4} />
                 <Point position={[0, 0, 0]} color="#00ffff" />
@@ -178,11 +175,11 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
                 </Text>
             </>
         );
-    }
+    };
 
-    if (type === 'punt_sella_optim') {
+const VisPuntSellaOptim = () => {
         const f = (x: number, y: number) => 0.2 * (x * x - y * y);
-        content = (
+        return (
             <>
                 <FunctionSurface f={f} colorScale={2} />
                 <Point position={[0, 0, 0]} color="#ffff00" />
@@ -191,13 +188,13 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
                 </Text>
             </>
         );
-    }
+    };
 
-    if (type === 'taylor_3d') {
+const VisTaylor3d = () => {
         const f = (x: number, y: number) => Math.cos(x/2) * Math.sin(y/2) * 2;
         const p1 = (_x: number, y: number) => y * 0.5;
 
-        content = (
+        return (
             <>
                 <FunctionSurface f={f} colorScale={3} />
                 <group position={[0, 0.1, 0]}>
@@ -208,9 +205,25 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
                 </Text>
             </>
         );
-    }
+    };
 
-    if (!content) return <div className="p-4 bg-red-900/20 text-red-400 rounded-xl border border-red-500/30">Tipus 3D no trobat: {type}</div>;
+
+const VISUALIZERS: Record<string, React.FC> = {
+    'punts_sella': VisPuntsSella,
+    'paraboloide': VisParaboloide,
+    'pla_tangent': VisPlaTangent,
+    'vector_gradient': VisVectorGradient,
+    'maxim_local': VisMaximLocal,
+    'minim_local': VisMinimLocal,
+    'punt_sella_optim': VisPuntSellaOptim,
+    'taylor_3d': VisTaylor3d,
+};
+
+const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
+    const Component = VISUALIZERS[type];
+
+    if (!Component) return <div className="p-4 bg-red-900/20 text-red-400 rounded-xl border border-red-500/30">Tipus 3D no trobat: {type}</div>;
+
 
     return (
         <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8 relative group">
@@ -241,7 +254,7 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
                     cellSize={1}
                 />
 
-                {content}
+                <Component />
 
                 {/* Eixos */}
                 <axesHelper args={[5]} />

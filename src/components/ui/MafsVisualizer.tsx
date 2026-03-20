@@ -7,8 +7,7 @@ type MafsVisualizerProps = {
     type: string;
 };
 
-const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
-    if (type === 'successio_1_n') {
+const VisSuccessio1N = () => {
         const points = Array.from({ length: 30 }, (_, i) => {
             const n = i + 1;
             return [n, 1 / n];
@@ -46,9 +45,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </Mafs>
             </div>
         );
-    }
+    };
 
-    if (type === 'successio_oscilant') {
+const VisSuccessioOscilant = () => {
         const points = Array.from({ length: 20 }, (_, i) => {
             const n = i + 1;
             return [n, Math.pow(-1, n)];
@@ -82,9 +81,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </Mafs>
             </div>
         );
-    }
+    };
 
-    if (type === 'teorema_bolzano') {
+const VisTeoremaBolzano = () => {
         const a = -2;
         const b = 3;
         const f = (x: number) => 0.5 * Math.pow(x, 2) - 2; // Arrel a x=2
@@ -110,10 +109,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </Mafs>
             </div>
         );
-    }
+    };
 
-    if (type === 'derivada_tangent') {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+const VisDerivadaTangent = () => {
         const [a, setA] = React.useState(1.0);
         const f = (x: number) => 0.25 * Math.pow(x, 3) - x + 1;
         const df = (x: number) => 0.75 * Math.pow(x, 2) - 1;
@@ -155,12 +153,10 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'taylor_centrat') {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+const VisTaylorCentrat = () => {
         const [a, setA] = React.useState([0, 0]);
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [n, setN] = React.useState(3);
 
         const f = (x: number) => Math.sin(x) + 0.5 * x;
@@ -211,9 +207,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'taylor_error') {
+const VisTaylorError = () => {
         const f = (x: number) => Math.exp(x / 2);
         // P2 centrat a 0: f(0) + f'(0)x + f''(0)/2 x^2 = 1 + 0.5x + 0.125x^2
         const p2 = (x: number) => 1 + 0.5 * x + 0.125 * x * x;
@@ -254,10 +250,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'taylor_comportament') {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+const VisTaylorComportament = () => {
         const [n, setN] = React.useState(2);
         const f = (x: number) => Math.cos(x);
         
@@ -287,9 +282,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'extrems_relatius') {
+const VisExtremsRelatius = () => {
         const f = (x: number) => {
             if (x < 0) return 0; // Domini [0,1]
             return Math.pow(x, 2 / 3) * Math.pow(x - 1, 4);
@@ -312,9 +307,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'taylor_teorema') {
+const VisTaylorTeorema = () => {
         const [x, setX] = React.useState([1.5, 0]);
         const f = (val: number) => Math.exp(val / 2);
         const p1 = (val: number) => 1 + 0.5 * val; // Tangent a 0
@@ -340,9 +335,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'taylor_lagrange') {
+const VisTaylorLagrange = () => {
         const [x, setX] = React.useState([2, 0]);
         const f = (val: number) => Math.sin(val);
         const p1 = (val: number) => val; // P1 a x=0 \u00e9s y=x
@@ -374,9 +369,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'taylor_maclaurin') {
+const VisTaylorMaclaurin = () => {
         const [mode, setMode] = React.useState(0);
         const [n, setN] = React.useState(2);
         
@@ -462,9 +457,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'derivacio_logaritmica') {
+const VisDerivacioLogaritmica = () => {
         const [xVal, setXVal] = React.useState([1.5, 0]);
         // f(x) = x^x. \u00c9s una funci\u00f3 que creix molt r\u00e0pid.
         const f = (x: number) => x > 0 ? Math.pow(x, x) : 0;
@@ -494,9 +489,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'teorema_rolle') {
+const VisTeoremaRolle = () => {
         const [a, setA] = React.useState(-2);
         const [b, setB] = React.useState(2);
         
@@ -527,9 +522,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'teorema_valor_mitja') {
+const VisTeoremaValorMitja = () => {
         const [a, setA] = React.useState(-2);
         const [b, setB] = React.useState(2);
         
@@ -567,9 +562,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'regla_hopital') {
+const VisReglaHopital = () => {
         const [x, setX] = React.useState([0.5, 0]);
         // Dues funcions que van a 0 quan x -> 0
         const f = (xVal: number) => Math.sin(2 * xVal);
@@ -599,9 +594,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'parametrizada_exp') {
+const VisParametrizadaExp = () => {
         const [a, setA] = React.useState(0.5);
         // Per visualitzar-ho millor, fem que el gràfic sigui f(x) = e^{-(x-c)^2} si a>0 
         // o similar, però mantenint l'essència del problema.
@@ -649,9 +644,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'unicitat_3x') {
+const VisUnicitat3x = () => {
         const f = (x: number) => Math.pow(3, -x) - x;
         const df = (x: number) => -Math.pow(3, -x) * Math.log(3) - 1;
 
@@ -684,10 +679,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'teorema_fonamental') {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+const VisTeoremaFonamental = () => {
         const [x, setX] = React.useState([2, 0]);
         const f = (t: number) => 0.25 * t * t + 0.5;
         
@@ -745,12 +739,10 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'primitiva_familia') {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+const VisPrimitivaFamilia = () => {
         const [C, setC] = React.useState(0);
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [x, setX] = React.useState([1, 0]);
         
         const f = (t: number) => Math.cos(t);
@@ -804,10 +796,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'regla_barrow') {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+const VisReglaBarrow = () => {
         const [interval, setInterval] = React.useState({ a: 1, b: 3 });
         const f = (x: number) => 0.4 * x + 0.8;
         const F = (x: number) => 0.2 * x * x + 0.8 * x;
@@ -855,10 +846,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'limits_integracio') {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+const VisLimitsIntegracio = () => {
         const [x, setX] = React.useState([1.5, 0]);
         const f = (t: number) => 1.8 + 1.2 * Math.sin(1.5 * t);
         const u = (val: number) => val * 0.4;
@@ -907,9 +897,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'integracio_trapezi') {
+const VisIntegracioTrapezi = () => {
 
         const [n, setN] = React.useState(4);
         const f = (x: number) => Math.sin(x) + 2;
@@ -962,10 +952,9 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    if (type === 'integracio_simpson') {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+const VisIntegracioSimpson = () => {
         const [n, setN] = React.useState(4); // n ha de ser parell
         const f = (x: number) => Math.sin(x) + 2;
         const a = 0;
@@ -1050,13 +1039,45 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
                 </div>
             </div>
         );
-    }
+    };
 
-    return (
+
+const VISUALIZERS: Record<string, React.FC> = {
+    'successio_1_n': VisSuccessio1N,
+    'successio_oscilant': VisSuccessioOscilant,
+    'teorema_bolzano': VisTeoremaBolzano,
+    'derivada_tangent': VisDerivadaTangent,
+    'taylor_centrat': VisTaylorCentrat,
+    'taylor_error': VisTaylorError,
+    'taylor_comportament': VisTaylorComportament,
+    'extrems_relatius': VisExtremsRelatius,
+    'taylor_teorema': VisTaylorTeorema,
+    'taylor_lagrange': VisTaylorLagrange,
+    'taylor_maclaurin': VisTaylorMaclaurin,
+    'derivacio_logaritmica': VisDerivacioLogaritmica,
+    'teorema_rolle': VisTeoremaRolle,
+    'teorema_valor_mitja': VisTeoremaValorMitja,
+    'regla_hopital': VisReglaHopital,
+    'parametrizada_exp': VisParametrizadaExp,
+    'unicitat_3x': VisUnicitat3x,
+    'teorema_fonamental': VisTeoremaFonamental,
+    'primitiva_familia': VisPrimitivaFamilia,
+    'regla_barrow': VisReglaBarrow,
+    'limits_integracio': VisLimitsIntegracio,
+    'integracio_trapezi': VisIntegracioTrapezi,
+    'integracio_simpson': VisIntegracioSimpson,
+};
+
+const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
+    const Component = VISUALIZERS[type];
+    if (!Component) {
+        return (
         <div className="p-4 border border-red-500/50 rounded-xl bg-red-500/10 text-red-400">
             [Error de Mafs] Tipus de visualització no trobat: {type}
         </div>
     );
+    }
+    return <Component />;
 };
 
 export default MafsVisualizer;

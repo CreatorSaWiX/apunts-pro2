@@ -904,5 +904,383 @@ export const quizzes: TopicQuiz[] = [
                 explanation: 'Teorema de la Secció 1: Un bosc de $n$ vèrtexs i $k$ components connexos té exactament $m = n - k$ arestes. Amb $n = 12$ i $k = 3$: $m = 12 - 3 = 9$ arestes.'
             }
         ]
+    },
+    {
+        topicId: 'pro2-tema-4', // Immersió i arbres binaris
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'q4-1',
+                question: 'Quina és la finalitat principal de l\'estratègia de la "Immersió" en la recursivitat?',
+                options: [
+                    { id: 'a', text: 'Permetre que una funció es cridi a si mateixa sense límit de memòria.' },
+                    { id: 'b', text: 'Superar les limitacions d\'una signatura pública fixa afegint paràmetres auxiliars en una funció interna.' },
+                    { id: 'c', text: 'Convertir automàticament qualsevol algorisme recursiu en un d\'iteratiu.' },
+                    { id: 'd', text: 'Evitar l\'ús de punters en el tractament d\'arbres binaris.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'A la secció 4.1 s\'explica que la immersió s\'usa quan la funció pública no té prou paràmetres per portar el càlcul (com un acumulador). Creem una funció auxiliar amb els paràmetres extre que necessitem.'
+            },
+            {
+                id: 'q4-2',
+                question: 'Per què diem que la classe `BinTree<T>` de PRO2 és immutable?',
+                options: [
+                    { id: 'a', text: 'Perquè un cop creat l\'arbre, no es pot buidar mai.' },
+                    { id: 'b', text: 'Perquè només permet emmagatzemar constants.' },
+                    { id: 'c', text: 'Perquè no permet modificar un subarbre directament; cal reconstruir l\'arbre per aplicar canvis.' },
+                    { id: 'd', text: 'Perquè s\'emmagatzema en una zona de la memòria de només lectura.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Tal com indica el punt 4.2, per alterar un arbre cal re-reconstruir-lo com una instància nova aprofitant les parts que no canvien, ja que no podem "obrir" l\'arbre i canviar-li un fill.'
+            },
+            {
+                id: 'q4-3',
+                question: 'En un recorregut en "Preordre" d\'un arbre binari, quin és l\'ordre de visita?',
+                options: [
+                    { id: 'a', text: 'Esquerre → Arrel → Dret.' },
+                    { id: 'b', text: 'Arrel → Esquerre → Dret.' },
+                    { id: 'c', text: 'Esquerre → Dret → Arrel.' },
+                    { id: 'd', text: 'Dret → Esquerre → Arrel.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'El preordre (4.4) visita primer l\'arrel, després explora el subarbre esquerre i finalment el dret.'
+            },
+            {
+                id: 'q4-4',
+                question: 'Si volem que una funció recursiva retorni dues dades diferents d\'un sol cop dalt d\'un arbre (ex: l\'altura i si és equilibrat), quina és l\'estratègia més eficient?',
+                options: [
+                    { id: 'a', text: 'Llançar dues funcions recursives independents una darrere l\'altra.' },
+                    { id: 'b', text: 'Utilitzar variables globals per anar guardant els comptadors.' },
+                    { id: 'c', text: 'Fer que la funció retorni un `std::pair` amb ambdues dades per fer-ho en una sola passada.' },
+                    { id: 'd', text: 'No és possible fer-ho en una sola funció; el compilador g++ ho prohibeix.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'A l\'apartat 4.5 es mostra que retornar un `pair` permet passar de cost $\\Theta(N^2)$ a $\\Theta(N)$, ja que evitem recórrer l\'arbre múltiples vegades per calcular dades relacionades.'
+            },
+            {
+                id: 'q4-5',
+                question: 'Quin recorregut d\'un arbre binari s\'utilitza en els Jutges del laboratori quan es representen amb "#" pels subarbres buits?',
+                options: [
+                    { id: 'a', text: 'Inordre.' },
+                    { id: 'b', text: 'Postordre.' },
+                    { id: 'c', text: 'Preordre.' },
+                    { id: 'd', text: 'Cerca en amplada (BFS).' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'A la secció 4.6 s\'especifica que el format més habitual de lectura és el Preordre, on el caràcter `#` indica un subarbre buit.'
+            },
+            {
+                id: 'q4-6',
+                question: 'Quin és el cost algorísmic de calcular l\'altura d\'un arbre binari amb $N$ nodes?',
+                options: [
+                    { id: 'a', text: '$O(1)$' },
+                    { id: 'b', text: '$O(\\log N)$' },
+                    { id: 'c', text: '$O(N)$' },
+                    { id: 'd', text: '$O(N \\log N)$' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Per calcular l\'altura cal visitar tots els nodes de l\'arbre un cop, per tant el cost és proporcional al nombre de nodes, $\\Theta(N)$.'
+            },
+            {
+                id: 'q4-7',
+                question: 'En un recorregut en "Inordre", quin node de l\'arbre serà l\'últim a ser visitat?',
+                options: [
+                    { id: 'a', text: 'L\'arrel de l\'arbre.' },
+                    { id: 'b', text: 'El node més a la dreta del subarbre dret.' },
+                    { id: 'c', text: 'El node més a l\'esquerra del subarbre esquerre.' },
+                    { id: 'd', text: 'Depèn de si l\'arbre està equilibrat o no.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Com que l\'inordre és Esquerre → Arrel → Dret, la branca més a la dreta sempre es visita al final de tot el procés recursiu.'
+            },
+            {
+                id: 'q4-8',
+                question: 'Què representa el caràcter `#` en les entrades d\'arbres del laboratori de PRO2?',
+                options: [
+                    { id: 'a', text: 'Un node que conté un caràcter especial.' },
+                    { id: 'b', text: 'El final de tot l\'arbre.' },
+                    { id: 'c', text: 'Un subarbre buit (`empty`).' },
+                    { id: 'd', text: 'Una fulla de l\'arbre.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Tal com diu el punt 4.6, el marc `#` és la forma estàndard d\'indicar un subarbre buit en la representació lineal per poder reconstruir l\'estructura correctament.'
+            },
+            {
+                id: 'q4-9',
+                question: 'Si volem reconstruir un arbre a partir de la seva entrada en "Postordre", quina estructura de dades auxiliar ens seria més útil?',
+                options: [
+                    { id: 'a', text: 'Una cua (`queue`).' },
+                    { id: 'b', text: 'Una pila (`stack`).' },
+                    { id: 'c', text: 'Un vector.' },
+                    { id: 'd', text: 'Un set.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'A la secció 4.6 s\'explica que pel format Postordre cal una pila per anar guardant els subarbres ja llegits fins que arribem a l\'arrel que els uneix.'
+            },
+            {
+                id: 'q4-10',
+                question: 'Si un arbre binari té l\'arrel 10, fill esquerre 5 i fill dret 15. Com es representaria en la notació Postordre del Jutge?',
+                options: [
+                    { id: 'a', text: '10 5 # # 15 # #' },
+                    { id: 'b', text: '# # 5 # # 15 10' },
+                    { id: 'c', text: '# 5 # 10 # 15 #' },
+                    { id: 'd', text: '10 # # 5 # # 15' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Postordre: Esquerre (# # 5), Dreta (# # 15), Arrel (10). Resultat: # # 5 # # 15 10.'
+            }
+        ]
+    },
+    {
+        topicId: 'pro2-tema-5', // Cues de prioritat i arbres generals
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'q5-1',
+                question: 'Quina és l\'operació principal que garanteix una cua de prioritat?',
+                options: [
+                    { id: 'a', text: 'Sempre retorna l\'element més antic que ha entrat.' },
+                    { id: 'b', text: 'Sempre retorna l\'element que ocupa menys memòria.' },
+                    { id: 'c', text: 'Sempre retorna l\'element més gran (o amb més prioritat) d\'entre els que hi ha.' },
+                    { id: 'd', text: 'Sempre retorna els elements en ordre alfabètic.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'A diferència de les cues FIFO, les de prioritat (5.1) atenen l\'element més prioritari independentment de l\'ordre d\'arribada.'
+            },
+            {
+                id: 'q5-2',
+                question: 'Quin és el cost algorísmic d\'inserir un element (`push`) en un Binary Heap?',
+                options: [
+                    { id: 'a', text: '$O(1)$' },
+                    { id: 'b', text: '$O(\\log N)$' },
+                    { id: 'c', text: '$O(N)$' },
+                    { id: 'd', text: '$O(N \\log N)$' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Com que un Binary Heap (5.2) és un arbre binari complet, les operacions de pujada o baixada per reequilibrar triguen com a molt l\'altura de l\'arbre, que és $\\log N$.'
+            },
+            {
+                id: 'q5-3',
+                question: 'En la representació vectorial d\'un Heap, si un node està a la posició `i`, on es troba el seu fill dret?',
+                options: [
+                    { id: 'a', text: '`i + 1`' },
+                    { id: 'b', text: '`2 * i`' },
+                    { id: 'c', text: '`2 * i + 1`' },
+                    { id: 'd', text: '`i / 2`' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Segons l\'aritmètica de Heaps (5.2), el fill esquerre està a `2i` i el dret a `2i + 1`.'
+            },
+            {
+                id: 'q5-4',
+                question: 'Què cal fer perquè un Heap pugui ordenar objectes personalitzats (com `struct Persona`) segons el nostre propi criteri?',
+                options: [
+                    { id: 'a', text: 'Canviar el codi intern de la llibreria Heap.' },
+                    { id: 'b', text: 'Sobrecarregar l\'operador `>` per definir quina persona és "més gran".' },
+                    { id: 'c', text: 'L\'estructura Heap només serveix per a enters i caràcters.' },
+                    { id: 'd', text: 'S\'ha d\'afegir un atribut enter anomenat `prioritat` obligatòriament.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'L\'apartat 5.3 ensenya que sobrecarregant l\'operatror `>` podem ensenyar al Heap com comparar els nostres objectes.'
+            },
+            {
+                id: 'q5-5',
+                question: 'Quina és la diferència principal d\'un "Arbre General" (`Tree<T>`) respecte a un "Arbre Binari"?',
+                options: [
+                    { id: 'a', text: 'Que només pot tenir fills per la banda dreta.' },
+                    { id: 'b', text: 'Que cada node pot tenir un nombre arbitrari de fills (0, 1, 2, 10...).' },
+                    { id: 'c', text: 'Que les dades s\'emmagatzemen sempre de forma ordenada.' },
+                    { id: 'd', text: 'Que no admet recursivitat.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'A la secció 5.4 es defineix l\'arbre general com aquell on la llimitació d\'esquerra/dreta desapareix i usem un vector de fills.'
+            },
+            {
+                id: 'q5-6',
+                question: 'Com s\'accedeix als fills d\'un node en un arbre general `Tree<T>`?',
+                options: [
+                    { id: 'a', text: 'Amb les funcions `left()` i `right()`.' },
+                    { id: 'b', text: 'Mitjançant un bucle de 0 a `num_children() - 1` usant la funció `child(i)`.' },
+                    { id: 'c', text: 'Usant un iterador de cua.' },
+                    { id: 'd', text: 'Llegint la posició `t[i]`.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Com que hi ha $N$ fills, cal iterar sobre el vector intern de subarbres mitjançant `child(i)` (5.4).'
+            },
+            {
+                id: 'q5-7',
+                question: 'En l\'operació `pop()` d\'un Heap, quin element es posa provisionalment a l\'arrel abans de fer-lo baixar?',
+                options: [
+                    { id: 'a', text: 'El segon element més gran.' },
+                    { id: 'b', text: 'El valor zero.' },
+                    { id: 'c', text: 'L\'últim element del vector (el que estava a la posició més baixa).' },
+                    { id: 'd', text: 'Un valor nul `#`.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Per mantenir l\'estructura completa de l\'arbre, movem l\'últim element a l\'arrel i després el fem baixar fins a la seva posició jeràrquica correcta (5.2).'
+            },
+            {
+                id: 'q5-8',
+                question: 'Quin és el cost algorísmic d\'obtenir l\'element màxim d\'una cua de prioritat (`top`)?',
+                options: [
+                    { id: 'a', text: '$O(1)$' },
+                    { id: 'b', text: '$O(\\log N)$' },
+                    { id: 'c', text: '$O(N)$' },
+                    { id: 'd', text: 'Depèn de si el Heap està buit.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'L\'element màxim sempre és a la posició 1 del vector (l\'arrel), per tant l\'accés és immediat, $O(1)$.'
+            },
+            {
+                id: 'q5-9',
+                question: 'Si un arbre general té 5 fills, quina serà la seva estructura en memòria segons la classe `Tree<T>`?',
+                options: [
+                    { id: 'a', text: 'Cinc punters directes anomenats `f1`, `f2`... `f5`.' },
+                    { id: 'b', text: 'Un `std::vector<Tree<T>>` amb 5 posicions.' },
+                    { id: 'c', text: 'Una llista doblement encadenada de fills.' },
+                    { id: 'd', text: 'Un Binary Heap de subarbres.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Internament, el `Tree` gestiona els seus descendents mitjançant un vector d\'altres objectes `Tree` (5.4).'
+            },
+            {
+                id: 'q5-10',
+                question: 'A quina posició del vector d\'un Heap guardem l\'arrel per facilitar els càlculs?',
+                options: [
+                    { id: 'a', text: 'A la posició 0.' },
+                    { id: 'b', text: 'A la posició 1 (ignorant la 0).' },
+                    { id: 'c', text: 'A l\'última posició.' },
+                    { id: 'd', text: 'A la posició `N/2`.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Es comença a la posició 1 (5.2) perquè les operacions matemàtiques de `2i` i `2i+1` siguin més senzilles d\'entendre.'
+            }
+        ]
+    },
+    {
+        topicId: 'pro2-tema-6', // Arbres de cerca i maps
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'q6-1',
+                question: 'Quina és l\'invariant fonamental d\'un Arbre Binari de Cerca (BST)?',
+                options: [
+                    { id: 'a', text: 'Que l\'altura dels dos subarbres sigui idèntica.' },
+                    { id: 'b', text: 'Que tots els vèrtexs tinguin el mateix grau.' },
+                    { id: 'c', text: 'Esquerre < Arrel < Dret (per a cada node de l\'arbre).' },
+                    { id: 'd', text: 'Que les fulles estiguin totes al mateix nivell.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'L\'invariant BST (6.2) dicta que a l\'esquerra de qualsevol node només hi ha valors menors, i a la dreta només majors.'
+            },
+            {
+                id: 'q6-2',
+                question: 'Quin recorregut d\'un BST ens torna els elements en ordre ascendent?',
+                options: [
+                    { id: 'a', text: 'Preordre.' },
+                    { id: 'b', text: 'Inordre.' },
+                    { id: 'c', text: 'Postordre.' },
+                    { id: 'd', text: 'Cerca en amplada.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'A causa de l\'invariant (Esquerre < Arrel < Dret), el recorregut Inordre ens retorna la seqüència exactament ordenada (6.2).'
+            },
+            {
+                id: 'q6-3',
+                question: 'Quin és el cost de cercar un element en un BST si l\'arbre està equilibrat?',
+                options: [
+                    { id: 'a', text: '$O(1)$' },
+                    { id: 'b', text: '$O(\\log N)$' },
+                    { id: 'c', text: '$O(N)$' },
+                    { id: 'd', text: '$O(N \\log N)$' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Com que a cada pas descartem el 50% de l\'arbre, el cost és logarítmic (6.3).'
+            },
+            {
+                id: 'q6-4',
+                question: 'En un mapa de C++ (`map<string, int> m`), què passa si fem `m["paraula"]++` i la clau no existia?',
+                options: [
+                    { id: 'a', text: 'Dona un error en temps d\'execució.' },
+                    { id: 'b', text: 'C++ crea la clau automàticament amb valor 0 i li aplica l\'increment.' },
+                    { id: 'c', text: 'No s\'incrementa res perquè la clau és NULL.' },
+                    { id: 'd', text: 'Retorna un iterador a `m.end()`.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'L\'operador `[]` té l\'efecte lateral de crear l\'element amb el valor per defecte (0 per a int) si no el troba (6.5 i 6.6).'
+            },
+            {
+                id: 'q6-5',
+                question: 'Quin és l\'objecte real que emmagatzema un `map` internament per a cada entrada?',
+                options: [
+                    { id: 'a', text: 'Un node senzill.' },
+                    { id: 'b', text: 'Una llista d\'enters.' },
+                    { id: 'c', text: 'Un `std::pair<const K, V>` amb camps `first` (clau) i `second` (valor).' },
+                    { id: 'd', text: 'Un vector de dues posicions.' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Cada entrada del mapa és un parell (6.5), on el primer camp és la clau (que no es pot modificar) i el segon és el valor.'
+            },
+            {
+                id: 'q6-6',
+                question: 'Si necessitem un contenidor que només guardi valors únics i estiguin ordenats (sense valors associats), quin fem servir?',
+                options: [
+                    { id: 'a', text: '`std::map`' },
+                    { id: 'b', text: '`std::vector`' },
+                    { id: 'c', text: '`std::set`' },
+                    { id: 'd', text: '`std::queue`' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'El `set` és un BST on només s\'emmagatzemen les claus, garantint unicitat i ordre (6.8).'
+            },
+            {
+                id: 'q6-7',
+                question: 'Quin és el pitjor cas de cerca en un BST si l\'arbre està totalment desequilibrat (una llista)?',
+                options: [
+                    { id: 'a', text: '$O(1)$' },
+                    { id: 'b', text: '$O(\\log N)$' },
+                    { id: 'c', text: '$O(N)$' },
+                    { id: 'd', text: '$O(N^2)$' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Si l\'arbre és degenerat (un node darrere l\'altre), perdem l\'avantatge de la divisió de l\'arbre i hem de recórrer tots els nodes (6.3 tip).'
+            },
+            {
+                id: 'q6-8',
+                question: 'En un BST, un node sempre és més gran que tots els nodes de:',
+                options: [
+                    { id: 'a', text: 'El seu subarbre dret.' },
+                    { id: 'b', text: 'El seu subarbre esquerre.' },
+                    { id: 'c', text: 'Qualsevol node que estigui per sobre d\'ell.' },
+                    { id: 'd', text: 'Cap de les anteriors.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Pel propi invariant, l\'arrel de qualsevol subarbre és major que qualsevol element que pengi de la seva banda esquerra (6.2).'
+            },
+            {
+                id: 'q6-9',
+                question: 'Què retorna la funció `m.find(clau)` si la clau que busquem no és al mapa?',
+                options: [
+                    { id: 'a', text: 'L\'iterador al primer element.' },
+                    { id: 'b', text: 'L\'iterador `m.end()`.' },
+                    { id: 'c', text: 'El valor 0.' },
+                    { id: 'd', text: 'Un error de sistema.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'La funció `find` (6.5) retorna l\'iterador past-the-end (`end()`) per indicar que la cerca no ha tingut èxit.'
+            },
+            {
+                id: 'q6-10',
+                question: 'Quan és preferible utilitzar un `unordered_map` en lloc d\'un `map`?',
+                options: [
+                    { id: 'a', text: 'Perquè el codi és més segur.' },
+                    { id: 'b', text: 'Quan necessitem la màxima velocitat de cerca ($O(1)$ amortitzat) i no ens importa l\'ordre dels elements.' },
+                    { id: 'c', text: 'Sempre s\'ha de preferir l\'unordered_map.' },
+                    { id: 'd', text: 'Quan la clau no és un string.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Tal com indica la taula 6.9, el `unordered_map` és més ràpid però no manté els elements en ordre ascendent per clau.'
+            }
+        ]
     }
 ];
