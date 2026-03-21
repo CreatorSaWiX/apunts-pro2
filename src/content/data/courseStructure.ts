@@ -231,6 +231,26 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M1-T3-Ex3.16", title: "Exercici 3.16: Existència de Camí Hamiltonià" }
         ]
     },
+    {
+        id: "m1-tema-4",
+        title: "Tema 4: Arbres i arbres generadors",
+        description: "L'estructura estrella. Caracterització i la seqüència de Prüfer.",
+        problems: [
+            { id: "M1-T4-Ex4.2", title: "Exercici 4.2: Arbre és Bipartit" },
+            { id: "M1-T4-Ex4.3", title: "Exercici 4.3: Ordre i Mida d'Arbres" },
+            { id: "M1-T4-Ex4.5", title: "Exercici 4.5: Seqüència de Graus i Arbres No Isomorfs" },
+            { id: "M1-T4-Ex4.6", title: "Exercici 4.6: Graf no arbre amb vèrtexs de tall" },
+            { id: "M1-T4-Ex4.7", title: "Exercici 4.7: Fórmula de les Fulles" },
+            { id: "M1-T4-Ex4.8", title: "Exercici 4.8: Condició per ser Arbre (Graus 1 i 5)" },
+            { id: "M1-T4-Ex4.9", title: "Exercici 4.9: Grau Màxim i Nombre de Fulles" },
+            { id: "M1-T4-Ex4.10", title: "Exercici 4.10: Caracteritzacions del Graf Estrella" },
+            { id: "M1-T4-Ex4.11", title: "Exercici 4.11: Grafs Unicíclics" },
+            { id: "M1-T4-Ex4.12", title: "Exercici 4.12: Arbres generadors de C_n i K_{2,r}" },
+            { id: "M1-T4-Ex4.15", title: "Exercici 4.15: Fulles del Spanning Tree i Vèrtexs de Tall" },
+            { id: "M1-T4-Ex4.16", title: "Exercici 4.16: Seqüències de Prüfer" },
+            { id: "M1-T4-Ex4.17", title: "Exercici 4.17: Reconstrucció d'arbres" }
+        ]
+    },
 
     // --- M2 (Càlcul i Optimitació) ---
     {
