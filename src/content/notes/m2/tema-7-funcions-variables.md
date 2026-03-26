@@ -1,10 +1,10 @@
 ---
-title: "Tema 7: Funcions de Vàries Variables"
+title: "Tema 7: Func. de vàries variables"
 description: "Introducció a l'espai euclidi Rn, topologia bàsica (oberts, tancats, compactes), gràfiques de superfícies i corbes de nivell."
 order: 7
 readTime: "30 min"
 subject: "m2"
-draft: false
+draft: true
 ---
 
 Fins ara hem estudiat funcions d'una sola variable $f(x)$. En aquest tema estenem el càlcul a funcions on el domini és un subconjunt de l'espai $n$-dimensional: $f(x_1, x_2, \dots, x_n)$.

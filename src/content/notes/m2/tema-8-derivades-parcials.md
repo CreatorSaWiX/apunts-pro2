@@ -1,5 +1,5 @@
 ---
-title: "Tema 8: Derivades Parcials i Gradient"
+title: "Tema 8: Derivada parcial i gradient"
 description: "Càlcul diferencial multivariable: derivades direccionals, vectors gradient, diferenciabilitat i el pla tangent."
 order: 8
 readTime: "35 min"
@@ -69,4 +69,4 @@ $$
 Per a la composició de funcions $g \circ f$, la matriu jacobiana del resultat és el producte de les matrius jacobianes:
 $$\mathcal{J}(g \circ f)(\mathbf{a}) = \mathcal{J}g(f(\mathbf{a})) \cdot \mathcal{J}f(\mathbf{a})$$
 
-> **Consell de Senior**: Encara que la matriu sembli gegant, pensa-la com una simple multiplicació de "pendents" generalitzades a moltes dimensions.
+> Encara que la matriu sembli gegant, pensa-la com una simple multiplicació de "pendents" generalitzades a moltes dimensions.

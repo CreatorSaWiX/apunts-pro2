@@ -67,19 +67,40 @@ Una **Biestrella** és un arbre que té **exactament dos vèrtexs que no són fu
 :::
 
 ### Teoremes de caracterització
-Un graf $G$ d'ordre $n$ i mida $m$ és un arbre si compleix **dues** d'aquestes tres condicions (la tercera es compleix automàticament):
+Un graf $G$ d'ordre $n$ i mida $m$ és un arbre si compleix **dues** d'aquestes tres condicions:
 1.  $G$ és connex.
 2.  $G$ és acíclic.
 3.  $m = n - 1$.
+
+:::tip{title="Ex1-Parcial-2014"}
+**Problema:** Demostreu que un graf d’ordre $n$ i mida $m$ és arbre si i només si és acíclic i $m = n-1$.
+
+<details>
+<summary><b>Veure la demostració</b></summary>
+
+1. ($\implies$) Si $G$ és un arbre, llavors és acíclic per definició. Demostrem que $m = n-1$ per inducció sobre $n$:
+    
+    **Cas base ($n=1$):** Un node i 0 arestes. $m = 0 = 1-1$. Correcte.
+   
+   **Pas inductiu:** 
+    * **H.I.:** Suposem que la fórmula $m=n-1$ és certa per a tots els arbres de $n=k$ vèrtexs.
+    * **T.I.:** Un arbre de $n=k+1$ nodes té almenys una fulla (vèrtex de grau 1). Si l'eliminem juntament amb la seva aresta, obtenim un nou arbre de $n=k$ nodes. Per hipòtesi d'inducció, aquest té $m = k-1$ arestes. En restaurar la fulla i l'aresta original, tenim $m = (k-1) + 1 = k = (k+1)-1$.
+
+2. ($\impliedby$) Si $G$ és acíclic i $m = n-1$, hem de demostrar que és connex (i per tant un arbre):
+    * Suposem que $G$ té $k$ components connexes $C_1, C_2, \dots, C_k$. Com que el graf és acíclic, cada component també ho és i, per ser connexa, cada $C_i$ és un arbre.
+    * Per a cada component $C_i$, sabem que $m_i = n_i - 1$.
+    * Sumant totes les arestes: $m = \sum_{i=1}^k m_i = \sum_{i=1}^k (n_i - 1) = \sum n_i - \sum 1 = n - k$.
+    * Com que se'ns diu que $m = n - 1$, llavors $n - k = n - 1 \implies \mathbf{k = 1}$.
+    * En haver-hi una sola component, el graf és connex i queda demostrat que és un arbre.
+</details>
+:::
 
 Altres caracteritzacions:
 *   Existeix un **únic camí** entre qualsevol parell de vèrtexs.
 *   És acíclic, però si hi afegim qualsevol aresta nova, es crea exactament un cicle.
 
 ### Tip d'exàmen:
-La majoria de problemes numèrics es resolen combinant el Teorema de les Encaixades ($\sum g(v) = 2m$) amb la propietat $m = n - 1$:
-
-$$ \sum_{v \in V} g(v) = 2n - 2 $$
+La majoria de problemes numèrics es resolen combinant lema de les encaixades amb la propietat $m = n - 1$: $$ \sum_{v \in V} g(v) = 2n - 2 $$
 
 :::tip{title="Exemple de càlcul de fulles"}
 **Problema:** Un arbre té 3 vèrtexs de graus 4, 3 i 2. La resta són fulles. Quantes fulles té?

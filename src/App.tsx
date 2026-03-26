@@ -18,7 +18,7 @@ const QuizPage = lazy(() => import('./pages/QuizPage'));
 import { AuthProvider } from './contexts/AuthContext';
 import { SubjectProvider } from './contexts/SubjectContext';
 import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/react"
+// import { SpeedInsights } from "@vercel/speed-insights/react"
 
 function App() {
   return (
@@ -49,7 +49,7 @@ function App() {
             </Routes>
           </Suspense>
           <Analytics />
-          <SpeedInsights />
+          {/* <SpeedInsights /> */}
         </div>
       </AuthProvider>
     </SubjectProvider>

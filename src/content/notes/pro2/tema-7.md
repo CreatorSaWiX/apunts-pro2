@@ -1,7 +1,7 @@
 ---
 title: "Tema 7: Projectes amb classes"
 description: "Implementació i ús de cues de prioritat."
-readTime: "Properament"
+readTime: "40s"
 order: 8
 draft: true
 ---

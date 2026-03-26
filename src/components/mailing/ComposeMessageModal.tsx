@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Send, Loader, AlertCircle, FileCode } from 'lucide-react';
+import { X, Send, Loader, AlertCircle, FileCode, Code } from 'lucide-react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -43,6 +43,17 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!subject.trim()) {
+            setError('Si us plau, introdueix un assumpte per al missatge.');
+            return;
+        }
+
+        if (!body.trim()) {
+            setError('El missatge no pot estar buit.');
+            return;
+        }
+
         if (!user) {
             setError('Has d\'iniciar sessió per enviar missatges.');
             return;
@@ -54,12 +65,24 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
         try {
             const encryptedBody = encryptMessage(body);
 
+            let receiverAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${receiverName}`;
+            try {
+                const { getDoc, doc } = await import('firebase/firestore');
+                const docSnap = await getDoc(doc(db, 'users', receiverId));
+                if (docSnap.exists() && docSnap.data().avatar) {
+                    receiverAvatar = docSnap.data().avatar;
+                }
+            } catch (err) {
+                console.error("No s'ha pogut verificar la foto del receptor", err);
+            }
+
             await addDoc(collection(db, 'messages'), {
                 senderId: user.id,
                 senderName: user.username,
                 senderAvatar: user.avatar,
                 receiverId: receiverId,
                 receiverName: receiverName,
+                receiverAvatar: receiverAvatar,
                 subject: subject,
                 body: encryptedBody,
                 relatedProblemId: selectedProblem ? selectedProblem.id : null,
@@ -127,10 +150,12 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                                 <input
                                     type="text"
                                     value={subject}
-                                    onChange={(e) => setSubject(e.target.value)}
+                                    onChange={(e) => {
+                                        setSubject(e.target.value);
+                                        if (error) setError('');
+                                    }}
                                     className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:border-sky-500/50 focus:ring-4 focus:ring-sky-500/10 outline-none transition-all font-medium"
                                     placeholder="[P12345] Dubte d'aquest exercici"
-                                    required
                                 />
                             </div>
 
@@ -159,19 +184,31 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                                Missatge
-                                <span className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px] text-slate-400 normal-case font-normal flex items-center gap-1">
-                                    <AlertCircle size={10} />
-                                    Encriptat amb AES-256
-                                </span>
-                            </label>
+                            <div className="flex justify-between items-center">
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                                    Missatge
+                                    <span className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px] text-slate-400 normal-case font-normal flex items-center gap-1">
+                                        <AlertCircle size={10} />
+                                        Encriptat amb AES-256
+                                    </span>
+                                </label>
+                                <button
+                                    type="button"
+                                    onClick={() => setBody(prev => prev + (prev.length > 0 && !prev.endsWith('\n') ? '\n' : '') + '```cpp\n// Escriu el teu codi aquí\n\n```\n')}
+                                    className="text-xs flex items-center gap-1.5 text-sky-400 hover:text-sky-300 transition-colors px-2 py-1 rounded-md hover:bg-sky-500/10"
+                                >
+                                    <Code size={14} />
+                                    Afegeix Codi
+                                </button>
+                            </div>
                             <textarea
                                 value={body}
-                                onChange={(e) => setBody(e.target.value)}
-                                className="w-full h-40 bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:border-sky-500/50 focus:ring-4 focus:ring-sky-500/10 outline-none resize-none transition-all leading-relaxed"
-                                placeholder="Escriu el teu missatge aquí..."
-                                required
+                                onChange={(e) => {
+                                    setBody(e.target.value);
+                                    if (error) setError('');
+                                }}
+                                className="w-full h-40 bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:border-sky-500/50 focus:ring-4 focus:ring-sky-500/10 outline-none resize-none transition-all leading-relaxed custom-scrollbar"
+                                placeholder="Escriu el teu missatge aquí... (Pots fer servir ```cpp per afegir codi)"
                             />
                         </div>
 
@@ -190,7 +227,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-3.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
+                                className="w-full py-3.5 bg-linear-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
                             >
                                 {isLoading ? <Loader size={18} className="animate-spin" /> : <Send size={18} />}
                                 Enviar missatge

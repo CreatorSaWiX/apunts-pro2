@@ -1,9 +1,9 @@
 ---
 title: "Parcial PRO2"
 description: "Parcial PRO2"
-readTime: "Properament"
+readTime: "40s"
 order: 7
-draft: true
+draft: false
 ---
 
 # Contingut pendent
