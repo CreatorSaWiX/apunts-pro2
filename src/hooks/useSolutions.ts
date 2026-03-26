@@ -5,7 +5,7 @@ import { fetchJutgeProblem } from '../lib/jutge';
 import { allSolutions } from '../content/data/solutions';
 import type { Solution } from '../content/data/solutions';
 
-export const useSolutions = (topicId: string) => {
+export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
     const [solutions, setSolutions] = useState<Solution[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -14,35 +14,64 @@ export const useSolutions = (topicId: string) => {
             setLoading(true);
             try {
                 // 1. Get static solutions
-                const staticSolutions = allSolutions.find(t => t.topicId === topicId)?.solutions || [];
+                let staticSolutions = allSolutions.find(t => t.topicId === topicId)?.solutions || [];
 
-                // 2. Get Firestore solutions
-                // HANDLE LEGACY IDs: If we are querying 'pro2-tema-1', we also want to catch 'tema-1'
-                const idsToQuery = [topicId];
-                if (topicId.startsWith('pro2-')) {
-                    idsToQuery.push(topicId.replace('pro2-', ''));
+                // Overlap global static solutions if problemIds are explicitly defined
+                if (problemIdsToCheck && problemIdsToCheck.length > 0) {
+                    const globalStaticSolutions = allSolutions.flatMap(t => t.solutions).filter(s => problemIdsToCheck.includes(s.id));
+                    staticSolutions = [...staticSolutions, ...globalStaticSolutions];
                 }
 
-                const q = query(
-                    collection(db, 'solutions'),
-                    where('topicId', 'in', idsToQuery)
-                    // You might want to enable indexing for this: orderBy('createdAt', 'desc')
-                );
-
-                const querySnapshot = await getDocs(q);
+                // 2. Get Firestore solutions
                 const firestoreSolutions: Solution[] = [];
 
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    firestoreSolutions.push({
-                        id: data.problemId,
-                        title: data.title,
-                        author: data.authorName, // Mapping authorName to author
-                        authorId: data.authorId,
-                        code: data.code,
-                        statement: data.statement
+                if (problemIdsToCheck && problemIdsToCheck.length > 0) {
+                    // Chunk into groups of 10 to satisfy Firestore 'in' limitation
+                    const chunks = [];
+                    for (let i = 0; i < problemIdsToCheck.length; i += 10) {
+                        chunks.push(problemIdsToCheck.slice(i, i + 10));
+                    }
+                    
+                    await Promise.all(chunks.map(async chunk => {
+                        const q = query(collection(db, 'solutions'), where('problemId', 'in', chunk));
+                        const snapshot = await getDocs(q);
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            firestoreSolutions.push({
+                                id: data.problemId,
+                                title: data.title,
+                                author: data.authorName, // Mapping authorName to author
+                                authorId: data.authorId,
+                                code: data.code,
+                                statement: data.statement
+                            });
+                        });
+                    }));
+                } else {
+                    // HANDLE LEGACY IDs: If we are querying 'pro2-tema-1', we also want to catch 'tema-1'
+                    const idsToQuery = [topicId];
+                    if (topicId.startsWith('pro2-')) {
+                        idsToQuery.push(topicId.replace('pro2-', ''));
+                    }
+
+                    const q = query(
+                        collection(db, 'solutions'),
+                        where('topicId', 'in', idsToQuery)
+                    );
+
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        firestoreSolutions.push({
+                            id: data.problemId,
+                            title: data.title,
+                            author: data.authorName,
+                            authorId: data.authorId,
+                            code: data.code,
+                            statement: data.statement
+                        });
                     });
-                });
+                }
 
                 // 3. Merge (Firestore takes precedence if ID collision, or just append)
                 // We use a Map to ensure unique by ID, preferring Firestore, then Static
@@ -66,10 +95,10 @@ export const useSolutions = (topicId: string) => {
             }
         };
 
-        if (topicId) {
+        if (topicId || (problemIdsToCheck && problemIdsToCheck.length > 0)) {
             fetchSolutions();
         }
-    }, [topicId]);
+    }, [topicId, JSON.stringify(problemIdsToCheck)]);
 
     return { solutions, loading };
 };

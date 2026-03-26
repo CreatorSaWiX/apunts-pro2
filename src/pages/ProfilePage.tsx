@@ -202,10 +202,12 @@ const ProfilePage = () => {
     const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
 
     const [extendedUser, setExtendedUser] = useState<any>(null);
+    const [isFetchingUser, setIsFetchingUser] = useState(true);
 
     useEffect(() => {
         const fetchUserData = async () => {
             if (userIdToFetch) {
+                setIsFetchingUser(true);
                 const docRef = doc(db, 'users', userIdToFetch);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
@@ -219,6 +221,7 @@ const ProfilePage = () => {
                         id: userIdToFetch
                     });
                 }
+                setIsFetchingUser(false);
             }
         };
         fetchUserData();
@@ -279,16 +282,16 @@ const ProfilePage = () => {
         }
     };
 
-    if (authLoading && !uid) {
+    if (!userIdToFetch && !authLoading) {
+        return <Navigate to="/login" replace />;
+    }
+
+    if (authLoading || isFetchingUser || !extendedUser) {
         return (
             <div className="min-h-screen flex items-center justify-center pt-24 relative z-10 w-full">
                 <Loader size={32} className="text-primary animate-spin" />
             </div>
         );
-    }
-
-    if (!userIdToFetch && !authLoading) {
-        return <Navigate to="/login" replace />;
     }
 
     const rank = getRank(userContributions.length);

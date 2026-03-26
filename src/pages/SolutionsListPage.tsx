@@ -8,11 +8,14 @@ import NotebookLayout from '../components/layout/NotebookLayout';
 
 const SolutionsListPage = () => {
     const { id: topicId } = useParams();
-    const { solutions: uploadedSolutions, loading } = useSolutions(topicId || '');
     const [searchQuery, setSearchQuery] = useState('');
 
     // 1. Get definitions for the current topic from our static structure
     const topicDefinition = courseStructure.find(t => t.id === topicId);
+    
+    // We pass the explicit problem IDs so they are searched globally (not just constrained by topicId namespace)
+    const predefinedProblemIds = topicDefinition?.problems?.map(p => p.id) || [];
+    const { solutions: uploadedSolutions, loading } = useSolutions(topicId || '', predefinedProblemIds);
 
     // Scroll to top
     useEffect(() => {
@@ -106,6 +109,15 @@ const SolutionsListPage = () => {
 
             {/* Problems List based on Structure */}
             {problemsList.length > 0 ? (
+                loading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="h-44 rounded-3xl bg-slate-800/20 border border-white/5 animate-pulse relative overflow-hidden">
+                                <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {visibleProblems.map((problem, index) => {
                         const { id: problemId, title: problemTitle } = problem;
@@ -167,6 +179,7 @@ const SolutionsListPage = () => {
                         );
                     })}
                 </div>
+                )
             ) : (
                 /* Fallback for unstructured topics */
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

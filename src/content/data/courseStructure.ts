@@ -110,8 +110,35 @@ export const courseStructure: TopicDefinition[] = [
     {
         id: "pro2-parcial-pro2",
         title: "Parcial PRO2",
-        description: "Recull d'exàmens parcials i exercicis de preparació.",
-        problems: []
+        description: "Resum PRO2",
+        problems: [
+            { id: "X24468", title: "Índex de paraules" },
+            { id: "V80480", title: "Anagrames" },
+            { id: "Z49559", title: "Mateixos amics" },
+            { id: "U20331", title: "Turistes" },
+            { id: "U93469", title: "Treballs d'impressió repetits" },
+            { id: "V55523", title: "Llistes iguals circularment" },
+            { id: "W49269", title: "Casino" },
+            { id: "Z99038", title: "Rànking de tennis (1)" },
+            { id: "X14956", title: "K nombres més freqüents" },
+            { id: "U14997", title: "Rànking de tennis (2)" },
+            { id: "Y60287", title: "Anti Cross-Site Scripting" },
+            { id: "Z84907", title: "Pàgina HTML Correcta" },
+            { id: "W54048", title: "Corregeix Pàgines HTML" },
+            { id: "V72123", title: "Unió de llistes ordenades" },
+            { id: "W78388", title: "Round Robin" },
+            { id: "X34719", title: "Scraper Bots" },
+            { id: "S37830", title: "Concatena els valors d'un arbre binari de strings" },
+            { id: "X93918", title: "Arbre binari amb els valors dels nodes interns iguals" },
+            { id: "U38461", title: "Avaluar expressions binàries (1)" },
+            { id: "Y97108", title: "Reemplaça els nodes d'un arbre binari a profunditat parell per la suma per sota" },
+            { id: "T56798", title: "Arbre de Múltiples" },
+            { id: "Z19994", title: "Mostra carpetes indentades" },
+            { id: "T47104", title: "Arbre binari de graus de desequilibri" },
+            { id: "Z78925", title: "Avaluar expressions binàries amb variables" },
+            { id: "W90730", title: "Ordenar un arbre binari per sumes de subarbres" },
+            { id: "V22704", title: "Camí més llarg en un arbre binari" }
+        ]
     },
     {
         id: "pro2-tema-7",
