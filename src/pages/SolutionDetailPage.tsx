@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, FileText, ChevronLeft, ChevronRight, CheckCircle, Loader, Edit, Save, X } from 'lucide-react';
+import { ArrowLeft, FileText, ChevronLeft, ChevronRight, CheckCircle, Loader, Edit, Save, X, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSolution, useSolutions } from '../hooks/useSolutions';
 import CodeBlock from '../components/ui/CodeBlock';
@@ -110,6 +110,10 @@ const SolutionDetailPage = () => {
     // Helper to check if it's a "real" solved solution
     const isSolved = solution && solution.authorId && !solution.code.includes('// Solució no disponible encara');
 
+    // Evaluate if this problem is a Jutge problem. Most PRO2 problems that are exactly 6 letters/numbers are Jutge IDs.
+    const isJutgeId = solution && /^[A-Z0-9]{6}$/.test(solution.id) && topicId?.startsWith('pro2-');
+    const jutgeUrl = isJutgeId ? `https://jutge.org/problems/${solution.id}` : undefined;
+
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center pt-24 pb-20 px-4">
             <div className="flex flex-col items-center gap-4">
@@ -151,9 +155,16 @@ const SolutionDetailPage = () => {
 
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
-                            <span className="font-mono text-emerald-400 font-bold tracking-tight text-lg">
-                                {solution.id}
-                            </span>
+                            {jutgeUrl ? (
+                                <a href={jutgeUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-emerald-400 hover:text-emerald-300 hover:underline font-bold tracking-tight text-lg flex items-center gap-1.5" title="Obrir problema al Jutge">
+                                    {solution.id}
+                                    <ExternalLink size={16} className="opacity-70" />
+                                </a>
+                            ) : (
+                                <span className="font-mono text-emerald-400 font-bold tracking-tight text-lg">
+                                    {solution.id}
+                                </span>
+                            )}
                             <span className="w-1 h-1 rounded-full bg-slate-600"></span>
                             <h1 className="text-lg font-bold text-slate-200 truncate max-w-xs sm:max-w-md">
                                 {(() => {
@@ -283,7 +294,14 @@ const SolutionDetailPage = () => {
                                 <>
                                     <div className="px-5 py-3 bg-white/[0.03] border-b border-white/[0.06] flex items-center justify-between shrink-0">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-sm font-mono text-slate-400">{solution.id}.cpp</span>
+                                            {jutgeUrl ? (
+                                                <a href={jutgeUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-slate-400 hover:text-sky-400 hover:underline transition-colors flex items-center gap-1.5" title="Obrir a jutge.org">
+                                                    {solution.id}.cpp
+                                                    <Edit size={13} className="opacity-0" /> {/* Spacer */}
+                                                </a>
+                                            ) : (
+                                                <span className="text-sm font-mono text-slate-400">{solution.id}.cpp</span>
+                                            )}
                                             <span className="text-xs font-medium text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">C++</span>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -315,6 +333,7 @@ const SolutionDetailPage = () => {
                                     code={solution.code}
                                     language="cpp"
                                     title={`${solution.id}.cpp`}
+                                    titleHref={jutgeUrl}
                                     showHeader={true}
                                     className="!m-0 h-full !bg-transparent !rounded-none !shadow-none !border-0 flex-1 flex flex-col"
                                     headerActions={

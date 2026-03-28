@@ -1,4 +1,4 @@
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, ExternalLink } from 'lucide-react';
 import React, { useState } from 'react';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
@@ -48,6 +48,7 @@ const getLanguageExtension = (langKey: string) => {
 interface CodeBlockProps {
     code: string;
     title?: string;
+    titleHref?: string;
     language?: string;
     className?: string;
     variant?: 'default' | 'minimal';
@@ -58,6 +59,7 @@ interface CodeBlockProps {
 const CodeBlock: React.FC<CodeBlockProps> = ({
     code,
     title,
+    titleHref,
     language = 'text',
     className = '',
     variant = 'default',
@@ -138,7 +140,14 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
                 <div className="px-5 py-3 bg-white/[0.03] border-b border-white/[0.06] flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         {title && (
-                            <span className="text-sm font-mono text-slate-400">{title}</span>
+                            titleHref ? (
+                                <a href={titleHref} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-slate-400 hover:text-sky-400 hover:underline transition-colors flex items-center gap-1.5" title="Obrir a una nova pestanya">
+                                    {title}
+                                    <ExternalLink size={13} className="opacity-70" />
+                                </a>
+                            ) : (
+                                <span className="text-sm font-mono text-slate-400">{title}</span>
+                            )
                         )}
                         <span className={`text-xs font-medium ${config.color} ${config.bg} px-2 py-0.5 rounded border ${config.border}`}>
                             {config.name}

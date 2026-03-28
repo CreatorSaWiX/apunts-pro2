@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Search, Check, Code2 } from 'lucide-react';
+import { ArrowLeft, Search, Check, Code2, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSolutions } from '../hooks/useSolutions';
 import { courseStructure } from '../content/data/courseStructure';
@@ -147,11 +147,36 @@ const SolutionsListPage = () => {
                                         )}
 
                                         <div className="relative z-10 flex items-start justify-between mb-4">
-                                            <div className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition-colors shadow-sm
-                                                ${isSolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-white/10'}
-                                            `}>
-                                                {problemId}
-                                            </div>
+                                            {(() => {
+                                                const isJutgeId = /^[A-Z0-9]{6}$/.test(problemId) && topicId?.startsWith('pro2-');
+                                                const jutgeUrl = isJutgeId ? `https://jutge.org/problems/${problemId}` : undefined;
+                                                
+                                                if (jutgeUrl) {
+                                                    return (
+                                                        <button 
+                                                            onClick={(e) => {
+                                                                e.preventDefault(); 
+                                                                window.open(jutgeUrl, '_blank', 'noopener,noreferrer');
+                                                            }}
+                                                            className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition-all shadow-sm flex items-center gap-1.5 hover:-translate-y-0.5
+                                                                ${isSolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-400' : 'bg-slate-800 text-slate-400 border-white/10 hover:bg-slate-700 hover:text-white'}
+                                                            `}
+                                                            title="Obrir problema al Jutge"
+                                                        >
+                                                            {problemId}
+                                                            <ExternalLink size={14} className="opacity-70" />
+                                                        </button>
+                                                    );
+                                                }
+                                                
+                                                return (
+                                                    <div className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition-colors shadow-sm
+                                                        ${isSolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-white/10'}
+                                                    `}>
+                                                        {problemId}
+                                                    </div>
+                                                );
+                                            })()}
                                             {isSolved ? (
                                                 <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1.5 rounded-full border border-emerald-500/20 shadow-sm backdrop-blur-md">
                                                     <Check size={12} strokeWidth={3} /> Fet

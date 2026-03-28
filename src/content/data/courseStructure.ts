@@ -83,7 +83,7 @@ export const courseStructure: TopicDefinition[] = [
             { id: "Z82639", title: "Avaluar expressions Booleanes" },
             { id: "Z14339", title: "Imprimir expressions" },
             { id: "W37576", title: "Màxim en Finestra" },
-            { id: "S84123", title: "Exercici restringit (S84123)" }
+            { id: "S84123", title: "Fusió de K Llistes Ordenades" }
         ]
     },
     {
@@ -116,28 +116,45 @@ export const courseStructure: TopicDefinition[] = [
             { id: "V80480", title: "Anagrames" },
             { id: "Z49559", title: "Mateixos amics" },
             { id: "U20331", title: "Turistes" },
-            { id: "U93469", title: "Treballs d'impressió repetits" },
-            { id: "V55523", title: "Llistes iguals circularment" },
-            { id: "W49269", title: "Casino" },
+            { id: "U93469", title: "24T-Ex2: Treballs d'impressió repetits" },
+            { id: "V55523", title: "24T-Ex3: Llistes iguals circularment" },
+            { id: "W49269", title: "25P-Ex3: Casino" },
             { id: "Z99038", title: "Rànking de tennis (1)" },
             { id: "X14956", title: "K nombres més freqüents" },
             { id: "U14997", title: "Rànking de tennis (2)" },
             { id: "Y60287", title: "Anti Cross-Site Scripting" },
             { id: "Z84907", title: "Pàgina HTML Correcta" },
-            { id: "W54048", title: "Corregeix Pàgines HTML" },
-            { id: "V72123", title: "Unió de llistes ordenades" },
+            { id: "W54048", title: "25P-Ex4: Corregeix Pàgines HTML" },
+            { id: "V72123", title: "25P-Ex2: Unió de llistes ordenades" },
             { id: "W78388", title: "Round Robin" },
             { id: "X34719", title: "Scraper Bots" },
             { id: "S37830", title: "Concatena els valors d'un arbre binari de strings" },
-            { id: "X93918", title: "Arbre binari amb els valors dels nodes interns iguals" },
+            { id: "X93918", title: "25P-Ex1: Arbre binari amb els valors dels nodes interns iguals" },
             { id: "U38461", title: "Avaluar expressions binàries (1)" },
             { id: "Y97108", title: "Reemplaça els nodes d'un arbre binari a profunditat parell per la suma per sota" },
-            { id: "T56798", title: "Arbre de Múltiples" },
+            { id: "T56798", title: "25T-Ex2: Arbre de Múltiples" },
             { id: "Z19994", title: "Mostra carpetes indentades" },
             { id: "T47104", title: "Arbre binari de graus de desequilibri" },
             { id: "Z78925", title: "Avaluar expressions binàries amb variables" },
             { id: "W90730", title: "Ordenar un arbre binari per sumes de subarbres" },
-            { id: "V22704", title: "Camí més llarg en un arbre binari" }
+            { id: "V22704", title: "Camí més llarg en un arbre binari" },
+            { id: "S81463", title: "25T-Ex1: Parentització Correcta" },
+            { id: "W28242", title: "25T-Ex3: Avalua expressió general" },
+            { id: "Y99091", title: "25T-Ex4: Números consecutius" },
+
+            { id: "X31410", title: "24P-Ex1: Nombre de nodes amb valor estríctament major que el valor del seu node pare" },
+            { id: "X65021", title: "24P-Ex2: Afegir els propis elements d'una llista al final i en ordre invers (Pro2)" },
+            { id: "X31002", title: "24P-Ex3: Esborrar cada dos lletres consecutives iguals però una majúscula i l'altra minúscula" },
+            { id: "X21572", title: "24P-Ex4: Seguiment de comptes en vermell" },
+            { id: "X56934", title: "24P-Ex5: Arbre amb postordre" },
+
+            { id: "X58333", title: "24T-Ex1: Màxima suma d'un camí descendent." },
+            { id: "V40142", title: "24T-Ex4: Paraula en un arbre" },
+
+            { id: "X12047", title: "23T-Ex1: Nombre de fulles d'un arbre" },
+            { id: "X38065", title: "23T-Ex2: Nombre de persones amb monedes" },
+            { id: "X30191", title: "23T-Ex3: Nombre d'expressions amb avaluació negativa" },
+            { id: "X62454", title: "23T-Ex4: Canviar paréntesis i corxets de tancar per a produïr una seqüència ben parentitzada" }
         ]
     },
     {
