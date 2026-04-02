@@ -117,22 +117,46 @@ Resta d'arrels dóna $\\infty - \\infty$. Tret obligatòri de multiplicar per co
         type: "notebook",
         code: "",
         statement: `Sigui $(a_n)_{n \\geq 1}$ una successió tal que $a_1 = -2/3$ i $3a_{n+1} = 2 + a_n^3$ si $n \\geq 1$.
+
 a) Proveu que $-2 \\leq a_n \\leq 1$ per a tot $n \\geq 1$.
+
 b) Proveu que $(a_n)$ és creixent
+
 c) Proveu que $(a_n)_{n \\geq 1}$ és convergent i calculeu el seu límit.`,
         content: `**a) Proveu que $-2 \\leq a_n \\leq 1$**
+
 Ho demostrem per inducció.
-*Pas base:* Per $n = 1$, $a_1 = -2/3$. Es compleix $-2 \\leq -2/3 \\leq 1$.
-*Pas inductiu:* Suposem cert per a $n$, $a_{n+1} = \\frac{2 + a_n^3}{3}$. Acotant sabent  $-2 \\leq a_n \\leq 1$, i per inducció, ens demostra pertinença novament als límits quan és inserit $-2 \\leq \\frac{2 + a_n^3}{3} \\leq 1$. $Q.E.D.$ 
+
+**Pas base:** Per $n = 1$, $a_1 = -2/3$. Es compleix $-2 \\leq -2/3 \\leq 1$.
+
+**Pas inductiu:**
+*   **HI (Hipòtesi d'Inducció):** Suposem que per a un cert $n$ es compleix $-2 \\leq a_n \\leq 1$.
+*   **TI (Tesi d'Inducció):** Volem demostrar que aleshores $-2 \\leq a_{n+1} \\leq 1$.
+
+Sabem que $a_{n+1} = \\frac{2 + a_n^3}{3}$. Apliquem la **HI**:
+Com que $-2 \\leq a_n \\leq 1$, i la funció $f(x) = x^3$ és creixent:
+
+$$ -2 \\leq a_n \\leq 1 \\implies (-2)^3 \\leq a_n^3 \\leq 1^3 \\implies -8 \\leq a_n^3 \\leq 1 $$
+$$ -8+2 \\leq 2+a_n^3 \\leq 1+2 \\implies -6 \\leq 2+a_n^3 \\leq 3 \\implies \\frac{-6}{3} \\leq \\frac{2+a_n^3}{3} \\leq \\frac{3}{3} \\implies -2 \\leq a_{n+1} \\leq 1 $$
+Per tant, la propietat és certa per a tot $n \\geq 1$. 
 
 **b) Proveu que $(a_n)$ és creixent**
-Volem veure que $a_{n+1} - a_n \\geq 0$. Restant la fòrmula base extraiem que ens dóna $\\frac{a_n^3-3a_n+2}{3}$.
-Per mètodologia de Ruffini s'obtenen arrels i s'entén que $P(x)$ equival exactament a $\\frac{(a_n-1)^2(a_n+2)}{3}$.
-Amb límits en $-2$ i $+1$ d'interior cap secció i elevat pot donar negatiu, per conseqüència resultat es $\\geq 0$, successió de fons és certament creixent.
+
+Volem veure que $a_{n+1} - a_n \\geq 0$:
+$$ a_{n+1} - a_n = \\frac{2 + a_n^3}{3} - a_n = \\frac{a_n^3 - 3a_n + 2}{3} $$
+Podem factoritzar el polinomi del numerador (per Ruffini):
+$$ \\frac{a_n^3 - 3a_n + 2}{3} = \\frac{(a_n - 1)^2(a_n + 2)}{3} $$
+Sabem d'**a)** que $-2 \\leq a_n \\leq 1$:
+*   El terme $(a_n - 1)^2$ sempre és $\\geq 0$ (quadrat).
+*   Com que $a_n \\geq -2$, el terme $(a_n + 2)$ és $\\geq 0$.
+
+Per tant, $a_{n+1} - a_n \\geq 0$, el que demostra que la successió és creixent.
 
 **c) Convergència i límit:**
-Mònotona + tancada per limit per Teorema donen lloc a convergent cap al sostre de manera previsible.
-Sigui $l = \\lim_{n\\rightarrow\\infty} a_n$. Substituïnt al cor ens du $l = \\frac{2 + l^3}{3}$. Rearrenjant s'obté factor $(l-1)^2(l+2) = 0$. Les arrels possibles en resultància ens deriven al resultat per $l = 1$ en ser condició creta de $a_1 = -2/3$.`
+
+Pel Teorema de la Convergència Monòtona, com que la successió és monòtona (creixent) i està acotada superiorment (per 1), sabem que és convergent. Sigui $L = \\lim_{n\\rightarrow\\infty} a_n$:
+$$ L = \\frac{2 + L^3}{3} \\implies L^3 - 3L + 2 = 0 \\implies (L - 1)^2(L + 2) = 0 $$
+Les solucions són $L = 1$ i $L = -2$. Com que $a_1 = -2/3$ i la successió és creixent, el límit forçosament ha de ser $L = 1$.`
     },
     {
         id: "M2-T2-Ex9",
