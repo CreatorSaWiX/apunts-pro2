@@ -66,7 +66,9 @@ export const courseStructure: TopicDefinition[] = [
             { id: "V80619", title: "Podar un arbre binari" },
             { id: "U38261", title: "Podar un arbre binari sense repeticions" },
             { id: "W90730", title: "Ordenar un arbre binari per sumes de subarbres" },
-            { id: "V22704", title: "Camí més llarg en un arbre binari" }
+            { id: "V22704", title: "Camí més llarg en un arbre binari" },
+            { id: "T82960", title: "Arbre binari amb totes les fulles iguals" },
+            { id: "X93918", title: "25P-Ex1: Arbre binari amb els valors dels nodes interns iguals" }
         ]
     },
     {
@@ -128,6 +130,8 @@ export const courseStructure: TopicDefinition[] = [
             { id: "V72123", title: "25P-Ex2: Unió de llistes ordenades" },
             { id: "W78388", title: "Round Robin" },
             { id: "X34719", title: "Scraper Bots" },
+            { id: "X85340", title: "Subhasta" },
+            { id: "U52362", title: "Guillem Tell" },
             { id: "S37830", title: "Concatena els valors d'un arbre binari de strings" },
             { id: "X93918", title: "25P-Ex1: Arbre binari amb els valors dels nodes interns iguals" },
             { id: "U38461", title: "Avaluar expressions binàries (1)" },
