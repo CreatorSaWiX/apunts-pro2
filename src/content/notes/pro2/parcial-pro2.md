@@ -54,10 +54,10 @@ draft: false
   - **Mètodes:** `value()`, `num_children()`, `child(i)`, `empty()`.
 
 ## 6. Diccionaris: map i set
-- **`set<T>`:** `#include <set>`.
+- **`set<T>`:** `#include <set>`. **Conjunt ordenat** que no admet duplicats. Per usar `set` amb un `struct`, cal definir l' **`operator<`** (establir l'ordre).
   - **Mètodes:** `insert(x)`, `erase(x)`, `find(x)`, `empty()`, `size()`.
   - **Iteradors:** `begin()`, `end()`. S'accedeix al valor amb `*it`.
-- **`map<K, V>`:** `#include <map>`. Elements interns: `pair<clau, valor>`.
+- **`map<K, V>`:** `#include <map>`. Ordena automàticament per la **clau** (`K`). Elements interns: `pair<clau, valor>`.
   - **Mètodes:** `m[clau] = val`, `insert({clau, val})`, `erase(x)`, `find(clau)`, `empty()`, `size()`.
   - **Iteradors:** `begin()`, `end()`. S'accedeix com `it->first` (clau) i `it->second` (valor).
 
