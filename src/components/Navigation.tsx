@@ -21,7 +21,7 @@ const Navigation: React.FC = () => {
             setUnreadCount(0);
             return;
         }
-
+        let isMounted = true;
         let unsubscribe = () => { };
 
         // Import Firestore dynamically to avoid blocking the main bundle FCP
@@ -29,6 +29,8 @@ const Navigation: React.FC = () => {
             import('firebase/firestore'),
             import('../lib/firebase')
         ]).then(([{ collection, query, where, onSnapshot }, { db }]) => {
+            if (!isMounted) return;
+            
             const q = query(
                 collection(db, 'messages'),
                 where('receiverId', '==', user.id),
@@ -40,7 +42,10 @@ const Navigation: React.FC = () => {
             });
         }).catch(err => console.error("Failed to load firestore in navigation", err));
 
-        return () => { unsubscribe() };
+        return () => { 
+            isMounted = false;
+            unsubscribe();
+        };
     }, [user]);
 
     // Mobile Navbar states
@@ -176,35 +181,26 @@ const Navigation: React.FC = () => {
 
             {/* Bottom-Left Floating Language Selector - Grayscale High Contrast */}
             <div className={`nav-pill-container fixed bottom-5 md:bottom-6 z-40 transition-all duration-300 ease-out left-4 sm:left-6 ${showCompact ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
-                <div className="flex items-center p-1 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.5)] transition-all hover:bg-slate-900/90 hover:border-white/20">
+                <div className="flex items-center p-1 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.5)] transition-all hover:bg-slate-900/90 hover:border-white/20 relative">
+                    {/* CSS Slider Pill */}
+                    <div 
+                        className={`absolute left-1 top-1 bottom-1 w-9 md:w-10 bg-linear-to-br from-white to-slate-400 rounded-full border border-white/20 shadow-md transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0 ${
+                            preferredLang === 'es' ? 'translate-x-full' : 'translate-x-0'
+                        }`} 
+                    />
+                    
                     <button
                         onClick={() => setPreferredLang('ca')}
-                        className={`relative w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-xs font-black transition-colors duration-300 z-10 ${preferredLang === 'ca' ? 'text-slate-950' : 'text-slate-400 hover:text-slate-200'
-                            }`}
+                        className={`relative w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-xs font-black transition-colors duration-300 z-10 ${preferredLang === 'ca' ? 'text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}
                         title="Català"
                     >
-                        {preferredLang === 'ca' && (
-                            <motion.div
-                                layoutId="active-lang-pill"
-                                className="absolute inset-0 bg-linear-to-br from-white to-slate-400 rounded-full border border-white/20 shadow-md z-[-1]"
-                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                            />
-                        )}
                         CA
                     </button>
                     <button
                         onClick={() => setPreferredLang('es')}
-                        className={`relative w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-xs font-black transition-colors duration-300 z-10 ${preferredLang === 'es' ? 'text-slate-950' : 'text-slate-400 hover:text-slate-200'
-                            }`}
+                        className={`relative w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-xs font-black transition-colors duration-300 z-10 ${preferredLang === 'es' ? 'text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}
                         title="Castellano"
                     >
-                        {preferredLang === 'es' && (
-                            <motion.div
-                                layoutId="active-lang-pill"
-                                className="absolute inset-0 bg-linear-to-br from-white to-slate-400 rounded-full border border-white/20 shadow-md z-[-1]"
-                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                            />
-                        )}
                         ES
                     </button>
                 </div>

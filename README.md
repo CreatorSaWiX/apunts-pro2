@@ -32,6 +32,7 @@ Platform to share interactive notes, problem solutions from Jutge.org, and acade
 1. **Clone the repository**
    ```bash
    git clone https://github.com/CreatorSaWiX/apunts-pro2.git
+   cd apunts-pro2
    ```
 
 2. **Install dependencies**

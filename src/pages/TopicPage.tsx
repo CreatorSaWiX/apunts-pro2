@@ -57,6 +57,13 @@ const TopicPage: React.FC = () => {
     const nextTopic = currentIndex < sortedTopics.length - 1 ? sortedTopics[currentIndex + 1] : undefined;
 
     useEffect(() => {
+        const startStr = sessionStorage.getItem('topicLoadStart');
+        if (startStr) {
+            const startStrTimestamp = parseInt(startStr, 10);
+            const elapsed = Date.now() - startStrTimestamp;
+            console.log(`⏱️ [PERFORMANCE] Temps de navegació i càrrega fins FCP del tema '${id}': ${elapsed}ms.`);
+            sessionStorage.removeItem('topicLoadStart');
+        }
         window.scrollTo(0, 0);
     }, [id]);
 
