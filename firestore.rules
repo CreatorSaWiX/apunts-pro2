@@ -24,7 +24,8 @@ service cloud.firestore {
     // Missatges: permetre llegir els propis missatges, o enviar a qualsevol si estàs autenticat
     match /messages/{document=**} {
       allow read, update, delete: if request.auth != null && resource.data.receiverId == request.auth.uid;
-      allow create: if request.auth != null;
+      // Els loguejats poden enviar a tothom. Els anònims NOMÉS poden enviar missatges (Feedback) al teu UID directament.
+      allow create: if request.auth != null || request.resource.data.receiverId == 'jV5Y63M77PcqIcOUCpLz76GTYMI3';
     }
 
     // Solucions i Notificacions: els moderadors fan i desfan la base, però tothom autenticat pot comentar

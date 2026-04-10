@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Background from './components/Background';
 // import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
+import FeedbackModal from './components/FeedbackModal';
 
 // LACY LOADING PAGES: Split the gigantic React bundle into tiny specific chunks 
 // This allows the browser to show the initial HTML / FCP (First Contentful Paint) immediately on mobile
@@ -31,6 +32,7 @@ function App() {
           <Background />
           {/* <PerformanceMonitor /> */}
           <Navigation />
+          <FeedbackModal />
 
           <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center relative z-10 w-full">

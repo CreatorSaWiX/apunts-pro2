@@ -1,4 +1,4 @@
-import type { Solution } from '../../solutions';
+import type { Solution } from '../../../solutions';
 
 export const ex4_7: Solution = {
   id: 'M1-T4-Ex4.7',

@@ -1,4 +1,4 @@
-import type { Solution } from '../../solutions';
+import type { Solution } from '../../../solutions';
 
 export const m2t2Solutions: Solution[] = [
     {

@@ -1,7 +1,7 @@
 ---
 title: "Tema 5: Àlgebra de Matrius"
 description: "Repàs fonamental: definicions, operacions, matriu inversa i propietats de l'espai de matrius."
-order: 5
+order: 6
 readTime: "25 min"
 subject: "m1"
 draft: true

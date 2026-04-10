@@ -1,4 +1,4 @@
-import type { Solution } from '../../solutions';
+import type { Solution } from '../../../solutions';
 import { ex4_2 } from './ex4.2';
 import { ex4_3 } from './ex4.3';
 import { ex4_5 } from './ex4.5';

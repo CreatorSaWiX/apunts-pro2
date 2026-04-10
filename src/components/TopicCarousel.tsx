@@ -261,8 +261,6 @@ const TopicCarousel: React.FC = () => {
                                     e.preventDefault();
                                     scrollTo(i);
                                 } else {
-                                    sessionStorage.setItem('topicLoadStart', Date.now().toString());
-                                    // Also set for the Link below implicitly since it will navigate.
                                     navigate(`/tema/${topic.slug}`);
                                 }
                             }}
@@ -339,10 +337,7 @@ const TopicCarousel: React.FC = () => {
                                     <div className="flex flex-col gap-4">
                                         <Link
                                             to={`/tema/${topic.slug}`}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                sessionStorage.setItem('topicLoadStart', Date.now().toString());
-                                            }}
+                                            onClick={(e) => e.stopPropagation()}
                                             className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-4 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 text-sm"
                                         >
                                             <span>Explorar tema</span>
