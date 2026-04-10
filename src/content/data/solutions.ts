@@ -16,16 +16,16 @@ export interface TopicSolutions {
     topicId: string;
     solutions: Solution[];
 }
-import { m1t1Solutions } from './solucionarisM1/t1/index';
-import { m1t2Solutions } from './solucionarisM1/t2/index';
-import { m1t3Solutions } from './solucionarisM1/t3/index';
-import { m1t4Solutions } from './solucionarisM1/t4/index';
+import { m1t1Solutions } from './solucionarisM1/ca/t1/index';
+import { m1t2Solutions } from './solucionarisM1/ca/t2/index';
+import { m1t3Solutions } from './solucionarisM1/ca/t3/index';
+import { m1t4Solutions } from './solucionarisM1/ca/t4/index';
 
-import { m2t1Solutions } from './solucionarisM2/t1/index';
-import { m2t2Solutions } from './solucionarisM2/t2/index';
-import { m2t3Solutions } from './solucionarisM2/t3/index';
-import { m2t4Solutions } from './solucionarisM2/t4/index';
-import { m2t5Solutions } from './solucionarisM2/t5/index';
+import { m2t1Solutions } from './solucionarisM2/ca/t1/index';
+import { m2t2Solutions } from './solucionarisM2/ca/t2/index';
+import { m2t3Solutions } from './solucionarisM2/ca/t3/index';
+import { m2t4Solutions } from './solucionarisM2/ca/t4/index';
+import { m2t5Solutions } from './solucionarisM2/ca/t5/index';
 
 export const allSolutions: TopicSolutions[] = [
     {

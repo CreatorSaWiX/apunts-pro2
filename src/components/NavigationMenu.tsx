@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { X, BookOpen, ChevronRight } from 'lucide-react';
 import { allPersonalNotes } from 'content-collections';
 import { motion } from 'framer-motion';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface NavigationMenuProps {
     isMenuOpen: boolean;
@@ -12,6 +13,8 @@ interface NavigationMenuProps {
 }
 
 const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOpen, subject, theme }) => {
+    const { preferredLang } = useLanguage();
+    
     if (!isMenuOpen) return null;
 
     return (
@@ -46,7 +49,15 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                 <div className="flex-1 overflow-y-auto p-4 space-y-2">
                     <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2">Temari del Curs</div>
                     {[...allPersonalNotes]
-                        .filter(n => (n as any).subject === subject && !n.slug.includes('-lab-'))
+                        .filter(note => {
+                            if ((note as any).subject !== subject || note.slug.includes('-lab-')) return false;
+                            if ((note as any).draft) return false;
+                            
+                            const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+                            const hasPreferred = versions.some(n => n.lang === preferredLang);
+                            if (hasPreferred) return note.lang === preferredLang;
+                            return note.lang === 'ca';
+                        })
                         .sort((a, b) => a.order - b.order)
                         .map((topic, i) => (
                             <Link
@@ -77,7 +88,15 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                         <>
                             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2 mt-8">Laboratoris</div>
                             {[...allPersonalNotes]
-                                .filter(n => (n as any).subject === subject && n.slug.includes('-lab-'))
+                                .filter(note => {
+                                    if ((note as any).subject !== subject || !note.slug.includes('-lab-')) return false;
+                                    if ((note as any).draft) return false;
+                                    
+                                    const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+                                    const hasPreferred = versions.some(n => n.lang === preferredLang);
+                                    if (hasPreferred) return note.lang === preferredLang;
+                                    return note.lang === 'ca';
+                                })
                                 .sort((a, b) => a.order - b.order)
                                 .map((topic, i) => (
                                     <Link

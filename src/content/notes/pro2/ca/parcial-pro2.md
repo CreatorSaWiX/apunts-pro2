@@ -42,10 +42,11 @@ draft: false
 ## 4. Arbres binaris (`BinTree<T>`)
 - **`BinTree<T>`:** `#include "BinTree.hh"`. Estructura recursiva immutable.
   - **Mètodes:** `value()`, `left()`, `right()`, `empty()`.
-- **Recorreguts:**
-  - **DFS:** Preordre (A-E-D), Inordre (E-A-D), Postordre (E-D-A).
-  - **BFS:** Per nivells.
-- **Immersió:** Ús de funcions auxiliars per passar paràmetres extres (referències) o retornar més d'un valor.
+- **Recorreguts:** DFS (Pre/In/Postordre) i BFS (nivells).
+- **Estratègies de Resolució:**
+  1. **Casos base:** Comprovar `t.empty()` i, si cal, cas **fulla** (`left` i `right` buits).
+  2. **Immersió:** Per si els arbres parlen entre ells (Ex: si tots nodes iguals, si totes fulles iguals, si suma de nodes fills = node actual, etc). Usar funció auxiliar (`nom__()`) amb paràmetre per **referència** (ex: `int& x`) per guardar estats.
+  3. **Salt de fe:** Resol el node actual i assumeix que la recursivitat ja funciona per als fills.
 
 ## 5. Cues de prioritat i arbres generals
 - **`Heap<T>`:** `#include "heap.hh"`.
@@ -57,6 +58,7 @@ draft: false
 - **`set<T>`:** `#include <set>`. **Conjunt ordenat** que no admet duplicats. Per usar `set` amb un `struct`, cal definir l' **`operator<`** (establir l'ordre).
   - **Mètodes:** `insert(x)`, `erase(x)`, `find(x)`, `empty()`, `size()`.
   - **Iteradors:** `begin()`, `end()`. S'accedeix al valor amb `*it`.
+- **`multiset<T>`:** Igual que el `set`, però permet duplicats (útil per rànquings on dos elements poden empatar en tot).
 - **`map<K, V>`:** `#include <map>`. Ordena automàticament per la **clau** (`K`). Elements interns: `pair<clau, valor>`.
   - **Mètodes:** `m[clau] = val`, `insert({clau, val})`, `erase(x)`, `find(clau)`, `empty()`, `size()`.
   - **Iteradors:** `begin()`, `end()`. S'accedeix com `it->first` (clau) i `it->second` (valor).

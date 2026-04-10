@@ -5,10 +5,12 @@ import { motion } from 'framer-motion';
 import { useSolutions } from '../hooks/useSolutions';
 import { courseStructure } from '../content/data/courseStructure';
 import NotebookLayout from '../components/layout/NotebookLayout';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const SolutionsListPage = () => {
     const { id: topicId } = useParams();
     const [searchQuery, setSearchQuery] = useState('');
+    const { preferredLang } = useLanguage();
 
     // 1. Get definitions for the current topic from our static structure
     const topicDefinition = courseStructure.find(t => t.id === topicId);
@@ -85,10 +87,10 @@ const SolutionsListPage = () => {
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div className="flex-1">
                         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-                            {topicDefinition?.title || 'Llista de Problemes'}
+                            {(preferredLang === 'es' && topicDefinition?.title_es) ? topicDefinition.title_es : (topicDefinition?.title || 'Llista de Problemes')}
                         </h1>
                         <p className="text-slate-400 text-lg max-w-2xl leading-relaxed">
-                            {topicDefinition?.description || `Col·lecció d'exercicis del tema ${topicId}.`}
+                            {(preferredLang === 'es' && topicDefinition?.description_es) ? topicDefinition.description_es : (topicDefinition?.description || `Col·lecció d'exercicis del tema ${topicId}.`)}
                         </p>
                     </div>
 
@@ -120,7 +122,8 @@ const SolutionsListPage = () => {
                 ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {visibleProblems.map((problem, index) => {
-                        const { id: problemId, title: problemTitle } = problem;
+                        const { id: problemId } = problem;
+                        const problemTitle = (preferredLang === 'es' && problem.title_es) ? problem.title_es : problem.title;
                         const { status, solution } = getProblemStatus(problemId);
                         const isSolved = status === 'solved';
 

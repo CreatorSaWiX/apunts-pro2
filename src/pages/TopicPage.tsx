@@ -3,13 +3,26 @@ import { useParams, Navigate, Link } from 'react-router-dom';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { allPersonalNotes } from 'content-collections';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { MarkdownRenderer } from "../markdown/MarkdownRenderer";
 
 
 const TopicPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const topic = allPersonalNotes.find(note => note.slug === id);
+    const { preferredLang } = useLanguage();
+
+    let topic = allPersonalNotes.find(note => note.slug === id && note.lang === preferredLang);
+    const usedFallback = !topic;
+    
+    if (!topic) {
+        topic = allPersonalNotes.find(note => note.slug === id && note.lang === 'ca');
+    }
+
+    const availableLangs = allPersonalNotes
+        .filter(n => n.slug === id)
+        .map(n => n.lang);
 
     // Scroll Progress
     const { scrollYProgress } = useScroll();

@@ -14,11 +14,17 @@ const personalNotes = defineCollection({
         content: z.string()
     }),
     transform: (document) => {
-        const subject = document._meta.directory; // "pro2" or "m1"
+        // Separem "m1/ca" -> ["m1", "ca"]
+        const pathParts = document._meta.directory.split('/');
+        const subject = pathParts[0] || 'pro2';
+        const lang = pathParts[1] || 'ca'; // 'ca' per defecte per precaució
+
         return {
             ...document,
-            subject: subject || 'pro2',
-            slug: `${subject || 'pro2'}-${document._meta.fileName.replace(/\.md$/, '')}`
+            subject: subject,
+            lang: lang,
+            // El slug es queda igual ("m1-tema-1") per no trencar les URLs
+            slug: `${subject}-${document._meta.fileName.replace(/\.md$/, '')}`
         };
     }
 });

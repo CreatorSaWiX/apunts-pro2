@@ -1,8 +1,10 @@
 export interface TopicDefinition {
     id: string;
     title: string;
+    title_es?: string;
     description?: string;
-    problems: { id: string; title: string }[];
+    description_es?: string;
+    problems: { id: string; title: string; title_es?: string }[];
 }
 
 export const courseStructure: TopicDefinition[] = [

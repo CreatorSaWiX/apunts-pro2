@@ -17,12 +17,14 @@ const NewSolutionPage = lazy(() => import('./pages/NewSolutionPage'));
 const QuizPage = lazy(() => import('./pages/QuizPage'));
 import { AuthProvider } from './contexts/AuthContext';
 import { SubjectProvider } from './contexts/SubjectContext';
+import { LanguageProvider } from './contexts/LanguageContext';
 import { Analytics } from "@vercel/analytics/react";
 // import { SpeedInsights } from "@vercel/speed-insights/react"
 
 function App() {
   return (
-    <SubjectProvider>
+    <LanguageProvider>
+      <SubjectProvider>
       <AuthProvider>
         <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
 
@@ -53,6 +55,7 @@ function App() {
         </div>
       </AuthProvider>
     </SubjectProvider>
+    </LanguageProvider>
   );
 }
 

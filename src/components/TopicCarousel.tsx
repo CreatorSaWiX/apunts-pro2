@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
 import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
@@ -51,6 +52,7 @@ function SpotlightCard({
 const TopicCarousel: React.FC = () => {
     const navigate = useNavigate();
     const { subject } = useSubject();
+    const { preferredLang } = useLanguage();
     const [activeIndex, setActiveIndex] = useState(0);
     const scrollRef = useRef<HTMLDivElement>(null);
     const requestRef = useRef<number>(0);
@@ -66,7 +68,16 @@ const TopicCarousel: React.FC = () => {
             if ((note as any).draft) {
                 return false;
             }
-            return true;
+
+            // Filtrar duplicats: quins idiomes té disponibles aquest slug?
+            const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+            const hasPreferred = versions.some(n => n.lang === preferredLang);
+            
+            if (hasPreferred) {
+                return note.lang === preferredLang;
+            } else {
+                return note.lang === 'ca';
+            }
         })
         .sort((a, b) => a.order - b.order);
 
