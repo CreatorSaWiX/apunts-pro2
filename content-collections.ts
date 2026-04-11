@@ -14,8 +14,8 @@ const personalNotes = defineCollection({
         content: z.string()
     }),
     transform: (document) => {
-        // Separem "m1/ca" -> ["m1", "ca"]
-        const pathParts = document._meta.directory.split('/');
+        // Separem "m1/ca" -> ["m1", "ca"] (compatibilitat Windows i Mac)
+        const pathParts = document._meta.directory.split(/[\\/]/);
         const subject = pathParts[0] || 'pro2';
         const lang = pathParts[1] || 'ca'; // 'ca' per defecte per precaució
 
