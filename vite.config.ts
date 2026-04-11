@@ -100,6 +100,14 @@ export default defineConfig(({ mode }) => {
         }
       }
     ],
+    optimizeDeps: {
+      include: [
+        'three',
+        '@react-three/fiber',
+        '@react-three/drei',
+      ],
+      exclude: [],
+    },
     build: {
       chunkSizeWarningLimit: 1000,
       rollupOptions: {

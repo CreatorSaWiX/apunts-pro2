@@ -24,7 +24,21 @@ const BinTreeVisualizer = React.lazy(() => import("../components/ui/BinTreeVisua
 const ProofPlayer = React.lazy(() => import("../components/ui/ProofPlayer"));
 const MafsVisualizer = React.lazy(() => import("../components/ui/MafsVisualizer"));
 const VideoPlayer = React.lazy(() => import("../components/ui/VideoPlayer"));
-const ThreeVisualizer = React.lazy(() => import("../components/ui/ThreeVisualizer"));
+const ThreeVisualizer = React.lazy(() =>
+    import("../components/ui/ThreeVisualizer").catch(() => ({
+        default: () => (
+            <div className="w-full h-64 bg-slate-950 rounded-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-3 p-8">
+                <div className="text-3xl">🧊</div>
+                <p className="text-amber-400 font-semibold text-sm text-center">Visualització 3D no disponible</p>
+                <p className="text-slate-500 text-xs text-center max-w-xs">
+                    No s'ha pogut carregar el motor 3D (possiblement bloquejat per l'antivirus o sense WebGL). 
+                    El contingut dels apunts és complet al text de sota.
+                </p>
+            </div>
+        )
+    }))
+);
+
 
 const VizFallback = () => (
     <div className="h-64 animate-pulse bg-slate-900/40 border border-white/5 rounded-2xl w-full my-12 flex items-center justify-center">
