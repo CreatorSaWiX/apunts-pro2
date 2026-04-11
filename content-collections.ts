@@ -14,10 +14,18 @@ const personalNotes = defineCollection({
         content: z.string()
     }),
     transform: (document) => {
-        // Separem "m1/ca" -> ["m1", "ca"] (compatibilitat Windows i Mac)
-        const pathParts = document._meta.directory.split(/[\\/]/);
-        const subject = pathParts[0] || 'pro2';
-        const lang = pathParts[1] || 'ca'; // 'ca' per defecte per precaució
+        // Mètode a prova de bales per Windows/Mac: analitzem l'string sencer de la ruta
+        const dPath = (document._meta.directory || "").toLowerCase();
+        
+        let subject = 'pro2';
+        if (dPath.includes('m1')) subject = 'm1';
+        if (dPath.includes('m2')) subject = 'm2';
+        
+        let lang = 'ca';
+        // Busquem rutes tipus /es o \es o /es/ 
+        if (dPath.includes('/es') || dPath.includes('\\es') || dPath === 'es') {
+            lang = 'es';
+        }
 
         return {
             ...document,
