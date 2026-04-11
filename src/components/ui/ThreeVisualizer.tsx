@@ -1,10 +1,48 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, Component } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid, Stars, Text } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface ThreeVisualizerProps {
     type: string;
+}
+
+// Detecció de suport WebGL per a Windows/Linux amb drivers antics
+function hasWebGL(): boolean {
+    try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        return !!ctx;
+    } catch {
+        return false;
+    }
+}
+
+// Error Boundary per capturar errors de R3F sense fer petar la pàgina
+class ThreeErrorBoundary extends Component<{ children: React.ReactNode }, { hasError: boolean, error: string }> {
+    constructor(props: any) {
+        super(props);
+        this.state = { hasError: false, error: '' };
+    }
+    static getDerivedStateFromError(error: Error) {
+        return { hasError: true, error: error.message };
+    }
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-4 p-8">
+                    <div className="text-4xl">⚠️</div>
+                    <p className="text-amber-400 font-semibold text-center">No s'ha pogut carregar la visualització 3D</p>
+                    <p className="text-slate-500 text-sm text-center max-w-sm">
+                        El teu navegador o sistema no suporta WebGL (necessari per a gràfics 3D). 
+                        Prova amb Chrome o Firefox actualitzats, o comprova que els drivers de gràfics estan al dia.
+                    </p>
+                    <code className="text-xs text-slate-600 bg-slate-900 px-3 py-1 rounded-lg">{this.state.error}</code>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
 }
 
 const FunctionSurface = ({ f, colorScale = 5 }: { f: (x: number, y: number) => number, colorScale?: number }) => {
@@ -224,57 +262,72 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
 
     if (!Component) return <div className="p-4 bg-red-900/20 text-red-400 rounded-xl border border-red-500/30">Tipus 3D no trobat: {type}</div>;
 
+    // Fallback per a navegadors sense WebGL (Windows amb drivers antics, etc.)
+    if (!hasWebGL()) {
+        return (
+            <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-4 p-8">
+                <div className="text-4xl">🖥️</div>
+                <p className="text-amber-400 font-semibold text-center">Visualització 3D no disponible</p>
+                <p className="text-slate-500 text-sm text-center max-w-sm">
+                    El teu navegador no té WebGL activat, necessari per als gràfics 3D interactius.
+                    Prova d'activar l'acceleració de hardware a la configuració del navegador, o obre la web directament a <strong className="text-slate-400">chrome://flags</strong> i activa "Override software rendering list".
+                </p>
+            </div>
+        );
+    }
 
     return (
-        <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8 relative group">
-            <div className="absolute top-4 left-4 z-10 pointer-events-none">
-                <div className="bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-[10px] text-blue-400 font-mono flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                    Vista en 3D
+        <ThreeErrorBoundary>
+            <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8 relative group">
+                <div className="absolute top-4 left-4 z-10 pointer-events-none">
+                    <div className="bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-[10px] text-blue-400 font-mono flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                        Vista en 3D
+                    </div>
+                </div>
+
+                <Canvas shadows dpr={[1, 2]}>
+                    <PerspectiveCamera makeDefault position={[8, 8, 8]} fov={50} />
+                    <OrbitControls enableDamping dampingFactor={0.05} />
+
+                    {/* Il·luminació Premium */}
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+                    <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
+
+                    {/* Entorn */}
+                    <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+                    <Grid
+                        infiniteGrid
+                        fadeDistance={50}
+                        cellColor="#444"
+                        sectionColor="#888"
+                        sectionSize={5}
+                        cellSize={1}
+                    />
+
+                    <Component />
+
+                    {/* Eixos */}
+                    <axesHelper args={[5]} />
+                </Canvas>
+
+                <div className="absolute bottom-4 left-4 flex flex-col gap-2 pointer-events-none">
+                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/5">
+                        <div className="w-24 h-2 rounded-full bg-linear-to-r from-blue-500 via-emerald-500 via-orange-500 to-red-500" />
+                        <span className="text-[9px] text-white/70 font-mono uppercase tracking-tighter">Escala: alçada eix z</span>
+                    </div>
+                    <div className="flex gap-4 text-[9px] text-white/40 font-mono px-3">
+                        <span>mínim (blau)</span>
+                        <span className="ml-auto">màxim (vermell)</span>
+                    </div>
+                </div>
+
+                <div className="absolute bottom-4 right-4 text-[10px] text-white/50 bg-black/30 px-2 py-1 rounded backdrop-blur-sm">
+                    Fes clic i arrossega per rotar • Roda per zoom
                 </div>
             </div>
-
-            <Canvas shadows dpr={[1, 2]}>
-                <PerspectiveCamera makeDefault position={[8, 8, 8]} fov={50} />
-                <OrbitControls enableDamping dampingFactor={0.05} />
-
-                {/* Il·luminació Premium */}
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={1} castShadow />
-                <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
-
-                {/* Entorn */}
-                <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-                <Grid
-                    infiniteGrid
-                    fadeDistance={50}
-                    cellColor="#444"
-                    sectionColor="#888"
-                    sectionSize={5}
-                    cellSize={1}
-                />
-
-                <Component />
-
-                {/* Eixos */}
-                <axesHelper args={[5]} />
-            </Canvas>
-
-            <div className="absolute bottom-4 left-4 flex flex-col gap-2 pointer-events-none">
-                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/5">
-                    <div className="w-24 h-2 rounded-full bg-linear-to-r from-blue-500 via-emerald-500 via-orange-500 to-red-500" />
-                    <span className="text-[9px] text-white/70 font-mono uppercase tracking-tighter">Escala: alçada eix z</span>
-                </div>
-                <div className="flex gap-4 text-[9px] text-white/40 font-mono px-3">
-                    <span>mínim (blau)</span>
-                    <span className="ml-auto">màxim (vermell)</span>
-                </div>
-            </div>
-
-            <div className="absolute bottom-4 right-4 text-[10px] text-white/50 bg-black/30 px-2 py-1 rounded backdrop-blur-sm">
-                Fes clic i arrossega per rotar • Roda per zoom
-            </div>
-        </div>
+        </ThreeErrorBoundary>
     );
 };
 
