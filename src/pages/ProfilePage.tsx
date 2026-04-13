@@ -254,7 +254,7 @@ const ProfilePage = () => {
 
         const interval = setInterval(fetchUnread, 30000);
         return () => clearInterval(interval);
-    }, [isOwnProfile, authUser, isMailboxOpen, isInboxOpen]);
+    }, [isOwnProfile, authUser]);
 
     const handleUpdateProfile = async (data: any) => {
         if (!authUser?.id) return;

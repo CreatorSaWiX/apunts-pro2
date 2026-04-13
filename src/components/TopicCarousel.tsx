@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -60,27 +60,29 @@ const TopicCarousel: React.FC = () => {
     const restoringRef = useRef(true);
     const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
 
-    const sortedTopics = [...allPersonalNotes]
-        .filter(note => {
-            const isMatch = (note as any).subject === subject && !note.slug.includes('-lab-');
-            if (!isMatch) return false;
-            
-            // Hide notes marked as draft
-            if ((note as any).draft) {
-                return false;
-            }
+    const sortedTopics = useMemo(() => {
+        return [...allPersonalNotes]
+            .filter(note => {
+                const isMatch = (note as any).subject === subject && !note.slug.includes('-lab-');
+                if (!isMatch) return false;
+                
+                // Hide notes marked as draft
+                if ((note as any).draft) {
+                    return false;
+                }
 
-            // Filtrar duplicats: quins idiomes té disponibles aquest slug?
-            const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
-            const hasPreferred = versions.some(n => n.lang === preferredLang);
-            
-            if (hasPreferred) {
-                return note.lang === preferredLang;
-            } else {
-                return note.lang === 'ca';
-            }
-        })
-        .sort((a, b) => a.order - b.order);
+                // Filtrar duplicats: quins idiomes té disponibles aquest slug?
+                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+                const hasPreferred = versions.some(n => n.lang === preferredLang);
+                
+                if (hasPreferred) {
+                    return note.lang === preferredLang;
+                } else {
+                    return note.lang === 'ca';
+                }
+            })
+            .sort((a, b) => a.order - b.order);
+    }, [subject, preferredLang]);
 
     // Save activeIndex to session storage whenever it updates (skip during restoration)
     useEffect(() => {
