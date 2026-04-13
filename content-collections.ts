@@ -11,6 +11,7 @@ const personalNotes = defineCollection({
         readTime: z.string().optional(),
         order: z.number(),
         draft: z.boolean().optional().default(false),
+        isNew: z.boolean().optional().default(false),
         content: z.string()
     }),
     transform: (document) => {

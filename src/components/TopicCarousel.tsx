@@ -58,6 +58,7 @@ const TopicCarousel: React.FC = () => {
     const requestRef = useRef<number>(0);
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const restoringRef = useRef(true);
+    const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
 
     const sortedTopics = [...allPersonalNotes]
         .filter(note => {
@@ -86,6 +87,26 @@ const TopicCarousel: React.FC = () => {
         if (restoringRef.current) return;
         sessionStorage.setItem(`topic-carousel-${subject}`, activeIndex.toString());
     }, [activeIndex, subject]);
+
+    // Load seen topics from localStorage on mount
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('seen-new-topics');
+            if (saved) {
+                setSeenNewTopics(JSON.parse(saved));
+            }
+        } catch (e) {}
+    }, []);
+
+    const markAsSeen = (slug: string) => {
+        try {
+            const saved = localStorage.getItem('seen-new-topics');
+            const prev = saved ? JSON.parse(saved) : [];
+            if (!prev.includes(slug)) {
+                localStorage.setItem('seen-new-topics', JSON.stringify([...prev, slug]));
+            }
+        } catch (e) {}
+    };
 
     // Initialize layout scales on mount & restore saved position
     useEffect(() => {
@@ -245,6 +266,9 @@ const TopicCarousel: React.FC = () => {
             >
                 {sortedTopics.map((topic, i) => {
                     const isActive = activeIndex === i;
+                    // Check if ANY language version of this topic is marked as new
+                    const hasNewTag = allPersonalNotes.some(n => n.slug === topic.slug && (n as any).isNew);
+                    const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
 
                     return (
                         <div
@@ -261,6 +285,7 @@ const TopicCarousel: React.FC = () => {
                                     e.preventDefault();
                                     scrollTo(i);
                                 } else {
+                                    markAsSeen(topic.slug);
                                     navigate(`/tema/${topic.slug}`);
                                 }
                             }}
@@ -280,6 +305,18 @@ const TopicCarousel: React.FC = () => {
                             >
                                 {/* Decorative Gradient Orb */}
                                 <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary/20 rounded-full blur-3xl pointer-events-none transition-opacity duration-200 ${isActive ? 'opacity-100' : 'opacity-0'}`} />
+
+                                {/* "New" Badge */}
+                                {isTopicNew && (
+                                    <div className={`absolute top-6 right-6 md:top-8 md:right-8 z-30 transition-all duration-300 ${isActive ? 'opacity-100 scale-100' : 'opacity-60 scale-90'}`}>
+                                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-linear-to-r from-rose-500/90 to-pink-500/90 border border-rose-300/30 shadow-[0_0_20px_rgba(244,63,94,0.4)] backdrop-blur-md">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_5px_white]" />
+                                            <span className="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider drop-shadow-sm">
+                                                {preferredLang === 'es' ? 'Nuevo' : 'Nou'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Card Header */}
                                 <div className="p-8 md:p-10 relative z-20">
@@ -337,7 +374,7 @@ const TopicCarousel: React.FC = () => {
                                     <div className="flex flex-col gap-4">
                                         <Link
                                             to={`/tema/${topic.slug}`}
-                                            onClick={(e) => e.stopPropagation()}
+                                            onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug); }}
                                             className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-4 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 text-sm"
                                         >
                                             <span>Explorar tema</span>
@@ -346,7 +383,7 @@ const TopicCarousel: React.FC = () => {
 
                                         <Link
                                             to={`/tema/${topic.slug}/test`}
-                                            onClick={(e) => e.stopPropagation()}
+                                            onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug); }}
                                             className="text-slate-500 hover:text-amber-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/test"
                                         >
                                             <div className="p-1 rounded bg-white/5 group-hover/test:bg-amber-500/10 transition-colors">
@@ -357,7 +394,7 @@ const TopicCarousel: React.FC = () => {
 
                                         <Link
                                             to={subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : `/tema/${topic.slug}/solucionaris`}
-                                            onClick={(e) => e.stopPropagation()}
+                                            onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug); }}
                                             className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol"
                                         >
                                             <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">

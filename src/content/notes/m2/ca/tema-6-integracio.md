@@ -5,6 +5,7 @@ order: 6
 readTime: "30 min"
 subject: "m2"
 draft: false
+isNew: true
 ---
 
 L'objectiu principal d'aquest tema és estudiar l'àrea sota la corba d'una funció mitjançant diferents mètodes analítics i numèrics, i relacionar la integració amb la derivació.

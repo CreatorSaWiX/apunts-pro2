@@ -4,7 +4,8 @@ description: "Repàs fonamental: definicions, operacions, matriu inversa i propi
 order: 6
 readTime: "25 min"
 subject: "m1"
-draft: true
+draft: false
+isNew: true
 ---
 
 ## 0. Repàs d'Àlgebra de Matrius
