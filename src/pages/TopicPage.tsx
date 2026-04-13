@@ -136,7 +136,8 @@ const TopicPage: React.FC = () => {
                                             {availablePdfs.ca && (
                                                 <a 
                                                     href={`/pdfs/${topic.subject}/ca/${topic.slug.replace(new RegExp(`^${topic.subject}-`), '')}.pdf`}
-                                                    download
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
                                                     onClick={() => setIsPdfMenuOpen(false)}
                                                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-lg transition-colors group"
                                                 >
@@ -147,7 +148,8 @@ const TopicPage: React.FC = () => {
                                             {availablePdfs.es && (
                                                 <a 
                                                     href={`/pdfs/${topic.subject}/es/${topic.slug.replace(new RegExp(`^${topic.subject}-`), '')}.pdf`}
-                                                    download
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
                                                     onClick={() => setIsPdfMenuOpen(false)}
                                                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-lg transition-colors group"
                                                 >

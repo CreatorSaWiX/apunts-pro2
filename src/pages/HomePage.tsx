@@ -73,12 +73,12 @@ const HomePage = () => {
                 </button>
             </div>
 
-            <div className="flex-none pt-10 z-20 pointer-events-none">
+            <div className="flex-none pt-4 z-20 pointer-events-none">
                 <div className="pointer-events-auto">
                     <Hero />
                 </div>
             </div>
-            <div className="flex-1 min-h-0 relative z-10 flex flex-col justify-center -mt-4 pb-16">
+            <div className="flex-1 min-h-0 relative z-10 flex flex-col justify-center mt-2 md:-mt-4 pb-16">
                 <TopicCarousel />
             </div>
         </div>
