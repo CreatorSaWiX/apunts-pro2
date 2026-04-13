@@ -3,6 +3,10 @@ import { useSubject } from '../contexts/SubjectContext';
 import Hero from '../components/Hero';
 import { motion } from 'framer-motion';
 import TopicCarousel from '../components/TopicCarousel';
+import { useIsMobile } from '../hooks/useIsMobile';
+import { lazy, Suspense } from 'react';
+
+const MobileActionMenu = lazy(() => import('../components/MobileActionMenu'));
 
 const HomePage = () => {
     const { subject, setSubject } = useSubject();
@@ -15,10 +19,19 @@ const HomePage = () => {
         };
     }, []);
 
+    const isMobile = useIsMobile();
+
     return (
-        <div className="h-screen w-full relative z-10 flex flex-col overflow-hidden">
+        <div className="h-[100dvh] w-full relative z-10 flex flex-col overflow-hidden leading-tight">
+            {/* Mobile Action Menu (Lazy loaded) */}
+            {isMobile && (
+                <Suspense fallback={null}>
+                    <MobileActionMenu />
+                </Suspense>
+            )}
+
             {/* Subject Switcher - Premium Animated Pill */}
-            <div className="absolute top-4 right-4 md:top-6 md:right-8 z-50 flex items-center p-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.5)] scale-90 md:scale-100 origin-top-right transition-all hover:bg-slate-900/90 hover:border-white/20">
+            <div className="hidden md:flex absolute top-4 right-4 md:top-6 md:right-8 z-50 items-center p-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.5)] scale-90 md:scale-100 origin-top-right transition-all hover:bg-slate-900/90 hover:border-white/20">
                 <button
                     onClick={() => setSubject('pro2')}
                     className={`relative px-4 py-1.5 md:px-5 md:py-2 rounded-full text-[11px] md:text-[13px] font-black tracking-widest transition-all duration-300 z-10 ${subject === 'pro2' ? 'text-white' : 'text-slate-400 hover:text-white'}`}

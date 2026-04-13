@@ -181,7 +181,7 @@ const Navigation: React.FC = () => {
 
             {/* Bottom-Left Floating Language Selector - Grayscale High Contrast */}
             {location.pathname === '/' && (
-                <div className={`nav-pill-container fixed bottom-5 md:bottom-6 z-40 transition-all duration-300 ease-out left-4 sm:left-6 ${showCompact ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
+                <div className={`hidden md:block nav-pill-container fixed bottom-5 md:bottom-6 z-40 transition-all duration-300 ease-out left-4 sm:left-6 ${showCompact ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
                     <div className="flex items-center p-1 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.5)] transition-all hover:bg-slate-900/90 hover:border-white/20 relative">
                         {/* CSS Slider Pill */}
                         <div 

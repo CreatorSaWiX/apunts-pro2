@@ -180,7 +180,7 @@ const Hero: React.FC = () => {
             </AnimatePresence>
 
             {/* Floating Action Buttons (Bottom Right) */}
-            <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] flex flex-row gap-4 items-center">
+            <div className="hidden md:flex fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] flex-row gap-4 items-center">
 
                 {/* GitHub Button */}
                 <motion.a

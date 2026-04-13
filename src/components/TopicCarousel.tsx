@@ -65,7 +65,7 @@ const TopicCarousel: React.FC = () => {
             .filter(note => {
                 const isMatch = (note as any).subject === subject && !note.slug.includes('-lab-');
                 if (!isMatch) return false;
-                
+
                 // Hide notes marked as draft
                 if ((note as any).draft) {
                     return false;
@@ -74,7 +74,7 @@ const TopicCarousel: React.FC = () => {
                 // Filtrar duplicats: quins idiomes té disponibles aquest slug?
                 const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
                 const hasPreferred = versions.some(n => n.lang === preferredLang);
-                
+
                 if (hasPreferred) {
                     return note.lang === preferredLang;
                 } else {
@@ -97,7 +97,7 @@ const TopicCarousel: React.FC = () => {
             if (saved) {
                 setSeenNewTopics(JSON.parse(saved));
             }
-        } catch (e) {}
+        } catch (e) { }
     }, []);
 
     const markAsSeen = (slug: string) => {
@@ -107,7 +107,7 @@ const TopicCarousel: React.FC = () => {
             if (!prev.includes(slug)) {
                 localStorage.setItem('seen-new-topics', JSON.stringify([...prev, slug]));
             }
-        } catch (e) {}
+        } catch (e) { }
     };
 
     // Initialize layout scales on mount & restore saved position
@@ -414,7 +414,7 @@ const TopicCarousel: React.FC = () => {
             </div>
 
             {/* Elegant Pagination Indicators */}
-            <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-50">
+            <div className="absolute bottom-6 md:bottom-6 left-0 right-0 flex justify-center gap-2 z-50">
                 {sortedTopics.map((_, i) => (
                     <button
                         key={i}
