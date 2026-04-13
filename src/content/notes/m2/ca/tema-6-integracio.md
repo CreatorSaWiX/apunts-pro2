@@ -4,7 +4,7 @@ description: "Teorema fonamental del càlcul, integració numèrica (Trapezis i 
 order: 6
 readTime: "30 min"
 subject: "m2"
-draft: false
+draft: true
 isNew: true
 ---
 

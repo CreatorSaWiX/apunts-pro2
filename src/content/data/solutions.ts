@@ -20,6 +20,7 @@ import { m1t1Solutions } from './solucionarisM1/ca/t1/index';
 import { m1t2Solutions } from './solucionarisM1/ca/t2/index';
 import { m1t3Solutions } from './solucionarisM1/ca/t3/index';
 import { m1t4Solutions } from './solucionarisM1/ca/t4/index';
+import { m1t5Solutions } from './solucionarisM1/ca/t5/index';
 
 import { m2t1Solutions } from './solucionarisM2/ca/t1/index';
 import { m2t2Solutions } from './solucionarisM2/ca/t2/index';
@@ -43,6 +44,10 @@ export const allSolutions: TopicSolutions[] = [
     {
         topicId: 'm1-tema-4',
         solutions: m1t4Solutions
+    },
+    {
+        topicId: 'm1-tema-5',
+        solutions: m1t5Solutions
     },
     {
         topicId: 'm2-tema-1-reals',

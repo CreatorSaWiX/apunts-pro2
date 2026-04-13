@@ -43,6 +43,7 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
           maximumFileSizeToCacheInBytes: 3000000,
           runtimeCaching: [
             {
@@ -62,7 +63,9 @@ export default defineConfig(({ mode }) => {
           ]
         },
         devOptions: {
-          enabled: true
+          enabled: true,
+          type: 'module',
+          navigateFallbackAllowlist: [/^\/$/]
         }
       }),
       {

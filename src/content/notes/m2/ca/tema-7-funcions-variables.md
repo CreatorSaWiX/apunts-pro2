@@ -4,7 +4,7 @@ description: "Introducció a l'espai euclidi Rn, topologia bàsica (oberts, tanc
 order: 7
 readTime: "30 min"
 subject: "m2"
-draft: false
+draft: true
 isNew: true
 ---
 

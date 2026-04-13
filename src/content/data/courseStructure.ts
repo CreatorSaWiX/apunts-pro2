@@ -301,6 +301,31 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M1-T4-Ex4.17", title: "Exercici 4.17: Reconstrucció d'arbres" }
         ]
     },
+    {
+        id: "m1-tema-5",
+        title: "Tema 5: Matrius",
+        description: "Càlcul matricial. Operacions bàsiques i propietats.",
+        problems: [
+            { id: "M1-T5-Ex5.1", title: "Exercici 5.1: Operacions bàsiques" },
+            { id: "M1-T5-Ex5.2", title: "Exercici 5.2: Producte de vectors fila i columna" },
+            { id: "M1-T5-Ex5.3", title: "Exercici 5.3: Existència del producte BA" },
+            { id: "M1-T5-Ex5.4", title: "Exercici 5.4: Càlcul d’elements específics" },
+            { id: "M1-T5-Ex5.5", title: "Exercici 5.5: Representació de dades" },
+            { id: "M1-T5-Ex5.6", title: "Exercici 5.6: Potències de matrius diagonals" },
+            { id: "M1-T5-Ex5.7", title: "Exercici 5.7: Transposada del producte" },
+            { id: "M1-T5-Ex5.8", title: "Exercici 5.8: Producte de matrius simètriques" },
+            { id: "M1-T5-Ex5.9", title: "Exercici 5.9: Condició de simetria del producte" },
+            { id: "M1-T5-Ex5.10", title: "Exercici 5.10: Matrius amb propietats especials" },
+            { id: "M1-T5-Ex5.11", title: "Exercici 5.11: Identitats notables amb matrius" },
+            { id: "M1-T5-Ex5.12", title: "Exercici 5.12: Relació de semblança" },
+            { id: "M1-T5-Ex5.13", title: "Exercici 5.13: Escalonament i rang" },
+            { id: "M1-T5-Ex5.14", title: "Exercici 5.14: Inversa de matrius elementals" },
+            { id: "M1-T5-Ex5.15", title: "Exercici 5.15: Càlcul de la inversa (Gauss-Jordan)" },
+            { id: "M1-T5-Ex5.16", title: "Exercici 5.16: Linealitat de les equacions" },
+            { id: "M1-T5-Ex5.17", title: "Exercici 5.17: De matriu ampliada a sistema" },
+            { id: "M1-T5-Ex5.18", title: "Exercici 5.18: Teorema de Rouché-Capelli" }
+        ]
+    },
 
     // --- M2 (Càlcul i Optimitació) ---
     {
