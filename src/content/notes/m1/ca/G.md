@@ -3,7 +3,6 @@ title: "Parcial teoria de grafs"
 description: "Resum de teoria de grafs"
 readTime: "20 Min"
 order: 5
-isNew: true
 ---
 
 Aquí tens el resum de Teoria de Grafs. Pots visualitzar-lo directament o descarregar-lo.

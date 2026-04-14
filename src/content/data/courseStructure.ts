@@ -431,7 +431,23 @@ export const courseStructure: TopicDefinition[] = [
         id: "m2-tema-6-integracio",
         title: "Tema 6: Integració de funcions d'una variable",
         description: "Teorema Fonamental del Càlcul. Regla de Barrow. Àrees i volums. Trapezis i Simpson.",
-        problems: []
+        problems: [
+            { id: "M2-T6-Ex1", title: "Problema 1: Derivada de funcions integrals" },
+            { id: "M2-T6-Ex2", title: "Problema 2: Límits amb integrals" },
+            { id: "M2-T6-Ex3", title: "Problema 3: Monotonia d'una funció integral" },
+            { id: "M2-T6-Ex4", title: "Problema 4: Paritat i concavitat d'una funció integral" },
+            { id: "M2-T6-Ex5", title: "Problema 5: Integració numèrica (Trapezis i Simpson)" },
+            { id: "M2-T6-Ex6", title: "Problema 6: Dimensió de la partició per Simpson" },
+            { id: "M2-T6-Ex7", title: "Problema 7: Integrals immediates" },
+            { id: "M2-T6-Ex8", title: "Problema 8: Integració per parts" },
+            { id: "M2-T6-Ex9", title: "Problema 9: Àrea entre paràbola i recta" },
+            { id: "M2-T6-Ex10", title: "Problema 10: Àrea entre corbes i eix d'abscisses" },
+            { id: "M2-T6-Ex11", title: "Problema 11: Àrea en el quart quadrant" },
+            { id: "M2-T6-Ex12", title: "Problema 12: Integració numèrica de funcions no elementals" },
+            { id: "M2-T6-Ex13", title: "Problema 13: Determinació de la partició per a un error fixat" },
+            { id: "M2-T6-Ex14", title: "Problema 14: Anàlisi de l'error en la regla de Simpson" },
+            { id: "M2-T6-Ex15", title: "Problema 15: Punt crític i integració numèrica" }
+        ]
     },
     {
         id: "m2-tema-7-funcions-diverses",

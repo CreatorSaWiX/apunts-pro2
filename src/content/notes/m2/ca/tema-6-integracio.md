@@ -4,7 +4,7 @@ description: "Teorema fonamental del càlcul, integració numèrica (Trapezis i 
 order: 6
 readTime: "30 min"
 subject: "m2"
-draft: true
+draft: false
 isNew: true
 ---
 
@@ -35,6 +35,16 @@ Aquest concepte ens introdueix una de les eines més importants i pràctiques pe
 
 ::mafs{type="regla_barrow"}
 
+### Propietats de Simetria i Paritat
+
+Si la funció $f$ presenta simetries, l'estudi de la funció àrea $F(x) = \int_0^x f(t)dt$ se simplifica:
+- Si **$f$ és parella** ($f(-x) = f(x)$), llavors **$F$ és imparella** ($F(-x) = -F(x)$).
+- Si **$f$ és imparella** ($f(-x) = -f(x)$), llavors **$F$ és parella** ($F(-x) = F(x)$).
+
+::mafs{type="paritat_integrals"}
+
+> **Truc d'examen**: Recorda que la integral d'una funció imparella en un interval simètric $[-a, a]$ és sempre $0$.
+
 ### Estudi de funcions definides per integrals (Límits funcionals)
 
 De vegades podem tenir límits d'integració que depenen d'una variable $x$. Com derivem aquestes integrals?
@@ -45,6 +55,24 @@ De vegades podem tenir límits d'integració que depenen d'una variable $x$. Com
 > $$F'(x_0) = f(v(x_0)) \cdot v'(x_0) - f(u(x_0)) \cdot u'(x_0)$$
 
 ::mafs{type="limits_integracio"}
+
+### Límits i Indeterminacions amb Integrals
+
+Quan apareixen integrals en límits que generen indeterminacions del tipus $\frac{0}{0}$, podem aplicar la **Regla de L'Hôpital** derivant la funció integral mitjançant el TFC:
+
+$$\lim_{x \to a} \frac{\int_a^x f(t)dt}{g(x)} = \lim_{x \to a} \frac{f(x)}{g'(x)}$$
+
+::mafs{type="regla_hopital"}
+
+---
+
+### Estudi Local de la Funció Integral
+
+Podem estudiar el comportament de $F(x) = \int_a^x f(t)dt$ sense calcular la integral:
+- **Punts Crítics**: Són els valors de $x$ on $F'(x) = f(x) = 0$.
+- **Creixement**: $F$ creix on $f(x) > 0$ i decreix on $f(x) < 0$.
+- **Concavitat**: Estudiem $F''(x) = f'(x)$. Si $f'(x) > 0$, $F$ és convexa ($\cup$).
+- **Punts d'Inflexió**: On $f'(x) = 0$ i hi ha canvi de curvatura.
 
 ---
 
@@ -61,7 +89,16 @@ $$ \int_a^b f(x) dx \approx T_n = \frac{b-a}{n} \left( \frac{f(a) + f(b)}{2} + \
 
 **Càlcul de l'error del Mètode del Trapezi:**
 
-Si la funció $f$ té la segona derivada de forma contínua i existeix una cota absoluta $|f''(x)| \le M_2$ per a tot $x \in [a,b]$, l'error de l'aproximació compleix:
+### Com trobar la cota $M$ i el nombre d'intervals $n$?
+
+En els problemes de càlcul d'errors, el procediment general és:
+1. **Calcular la derivada** (2a per a Trapezis, 4a per a Simpson).
+2. **Trobar el màxim absolut** d'aquesta derivada en l'interval $[a,b]$. Sol ser en un dels extrems de l'interval si la derivada és monòtona. Aquest valor és la nostra $M$.
+3. **Aïllar $n$** de la inecuació d'error segons la tolerància $\varepsilon$:
+   - **Trapezis**: $n \geq \sqrt{\frac{(b-a)^3 M_2}{12\varepsilon}}$
+   - **Simpson**: $n \geq \sqrt[4]{\frac{(b-a)^5 M_4}{180\varepsilon}}$ (Recorda: $n$ ha de ser parell).
+
+::mafs{type="cota_error"}
 
 $$ |T_n - \int_a^b f(x) dx| \leq \frac{(b-a)^3}{12n^2} \cdot M_2 $$
 
@@ -80,51 +117,32 @@ Si la funció té la quarta derivada contínua i podem fitar-la dins l'interval 
 $$ |S_n - \int_a^b f(x) dx| \leq \frac{(b-a)^5}{180n^4} \cdot M_4 $$
 
 ::mafs{type="integracio_simpson"}
-<!-- 
----
-
-## 3. Apèndix 1: La Integral de Riemann i Propietats Elementals
-
-Al voltant de la noció històrica de com definir l'àrea amb certesa de rigor matemàtic, la construcció de la integral de Riemann es basa totalment en la **suma de particions rectangulars**:
-
-Donada una partició $P$ de $[a,b]$, classifiquem dos conjunts de sumes de caixes:
-* **Suma inferior**: $s(f,P) = \sum_{i=1}^n m_i \cdot (x_i - x_{i-1})$ on $m_i$ és l'**ínfim** (el mínim local) de f en el interval determinat $i$.
-* **Suma superior**: $S(f,P) = \sum_{i=1}^n M_i \cdot (x_i - x_{i-1})$ igual però amb una alçada equivalent al $M_i$ **suprem** de l'interval.
-
-S'acorda que una funció acotada en $[a,b]$ és **Integrable Riemann** quan cert número reuneix les sumes superiors i les sumes inferiors (tots dos conjunts coincideixen), i aquest punt coincident es denomina de manera notacional $\int f$ o $\int_a^b f(x) dx$.
-
-**Propietats Elementals que has de conèixer:**
-1. Tota funció que sigui contínua és integrable en un espai afitat.
-2. Tota funció acotada que sigui monòtona a l'interval és integrable.
-3. El conjunt amb un llistat finit (o numerable) de punts de discontinuïtat és integrable.
-4. **Linealitat**: Si f i g són integrables, $(\alpha f + \beta g)$ també ho és. $\implies \int (\alpha f + \beta g) = \alpha\int f + \beta \int g$.
-5. **Monotonia i signe**: Si l'acotació f es sempre positiva ($f \ge 0$), aleshores la seva integral obtinguda $\int f \ge 0$. Més extens: Si $f \le g \implies \int f \le \int g$.
-6. **Teorema de la mitjana de la integral**: Si f és totalment contínua, garantim l'existència d'algun punt $c \in [a,b]$ amagat tal que el valor de la integral és igual a l'àrea d'un rectangle de base $(b-a)$ per l'alçària mig $f(c)$. Això es nota: $\int_a^b f = f(c)(b-a)$.
-7. **Additivitat segons l'interval**: l'àrea d'un tram complet és l'acumulat dels sub-trams: $\int_a^b f = \int_a^c f + \int_c^b f$.
 
 ---
 
-## 4. Apèndix 2: Breu Repàs de Càlcul de Primitives
+## 3. Annex: Càlcul de Primitives i Àrees
 
-En gran part la feina es redueix a poder trobar la funció origen, coneguda com la integral indefinida. Un ràpid recordatori de les principals tècniques per solucionar-ho:
+Aquestes són les eines analítiques que hem utilitzat per resoldre els exercicis del tema.
 
-### Tècniques base
+### 3.1 Càlcul d'Àrees entre corbes
+Per trobar l'àrea limitada per dues funcions $f$ i $g$:
+1. Trobem els punts de tall igualant $f(x) = g(x)$.
+2. Determinem quina funció és superior a l'interval $[a,b]$.
+3. Calculem l'àrea com: $A = \int_a^b |f(x) - g(x)| dx$.
 
-* **Canvi de variable**: Aplicat mitjançant la Regla de la cadena de les derivades $F(g(t))' = F'(g(t)) \cdot g'(t)$. Si ens trobem una integral com $\int f(g(t))g'(t)dt$, la podem reduir per variables transformades substituint l'enganyosa composició de funcions: resulta en $F(g(x)) + K$.
-* **Integració per parts**: Empreu sempre aquesta propietat derivada d'un producte $(u \cdot v)'$. Ens aporta una molt agraïble fórmula general:\
-**Fórmula màgica**: $\int u \cdot dv = u \cdot v - \int v \cdot du$
-* **Integrals de funcions racionals**: $\int \frac{P(x)}{Q(x)}$
-  - Si trobem que el grau del polinomi numèric (el numerador) es superior o igual, s'ha de procedir a fer una divisió algorítmica de polinomis, per separar la divisió amb una forma $C(x) + \frac{R(x)}{Q(x)}$.
-  - Per funcions on el numerador és menor al denominador s'utilitzen tècniques de separació en fraccions simples $\left( A, B, C... \right)$. Aquelles que derivin de ser irreductibles acabaran sent integrables usant logaritmes i arctangents generalment, d'aquesta manera: $\frac{A}{x - a} \implies A\ln|x-a|$.
+::mafs{type="area_entre_corbes"}
 
-### Un resum d'Integrals Immediates (Taula Bàsica)
-Les funcions elementals directes de les quals deriven les fórmules que necessites tindre al cap. Amb u equivalent a una variable funcional genèrica.
+### 3.2 Tècniques d'Integració
+- **Integració per parts**: $\int u \, dv = u \cdot v - \int v \, du$. Utilitzada per a productes de funcions (Ex 8 i 11).
+- **Canvi de variable**: $u = g(x) \implies du = g'(x)dx$.
+- **Racionals**: Divisió de polinomis o fraccions simples si el denominador té arrels.
 
-- $\int u^r \cdot u' \cdot dx = \frac{u^{r+1}}{r+1} + K$ (Excepte $r = -1$)
-- $\int \frac{u'}{u} \cdot dx = \ln|u| + K$
-- $\int u' e^u \cdot dx = e^u + K$
-- $\int u' \cdot \cos(u) \cdot dx = \sin(u) + K$
-- $\int u' \cdot \sin(u) \cdot dx = -\cos(u) + K$
-- $\int \frac{u'}{\cos^2(u)} \cdot dx = \tan(u) + K$
-- $\int \frac{u'}{1+u^2} \cdot dx = \arctan(u) + K$
-- $\int \frac{u'}{\sqrt{1-u^2}} \cdot dx = \arcsin(u) + K$ -->
+### 3.3 Integrals Immediates
+| Tipus | Fórmula |
+|---|---|
+| **Potencial** | $\int u^n \cdot u' \, dx = \frac{u^{n+1}}{n+1} + C$ |
+| **Logarítmica** | $\int \frac{u'}{u} \, dx = \ln \lvert u \rvert + C$ |
+| **Exponencial** | $\int e^u \cdot u' \, dx = e^u + C$ |
+| **Trigonomètrica** | $\int \cos(u) \cdot u' \, dx = \sin(u) + C$ |
+| **Arctangent** | $\int \frac{u'}{1+u^2} \, dx = \arctan(u) + C$ |
+

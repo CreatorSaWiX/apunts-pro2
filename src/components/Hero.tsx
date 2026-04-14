@@ -55,7 +55,7 @@ const Hero: React.FC = () => {
 
         setIsLoadingContributors(true);
         const uids = ["jV5Y63M77PcqIcOUCpLz76GTYMI3", "tHrqAkSatrV6FVcgfdSErLjyXL12",
-                    "YU5QuXAZ47dslUX8ruyriHHPfh82", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
+            "YU5QuXAZ47dslUX8ruyriHHPfh82", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
         const fetched: Contributor[] = [];
 
         for (const uid of uids) {
@@ -88,9 +88,9 @@ const Hero: React.FC = () => {
         }
     });
 
-    const currentData = APP_DATA[subject] || { version: 'v1.0.0', updated: '24/02/2026' };
+    const currentData = APP_DATA[subject];
     return (
-        <div className="relative flex flex-col items-center justify-center pt-4 pb-6 z-10 text-center px-4">
+        <div className="relative flex flex-col items-center justify-center pt-12 pb-4 z-10 text-center px-4">
 
             {/* Version Badge & Updates */}
             <AnimatePresence mode="wait">
@@ -131,7 +131,7 @@ const Hero: React.FC = () => {
 
                         {/* Tooltip Last Update Date */}
                         <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 px-3 py-2 bg-slate-800/95 backdrop-blur-md text-slate-300 text-[10px] uppercase tracking-wider font-semibold rounded-lg opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 whitespace-nowrap pointer-events-none border border-white/10 shadow-2xl z-50 flex items-center gap-2 flex-row">
-                            <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
+                            <span className="relative flex h-1.5 w-1.5 shrink-0">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                             </span>
@@ -157,7 +157,7 @@ const Hero: React.FC = () => {
                                 <motion.span
                                     key={`static-${index}`}
                                     variants={letterVariants}
-                                    className="inline-block bg-gradient-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
+                                    className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
                                 >
                                     {char}
                                 </motion.span>
@@ -169,7 +169,7 @@ const Hero: React.FC = () => {
                                 <motion.span
                                     key={`dynamic-${subject}-${index}`}
                                     variants={letterVariants}
-                                    className="inline-block bg-gradient-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
+                                    className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
                                 >
                                     {char}
                                 </motion.span>
@@ -180,7 +180,7 @@ const Hero: React.FC = () => {
             </AnimatePresence>
 
             {/* Floating Action Buttons (Bottom Right) */}
-            <div className="hidden md:flex fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] flex-row gap-4 items-center">
+            <div className="hidden md:flex fixed bottom-6 right-6 md:bottom-8 md:right-8 z-100 flex-row gap-4 items-center">
 
                 {/* GitHub Button */}
                 <motion.a

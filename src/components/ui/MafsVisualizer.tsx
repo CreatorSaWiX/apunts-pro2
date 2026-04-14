@@ -1042,6 +1042,219 @@ const VisIntegracioSimpson = () => {
     };
 
 
+const VisAreaEntreCorbes = () => {
+        const f = (x: number) => -0.5 * x * x + 3;
+        const g = (x: number) => 0.5 * x + 1;
+        // Punts de tall aproximats per a la visualització: x = -2.5, x = 1.5
+        const a = -2.56;
+        const b = 1.56;
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-4, 4], y: [-1, 5] }} pan={true} zoom={true} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian subdivisions={5} />
+                    
+                    {/* Àrea entre f i g */}
+                    <Polygon
+                        points={[
+                            ...Array.from({ length: 30 }, (_, i) => {
+                                const x = a + (i / 29) * (b - a);
+                                return [x, f(x)] as [number, number];
+                            }),
+                            ...Array.from({ length: 30 }, (_, i) => {
+                                const x = b - (i / 29) * (b - a);
+                                return [x, g(x)] as [number, number];
+                            })
+                        ]}
+                        color={Theme.yellow}
+                        fillOpacity={0.3}
+                    />
+
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    <Plot.OfX y={g} color={Theme.red} weight={3} />
+
+                    <LaTeX at={[a, f(a) + 0.5]} tex="x_1" color="white" />
+                    <LaTeX at={[b, f(b) + 0.5]} tex="x_2" color="white" />
+                    
+                    <LaTeX at={[0, 4]} tex="f(x)" color={Theme.blue} />
+                    <LaTeX at={[2, 1.5]} tex="g(x)" color={Theme.red} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-400">
+                    L'àrea groga es calcula com <InlineMath math="\int_{x_1}^{x_2} (f(x) - g(x)) dx" />, on <InlineMath math="f(x)" /> és el sostre i <InlineMath math="g(x)" /> el terra.
+                </div>
+            </div>
+        );
+    };
+
+const VisTeoremaMitjana = () => {
+        const f = (x: number) => Math.sin(x) + 2;
+        const a = 0.5;
+        const b = 4;
+        // Valor mitjà aproximat per a la visualització
+        const fMitja = 2.15;
+        const c = 3.0; // Punt on f(c) = fMitja aproximat
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-0.5, 5], y: [-0.5, 4] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    
+                    {/* Àrea sota la corba */}
+                    <Polygon
+                        points={[
+                            [a, 0],
+                            ...Array.from({ length: 30 }, (_, i) => {
+                                const x = a + (i / 29) * (b - a);
+                                return [x, f(x)] as [number, number];
+                            }),
+                            [b, 0]
+                        ]}
+                        color={Theme.blue}
+                        fillOpacity={0.2}
+                    />
+
+                    {/* Rectangle de la mitjana */}
+                    <Polygon
+                        points={[[a, 0], [b, 0], [b, fMitja], [a, fMitja]]}
+                        color={Theme.green}
+                        fillOpacity={0.2}
+                        weight={2}
+                    />
+
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    <Line.Segment point1={[a, fMitja]} point2={[b, fMitja]} color={Theme.green} weight={3} />
+                    
+                    <circle cx={c} cy={f(c)} r={0.15} fill={Theme.green} stroke="white" />
+                    
+                    <LaTeX at={[c, f(c) + 0.4]} tex="f(c)" color={Theme.green} />
+                    <LaTeX at={[a, -0.4]} tex="a" color="white" />
+                    <LaTeX at={[b, -0.4]} tex="b" color="white" />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-400 leading-relaxed">
+                    L'àrea del <span className="text-green-400 font-bold">rectangle verd</span> és exactament igual a l'àrea <span className="text-blue-400 font-bold">blava</span> sota la corba. 
+                    L'alçada <InlineMath math="f(c)" /> representa el valor mitjà de la funció en l'interval.
+                </div>
+            </div>
+        );
+    };
+
+const VisRiemannSums = () => {
+        const [n, setN] = React.useState(6);
+        const [type, setType] = React.useState<'lower' | 'upper'>('lower');
+        const f = (x: number) => 0.1 * x * x + 1;
+        const a = 0;
+        const b = 5;
+        const dx = (b - a) / n;
+
+        const rectangles = [];
+        for (let i = 0; i < n; i++) {
+            const x0 = a + i * dx;
+            const x1 = a + (i + 1) * dx;
+            const h = type === 'lower' ? f(x0) : f(x1); // Com que és creixent, ínfim és esquerra i suprem dreta
+            rectangles.push(
+                <Polygon
+                    key={i}
+                    points={[[x0, 0], [x1, 0], [x1, h], [x0, h]]}
+                    color={type === 'lower' ? Theme.blue : Theme.red}
+                    fillOpacity={0.3}
+                />
+            );
+        }
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <Mafs viewBox={{ x: [-1, 6], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    {rectangles}
+                    <Plot.OfX y={f} color={Theme.red} weight={3} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="flex gap-2">
+                            <button onClick={() => setType('lower')} className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase ${type === 'lower' ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>Inferiors</button>
+                            <button onClick={() => setType('upper')} className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase ${type === 'upper' ? 'bg-red-500 text-white' : 'bg-slate-700 text-slate-400'}`}>Superiors</button>
+                        </div>
+                        <div className="flex items-center gap-3 flex-1 px-4">
+                            <span className="text-[10px] text-slate-400 uppercase font-bold w-12">Parts: {n}</span>
+                            <input type="range" min="2" max="40" step="1" value={n} onChange={(e) => setN(parseInt(e.target.value))} className="flex-1 accent-indigo-500 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+const VisParitatIntegrals = () => {
+        const [mode, setMode] = React.useState<'even' | 'odd'>('even');
+        
+        const f = mode === 'even' ? (t: number) => Math.cos(t) : (t: number) => Math.sin(t);
+        const F = mode === 'even' ? (t: number) => Math.sin(t) : (t: number) => -Math.cos(t) + 1; // Integral de sin(t) des de 0 \u00e9s 1 - cos(t)
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <div className="p-4 flex gap-4 bg-slate-800/50 border-b border-white/10 justify-center">
+                    <button onClick={() => setMode('even')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'even' ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Parella</button>
+                    <button onClick={() => setMode('odd')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'odd' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Imparella</button>
+                </div>
+                <Mafs viewBox={{ x: [-4, 4], y: [-2, 2] }} pan={true} zoom={true} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    <Plot.OfX y={f} color={Theme.orange} weight={3} opacity={0.5} />
+                    <Plot.OfX y={F} color={Theme.blue} weight={4} />
+                    
+                    <LaTeX at={[1, f(1) + 0.3]} tex="f(x)" color={Theme.orange} />
+                    <LaTeX at={[1, F(1) + 0.3]} tex="F(x) = \int_0^x f" color={Theme.blue} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-300">
+                    {mode === 'even' 
+                        ? <p>Si <span className="text-orange-400 font-bold">f(x)</span> és **parella** (simètrica eix Y), la funció àrea **F(x)** és **imparella** (simètrica origen).</p>
+                        : <p>Si <span className="text-orange-400 font-bold">f(x)</span> és **imparella**, la funció àrea **F(x)** és **parella**.</p>
+                    }
+                </div>
+            </div>
+        );
+    };
+
+const VisCotaError = () => {
+        const [n, setN] = React.useState(2);
+        const [mode, setMode] = React.useState<'low' | 'high'>('low');
+        
+        // f(x) amb poca curvatura vs molta curvatura
+        const f = mode === 'low' ? (x: number) => 0.2*x*x + 1 : (x: number) => 3 / (x + 1.2);
+        const a = 0; const b = 3;
+        const dx = (b-a)/n;
+
+        const traps = [];
+        for(let i=0; i<n; i++) {
+            const x0 = a + i*dx;
+            const x1 = a + (i+1)*dx;
+            traps.push(<Polygon key={i} points={[[x0,0], [x1,0], [x1, f(x1)], [x0, f(x0)]]} color={Theme.yellow} fillOpacity={0.2} />);
+        }
+
+        return (
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+                <div className="p-4 flex gap-4 bg-slate-800/50 border-b border-white/10 justify-center">
+                    <button onClick={() => setMode('low')} className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase ${mode === 'low' ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>Baixa Curvatura (f'')</button>
+                    <button onClick={() => setMode('high')} className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase ${mode === 'high' ? 'bg-red-500 text-white' : 'bg-slate-700 text-slate-400'}`}>Alta Curvatura (f'')</button>
+                </div>
+                <Mafs viewBox={{ x: [-0.5, 4], y: [-0.5, 4] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+                    {traps}
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-6 border-t border-white/10">
+                    <div className="flex items-center gap-4 mb-4">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase w-12">n = {n}</span>
+                        <input type="range" min="1" max="15" step="1" value={n} onChange={(e) => setN(parseInt(e.target.value))} className="flex-1 accent-yellow-400" />
+                    </div>
+                    <p className="text-xs text-slate-400 italic">
+                        L'error és l'espai buit entre la corba blava i els trapezis grocs. 
+                        Fixa't com, per a una mateixa n, l'error és molt major si la funció té una **curvatura (derivada segona)** més pronunciada.
+                    </p>
+                </div>
+            </div>
+        );
+    };
+
 const VISUALIZERS: Record<string, React.FC> = {
     'successio_1_n': VisSuccessio1N,
     'successio_oscilant': VisSuccessioOscilant,
@@ -1066,7 +1279,14 @@ const VISUALIZERS: Record<string, React.FC> = {
     'limits_integracio': VisLimitsIntegracio,
     'integracio_trapezi': VisIntegracioTrapezi,
     'integracio_simpson': VisIntegracioSimpson,
+    'area_entre_corbes': VisAreaEntreCorbes,
+    'teorema_mitjana': VisTeoremaMitjana,
+    'riemann_sums': VisRiemannSums,
+    'paritat_integrals': VisParitatIntegrals,
+    'cota_error': VisCotaError,
 };
+
+
 
 const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
     const Component = VISUALIZERS[type];
