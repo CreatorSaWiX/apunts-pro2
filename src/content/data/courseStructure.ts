@@ -323,7 +323,16 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M1-T5-Ex5.15", title: "Exercici 5.15: Càlcul de la inversa (Gauss-Jordan)" },
             { id: "M1-T5-Ex5.16", title: "Exercici 5.16: Linealitat de les equacions" },
             { id: "M1-T5-Ex5.17", title: "Exercici 5.17: De matriu ampliada a sistema" },
-            { id: "M1-T5-Ex5.18", title: "Exercici 5.18: Teorema de Rouché-Capelli" }
+            { id: "M1-T5-Ex5.18", title: "Exercici 5.18: Teorema de Rouché-Capelli" },
+            { id: "M1-T5-Ex5.19", title: "Exercici 5.19: Sistemes en Z2" },
+            { id: "M1-T5-Ex5.20", title: "Exercici 5.20: Resolució de sistemes lineals" },
+            { id: "M1-T5-Ex5.21", title: "Exercici 5.21: Resolució de sistemes homogenis" },
+            { id: "M1-T5-Ex5.22", title: "Exercici 5.22: Discussió segons paràmetres" },
+            { id: "M1-T5-Ex5.23", title: "Exercici 5.23: Propietats dels determinants" },
+            { id: "M1-T5-Ex5.24", title: "Exercici 5.24: Valors per determinant nul" },
+            { id: "M1-T5-Ex5.25", title: "Exercici 5.25: Càlcul de determinants" },
+            { id: "M1-T5-Ex5.26", title: "Exercici 5.26: Propietats algebraiques" },
+            { id: "M1-T5-Ex5.27", title: "Exercici 5.27: Demostració de determinant" }
         ]
     },
 

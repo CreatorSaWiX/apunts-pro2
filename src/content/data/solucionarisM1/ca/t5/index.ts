@@ -17,6 +17,15 @@ import { ex5_15 } from './ex5.15';
 import { ex5_16 } from './ex5.16';
 import { ex5_17 } from './ex5.17';
 import { ex5_18 } from './ex5.18';
+import { ex5_19 } from './ex5.19';
+import { ex5_20 } from './ex5.20';
+import { ex5_21 } from './ex5.21';
+import { ex5_22 } from './ex5.22';
+import { ex5_23 } from './ex5.23';
+import { ex5_24 } from './ex5.24';
+import { ex5_25 } from './ex5.25';
+import { ex5_26 } from './ex5.26';
+import { ex5_27 } from './ex5.27';
 
 export const m1t5Solutions: Solution[] = [
     ex5_1,
@@ -36,5 +45,14 @@ export const m1t5Solutions: Solution[] = [
     ex5_15,
     ex5_16,
     ex5_17,
-    ex5_18
+    ex5_18,
+    ex5_19,
+    ex5_20,
+    ex5_21,
+    ex5_22,
+    ex5_23,
+    ex5_24,
+    ex5_25,
+    ex5_26,
+    ex5_27
 ];
