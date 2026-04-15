@@ -15,7 +15,7 @@ b) $\\int_0^1 \\cos(x^2) \\, dx$.
 Calculeu també la cota superior de l'error comès en cada cas.`,
   content: `
 Per a ambdues integrals tenim $n=4$ subintervals en l'interval $[0, 1]$, per tant $h = \\frac{1-0}{4} = 0.25$.
-Els punts de la partició són $x_i = \{0, 0.25, 0.5, 0.75, 1\}$.
+Els punts de la partició són $x_i = a + i \\cdot h = 0 + \\frac i 4 = \\{0, 0.25, 0.5, 0.75, 1\\}$.
 
 ---
 
@@ -29,17 +29,26 @@ Taula de valors ($f(x) = e^{x^2}$):
 - $f(1) \\approx 2.71828$
 
 **Mètode dels Trapezis ($T$):**
+$T_n = \\frac{h}{2} \\left[ f(x_0) + 2 \\sum_{i=1}^{n-1} f(x_i) + f(x_n) \\right]$
+
 $T = \\frac{0.25}{2} [f(0) + 2(f(0.25) + f(0.5) + f(0.75)) + f(1)]$
+
 $T = 0.125 [1 + 2(4.10357) + 2.71828] = 0.125 [11.92542] \\approx \\mathbf{1.49068}$
 
 **Regla de Simpson ($S$):**
+$S_n = \\frac{h}{3} \\left[ f(x_0) + 4 \\sum_{\\text{senars}} f(x_i) + 2 \\sum_{\\text{parells}} f(x_i) + f(x_n) \\right]$
+
 $S = \\frac{0.25}{3} [f(0) + 4f(0.25) + 2f(0.5) + 4f(0.75) + f(1)]$
+
 $S = \\frac{0.25}{3} [1 + 4.25796 + 2.56806 + 7.02020 + 2.71828] = \\frac{0.25}{3} [17.56450] \\approx \\mathbf{1.46371}$
 
 **Cotes d'error (a):**
 Necessitem les derivades: $f''(x) = (2+4x^2)e^{x^2}$ i $f^{(4)}(x) = (12+48x^2+16x^4)e^{x^2}$.
 - $max |f''(x)| = f''(1) = 6e \\approx 16.31$
 - $max |f^{(4)}(x)| = f^{(4)}(1) = 76e \\approx 206.59$
+
+Fórmules de l'error:
+$|E_T| \\leq \\frac{(b-a)h^2}{12} M_2, \\quad |E_S| \\leq \\frac{(b-a)h^4}{180} M_4$
 
 $|E_T| \\leq \\frac{1 \\cdot 0.25^2}{12} \\cdot 16.31 \\approx \\mathbf{0.0849}$
 $|E_S| \\leq \\frac{1 \\cdot 0.25^4}{180} \\cdot 206.59 \\approx \\mathbf{0.00448}$

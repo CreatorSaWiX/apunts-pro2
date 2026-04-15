@@ -171,8 +171,8 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "pro2-tema-8",
-        title: "Tema 8: Diccionaris i ABB",
-        description: "Arbres Binaris de Cerca i la seva aplicació en diccionaris.",
+        title: "Tema 8: Punters",
+        description: "Gestió de memòria en C++, operadors, aliasing i gestió del 'heap'.",
         problems: []
     },
     {

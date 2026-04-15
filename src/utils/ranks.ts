@@ -8,12 +8,12 @@ export type Rank = {
 
 const ranks: Omit<Rank, 'division'>[] = [
     { name: 'Bronze', color: 'text-orange-600', minSolutions: 0 },
-    { name: 'Plata', color: 'text-slate-400', minSolutions: 5 },
-    { name: 'Or', color: 'text-yellow-400', minSolutions: 10 },
-    { name: 'Platí', color: 'text-cyan-400', minSolutions: 15 },
-    { name: 'Diamant', color: 'text-blue-500', minSolutions: 20 },
-    { name: 'Campió', color: 'text-purple-500', minSolutions: 25 },
-    { name: 'Gran Campió', color: 'text-red-500', minSolutions: 35 },
+    { name: 'Silver', color: 'text-slate-400', minSolutions: 5 },
+    { name: 'Gold', color: 'text-yellow-400', minSolutions: 10 },
+    { name: 'Platinum', color: 'text-cyan-400', minSolutions: 15 },
+    { name: 'Diamond', color: 'text-blue-500', minSolutions: 20 },
+    { name: 'Champion', color: 'text-purple-500', minSolutions: 25 },
+    { name: 'Grand Champion', color: 'text-red-500', minSolutions: 35 },
     { name: 'SSL', color: 'text-pink-500 bg-clip-text bg-gradient-to-r from-pink-500 to-white', minSolutions: 50 },
 ];
 

@@ -1,7 +1,7 @@
 ---
 title: "Parcial PRO2"
 description: "Resum tema 1 - tema 6"
-readTime: "4m"
+readTime: "4 min"
 order: 7
 draft: false
 ---

@@ -1,9 +1,10 @@
 ---
-title: "Tema 7: Projectes amb classes"
+title: "Tema 7: Punters"
 description: "Implementació i ús de cues de prioritat."
 readTime: "40s"
 order: 8
 draft: true
+isNew: true
 ---
 
 # Contingut pendent

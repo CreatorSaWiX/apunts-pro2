@@ -16,9 +16,9 @@ interface Contributor {
 }
 
 const APP_DATA: Record<string, { version: string; updated: string }> = {
-    pro2: { version: 'v1.3.6', updated: '13/04/2026' },
-    m1: { version: 'v1.4.0', updated: '13/04/2026' },
-    m2: { version: 'v1.2.1', updated: '14/04/2026' }
+    pro2: { version: 'v1.4.0', updated: '15/04/2026' },
+    m1: { version: 'v1.4.1', updated: '15/04/2026' },
+    m2: { version: 'v1.2.2', updated: '15/04/2026' }
 };
 
 const letterContainerVariants = {
@@ -191,7 +191,7 @@ const Hero: React.FC = () => {
                     whileTap={{ scale: 0.9 }}
                     className="group relative p-3 rounded-full bg-slate-900 border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] hover:border-white/20 transition-all duration-300 flex items-center justify-center overflow-hidden"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+                    <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/10 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
                     <Github size={22} className="text-slate-400 group-hover:text-white relative z-10 transition-colors" />
 
                     {/* Hover tooltip for GitHub */}
@@ -230,7 +230,7 @@ const Hero: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-200 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                         onClick={() => setIsModalOpen(false)}
                     >
                         <motion.div
@@ -238,7 +238,7 @@ const Hero: React.FC = () => {
                             animate={{ scale: 1, y: 0, opacity: 1 }}
                             exit={{ scale: 0.9, y: 20, opacity: 0 }}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                            className="relative w-full max-w-md p-8 overflow-hidden rounded-[2rem] bg-slate-900/95 backdrop-blur-xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                            className="relative w-full max-w-md p-8 overflow-hidden rounded-4xl bg-slate-900/95 backdrop-blur-xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Glowing background inside modal */}
@@ -283,7 +283,7 @@ const Hero: React.FC = () => {
                                                 transition={{ delay: 0.1 + i * 0.1 }}
                                                 className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all group cursor-pointer no-underline"
                                             >
-                                                <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform relative">
+                                                <div className="w-12 h-12 rounded-full overflow-hidden bg-linear-to-tr from-primary to-accent flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform relative">
                                                     {user.avatar ? (
                                                         <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
                                                     ) : (

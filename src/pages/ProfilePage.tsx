@@ -414,12 +414,12 @@ const ProfilePage = () => {
                                             <h4 className="font-bold text-white mb-4 tracking-tight text-sm">Escala de rangs</h4>
                                             <ul className="space-y-2.5 text-xs font-semibold">
                                                 <li className="flex justify-between items-center"><span className="text-orange-500">Bronze</span> <span className="text-slate-500">0+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-slate-400">Plata</span> <span className="text-slate-500">5+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-yellow-400">Or</span> <span className="text-slate-500">10+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-cyan-400">Platí</span> <span className="text-slate-500">15+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-blue-500">Diamant</span> <span className="text-slate-500">20+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-purple-500">Campió</span> <span className="text-slate-500">25+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-red-500">Gran Campió</span> <span className="text-slate-500">35+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-slate-400">Silver</span> <span className="text-slate-500">5+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-yellow-400">Gold</span> <span className="text-slate-500">10+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-cyan-400">Platinum</span> <span className="text-slate-500">15+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-blue-500">Diamond</span> <span className="text-slate-500">20+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-purple-500">Champion</span> <span className="text-slate-500">25+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-red-500">Grand Champion</span> <span className="text-slate-500">35+</span></li>
                                                 <li className="flex justify-between items-center"><span className="text-pink-500">SSL</span> <span className="text-pink-400/50">50+</span></li>
                                             </ul>
                                         </div>
