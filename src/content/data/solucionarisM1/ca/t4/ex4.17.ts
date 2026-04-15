@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_17: Solution = {
   id: 'M1-T4-Ex4.17',
   title: "Exercici 4.17: Reconstrucció d'arbres des de seqüències de Prüfer",
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu els arbres que tenen les seqüències de Prüfer següents:

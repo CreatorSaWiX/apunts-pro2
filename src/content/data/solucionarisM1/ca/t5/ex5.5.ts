@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_5: Solution = {
   id: 'M1-T5-Ex5.5',
   title: 'Exercici 5.5: Representació Matricial de Dades',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Una empresa confecciona bosses i maletes en dues fàbriques diferents. La taula adjunta dóna la informació del cost total de fabricació en milers d'euros de cada producte a cada lloc:

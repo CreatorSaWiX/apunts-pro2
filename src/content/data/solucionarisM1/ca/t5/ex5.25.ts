@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_25: Solution = {
   id: 'M1-T5-Ex5.25',
   title: 'Exercici 5.25: Càlcul de Determinants de Diversos Ordres',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Calculeu els determinants següents:

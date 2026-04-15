@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_18: Solution = {
   id: 'M1-T5-Ex5.18',
   title: 'Exercici 5.18: Teorema de Rouché-Capelli',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Responeu raonadament les preguntes següents:

@@ -28,6 +28,7 @@ import { m2t3Solutions } from './solucionarisM2/ca/t3/index';
 import { m2t4Solutions } from './solucionarisM2/ca/t4/index';
 import { m2t5Solutions } from './solucionarisM2/ca/t5/index';
 import { m2t6Solutions } from './solucionarisM2/ca/t6/index';
+import { m2t7Solutions } from './solucionarisM2/ca/t7/index';
 
 export const allSolutions: TopicSolutions[] = [
     {
@@ -73,6 +74,10 @@ export const allSolutions: TopicSolutions[] = [
     {
         topicId: 'm2-tema-6-integracio',
         solutions: m2t6Solutions
+    },
+    {
+        topicId: 'm2-tema-7-funcions-variables',
+        solutions: m2t7Solutions
     }
 ];
 

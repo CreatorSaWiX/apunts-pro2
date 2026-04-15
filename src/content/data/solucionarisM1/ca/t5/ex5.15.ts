@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_15: Solution = {
   id: 'M1-T5-Ex5.15',
   title: 'Exercici 5.15: Càlcul de la Matriu Inversa (Gauss-Jordan)',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu, si existeix, la inversa de cadascuna de les matrius següents, seguint el mètode de Gauss-Jordan.

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_7: Solution = {
   id: 'M2-T6-Ex7',
   title: 'Exercici 7: Integrals immediates',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Calculeu les integrals immediates següents:

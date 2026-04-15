@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_1: Solution = {
   id: 'M1-T5-Ex5.1',
   title: 'Exercici 5.1: Operacions amb Matrius',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Donades les matrius

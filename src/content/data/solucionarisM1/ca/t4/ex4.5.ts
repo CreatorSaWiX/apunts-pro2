@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_5: Solution = {
   id: 'M1-T4-Ex4.5',
   title: 'Exercici 4.5: Seqüència de Graus i Arbres No Isomorfs',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $T$ un arbre d'ordre 12 que té exactament 3 vèrtexs de grau 3 i exactament un vèrtex de grau 2.

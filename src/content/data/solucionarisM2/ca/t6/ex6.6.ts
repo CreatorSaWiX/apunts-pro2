@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_6: Solution = {
   id: 'M2-T6-Ex6',
   title: 'Exercici 6: Dimensió de la partició per Simpson',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Siguin $f(x) = (\\sin(x) \\cos(x))^{4/3}$ i $I = \\int_{0.6}^{1.0} f(x) \\, dx$.

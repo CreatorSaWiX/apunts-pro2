@@ -35,6 +35,25 @@ Aquest concepte ens introdueix una de les eines més importants i pràctiques pe
 
 ::mafs{type="regla_barrow"}
 
+### Propietats Fonamentals
+
+Per treballar amb integrals definides, és essencial recordar aquestes propietats:
+
+1. **Inversió de límits**: Si intercanviem els límits d'integració, el signe de la integral canvia.
+   $$\int_a^b f(x) dx = -\int_b^a f(x) dx$$
+
+::mafs{type="propietat_inversio"}
+
+2. **Linealitat**: La integral de la suma és la suma d'integrals, i les constants poden sortir de la integral.
+   $$\int_a^b (k \cdot f(x) + g(x)) dx = k \int_a^b f(x) dx + \int_a^b g(x) dx$$
+
+::mafs{type="propietat_linealitat"}
+
+3. **Additivitat de l'interval**: Podem partir una integral en un punt $c \in [a,b]$.
+   $$\int_a^b f(x) dx = \int_a^c f(x) dx + \int_c^b f(x) dx$$
+
+::mafs{type="propietat_additivitat"}
+
 ### Propietats de Simetria i Paritat
 
 Si la funció $f$ presenta simetries, l'estudi de la funció àrea $F(x) = \int_0^x f(t)dt$ se simplifica:
@@ -45,14 +64,16 @@ Si la funció $f$ presenta simetries, l'estudi de la funció àrea $F(x) = \int_
 
 > **Truc d'examen**: Recorda que la integral d'una funció imparella en un interval simètric $[-a, a]$ és sempre $0$.
 
-### Estudi de funcions definides per integrals (Límits funcionals)
+### Derivada d'una integral
 
-De vegades podem tenir límits d'integració que depenen d'una variable $x$. Com derivem aquestes integrals?
+Quan els límits d'integració depenen d'una variable $x$, no podem aplicar el TFC directament; cal utilitzar la **Regla de la Cadena**.
 
-> **Teorema**: Sigui $f$ contínua i $u, v$ funcions derivables en un punt $x_0$. Si definim:
+> **Teorema**: Sigui $f$ contínua i $u(x), v(x)$ funcions derivables. Si definim:
 > $$F(x) = \int_{u(x)}^{v(x)} f(t)dt$$
-> Aleshores $F$ és derivable en $x_0$ i la seva derivada en $x$ s'avalúa aplicant la Regla de la Cadena a Barrow:
-> $$F'(x_0) = f(v(x_0)) \cdot v'(x_0) - f(u(x_0)) \cdot u'(x_0)$$
+> Aleshores la seva derivada és:
+> $$F'(x) = f(v(x)) \cdot v'(x) - f(u(x)) \cdot u'(x)$$
+
+*En paraules:* Substituïm la $x$ en la funció i multipliquem per la derivada del límit.
 
 ::mafs{type="limits_integracio"}
 

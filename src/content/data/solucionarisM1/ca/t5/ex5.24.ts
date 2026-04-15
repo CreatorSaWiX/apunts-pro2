@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_24: Solution = {
   id: 'M1-T5-Ex5.24',
   title: 'Exercici 5.24: Valors per Determinant Nul (Valors Propis)',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu els valors de $\\lambda$ per als quals les matrius següents tenen determinant 0.

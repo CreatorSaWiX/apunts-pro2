@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_14: Solution = {
   id: 'M2-T6-Ex14',
   title: 'Exercici 14: Anàlisi de l\'error en la regla de Simpson',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Siguin $f(x) = \\cos^3(x)$ i $I = \\int_0^1 \\cos^3(x) \\, dx$.

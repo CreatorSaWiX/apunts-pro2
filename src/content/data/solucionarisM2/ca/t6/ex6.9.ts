@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_9: Solution = {
   id: 'M2-T6-Ex9',
   title: 'Exercici 9: Àrea entre una paràbola i una recta',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu l'àrea determinada per la paràbola $y = x^2 + 7$ i la recta $y = 10$.`,

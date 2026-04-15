@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_6: Solution = {
   id: 'M1-T4-Ex4.6',
   title: 'Exercici 4.6: Graf no arbre amb vèrtexs de tall',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu un graf connex tal que tot vèrtex de grau $\\ge 2$ sigui de tall però no sigui arbre.`,

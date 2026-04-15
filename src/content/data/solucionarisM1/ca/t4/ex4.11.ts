@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_11: Solution = {
   id: 'M1-T4-Ex4.11',
   title: 'Exercici 4.11: Grafs Unicíclics',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf d'ordre $n$ i mida $m$. Demostreu que les propietats següents són equivalents:

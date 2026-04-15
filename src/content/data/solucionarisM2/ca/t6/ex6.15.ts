@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_15: Solution = {
   id: 'M2-T6-Ex15',
   title: 'Exercici 15: Punt crític i integració numèrica',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $F(x) = \\int_1^{x^2+2} \\frac{e^t}{t} \\, dt$.

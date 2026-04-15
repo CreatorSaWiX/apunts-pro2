@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_7: Solution = {
   id: 'M1-T4-Ex4.7',
   title: 'Exercici 4.7: Fórmula de les Fulles',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `1) Sigui $T$ un arbre d'ordre $n \\ge 2$. Proveu que el nombre de fulles de $T$ és:

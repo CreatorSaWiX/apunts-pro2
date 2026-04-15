@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_3: Solution = {
   id: 'M1-T5-Ex5.3',
   title: 'Exercici 5.3: Existència del Producte BA',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Donades $A$ i $B$ matrius tals que $AB$ és una matriu quadrada, proveu que el producte $BA$ està definit.`,

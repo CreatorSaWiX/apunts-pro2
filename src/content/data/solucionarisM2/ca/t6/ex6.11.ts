@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_11: Solution = {
   id: 'M2-T6-Ex11',
   title: 'Exercici 11: Àrea en el quart quadrant',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Calculeu l'àrea de la regió del quart quadrant limitada per la corba $y = (x^2 - x)e^{-x}$ i el semieix positiu d'abscisses.`,

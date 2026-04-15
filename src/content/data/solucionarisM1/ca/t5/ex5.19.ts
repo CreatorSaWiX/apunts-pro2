@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_19: Solution = {
   id: 'M1-T5-Ex5.19',
   title: 'Exercici 5.19: Sistemes en el cos Z2',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Resoleu els sistemes lineals següents amb coeficients a $\\mathbb{Z}_2$. Useu eliminació gaussiana i doneu la solució en forma paramètrica.

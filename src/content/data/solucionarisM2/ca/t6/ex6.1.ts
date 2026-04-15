@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_1: Solution = {
   id: 'M2-T6-Ex1',
   title: 'Exercici 1: Derivada de funcions integrals',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Calculeu la derivada de les funcions següents:
@@ -30,7 +30,7 @@ $F'(x) = f(g(x)) \\cdot g'(x) - f(h(x)) \\cdot h'(x)$
 
 En aquest cas, tenim una aplicació directa del TFC on el límit superior és $x$ i l'inferior és una constant.
 
-$f'(x) = \\sin(\\ln x)$
+$f'(x) = \\sin(\\ln x) \\cdot 1 = \\sin(\\ln x)$
 
 ---
 

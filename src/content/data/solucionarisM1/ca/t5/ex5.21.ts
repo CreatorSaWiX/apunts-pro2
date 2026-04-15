@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_21: Solution = {
   id: 'M1-T5-Ex5.21',
   title: 'Exercici 5.21: Resolució de Sistemes Homogenis',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Resoleu el sistemes lineals homogenis següents. Useu l'eliminació gaussiana i doneu la solució en forma paramètrica.

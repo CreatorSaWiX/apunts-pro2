@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_6: Solution = {
   id: 'M1-T5-Ex5.6',
   title: 'Exercici 5.6: Potències de Matrius Diagonals',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `En aquest exercici es vol trobar una fórmula per calcular les potències d'una matriu diagonal.

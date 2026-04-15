@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_10: Solution = {
   id: 'M1-T5-Ex5.10',
   title: 'Exercici 5.10: Matrius amb Propietats Especials',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Siguin $I$ la matriu identitat i $O$ la matriu nul·la de $\\mathcal{M}_{2 \\times 2}(\\mathbb{R})$. Trobeu matrius $A, B, C, D, E \\in \\mathcal{M}_{2 \\times 2}(\\mathbb{R})$ tals:

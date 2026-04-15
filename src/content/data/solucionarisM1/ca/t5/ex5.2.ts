@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_2: Solution = {
   id: 'M1-T5-Ex5.2',
   title: 'Exercici 5.2: Producte de Vectors Fila i Columna',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Calculeu els productes $\\begin{pmatrix} 1 & 2 & -3 \\end{pmatrix} \\begin{pmatrix} 2 \\\\ 1 \\\\ 5 \\end{pmatrix}$ i $\\begin{pmatrix} 2 \\\\ 1 \\\\ 5 \\end{pmatrix} \\begin{pmatrix} 1 & 2 & -3 \\end{pmatrix}$.`,

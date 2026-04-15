@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_3: Solution = {
   id: 'M1-T4-Ex4.3',
   title: 'Exercici 4.3: Ordre i Mida d\'Arbres',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $T_1$ un arbre d'ordre $n$ i mida 17 i $T_2$ un arbre d'ordre $2n$. Calculeu $n$ i l'ordre i la mida de $T_2$.`,

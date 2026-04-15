@@ -140,6 +140,14 @@ const defaultComponents: any = {
             </React.Suspense>
         );
     },
+    three: (props: any) => {
+        const { node, ...rest } = props;
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <ThreeVisualizer {...rest} />
+            </React.Suspense>
+        );
+    },
     pre: ({ children }: any) => <>{children}</>,
     code(props: any) {
         const { children, className, ...rest } = props;

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_4: Solution = {
   id: 'M2-T6-Ex4',
   title: 'Exercici 4: Paritat i concavitat d\'una funció integral',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $F(x) = \\int_{-x}^{x} t^2 e^{t^2} \\, dt$. Proveu que $F'$ és una funció parella i estudieu la concavitat de $F$.`,

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_20: Solution = {
   id: 'M1-T5-Ex5.20',
   title: 'Exercici 5.20: Resolució de Sistemes Lineals (Gauss)',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Resoleu el sistemes lineals següents. Useu eliminació gaussiana i doneu la solució en forma paramètrica.

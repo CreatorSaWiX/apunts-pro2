@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_7: Solution = {
   id: 'M1-T5-Ex5.7',
   title: 'Exercici 5.7: Transposada del Producte',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Doneu un exemple de dues matrius $A$ i $B$ de tipus $2 \\times 2$ tals que $(AB)^t \\neq A^t B^t$.`,

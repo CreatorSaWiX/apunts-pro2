@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_13: Solution = {
   id: 'M1-T5-Ex5.13',
   title: 'Exercici 5.13: Escalonament i Rang de Matrius',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu una matriu escalonada per files equivalent a cadascuna de les matrius següents. Doneu el rang de cada matriu.

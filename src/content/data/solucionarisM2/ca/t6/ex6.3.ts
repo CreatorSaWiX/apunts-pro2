@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_3: Solution = {
   id: 'M2-T6-Ex3',
   title: 'Exercici 3: Monotonia d\'una funció integral',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $f : (0, +\\infty) \\setminus \{1\} \\to \\mathbb{R}$ definida per $f(x) = \\int_x^{x^2} \\frac{dt}{\\ln t}$. Proveu que $f$ és estrictament creixent a $(0, 1)$ i a $(1, +\\infty)$.`,
@@ -12,40 +12,32 @@ Per provar que una funció és estrictament creixent en un interval, hem de demo
 
 ### 1) Càlcul de la derivada
 
-Utilitzem el Teorema Fonamental del Càlcul per derivar la funció integral:
-$f(x) = \\int_{x}^{x^2} \\frac{1}{\\ln t} \\, dt$
+Utilitzem el Teorema Fonamental del Càlcul. Com que els dos límits d'integració depenen de $x$, la derivada s'avalua en ambdós extrems:
+$$f'(x) = \\frac{1}{\\ln(x^2)} \\cdot (x^2)' - \\frac{1}{\\ln x} \\cdot (x)'$$
 
-L'integrant és $g(t) = \\frac{1}{\\ln t}$. Aplicant la fórmula de la derivada d'una integral amb límits variables:
-$f'(x) = g(x^2) \\cdot \\frac{d}{dx}(x^2) - g(x) \\cdot \\frac{d}{dx}(x)$
+Substituïm les derivades $(x^2)' = 2x$ i $(x)' = 1$:
+$$f'(x) = \\frac{2x}{\\ln(x^2)} - \\frac{1}{\\ln x}$$
 
-$f'(x) = \\frac{1}{\\ln(x^2)} \\cdot 2x - \\frac{1}{\\ln x} \\cdot 1$
+Ara apliquem la propietat dels logaritmes $\\ln(a^b) = b \\ln a$ al primer terme:
+$$f'(x) = \\frac{2x}{2 \\ln x} - \\frac{1}{\\ln x}$$
 
-Utilitzant la propietat dels logaritmes $\\ln(x^a) = a \\ln x$:
-$f'(x) = \\frac{2x}{2 \\ln x} - \\frac{1}{\\ln x} = \\frac{x}{\\ln x} - \\frac{1}{\\ln x}$
-
-Simplificant, obtenim l'expressió de la derivada:
-$\\mathbf{f'(x) = \\frac{x-1}{\\ln x}}$
+Simplifiquem el factor $2$ i agrupem els termes (tenen el mateix denominador):
+$$f'(x) = \\frac{x}{\\ln x} - \\frac{1}{\\ln x} = \\mathbf{\\frac{x-1}{\\ln x}}$$
 
 ---
 
-### 2) Anàlisi del signe de $f'(x)$
+### 2) Estudi del signe
 
-Analitzem el signe de la derivada en els dos intervals donats:
+Per saber si la funció és creixent, mirem on $f'(x) > 0$. Recordem el comportament de $\\ln x$ (és negatiu entre $0$ i $1$, i positiu a partir d'1):
 
-#### Interval $(0, 1)$
-Si $x \\in (0, 1)$:
-- El numerador: $x-1 < 0$ (perquè $x$ és menor que 1).
-- El denominador: $\\ln x < 0$ (perquè el logaritme de números entre 0 i 1 és negatiu).
-- Per tant: $f'(x) = \\frac{\\text{negatiu}}{\\text{negatiu}} > 0$.
+| | $x \\in (0, 1)$ | $x \\in (1, +\\infty)$ |
+| :--- | :---: | :---: |
+| **Numerador** ($x-1$) | $-$ | $+$ |
+| **Denominador** ($\\ln x$) | $-$ | $+$ |
+| **Signe de $f'(x)$** | $\\mathbf{+}$ | $\\mathbf{+}$ |
 
-#### Interval $(1, +\\infty)$
-Si $x \\in (1, +\\infty)$:
-- El numerador: $x-1 > 0$ (perquè $x$ és major que 1).
-- El denominador: $\\ln x > 0$ (perquè el logaritme de números majors que 1 és positiu).
-- Per tant: $f'(x) = \\frac{\\text{positiu}}{\\text{positiu}} > 0$.
+**Conclusió**: Com que $f'(x) > 0$ en ambdós intervals, la funció **$f(x)$ és estrictament creixent** a $(0, 1)$ i a $(1, +\\infty)$.
 
-### Conclusió
-Com que la derivada $f'(x)$ és estrictament positiva en ambdós intervals, la funció **$f(x)$ és estrictament creixent** a $(0, 1)$ i a $(1, +\\infty)$.
 `,
   availableLanguages: ['ca']
 };

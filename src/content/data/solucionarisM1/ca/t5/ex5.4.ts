@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_4: Solution = {
   id: 'M1-T5-Ex5.4',
   title: 'Exercici 5.4: Càlcul d’Elements Específics del Producte',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Per a les matrius $A$ i $B$ següents, doneu els elements $c_{13}$ i $c_{22}$ de la matriu $C = AB$ sense calcular tots els elements de $C$.

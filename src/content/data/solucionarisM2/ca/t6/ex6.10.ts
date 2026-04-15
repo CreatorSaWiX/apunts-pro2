@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_10: Solution = {
   id: 'M2-T6-Ex10',
   title: 'Exercici 10: Àrea entre corbes i eix d\'abscisses',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Calculeu l'àrea de la regió tancada determinada per l'eix d'abscisses, les corbes $y = e^x$ i $y = e^{-x}$ i les rectes $x = 2$ i $x = -2$.`,

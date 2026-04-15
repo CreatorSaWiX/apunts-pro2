@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_12: Solution = {
   id: 'M2-T6-Ex12',
   title: 'Exercici 12: Integració numèrica de funcions no elementals',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Utilitzeu el mètode dels trapezis i la regla de Simpson amb 4 subintervals per avaluar les integrals següents:

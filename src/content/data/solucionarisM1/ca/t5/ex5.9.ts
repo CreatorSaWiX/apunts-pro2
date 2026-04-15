@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_9: Solution = {
   id: 'M1-T5-Ex5.9',
   title: 'Exercici 5.9: Condició de Simetria del Producte',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Siguin $A$ i $B$ dues matrius simètriques del mateix tipus. Proveu que $AB$ és una matriu simètrica si, i només si, $A$ i $B$ commuten.`,

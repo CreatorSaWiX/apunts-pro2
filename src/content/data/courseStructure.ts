@@ -459,10 +459,15 @@ export const courseStructure: TopicDefinition[] = [
         ]
     },
     {
-        id: "m2-tema-7-funcions-diverses",
+        id: "m2-tema-7-funcions-variables",
         title: "Tema 7: Funcions de diverses variables",
         description: "Domini, gràfica, conjunts de nivell, interpretació geomètrica. Funcions contínues.",
-        problems: []
+        problems: [
+            { id: "M2-T7-Ex1", title: "Problema 1: Topologia a R^2 (Conjunts)" },
+            { id: "M2-T7-Ex2", title: "Problema 2: Domini de funcions" },
+            { id: "M2-T7-Ex3", title: "Problema 3: Dibuix de corbes de nivell" },
+            { id: "M2-T7-Ex4", title: "Problema 4: Domini i corbes de nivell complexes" }
+        ]
     },
     {
         id: "m2-tema-8-derivades-parcials",

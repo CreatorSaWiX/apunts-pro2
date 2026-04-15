@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_15: Solution = {
   id: 'M1-T4-Ex4.15',
   title: 'Exercici 4.15: Fulles del Spanning Tree i Vèrtexs de Tall',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Demostreu que si $T$ és un arbre generador de $G$, aleshores les fulles de $T$ no són vèrtexs de tall de $G$. Conclogueu que tot graf connex d'ordre $n \\ge 2$ té almenys dos vèrtexs que no són vèrtexs de tall.`,

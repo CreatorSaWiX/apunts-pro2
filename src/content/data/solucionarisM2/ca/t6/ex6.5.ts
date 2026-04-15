@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_5: Solution = {
   id: 'M2-T6-Ex5',
   title: 'Exercici 5: Integració numèrica (Trapezis i Simpson)',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Calculeu la integral següent $I = \\int_{0}^{4} (1 - e^{x/4}) \\, dx$:

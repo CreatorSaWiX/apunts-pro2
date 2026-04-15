@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_10: Solution = {
   id: 'M1-T4-Ex4.10',
   title: 'Exercici 4.10: Caracteritzacions del Graf Estrella',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Demostreu que les afirmacions següents són equivalents per a un arbre $T$ d'ordre $n \\ge 3$:

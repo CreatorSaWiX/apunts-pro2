@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_12: Solution = {
   id: 'M1-T4-Ex4.12',
   title: 'Exercici 4.12: Arbres generadors de C_n i K_{2,r}',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `1) Calculeu el nombre d'arbres generadors diferents del graf cicle $C_n$. Quants n'hi ha llevat isomorfismes?

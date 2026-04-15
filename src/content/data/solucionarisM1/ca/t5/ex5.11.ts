@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_11: Solution = {
   id: 'M1-T5-Ex5.11',
   title: 'Exercici 5.11: Identitats Notables amb Matrius',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Esbrineu si les igualtats següents les satisfan totes les matrius $A, B \\in \\mathcal{M}_n(\\mathbb{R})$. En cas negatiu, doneu alguna condició sobre $A$ i $B$ per tal que es satisfacin.

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_23: Solution = {
   id: 'M1-T5-Ex5.23',
   title: 'Exercici 5.23: Propietats dels Determinants',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Suposant que $\\begin{vmatrix} a & b & c & d \\\\ e & f & g & h \\\\ i & j & k & l \\\\ m & n & o & p \\end{vmatrix} = 5$, calculeu els determinants següents:

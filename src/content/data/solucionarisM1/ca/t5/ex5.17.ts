@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_17: Solution = {
   id: 'M1-T5-Ex5.17',
   title: 'Exercici 5.17: De Matriu Ampliada a Sistema d\'Equacions',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu un sistema d'equacions lineals que correspongui a cadascuna de les matrius ampliades següents.

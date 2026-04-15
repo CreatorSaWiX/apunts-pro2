@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_22: Solution = {
   id: 'M1-T5-Ex5.22',
   title: 'Exercici 5.22: Discussió de Sistemes amb Paràmetres',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Discutiu els sistemes següents segons els valors dels paràmetres a $\\mathbb{R}$.

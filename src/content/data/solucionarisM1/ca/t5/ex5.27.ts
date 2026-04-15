@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_27: Solution = {
   id: 'M1-T5-Ex5.27',
   title: 'Exercici 5.27: Demostració d\'un Determinant Simètric',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Comproveu que

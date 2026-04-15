@@ -4,67 +4,110 @@ description: "Introducció a l'espai euclidi Rn, topologia bàsica (oberts, tanc
 order: 7
 readTime: "30 min"
 subject: "m2"
-draft: true
+draft: false
 isNew: true
 ---
 
-Fins ara hem estudiat funcions d'una sola variable $f(x)$. En aquest tema estenem el càlcul a funcions on el domini és un subconjunt de l'espai $n$-dimensional: $f(x_1, x_2, \dots, x_n)$.
+## 1. L'espai euclidi $\mathbb{R}^n$ i la distància
 
-## 1. L'espai Euclidi $\mathbb{R}^n$
+A l'espai $n$-dimensional de nombres reals, denotat per $\mathbb{R}^n$, la n-upla $(x_1, \dots, x_n)$ representa un punt o vector. Per mesurar la "proximitat" entre punts necessitem una funció de distància. La distància entre dos punts $\mathbf{x}$ i $\mathbf{y}$ és la longitud del segment que els uneix:
+$$d(\mathbf{x}, \mathbf{y}) = \sqrt{(x_1-y_1)^2 + (x_2-y_2)^2 + \dots + (x_n-y_n)^2}$$
 
-Els elements de $\mathbb{R}^n$ s'anomenen **vectors** o **punts**. Tenen estructura d'espai vectorial amb les operacions de suma i producte per escalar.
-
-### Producte Escalar i Norma
-Donats dos vectors $\mathbf{u} = (u_1, \dots, u_n)$ i $\mathbf{v} = (v_1, \dots, v_n)$:
-- **Producte Escalar**: $\mathbf{u} \cdot \mathbf{v} = u_1v_1 + \dots + u_nv_n$.
-- **Normal (Mòdul)**: $\|\mathbf{u}\| = \sqrt{\mathbf{u} \cdot \mathbf{u}} = \sqrt{u_1^2 + \dots + u_n^2}$.
-- **Distància**: $d(\mathbf{x}, \mathbf{y}) = \|\mathbf{y} - \mathbf{x}\|$.
-
-## 2. Topologia en $\mathbb{R}^n$
-
-La topologia ens permet definir formalment el concepte de "proximitat".
-
-> **Bola Oberta**: Donat un punt $\mathbf{a} \in \mathbb{R}^n$ i un radi $r > 0$, la bola de centre $\mathbf{a}$ i radi $r$ és:
-> $$B_r(\mathbf{a}) = \{ \mathbf{x} \in \mathbb{R}^n : d(\mathbf{a}, \mathbf{x}) < r \}$$
-
-### Tipus de Conjunts
-Un subconjunt $A \subseteq \mathbb{R}^n$ pot ser:
-- **Obert**: Si per a tot punt $\mathbf{a} \in A$, existeix una bola $B_r(\mathbf{a}) \subseteq A$.
-- **Tancat**: Si el seu complementari és obert (o si conté tots els seus punts frontera).
-- **Compacte**: Un conjunt és compacte si és **tancat i acotat**. (Teorema de Weierstrass: una funció contínua en un compacte sempre assoleix un màxim i un mínim absoluts).
+::threeviz{type="vis_distancia_sync_3d_2d"}
 
 ---
 
-## 3. Gràfiques i Superfícies
+## 2. El concepte de "n-bola"
 
-Si $f: D \subseteq \mathbb{R}^2 \to \mathbb{R}$, la seva gràfica és el conjunt de punts $(x, y, f(x, y))$ de $\mathbb{R}^3$. Això defineix una **superfície**.
+La bola és l'extensió del concepte d'interval de $\mathbb{R}$ a qualsevol dimensió.
 
-### Exemples Clàssics en 3D
+* **Bola Oberta ($B_r(\mathbf{a})$)**: Conjunt de punts a distància menor que $r$.
+$$B(\vec{a}, r) = \{ \vec{x} \in \mathbb{R}^n : d(\vec{x}, \vec{a}) < r \}$$
+* **Bola Tancada ($\bar{B}_r(\mathbf{a})$)**: Inclou els punts que estan exactament a distància $r$.
+$$\bar{B}(\vec{a}, r) = \{ \vec{x} \in \mathbb{R}^n : d(\vec{x}, \vec{a}) \le r \}$$
 
-::threeviz{type="paraboloide"}
+::mafs{type="vis_bola_interactiva"}
 
-::threeviz{type="punts_sella"}
+---
+
+## 3. Metodologia de càlcul de dominis
+
+| Si veus... | Atenció a... | Condició |
+| :--- | :--- | :--- |
+| **Arrels** ($\sqrt{g}$) | L'interior | $g(x, y) \ge 0$ |
+| **Logs** ($\ln g$) | L'argument | $g(x, y) > 0$ |
+| **Fraccions** ($1/g$) | El denominador | $g(x, y) \neq 0$ |
+
+### Mètode dels punts de prova
+És la "recepta" per dibuixar inequacions (ex: $x^2 + y^2 \le 4$):
+
+1. **Dibuixa la vora**: Fes com si fos un igual ($x^2 + y^2 = 4$). Dibuixa la línia.
+2. **Tria un punt**: Agafa el $(0,0)$ o qualsevol punt fàcil que no estigui a la línia.
+3. **Comprova**: Si el punt compleix la inecuació $\implies$ **Ombreja** tot el seu costat.
+
+::mafs{type="vis_metode_punts_prova"}
+
+---
+
+## 4. Topologia pràctica
+
+Sigui $A \subseteq \mathbb{R}^n$ un conjunt. Cada punt de l'espai pot ser:
+
+1. **Punt interior**: Si podem "tancar-lo" en una bola petita que estigui tota dins d'$A$. El conjunt de punts interiors és l'**Interior ($A^\circ$)**.
+2. **Punt de frontera**: Si qualsevol bola que fem al seu voltant talla tant a $A$ com al seu complementari. El conjunt de punts frontera és la **Frontera ($Fr(A)$)**.
+3. **Punt adherent**: Si qualsevol bola que fem al seu voltant talla a $A$. L'**Adherència ($\bar{A}$)** és la unió: $\bar{A} = A \cup Fr(A)$.
+
+### L'exemple del triangle
+Observem com s'apliquen aquests conceptes al conjunt:
+$$A = \{(x, y) \in \mathbb{R}^2 : x \ge 0, y \ge 0, x+y < 1\}$$
+
+::mafs{type="vis_ex_pissarra_topologia"}
+
+---
+
+## 5. Classificació de conjunts
+
+Podem descriure els conjunts segons el comportament de la seva frontera:
+
+- **Obert**: Si no conté cap punt de la seva frontera ($A \cap Fr(A) = \emptyset$). Equival a dir que $A = A^\circ$.
+- **Tancat**: Si conté tota la seva frontera ($Fr(A) \subseteq A$). Equival a dir que $A = \bar{A}$.
+- **Acotat**: Si el conjunt es pot tancar dins d'una bola de radi finit.
+- **Compacte**: Molt important per a càlcul d'extrems. Un conjunt és compacte si és **tancat i acotat**.
+
+::mafs{type="vis_classificacio_conjunts"}
+
+---
+
+## 6. Bordes i còniques
+
+| Nom | Equació Canònica | Forma Visual |
+| :--- | :--- | :--- |
+| **Circumferència** | $x^2 + y^2 = r^2$ | Cercle |
+| **El·lipse** | $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ | Ou (Oval) |
+| **Hipèrbola** | $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$ | Dues ales simètriques |
+| **Paràbola** | $y = a x^2$ | Vall o muntanya |
+| **Diamant** | $|x| + |y| = k$ | Quadrat girat $45^\circ$ |
+| **Quadrat** | $\max(|x|, |y|) = k$ | Marc de foto |
+
+::mafs{type="vis_cheat_sheet_coniques"}
+
+---
+
+## 7. Geometria a l'espai $\mathbb{R}^3$
+
+Per als exercicis de conjunts en 3D, les superfícies "mare" són:
+
+| Superfície | Equació | Descripció Visual |
+| :--- | :--- | :--- |
+| **Pla** | $Ax + By + Cz = D$ | Full de paper infinit |
+| **Esfera** | $x^2 + y^2 + z^2 = r^2$ | Pilota de ping-pong |
+| **Cilindre** | $x^2 + y^2 = r^2$ | Tub infinit (eix Z) |
+| **Paraboloide** | $z = x^2 + y^2$ | Copa / Bol |
+
+::threeviz{type="vis_superficies_basiques_3d"}
 
 ### Corbes de Nivell
-Per a una funció $f(x, y)$, el conjunt de nivell $k$ és el conjunt de punts del domini on la funció val exactament $k$:
-$$C_k = \{ (x, y) \in D : f(x, y) = k \}$$
-Això ens permet visualitzar una funció 3D en un mapa 2D (com si fos un mapa topogràfic de muntanyes).
+Són les línies de "tall" a una altura $k$ constant ($f(x, y) = k$).
 
----
+::threeviz{type="vis_corbes_nivell_3d_2d"}
 
-## 4. Límits i Continuïtat
-
-El límit en vàries variables és més complex que en una variable, perquè ens podem apropar a un punt des de **infinites direccions** (rectes, paràboles, etc.).
-
-> **Definició**: $\lim_{\mathbf{x} \to \mathbf{a}} f(\mathbf{x}) = \ell$ si per a tot $\epsilon > 0$ existeix un $\delta > 0$ tal que si $0 < d(\mathbf{x}, \mathbf{a}) < \delta \implies |f(\mathbf{x}) - \ell| < \epsilon$.
-
-### Estratègies per calcular límits:
-1. **Límits direccionals**: Si ens acostem per diferents rectes ($y=mx$) i obtenim resultats diferents, el límit **no existeix**.
-2. **Coordenades polars**: Útil si el límit és a l'origen $(0,0)$. Fem $x = r\cos\alpha$ i $y = r\sin\alpha$. Si el resultat depèn de $\alpha$ quan $r \to 0$, el límit no existeix.
-3. **Fites (Majoració)**: Si podem demostrar que $|f(x, y) - \ell| \leq g(x, y)$ i $g \to 0$, llavors el límit és $\ell$.
-
-### Teorema de Weierstrass
-Si $f$ és una funció real contínua definida en un conjunt **compacte** $K \subseteq \mathbb{R}^n$:
-1. $f$ està acotada en $K$.
-2. Existeixen $\mathbf{a}, \mathbf{b} \in K$ tals que $f(\mathbf{a}) \leq f(\mathbf{x}) \leq f(\mathbf{b})$ per a tot $\mathbf{x} \in K$.
-*(En altres paraules: hi ha un màxim i un mínim absolut).*

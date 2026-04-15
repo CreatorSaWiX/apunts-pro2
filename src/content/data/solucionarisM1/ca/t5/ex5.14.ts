@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_14: Solution = {
   id: 'M1-T5-Ex5.14',
   title: 'Exercici 5.14: Inversa de Matrius Elementals',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu la inversa de les matrius elementals següents.

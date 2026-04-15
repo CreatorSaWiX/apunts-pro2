@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_2: Solution = {
   id: 'M1-T4-Ex4.2',
   title: 'Exercici 4.2: Arbre és Bipartit',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Proveu que tot arbre d'ordre $n \\ge 2$ és un graf bipartit.`,

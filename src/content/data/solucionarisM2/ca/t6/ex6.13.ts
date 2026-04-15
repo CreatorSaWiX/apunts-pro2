@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_13: Solution = {
   id: 'M2-T6-Ex13',
   title: 'Exercici 13: Determinació de la partició per a un error fixat',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Feu ús de les fórmules dels trapezis i de Simpson per avaluar les integrals següents amb un error més petit que $0.5 \\cdot 10^{-2}$:

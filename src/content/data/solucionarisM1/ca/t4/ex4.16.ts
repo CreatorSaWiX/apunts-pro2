@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_16: Solution = {
   id: 'M1-T4-Ex4.16',
   title: "Exercici 4.16: Seqüències de Prüfer",
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu les seqüències de Prüfer dels arbres següents:

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_12: Solution = {
   id: 'M1-T5-Ex5.12',
   title: 'Exercici 5.12: Relació de Semblança entre Matrius',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Siguin $A$ i $B$ matrius quadrades del mateix tipus. Direm que $A$ és **semblant** a $B$ si existeix una matriu invertible $P$ tal que $B = P^{-1}AP$. Si aquest és el cas, proveu:

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_8: Solution = {
   id: 'M1-T5-Ex5.8',
   title: 'Exercici 5.8: Producte de Matrius Simètriques',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Siguin $A = \\begin{pmatrix} 1 & -2 \\\\ -2 & 3 \\end{pmatrix}$ i $B = \\begin{pmatrix} -2 & 1 \\\\ 1 & 1 \\end{pmatrix}$. Calculeu $(AB)^t$ i $B^t A^t$. Observeu que, encara que $A$ i $B$ són matrius simètriques, el seu producte no ho és.`,

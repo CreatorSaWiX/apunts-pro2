@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_9: Solution = {
   id: 'M1-T4-Ex4.9',
   title: 'Exercici 4.9: Grau Màxim i Nombre de Fulles',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $T$ un arbre d'ordre $n \\ge 2$ i de grau màxim $\\Delta$. Proveu que $T$ té un mínim de $\\Delta$ fulles.`,

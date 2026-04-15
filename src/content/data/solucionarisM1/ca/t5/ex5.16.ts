@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex5_16: Solution = {
   id: 'M1-T5-Ex5.16',
   title: 'Exercici 5.16: Linealitat de les Equacions',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Quines de les equacions següents són lineals en $x, y$ i $z$?

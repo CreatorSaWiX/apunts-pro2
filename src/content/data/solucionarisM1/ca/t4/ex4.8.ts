@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex4_8: Solution = {
   id: 'M1-T4-Ex4.8',
   title: 'Exercici 4.8: Condició per ser Arbre (Graus 1 i 5)',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf connex que només té vèrtexs de grau 1 i de grau 5. Sigui $k$ el nombre de vèrtexs de grau 5. Demostreu que $G$ és un arbre si, i només si, el nombre de fulles és $3k + 2$.`,

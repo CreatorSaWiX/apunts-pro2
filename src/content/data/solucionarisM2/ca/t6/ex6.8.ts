@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex6_8: Solution = {
   id: 'M2-T6-Ex8',
   title: 'Exercici 8: Integració per parts',
-  author: 'Antigravity',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Calculeu les integrals següents integrant per parts:
