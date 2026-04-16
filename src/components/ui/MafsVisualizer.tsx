@@ -1576,121 +1576,7 @@ const VisExPissarraTopologia = () => {
     );
 };
 
-const VisEx71a = () => {
-    const [point, setPoint] = React.useState<[number, number]>([0.5, 0.5]);
-    const dist = Math.sqrt(point[0] ** 2 + point[1] ** 2);
-    const isInSet = dist < 1;
 
-    return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
-            <Mafs viewBox={{ x: [-2, 2], y: [-2, 2] }} pan={false} zoom={false}>
-                <Coordinates.Cartesian />
-
-                <Circle
-                    center={[0, 0]}
-                    radius={1}
-                    color={Theme.blue}
-                    fillOpacity={0.2}
-                    strokeStyle="dashed"
-                />
-
-                <MovablePoint point={point} onMove={setPoint} color={isInSet ? Theme.green : Theme.red} />
-
-                <LaTeX at={[0, 1.5]} tex="x^2 + y^2 < 1" color={Theme.blue} />
-                <Text x={point[0]} y={point[1] + 0.2} color={isInSet ? Theme.green : Theme.red} size={14}>
-                    {isInSet ? "Dins d'A" : "Fora d'A"}
-                </Text>
-            </Mafs>
-            <div className="bg-slate-800/80 p-4 border-t border-white/10">
-                <p className="text-xs text-slate-400 mb-2 italic">
-                    Arrossega el punt per comprovar la condició.
-                    Fixa't que si el punt cau exactament sobre la línia discontínua, <span className="font-bold text-slate-200">no pertany</span> al conjunt.
-                </p>
-                <div className="flex items-center gap-4 bg-black/20 p-2 rounded-lg font-mono text-[10px]">
-                    <span className="text-slate-500">Distància a l'origen:</span>
-                    <span className={isInSet ? "text-green-400" : "text-red-400"}>{dist.toFixed(3)}</span>
-                    <span className="text-slate-500">{isInSet ? <InlineMath math="< 1" /> : <InlineMath math="\ge 1" />} ( {isInSet ? "Dins" : "Fora"} )</span>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const VisEx71b = () => {
-    const [point, setPoint] = React.useState<[number, number]>([1, 0.5]);
-    const xRange = Array.from({ length: 41 }, (_, i) => -2 + (i / 40) * 4);
-
-    // Condicions del conjunt B
-    const inXRange = point[0] >= -2 && point[0] <= 2;
-    const inParabolas = Math.abs(point[1]) <= point[0] ** 2;
-    const notOnAxis = Math.abs(point[1]) > 0.001; // Tolerància per y != 0
-    const isInSet = inXRange && inParabolas && notOnAxis;
-
-    return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
-            <Mafs viewBox={{ x: [-3, 3], y: [-5, 5] }} pan={false} zoom={false}>
-                <Coordinates.Cartesian subdivisions={5} />
-
-                {/* Conjunt B: |y| <= x^2, y != 0, x in [-2, 2] */}
-                {/* Regió superior: 0 < y <= x^2 */}
-                <Polygon
-                    points={[
-                        ...xRange.map(x => [x, x * x] as [number, number]),
-                        [2, 0.001],
-                        [-2, 0.001]
-                    ]}
-                    color={Theme.green}
-                    fillOpacity={0.2}
-                    weight={0}
-                />
-
-                {/* Regió inferior: -x^2 <= y < 0 */}
-                <Polygon
-                    points={[
-                        ...xRange.map(x => [x, -x * x] as [number, number]),
-                        [2, -0.001],
-                        [-2, -0.001]
-                    ]}
-                    color={Theme.green}
-                    fillOpacity={0.2}
-                    weight={0}
-                />
-
-                <MovablePoint point={point} onMove={setPoint} color={isInSet ? Theme.green : Theme.red} />
-
-                {/* Paràboles (Límits) */}
-                <Plot.OfX y={x => x * x} color={Theme.green} weight={1.5} opacity={inXRange ? 1 : 0.3} />
-                <Plot.OfX y={x => -x * x} color={Theme.green} weight={1.5} opacity={inXRange ? 1 : 0.3} />
-
-                {/* Eix X (y=0) que està exclòs */}
-                <Plot.OfX y={() => 0} color={Theme.red} weight={2} opacity={0.4} />
-
-                <LaTeX at={[point[0], point[1] + 0.4]} tex={isInSet ? "\\text{Dins de B}" : "\\text{Fora de B}"} color={isInSet ? Theme.green : Theme.red} />
-                <LaTeX at={[0, 4.5]} tex="|y| \le x^2, y \ne 0, x \in [-2, 2]" color={Theme.green} />
-            </Mafs>
-            <div className="bg-slate-800/80 p-5 border-t border-white/10">
-                <p className="text-xs text-slate-400 mb-4 italic">
-                    Observa que si situes el punt sobre l'eix <span className="text-red-400 font-bold">vermell</span> (<InlineMath math="y = 0" />), el punt està <span className="font-bold text-slate-200">fora</span> de <InlineMath math="B" />.
-                    Això vol dir que <InlineMath math="B" /> no és tancat (la seva frontera conté punts que no són del conjunt).
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                    <div className={`p-2 rounded-lg border text-center ${inXRange ? 'bg-green-500/10 border-green-500/20 text-green-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
-                        <div className="text-[10px] uppercase font-bold mb-1">Interval X</div>
-                        <div className="font-mono text-[10px]">{point[0].toFixed(2)} ∈ [-2, 2]</div>
-                    </div>
-                    <div className={`p-2 rounded-lg border text-center ${inParabolas ? 'bg-green-500/10 border-green-500/20 text-green-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
-                        <div className="text-[10px] uppercase font-bold mb-1">Paràboles</div>
-                        <div className="font-mono text-[10px]">|y| ≤ x²</div>
-                    </div>
-                    <div className={`p-2 rounded-lg border text-center ${notOnAxis ? 'bg-green-500/10 border-green-500/20 text-green-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
-                        <div className="text-[10px] uppercase font-bold mb-1">y ≠ 0</div>
-                        <div className="font-mono text-[10px]">y = {point[1].toFixed(2)}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 const VisDominisComplexos = () => {
     return (
@@ -1736,7 +1622,7 @@ const VisCheatSheetConiques = () => {
             case 'ellipse':
                 return (
                     <>
-                        <Circle center={[0, 0]} radius={a} color={Theme.blue} fillOpacity={0} weight={1} style="dashed" />
+                        <Circle center={[0, 0]} radius={a} color={Theme.blue} fillOpacity={0} weight={1} strokeStyle="dashed" />
                         <Plot.OfX y={(x) => b * Math.sqrt(Math.max(0, 1 - (x * x) / (a * a)))} color={Theme.blue} weight={3} />
                         <Plot.OfX y={(x) => -b * Math.sqrt(Math.max(0, 1 - (x * x) / (a * a)))} color={Theme.blue} weight={3} />
                         <MovablePoint point={[a, 0]} onMove={([x]) => setA(Math.max(0.2, x))} color={Theme.blue} />
@@ -1748,8 +1634,8 @@ const VisCheatSheetConiques = () => {
                 return (
                     <>
                         {/* Asímptotes */}
-                        <Plot.OfX y={(x) => (b / a) * x} color={Theme.slate} weight={1} style="dashed" />
-                        <Plot.OfX y={(x) => -(b / a) * x} color={Theme.slate} weight={1} style="dashed" />
+                        <Plot.OfX y={(x) => (b / a) * x} color={'#64748b'} weight={1} style="dashed" />
+                        <Plot.OfX y={(x) => -(b / a) * x} color={'#64748b'} weight={1} style="dashed" />
 
                         <Plot.OfX y={(x) => b * Math.sqrt(Math.max(0, (x * x) / (a * a) - 1))} color={Theme.red} weight={3} />
                         <Plot.OfX y={(x) => -b * Math.sqrt(Math.max(0, (x * x) / (a * a) - 1))} color={Theme.red} weight={3} />
@@ -1783,9 +1669,9 @@ const VisCheatSheetConiques = () => {
             case 'diamant':
                 return (
                     <>
-                        <Polygon points={[[a, 0], [0, a], [-a, 0], [0, -a]]} color={Theme.magenta} fillOpacity={0.1} weight={3} />
-                        <MovablePoint point={[a, 0]} onMove={([x]) => setA(Math.max(0.2, x))} color={Theme.magenta} />
-                        <LaTeX at={[0, 2.5]} tex={`|x| + |y| = ${a.toFixed(1)}`} color={Theme.magenta} />
+                        <Polygon points={[[a, 0], [0, a], [-a, 0], [0, -a]]} color={Theme.pink} fillOpacity={0.1} weight={3} />
+                        <MovablePoint point={[a, 0]} onMove={([x]) => setA(Math.max(0.2, x))} color={Theme.pink} />
+                        <LaTeX at={[0, 2.5]} tex={`|x| + |y| = ${a.toFixed(1)}`} color={Theme.pink} />
                     </>
                 );
             default: return null;
@@ -1822,7 +1708,6 @@ const VisClassificacioConjunts = () => {
 
     // Lògica de pertinença
     const isIn = type === 'obert' ? dist < r : dist <= r;
-    const isBoundary = Math.abs(dist - r) < 0.05;
 
     return (
         <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
@@ -1932,7 +1817,7 @@ const VisDistanciaEuclidia = () => {
                     points={[p1, [p2[0], p1[1]], p2]}
                     color={Theme.blue}
                     fillOpacity={0.05}
-                    style="dashed"
+                    strokeStyle="dashed"
                     weight={1}
                 />
 

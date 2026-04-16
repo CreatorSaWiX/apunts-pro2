@@ -18,7 +18,7 @@ interface Contributor {
 const APP_DATA: Record<string, { version: string; updated: string }> = {
     pro2: { version: 'v1.4.0', updated: '15/04/2026' },
     m1: { version: 'v1.4.1', updated: '15/04/2026' },
-    m2: { version: 'v1.2.2', updated: '15/04/2026' }
+    m2: { version: 'v1.3.0', updated: '16/04/2026' }
 };
 
 const letterContainerVariants = {

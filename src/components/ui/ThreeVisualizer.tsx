@@ -48,7 +48,7 @@ class ThreeErrorBoundary extends Component<{ children: React.ReactNode }, { hasE
     }
 }
 
-const FunctionSurface = ({ f, colorScale = 5, showWireframe = false }: { f: (x: number, y: number) => number, colorScale?: number, showWireframe?: boolean }) => {
+const FunctionSurface = ({ f, colorScale = 5, showWireframe = false, opacity = 1 }: { f: (x: number, y: number) => number, colorScale?: number, showWireframe?: boolean, opacity?: number }) => {
     const size = 10;
     const segments = 60;
 
@@ -97,11 +97,11 @@ const FunctionSurface = ({ f, colorScale = 5, showWireframe = false }: { f: (x: 
         <group>
             <mesh geometry={geometry}>
                 <meshPhongMaterial
-                    vertexColors
+                    transparent={opacity < 1}
+                    opacity={opacity}
                     side={THREE.DoubleSide}
                     shininess={100}
-                    transparent
-                    opacity={0.8}
+                    vertexColors
                 />
             </mesh>
             {showWireframe && (
@@ -150,31 +150,98 @@ const VisParaboloide = ({ showWireframe = false }: { showWireframe?: boolean }) 
     );
 };
 
-const VisPlaTangent = () => {
-    const f = (x: number, y: number) => 0.05 * (x * x + y * y);
-    // Punt de tangència a (2, 2) -> f(2,2) = 0.05 * 8 = 0.4
-    // f_x = 0.1x -> f_x(2,2) = 0.2
-    // f_y = 0.1y -> f_y(2,2) = 0.2
-    // Pla: z = 0.4 + 0.2(x-2) + 0.2(y-2)
-    const a = 2, b = 2;
-    const fa = 0.4;
-    const dfx = 0.2, dfy = 0.2;
+const VisPlaTangentINormalHibrid = () => {
+    const [p, setP] = React.useState<[number, number]>([1, 0.5]);
+
+    // Funció z = 5 * exp(-(x^2 + y^2)/15) (muntanya molt més ampla i majestuosa)
+    const f = (x: number, y: number) => 5 * Math.exp(-(x * x + y * y) / 15);
+    const dfx = (x: number, y: number) => f(x, y) * (-2 * x / 15);
+    const dfy = (x: number, y: number) => f(x, y) * (-2 * y / 15);
+
+    const a = p[0], b = p[1];
+    const fa = f(a, b);
+    const da = dfx(a, b);
+    const db = dfy(a, b);
+
+    // Vector normal en (da, 1, db)
+    const normalDir = new THREE.Vector3(da, 1, db).normalize();
 
     return (
-        <>
-            <FunctionSurface f={f} />
-            <Point position={[a, fa, b]} color="#00ff88" />
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[a, fa, b]}>
-                {/* El pla tangent dibuixat com un quatrat semi-transparent */}
-                <mesh rotation={[Math.PI / 2 - Math.atan(dfy), Math.atan(dfx), 0]}>
-                    <planeGeometry args={[4, 4]} />
-                    <meshPhongMaterial color="#00ccff" transparent opacity={0.5} side={THREE.DoubleSide} />
-                </mesh>
-            </mesh>
-            <Text position={[0, 4, 0]} color="white" fontSize={0.4} textAlign="center">
-                Aproximació Lineal: Pla Tangent en (2, 2)
-            </Text>
-        </>
+        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Pla Tangent en (a, b)</span>
+                        <div className="flex gap-4">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs text-slate-500 font-bold">a:</span>
+                                <input type="range" min="-4" max="4" step="0.1" value={a} onChange={e => setP([parseFloat(e.target.value), b])} className="w-24 accent-indigo-500" />
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs text-slate-500 font-bold">b:</span>
+                                <input type="range" min="-4" max="4" step="0.1" value={b} onChange={e => setP([a, parseFloat(e.target.value)])} className="w-24 accent-indigo-500" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-black/40 p-3 rounded-xl border border-white/5 font-mono text-[11px] text-indigo-300">
+                        <div className="opacity-50 text-[10px] mb-1 italic">Equació de l'aproximació lineal:</div>
+                        <InlineMath math={`z \\approx ${fa.toFixed(2)} ${da >= 0 ? '+' : ''} ${da.toFixed(2)}(x ${a >= 0 ? '-' : '+'} ${Math.abs(a).toFixed(1)}) ${db >= 0 ? '+' : ''} ${db.toFixed(2)}(y ${b >= 0 ? '-' : '+'} ${Math.abs(b).toFixed(1)})`} />
+                    </div>
+                </div>
+            </div>
+
+            <div className="relative h-[600px] bg-slate-950/40">
+                <Canvas shadows dpr={[1, 2]}>
+                    <PerspectiveCamera makeDefault position={[10, 8, 10]} fov={40} />
+                    <OrbitControls enableZoom={true} />
+                    <ambientLight intensity={0.7} />
+                    <pointLight position={[10, 10, -10]} intensity={2} castShadow />
+                    <pointLight position={[-10, 10, 10]} intensity={1} />
+                    <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+
+                    <FunctionSurface f={f} opacity={0.9} colorScale={4} showWireframe={false} />
+
+                    {/* Grup del Plànol i Normal */}
+                    <group position={[a, fa, b]}>
+                        <mesh onUpdate={(self) => self.lookAt(normalDir.clone().add(self.position))}>
+                            <planeGeometry args={[4, 4]} />
+                            <meshPhongMaterial color="#6366f1" transparent opacity={0.6} side={THREE.DoubleSide} shininess={100} />
+                        </mesh>
+
+                        <primitive
+                            object={new THREE.ArrowHelper(
+                                normalDir,
+                                new THREE.Vector3(0, 0, 0),
+                                2.5,
+                                "#fbbf24",
+                                0.5,
+                                0.25
+                            )}
+                        />
+
+                        <mesh>
+                            <sphereGeometry args={[0.1]} />
+                            <meshStandardMaterial color="#fff" emissive="#fff" emissiveIntensity={1} />
+                        </mesh>
+                    </group>
+
+                    <gridHelper args={[10, 10, 0x334155, 0x1e293b]} position={[0, -0.01, 0]} />
+                </Canvas>
+
+                <div className="absolute bottom-6 left-6 flex flex-col gap-2">
+                    <div className="bg-indigo-600/40 px-3 py-1 rounded text-[10px] text-white font-bold border border-indigo-500/50 shadow-lg shadow-indigo-500/20 backdrop-blur-sm">
+                        PLA TANGENT (Aprox. Lineal)
+                    </div>
+                    <div className="bg-amber-600/40 px-3 py-1 rounded text-[10px] text-white font-bold border border-amber-500/50 shadow-lg shadow-amber-500/20 backdrop-blur-sm">
+                        RECTA NORMAL ($\nabla f$)
+                    </div>
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-800/30 text-[11px] text-slate-400 text-center border-t border-white/10">
+                MOU ELS SLIDERS: El plànol blau és l'únic plànol que "toca" la superfície de forma suau. El vector normal <InlineMath math={"(\\frac{\\partial f}{\\partial x}, \\frac{\\partial f}{\\partial y}, -1)"} /> indica la direcció perpendicular al punt.
+            </div>
+        </div>
     );
 };
 
@@ -514,13 +581,13 @@ const VisEx73a = () => {
                         <Coordinates.Cartesian />
                         {k > 0 ? (
                             <>
-                                <Plot.OfX y={(x) => Math.sqrt(Math.max(0, x*x - k))} color={Theme.indigo} weight={3} />
-                                <Plot.OfX y={(x) => -Math.sqrt(Math.max(0, x*x - k))} color={Theme.indigo} weight={3} />
+                                <Plot.OfX y={(x) => Math.sqrt(Math.max(0, x * x - k))} color={Theme.indigo} weight={3} />
+                                <Plot.OfX y={(x) => -Math.sqrt(Math.max(0, x * x - k))} color={Theme.indigo} weight={3} />
                             </>
                         ) : k < 0 ? (
                             <>
-                                <Plot.OfY x={(y) => Math.sqrt(Math.max(0, y*y + k))} color={Theme.indigo} weight={3} />
-                                <Plot.OfY x={(y) => -Math.sqrt(Math.max(0, y*y + k))} color={Theme.indigo} weight={3} />
+                                <Plot.OfY x={(y) => Math.sqrt(Math.max(0, y * y + k))} color={Theme.indigo} weight={3} />
+                                <Plot.OfY x={(y) => -Math.sqrt(Math.max(0, y * y + k))} color={Theme.indigo} weight={3} />
                             </>
                         ) : (
                             <>
@@ -578,16 +645,16 @@ const VisEx73b = () => {
                     <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
                         <Coordinates.Cartesian />
                         {1 - k > 0 ? (
-                            <Polygon 
+                            <Polygon
                                 points={[
                                     [1 - k, 0], [0, 1 - k], [-(1 - k), 0], [0, -(1 - k)]
-                                ]} 
-                                color={Theme.emerald} weight={3} fillOpacity={0.1}
+                                ]}
+                                color={Theme.green} weight={3} fillOpacity={0.1}
                             />
                         ) : (1 - k === 0) ? (
-                            <Circle center={[0, 0]} radius={0.1} color={Theme.emerald} fillOpacity={1} />
+                            <Circle center={[0, 0]} radius={0.1} color={Theme.green} fillOpacity={1} />
                         ) : null}
-                        <MafsLaTeX at={[0, -4]} tex={`1 - |x| - |y| = ${k.toFixed(1)}`} color={Theme.emerald} />
+                        <MafsLaTeX at={[0, -4]} tex={`1 - |x| - |y| = ${k.toFixed(1)}`} color={Theme.green} />
                     </Mafs>
                 </div>
                 <div className="relative min-h-[300px]">
@@ -608,7 +675,265 @@ const VisEx73b = () => {
     );
 };
 
+const VisDerivadaDireccionalHibrida = () => {
+    const [a, setA] = React.useState<[number, number]>([1, 1]);
+    const [angle, setAngle] = React.useState(Math.PI / 4);
+
+    // Funció z = 4 - 0.25(x^2 + y^2)
+    const f = (x: number, y: number) => 4 - 0.25 * (x * x + y * y);
+    const dfx = (x: number) => -0.5 * x;
+    const dfy = (y: number) => -0.5 * y;
+
+    const vx = Math.cos(angle);
+    const vy = Math.sin(angle);
+
+    // Derivada direccional: grad(f) * v
+    const slope = dfx(a[0]) * vx + dfy(a[1]) * vy;
+    const z0 = f(a[0], a[1]);
+
+    // Punts per a la corba del tall 2D: f(a + t*v)
+    const curvePoints = Array.from({ length: 41 }, (_, i) => {
+        const t = -4 + i * 0.2;
+        const x = a[0] + t * vx;
+        const y = a[1] + t * vy;
+        return [t, f(x, y)] as [number, number];
+    });
+
+    return (
+        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center">
+                <div className="flex gap-4 items-center">
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-slate-400 uppercase font-black">Punt a</span>
+                        <div className="flex gap-2">
+                            <input type="range" min="-2" max="2" step="0.1" value={a[0]} onChange={e => setA([parseFloat(e.target.value), a[1]])} className="w-16 accent-indigo-500" />
+                            <input type="range" min="-2" max="2" step="0.1" value={a[1]} onChange={e => setA([a[0], parseFloat(e.target.value)])} className="w-16 accent-indigo-500" />
+                        </div>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-slate-400 uppercase font-black">Direcció θ</span>
+                        <input type="range" min="0" max={Math.PI * 2} step="0.1" value={angle} onChange={e => setAngle(parseFloat(e.target.value))} className="w-32 accent-rose-500" />
+                    </div>
+                </div>
+                <div className="bg-black/30 px-3 py-1 rounded-full border border-white/5 font-mono text-sm text-white">
+                    <InlineMath math={`D_{\\vec{v}}f(\\vec{a}) = ${slope.toFixed(2)}`} />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px]">
+                {/* 2D Slice View */}
+                <div className="relative border-r border-white/5 bg-slate-950/20">
+                    <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-indigo-300 font-bold border border-indigo-500/30">
+                        VISTA DEL TALL (Plànol π)
+                    </div>
+                    <Mafs viewBox={{ x: [-4, 4], y: [0, 5] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Polygon points={[...curvePoints, [4, 0], [-4, 0]]} color={Theme.indigo} fillOpacity={0.05} weight={0} />
+                        <Plot.OfX y={t => f(a[0] + t * vx, a[1] + t * vy)} color={Theme.indigo} weight={3} />
+
+                        {/* Recta Tangent */}
+                        <Plot.OfX y={t => z0 + slope * t} color={Theme.pink} weight={2} style="dashed" />
+
+                        <Circle center={[0, z0]} radius={0.1} color={Theme.pink} fillOpacity={1} />
+                        <MafsLaTeX at={[0, z0 + 0.5]} tex="f(\vec{a})" color={Theme.foreground} />
+                    </Mafs>
+                </div>
+
+                {/* 3D Scene */}
+                <div className="relative bg-slate-950/40">
+                    <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-rose-300 font-bold border border-rose-500/30">
+                        CONTEXT 3D (Pastís)
+                    </div>
+                    <Canvas shadows>
+                        <PerspectiveCamera makeDefault position={[6, 6, 6]} />
+                        <OrbitControls enableZoom={false} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+
+                        <FunctionSurface f={(x, y) => f(x, y)} opacity={0.6} colorScale={1.2} />
+
+                        {/* Plànol de tall vertical π */}
+                        <group rotation={[0, -angle, 0]} position={[a[0], 0, a[1]]}>
+                            <mesh position={[0, 2.5, 0]}>
+                                <planeGeometry args={[10, 5]} />
+                                <meshPhongMaterial color="#f43f5e" transparent opacity={0.2} side={THREE.DoubleSide} depthWrite={false} />
+                            </mesh>
+                        </group>
+
+                        {/* Corba de tall ressaltada */}
+                        <line>
+                            <bufferGeometry attach="geometry">
+                                <float32BufferAttribute
+                                    attach="attributes-position"
+                                    args={[new Float32Array(curvePoints.flatMap(([t, z]) => [a[0] + t * vx, z, a[1] + t * vy])), 3]}
+                                />
+                            </bufferGeometry>
+                            <lineBasicMaterial attach="material" color="#818cf8" linewidth={3} />
+                        </line>
+
+                        {/* Punt i Vector director */}
+                        <mesh position={[a[0], z0, a[1]]}>
+                            <sphereGeometry args={[0.15]} />
+                            <meshStandardMaterial color="#f43f5e" />
+                        </mesh>
+
+                        <gridHelper args={[10, 10, 0x334155, 0x1e293b]} position={[0, 0.01, 0]} />
+                    </Canvas>
+                </div>
+            </div>
+            <div className="p-3 bg-slate-800/30 text-[10px] text-slate-400 italic text-center border-t border-white/5">
+                Fixa't que a l'esquerra veiem un problema de càlcul 1 (una corba i una tangent), mentre que a la dreta veiem el context 3D d'on prové aquesta corba.
+            </div>
+        </div>
+    );
+};
+
+const VisDerivadesParcialsHibrida = () => {
+    const [a, setA] = React.useState<[number, number]>([1, 1]);
+    const [mode, setMode] = React.useState<'x' | 'y'>('x');
+
+    const f = (x: number, y: number) => 4 - 0.25 * (x * x + y * y);
+    const dfx = (x: number) => -0.5 * x;
+    const dfy = (y: number) => -0.5 * y;
+
+    const z0 = f(a[0], a[1]);
+    const currentSlope = mode === 'x' ? dfx(a[0]) : dfy(a[1]);
+
+
+
+    return (
+        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center">
+                <div className="flex gap-4 items-center">
+                    <div className="flex bg-black/40 p-1 rounded-lg border border-white/5">
+                        <button onClick={() => setMode('x')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${mode === 'x' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>RESPECTE A X</button>
+                        <button onClick={() => setMode('y')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${mode === 'y' ? 'bg-rose-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>RESPECTE A Y</button>
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-mono">
+                        Punt: ({a[0].toFixed(1)}, {a[1].toFixed(1)})
+                    </div>
+                </div>
+                <div className="font-mono text-sm text-white bg-black/30 px-3 py-1 rounded-full border border-white/5">
+                    <InlineMath math={mode === 'x' ? `\\frac{\\partial f}{\\partial x} = ${currentSlope.toFixed(2)}` : `\\frac{\\partial f}{\\partial y} = ${currentSlope.toFixed(2)}`} />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 min-h-[350px]">
+                {/* Left: 2D Contour Map */}
+                <div className="relative border-r border-white/5 bg-slate-950/20">
+                    <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-300 font-bold border border-white/10 italic">
+                        MAPA DE CORBES DE NIVELL
+                    </div>
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        {/* Cercles de nivell aproximats: x^2 + y^2 = R^2 */}
+                        {[1, 2, 3, 4, 5, 6].map(r => (
+                            <Circle key={r} center={[0, 0]} radius={Math.sqrt(r * 4)} color={Theme.foreground} weight={1} fillOpacity={0.1} />
+                        ))}
+
+                        {/* Línia de tall */}
+                        {mode === 'x' ? (
+                            <Plot.OfX y={() => a[1]} color={Theme.indigo} weight={2} opacity={0.5} />
+                        ) : (
+                            <Plot.OfY x={() => a[0]} color={Theme.pink} weight={2} opacity={0.5} />
+                        )}
+
+                        <MovablePoint point={a} onMove={setA} color={mode === 'x' ? Theme.indigo : Theme.pink} />
+                    </Mafs>
+                </div>
+
+                {/* Right: 1D Frozen Function */}
+                <div className="relative bg-slate-950/40">
+                    <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-300 font-bold border border-white/10 italic">
+                        FUNCIÓ CONGELADA (1 VARIABLE)
+                    </div>
+                    <Mafs viewBox={{ x: [-4, 4], y: [0, 5] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Plot.OfX y={t => mode === 'x' ? f(t, a[1]) : f(a[0], t)} color={mode === 'x' ? Theme.indigo : Theme.pink} weight={3} />
+
+                        {/* Recta Tangent */}
+                        <Plot.OfX y={t => z0 + currentSlope * (t - (mode === 'x' ? a[0] : a[1]))} color={Theme.yellow} weight={2} style="dashed" />
+
+                        <Circle center={[mode === 'x' ? a[0] : a[1], z0]} radius={0.15} color={Theme.yellow} fillOpacity={1} />
+                    </Mafs>
+                </div>
+            </div>
+            <div className="p-3 bg-slate-800/30 text-[10px] text-slate-400 text-center border-t border-white/5 italic">
+                A l'esquerra triem on som. A la dreta veiem la derivada "de tota la vida" que resulta de mantenir una variable fixa.
+            </div>
+        </div>
+    );
+};
+
+const VisJacobianaDeformacioHibrida = () => {
+    const [uv, setUv] = React.useState<[number, number]>([1, 1]);
+
+    // Funció vectorial f: R2 -> R2 (transformació ondulada)
+    const f = (u: number, v: number): [number, number] => [
+        u + Math.cos(v),
+        v + Math.sin(u)
+    ];
+
+    // Matriu Jacobiana Local Jf
+    const df1dv = -Math.sin(uv[1]);
+    const df2du = Math.cos(uv[0]);
+
+    const eps = 0.5;
+    const p0 = f(uv[0], uv[1]);
+    const p1 = f(uv[0] + eps, uv[1]);
+    const p12 = f(uv[0] + eps, uv[1] + eps);
+    const p2 = f(uv[0], uv[1] + eps);
+
+    return (
+        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Matriu Jacobiana Local</span>
+                    <div className="text-xs text-slate-400 mt-1 italic">Transformació de (u,v) → (x,y)</div>
+                </div>
+                <div className="bg-black/40 p-3 rounded-xl border border-white/5 font-mono text-indigo-300">
+                    <InlineMath math={`\\mathcal{J}f(\\mathbf{a}) = \\begin{pmatrix} 1 & ${df1dv.toFixed(2)} \\\\ ${df2du.toFixed(2)} & 1 \\end{pmatrix}`} />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 h-[500px]">
+                {/* Espai Original */}
+                <div className="relative border-r border-white/5 bg-slate-950/20">
+                    <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-300 font-bold">ESPAI ORIGINAL (u, v)</div>
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false}>
+                        <Coordinates.Cartesian />
+                        <Polygon points={[[uv[0], uv[1]], [uv[0] + eps, uv[1]], [uv[0] + eps, uv[1] + eps], [uv[0], uv[1] + eps]]} color={Theme.indigo} fillOpacity={0.2} />
+                        <MovablePoint point={uv} onMove={setUv} color={Theme.indigo} />
+                    </Mafs>
+                </div>
+
+                {/* Espai Transformat */}
+                <div className="relative bg-slate-950/40">
+                    <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-300 font-bold">ESPAI DEFORMAT (x, y)</div>
+                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false}>
+                        <Coordinates.Cartesian />
+                        {/* Dibuixem una graella deformada simplificada */}
+                        {[-4, -2, 0, 2, 4].map(t => (
+                            <React.Fragment key={t}>
+                                <Plot.Parametric xy={u => f(u, t)} t={[-4, 4]} color={Theme.foreground} opacity={0.1} />
+                                <Plot.Parametric xy={v => f(t, v)} t={[-4, 4]} color={Theme.foreground} opacity={0.1} />
+                            </React.Fragment>
+                        ))}
+                        <Polygon points={[p0, p1, p12, p2]} color={Theme.pink} fillOpacity={0.4} />
+                        <Circle center={p0} radius={0.1} color={Theme.pink} />
+                    </Mafs>
+                </div>
+            </div>
+            <div className="p-4 bg-slate-800/30 text-[11px] text-slate-400 text-center border-t border-white/10">
+                La matriu Jacobiana descriu com el quadrat blau del domini es converteix en el paral·lelogram rosa de la imatge.
+            </div>
+        </div>
+    );
+};
+
 const VISUALIZERS: Record<string, React.FC> = {
+    'vis_derivades_parcials_hibrida': VisDerivadesParcialsHibrida,
+    'vis_derivada_direccional_hibrida': VisDerivadaDireccionalHibrida,
     'vis_distancia_3d': VisDistancia3D,
     'vis_superficies_basiques_3d': VisSuperficiesBasiques3D,
     'vis_corbes_nivell_3d_2d': VisCorbesNivell3D2D,
@@ -617,12 +942,13 @@ const VISUALIZERS: Record<string, React.FC> = {
     'vis_ex7_3_b': VisEx73b,
     'punts_sella': VisPuntsSella,
     'paraboloide': VisParaboloide,
-    'pla_tangent': VisPlaTangent,
+    'pla_tangent': VisPlaTangentINormalHibrid,
     'vector_gradient': VisVectorGradient,
     'maxim_local': VisMaximLocal,
     'minim_local': VisMinimLocal,
     'punt_sella_optim': VisPuntSellaOptim,
     'taylor_3d': VisTaylor3d,
+    'vis_jacobiana': VisJacobianaDeformacioHibrida,
 };
 
 const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
@@ -631,7 +957,7 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
     if (!Component) return <div className="p-4 bg-red-900/20 text-red-400 rounded-xl border border-red-500/30">Tipus 3D no trobat: {type}</div>;
 
     // Cas especial per a components HÍBRIDS (gestionen el seu propi Canvas/Layout)
-    if (type === 'vis_corbes_nivell_3d_2d' || type === 'vis_distancia_sync_3d_2d' || type === 'vis_ex7_3_a' || type === 'vis_ex7_3_b') {
+    if (type === 'vis_corbes_nivell_3d_2d' || type === 'vis_distancia_sync_3d_2d' || type === 'vis_ex7_3_a' || type === 'vis_ex7_3_b' || type === 'vis_derivada_direccional_hibrida' || type === 'vis_derivades_parcials_hibrida' || type === 'pla_tangent' || type === 'vis_jacobiana') {
         return <Component />;
     }
 
