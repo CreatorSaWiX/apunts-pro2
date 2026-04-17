@@ -16,7 +16,7 @@ Apliquem l'eliminació gaussiana a cada sistema per determinar-ne la compatibili
 
 ### 1) Sistema de 4 equacions i 3 incògnites
 Matriu ampliada i passos de Gauss:
-$$\\begin{pmatrix} 1 & 1 & 2 & | & 8 \\\\ -1 & -2 & 3 & | & 1 \\\\ 3 & -7 & 4 & | & 10 \\\\ 0 & 3 & -2 & | & -1 \\end{pmatrix} \\xrightarrow[R_3 - 3R_1]{R_2 + R_1} \\begin{pmatrix} 1 & 1 & 2 & | & 8 \\\\ 0 & -1 & 5 & | & 9 \\\\ 0 & -10 & -2 & | & -14 \\\\ 0 & 3 & -2 & | & -1 \\end{pmatrix} \\xrightarrow[R_4+3R_2]{R_3-10R_2} \\begin{pmatrix} 1 & 1 & 2 & | & 8 \\\\ 0 & -1 & 5 & | & 9 \\\\ 0 & 0 & -52 & | & -104 \\\\ 0 & 0 & 13 & | & 26 \\end{pmatrix}$$
+$$\\begin{pmatrix} 1 & 1 & 2 & | & 8 \\\\ -1 & -2 & 3 & | & 1 \\\\ 3 & -7 & 4 & | & 10 \\\\ 0 & 3 & -2 & | & -1 \\end{pmatrix} \\xrightarrow[F_3 - 3F_1]{F_2 + F_1} \\begin{pmatrix} 1 & 1 & 2 & | & 8 \\\\ 0 & -1 & 5 & | & 9 \\\\ 0 & -10 & -2 & | & -14 \\\\ 0 & 3 & -2 & | & -1 \\end{pmatrix} \\xrightarrow[F_4+3F_2]{F_3-10F_2} \\begin{pmatrix} 1 & 1 & 2 & | & 8 \\\\ 0 & -1 & 5 & | & 9 \\\\ 0 & 0 & -52 & | & -104 \\\\ 0 & 0 & 13 & | & 26 \\end{pmatrix}$$
 De la tercera fila: $-52z = -104 \\implies z = 2$.
 Substituint:
 - $-y + 5(2) = 9 \\implies -y = -1 \\implies y = 1$
@@ -26,12 +26,12 @@ Substituint:
 
 ### 2) Sistema de 4 equacions i 3 incògnites
 Matriu ampliada:
-$$\\begin{pmatrix} 1 & -1 & 2 & | & 3 \\\\ 2 & -2 & 5 & | & 4 \\\\ 1 & 2 & -1 & | & -3 \\\\ 0 & 2 & 2 & | & 1 \\end{pmatrix} \\xrightarrow[R_3-R_1]{R_2-2R_1} \\begin{pmatrix} 1 & -1 & 2 & | & 3 \\\\ 0 & 0 & 1 & | & -2 \\\\ 0 & 3 & -3 & | & -6 \\\\ 0 & 2 & 2 & | & 1 \\end{pmatrix} \\xrightarrow[R_4-2R_3]{R_3/3, R_2 \\leftrightarrow R_3} \\begin{pmatrix} 1 & -1 & 2 & | & 3 \\\\ 0 & 1 & -1 & | & -2 \\\\ 0 & 0 & 1 & | & -2 \\\\ 0 & 0 & 4 & | & 5 \\end{pmatrix} \\xrightarrow{R_4-4R_3} \\begin{pmatrix} \\dots \\\\ 0 & 0 & 0 & | & 13 \\end{pmatrix}$$
+$$\\begin{pmatrix} 1 & -1 & 2 & | & 3 \\\\ 2 & -2 & 5 & | & 4 \\\\ 1 & 2 & -1 & | & -3 \\\\ 0 & 2 & 2 & | & 1 \\end{pmatrix} \\xrightarrow[F_3-F_1]{F_2-2F_1} \\begin{pmatrix} 1 & -1 & 2 & | & 3 \\\\ 0 & 0 & 1 & | & -2 \\\\ 0 & 3 & -3 & | & -6 \\\\ 0 & 2 & 2 & | & 1 \\end{pmatrix} \\xrightarrow[F_4-2F_3]{F_3/3, F_2 \\leftrightarrow F_3} \\begin{pmatrix} 1 & -1 & 2 & | & 3 \\\\ 0 & 1 & -1 & | & -2 \\\\ 0 & 0 & 1 & | & -2 \\\\ 0 & 0 & 4 & | & 5 \\end{pmatrix} \\xrightarrow{F_4-4F_3} \\begin{pmatrix} \\dots \\\\ 0 & 0 & 0 & | & 13 \\end{pmatrix}$$
 L'última fila indica una contradicció ($0 = 13$).
 **Solució:** El sistema és **incompatible**.
 
 ### 3) Sistema de 4 variables
-$$\\begin{pmatrix} 1 & -1 & 2 & -1 & | & -1 \\\\ 2 & 1 & -2 & -2 & | & -2 \\\\ -1 & 2 & -4 & 1 & | & 1 \\\\ 3 & 0 & 0 & -3 & | & -3 \\end{pmatrix} \\xrightarrow[R_3+R_1, R_4-3R_1]{R_2-2R_1} \\begin{pmatrix} 1 & -1 & 2 & -1 & | & -1 \\\\ 0 & 3 & -6 & 0 & | & 0 \\\\ 0 & 1 & -2 & 0 & | & 0 \\\\ 0 & 3 & -6 & 0 & | & 0 \\end{pmatrix}$$
+$$\\begin{pmatrix} 1 & -1 & 2 & -1 & | & -1 \\\\ 2 & 1 & -2 & -2 & | & -2 \\\\ -1 & 2 & -4 & 1 & | & 1 \\\\ 3 & 0 & 0 & -3 & | & -3 \\end{pmatrix} \\xrightarrow[F_3+F_1, F_4-3F_1]{F_2-2F_1} \\begin{pmatrix} 1 & -1 & 2 & -1 & | & -1 \\\\ 0 & 3 & -6 & 0 & | & 0 \\\\ 0 & 1 & -2 & 0 & | & 0 \\\\ 0 & 3 & -6 & 0 & | & 0 \\end{pmatrix}$$
 Les files 2, 3 i 4 són proporcionals ($y - 2z = 0$). Tenim 2 variables lliures ($z$ i $w$).
 - $y = 2z$
 - $x - 2z + 2z - w = -1 \\implies x = w - 1$
@@ -39,9 +39,9 @@ Les files 2, 3 i 4 són proporcionals ($y - 2z = 0$). Tenim 2 variables lliures 
 **Solució paramètrica:** $(x, y, z, w) = (w - 1, 2z, z, w)$ per a tot $z, w \\in \\mathbb{R}$.
 
 ### 4) Sistema de 6 variables
-$$\\begin{pmatrix} 1 & 3 & -2 & 0 & 2 & 0 & | & 0 \\\\ 2 & 6 & -5 & -2 & 4 & -3 & | & -1 \\\\ 0 & 0 & 5 & 10 & 0 & 15 & | & 5 \\\\ 2 & 6 & 0 & 8 & 4 & 18 & | & 6 \\end{pmatrix} \\xrightarrow[R_4-2R_1]{R_2-2R_1} \\begin{pmatrix} 1 & 3 & -2 & 0 & 2 & 0 & | & 0 \\\\ 0 & 0 & -1 & -2 & 0 & -3 & | & -1 \\\\ 0 & 0 & 1 & 2 & 0 & 3 & | & 1 \\\\ 0 & 0 & 4 & 8 & 0 & 18 & | & 6 \\end{pmatrix}$$
+$$\\begin{pmatrix} 1 & 3 & -2 & 0 & 2 & 0 & | & 0 \\\\ 2 & 6 & -5 & -2 & 4 & -3 & | & -1 \\\\ 0 & 0 & 5 & 10 & 0 & 15 & | & 5 \\\\ 2 & 6 & 0 & 8 & 4 & 18 & | & 6 \\end{pmatrix} \\xrightarrow[F_4-2F_1]{F_2-2F_1} \\begin{pmatrix} 1 & 3 & -2 & 0 & 2 & 0 & | & 0 \\\\ 0 & 0 & -1 & -2 & 0 & -3 & | & -1 \\\\ 0 & 0 & 1 & 2 & 0 & 3 & | & 1 \\\\ 0 & 0 & 4 & 8 & 0 & 18 & | & 6 \\end{pmatrix}$$
 - De la segona i tercera fila, veiem que són la mateixa equació.
-- De la quarta: $R_4 - 4R_2 \\implies 6x_6 = 2 \\implies x_6 = 1/3$.
+- De la quarta: $F_4 - 4F_2 \\implies 6x_6 = 2 \\implies x_6 = 1/3$.
 - De la segona: $x_3 + 2x_4 + 3(1/3) = 1 \\implies x_3 = -2x_4$.
 - De la primera: $x_1 + 3x_2 - 2(-2x_4) + 2x_5 = 0 \\implies x_1 = -3x_2 - 4x_4 - 2x_5$.
 

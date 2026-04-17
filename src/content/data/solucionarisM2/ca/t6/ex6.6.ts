@@ -19,19 +19,15 @@ $|E_S| \\leq \\frac{(b-a)h^4}{180} \\max |f^{(4)}(x)|$
 
 Dades del problema:
 - Interval: $[0.6, 1.0] \\implies b-a = 0.4$
-- Cota de la quarta derivada: $M_4 = 20$
+- Cota de la quarta derivada: $M_4 = \\max |f^{(4)}(x)| = 20$
 - Precisió demanada: $\\epsilon = 0.5 \\cdot 10^{-4} = 5 \\cdot 10^{-5}$
 
 Volem trobar $h$ tal que $|E_S| \\leq \\epsilon$:
-$\\frac{0.4 \\cdot h^4}{180} \\cdot 20 \\leq 5 \\cdot 10^{-5}$
-$\\frac{8 \\cdot h^4}{180} \\leq 5 \\cdot 10^{-5}$
-$\\frac{2}{45} h^4 \\leq 5 \\cdot 10^{-5}$
-$h^4 \\leq \\frac{5 \\cdot 10^{-5} \\cdot 45}{2} = 112.5 \\cdot 10^{-5} = 0.001125$
 
-Calculem $h$:
-$h \\leq \\sqrt[4]{0.001125} \\approx 0.183$
+$\\frac{0.4 \\cdot h^4}{180} \\cdot 20 \\leq 5 \\cdot 10^{-5} \\implies \\frac{8 \\cdot h^4}{180} \\leq 5 \\cdot 10^{-5} \\implies h^4 \\leq \\frac{5 \\cdot 10^{-5} \\cdot 180}{8} \\implies h \\leq \\sqrt[4]{\\frac{5 \\cdot 10^{-5} \\cdot 180}{8}} \\approx 0.183$
 
 Com que $h = \\frac{b-a}{n} = \\frac{0.4}{n}$:
+
 $\\frac{0.4}{n} \\leq 0.183 \\implies n \\geq \\frac{0.4}{0.183} \\approx 2.18$
 
 En el mètode de Simpson, l'índex $n$ ha de ser un **nombre enter parell**. El primer enter parell que compleix la condició és **$n=4$**.
@@ -54,9 +50,13 @@ Calculem els valors de la funció:
 - $f(1.0) = (0.5 \\sin 2.0)^{4/3} \\approx 0.34651$
 
 Apliquem la fórmula de Simpson:
+
 $S = \\frac{h}{3} [f(x_0) + 4f(x_1) + 2f(x_2) + 4f(x_3) + f(x_4)]$
+
 $S = \\frac{0.1}{3} [0.35821 + 4(0.38584) + 2(0.39322) + 4(0.37981) + 0.34651]$
+
 $S = \\frac{0.1}{3} [0.35821 + 1.54336 + 0.78644 + 1.51924 + 0.34651]$
+
 $S = \\frac{0.1}{3} [4.55376] \\approx \\mathbf{0.151792}$
 
 El valor aproximat de la integral amb 4 decimals correctes és **$0.1518$**.

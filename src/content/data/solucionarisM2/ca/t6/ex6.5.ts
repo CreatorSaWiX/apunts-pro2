@@ -20,12 +20,16 @@ export const ex6_5: Solution = {
   content: `
 ### (a) Regla de Barrow (Valor exacte)
 
-Primer trobem una primitiva de $f(x) = 1 - e^{x/4}$:
-$F(x) = \\int (1 - e^{x/4}) \\, dx = x - 4e^{x/4}$
+Per trobar una primitiva de $f(x) = 1 - e^{x/4}$, calculem cada part per separat:
+1. La primitiva de 1 és $x$.
+2. Per a l'exponencial $e^{x/4}$, sabem que la seva primitiva és $4e^{x/4}$, ja que si la derivem tornem a l'original:
+$$(4e^{x/4})' = 4 \\cdot e^{x/4} \\cdot \\frac{1}{4} = e^{x/4}$$
+
+Així doncs, la primitiva completa és: **$F(x) = x - 4e^{x/4}$**
 
 Apliquem la Regla de Barrow en l'interval $[0, 4]$:
-$I = [x - 4e^{x/4}]_0^4 = (4 - 4e^{4/4}) - (0 - 4e^{0/4})$
-$I = 4 - 4e - (0 - 4) = 8 - 4e$
+$$I = [x - 4e^{x/4}]_0^4 = (4 - 4e^{4/4}) - (0 - 4e^{0/4})$$
+$$I = (4 - 4e) - (0 - 4 \\cdot 1) = 4 - 4e + 4 = 8 - 4e$$
 
 Valor numèric aproximat:
 $I = 8 - 4(2.7182818) \\approx \\mathbf{-2.873127}$
@@ -40,52 +44,59 @@ Els punts són $x_i = \{0, 1, 2, 3, 4\}$.
 | $i$ | $x_i$ | $f(x_i) = 1 - e^{x_i/4}$ |
 |---|---|---|
 | 0 | 0 | $1 - e^0 = 0$ |
-| 1 | 1 | $1 - e^{0.25} \\approx -0.284025$ |
-| 2 | 2 | $1 - e^{0.5} \\approx -0.648721$ |
-| 3 | 3 | $1 - e^{0.75} \\approx -1.117000$ |
-| 4 | 4 | $1 - e^1 \\approx -1.718282$ |
+| 1 | 1 | $1 - e^{1/4}$ |
+| 2 | 2 | $1 - e^{1/2}$ |
+| 3 | 3 | $1 - e^{3/4}$ |
+| 4 | 4 | $1 - e^1$ |
 
-Fórmula: $T = \\frac{h}{2} [f(x_0) + 2(f(x_1) + f(x_2) + f(x_3)) + f(x_4)]$
-$T = \\frac{1}{2} [0 + 2(-0.284025 - 0.648721 - 1.117000) - 1.718282]$
-$T = \\frac{1}{2} [-4.099492 - 1.718282] = \\frac{1}{2} [-5.817774] = \\mathbf{-2.908887}$
+Substituïm els valors exactes en la fórmula:
+
+$$T = \\frac{h}{2} \\left[ f(0) + 2(f(1) + f(2) + f(3)) + f(4) \\right]$$
+
+$$T = \\frac{1}{2} \\left[ 0 + 2( (1-e^{1/4}) + (1-e^{1/2}) + (1-e^{3/4}) ) + (1-e) \\right] \\approx \\mathbf{-2.908887}$$
 
 ---
 
 ### (c) Fórmula de Simpson ($n=4$)
 
-Fórmula: $S = \\frac{h}{3} [f(x_0) + 4f(x_1) + 2f(x_2) + 4f(x_3) + f(x_4)]$
-$S = \\frac{1}{3} [0 + 4(-0.284025) + 2(-0.648721) + 4(-1.117000) - 1.718282]$
-$S = \\frac{1}{3} [0 - 1.136100 - 1.297442 - 4.468000 - 1.718282]$
-$S = \\frac{1}{3} [-8.619824] = \\mathbf{-2.873275}$
+Substituïm els valors exactes en la fórmula de Simpson:
+
+$$S = \\frac{h}{3} \\left[ f(0) + 4f(1) + 2f(2) + 4f(3) + f(4) \\right]$$
+
+$$S = \\frac{1}{3} \\left[ 0 + 4(1-e^{1/4}) + 2(1-e^{1/2}) + 4(1-e^{3/4}) + (1-e) \\right]$$
+
+$$S = \\frac{1}{3} \\left[ 4 - 4e^{1/4} + 2 - 2e^{1/2} + 4 - 4e^{3/4} + 1 - e \\right]$$
+
+$$S = \\frac{1}{3} \\left[ 11 - e - 4e^{1/4} - 2e^{1/2} - 4e^{3/4} \\right] \\approx \\mathbf{-2.873275}$$
 
 ---
 
 ### (d) Error absolut i comentari
 
-- **Error Trapezis**: $E_T = |I - T| = |-2.873127 - (-2.908887)| = \\mathbf{0.035760}$
-- **Error Simpson**: $E_S = |I - S| = |-2.873127 - (-2.873275)| = \\mathbf{0.000148}$
+- **Error Trapezis**: $E_T = |I - T| \\approx |-2.873127 - (-2.908887)| = \\mathbf{0.035760}$
+- **Error Simpson**: $E_S = |I - S| \\approx |-2.873127 - (-2.873275)| = \\mathbf{0.000148}$
 
-**Comentari**: S'observa que el mètode de Simpson és molt més precís que el dels trapezis per al mateix nombre de divisions ($n=4$). L'error de Simpson és aproximadament 240 vegades menor.
+S'observa que el mètode de Simpson és molt més precís que el dels trapezis per al mateix nombre de divisions. 
 
 ---
 
 ### (e) Cotes superiors de l'error
 
 Derivem la funció $f(x) = 1 - e^{x/4}$:
+
 $f'(x) = -\\frac{1}{4} e^{x/4}$
-$f''(x) = -\\frac{1}{16} e^{x/4} \\implies |f''(x)| \\leq \\frac{e}{16} \\approx 0.1699$ en $[0, 4]$.
+
+$f''(x) = -\\frac{1}{16} e^{x/4} \\implies |f''(x)| \\leq \\frac{e}{16} \\approx 0.1699$ en $[0, 4]$ (el màxim es dóna a $x=4$ perquè l'exponencial creix).
+
 $f'''(x) = -\\frac{1}{64} e^{x/4}$
-$f^{(4)}(x) = -\\frac{1}{256} e^{x/4} \\implies |f^{(4)}(x)| \\leq \\frac{e}{256} \\approx 0.0106$ en $[0, 4]$.
+
+$f^{(4)}(x) = -\\frac{1}{256} e^{x/4} \\implies |f^{(4)}(x)| \\leq \\frac{e}{256} \\approx 0.0106$ en $[0, 4]$ (el màxim es dóna a $x=4$ perquè l'exponencial creix).
 
 **Cota Trapezis**:
 $|E_T| \\leq \\frac{(b-a)h^2}{12} \\max |f''(x)| = \\frac{4 \\cdot 1^2}{12} \\cdot 0.1699 = \\frac{1}{3} \\cdot 0.1699 \\approx \\mathbf{0.0566}$
-*(L'error real 0.0357 és menor que la cota 0.0566, correcte)*
 
 **Cota Simpson**:
 $|E_S| \\leq \\frac{(b-a)h^4}{180} \\max |f^{(4)}(x)| = \\frac{4 \\cdot 1^4}{180} \\cdot 0.0106 = \\frac{1}{45} \\cdot 0.0106 \\approx \\mathbf{0.000236}$
-*(L'error real 0.000148 és menor que la cota 0.000236, correcte)*
-
-Comentari: Les cotes confirmen teòricament la superioritat de Simpson.
 `,
   availableLanguages: ['ca']
 };

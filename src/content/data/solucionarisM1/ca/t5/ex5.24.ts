@@ -30,7 +30,7 @@ $$ (\\lambda - 6)(\\lambda - 2)^2 = 0 $$
 Els valors són: **$\\lambda \\in \\{2, 6\\}$** (on el 2 és una arrel doble).
 
 ### 3) Matriu $3 \\times 3$ (Simètrica)
-Podem simplificar restant la fila 3 a la fila 1 ($R_1 \\to R_1 - R_3$):
+Podem simplificar restant la fila 3 a la fila 1 ($F_1 \\to F_1 - F_3$):
 $$ \\begin{vmatrix} 2 - \\lambda & 0 & \\lambda - 2 \\\\ 2 & 4 - \\lambda & 2 \\\\ 1 & 1 & 3 - \\lambda \\end{vmatrix} = 0 $$
 Treiem factor comú $(\\lambda - 2)$ de la primera fila:
 $$ (\\lambda - 2) \\begin{vmatrix} -1 & 0 & 1 \\\\ 2 & 4 - \\lambda & 2 \\\\ 1 & 1 & 3 - \\lambda \\end{vmatrix} = 0 $$

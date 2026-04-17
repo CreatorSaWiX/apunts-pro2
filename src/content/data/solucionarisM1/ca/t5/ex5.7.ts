@@ -16,18 +16,17 @@ Siguin les matrius:
 $$A = \\begin{pmatrix} 1 & 1 \\\\ 0 & 1 \\end{pmatrix}, \\quad B = \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}$$
 
 **1. Calculem $(AB)^t$:**
-Primer el producte $AB$:
+
 $$AB = \\begin{pmatrix} 1 & 1 \\\\ 0 & 1 \\end{pmatrix} \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix} = \\begin{pmatrix} 1(0)+1(1) & 1(1)+1(0) \\\\ 0(0)+1(1) & 0(1)+1(0) \\end{pmatrix} = \\begin{pmatrix} 1 & 1 \\\\ 1 & 0 \\end{pmatrix}$$
-Llavors la seva transposada:
+
 $$(AB)^t = \\begin{pmatrix} 1 & 1 \\\\ 1 & 0 \\end{pmatrix}$$
 
 **2. Calculem $A^t B^t$:**
-Transposem les matrius originals:
+
 $$A^t = \\begin{pmatrix} 1 & 0 \\\\ 1 & 1 \\end{pmatrix}, \\quad B^t = \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}$$
-Ara les multipliquem en aquest ordre:
+
 $$A^t B^t = \\begin{pmatrix} 1 & 0 \\\\ 1 & 1 \\end{pmatrix} \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix} = \\begin{pmatrix} 1(0)+0(1) & 1(1)+0(0) \\\\ 1(0)+1(1) & 1(1)+1(0) \\end{pmatrix} = \\begin{pmatrix} 0 & 1 \\\\ 1 & 1 \\end{pmatrix}$$
 
-### Conclusió
 Com podem observar:
 $$(AB)^t = \\begin{pmatrix} 1 & 1 \\\\ 1 & 0 \\end{pmatrix} \\neq \\begin{pmatrix} 0 & 1 \\\\ 1 & 1 \\end{pmatrix} = A^t B^t$$
 

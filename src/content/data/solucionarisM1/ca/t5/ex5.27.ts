@@ -17,7 +17,7 @@ $$\\begin{vmatrix} a+3 & 1 & 1 & 1 \\\\ a+3 & a & 1 & 1 \\\\ a+3 & 1 & a & 1 \\\
 ### Pas 2: Treure factor comú $(a+3)$ de la primera columna
 $$(a+3) \\cdot \\begin{vmatrix} 1 & 1 & 1 & 1 \\\\ 1 & a & 1 & 1 \\\\ 1 & 1 & a & 1 \\\\ 1 & 1 & 1 & a \\end{vmatrix}$$
 
-### Pas 3: Crear zeros a la primera columna ($R_2-R_1, R_3-R_1, R_4-R_1$)
+### Pas 3: Crear zeros a la primera columna ($F_2-F_1, F_3-F_1, F_4-F_1$)
 $$(a+3) \\cdot \\begin{vmatrix} 1 & 1 & 1 & 1 \\\\ 0 & a-1 & 0 & 0 \\\\ 0 & 0 & a-1 & 0 \\\\ 0 & 0 & 0 & a-1 \\end{vmatrix}$$
 
 ### Pas 4: Calcular el determinant de la matriu triangular

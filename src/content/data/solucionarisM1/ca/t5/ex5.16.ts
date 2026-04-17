@@ -29,9 +29,7 @@ on $a, b, c, d$ són constants reals. Això implica que les variables han d'esta
 5. **$z + x - y^{-1} + 4 = 0$**: **NO lineal**. El terme $y^{-1}$ ($1/y$) no és de grau 1.
 6. **$x = z$**: **Lineal**. Es pot escriure com $1x + 0y - 1z = 0$.
 
----
-
-**Resum:** Les equacions lineals són la **2**, la **4** i la **6**.
+Les equacions lineals són la **2**, la **4** i la **6**.
 `,
   availableLanguages: ['ca']
 };

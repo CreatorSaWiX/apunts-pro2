@@ -10,7 +10,7 @@ export const ex5_4: Solution = {
 $A = \\begin{pmatrix} 1 & 2 & 1 \\\\ -3 & 0 & -1 \\end{pmatrix}$,
 $B = \\begin{pmatrix} 2 & 0 & 0 \\\\ 1 & -4 & 3 \\\\ -1 & 3 & 2 \\end{pmatrix}$.`,
   content: `
-Per trobar un element específic $c_{ij}$ del producte $C = AB$, només hem de calcular el producte escalar de la **fila $i$ de la matriu $A$** per la **columna $j$ de la matriu $B$**.
+Recordem que comptem desde 1, no 0 com a PRO o EC.
 
 ### Càlcul de $c_{13}$
 Aquest element s'obté multiplicant la **Fila 1 d'A** per la **Columna 3 de B**:
@@ -27,9 +27,6 @@ Aquest element s'obté multiplicant la **Fila 2 d'A** per la **Columna 2 de B**:
 - Columna 2 de B: $\\begin{pmatrix} 0 \\\\ -4 \\\\ 3 \\end{pmatrix}$
 
 $$c_{22} = (-3 \\cdot 0) + (0 \\cdot (-4)) + (-1 \\cdot 3) = 0 + 0 - 3 = \\mathbf{-3}$$
-
----
-**Conclusió:** No és necessari calcular tota la matriu resultant $C$ (que seria de mida $2 \\times 3$) si només se'ns demanen certs coeficients.
 `,
   availableLanguages: ['ca']
 };

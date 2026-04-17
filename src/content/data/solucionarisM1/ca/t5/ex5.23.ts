@@ -20,10 +20,10 @@ Per resoldre aquest exercici aplicarem les següents **propietats dels determina
 ---
 
 ### 1) Permutació de files
-Tenim les files del determinant original en l'ordre $(R_2, R_3, R_1, R_4)$.
+Tenim les files del determinant original en l'ordre $(F_2, F_3, F_1, F_4)$.
 Fem els canvis pas a pas per veure el signe:
-- Intercanviem $R_1 \\leftrightarrow R_2$: $(R_2, R_1, R_3, R_4)$ $\\to$ Signe $(-)$
-- Intercanviem $R_2 \\leftrightarrow R_3$: $(R_2, R_3, R_1, R_4)$ $\\to$ Signe $(-)(-) = (+)$
+- Intercanviem $F_1 \\leftrightarrow F_2$: $(F_2, F_1, F_3, F_4)$ $\\to$ Signe $(-)$
+- Intercanviem $F_2 \\leftrightarrow F_3$: $(F_2, F_3, F_1, F_4)$ $\\to$ Signe $(-)(-) = (+)$
 Com que s'han fet 2 intercanvis, el determinant es manté:
 $$D_1 = (-1)^2 \\cdot 5 = \\mathbf{5}$$
 
@@ -33,14 +33,14 @@ $$D_1 = (-1)^2 \\cdot 5 = \\mathbf{5}$$
 $$D_2 = (-1) \\cdot 2 \\cdot 5 = \\mathbf{-10}$$
 
 ### 3) Combinació lineal i intercanvi
-Primer, restem la segona fila a la primera ($R_1 \\to R_1 - R_2$). El determinant no varia:
+Primer, restem la segona fila a la primera ($F_1 \\to F_1 - F_2$). El determinant no varia:
 $$\\begin{vmatrix} a & b & c & d \\\\ e & f & g & h \\\\ m & n & o & p \\\\ i & j & k & l \\end{vmatrix}$$
 Ara, observem que les files 3 i 4 estan intercanviades respecte l'original:
-- Intercanvi $R_3 \\leftrightarrow R_4$: Signe $(-)$
+- Intercanvi $F_3 \\leftrightarrow F_4$: Signe $(-)$
 $$D_3 = -1 \\cdot 5 = \\mathbf{-5}$$
 
 ### 4) Operació elemental i constant
-- L'operació $R_2 \\to R_2 - 3R_1$ no modifica el valor del determinant.
+- L'operació $F_2 \\to F_2 - 3F_1$ no modifica el valor del determinant.
 - La quarta fila s'ha multiplicat per $4$.
 $$D_4 = 4 \\cdot 5 = \\mathbf{20}$$
 `,

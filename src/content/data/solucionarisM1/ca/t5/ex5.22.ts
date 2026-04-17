@@ -18,14 +18,14 @@ Discutir un sistema significa determinar per a quins valors dels paràmetres el 
 ---
 
 ### 1) Paràmetres $a, b, c$
-Observem que la tercera equació és la suma de les dues primeres ($R_3 = R_1 + R_2$):
+Observem que la tercera equació és la suma de les dues primeres ($F_3 = F_1 + F_2$):
 $(x+y+2z) + (x+z) = 2x+y+3z$.
 Per tant:
 - Si **$c = a + b$**: El sistema és **SCI** (Compatible Indeterminat) amb rang 2.
 - Si **$c \\neq a + b$**: El sistema és **SI** (Incompatible).
 
 ### 2) Paràmetre $b$
-Utilitzant les files que no tenen el paràmetre ($R_2$ i $R_3$), trobem que $x=z$ i $y=2x-1$. Substituint en $R_4$, trobem $x = (3b-1)/5$. Finalment, substituint en $R_1$, obtenim l'equació $2(b-2)^2 = 0$.
+Utilitzant les files que no tenen el paràmetre ($F_2$ i $F_3$), trobem que $x=z$ i $y=2x-1$. Substituint en $F_4$, trobem $x = (3b-1)/5$. Finalment, substituint en $F_1$, obtenim l'equació $2(b-2)^2 = 0$.
 - Si **$b = 2$**: El sistema és **SCD** (Compatible Determinat).
 - Si **$b \\neq 2$**: El sistema és **SI** (Incompatible).
 
@@ -35,8 +35,8 @@ Com que és homogeni, sempre és compatible. El determinant de la matriu de coef
 - Si **$a \\notin \\{0, 2, -2\\}$**: **SCD** (només la solució trivial).
 
 ### 4) Paràmetre $a$
-Observem que $R_3$ té els mateixos coeficients que $R_1+R_2$ en $x$ i $y$. Sumant les dues primeres: $4x+y+2z = 6$.
-Comparem amb $R_3$: $4x+y+(a^2-14)z = a+2$.
+Observem que $F_3$ té els mateixos coeficients que $F_1+F_2$ en $x$ i $y$. Sumant les dues primeres: $4x+y+2z = 6$.
+Comparem amb $F_3$: $4x+y+(a^2-14)z = a+2$.
 Igualem els coeficients de $z$: $a^2-14 = 2 \\implies a^2=16 \\implies a = \\pm 4$.
 - Si **$a = 4$**: $a^2-14=2$ i $a+2=6$. El sistema és **SCI** (rang 2).
 - Si **$a = -4$**: $a^2-14=2$ però $a+2=-2 \\neq 6$. El sistema és **SI**.

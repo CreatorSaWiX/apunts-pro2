@@ -17,23 +17,21 @@ Diem que una matriu $M$ és **simètrica** si $M^t = M$. En aquest exercici comp
 
 ### 2) Càlcul de $(AB)^t$ i $B^t A^t$
 
-Primer calculem el producte **$AB$**:
 $$AB = \\begin{pmatrix} 1 & -2 \\\\ -2 & 3 \\end{pmatrix} \\begin{pmatrix} -2 & 1 \\\\ 1 & 1 \\end{pmatrix} = \\begin{pmatrix} 1(-2)+(-2)(1) & 1(1)+(-2)(1) \\\\ (-2)(-2)+3(1) & (-2)(1)+3(1) \\end{pmatrix} = \\begin{pmatrix} -4 & -1 \\\\ 7 & 1 \\end{pmatrix}$$
 
-Llavors la seva transposada:
 $$(AB)^t = \\mathbf{\\begin{pmatrix} -4 & 7 \\\\ -1 & 1 \\end{pmatrix}}$$
 
-Ara calculem **$B^t A^t$** (que, com que són simètriques, equival a $BA$):
 $$B^t A^t = B A = \\begin{pmatrix} -2 & 1 \\\\ 1 & 1 \\end{pmatrix} \\begin{pmatrix} 1 & -2 \\\\ -2 & 3 \\end{pmatrix} = \\begin{pmatrix} -2(1)+1(-2) & -2(-2)+1(3) \\\\ 1(1)+1(-2) & 1(-2)+1(3) \\end{pmatrix} = \\mathbf{\\begin{pmatrix} -4 & 7 \\\\ -1 & 1 \\end{pmatrix}}$$
 
 Observem que, efectivament, $(AB)^t = B^t A^t$.
 
 ### 3) Observació sobre la simetria del producte
 
-Perquè el producte $AB$ fos simètric, caldria que $(AB)^t = AB$. Comparem:
+Perquè el producte $AB$ fos simètric, caldria que $(AB)^t = AB$.
+
 $$(AB)^t = \\begin{pmatrix} -4 & 7 \\\\ -1 & 1 \\end{pmatrix} \\neq \\begin{pmatrix} -4 & -1 \\\\ 7 & 1 \\end{pmatrix} = AB$$
 
-**Conclusió:** Encara que dues matrius siguin simètriques, el seu producte **no té per què ser simètric**. El producte de dues matrius simètriques només és simètric si les matrius **commuten** ($AB = BA$).
+Encara que dues matrius siguin simètriques, el seu producte **no té per què ser simètric**. El producte de dues matrius simètriques només és simètric si les matrius **commuten** ($AB = BA$).
 `,
   availableLanguages: ['ca']
 };

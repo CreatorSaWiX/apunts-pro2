@@ -37,10 +37,8 @@ $$O = \\begin{pmatrix} 20 & 20 \\\\ 20 & 20 \\end{pmatrix}$$
 Per trobar la matriu de materials $M$, aïllem:
 $$M = C - P - O$$
 
-Ja sabem que $P = \\frac{2}{3}C$, per tant $C - P = \\frac{1}{3}C$. Calculem primer $\\frac{1}{3}C$:
-$$\\frac{1}{3}C = \\frac{1}{3} \\begin{pmatrix} 135 & 150 \\\\ 627 & 681 \\end{pmatrix} = \\begin{pmatrix} 45 & 50 \\\\ 209 & 227 \\end{pmatrix}$$
+$$C - P = \\begin{pmatrix} 45 & 50 \\\\ 209 & 227 \\end{pmatrix}$$
 
-Ara restem la matriu $O$:
 $$M = \\begin{pmatrix} 45 & 50 \\\\ 209 & 227 \\end{pmatrix} - \\begin{pmatrix} 20 & 20 \\\\ 20 & 20 \\end{pmatrix} = \\mathbf{\\begin{pmatrix} 25 & 30 \\\\ 189 & 207 \\end{pmatrix}}$$
 `,
   availableLanguages: ['ca']

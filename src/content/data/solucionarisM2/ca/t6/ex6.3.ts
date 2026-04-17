@@ -6,7 +6,7 @@ export const ex6_3: Solution = {
   author: 'SaWiX',
   code: '',
   type: 'notebook',
-  statement: `Sigui $f : (0, +\\infty) \\setminus \{1\} \\to \\mathbb{R}$ definida per $f(x) = \\int_x^{x^2} \\frac{dt}{\\ln t}$. Proveu que $f$ és estrictament creixent a $(0, 1)$ i a $(1, +\\infty)$.`,
+  statement: `Sigui funció $f$ de zero a infinit menys menys el conjunt format pel 1, $f : (0, +\\infty) \\setminus \{1\} \\to \\mathbb{R}$ definida per $f(x) = \\int_x^{x^2} \\frac{1}{\\ln t} dt =  \\int_x^{x^2} \\frac{dt}{\\ln t}$. Proveu que $f$ és estrictament creixent a $(0, 1)$ i a $(1, +\\infty)$.`,
   content: `
 Per provar que una funció és estrictament creixent en un interval, hem de demostrar que la seva derivada és estrictament positiva ($f'(x) > 0$) en aquest interval.
 

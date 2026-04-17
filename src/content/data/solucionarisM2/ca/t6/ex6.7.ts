@@ -23,12 +23,7 @@ f) $\\int x 5^{2x^2} \\, dx$;
 g) $\\int \\frac{1}{1+16x^2} \\, dx$;
 
 h) $\\int \\tan^2 x \\, dx$.`,
-  content: `
-Resolem les integrals utilitzant mètodes de descomposició, canvi de variable immediat o fórmules de derivació elementals.
-
----
-
-### a) $\\int \\left(\\frac{1-x}{x}\\right)^2 \\, dx$
+  content: `### a) $\\int \\left(\\frac{1-x}{x}\\right)^2 \\, dx$
 Primer desenvolupem el quadrat del numerador:
 $\\int \\frac{1-2x+x^2}{x^2} \\, dx = \\int \\left( \\frac{1}{x^2} - \\frac{2x}{x^2} + \\frac{x^2}{x^2} \\right) \\, dx = \\int (x^{-2} - 2x^{-1} + 1) \\, dx$
 
@@ -46,6 +41,7 @@ $\\frac{1}{4} \\int \\frac{4x^3}{x^4+1} \\, dx = \\mathbf{\\frac{1}{4} \\ln(x^4+
 ### c) $\\int \\sqrt{\\frac{\\arcsin x}{1-x^2}} \\, dx$
 Podem escriure-ho com:
 $\\int (\\arcsin x)^{1/2} \\cdot \\frac{1}{\\sqrt{1-x^2}} \\, dx$
+
 Identifiquem la forma $\\int f(x)^n \\cdot f'(x) \\, dx = \\frac{f(x)^{n+1}}{n+1}$:
 $\\frac{(\\arcsin x)^{3/2}}{3/2} + C = \\mathbf{\\frac{2}{3} (\\arcsin x)^{3/2} + C}$
 
@@ -60,6 +56,7 @@ $\\int x^1 \\cdot x^{1/2} \\, dx = \\int x^{3/2} \\, dx = \\frac{x^{5/2}}{5/2} +
 ### e) $\\int \\frac{1}{x \\ln x} \\, dx$
 Escrivim la fracció com un quocient de funcions:
 $\\int \\frac{1/x}{\\ln x} \\, dx$
+
 La derivada de $\\ln x$ és $1/x$. Per tant:
 $\\mathbf{\\ln|\\ln x| + C}$
 
@@ -68,6 +65,7 @@ $\\mathbf{\\ln|\\ln x| + C}$
 ### f) $\\int x 5^{2x^2} \\, dx$
 La derivada de l'exponent $2x^2$ és $4x$. Ajustem les constants:
 $\\frac{1}{4} \\int (4x) 5^{2x^2} \\, dx$
+
 Recordant que $\\int a^{f(x)} f'(x) \\, dx = \\frac{a^{f(x)}}{\\ln a}$:
 $\\frac{1}{4} \\frac{5^{2x^2}}{\\ln 5} + C = \\mathbf{\\frac{5^{2x^2}}{4 \\ln 5} + C}$
 
@@ -76,6 +74,7 @@ $\\frac{1}{4} \\frac{5^{2x^2}}{\\ln 5} + C = \\mathbf{\\frac{5^{2x^2}}{4 \\ln 5}
 ### g) $\\int \\frac{1}{1+16x^2} \\, dx$
 Escrivim el denominador per identificar una arc tangent:
 $\\int \\frac{1}{1+(4x)^2} \\, dx$
+
 La derivada de la funció interior $4x$ és 4:
 $\\frac{1}{4} \\int \\frac{4}{1+(4x)^2} \\, dx = \\mathbf{\\frac{1}{4} \\arctan(4x) + C}$
 

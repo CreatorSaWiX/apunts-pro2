@@ -17,7 +17,8 @@ export const ex5_15: Solution = {
 El mètode de Gauss-Jordan consisteix a col·locar la matriu identitat a la dreta de la matriu $A$ i aplicar operacions elementals fins que a l'esquerra quedi la identitat. El que quedi a la dreta serà la inversa.
 
 ### 1) Matriu $2 \\times 2$
-$$ (M_1 | I) = \\begin{pmatrix} 1 & 2 & | & 1 & 0 \\\\ 3 & 5 & | & 0 & 1 \\end{pmatrix} \\xrightarrow{R_2 - 3R_1} \\begin{pmatrix} 1 & 2 & | & 1 & 0 \\\\ 0 & -1 & | & -3 & 1 \\end{pmatrix} \\xrightarrow{-R_2} \\begin{pmatrix} 1 & 2 & | & 1 & 0 \\\\ 0 & 1 & | & 3 & -1 \\end{pmatrix} \\xrightarrow{R_1 - 2R_2} \\begin{pmatrix} 1 & 0 & | & -5 & 2 \\\\ 0 & 1 & | & 3 & -1 \\end{pmatrix} $$
+$$ (M_1 | I) = \\begin{pmatrix} 1 & 2 & | & 1 & 0 \\\\ 3 & 5 & | & 0 & 1 \\end{pmatrix} \\xrightarrow{F_2 - 3F_1} \\begin{pmatrix} 1 & 2 & | & 1 & 0 \\\\ 0 & -1 & | & -3 & 1 \\end{pmatrix} \\xrightarrow{-F_2} \\begin{pmatrix} 1 & 2 & | & 1 & 0 \\\\ 0 & 1 & | & 3 & -1 \\end{pmatrix} \\xrightarrow{F_1 - 2F_2} \\begin{pmatrix} 1 & 0 & | & -5 & 2 \\\\ 0 & 1 & | & 3 & -1 \\end{pmatrix} $$
+
 $$ M_1^{-1} = \\mathbf{\\begin{pmatrix} -5 & 2 \\\\ 3 & -1 \\end{pmatrix}} $$
 
 ### 2) Matriu $3 \\times 3$

@@ -18,7 +18,7 @@ Recordem que en $\\mathbb{Z}_2$, només hi ha dos elements: $\{0, 1\}$. Les oper
 ### 1) Primer sistema
 Escrivim la matriu ampliada:
 $$\\begin{pmatrix} 1 & 1 & 0 & | & 1 \\\\ 1 & 0 & 1 & | & 0 \\\\ 1 & 1 & 1 & | & 1 \\end{pmatrix}$$
-Apliquem Gauss ($R_2 \\to R_2 + R_1$, $R_3 \\to R_3 + R_1$):
+Apliquem Gauss ($F_2 \\to F_2 + F_1$, $F_3 \\to F_3 + F_1$):
 $$\\begin{pmatrix} 1 & 1 & 0 & | & 1 \\\\ 0 & 1 & 1 & | & 1 \\\\ 0 & 0 & 1 & | & 0 \\end{pmatrix}$$
 D'on obtenim:
 - $z = 0$
@@ -29,16 +29,16 @@ D'on obtenim:
 
 ### 2) Segon sistema
 $$\\begin{pmatrix} 1 & 1 & 0 & | & 1 \\\\ 0 & 1 & 1 & | & 1 \\\\ 1 & 0 & 1 & | & 1 \\end{pmatrix}$$
-Apliquem Gauss ($R_3 \\to R_3 + R_1$):
+Apliquem Gauss ($F_3 \\to F_3 + F_1$):
 $$\\begin{pmatrix} 1 & 1 & 0 & | & 1 \\\\ 0 & 1 & 1 & | & 1 \\\\ 0 & 1 & 1 & | & 0 \\end{pmatrix}$$
-Apliquem Gauss ($R_3 \\to R_3 + R_2$):
+Apliquem Gauss ($F_3 \\to F_3 + F_2$):
 $$\\begin{pmatrix} 1 & 1 & 0 & | & 1 \\\\ 0 & 1 & 1 & | & 1 \\\\ 0 & 0 & 0 & | & 1 \\end{pmatrix}$$
 L'última fila ens dóna $0 = 1$, la qual cosa és una contradicció. 
 **Solució:** El sistema és **incompatible**.
 
 ### 3) Tercer sistema
 És un sistema homogeni:
-$$\\begin{pmatrix} 1 & 1 & 0 & | & 0 \\\\ 0 & 1 & 1 & | & 0 \\\\ 1 & 0 & 1 & | & 0 \\end{pmatrix} \\xrightarrow{R_3 + R_1} \\begin{pmatrix} 1 & 1 & 0 & | & 0 \\\\ 0 & 1 & 1 & | & 0 \\\\ 0 & 1 & 1 & | & 0 \\end{pmatrix} \\xrightarrow{R_3 + R_2} \\begin{pmatrix} 1 & 1 & 0 & | & 0 \\\\ 0 & 1 & 1 & | & 0 \\\\ 0 & 0 & 0 & | & 0 \\end{pmatrix}$$
+$$\\begin{pmatrix} 1 & 1 & 0 & | & 0 \\\\ 0 & 1 & 1 & | & 0 \\\\ 1 & 0 & 1 & | & 0 \\end{pmatrix} \\xrightarrow{F_3 + F_1} \\begin{pmatrix} 1 & 1 & 0 & | & 0 \\\\ 0 & 1 & 1 & | & 0 \\\\ 0 & 1 & 1 & | & 0 \\end{pmatrix} \\xrightarrow{F_3 + F_2} \\begin{pmatrix} 1 & 1 & 0 & | & 0 \\\\ 0 & 1 & 1 & | & 0 \\\\ 0 & 0 & 0 & | & 0 \\end{pmatrix}$$
 Obtenim:
 - $y + z = 0 \\implies y = z$
 - $x + y = 0 \\implies x = y$

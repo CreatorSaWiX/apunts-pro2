@@ -20,7 +20,7 @@ llavors es compleix que:
 
 ::mafs{type="teorema_fonamental"}
 
-### Primitiva i Regla de Barrow
+### Primitiva i regla de Barrow
 
 Si tenim dues funcions $f$ i $F$ definides en l'interval $(a,b)$ tal que $F'(x) = f(x)$ per a tot $x \in (a,b)$, es diu que $F$ és una **primitiva** de $f$ en l'interval $(a,b)$.
 
@@ -35,7 +35,7 @@ Aquest concepte ens introdueix una de les eines més importants i pràctiques pe
 
 ::mafs{type="regla_barrow"}
 
-### Propietats Fonamentals
+### Propietats fonamentals
 
 Per treballar amb integrals definides, és essencial recordar aquestes propietats:
 
@@ -54,7 +54,7 @@ Per treballar amb integrals definides, és essencial recordar aquestes propietat
 
 ::mafs{type="propietat_additivitat"}
 
-### Propietats de Simetria i Paritat
+### Propietats de simetria i paritat
 
 Si la funció $f$ presenta simetries, l'estudi de la funció àrea $F(x) = \int_0^x f(t)dt$ se simplifica:
 - Si **$f$ és parella** ($f(-x) = f(x)$), llavors **$F$ és imparella** ($F(-x) = -F(x)$).
@@ -77,7 +77,7 @@ Quan els límits d'integració depenen d'una variable $x$, no podem aplicar el T
 
 ::mafs{type="limits_integracio"}
 
-### Límits i Indeterminacions amb Integrals
+### Límits i indeterminacions amb integrals
 
 Quan apareixen integrals en límits que generen indeterminacions del tipus $\frac{0}{0}$, podem aplicar la **Regla de L'Hôpital** derivant la funció integral mitjançant el TFC:
 
@@ -87,57 +87,57 @@ $$\lim_{x \to a} \frac{\int_a^x f(t)dt}{g(x)} = \lim_{x \to a} \frac{f(x)}{g'(x)
 
 ---
 
-### Estudi Local de la Funció Integral
+### Estudi local de la funció integral
 
 Podem estudiar el comportament de $F(x) = \int_a^x f(t)dt$ sense calcular la integral:
-- **Punts Crítics**: Són els valors de $x$ on $F'(x) = f(x) = 0$.
+- **Punts crítics**: Són els valors de $x$ on $F'(x) = f(x) = 0$.
 - **Creixement**: $F$ creix on $f(x) > 0$ i decreix on $f(x) < 0$.
 - **Concavitat**: Estudiem $F''(x) = f'(x)$. Si $f'(x) > 0$, $F$ és convexa ($\cup$).
 - **Punts d'Inflexió**: On $f'(x) = 0$ i hi ha canvi de curvatura.
 
 ---
 
-## 2. Integració Numèrica
+## 2. Integració numèrica
 
-En molts de problemes pràctics i en l'enginyeria, calcular l'integral d'una funció amb la Regla de Barrow és extremadament difícil, molest, o impossible perquè algunes funcions no tenen una primitiva expressable en funcions elementals (com $\int e^{-x^2} dx$).
-En aquests casos s'utilitzen **mètodes elementals d'aproximació**, els quals substitueixen la funció original per polinomis elementals en el subinterval.
+En molts de problemes pràctics i en l'enginyeria, calcular l'integral d'una funció amb la Regla de Barrow és extremadament difícil o impossible perquè algunes funcions no tenen una primitiva expressable en funcions elementals (com $\int e^{-x^2} dx$). En aquests casos s'utilitzen **mètodes elementals d'aproximació**.
 
-### Mètode dels Trapezis
+### 2.1 Mètode dels Trapezis
 
-Consisteix en subdividir l'interval total $[a,b]$ en $n$ subintervals petits d'amplada idèntica $h = \frac{b-a}{n}$. Aquest intervals estan limitats pels punts de partició $x_i = a + i \cdot h$. En cada interval, se substitueix la corba per un trapezi recte. La suma total aproximada és:
+Consisteix en subdividir l'interval $[a,b]$ en $n$ subintervals d'amplada $h = \frac{b-a}{n}$. En cada interval, se substitueix la corba per un trapezi recte.
 
-$$ \int_a^b f(x) dx \approx T_n = \frac{b-a}{n} \left( \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(x_i) \right) $$
+$$ T_n = \frac{h}{2} \left[ f(a) + f(b) + 2 \sum_{i=1}^{n-1} f(x_i) \right] $$
 
-**Càlcul de l'error del Mètode del Trapezi:**
+**Càlcul de l'error i cerca de $n$:**
+L'error màxim admès ve fita per:
+$$ |E_T| \leq \frac{(b-a)h^2}{12} M_2 = \frac{(b-a)^3}{12n^2} M_2 $$
+*On $M_2$ és el valor màxim de $|f''(x)|$ en l'interval.*
 
-### Com trobar la cota $M$ i el nombre d'intervals $n$?
-
-En els problemes de càlcul d'errors, el procediment general és:
-1. **Calcular la derivada** (2a per a Trapezis, 4a per a Simpson).
-2. **Trobar el màxim absolut** d'aquesta derivada en l'interval $[a,b]$. Sol ser en un dels extrems de l'interval si la derivada és monòtona. Aquest valor és la nostra $M$.
-3. **Aïllar $n$** de la inecuació d'error segons la tolerància $\varepsilon$:
-   - **Trapezis**: $n \geq \sqrt{\frac{(b-a)^3 M_2}{12\varepsilon}}$
-   - **Simpson**: $n \geq \sqrt[4]{\frac{(b-a)^5 M_4}{180\varepsilon}}$ (Recorda: $n$ ha de ser parell).
-
-::mafs{type="cota_error"}
-
-$$ |T_n - \int_a^b f(x) dx| \leq \frac{(b-a)^3}{12n^2} \cdot M_2 $$
+Per trobar el nombre d'intervals $n$ necessari per a una precisió $\varepsilon$:
+1. Calculem $f''(x)$ i busquem el seu màxim $M_2$ en $[a,b]$.
+2. Aïllem $n$: **$n \geq \sqrt{\frac{(b-a)^3 M_2}{12\varepsilon}}$**
 
 ::mafs{type="integracio_trapezi"}
 
-### Mètode de Simpson
+### 2.2 Mètode de Simpson
 
-Aquest mètode millora substancialment la precisió, aproximant la capçalera de la corba a l'interval mitjançant fragments de parets parabòliques (polinomis de grau dos). Per aplicar el Mètode de Simpson, és fonamental que el nombre de **subintervals (n) sigui nombre parell**.
+Aquest mètode millora la precisió aproximant la corba mitjançant fragments de paràboles (polinomis de grau 2). Per aplicar-lo, és fonamental que el nombre de **subintervals ($n$) sigui parell**.
 
-$$ \int_a^b f(x) dx \approx S_n = \frac{b-a}{3n} \left( f(a) + f(b) + 4\sum_{i=1}^{n/2} f(x_{2i-1}) + 2\sum_{i=1}^{\frac{n}{2}-1} f(x_{2i}) \right) $$
+$$ S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{i=1}^{n/2} f(x_{2i-1}) + 2\sum_{i=1}^{\frac{n}{2}-1} f(x_{2i}) \right] $$
 
-**Càlcul de l'error del Mètode de Simpson:**
+**Càlcul de l'error i cerca de $n$:**
+L'error màxim admès ve fita per:
+$$ |E_S| \leq \frac{(b-a)h^4}{180} M_4 = \frac{(b-a)^5}{180n^4} M_4 $$
+*On $M_4$ és el valor màxim de $|f^{(4)}(x)|$ en l'interval.*
 
-Si la funció té la quarta derivada contínua i podem fitar-la dins l'interval $|f^{(4)}(x)| \le M_4$, llavors el cost en la precisió de l'aproximació és:
-
-$$ |S_n - \int_a^b f(x) dx| \leq \frac{(b-a)^5}{180n^4} \cdot M_4 $$
+Per trobar el nombre d'intervals $n$ necessari per a una precisió $\varepsilon$:
+1. Calculem $f^{(4)}(x)$ i busquem el seu màxim $M_4$ en $[a,b]$.
+2. Aïllem $n$: **$n \geq \sqrt[4]{\frac{(b-a)^5 M_4}{180\varepsilon}}$** (recorda arrodonir al següent enter parell).
 
 ::mafs{type="integracio_simpson"}
+
+### Exemple comparativa de cotes d'error
+
+::mafs{type="cota_error"}
 
 ---
 

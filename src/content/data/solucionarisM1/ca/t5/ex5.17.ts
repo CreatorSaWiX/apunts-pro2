@@ -31,6 +31,7 @@ $$\\begin{cases} x_1 + 2x_2 + 3x_3 + 4x_4 = 5 \\\\ \\frac{1}{3}x_1 + \\frac{1}{4
 ### 4) Sistema en $x_1, x_2, x_3, x_4$
 La matriu té 4 files i 5 columnes (4 equacions i 4 incògnites):
 $$\\begin{cases} x_1 = 1 \\\\ x_2 = 2 \\\\ x_3 = 3 \\\\ x_1 + x_4 = 4 \\end{cases}$$
+
 *(Aquest darrer sistema ja està pràcticament resolt, ja que ens dóna directament el valor de les variables primeres).*
 `,
   availableLanguages: ['ca']
