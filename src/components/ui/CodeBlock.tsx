@@ -2,7 +2,9 @@ import { Copy, Check, ExternalLink } from 'lucide-react';
 import React, { useState } from 'react';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
-import { EditorView } from '@codemirror/view';
+import { EditorView, Decoration, ViewPlugin, ViewUpdate } from '@codemirror/view';
+import type { DecorationSet } from '@codemirror/view';
+import { RangeSetBuilder } from '@codemirror/state';
 import { cpp } from '@codemirror/lang-cpp';
 import { javascript } from '@codemirror/lang-javascript';
 import { html } from '@codemirror/lang-html';
@@ -75,6 +77,40 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
+    
+    // Custom Diff Highlight extension
+    const diffHighlight = ViewPlugin.fromClass(class {
+      decorations: DecorationSet
+      constructor(view: EditorView) {
+        this.decorations = this.getDecorations(view)
+      }
+      update(update: ViewUpdate) {
+        if (update.docChanged || update.viewportChanged)
+          this.decorations = this.getDecorations(update.view)
+      }
+      getDecorations(view: EditorView) {
+        let builder = new RangeSetBuilder<Decoration>()
+        for (let {from, to} of view.visibleRanges) {
+          for (let pos = from; pos < to;) {
+            let line = view.state.doc.lineAt(pos)
+            const text = line.text.trimStart()
+            if (text.startsWith('+')) {
+              builder.add(line.from, line.from, Decoration.line({
+                attributes: { class: "cm-diff-add" }
+              }))
+            } else if (text.startsWith('-')) {
+              builder.add(line.from, line.from, Decoration.line({
+                attributes: { class: "cm-diff-remove" }
+              }))
+            }
+            pos = line.to + 1
+          }
+        }
+        return builder.finish()
+      }
+    }, {
+      decorations: v => v.decorations
+    })
 
     const isMinimal = variant === 'minimal';
 
@@ -126,6 +162,16 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         ".cm-selectionBackground": {
             backgroundColor: "transparent !important",
         },
+        ".cm-diff-add": {
+            backgroundColor: "rgba(16, 185, 129, 0.12) !important",
+            display: "block",
+            width: "100%",
+        },
+        ".cm-diff-remove": {
+            backgroundColor: "rgba(239, 68, 68, 0.12) !important",
+            display: "block",
+            width: "100%",
+        },
     });
 
     return (
@@ -173,7 +219,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
                     readOnly={true}
                     editable={false}
                     theme={[vscodeDark, codeTheme]}
-                    extensions={[getLanguageExtension(langKey)]}
+                    extensions={[getLanguageExtension(langKey), diffHighlight]}
                     className={`!bg-transparent ${isMinimal ? 'h-full' : ''}`}
                     basicSetup={{
                         lineNumbers: !isMinimal,

@@ -24,6 +24,7 @@ const BinTreeVisualizer = React.lazy(() => import("../components/ui/BinTreeVisua
 const ProofPlayer = React.lazy(() => import("../components/ui/ProofPlayer"));
 const MafsVisualizer = React.lazy(() => import("../components/ui/MafsVisualizer"));
 const VideoPlayer = React.lazy(() => import("../components/ui/VideoPlayer"));
+const Accordion = React.lazy(() => import("../components/ui/Accordion"));
 const ThreeVisualizer = React.lazy(() =>
     import("../components/ui/ThreeVisualizer").catch(() => ({
         default: () => (
@@ -31,7 +32,7 @@ const ThreeVisualizer = React.lazy(() =>
                 <div className="text-3xl">🧊</div>
                 <p className="text-amber-400 font-semibold text-sm text-center">Visualització 3D no disponible</p>
                 <p className="text-slate-500 text-xs text-center max-w-xs">
-                    No s'ha pogut carregar el motor 3D (possiblement bloquejat per l'antivirus o sense WebGL). 
+                    No s'ha pogut carregar el motor 3D (possiblement bloquejat per l'antivirus o sense WebGL).
                     El contingut dels apunts és complet al text de sota.
                 </p>
             </div>
@@ -60,6 +61,13 @@ const defaultComponents: any = {
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <VideoPlayer {...props} />
+            </React.Suspense>
+        );
+    },
+    accordion: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <Accordion {...props} />
             </React.Suspense>
         );
     },
