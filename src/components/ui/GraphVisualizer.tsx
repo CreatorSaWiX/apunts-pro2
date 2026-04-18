@@ -216,14 +216,6 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         ctx.fillStyle = color;
         ctx.fill();
 
-        // Draw Border
-        ctx.shadowBlur = 0; // Reset shadow for outline
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 2 / globalScale;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.stroke();
-
         // Draw Label
         ctx.font = `${fontSize}px Sans-Serif`;
         ctx.textAlign = 'center';
@@ -296,7 +288,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     return (
         <InteractionLock disabled className={transparentBg ? 'h-full w-full' : 'my-2 shadow-sm transition-all'}>
             <div
-                className={`relative group rounded-xl overflow-hidden ${transparentBg ? 'h-full w-full' : 'bg-slate-900/40'} transition-all duration-500 ${isFullScreen ? 'h-full bg-slate-900 border-none' : 'rounded-2xl border border-white/10 my-8'}`}
+                className={`relative group rounded-xl overflow-hidden ${transparentBg ? 'h-full w-full' : 'bg-slate-900/40'} transition-all duration-500 ${isFullScreen ? 'h-full bg-slate-900 border-none' : 'rounded-2xl border-none my-8'}`}
                 style={transparentBg ? {} : { height: isFullScreen ? '100%' : numericHeight }}
                 ref={containerRef}
                 onMouseEnter={() => setIsHovered(true)}

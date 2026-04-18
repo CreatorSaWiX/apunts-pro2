@@ -198,3 +198,8 @@ body.player-fullscreen .nav-pill-container {
 .jutge-content .vertical-view {
   display: block;
 }
+/* Global Canvas Fixes */
+canvas {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
