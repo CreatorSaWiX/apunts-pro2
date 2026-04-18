@@ -73,7 +73,6 @@ Una funció és **diferenciable** en un punt si es pot aproximar localment per u
 
 ::three{type="pla_tangent"}
 
-> [!TIP]
 > **Pla Tangent**: Observa com el pla blau s'adapta a la muntanya. L'equació que veus a sobre és la millor aproximació lineal de la funció en aquest punt.
 
 ### 3.2 Recta normal

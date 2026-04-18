@@ -2,12 +2,45 @@ import React, { useMemo, Component } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid, Stars, Text, Html, Line } from '@react-three/drei';
 import * as THREE from 'three';
+import { useIsMobile } from '../../hooks/useIsMobile';
 import { Mafs, Coordinates, Plot, Theme, LaTeX as MafsLaTeX, Circle, Polygon, MovablePoint, Line as MafsLine } from "mafs";
 import { InlineMath } from 'react-katex';
 import "mafs/core.css";
+import { InteractionLock } from './InteractionLock';
+import { useInteraction } from '../../contexts/InteractionContext';
 
 interface ThreeVisualizerProps {
     type: string;
+}
+
+// Helper to avoid thousands of ArrowHelper allocations
+const Arrow = ({ memoDir, length, color, head, width }: any) => {
+    const helper = useMemo(() => new THREE.ArrowHelper(memoDir, new THREE.Vector3(0, 0, 0), length, color, head, width), [memoDir, length, color, head, width]);
+    return <primitive object={helper} />;
+}
+
+// Helper to avoid heavy geometry recalculations every frame
+const DirectionalCurvePoints = ({ a, vx, vy, f }: any) => {
+    const curvePoints = useMemo(() => {
+        const points = Array.from({ length: 50 }, (_, i) => {
+            const t = (i / 49) * 8 - 4;
+            return [a[0] + t * vx, f(a[0] + t * vx, a[1] + t * vy), a[1] + t * vy];
+        });
+        return new Float32Array(points.flat());
+    }, [a, vx, vy, f]);
+
+    return (
+        <line>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    args={[curvePoints, 3]}
+                    count={curvePoints.length / 3}
+                />
+            </bufferGeometry>
+            <lineBasicMaterial attach="material" color="#818cf8" linewidth={3} />
+        </line>
+    );
 }
 
 // Detecció de suport WebGL per a Windows/Linux amb drivers antics
@@ -49,8 +82,9 @@ class ThreeErrorBoundary extends Component<{ children: React.ReactNode }, { hasE
 }
 
 const FunctionSurface = ({ f, colorScale = 5, showWireframe = false, opacity = 1 }: { f: (x: number, y: number) => number, colorScale?: number, showWireframe?: boolean, opacity?: number }) => {
+    const isMobile = useIsMobile();
     const size = 10;
-    const segments = 60;
+    const segments = isMobile ? 50 : 64;
 
     const geometry = useMemo(() => {
         const positions = [];
@@ -150,124 +184,38 @@ const VisParaboloide = ({ showWireframe = false }: { showWireframe?: boolean }) 
     );
 };
 
-const VisPlaTangentINormalHibrid = () => {
-    const [p, setP] = React.useState<[number, number]>([1, 0.5]);
 
-    // Funció z = 5 * exp(-(x^2 + y^2)/15) (muntanya molt més ampla i majestuosa)
-    const f = (x: number, y: number) => 5 * Math.exp(-(x * x + y * y) / 15);
-    const dfx = (x: number, y: number) => f(x, y) * (-2 * x / 15);
-    const dfy = (x: number, y: number) => f(x, y) * (-2 * y / 15);
-
-    const a = p[0], b = p[1];
-    const fa = f(a, b);
-    const da = dfx(a, b);
-    const db = dfy(a, b);
-
-    // Vector normal en (da, 1, db)
-    const normalDir = new THREE.Vector3(da, 1, db).normalize();
-
-    return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
-            <div className="p-4 bg-slate-800/50 border-b border-white/10">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="flex flex-col">
-                        <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Pla Tangent en (a, b)</span>
-                        <div className="flex gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs text-slate-500 font-bold">a:</span>
-                                <input type="range" min="-4" max="4" step="0.1" value={a} onChange={e => setP([parseFloat(e.target.value), b])} className="w-24 accent-indigo-500" />
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs text-slate-500 font-bold">b:</span>
-                                <input type="range" min="-4" max="4" step="0.1" value={b} onChange={e => setP([a, parseFloat(e.target.value)])} className="w-24 accent-indigo-500" />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-black/40 p-3 rounded-xl border border-white/5 font-mono text-[11px] text-indigo-300">
-                        <div className="opacity-50 text-[10px] mb-1 italic">Equació de l'aproximació lineal:</div>
-                        <InlineMath math={`z \\approx ${fa.toFixed(2)} ${da >= 0 ? '+' : ''} ${da.toFixed(2)}(x ${a >= 0 ? '-' : '+'} ${Math.abs(a).toFixed(1)}) ${db >= 0 ? '+' : ''} ${db.toFixed(2)}(y ${b >= 0 ? '-' : '+'} ${Math.abs(b).toFixed(1)})`} />
-                    </div>
-                </div>
-            </div>
-
-            <div className="relative h-[600px] bg-slate-950/40">
-                <Canvas shadows dpr={[1, 2]}>
-                    <PerspectiveCamera makeDefault position={[10, 8, 10]} fov={40} />
-                    <OrbitControls enableZoom={true} />
-                    <ambientLight intensity={0.7} />
-                    <pointLight position={[10, 10, -10]} intensity={2} castShadow />
-                    <pointLight position={[-10, 10, 10]} intensity={1} />
-                    <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-
-                    <FunctionSurface f={f} opacity={0.9} colorScale={4} showWireframe={false} />
-
-                    {/* Grup del Plànol i Normal */}
-                    <group position={[a, fa, b]}>
-                        <mesh onUpdate={(self) => self.lookAt(normalDir.clone().add(self.position))}>
-                            <planeGeometry args={[4, 4]} />
-                            <meshPhongMaterial color="#6366f1" transparent opacity={0.6} side={THREE.DoubleSide} shininess={100} />
-                        </mesh>
-
-                        <primitive
-                            object={new THREE.ArrowHelper(
-                                normalDir,
-                                new THREE.Vector3(0, 0, 0),
-                                2.5,
-                                "#fbbf24",
-                                0.5,
-                                0.25
-                            )}
-                        />
-
-                        <mesh>
-                            <sphereGeometry args={[0.1]} />
-                            <meshStandardMaterial color="#fff" emissive="#fff" emissiveIntensity={1} />
-                        </mesh>
-                    </group>
-
-                    <gridHelper args={[10, 10, 0x334155, 0x1e293b]} position={[0, -0.01, 0]} />
-                </Canvas>
-
-                <div className="absolute bottom-6 left-6 flex flex-col gap-2">
-                    <div className="bg-indigo-600/40 px-3 py-1 rounded text-[10px] text-white font-bold border border-indigo-500/50 shadow-lg shadow-indigo-500/20 backdrop-blur-sm">
-                        PLA TANGENT (Aprox. Lineal)
-                    </div>
-                    <div className="bg-amber-600/40 px-3 py-1 rounded text-[10px] text-white font-bold border border-amber-500/50 shadow-lg shadow-amber-500/20 backdrop-blur-sm">
-                        RECTA NORMAL ($\nabla f$)
-                    </div>
-                </div>
-            </div>
-
-            <div className="p-4 bg-slate-800/30 text-[11px] text-slate-400 text-center border-t border-white/10">
-                MOU ELS SLIDERS: El plànol blau és l'únic plànol que "toca" la superfície de forma suau. El vector normal <InlineMath math={"(\\frac{\\partial f}{\\partial x}, \\frac{\\partial f}{\\partial y}, -1)"} /> indica la direcció perpendicular al punt.
-            </div>
-        </div>
-    );
-};
 
 const VisVectorGradient = () => {
     const f = (x: number, y: number) => 3 * Math.sin(0.3 * x) * Math.cos(0.3 * y);
+
+    // Memoize the arrows to avoid creating thousands of Three.js objects on every render
+    const arrows = useMemo(() => {
+        return [[-3, -3], [0, 0], [3, 0], [0, 3]].map(([px, py]) => {
+            const z = f(px, py);
+            const gx = 3 * 0.3 * Math.cos(0.3 * px) * Math.cos(0.3 * py);
+            const gy = -3 * 0.3 * Math.sin(0.3 * px) * Math.sin(0.3 * py);
+            const dir = new THREE.Vector3(gx, 0, gy).normalize();
+            return {
+                position: [px, z, py] as [number, number, number],
+                helper: new THREE.ArrowHelper(dir, new THREE.Vector3(0, 0, 0), 1.5, "#ff4400", 0.3, 0.2)
+            };
+        });
+    }, []);
+
     return (
-        <>
+        <group>
             <FunctionSurface f={f} />
-            {/* Vectors gradient en punts clau */}
-            {[[-3, -3], [0, 0], [3, 0], [0, 3]].map(([px, py], i) => {
-                const z = f(px, py);
-                // Grad f = (f_x, f_y)
-                const gx = 3 * 0.3 * Math.cos(0.3 * px) * Math.cos(0.3 * py);
-                const gy = -3 * 0.3 * Math.sin(0.3 * px) * Math.sin(0.3 * py);
-                const dir = new THREE.Vector3(gx, 0, gy).normalize();
-                return (
-                    <group key={i} position={[px, z, py]}>
-                        <primitive object={new THREE.ArrowHelper(dir, new THREE.Vector3(0, 0, 0), 1.5, "#ff4400", 0.3, 0.2)} />
-                        <Point position={[0, 0, 0]} color="white" />
-                    </group>
-                )
-            })}
+            {arrows.map((arrow, i) => (
+                <group key={i} position={arrow.position}>
+                    <primitive object={arrow.helper} />
+                    <Point position={[0, 0, 0]} color="white" />
+                </group>
+            ))}
             <Text position={[0, 4, 0]} color="white" fontSize={0.5} textAlign="center">
                 Camps de Vectors: El Gradient (∇f)
             </Text>
-        </>
+        </group>
     );
 };
 
@@ -312,7 +260,7 @@ const VisPuntSellaOptim = () => {
 
 const VisTaylor3d = () => {
     const f = (x: number, y: number) => Math.cos(x / 2) * Math.sin(y / 2) * 2;
-    const p1 = (_x: number, y: number) => y * 0.5;
+    const p1 = (_: number, y: number) => y * 0.5;
 
     return (
         <>
@@ -411,12 +359,14 @@ const VisSuperficiesBasiques3D = () => {
 
 
 const VisCorbesNivell3D2D = () => {
+    const isMobile = useIsMobile();
     const [k, setK] = React.useState(1.5);
     const f = (x: number, y: number) => (x * x + y * y) * 0.1;
+    const { isFullScreen, resizeKey } = useInteraction();
 
     return (
-        <div className="w-full h-full min-h-[500px] bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col">
-            <div className="p-6 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] md:h-[500px] bg-slate-950 rounded-2xl'}`}>
+            <div className={`p-4 md:p-6 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4 md:gap-6`}>
                 <div className="flex-1 w-full">
                     <div className="flex justify-between mb-2">
                         <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Alçada de tall (k)</span>
@@ -430,8 +380,8 @@ const VisCorbesNivell3D2D = () => {
                 </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
-                <div className="border-r border-white/5 relative bg-slate-950/50 min-h-[300px]">
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                <div className="border-b md:border-b-0 md:border-r border-white/5 relative bg-slate-950/50 h-full overflow-hidden">
                     <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
                         <Coordinates.Cartesian />
                         <Circle
@@ -444,9 +394,8 @@ const VisCorbesNivell3D2D = () => {
                         <MafsLaTeX at={[0, -4.5]} tex={`x^2 + y^2 = ${(k / 0.1).toFixed(1)}`} color={Theme.indigo} />
                     </Mafs>
                 </div>
-
-                <div className="relative min-h-[300px]">
-                    <Canvas shadows>
+                <div className="relative h-full overflow-hidden">
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 8, 8]} />
                         <OrbitControls enableZoom={false} />
                         <ambientLight intensity={0.5} />
@@ -463,7 +412,7 @@ const VisCorbesNivell3D2D = () => {
                 </div>
             </div>
 
-            <div className="p-4 bg-slate-950 text-center border-t border-white/10">
+            <div className="p-3 bg-slate-950 text-center border-t border-white/10">
                 <p className="text-[10px] text-slate-500 italic">
                     La corba 2D a l'esquerra correspon al tall horitzontal a altura <span className="text-indigo-400 font-bold">k</span> de la figura 3D.
                 </p>
@@ -473,46 +422,34 @@ const VisCorbesNivell3D2D = () => {
 };
 
 const VisDistanciaSync3D2D = () => {
+    const isMobile = useIsMobile();
     const [p1, setP1] = React.useState<[number, number, number]>([1, 1, 0.5]);
     const [p2, setP2] = React.useState<[number, number, number]>([4, 3, 2]);
-
-    const dx = p2[0] - p1[0];
-    const dy = p2[1] - p1[1];
-    const dz = p2[2] - p1[2];
-    const dist2D = Math.sqrt(dx * dx + dy * dy);
-    const dist3D = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    const { isFullScreen, resizeKey } = useInteraction();
 
     return (
-        <div className="w-full h-full min-h-[550px] bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col my-8">
-            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] md:h-[500px] bg-slate-950 rounded-2xl'}`}>
+            <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'}`}>
+                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Distància Euleriana (Sincronitzada)</span>
+
                 <div className="flex gap-4">
-                    <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-slate-500 uppercase">Alçada P1 (z)</span>
-                        <input type="range" min="0" max="4" step="0.1" value={p1[2]} onChange={(e) => setP1([p1[0], p1[1], parseFloat(e.target.value)])} className="w-24 accent-blue-500" />
+                    <div className="flex flex-col items-center">
+                        <span className="text-[8px] text-slate-500 uppercase">P1 (z)</span>
+                        <input type="range" min="0" max="4" step="0.1" value={p1[2]} onChange={(e) => setP1([p1[0], p1[1], parseFloat(e.target.value)])} className="w-20 h-1 accent-blue-500" />
                     </div>
-                    <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-slate-500 uppercase">Alçada P2 (z)</span>
-                        <input type="range" min="0" max="4" step="0.1" value={p2[2]} onChange={(e) => setP2([p2[0], p2[1], parseFloat(e.target.value)])} className="w-24 accent-red-500" />
-                    </div>
-                </div>
-                <div className="bg-black/30 px-4 py-2 rounded-xl border border-white/5 flex gap-6">
-                    <div className="text-center">
-                        <div className="text-[8px] text-slate-500 uppercase">Distància 2D</div>
-                        <div className="text-sm font-mono font-bold text-blue-400">{dist2D.toFixed(2)}</div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-[8px] text-slate-500 uppercase">Distància 3D</div>
-                        <div className="text-sm font-mono font-bold text-indigo-400">{dist3D.toFixed(2)}</div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-[8px] text-slate-500 uppercase">P2 (z)</span>
+                        <input type="range" min="0" max="4" step="0.1" value={p2[2]} onChange={(e) => setP2([p2[0], p2[1], parseFloat(e.target.value)])} className="w-20 h-1 accent-red-500" />
                     </div>
                 </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
-                <div className="border-r border-white/5 relative bg-slate-950/50 min-h-[300px]">
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                <div className="border-b md:border-b-0 md:border-r border-white/5 relative bg-slate-950/50 h-full overflow-hidden">
                     <div className="absolute top-4 left-4 z-10 bg-black/40 backdrop-blur-md p-2 rounded-lg border border-white/10 pointer-events-none">
                         <span className="text-[9px] font-bold text-slate-300 uppercase tracking-tighter">Projecció XY (2D)</span>
                     </div>
-                    <Mafs viewBox={{ x: [-1, 6], y: [-1, 5] }} pan={false} zoom={false}>
+                    <Mafs viewBox={{ x: [-1, 6], y: [-1, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
                         <Plot.OfX y={() => p1[1]} color={Theme.blue} style="dashed" opacity={0.3} />
                         <MafsLine.Segment point1={[p1[0], p1[1]]} point2={[p2[0], p2[1]]} color={Theme.blue} weight={3} />
@@ -522,25 +459,23 @@ const VisDistanciaSync3D2D = () => {
                     </Mafs>
                 </div>
 
-                <div className="relative min-h-[300px]">
+                <div className="relative h-full overflow-hidden">
                     <div className="absolute top-4 left-4 z-10 bg-black/40 backdrop-blur-md p-2 rounded-lg border border-white/10 pointer-events-none">
                         <span className="text-[9px] font-bold text-slate-300 uppercase tracking-tighter">Espai R3 (3D)</span>
                     </div>
-                    <Canvas shadows>
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 5, 8]} />
                         <OrbitControls enableZoom={false} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} />
                         <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
 
-                        {/* Punts i Línia 3D */}
                         <Point position={p1} color="#3b82f6" />
                         <Point position={p2} color="#ef4444" />
                         <mesh>
                             <Line points={[p1, p2]} color="#6366f1" lineWidth={3} />
                         </mesh>
 
-                        {/* Components de distància */}
                         <Line points={[p1, [p2[0], p1[1], p1[2]]]} color="#ffffff" lineWidth={1} dashed />
                         <Line points={[[p2[0], p1[1], p1[2]], [p2[0], p2[1], p1[2]]]} color="#ffffff" lineWidth={1} dashed />
                         <Line points={[[p2[0], p2[1], p1[2]], p2]} color="#ffffff" lineWidth={1} dashed />
@@ -552,12 +487,14 @@ const VisDistanciaSync3D2D = () => {
 };
 
 const VisEx73a = () => {
+    const isMobile = useIsMobile();
     const [k, setK] = React.useState<number>(1);
     const f3D = React.useMemo(() => (x: number, y: number) => (x * x - y * y) * 0.2, []);
+    const { isFullScreen, resizeKey } = useInteraction();
 
     return (
-        <div className="w-full min-h-[550px] bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col my-8">
-            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] bg-slate-950 rounded-2xl'}`}>
+            <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
                 <div className="flex items-center gap-3">
                     <span className="bg-indigo-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-500/20">Apartat A</span>
                     <span className="text-sm font-mono text-slate-300"><InlineMath math="f(x,y) = x^2 - y^2" /></span>
@@ -575,9 +512,9 @@ const VisEx73a = () => {
                 </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
-                <div className="relative bg-slate-950/50 min-h-[300px] border-r border-white/5">
-                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                <div className="relative bg-slate-950/50 h-full overflow-hidden border-b md:border-b-0 md:border-r border-white/5">
+                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
                         {k > 0 ? (
                             <>
@@ -598,8 +535,8 @@ const VisEx73a = () => {
                         <MafsLaTeX at={[0, -4]} tex={`x^2 - y^2 = ${k.toFixed(1)}`} color={Theme.indigo} />
                     </Mafs>
                 </div>
-                <div className="relative min-h-[300px]">
-                    <Canvas shadows>
+                <div className="relative h-full overflow-hidden">
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 8, 8]} />
                         <OrbitControls enableZoom={false} />
                         <ambientLight intensity={0.5} />
@@ -617,12 +554,14 @@ const VisEx73a = () => {
 };
 
 const VisEx73b = () => {
+    const isMobile = useIsMobile();
     const [k, setK] = React.useState<number>(0);
     const f3D = React.useMemo(() => (x: number, y: number) => (1 - Math.abs(x) - Math.abs(y)) * 1.5, []);
+    const { isFullScreen, resizeKey } = useInteraction();
 
     return (
-        <div className="w-full min-h-[550px] bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col my-8">
-            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] bg-slate-950 rounded-2xl'}`}>
+            <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
                 <div className="flex items-center gap-3">
                     <span className="bg-emerald-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-emerald-500/20">Apartat B</span>
                     <span className="text-sm font-mono text-slate-300"><InlineMath math="f(x,y) = 1 - |x| - |y|" /></span>
@@ -640,9 +579,9 @@ const VisEx73b = () => {
                 </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
-                <div className="relative bg-slate-950/50 min-h-[300px] border-r border-white/5">
-                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                <div className="relative bg-slate-950/50 h-full overflow-hidden border-b md:border-b-0 md:border-r border-white/5">
+                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
                         {1 - k > 0 ? (
                             <Polygon
@@ -657,8 +596,8 @@ const VisEx73b = () => {
                         <MafsLaTeX at={[0, -4]} tex={`1 - |x| - |y| = ${k.toFixed(1)}`} color={Theme.green} />
                     </Mafs>
                 </div>
-                <div className="relative min-h-[300px]">
-                    <Canvas shadows>
+                <div className="relative h-full overflow-hidden">
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 8, 8]} />
                         <OrbitControls enableZoom={false} />
                         <ambientLight intensity={0.5} />
@@ -675,84 +614,150 @@ const VisEx73b = () => {
     );
 };
 
+const VisPlaTangentINormalHibrid = () => {
+    const isMobile = useIsMobile();
+    const { isFullScreen, resizeKey } = useInteraction();
+    const [p, setP] = React.useState<[number, number]>([1, 0.5]);
+
+    // Funció z = 5 * exp(-(x^2 + y^2)/15) (muntanya majestuosa)
+    const f = React.useCallback((x: number, y: number) => 5 * Math.exp(-(x * x + y * y) / 15), []);
+    const dfx = (x: number, y: number) => f(x, y) * (-2 * x / 15);
+    const dfy = (x: number, y: number) => f(x, y) * (-2 * y / 15);
+
+    const a = p[0], b = p[1];
+    const fa = f(a, b);
+    const da = dfx(a, b);
+    const db = dfy(a, b);
+
+    // Vector normal en (da, 1, db) - R3F usa Y com a vertical
+    const normalDir = new THREE.Vector3(da, 1, db).normalize();
+
+    return (
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] bg-slate-950 rounded-2xl'}`}>
+            <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
+                <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Pla Tangent i Vector Normal</span>
+                    <div className="text-xs font-mono text-white/70">
+                        <InlineMath math="z = 5 \cdot e^{-(x^2+y^2)/15}" />
+                    </div>
+                </div>
+                <div className="bg-black/40 p-3 rounded-xl border border-white/5 font-mono text-[10px] text-indigo-300">
+                    <InlineMath math={`z \\approx ${fa.toFixed(2)} ${da >= 0 ? '+' : ''} ${da.toFixed(2)}(x ${a >= 0 ? '-' : '+'} ${Math.abs(a).toFixed(1)}) ${db >= 0 ? '+' : ''} ${db.toFixed(2)}(y ${b >= 0 ? '-' : '+'} ${Math.abs(b).toFixed(1)})`} />
+                </div>
+            </div>
+
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                <div className="relative h-full overflow-hidden border-b md:border-b-0 md:border-r border-white/5 bg-slate-950/20">
+                    <div className="absolute top-2 left-2 z-10 bg-black/40 px-2 py-0.5 rounded text-[9px] text-emerald-300 font-bold uppercase border border-emerald-500/20">Domini (2D)</div>
+                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                        <Coordinates.Cartesian />
+                        <MovablePoint point={p} onMove={setP} color={Theme.green} />
+                    </Mafs>
+                </div>
+
+                <div className="relative h-full overflow-hidden bg-slate-950/40">
+                    <div className="absolute top-2 left-2 z-10 bg-black/40 px-2 py-0.5 rounded text-[9px] text-indigo-300 font-bold uppercase border border-indigo-500/20">Espai R3 (3D)</div>
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[8, 6, 8]} fov={40} />
+                        <OrbitControls enableZoom={false} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} />
+                        {!isMobile && <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />}
+
+                        <FunctionSurface f={f} showWireframe={false} opacity={0.9} colorScale={5} />
+
+                        {/* Grup del Plànol i Normal */}
+                        <group position={[a, fa, b]}>
+                            <mesh onUpdate={(self) => self.lookAt(normalDir.clone().add(self.position))}>
+                                <planeGeometry args={[4, 4]} />
+                                <meshPhongMaterial color="#6366f1" transparent opacity={0.6} side={THREE.DoubleSide} shininess={100} depthWrite={false} />
+                            </mesh>
+
+                            <Arrow memoDir={normalDir} color="#fbbf24" length={2.5} head={0.5} width={0.25} />
+
+                            <mesh>
+                                <sphereGeometry args={[0.1]} />
+                                <meshStandardMaterial color="#fff" emissive="#fff" emissiveIntensity={1} />
+                            </mesh>
+                        </group>
+
+                        <gridHelper args={[10, 10, 0x334155, 0x1e293b]} position={[0, -0.01, 0]} />
+                    </Canvas>
+                </div>
+            </div>
+            {!isFullScreen && (
+                <div className="p-3 bg-slate-800/30 text-[10px] text-slate-400 text-center border-t border-white/10 italic">
+                    El plànol blau és l'únic que "toca" la superfície de forma suau en el punt verd.
+                </div>
+            )}
+        </div>
+    );
+};
+
 const VisDerivadaDireccionalHibrida = () => {
+    const isMobile = useIsMobile();
     const [a, setA] = React.useState<[number, number]>([1, 1]);
     const [angle, setAngle] = React.useState(Math.PI / 4);
+    const { isFullScreen, resizeKey } = useInteraction();
 
-    // Funció z = 4 - 0.25(x^2 + y^2)
-    const f = (x: number, y: number) => 4 - 0.25 * (x * x + y * y);
-    const dfx = (x: number) => -0.5 * x;
-    const dfy = (y: number) => -0.5 * y;
-
+    const f = (x: number, y: number) => 4 - (x * x + y * y) * 0.2;
+    const z0 = f(a[0], a[1]);
     const vx = Math.cos(angle);
     const vy = Math.sin(angle);
 
-    // Derivada direccional: grad(f) * v
-    const slope = dfx(a[0]) * vx + dfy(a[1]) * vy;
-    const z0 = f(a[0], a[1]);
+    const slope = -0.4 * a[0] * vx - 0.4 * a[1] * vy;
 
-    // Punts per a la corba del tall 2D: f(a + t*v)
-    const curvePoints = Array.from({ length: 41 }, (_, i) => {
-        const t = -4 + i * 0.2;
-        const x = a[0] + t * vx;
-        const y = a[1] + t * vy;
-        return [t, f(x, y)] as [number, number];
+    const curvePoints = Array.from({ length: 50 }, (_, i) => {
+        const t = (i / 49) * 8 - 4;
+        return [t, f(a[0] + t * vx, a[1] + t * vy)] as [number, number];
     });
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
-            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center">
-                <div className="flex gap-4 items-center">
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'relative h-[100dvh] border-none rounded-none' : 'rounded-2xl'}`}>
+            <div className={`${isFullScreen ? 'absolute top-0 left-0 right-0 z-20 h-[14dvh] landscape:h-[20dvh] px-2 py-1 bg-black/60 backdrop-blur-md border-b border-white/5 flex flex-wrap justify-start items-center gap-x-4 gap-y-0.5 pr-16' : 'p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4'}`}>
+                <div className="flex gap-3 items-center">
                     <div className="flex flex-col">
-                        <span className="text-[10px] text-slate-400 uppercase font-black">Punt a</span>
-                        <div className="flex gap-2">
-                            <input type="range" min="-2" max="2" step="0.1" value={a[0]} onChange={e => setA([parseFloat(e.target.value), a[1]])} className="w-16 accent-indigo-500" />
-                            <input type="range" min="-2" max="2" step="0.1" value={a[1]} onChange={e => setA([a[0], parseFloat(e.target.value)])} className="w-16 accent-indigo-500" />
+                        <span className={`${isFullScreen ? 'text-[7px]' : 'text-[10px]'} text-slate-400 uppercase font-black leading-none mb-0.5`}>Punt a</span>
+                        <div className="flex gap-1">
+                            <input type="range" min="-2" max="2" step="0.1" value={a[0]} onChange={e => setA([parseFloat(e.target.value), a[1]])} className={`${isFullScreen ? 'w-10 h-0.5' : 'w-16'} accent-indigo-500`} />
+                            <input type="range" min="-2" max="2" step="0.1" value={a[1]} onChange={e => setA([a[0], parseFloat(e.target.value)])} className={`${isFullScreen ? 'w-10 h-0.5' : 'w-16'} accent-indigo-500`} />
                         </div>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] text-slate-400 uppercase font-black">Direcció θ</span>
-                        <input type="range" min="0" max={Math.PI * 2} step="0.1" value={angle} onChange={e => setAngle(parseFloat(e.target.value))} className="w-32 accent-rose-500" />
+                        <span className={`${isFullScreen ? 'text-[7px]' : 'text-[10px]'} text-slate-400 uppercase font-black leading-none mb-0.5`}>Direcció θ</span>
+                        <input type="range" min="0" max={Math.PI * 2} step="0.1" value={angle} onChange={e => setAngle(parseFloat(e.target.value))} className={`${isFullScreen ? 'w-16 h-0.5' : 'w-32'} accent-rose-500`} />
                     </div>
                 </div>
-                <div className="bg-black/30 px-3 py-1 rounded-full border border-white/5 font-mono text-sm text-white">
+                <div className={`${isFullScreen ? 'px-1.5 py-0 text-[10px]' : 'px-3 py-1 text-xs md:text-sm'} bg-black/30 rounded-full border border-white/5 font-mono text-white whitespace-nowrap`}>
                     <InlineMath math={`D_{\\vec{v}}f(\\vec{a}) = ${slope.toFixed(2)}`} />
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px]">
-                {/* 2D Slice View */}
-                <div className="relative border-r border-white/5 bg-slate-950/20">
+            <div className={`${isFullScreen ? 'absolute inset-0 pt-[14dvh] landscape:pt-[20dvh] grid grid-cols-1 grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 min-h-[600px] md:min-h-[400px]'}`}>
+                <div className={`relative border-white/5 bg-slate-950/20 overflow-hidden ${isFullScreen ? 'border-b landscape:border-b-0 landscape:border-r h-full' : 'border-b md:border-b-0 md:border-r h-full'}`}>
                     <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-indigo-300 font-bold border border-indigo-500/30">
                         VISTA DEL TALL (Plànol π)
                     </div>
-                    <Mafs viewBox={{ x: [-4, 4], y: [0, 5] }} pan={false} zoom={false}>
+                    <Mafs viewBox={{ x: [-4, 4], y: [0, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
                         <Polygon points={[...curvePoints, [4, 0], [-4, 0]]} color={Theme.indigo} fillOpacity={0.05} weight={0} />
                         <Plot.OfX y={t => f(a[0] + t * vx, a[1] + t * vy)} color={Theme.indigo} weight={3} />
-
-                        {/* Recta Tangent */}
                         <Plot.OfX y={t => z0 + slope * t} color={Theme.pink} weight={2} style="dashed" />
-
                         <Circle center={[0, z0]} radius={0.1} color={Theme.pink} fillOpacity={1} />
                         <MafsLaTeX at={[0, z0 + 0.5]} tex="f(\vec{a})" color={Theme.foreground} />
                     </Mafs>
                 </div>
 
-                {/* 3D Scene */}
-                <div className="relative bg-slate-950/40">
+                <div className={`relative bg-slate-950/40 overflow-hidden h-full`}>
                     <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-rose-300 font-bold border border-rose-500/30">
                         CONTEXT 3D (Pastís)
                     </div>
-                    <Canvas shadows>
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[6, 6, 6]} />
                         <OrbitControls enableZoom={false} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} castShadow />
-
                         <FunctionSurface f={(x, y) => f(x, y)} opacity={0.6} colorScale={1.2} />
-
-                        {/* Plànol de tall vertical π */}
                         <group rotation={[0, -angle, 0]} position={[a[0], 0, a[1]]}>
                             <mesh position={[0, 2.5, 0]}>
                                 <planeGeometry args={[10, 5]} />
@@ -760,23 +765,12 @@ const VisDerivadaDireccionalHibrida = () => {
                             </mesh>
                         </group>
 
-                        {/* Corba de tall ressaltada */}
-                        <line>
-                            <bufferGeometry attach="geometry">
-                                <float32BufferAttribute
-                                    attach="attributes-position"
-                                    args={[new Float32Array(curvePoints.flatMap(([t, z]) => [a[0] + t * vx, z, a[1] + t * vy])), 3]}
-                                />
-                            </bufferGeometry>
-                            <lineBasicMaterial attach="material" color="#818cf8" linewidth={3} />
-                        </line>
+                        <DirectionalCurvePoints a={a} vx={vx} vy={vy} f={f} />
 
-                        {/* Punt i Vector director */}
                         <mesh position={[a[0], z0, a[1]]}>
                             <sphereGeometry args={[0.15]} />
                             <meshStandardMaterial color="#f43f5e" />
                         </mesh>
-
                         <gridHelper args={[10, 10, 0x334155, 0x1e293b]} position={[0, 0.01, 0]} />
                     </Canvas>
                 </div>
@@ -791,69 +785,53 @@ const VisDerivadaDireccionalHibrida = () => {
 const VisDerivadesParcialsHibrida = () => {
     const [a, setA] = React.useState<[number, number]>([1, 1]);
     const [mode, setMode] = React.useState<'x' | 'y'>('x');
+    const { isFullScreen, resizeKey } = useInteraction();
 
-    const f = (x: number, y: number) => 4 - 0.25 * (x * x + y * y);
-    const dfx = (x: number) => -0.5 * x;
-    const dfy = (y: number) => -0.5 * y;
-
+    const f = (x: number, y: number) => 4 - (x * x + y * y) * 0.1;
     const z0 = f(a[0], a[1]);
-    const currentSlope = mode === 'x' ? dfx(a[0]) : dfy(a[1]);
-
-
+    const currentSlope = mode === 'x' ? -0.2 * a[0] : -0.2 * a[1];
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
-            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center">
-                <div className="flex gap-4 items-center">
-                    <div className="flex bg-black/40 p-1 rounded-lg border border-white/5">
-                        <button onClick={() => setMode('x')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${mode === 'x' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>RESPECTE A X</button>
-                        <button onClick={() => setMode('y')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${mode === 'y' ? 'bg-rose-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>RESPECTE A Y</button>
-                    </div>
-                    <div className="text-[10px] text-slate-400 font-mono">
-                        Punt: ({a[0].toFixed(1)}, {a[1].toFixed(1)})
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'relative h-[100dvh] border-none rounded-none' : 'rounded-2xl'}`}>
+            <div className={`${isFullScreen ? 'absolute top-0 left-0 right-0 z-20 h-[14dvh] landscape:h-[20dvh] px-2 py-1 bg-black/60 backdrop-blur-md border-b border-white/5 flex flex-wrap justify-start items-center gap-x-4 gap-y-0.5 pr-16' : 'p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4'}`}>
+                <div className="flex gap-3 items-center">
+                    <div className="flex bg-black/40 p-0.5 rounded border border-white/5">
+                        <button onClick={() => setMode('x')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition-all ${mode === 'x' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>X</button>
+                        <button onClick={() => setMode('y')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition-all ${mode === 'y' ? 'bg-rose-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>Y</button>
                     </div>
                 </div>
-                <div className="font-mono text-sm text-white bg-black/30 px-3 py-1 rounded-full border border-white/5">
+                <div className={`${isFullScreen ? 'px-1.5 py-0 text-[10px]' : 'px-3 py-1 text-xs md:text-sm'} bg-black/30 rounded-full border border-white/5 font-mono text-white whitespace-nowrap`}>
                     <InlineMath math={mode === 'x' ? `\\frac{\\partial f}{\\partial x} = ${currentSlope.toFixed(2)}` : `\\frac{\\partial f}{\\partial y} = ${currentSlope.toFixed(2)}`} />
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 min-h-[350px]">
-                {/* Left: 2D Contour Map */}
-                <div className="relative border-r border-white/5 bg-slate-950/20">
+            <div className={`${isFullScreen ? 'absolute inset-0 pt-[14dvh] landscape:pt-[20dvh] grid grid-cols-1 grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 min-h-[600px] md:min-h-[350px]'}`}>
+                <div className={`relative border-white/5 bg-slate-950/20 overflow-hidden ${isFullScreen ? 'border-b landscape:border-b-0 landscape:border-r h-full' : 'border-b md:border-b-0 md:border-r h-full'}`}>
                     <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-300 font-bold border border-white/10 italic">
                         MAPA DE CORBES DE NIVELL
                     </div>
-                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
-                        {/* Cercles de nivell aproximats: x^2 + y^2 = R^2 */}
                         {[1, 2, 3, 4, 5, 6].map(r => (
                             <Circle key={r} center={[0, 0]} radius={Math.sqrt(r * 4)} color={Theme.foreground} weight={1} fillOpacity={0.1} />
                         ))}
-
-                        {/* Línia de tall */}
                         {mode === 'x' ? (
                             <Plot.OfX y={() => a[1]} color={Theme.indigo} weight={2} opacity={0.5} />
                         ) : (
                             <Plot.OfY x={() => a[0]} color={Theme.pink} weight={2} opacity={0.5} />
                         )}
-
                         <MovablePoint point={a} onMove={setA} color={mode === 'x' ? Theme.indigo : Theme.pink} />
                     </Mafs>
                 </div>
 
-                {/* Right: 1D Frozen Function */}
-                <div className="relative bg-slate-950/40">
+                <div className={`relative bg-slate-950/40 overflow-hidden h-full`}>
                     <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-300 font-bold border border-white/10 italic">
                         FUNCIÓ CONGELADA (1 VARIABLE)
                     </div>
-                    <Mafs viewBox={{ x: [-4, 4], y: [0, 5] }} pan={false} zoom={false}>
+                    <Mafs viewBox={{ x: [-4, 4], y: [0, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
                         <Plot.OfX y={t => mode === 'x' ? f(t, a[1]) : f(a[0], t)} color={mode === 'x' ? Theme.indigo : Theme.pink} weight={3} />
-
-                        {/* Recta Tangent */}
                         <Plot.OfX y={t => z0 + currentSlope * (t - (mode === 'x' ? a[0] : a[1]))} color={Theme.yellow} weight={2} style="dashed" />
-
                         <Circle center={[mode === 'x' ? a[0] : a[1], z0]} radius={0.15} color={Theme.yellow} fillOpacity={1} />
                     </Mafs>
                 </div>
@@ -931,7 +909,7 @@ const VisJacobianaDeformacioHibrida = () => {
     );
 };
 
-const VISUALIZERS: Record<string, React.FC> = {
+const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'vis_derivades_parcials_hibrida': VisDerivadesParcialsHibrida,
     'vis_derivada_direccional_hibrida': VisDerivadaDireccionalHibrida,
     'vis_distancia_3d': VisDistancia3D,
@@ -951,82 +929,93 @@ const VISUALIZERS: Record<string, React.FC> = {
     'vis_jacobiana': VisJacobianaDeformacioHibrida,
 };
 
-const ThreeVisualizer: React.FC<ThreeVisualizerProps> = ({ type }) => {
-    const Component = VISUALIZERS[type];
+const ThreeVisualizerContent = ({ SurfaceComponent, isHybrid }: { SurfaceComponent: React.ComponentType<any>, isHybrid: boolean }) => {
+    const isMobile = useIsMobile();
+    const { isFullScreen } = useInteraction();
 
-    if (!Component) return <div className="p-4 bg-red-900/20 text-red-400 rounded-xl border border-red-500/30">Tipus 3D no trobat: {type}</div>;
-
-    // Cas especial per a components HÍBRIDS (gestionen el seu propi Canvas/Layout)
-    if (type === 'vis_corbes_nivell_3d_2d' || type === 'vis_distancia_sync_3d_2d' || type === 'vis_ex7_3_a' || type === 'vis_ex7_3_b' || type === 'vis_derivada_direccional_hibrida' || type === 'vis_derivades_parcials_hibrida' || type === 'pla_tangent' || type === 'vis_jacobiana') {
-        return <Component />;
+    if (isHybrid) {
+        return <SurfaceComponent />;
     }
 
-    // Fallback per a navegadors sense WebGL (Windows amb drivers antics, etc.)
+    return (
+        <ThreeErrorBoundary>
+            <div className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[500px] bg-slate-950 rounded-2xl'}`}>
+
+                <div className="flex-1 relative">
+                    <Canvas
+                        shadows={{ type: THREE.PCFShadowMap }}
+                        dpr={isMobile ? 1 : [1, 2]}
+                        gl={{ antialias: true, powerPreference: "high-performance" }}
+                    >
+                        <PerspectiveCamera makeDefault position={[8, 8, 8]} fov={50} />
+                        <OrbitControls enableDamping dampingFactor={0.05} />
+
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+                        <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
+
+                        <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
+                        <Grid
+                            infiniteGrid
+                            fadeDistance={50}
+                            cellColor="#444"
+                            sectionColor="#888"
+                            sectionSize={5}
+                            cellSize={1}
+                        />
+
+                        <SurfaceComponent />
+                        <axesHelper args={[5]} />
+                    </Canvas>
+                </div>
+
+                {!isFullScreen && (
+                    <div className="absolute bottom-4 right-4 text-[10px] text-white/50 bg-black/30 px-2 py-1 rounded backdrop-blur-sm pointer-events-none">
+                        Fes clic i arrossega per rotar • Roda per zoom
+                    </div>
+                )}
+            </div>
+        </ThreeErrorBoundary>
+    );
+};
+
+const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
+    // We explicitly destructure only the 'type' and ignore any 'children' 
+    // passed by the MDX parser to avoid layout leakage in immersive mode.
+    const { type } = props;
+    const SurfaceComponent = VISUALIZERS[type];
+
+    if (!SurfaceComponent) return <div className="p-4 bg-red-900/20 text-red-400 rounded-xl border border-red-500/30">Tipus 3D no trobat: {type}</div>;
+
+    const hybridTypes = [
+        'vis_corbes_nivell_3d_2d',
+        'vis_distancia_sync_3d_2d',
+        'vis_ex7_3_a',
+        'vis_ex7_3_b',
+        'vis_derivada_direccional_hibrida',
+        'vis_derivades_parcials_hibrida',
+        'pla_tangent',
+        'vis_jacobiana'
+    ];
+
+    const isHybrid = hybridTypes.includes(type);
+
     if (!hasWebGL()) {
         return (
             <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-4 p-8">
                 <div className="text-4xl">🖥️</div>
                 <p className="text-amber-400 font-semibold text-center">Visualització 3D no disponible</p>
                 <p className="text-slate-500 text-sm text-center max-w-sm">
-                    El teu navegador no té WebGL activat, necessari per als gràfics 3D interactius.
-                    Prova d'activar l'acceleració de hardware a la configuració del navegador, o obre la web directament a <strong className="text-slate-400">chrome://flags</strong> i activa "Override software rendering list".
+                    El teu navegador no té WebGL activat. Prova d'activar l'acceleració de hardware.
                 </p>
             </div>
         );
     }
 
     return (
-        <ThreeErrorBoundary>
-            <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8 relative group">
-                <div className="absolute top-4 left-4 z-10 pointer-events-none">
-                    <div className="bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-[10px] text-blue-400 font-mono flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                        Vista en 3D
-                    </div>
-                </div>
-
-                <Canvas shadows dpr={[1, 2]}>
-                    <PerspectiveCamera makeDefault position={[8, 8, 8]} fov={50} />
-                    <OrbitControls enableDamping dampingFactor={0.05} />
-
-                    {/* Il·luminació Premium */}
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} intensity={1} castShadow />
-                    <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
-
-                    {/* Entorn */}
-                    <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-                    <Grid
-                        infiniteGrid
-                        fadeDistance={50}
-                        cellColor="#444"
-                        sectionColor="#888"
-                        sectionSize={5}
-                        cellSize={1}
-                    />
-
-                    <Component />
-
-                    {/* Eixos */}
-                    <axesHelper args={[5]} />
-                </Canvas>
-
-                <div className="absolute bottom-4 left-4 flex flex-col gap-2 pointer-events-none">
-                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/5">
-                        <div className="w-24 h-2 rounded-full bg-linear-to-r from-blue-500 via-emerald-500 via-orange-500 to-red-500" />
-                        <span className="text-[9px] text-white/70 font-mono uppercase tracking-tighter">Escala: alçada eix z</span>
-                    </div>
-                    <div className="flex gap-4 text-[9px] text-white/40 font-mono px-3">
-                        <span>mínim (blau)</span>
-                        <span className="ml-auto">màxim (vermell)</span>
-                    </div>
-                </div>
-
-                <div className="absolute bottom-4 right-4 text-[10px] text-white/50 bg-black/30 px-2 py-1 rounded backdrop-blur-sm">
-                    Fes clic i arrossega per rotar • Roda per zoom
-                </div>
-            </div>
-        </ThreeErrorBoundary>
+        <InteractionLock className="my-8" key={type}>
+            <ThreeVisualizerContent SurfaceComponent={SurfaceComponent} isHybrid={isHybrid} />
+        </InteractionLock>
     );
 };
 

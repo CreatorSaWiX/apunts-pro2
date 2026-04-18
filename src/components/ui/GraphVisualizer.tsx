@@ -4,6 +4,8 @@ import ForceGraph2D from 'react-force-graph-2d';
 import { useSubject } from '../../contexts/SubjectContext';
 import { RotateCcw } from 'lucide-react';
 import { useInView } from 'framer-motion';
+import { InteractionLock } from './InteractionLock';
+import { useInteraction } from '../../contexts/InteractionContext';
 
 interface GraphVisualizerProps {
     initialData?: {
@@ -289,67 +291,71 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         }
     }, []);
 
+    const { isFullScreen } = useInteraction();
+
     return (
-        <div
-            className={`relative group rounded-xl overflow-hidden ${transparentBg ? 'h-full w-full' : 'my-2 bg-slate-900/40 shadow-sm transition-all'}`}
-            style={transparentBg ? {} : { height: numericHeight }}
-            ref={containerRef}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-            {/* Controls */}
-            {showControls && (
-                <div className={`absolute bottom-2 right-2 z-10 flex gap-2 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'} pointer-events-none`}>
-                    <button
-                        onClick={handleReset}
-                        className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 hover:border-slate-600 transition-colors pointer-events-auto"
-                        title="Reset View"
-                    >
-                        <RotateCcw size={14} />
-                    </button>
-                    {/* Notice for Brave/Opera GX Users with Canvas Poisoning Active */}
-                    {hasCanvasProtection && (
-                        <div className="hidden group-hover:flex items-center text-[10px] text-slate-500 bg-slate-800/80 px-2 rounded-lg border border-slate-700 h-[28px]">
-                            Brave / Escuts actius? Apaga'ls per arrossegar nodes.
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Placeholder for when graph is out of view */}
-            {(!hasMounted && dimensions.width > 0) && (
-                <div
-                    className="w-full h-full flex items-center justify-center text-slate-500 bg-slate-900/50 pointer-events-none"
-                    style={{ height: dimensions.height }}
-                >
-                    <div className="flex flex-col items-center gap-2">
-                        <RotateCcw size={24} className="animate-spin-slow opacity-20" />
-                        <span className="text-xs font-mono uppercase tracking-widest opacity-40">Renderitzant Graf...</span>
+        <InteractionLock disabled className={transparentBg ? 'h-full w-full' : 'my-2 shadow-sm transition-all'}>
+            <div
+                className={`relative group rounded-xl overflow-hidden ${transparentBg ? 'h-full w-full' : 'bg-slate-900/40'} transition-all duration-500 ${isFullScreen ? 'h-full bg-slate-900 border-none' : 'rounded-2xl border border-white/10 my-8'}`}
+                style={transparentBg ? {} : { height: isFullScreen ? '100%' : numericHeight }}
+                ref={containerRef}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
+                {/* Controls */}
+                {showControls && (
+                    <div className={`absolute bottom-2 right-2 z-10 flex gap-2 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'} pointer-events-none`}>
+                        <button
+                            onClick={handleReset}
+                            className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 hover:border-slate-600 transition-colors pointer-events-auto"
+                            title="Reset View"
+                        >
+                            <RotateCcw size={14} />
+                        </button>
+                        {/* Notice for Brave/Opera GX Users with Canvas Poisoning Active */}
+                        {hasCanvasProtection && (
+                            <div className="hidden group-hover:flex items-center text-[10px] text-slate-500 bg-slate-800/80 px-2 rounded-lg border border-slate-700 h-[28px]">
+                                Brave / Escuts actius? Apaga'ls per arrossegar nodes.
+                            </div>
+                        )}
                     </div>
-                </div>
-            )}
+                )}
 
-            {(hasMounted && dimensions.width > 0) && (
-                <ForceGraph2D
-                    ref={fgRef}
-                    width={dimensions.width}
-                    height={dimensions.height}
-                    graphData={graphData}
-                    nodeRelSize={6} // Increased size
-                    nodeColor={getNodeColor}
-                    nodeCanvasObjectMode={getNodeCanvasObjectMode}
-                    nodeCanvasObject={drawNode}
-                    onNodeHover={handleNodeHover}
-                    nodeLabel="label"
-                    linkColor={getLinkColor}
-                    backgroundColor="rgba(0,0,0,0)"
-                    linkWidth={2.5} // Thicker connections
-                    d3VelocityDecay={0.15} // Slightly more floaty
-                    cooldownTicks={100}
-                    onEngineStop={handleEngineStop}
-                />
-            )}
-        </div>
+                {/* Placeholder for when graph is out of view */}
+                {(!hasMounted && dimensions.width > 0) && (
+                    <div
+                        className="w-full h-full flex items-center justify-center text-slate-500 bg-slate-900/50 pointer-events-none"
+                        style={{ height: dimensions.height }}
+                    >
+                        <div className="flex flex-col items-center gap-2">
+                            <RotateCcw size={24} className="animate-spin-slow opacity-20" />
+                            <span className="text-xs font-mono uppercase tracking-widest opacity-40">Renderitzant Graf...</span>
+                        </div>
+                    </div>
+                )}
+
+                {(hasMounted && dimensions.width > 0) && (
+                    <ForceGraph2D
+                        ref={fgRef}
+                        width={dimensions.width}
+                        height={dimensions.height}
+                        graphData={graphData}
+                        nodeRelSize={6} // Increased size
+                        nodeColor={getNodeColor}
+                        nodeCanvasObjectMode={getNodeCanvasObjectMode}
+                        nodeCanvasObject={drawNode}
+                        onNodeHover={handleNodeHover}
+                        nodeLabel="label"
+                        linkColor={getLinkColor}
+                        backgroundColor="rgba(0,0,0,0)"
+                        linkWidth={2.5} // Thicker connections
+                        d3VelocityDecay={0.15} // Slightly more floaty
+                        cooldownTicks={100}
+                        onEngineStop={handleEngineStop}
+                    />
+                )}
+            </div>
+        </InteractionLock>
     );
 };
 

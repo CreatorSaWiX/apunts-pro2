@@ -2,6 +2,7 @@ import React from 'react';
 import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon, MovablePoint, Line, Circle, Vector } from 'mafs';
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
+import { InteractionLock } from './InteractionLock';
 
 type MafsVisualizerProps = {
     type: string;
@@ -922,35 +923,37 @@ const VisIntegracioTrapezi = () => {
     }
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
-            <Mafs viewBox={{ x: [-1, 7], y: [-1, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
-                <Coordinates.Cartesian subdivisions={5} />
+        <InteractionLock className="my-8">
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10">
+                <Mafs viewBox={{ x: [-1, 7], y: [-1, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian subdivisions={5} />
 
-                {polygons}
+                    {polygons}
 
-                <Plot.OfX y={f} color={Theme.red} weight={4} />
+                    <Plot.OfX y={f} color={Theme.red} weight={4} />
 
-                <LaTeX at={[Math.PI, 3.5]} tex="\int_0^{2\pi} (\sin(x) + 2) dx \approx T_n" color={Theme.red} />
-            </Mafs>
-            <div className="bg-slate-800/80 p-6 border-t border-white/10 text-white">
-                <div className="flex items-center gap-4 mb-2">
-                    <span className="text-sm font-medium w-32">Subintervals (n):</span>
-                    <input
-                        type="range"
-                        min="1"
-                        max="20"
-                        step="1"
-                        value={n}
-                        onChange={(e) => setN(parseInt(e.target.value))}
-                        className="flex-1 accent-blue-400"
-                    />
-                    <span className="font-mono bg-black/40 px-3 py-1 rounded w-12 text-center">{n}</span>
-                </div>
-                <div className="text-xs text-slate-400 italic mt-2 text-center">
-                    Mètode dels trapezis per aproximar l'àrea sota la corba d'una funció.
+                    <LaTeX at={[Math.PI, 3.5]} tex="\int_0^{2\pi} (\sin(x) + 2) dx \approx T_n" color={Theme.red} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-6 border-t border-white/10 text-white">
+                    <div className="flex items-center gap-4 mb-2">
+                        <span className="text-sm font-medium w-32">Subintervals (n):</span>
+                        <input
+                            type="range"
+                            min="1"
+                            max="20"
+                            step="1"
+                            value={n}
+                            onChange={(e) => setN(parseInt(e.target.value))}
+                            className="flex-1 accent-blue-400"
+                        />
+                        <span className="font-mono bg-black/40 px-3 py-1 rounded w-12 text-center">{n}</span>
+                    </div>
+                    <div className="text-xs text-slate-400 italic mt-2 text-center">
+                        Mètode dels trapezis per aproximar l'àrea sota la corba d'una funció.
+                    </div>
                 </div>
             </div>
-        </div>
+        </InteractionLock>
     );
 };
 
@@ -1009,35 +1012,37 @@ const VisIntegracioSimpson = () => {
     }
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
-            <Mafs viewBox={{ x: [-1, 7], y: [-1, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
-                <Coordinates.Cartesian subdivisions={5} />
+        <InteractionLock className="my-8">
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10">
+                <Mafs viewBox={{ x: [-1, 7], y: [-1, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian subdivisions={5} />
 
-                {polygons}
+                    {polygons}
 
-                <Plot.OfX y={f} color={Theme.red} weight={4} />
+                    <Plot.OfX y={f} color={Theme.red} weight={4} />
 
-                <LaTeX at={[Math.PI, 3.5]} tex="\int_0^{2\pi} (\sin(x) + 2) dx \approx S_n" color={Theme.red} />
-            </Mafs>
-            <div className="bg-slate-800/80 p-6 border-t border-white/10 text-white">
-                <div className="flex items-center gap-4 mb-2">
-                    <span className="text-sm font-medium w-auto">Subintervals (n parell):</span>
-                    <input
-                        type="range"
-                        min="2"
-                        max="20"
-                        step="2"
-                        value={n}
-                        onChange={(e) => setN(parseInt(e.target.value))}
-                        className="flex-1 accent-green-400"
-                    />
-                    <span className="font-mono bg-black/40 px-3 py-1 rounded w-12 text-center">{n}</span>
-                </div>
-                <div className="text-xs text-slate-400 italic mt-2 text-center">
-                    El mètode de Simpson aproxima la corba usant arcs parabòlics definits per tres punts consecutius.
+                    <LaTeX at={[Math.PI, 3.5]} tex="\int_0^{2\pi} (\sin(x) + 2) dx \approx S_n" color={Theme.red} />
+                </Mafs>
+                <div className="bg-slate-800/80 p-6 border-t border-white/10 text-white">
+                    <div className="flex items-center gap-4 mb-2">
+                        <span className="text-sm font-medium w-auto">Subintervals (n parell):</span>
+                        <input
+                            type="range"
+                            min="2"
+                            max="20"
+                            step="2"
+                            value={n}
+                            onChange={(e) => setN(parseInt(e.target.value))}
+                            className="flex-1 accent-green-400"
+                        />
+                        <span className="font-mono bg-black/40 px-3 py-1 rounded w-12 text-center">{n}</span>
+                    </div>
+                    <div className="text-xs text-slate-400 italic mt-2 text-center">
+                        El mètode de Simpson aproxima la corba usant arcs parabòlics definits per tres punts consecutius.
+                    </div>
                 </div>
             </div>
-        </div>
+        </InteractionLock>
     );
 };
 
@@ -1095,46 +1100,48 @@ const VisTeoremaMitjana = () => {
     const c = 3.0; // Punt on f(c) = fMitja aproximat
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
-            <Mafs viewBox={{ x: [-0.5, 5], y: [-0.5, 4] }} pan={false} zoom={false} preserveAspectRatio={false}>
-                <Coordinates.Cartesian />
+        <InteractionLock className="my-8">
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10">
+                <Mafs viewBox={{ x: [-0.5, 5], y: [-0.5, 4] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
 
-                {/* Àrea sota la corba */}
-                <Polygon
-                    points={[
-                        [a, 0],
-                        ...Array.from({ length: 30 }, (_, i) => {
-                            const x = a + (i / 29) * (b - a);
-                            return [x, f(x)] as [number, number];
-                        }),
-                        [b, 0]
-                    ]}
-                    color={Theme.blue}
-                    fillOpacity={0.2}
-                />
+                    {/* Àrea sota la corba */}
+                    <Polygon
+                        points={[
+                            [a, 0],
+                            ...Array.from({ length: 30 }, (_, i) => {
+                                const x = a + (i / 29) * (b - a);
+                                return [x, f(x)] as [number, number];
+                            }),
+                            [b, 0]
+                        ]}
+                        color={Theme.blue}
+                        fillOpacity={0.2}
+                    />
 
-                {/* Rectangle de la mitjana */}
-                <Polygon
-                    points={[[a, 0], [b, 0], [b, fMitja], [a, fMitja]]}
-                    color={Theme.green}
-                    fillOpacity={0.2}
-                    weight={2}
-                />
+                    {/* Rectangle de la mitjana */}
+                    <Polygon
+                        points={[[a, 0], [b, 0], [b, fMitja], [a, fMitja]]}
+                        color={Theme.green}
+                        fillOpacity={0.2}
+                        weight={2}
+                    />
 
-                <Plot.OfX y={f} color={Theme.blue} weight={3} />
-                <Line.Segment point1={[a, fMitja]} point2={[b, fMitja]} color={Theme.green} weight={3} />
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    <Line.Segment point1={[a, fMitja]} point2={[b, fMitja]} color={Theme.green} weight={3} />
 
-                <circle cx={c} cy={f(c)} r={0.15} fill={Theme.green} stroke="white" />
+                    <circle cx={c} cy={f(c)} r={0.15} fill={Theme.green} stroke="white" />
 
-                <LaTeX at={[c, f(c) + 0.4]} tex="f(c)" color={Theme.green} />
-                <LaTeX at={[a, -0.4]} tex="a" color="white" />
-                <LaTeX at={[b, -0.4]} tex="b" color="white" />
-            </Mafs>
-            <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-400 leading-relaxed">
-                L'àrea del <span className="text-green-400 font-bold">rectangle verd</span> és exactament igual a l'àrea <span className="text-blue-400 font-bold">blava</span> sota la corba.
-                L'alçada <InlineMath math="f(c)" /> representa el valor mitjà de la funció en l'interval.
+                    <LaTeX at={[c, f(c) + 0.4]} tex="f(c)" color={Theme.green} />
+                    <LaTeX at={[a, -0.4]} tex="a" color="white" />
+                    <LaTeX at={[b, -0.4]} tex="b" color="white" />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-400 leading-relaxed">
+                    L'àrea del <span className="text-green-400 font-bold">rectangle verd</span> és exactament igual a l'àrea <span className="text-blue-400 font-bold">blava</span> sota la corba.
+                    L'alçada <InlineMath math="f(c)" /> representa el valor mitjà de la funció en l'interval.
+                </div>
             </div>
-        </div>
+        </InteractionLock>
     );
 };
 
@@ -1228,39 +1235,41 @@ const VisInversioLimits = () => {
     const integralValue = calcInt(a, b);
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
-            <Mafs viewBox={{ x: [-1, 5], y: [-0.5, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
-                <Coordinates.Cartesian />
+        <InteractionLock className="my-8">
+            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10">
+                <Mafs viewBox={{ x: [-1, 5], y: [-0.5, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
 
-                {/* Àrea */}
-                <Polygon
-                    points={[
-                        [a, 0],
-                        ...Array.from({ length: 20 }, (_, i) => {
-                            const x = a + (i / 19) * (b - a);
-                            return [x, f(x)] as [number, number];
-                        }),
-                        [b, 0]
-                    ]}
-                    color={integralValue >= 0 ? Theme.blue : Theme.red}
-                    fillOpacity={0.3}
-                />
+                    {/* Àrea */}
+                    <Polygon
+                        points={[
+                            [a, 0],
+                            ...Array.from({ length: 20 }, (_, i) => {
+                                const x = a + (i / 19) * (b - a);
+                                return [x, f(x)] as [number, number];
+                            }),
+                            [b, 0]
+                        ]}
+                        color={integralValue >= 0 ? Theme.blue : Theme.red}
+                        fillOpacity={0.3}
+                    />
 
-                <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
 
-                <MovablePoint point={[a, 0]} onMove={(p) => setA(p[0])} color={Theme.yellow} />
-                <MovablePoint point={[b, 0]} onMove={(p) => setB(p[0])} color={Theme.yellow} />
+                    <MovablePoint point={[a, 0]} onMove={(p) => setA(p[0])} color={Theme.yellow} />
+                    <MovablePoint point={[b, 0]} onMove={(p) => setB(p[0])} color={Theme.yellow} />
 
-                <LaTeX at={[a, -0.4]} tex="a" color={Theme.yellow} />
-                <LaTeX at={[b, -0.4]} tex="b" color={Theme.yellow} />
+                    <LaTeX at={[a, -0.4]} tex="a" color={Theme.yellow} />
+                    <LaTeX at={[b, -0.4]} tex="b" color={Theme.yellow} />
 
-                <LaTeX at={[2, 2.5]} tex={`\\int_{${a.toFixed(1)}}^{${b.toFixed(1)}} f(x)dx = ${integralValue.toFixed(2)}`} color="white" />
-            </Mafs>
-            <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-400">
-                Arrossega els punts <span className="text-yellow-400 font-bold italic">a</span> i <span className="text-yellow-400 font-bold italic">b</span>.
-                Si <InlineMath math="b < a" />, la integral computa l'àrea en sentit contrari i el resultat canvia de signe (es torna <span className="text-red-400 font-bold">vermell</span>).
+                    <LaTeX at={[2, 2.5]} tex={`\\int_{${a.toFixed(1)}}^{${b.toFixed(1)}} f(x)dx = ${integralValue.toFixed(2)}`} color="white" />
+                </Mafs>
+                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-400">
+                    Arrossega els punts <span className="text-yellow-400 font-bold italic">a</span> i <span className="text-yellow-400 font-bold italic">b</span>.
+                    Si <InlineMath math="b < a" />, la integral computa l'àrea en sentit contrari i el resultat canvia de signe (es torna <span className="text-red-400 font-bold">vermell</span>).
+                </div>
             </div>
-        </div>
+        </InteractionLock>
     );
 };
 
@@ -2177,8 +2186,12 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
 
 
 
+import { useInteraction } from '../../contexts/InteractionContext';
+
 const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
     const Component = VISUALIZERS[type];
+    const { isFullScreen } = useInteraction();
+
     if (!Component) {
         return (
             <div className="p-4 border border-red-500/50 rounded-xl bg-red-500/10 text-red-400">
@@ -2186,7 +2199,14 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
             </div>
         );
     }
-    return <Component />;
+
+    return (
+        <InteractionLock>
+            <div className={`w-full overflow-hidden shadow-lg transition-all duration-500 ${isFullScreen ? 'h-full border-none rounded-none' : 'rounded-2xl border border-white/10 my-8'}`}>
+                <Component />
+            </div>
+        </InteractionLock>
+    );
 };
 
 export default MafsVisualizer;

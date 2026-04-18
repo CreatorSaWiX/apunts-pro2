@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useDeferredValue } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import Hero from '../components/Hero';
 import { motion } from 'framer-motion';
@@ -10,6 +10,8 @@ const MobileActionMenu = lazy(() => import('../components/MobileActionMenu'));
 
 const HomePage = () => {
     const { subject, setSubject } = useSubject();
+    const deferredSubject = useDeferredValue(subject);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     // Lock scroll on mount
     useEffect(() => {
@@ -22,11 +24,11 @@ const HomePage = () => {
     const isMobile = useIsMobile();
 
     return (
-        <div className="h-[100dvh] w-full relative z-10 flex flex-col overflow-hidden leading-tight">
+        <div className="h-[100dvh] w-full flex flex-col overflow-hidden leading-tight">
             {/* Mobile Action Menu (Lazy loaded) */}
             {isMobile && (
                 <Suspense fallback={null}>
-                    <MobileActionMenu />
+                    <MobileActionMenu isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} />
                 </Suspense>
             )}
 
@@ -75,11 +77,11 @@ const HomePage = () => {
 
             <div className="flex-none pt-4 z-20 pointer-events-none">
                 <div className="pointer-events-auto">
-                    <Hero />
+                    <Hero isMenuOpen={isMenuOpen} subjectOverride={deferredSubject} />
                 </div>
             </div>
-            <div className="flex-1 min-h-0 relative z-10 flex flex-col justify-center mt-2 md:-mt-4 pb-16">
-                <TopicCarousel />
+            <div className="flex-1 min-h-0 relative z-10 flex flex-col justify-center md:pt-0 md:-mt-4 pb-16">
+                <TopicCarousel isMenuOpen={isMenuOpen} subjectOverride={deferredSubject} />
             </div>
         </div>
     );

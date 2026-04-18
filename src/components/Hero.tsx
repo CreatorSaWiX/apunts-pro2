@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { RefreshCw, GitCommitVertical, Github, Heart, X, ChevronRight } from 'lucide-react';
 import { useSubject } from '../contexts/SubjectContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { Link } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -42,8 +43,15 @@ const letterVariants = {
     }
 };
 
-const Hero: React.FC = () => {
-    const { subject, theme } = useSubject();
+interface HeroProps {
+    isMenuOpen?: boolean;
+    subjectOverride?: string;
+}
+
+const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride }) => {
+    const { subject: contextSubject, theme } = useSubject();
+    const subject = subjectOverride || contextSubject;
+    const isMobile = useIsMobile();
     const { preferredLang } = useLanguage();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [contributors, setContributors] = useState<Contributor[]>([]);
@@ -90,7 +98,7 @@ const Hero: React.FC = () => {
 
     const currentData = APP_DATA[subject];
     return (
-        <div className="relative flex flex-col items-center justify-center pt-12 pb-4 z-10 text-center px-4">
+        <div className="relative flex flex-col items-center justify-center pt-8 pb-3 md:pt-12 md:pb-4 z-10 text-center px-4">
 
             {/* Version Badge & Updates */}
             <AnimatePresence mode="wait">
@@ -122,7 +130,7 @@ const Hero: React.FC = () => {
                         exit={{ opacity: 0, scale: 0.9, y: -10 }}
                         whileHover={{ y: -2 }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="group relative z-50 mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/50 border border-primary/20 shadow-lg shadow-primary/10 backdrop-blur-md cursor-pointer transition-colors duration-300 hover:bg-slate-800/80 hover:border-primary/40 hover:shadow-primary/20"
+                        className="group relative z-50 mb-4 md:mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/50 border border-primary/20 shadow-lg shadow-primary/10 backdrop-blur-md cursor-pointer transition-colors duration-300 hover:bg-slate-800/80 hover:border-primary/40 hover:shadow-primary/20"
                     >
                         <GitCommitVertical size={12} className="text-accent group-hover:rotate-12 transition-transform duration-300" />
                         <span className="text-[10px] uppercase tracking-widest text-accent font-semibold transition-colors group-hover:text-white">
@@ -141,43 +149,55 @@ const Hero: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            {/* Main Title with Staggered Letters */}
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={subject}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={letterContainerVariants}
-                    className="relative"
-                >
-                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4 text-white overflow-visible">
-                        <span className="inline-block mr-4">
-                            {"APUNTS".split("").map((char, index) => (
-                                <motion.span
-                                    key={`static-${index}`}
-                                    variants={letterVariants}
-                                    className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
-                                >
-                                    {char}
-                                </motion.span>
-                            ))}
-                        </span>
+            <MotionConfig reducedMotion={isMobile && isMenuOpen ? "always" : "never"}>
+                {/* Main Title with Staggered Letters - Hard Bypass on Mobile Menu */}
+                {isMobile && isMenuOpen ? (
+                   <div className="relative">
+                        <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
+                            <span className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl">
+                                APUNTS {theme.label}
+                            </span>
+                        </h1>
+                   </div>
+                ) : (
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={subject}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            variants={letterContainerVariants}
+                            className="relative"
+                        >
+                            <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
+                                <span className="inline-block mr-4">
+                                    {"APUNTS".split("").map((char, index) => (
+                                        <motion.span
+                                            key={`static-${index}`}
+                                            variants={letterVariants}
+                                            className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
+                                        >
+                                            {char}
+                                        </motion.span>
+                                    ))}
+                                </span>
 
-                        <span className="inline-block mr-4">
-                            {theme.label.split("").map((char, index) => (
-                                <motion.span
-                                    key={`dynamic-${subject}-${index}`}
-                                    variants={letterVariants}
-                                    className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
-                                >
-                                    {char}
-                                </motion.span>
-                            ))}
-                        </span>
-                    </h1>
-                </motion.div>
-            </AnimatePresence>
+                                <span className="inline-block">
+                                    {theme.label.split("").map((char, index) => (
+                                        <motion.span
+                                            key={`dynamic-${subject}-${index}`}
+                                            variants={letterVariants}
+                                            className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
+                                        >
+                                            {char}
+                                        </motion.span>
+                                    ))}
+                                </span>
+                            </h1>
+                        </motion.div>
+                    </AnimatePresence>
+                )}
+            </MotionConfig>
 
             {/* Floating Action Buttons (Bottom Right) */}
             <div className="hidden md:flex fixed bottom-6 right-6 md:bottom-8 md:right-8 z-100 flex-row gap-4 items-center">

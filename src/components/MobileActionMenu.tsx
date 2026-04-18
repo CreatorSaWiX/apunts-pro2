@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Github, Heart } from 'lucide-react';
 import { useSubject } from '../contexts/SubjectContext';
@@ -14,11 +14,14 @@ interface Contributor {
     avatar: string;
 }
 
-export const MobileActionMenu: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
+export const MobileActionMenu: React.FC<{
+    isOpen: boolean;
+    setIsOpen: (val: boolean) => void;
+}> = ({ isOpen, setIsOpen }) => {
     const { subject, setSubject } = useSubject();
     const { preferredLang, setPreferredLang } = useLanguage();
-    
+    const [, startTransition] = useTransition();
+
     // Contributors state
     const [contributors, setContributors] = useState<Contributor[]>([]);
     const [isLoadingContributors, setIsLoadingContributors] = useState(false);
@@ -28,7 +31,7 @@ export const MobileActionMenu: React.FC = () => {
         if (contributors.length > 0) return;
         setIsLoadingContributors(true);
         const uids = ["jV5Y63M77PcqIcOUCpLz76GTYMI3", "tHrqAkSatrV6FVcgfdSErLjyXL12",
-                      "YU5QuXAZ47dslUX8ruyriHHPfh82", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
+            "YU5QuXAZ47dslUX8ruyriHHPfh82", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
         const fetched: Contributor[] = [];
         for (const uid of uids) {
             try {
@@ -69,7 +72,7 @@ export const MobileActionMenu: React.FC = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setIsOpen(false)}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-end"
+                        className="fixed inset-0 bg-slate-950 z-[2000] flex justify-end"
                     >
                         <motion.div
                             initial={{ x: '100%' }}
@@ -79,8 +82,8 @@ export const MobileActionMenu: React.FC = () => {
                             onClick={(e) => e.stopPropagation()}
                             className="w-72 h-full bg-slate-900 shadow-2xl border-l border-white/10 p-6 flex flex-col relative"
                         >
-                            <button 
-                                onClick={() => setIsOpen(false)} 
+                            <button
+                                onClick={() => setIsOpen(false)}
                                 className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors p-1"
                             >
                                 <X size={24} />
@@ -97,20 +100,29 @@ export const MobileActionMenu: React.FC = () => {
                                 <div className="space-y-8 flex-1">
                                     {/* Subject Switcher */}
                                     <div className="space-y-3">
-                                        <label className="text-xs uppercase tracking-wider text-slate-500 font-bold">
+                                        <label className="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-3">
                                             {preferredLang === 'es' ? 'Asignatura' : 'Assignatura'}
                                         </label>
-                                        <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5">
+                                        <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
                                             {(['pro2', 'm1', 'm2'] as const).map((sub) => (
                                                 <button
                                                     key={sub}
-                                                    onClick={() => setSubject(sub)}
-                                                    className={`py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 ${
-                                                        subject === sub 
-                                                            ? 'bg-slate-700 text-white shadow-md' 
-                                                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
-                                                    }`}
+                                                    onClick={() => startTransition(() => setSubject(sub))}
+                                                    className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${subject === sub
+                                                        ? 'text-white'
+                                                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                                                        }`}
                                                 >
+                                                    {subject === sub && (
+                                                        <motion.div
+                                                            layoutId="active-subject-menu"
+                                                            className={`absolute inset-0 rounded-xl z-[-1] bg-linear-to-r ${sub === 'pro2' ? 'from-sky-400 to-blue-500 shadow-[0_0_15px_rgba(56,189,248,0.4)]' :
+                                                                sub === 'm1' ? 'from-violet-500 to-fuchsia-500 shadow-[0_0_15px_rgba(139,92,246,0.4)]' :
+                                                                    'from-emerald-500 to-teal-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
+                                                                }`}
+                                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                                        />
+                                                    )}
                                                     {sub.toUpperCase()}
                                                 </button>
                                             ))}
@@ -119,20 +131,26 @@ export const MobileActionMenu: React.FC = () => {
 
                                     {/* Language Switcher */}
                                     <div className="space-y-3">
-                                        <label className="text-xs uppercase tracking-wider text-slate-500 font-bold">
+                                        <label className="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-3">
                                             {preferredLang === 'es' ? 'Idioma' : 'Idioma'}
                                         </label>
-                                        <div className="grid grid-cols-2 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5">
+                                        <div className="grid grid-cols-2 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
                                             {(['ca', 'es'] as const).map((lang) => (
                                                 <button
                                                     key={lang}
                                                     onClick={() => setPreferredLang(lang)}
-                                                    className={`py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 ${
-                                                        preferredLang === lang 
-                                                            ? 'bg-slate-700 text-white shadow-md' 
-                                                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
-                                                    }`}
+                                                    className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${preferredLang === lang
+                                                        ? 'text-slate-950'
+                                                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                                                        }`}
                                                 >
+                                                    {preferredLang === lang && (
+                                                        <motion.div
+                                                            layoutId="active-lang-menu"
+                                                            className="absolute inset-0 bg-linear-to-br from-white to-slate-400 rounded-xl shadow-md z-[-1]"
+                                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                                        />
+                                                    )}
                                                     {lang.toUpperCase()}
                                                 </button>
                                             ))}
@@ -140,16 +158,16 @@ export const MobileActionMenu: React.FC = () => {
                                     </div>
 
                                     <div className="pt-6 border-t border-white/5 space-y-3">
-                                        <label className="text-xs uppercase tracking-wider text-slate-500 font-bold">
+                                        <label className="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-3">
                                             {preferredLang === 'es' ? 'Enlaces' : 'Enllaços'}
                                         </label>
-                                        <a href="https://github.com/CreatorSaWiX/apunts-pro2" target="_blank" rel="noopener noreferrer" 
-                                           className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 transition-colors">
+                                        <a href="https://github.com/CreatorSaWiX/apunts-pro2" target="_blank" rel="noopener noreferrer"
+                                            className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 transition-colors">
                                             <Github size={18} />
                                             <span className="text-sm font-medium">{preferredLang === 'es' ? 'Código Fuente' : 'Codi Font'}</span>
                                         </a>
-                                        <button onClick={handleContributorsClick} 
-                                           className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-rose-500/10 text-slate-300 hover:text-rose-400 transition-colors">
+                                        <button onClick={handleContributorsClick}
+                                            className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-rose-500/10 text-slate-300 hover:text-rose-400 transition-colors">
                                             <Heart size={18} />
                                             <span className="text-sm font-medium">{preferredLang === 'es' ? 'Colaboradores' : 'Contribuidors'}</span>
                                         </button>
@@ -160,7 +178,7 @@ export const MobileActionMenu: React.FC = () => {
                                     <button onClick={() => setShowContributors(false)} className="text-sm text-slate-400 hover:text-white mb-4 flex items-center gap-1">
                                         ← {preferredLang === 'es' ? 'Volver' : 'Tornar'}
                                     </button>
-                                    
+
                                     <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                                         {isLoadingContributors ? (
                                             <div className="flex justify-center py-8">
