@@ -2,19 +2,16 @@
 
 Platform to share interactive notes, problem solutions from Jutge.org, and academic resources for **Programming 2 (PRO2)** and **Mathematics (M1/M2)** at UPC-FIB.
 
-<p align="center">
-  <img src="public/screenshot.png" alt="Apunts Platform Screenshot" width="800">
-  <br>
-  <em>Interactive visualizer for multivariable calculus (Directional Derivative) implemented using Mafs.</em>
-</p>
-
-
 [![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+
+<p align="center">
+  <img src="public/thumbnail.png" alt="Apunts Platform Screenshot" width="800">
+</p>
 
 ## Tech stack
 
