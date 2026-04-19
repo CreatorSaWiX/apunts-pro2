@@ -15,7 +15,7 @@ const VisSuccessio1N = () => {
     });
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-5, 5], y: [-2, 2] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
 
@@ -55,7 +55,7 @@ const VisSuccessioOscilant = () => {
     });
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-5, 5], y: [-2, 2] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -90,7 +90,7 @@ const VisTeoremaBolzano = () => {
     const f = (x: number) => 0.5 * Math.pow(x, 2) - 2; // Arrel a x=2
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-3, 3] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.red} weight={4} />
@@ -121,7 +121,7 @@ const VisDerivadaTangent = () => {
     const tangent = (x: number) => f(a) + df(a) * (x - a);
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
                 <Plot.OfX y={f} color={Theme.blue} weight={4} />
@@ -181,7 +181,7 @@ const VisTaylorCentrat = () => {
     };
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-5, 5], y: [-3, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} opacity={0.4} />
@@ -217,7 +217,7 @@ const VisTaylorError = () => {
     const errorLimit = 0.2;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-2, 2], y: [0, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -261,7 +261,7 @@ const VisTaylorComportament = () => {
     const p_odd = (x: number) => 1 - 0.5 * x * x - (1 / 6) * Math.pow(x, 3); // Imaginem un f'''(0) != 0 per veure punt d'inflexi\u00f3
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-2, 2], y: [-1, 2] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={2} opacity={0.3} />
@@ -292,7 +292,7 @@ const VisExtremsRelatius = () => {
     }
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-0.2, 1.2], y: [-0.05, 0.3] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
                 <Plot.OfX y={f} color={Theme.blue} weight={4} />
@@ -316,7 +316,7 @@ const VisTaylorTeorema = () => {
     const p1 = (val: number) => 1 + 0.5 * val; // Tangent a 0
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-1, 3], y: [0, 5] }} pan={false} zoom={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -349,7 +349,7 @@ const VisTaylorLagrange = () => {
     const cVal = x[0] === 0 ? 0 : Math.asin(Math.max(-1, Math.min(1, 2 * (x[0] - Math.sin(x[0])) / (x[0] * x[0]))));
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-1, 4], y: [-1, 2] }} pan={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -438,7 +438,7 @@ const VisTaylorMaclaurin = () => {
     ];
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {configs.map((c, i) => (
                     <button key={i} onClick={() => setMode(i)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === i ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-700'}`}>{c.label}</button>
@@ -501,7 +501,7 @@ const VisTeoremaRolle = () => {
     const c = (a + b) / 2; // El punt on f'(c)=0 per una par\u00e0bola
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -536,7 +536,7 @@ const VisTeoremaValorMitja = () => {
     const cVal = Math.sqrt(Math.abs((slope + 0.2) / 0.3)) * (slope < 0 ? -1 : 1);
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -572,7 +572,7 @@ const VisReglaHopital = () => {
     const g = (xVal: number) => Math.sin(xVal);
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-1, 1.5], y: [-1, 2.5] }} pan={false} zoom={true}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -610,7 +610,7 @@ const VisParametrizadaExp = () => {
     }
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-5, 15], y: [-1, 5] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
                 <Plot.OfX y={f} color={a > 0 ? Theme.blue : Theme.red} weight={4} />
@@ -652,7 +652,7 @@ const VisUnicitat3x = () => {
     const df = (x: number) => -Math.pow(3, -x) * Math.log(3) - 1;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-2, 3], y: [-4, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
 
@@ -688,7 +688,7 @@ const VisTeoremaFonamental = () => {
 
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-1, 5], y: [-1, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -751,7 +751,7 @@ const VisPrimitivaFamilia = () => {
     const df = (t: number) => Math.cos(t);
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-3, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -805,7 +805,7 @@ const VisReglaBarrow = () => {
     const F = (x: number) => 0.2 * x * x + 0.8 * x;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="overflow-hidden p-2">
                     <Mafs viewBox={{ x: [-0.5, 4.5], y: [-0.5, 3.5] }} pan={false} preserveAspectRatio={false}>
@@ -856,7 +856,7 @@ const VisLimitsIntegracio = () => {
     const v = (val: number) => val + 1.5;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-0.2, 5.5], y: [-0.2, 4.5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -1051,7 +1051,7 @@ const VisAreaEntreCorbes = () => {
     const b = 1.56;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-1, 5] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
 
@@ -1163,7 +1163,7 @@ const VisRiemannSums = () => {
     }
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-1, 6], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 {rectangles}
@@ -1192,7 +1192,7 @@ const VisParitatIntegrals = () => {
     const F = mode === 'even' ? (t: number) => Math.sin(t) : (t: number) => -Math.cos(t) + 1; // Integral de sin(t) des de 0 \u00e9s 1 - cos(t)
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-4 flex gap-4 bg-slate-800/50 border-b border-white/10 justify-center">
                 <button onClick={() => setMode('even')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'even' ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Parella</button>
                 <button onClick={() => setMode('odd')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'odd' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Imparella</button>
@@ -1272,7 +1272,7 @@ const VisAdditivitatInterval = () => {
     const f = (x: number) => 0.2 * Math.pow(x - 2.5, 2) + 0.5;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-0.5, 5.5], y: [-0.5, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -1339,7 +1339,7 @@ const VisCotaError = () => {
     const cotaS = (Math.pow(b - a, 5) * M4) / (180 * Math.pow(n % 2 === 0 ? n : n + 1, 4));
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             {/* 1. Curvature Mode Selection */}
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-center gap-3">
                 <button
@@ -1456,7 +1456,7 @@ const VisLinealitat = () => {
     const b = 3.5;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-0.5, 4.5], y: [-0.2, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -1664,7 +1664,7 @@ const VisExPissarraTopologia = () => {
 
 const VisDominisComplexos = () => {
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-5, 5], y: [-3, 3] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
 
@@ -1763,7 +1763,7 @@ const VisCheatSheetConiques = () => {
     };
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {['ellipse', 'hiperbola', 'parabola', 'rectes', 'diamant'].map((m) => (
                     <button key={m} onClick={() => setMode(m as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === m ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:bg-slate-700'}`}>
@@ -1848,7 +1848,7 @@ const VisMapsTopograficsInteractiu = () => {
     const [k, setK] = React.useState(1);
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-3, 3] }} pan={true} zoom={true}>
                 <Coordinates.Cartesian />
 
@@ -1892,7 +1892,7 @@ const VisDistanciaEuclidia = () => {
     const dist = Math.sqrt(dx * dx + dy * dy);
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-1, 6], y: [-1, 5] }} pan={false} zoom={false}>
                 <Coordinates.Cartesian />
 
@@ -1965,7 +1965,7 @@ const VisEx72a = () => {
     const isInDomain = val > 0;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-20">
                 <div className="flex flex-col">
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Condició: $1 + xy &gt; 0$</span>
@@ -2030,7 +2030,7 @@ const VisEx72b = () => {
     const isInDomain = val >= 0;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-20">
                 <div className="flex flex-col">
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Condició: $y \\sin(x) \\ge 0$</span>
@@ -2062,7 +2062,7 @@ const VisEx74a = () => {
     const isInDomain = (x * y > 0) && (y > x * x - 1);
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-2, 6] }} pan={false}>
                 <Coordinates.Cartesian />
 
@@ -2108,7 +2108,7 @@ const VisEx74a = () => {
 
 const VisEx74b = () => {
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-2, 6] }} pan={false}>
                 <Coordinates.Cartesian />
                 {/* Ombrejat suau per context */}
@@ -2134,7 +2134,7 @@ const VisM1T6Ex6_2 = () => {
     const v4: [number, number] = [3, 0];
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <Mafs viewBox={{ x: [-5, 5], y: [-10, 8] }} pan={true} zoom={true}>
                 <Coordinates.Cartesian subdivisions={5} />
                 <Vector tail={[0, 0]} tip={v1} color={Theme.blue} weight={4} />
@@ -2169,7 +2169,7 @@ const VisM1T6Ex6_3 = () => {
     else result = [v2[0] - v4[0], v2[1] - v4[1]];
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-2 flex justify-center gap-2 bg-slate-900/40 border-b border-white/5">
                 <button onClick={() => setOp('sum')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sum' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 + v2</button>
                 <button onClick={() => setOp('sub1')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sub1' ? 'bg-green-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 - v3</button>
@@ -2242,7 +2242,7 @@ const VisUnioSevAtencio = () => {
     const isInside = isInS || isInSPrime;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="flex-1 relative overflow-hidden bg-slate-950/40">
                 <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} preserveAspectRatio={false}>
                     <Coordinates.Cartesian />
@@ -2300,7 +2300,7 @@ const VisAxiomesSuma = () => {
     const sumUVW: [number, number] = [u[0] + v[0] + w[0], u[1] + v[1] + w[1]];
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
                 <button onClick={() => setAxiom('e2')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e2' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e2 Commutativa</button>
                 <button onClick={() => setAxiom('e1')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e1' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e1 Associativa</button>
@@ -2381,7 +2381,7 @@ const VisAxiomesProducte = () => {
     const mu = 2;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
                 <button onClick={() => setAxiom('e6')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e6' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e6 Distr u+v</button>
                 <button onClick={() => setAxiom('e7')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e7' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e7 Distr λ+μ</button>
@@ -2463,7 +2463,7 @@ const VisExemplesEspais = () => {
     const m = [[1, -2], [0, 3]];
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
                 <button onClick={() => setView('polys')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'polys' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Polinomis</button>
                 <button onClick={() => setView('matrius')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'matrius' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Matrius</button>
@@ -2608,7 +2608,7 @@ const VisSEVIntro = () => {
         : Math.abs(sum[0] - sum[1] + 1) < 0.01;
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-2 flex justify-center gap-2 bg-slate-900/60 border-b border-white/5">
                 <button onClick={() => setMode('sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'sev' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Recta SEV (y = x)</button>
                 <button onClick={() => setMode('non_sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'non_sev' ? 'bg-rose-600 text-white shadow-[0_0_10px_rgba(225,29,72,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>No és SEV (y = x + 1)</button>
@@ -2694,7 +2694,7 @@ const VisOperacionsSEV = () => {
     const sum = [currentU[0] + currentW[0], currentU[1] + currentW[1]] as [number, number];
 
     return (
-        <div className="w-full h-[500px] flex flex-col">
+        <div className="w-full flex flex-col">
             <div className="p-2 flex justify-center gap-1 bg-slate-900/60 border-b border-white/5 overflow-x-auto no-scrollbar">
                 {[
                     { id: 'inter', label: 'Intersecció', color: 'bg-emerald-600' },
@@ -2806,7 +2806,7 @@ const VisIndependenciaLineal = () => {
     const isLD = det < 0.2; // Threshold for visual feedback
 
     return (
-        <div className="w-full h-[500px] flex flex-col bg-slate-950">
+        <div className="w-full flex flex-col bg-slate-950">
             <div className="flex-1 relative overflow-hidden">
                 <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false}>
                     <Coordinates.Cartesian />
@@ -2960,7 +2960,7 @@ const VisReglesOrBase = () => {
     const canGenerate = rank === 2;
 
     return (
-        <div className="w-full h-[500px] flex flex-col bg-slate-950">
+        <div className="w-full flex flex-col bg-slate-950">
             <div className="p-2 flex justify-between items-center bg-slate-900/60 border-b border-white/5 px-4">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Dimensió de l'espai: <InlineMath math={"n=2"} /></span>
                 <div className="flex items-center gap-3">
@@ -3054,7 +3054,7 @@ const VisCanviBase = () => {
     const l2 = isBase ? (u1[0] * v[1] - u1[1] * v[0]) / det : 0;
 
     return (
-        <div className="w-full h-[500px] flex flex-col bg-slate-950">
+        <div className="w-full flex flex-col bg-slate-950">
             <div className="flex-1 relative overflow-hidden">
                 <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false}>
                     <g opacity={showGrid ? 0.05 : 0.3}>
