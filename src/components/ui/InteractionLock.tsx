@@ -216,16 +216,12 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
                 {!isMobile && !isFullScreen && !disabled && (
                     <div className="w-full min-h-[500px] h-auto rounded-3xl overflow-hidden shadow-2xl border border-white/5 bg-slate-900/40 relative">
                         {shouldMountChildren ? (
-                            <div className="w-full h-full min-h-[500px]">
-                                {children}
-                            </div>
+                            children
                         ) : (
                             <div className="w-full h-[500px] bg-slate-950 flex items-center justify-center">
                                 <div className="w-10 h-10 border-2 border-white/5 border-t-white/40 rounded-full animate-spin" />
                             </div>
                         )}
-
-                        {/* Immersive Entry Badge - Desktop (Removed as per user request to keep UI clean) */}
                     </div>
                 )}
 

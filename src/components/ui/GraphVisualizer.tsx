@@ -207,14 +207,15 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         const r = 6;
         const color = node.color || theme.primary || '#8b5cf6';
 
-        // Add soft glow effect via drop-shadow
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = color;
-
         ctx.beginPath();
         ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
         ctx.fillStyle = color;
         ctx.fill();
+
+        // Premium stroke: semi-transparent white
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 2 / globalScale;
+        ctx.stroke();
 
         // Draw Label
         ctx.font = `${fontSize}px Sans-Serif`;
@@ -286,9 +287,9 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     const { isFullScreen } = useInteraction();
 
     return (
-        <InteractionLock disabled className={transparentBg ? 'h-full w-full' : 'my-2 shadow-sm transition-all'}>
+        <InteractionLock disabled className={transparentBg ? 'h-full w-full' : 'my-8'}>
             <div
-                className={`relative group rounded-xl overflow-hidden ${transparentBg ? 'h-full w-full' : 'bg-slate-900/40'} transition-all duration-500 ${isFullScreen ? 'h-full bg-slate-900 border-none' : 'rounded-2xl border-none my-8'}`}
+                className={`relative group overflow-hidden ${transparentBg ? 'h-full w-full' : 'bg-slate-900/40 rounded-2xl'} transition-all duration-500 ${isFullScreen ? 'h-full bg-slate-900' : ''}`}
                 style={transparentBg ? {} : { height: isFullScreen ? '100%' : numericHeight }}
                 ref={containerRef}
                 onMouseEnter={() => setIsHovered(true)}

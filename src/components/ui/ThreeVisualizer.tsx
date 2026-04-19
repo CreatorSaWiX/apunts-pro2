@@ -365,7 +365,7 @@ const VisCorbesNivell3D2D = () => {
     const { isFullScreen, resizeKey } = useInteraction();
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] md:h-[500px] bg-slate-950 rounded-2xl'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[600px] md:h-[600px]'}`}>
             <div className={`p-4 md:p-6 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4 md:gap-6`}>
                 <div className="flex-1 w-full">
                     <div className="flex justify-between mb-2">
@@ -427,25 +427,39 @@ const VisDistanciaSync3D2D = () => {
     const [p2, setP2] = React.useState<[number, number, number]>([4, 3, 2]);
     const { isFullScreen, resizeKey } = useInteraction();
 
-    return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] md:h-[500px] bg-slate-950 rounded-2xl'}`}>
-            <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'}`}>
-                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Distància Euleriana (Sincronitzada)</span>
+    const dx = p2[0] - p1[0];
+    const dy = p2[1] - p1[1];
+    const dz = p2[2] - p1[2];
+    const dist2D = Math.sqrt(dx * dx + dy * dy);
+    const dist3D = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
+    return (
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full' : 'h-[500px]'}`}>
+            <div className={`p-4 bg-slate-800/50 border-b border-white/10 flex flex-wrap items-center justify-between gap-4`}>
                 <div className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                        <span className="text-[8px] text-slate-500 uppercase">P1 (z)</span>
-                        <input type="range" min="0" max="4" step="0.1" value={p1[2]} onChange={(e) => setP1([p1[0], p1[1], parseFloat(e.target.value)])} className="w-20 h-1 accent-blue-500" />
+                    <div className="flex flex-col">
+                        <span className="text-[9px] font-black text-slate-500 uppercase">Alçada P1 (z)</span>
+                        <input type="range" min="0" max="4" step="0.1" value={p1[2]} onChange={(e) => setP1([p1[0], p1[1], parseFloat(e.target.value)])} className="w-24 accent-blue-500" />
                     </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[8px] text-slate-500 uppercase">P2 (z)</span>
-                        <input type="range" min="0" max="4" step="0.1" value={p2[2]} onChange={(e) => setP2([p2[0], p2[1], parseFloat(e.target.value)])} className="w-20 h-1 accent-red-500" />
+                    <div className="flex flex-col">
+                        <span className="text-[9px] font-black text-slate-500 uppercase">Alçada P2 (z)</span>
+                        <input type="range" min="0" max="4" step="0.1" value={p2[2]} onChange={(e) => setP2([p2[0], p2[1], parseFloat(e.target.value)])} className="w-24 accent-red-500" />
+                    </div>
+                </div>
+                <div className="bg-black/30 px-4 py-2 rounded-xl border border-white/5 flex gap-6">
+                    <div className="text-center">
+                        <div className="text-[8px] text-slate-500 uppercase">Distància 2D</div>
+                        <div className="text-sm font-mono font-bold text-blue-400">{dist2D.toFixed(2)}</div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-[8px] text-slate-500 uppercase">Distància 3D</div>
+                        <div className="text-sm font-mono font-bold text-indigo-400">{dist3D.toFixed(2)}</div>
                     </div>
                 </div>
             </div>
 
             <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
-                <div className="border-b md:border-b-0 md:border-r border-white/5 relative bg-slate-950/50 h-full overflow-hidden">
+                <div className="border-b md:border-b-0 md:border-r border-white/5 relative bg-slate-950/20 h-full overflow-hidden">
                     <div className="absolute top-4 left-4 z-10 bg-black/40 backdrop-blur-md p-2 rounded-lg border border-white/10 pointer-events-none">
                         <span className="text-[9px] font-bold text-slate-300 uppercase tracking-tighter">Projecció XY (2D)</span>
                     </div>
@@ -470,12 +484,14 @@ const VisDistanciaSync3D2D = () => {
                         <pointLight position={[10, 10, 10]} intensity={1} />
                         <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
 
+                        {/* Punts i Línia 3D */}
                         <Point position={p1} color="#3b82f6" />
                         <Point position={p2} color="#ef4444" />
                         <mesh>
                             <Line points={[p1, p2]} color="#6366f1" lineWidth={3} />
                         </mesh>
 
+                        {/* Components de distància */}
                         <Line points={[p1, [p2[0], p1[1], p1[2]]]} color="#ffffff" lineWidth={1} dashed />
                         <Line points={[[p2[0], p1[1], p1[2]], [p2[0], p2[1], p1[2]]]} color="#ffffff" lineWidth={1} dashed />
                         <Line points={[[p2[0], p2[1], p1[2]], p2]} color="#ffffff" lineWidth={1} dashed />
@@ -493,7 +509,7 @@ const VisEx73a = () => {
     const { isFullScreen, resizeKey } = useInteraction();
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] bg-slate-950 rounded-2xl'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[600px]'}`}>
             <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
                 <div className="flex items-center gap-3">
                     <span className="bg-indigo-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-500/20">Apartat A</span>
@@ -560,7 +576,7 @@ const VisEx73b = () => {
     const { isFullScreen, resizeKey } = useInteraction();
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] bg-slate-950 rounded-2xl'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[600px]'}`}>
             <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
                 <div className="flex items-center gap-3">
                     <span className="bg-emerald-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-emerald-500/20">Apartat B</span>
@@ -633,7 +649,7 @@ const VisPlaTangentINormalHibrid = () => {
     const normalDir = new THREE.Vector3(da, 1, db).normalize();
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[600px] bg-slate-950 rounded-2xl'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[600px]'}`}>
             <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
                 <div className="flex flex-col">
                     <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Pla Tangent i Vector Normal</span>
@@ -713,7 +729,7 @@ const VisDerivadaDireccionalHibrida = () => {
     });
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'relative h-[100dvh] border-none rounded-none' : 'rounded-2xl'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'relative h-[100dvh]' : 'h-[600px] md:min-h-[400px]'}`}>
             <div className={`${isFullScreen ? 'absolute top-0 left-0 right-0 z-20 h-[14dvh] landscape:h-[20dvh] px-2 py-1 bg-black/60 backdrop-blur-md border-b border-white/5 flex flex-wrap justify-start items-center gap-x-4 gap-y-0.5 pr-16' : 'p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4'}`}>
                 <div className="flex gap-3 items-center">
                     <div className="flex flex-col">
@@ -792,7 +808,7 @@ const VisDerivadesParcialsHibrida = () => {
     const currentSlope = mode === 'x' ? -0.2 * a[0] : -0.2 * a[1];
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'relative h-[100dvh] border-none rounded-none' : 'rounded-2xl'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'relative h-[100dvh]' : ''}`}>
             <div className={`${isFullScreen ? 'absolute top-0 left-0 right-0 z-20 h-[14dvh] landscape:h-[20dvh] px-2 py-1 bg-black/60 backdrop-blur-md border-b border-white/5 flex flex-wrap justify-start items-center gap-x-4 gap-y-0.5 pr-16' : 'p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4'}`}>
                 <div className="flex gap-3 items-center">
                     <div className="flex bg-black/40 p-0.5 rounded border border-white/5">
@@ -863,7 +879,7 @@ const VisJacobianaDeformacioHibrida = () => {
     const p2 = f(uv[0], uv[1] + eps);
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
                     <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Matriu Jacobiana Local</span>
@@ -909,7 +925,294 @@ const VisJacobianaDeformacioHibrida = () => {
     );
 };
 
+const VisRnDimensionality = () => {
+    const [n, setN] = React.useState(2);
+    const [mode, setMode] = React.useState<'single' | 'sum' | 'product'>('single');
+    const isMobile = useIsMobile();
+    const { isFullScreen, resizeKey } = useInteraction();
+
+    // Primary Vector State
+    const [v1_2d, setV1_2d] = React.useState<[number, number]>([2, 1]);
+    const [v1_3d, setV1_3d] = React.useState<[number, number, number]>([2, 2, 2]);
+    
+    // Secondary Vector State (for Sum)
+    const [v2_2d, setV2_2d] = React.useState<[number, number]>([1, 2]);
+    const [v2_3d, setV2_3d] = React.useState<[number, number, number]>([-1, 2, 1]);
+
+    // Scalar State (for Product)
+    const [scalar, setScalar] = React.useState<number>(1.5);
+
+    const renderContent = () => {
+        if (n === 1) {
+            const vSum = v1_2d[0] + v2_2d[0];
+            const vProd = v1_2d[0] * scalar;
+            return (
+                <div className="h-full bg-slate-950/20">
+                    <Mafs viewBox={{ x: [-5, 5], y: [-1, 1] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                        <Coordinates.Cartesian subdivisions={5} />
+                        
+                        {mode === 'single' && (
+                            <>
+                                <MovablePoint point={[v1_2d[0], 0]} onMove={(p) => setV1_2d([p[0], 0])} color={Theme.blue} />
+                                <MafsLaTeX at={[v1_2d[0], 0.4]} tex={`x = ${v1_2d[0].toFixed(1)}`} color={Theme.blue} />
+                            </>
+                        )}
+
+                        {mode === 'sum' && (
+                            <>
+                                <MovablePoint point={[v1_2d[0], 0]} onMove={(p) => setV1_2d([p[0], 0])} color={Theme.blue} />
+                                <MovablePoint point={[v2_2d[0], 0]} onMove={(p) => setV2_2d([p[0], 0])} color={Theme.red} />
+                                <Circle center={[vSum, 0]} radius={0.15} color={Theme.yellow} fillOpacity={1} />
+                                <MafsLaTeX at={[v1_2d[0], 0.4]} tex="x" color={Theme.blue} />
+                                <MafsLaTeX at={[v2_2d[0], 0.4]} tex="y" color={Theme.red} />
+                                <MafsLaTeX at={[vSum, -0.4]} tex="x+y" color={Theme.yellow} />
+                            </>
+                        )}
+
+                        {mode === 'product' && (
+                            <>
+                                <MovablePoint point={[v1_2d[0], 0]} onMove={(p) => setV1_2d([p[0], 0])} color={Theme.blue} />
+                                <Circle center={[vProd, 0]} radius={0.15} color={Theme.yellow} fillOpacity={1} />
+                                <MafsLaTeX at={[v1_2d[0], 0.4]} tex="x" color={Theme.blue} />
+                                <MafsLaTeX at={[vProd, -0.4]} tex={`\\lambda x`} color={Theme.yellow} />
+                            </>
+                        )}
+
+                        <MafsLaTeX at={[0, -0.7]} tex="\mathbb{R}^1 \text{ (La Recta Real)}" color={Theme.foreground} />
+                    </Mafs>
+                </div>
+            );
+        }
+        if (n === 2) {
+            const vSum: [number, number] = [v1_2d[0] + v2_2d[0], v1_2d[1] + v2_2d[1]];
+            const vProd: [number, number] = [v1_2d[0] * scalar, v1_2d[1] * scalar];
+            return (
+                <div className="h-full bg-slate-950/20">
+                    <Mafs viewBox={{ x: [-5, 5], y: [-4, 4] }} pan={true} zoom={true}>
+                        <Coordinates.Cartesian />
+                        
+                        {mode === 'single' && (
+                            <>
+                                <MafsLine.Segment point1={[0, 0]} point2={v1_2d} color={Theme.indigo} weight={3} />
+                                <MovablePoint point={v1_2d} onMove={setV1_2d} color={Theme.indigo} />
+                                <MafsLaTeX at={[v1_2d[0], v1_2d[1] + 0.4]} tex={`v = (${v1_2d[0].toFixed(1)}, ${v1_2d[1].toFixed(1)})`} color={Theme.indigo} />
+                            </>
+                        )}
+
+                        {mode === 'sum' && (
+                            <>
+                                <MafsLine.Segment point1={[0, 0]} point2={v1_2d} color={Theme.blue} weight={2} />
+                                <MafsLine.Segment point1={[0, 0]} point2={v2_2d} color={Theme.red} weight={2} />
+                                <MafsLine.Segment point1={v1_2d} point2={vSum} color={Theme.red} weight={1} style="dashed" />
+                                <MafsLine.Segment point1={v2_2d} point2={vSum} color={Theme.blue} weight={1} style="dashed" />
+                                <MafsLine.Segment point1={[0, 0]} point2={vSum} color={Theme.yellow} weight={3} />
+                                
+                                <MovablePoint point={v1_2d} onMove={setV1_2d} color={Theme.blue} />
+                                <MovablePoint point={v2_2d} onMove={setV2_2d} color={Theme.red} />
+                                
+                                <MafsLaTeX at={v1_2d} tex="u" color={Theme.blue} />
+                                <MafsLaTeX at={v2_2d} tex="v" color={Theme.red} />
+                                <MafsLaTeX at={vSum} tex="u+v" color={Theme.yellow} />
+                            </>
+                        )}
+
+                        {mode === 'product' && (
+                            <>
+                                <MafsLine.Segment point1={[0, 0]} point2={v1_2d} color={Theme.blue} weight={2} />
+                                <MafsLine.Segment point1={[0, 0]} point2={vProd} color={Theme.yellow} weight={3} />
+                                <MovablePoint point={v1_2d} onMove={setV1_2d} color={Theme.blue} />
+                                <MafsLaTeX at={v1_2d} tex="v" color={Theme.blue} />
+                                <MafsLaTeX at={vProd} tex="\lambda v" color={Theme.yellow} />
+                            </>
+                        )}
+
+                        <MafsLaTeX at={[0, -3.5]} tex="\mathbb{R}^2 \text{ (El Pla)}" color={Theme.foreground} />
+                    </Mafs>
+                </div>
+            );
+        }
+        
+        // 3D Render
+        const vSum3d: [number, number, number] = [v1_3d[0] + v2_3d[0], v1_3d[1] + v2_3d[1], v1_3d[2] + v2_3d[2]];
+        const vProd3d: [number, number, number] = [v1_3d[0] * scalar, v1_3d[1] * scalar, v1_3d[2] * scalar];
+        
+        return (
+            <div className="h-full bg-slate-950/40 relative">
+                <Canvas shadows dpr={isMobile ? 1 : [1, 2]}>
+                    <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={50} />
+                    <OrbitControls enableZoom={false} />
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={1} />
+                    <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+                    
+                    {/* Primary Vector */}
+                    <group>
+                        <Arrow memoDir={new THREE.Vector3(...v1_3d).normalize()} length={new THREE.Vector3(...v1_3d).length()} color={mode === 'single' ? "#6366f1" : "rgba(99, 102, 241, 0.6)"} head={0.4} width={0.2} />
+                        <Html position={v1_3d}>
+                            <div className="bg-slate-900/80 backdrop-blur-md px-2 py-1 rounded border border-white/10 text-[10px] text-indigo-300 font-mono">
+                                {mode === 'single' ? `v = (${v1_3d.map(c => c.toFixed(1)).join(',')})` : 'u'}
+                            </div>
+                        </Html>
+                    </group>
+
+                    {/* Sum Mode Visuals */}
+                    {mode === 'sum' && (
+                        <>
+                            <Arrow memoDir={new THREE.Vector3(...v2_3d).normalize()} length={new THREE.Vector3(...v2_3d).length()} color="rgba(239, 68, 68, 0.6)" head={0.4} width={0.15} />
+                            <Arrow memoDir={new THREE.Vector3(...vSum3d).normalize()} length={new THREE.Vector3(...vSum3d).length()} color="#eab308" head={0.4} width={0.2} />
+                            
+                            {/* Dotted Parallelogram lines */}
+                            <Line points={[v1_3d, vSum3d]} color="#ef4444" lineWidth={1} dashed dashScale={5} />
+                            <Line points={[v2_3d, vSum3d]} color="#6366f1" lineWidth={1} dashed dashScale={5} />
+
+                            <Html position={v2_3d}><div className="text-[10px] text-red-400 font-mono">v</div></Html>
+                            <Html position={vSum3d}><div className="bg-yellow-500/20 backdrop-blur-sm px-1.5 rounded text-[10px] text-yellow-500 font-bold">u+v</div></Html>
+                        </>
+                    )}
+
+                    {/* Product Mode Visuals */}
+                    {mode === 'product' && (
+                        <>
+                           <Arrow memoDir={new THREE.Vector3(...vProd3d).normalize()} length={new THREE.Vector3(...vProd3d).length()} color="#eab308" head={0.4} width={0.2} />
+                           <Html position={vProd3d}><div className="text-[10px] text-yellow-500 font-bold bg-black/40 px-1 rounded">λv</div></Html>
+                        </>
+                    )}
+                    
+                    <axesHelper args={[3]} />
+                </Canvas>
+
+                {/* Right Control Panel (for n=3 or complex modes) */}
+                <div className="absolute top-4 right-4 z-10 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl w-56 space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
+                    <div className="flex items-center gap-2 border-b border-white/5 pb-2">
+                        <div className="w-2 h-2 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
+                        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest leading-none">Configuració</span>
+                    </div>
+
+                    {/* Vector 1 Controls */}
+                    <div className="space-y-2">
+                        <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">{mode === 'sum' ? 'Vector u' : 'Vector v'}</span>
+                        {(['x', 'y', 'z'] as const).slice(0, n).map((axis, i) => (
+                            <div key={axis} className="space-y-1">
+                                <div className="flex justify-between text-[9px] text-slate-400 font-mono">
+                                    <span>{axis.toUpperCase()}</span>
+                                    <span className={mode === 'sum' ? 'text-indigo-400' : 'text-white'}>{n === 3 ? v1_3d[i].toFixed(1) : v1_2d[i].toFixed(1)}</span>
+                                </div>
+                                <input 
+                                    type="range" min="-4" max="4" step="0.1" 
+                                    value={n === 3 ? v1_3d[i] : v1_2d[i]} 
+                                    onChange={(e) => {
+                                        const val = parseFloat(e.target.value);
+                                        if (n === 3) {
+                                            const next = [...v1_3d] as [number, number, number];
+                                            next[i] = val;
+                                            setV1_3d(next);
+                                        } else {
+                                            const next = [...v1_2d] as [number, number];
+                                            next[i] = val;
+                                            setV1_2d(next);
+                                        }
+                                    }}
+                                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                                />
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Vector 2 Controls (Sum Mode ONLY) */}
+                    {mode === 'sum' && (
+                        <div className="space-y-2 pt-2 border-t border-white/5">
+                            <span className="text-[9px] text-red-500 font-bold uppercase tracking-wider">Vector v</span>
+                            {(['x', 'y', 'z'] as const).slice(0, n).map((axis, i) => (
+                                <div key={axis} className="space-y-1">
+                                    <div className="flex justify-between text-[9px] text-slate-400 font-mono">
+                                        <span>{axis.toUpperCase()}</span>
+                                        <span className="text-red-400">{n === 3 ? v2_3d[i].toFixed(1) : v2_2d[i].toFixed(1)}</span>
+                                    </div>
+                                    <input 
+                                        type="range" min="-4" max="4" step="0.1" 
+                                        value={n === 3 ? v2_3d[i] : v2_2d[i]} 
+                                        onChange={(e) => {
+                                            const val = parseFloat(e.target.value);
+                                            if (n === 3) {
+                                                const next = [...v2_3d] as [number, number, number];
+                                                next[i] = val;
+                                                setV2_3d(next);
+                                            } else {
+                                                const next = [...v2_2d] as [number, number];
+                                                next[i] = val;
+                                                setV2_2d(next);
+                                            }
+                                        }}
+                                        className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-red-500"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Escalar Controls (Product Mode ONLY) */}
+                    {mode === 'product' && (
+                        <div className="space-y-2 pt-2 border-t border-white/5">
+                            <div className="flex justify-between items-center">
+                                <span className="text-[9px] text-yellow-500 font-bold uppercase tracking-wider">Escalar λ</span>
+                                <span className="text-white text-xs font-mono">{scalar.toFixed(1)}</span>
+                            </div>
+                            <input 
+                                type="range" min="-3" max="3" step="0.1" value={scalar} 
+                                onChange={(e) => setScalar(parseFloat(e.target.value))}
+                                className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-yellow-500"
+                            />
+                        </div>
+                    )}
+                </div>
+
+                <div className="absolute top-4 left-4 z-10 bg-black/40 px-3 py-1 rounded-lg border border-white/10 text-[10px] text-slate-300 font-bold tracking-widest uppercase">
+                    R{n === 1 ? ' (Recta)' : n === 2 ? '² (Pla)' : '³ (Espai)'}
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900 border-none rounded-none' : 'h-[600px] border border-white/5 rounded-2xl shadow-2xl'}`}>
+            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Dimensió n</span>
+                    <input
+                        type="range" min="1" max="3" step="1" value={n}
+                        onChange={(e) => setN(parseInt(e.target.value))}
+                        className="flex-1 md:w-32 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-400"
+                    />
+                    <span className="text-xs font-mono text-white bg-indigo-600 px-2 py-0.5 rounded shadow-lg shadow-indigo-500/20">n = {n}</span>
+                </div>
+                
+                {/* Mode Selector */}
+                <div className="flex bg-black/40 p-1 rounded-lg border border-white/5">
+                    <button onClick={() => setMode('single')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'single' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Vector</button>
+                    <button onClick={() => setMode('sum')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'sum' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Suma</button>
+                    <button onClick={() => setMode('product')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'product' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Producte</button>
+                </div>
+
+                <div className="hidden lg:block text-[10px] font-mono text-slate-400 bg-black/20 px-3 py-1 rounded-full border border-white/5">
+                    <InlineMath math={mode === 'single' ? `v \\in \\mathbb{R}^${n}` : mode === 'sum' ? `u+v \\in \\mathbb{R}^${n}` : `\\lambda v \\in \\mathbb{R}^${n}`} />
+                </div>
+            </div>
+
+            <div className="flex-1 relative overflow-hidden">
+                {renderContent()}
+            </div>
+
+            <div className="p-3 bg-slate-950/80 text-[10px] text-slate-500 text-center border-t border-white/5 italic">
+                {mode === 'single' && (n === 1 ? "Un vector en 1D és només un component x." : n === 2 ? "En 2D, el vector té dues coordenades." : "En 3D, afegim l'alçada z.")}
+                {mode === 'sum' && "Suma component a component (regla del paral·lelogram)."}
+                {mode === 'product' && "Escalar el vector manté la direcció (o la inverteix si λ < 0)."}
+            </div>
+        </div>
+    );
+};
+
 const VISUALIZERS: Record<string, React.ComponentType<any>> = {
+    'vis_rn_dimensionality': VisRnDimensionality,
     'vis_derivades_parcials_hibrida': VisDerivadesParcialsHibrida,
     'vis_derivada_direccional_hibrida': VisDerivadaDireccionalHibrida,
     'vis_distancia_3d': VisDistancia3D,
@@ -929,6 +1232,7 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'vis_jacobiana': VisJacobianaDeformacioHibrida,
 };
 
+
 const ThreeVisualizerContent = ({ SurfaceComponent, isHybrid }: { SurfaceComponent: React.ComponentType<any>, isHybrid: boolean }) => {
     const isMobile = useIsMobile();
     const { isFullScreen } = useInteraction();
@@ -939,7 +1243,7 @@ const ThreeVisualizerContent = ({ SurfaceComponent, isHybrid }: { SurfaceCompone
 
     return (
         <ThreeErrorBoundary>
-            <div className={`w-full overflow-hidden shadow-2xl border border-white/10 relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full border-none rounded-none bg-slate-900' : 'h-[500px] bg-slate-950 rounded-2xl'}`}>
+            <div className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[500px]'}`}>
 
                 <div className="flex-1 relative">
                     <Canvas
@@ -988,6 +1292,7 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
     if (!SurfaceComponent) return <div className="p-4 bg-red-900/20 text-red-400 rounded-xl border border-red-500/30">Tipus 3D no trobat: {type}</div>;
 
     const hybridTypes = [
+        'vis_rn_dimensionality',
         'vis_corbes_nivell_3d_2d',
         'vis_distancia_sync_3d_2d',
         'vis_ex7_3_a',

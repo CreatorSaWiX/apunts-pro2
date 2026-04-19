@@ -335,6 +335,53 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M1-T5-Ex5.27", title: "Exercici 5.27: Demostració de determinant" }
         ]
     },
+    {
+        id: "m1-tema-6",
+        title: "Tema 6: Espais vectorials",
+        description: "Introducció als espais vectorials, subespais i bases.",
+        problems: [
+            { id: "M1-T6-Ex6.1", title: "Exercici 6.1: Operacions amb vectors" },
+            { id: "M1-T6-Ex6.2", title: "Exercici 6.2: Representació al pla" },
+            { id: "M1-T6-Ex6.3", title: "Exercici 6.3: Operacions gràfiques" },
+            { id: "M1-T6-Ex6.4", title: "Exercici 6.4: Combinacions lineals" },
+            { id: "M1-T6-Ex6.5", title: "Exercici 6.5: Polinomis de grau parell" },
+            { id: "M1-T6-Ex6.6", title: "Exercici 6.6: Espai de les funcions reals" },
+            { id: "M1-T6-Ex6.7", title: "Exercici 6.7: Identificació de subespais" },
+            { id: "M1-T6-Ex6.8", title: "Exercici 6.8: Subespais de polinomis" },
+            { id: "M1-T6-Ex6.9", title: "Exercici 6.9: Subespais de matrius" },
+            { id: "M1-T6-Ex6.10", title: "Exercici 6.10: Combinacions no úniques" },
+            { id: "M1-T6-Ex6.11", title: "Exercici 6.11: Combinació amb paràmetres" },
+            { id: "M1-T6-Ex6.12", title: "Exercici 6.12: Combinació de matrius" },
+            { id: "M1-T6-Ex6.13", title: "Exercici 6.13: Condició de pertinença" },
+            { id: "M1-T6-Ex6.14", title: "Exercici 6.14: Forma genèrica" },
+            { id: "M1-T6-Ex6.15", title: "Exercici 6.15: Igualtat de subespais" },
+            { id: "M1-T6-Ex6.16", title: "Exercici 6.16: Independència lineal" },
+            { id: "M1-T6-Ex6.17", title: "Exercici 6.17: Dependència lineal amb paràmetres" },
+            { id: "M1-T6-Ex6.18", title: "Exercici 6.18: Prova teòrica de dependència" },
+            { id: "M1-T6-Ex6.19", title: "Exercici 6.19: Independència i combinació de matrius" },
+            { id: "M1-T6-Ex6.20", title: "Exercici 6.20: Dependència de polinomis" },
+            { id: "M1-T6-Ex6.21", title: "Exercici 6.21: Propietats de la dependència lineal" },
+            { id: "M1-T6-Ex6.22", title: "Exercici 6.22: Veritat o Fals sobre LI i Generadors" },
+            { id: "M1-T6-Ex6.23", title: "Exercici 6.23: Canvi de base i coordenades" },
+            { id: "M1-T6-Ex6.24", title: "Exercici 6.24: Base de l'espai de matrius" },
+            { id: "M1-T6-Ex6.25", title: "Exercici 6.25: Base en l'espai de polinomis" },
+            { id: "M1-T6-Ex6.26", title: "Exercici 6.26: Base i equació implícita" },
+            { id: "M1-T6-Ex6.27", title: "Exercici 6.27: Igualtat de subespais" },
+            { id: "M1-T6-Ex6.28", title: "Exercici 6.28: Prova de base mitjançant combinacions" },
+            { id: "M1-T6-Ex6.29", title: "Exercici 6.29: Base subespai a R5 i extensió" },
+            { id: "M1-T6-Ex6.30", title: "Exercici 6.30: Extensió d'independència en matrius" },
+            { id: "M1-T6-Ex6.31", title: "Exercici 6.31: Dimensió amb paràmetres" },
+            { id: "M1-T6-Ex6.32", title: "Exercici 6.32: Subespai de matrius i bases" },
+            { id: "M1-T6-Ex6.33", title: "Exercici 6.33: Intersecció de subespais" },
+            { id: "M1-T6-Ex6.34", title: "Exercici 6.34: Ampliació de bases" },
+            { id: "M1-T6-Ex6.35", title: "Exercici 6.35: Matrius de canvi de base" },
+            { id: "M1-T6-Ex6.36", title: "Exercici 6.36: Base de polinomis i coordenades" },
+            { id: "M1-T6-Ex6.37", title: "Exercici 6.37: Canvi entre bases no canòniques" },
+            { id: "M1-T6-Ex6.38", title: "Exercici 6.38: Canvis de base en matrius" },
+            { id: "M1-T6-Ex6.39", title: "Exercici 6.39: Relació entre coordenades" },
+            { id: "M1-T6-Ex6.40", title: "Exercici 6.40: Determinació d'una base" }
+        ]
+    },
 
     // --- M2 (Càlcul i Optimitació) ---
     {

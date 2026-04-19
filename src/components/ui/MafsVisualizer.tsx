@@ -15,7 +15,7 @@ const VisSuccessio1N = () => {
     });
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-5, 5], y: [-2, 2] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
 
@@ -55,7 +55,7 @@ const VisSuccessioOscilant = () => {
     });
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-5, 5], y: [-2, 2] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -90,7 +90,7 @@ const VisTeoremaBolzano = () => {
     const f = (x: number) => 0.5 * Math.pow(x, 2) - 2; // Arrel a x=2
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-3, 3] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.red} weight={4} />
@@ -121,7 +121,7 @@ const VisDerivadaTangent = () => {
     const tangent = (x: number) => f(a) + df(a) * (x - a);
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
                 <Plot.OfX y={f} color={Theme.blue} weight={4} />
@@ -181,7 +181,7 @@ const VisTaylorCentrat = () => {
     };
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-5, 5], y: [-3, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} opacity={0.4} />
@@ -192,7 +192,7 @@ const VisTaylorCentrat = () => {
                 <LaTeX at={[a[0], f(a[0]) + 0.4]} tex="a" color={Theme.blue} />
                 <LaTeX at={[-4, 2]} tex={`P_{${n}}(x)`} color={Theme.yellow} />
             </Mafs>
-            <div className="bg-slate-800/80 p-5 border-t border-white/10">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="flex items-center gap-6 mb-4">
                     <div className="flex-1">
                         <span className="text-xs text-slate-400 block mb-1 uppercase font-bold tracking-wider">Grau del polinomi (n):</span>
@@ -217,7 +217,7 @@ const VisTaylorError = () => {
     const errorLimit = 0.2;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-2, 2], y: [0, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -261,7 +261,7 @@ const VisTaylorComportament = () => {
     const p_odd = (x: number) => 1 - 0.5 * x * x - (1 / 6) * Math.pow(x, 3); // Imaginem un f'''(0) != 0 per veure punt d'inflexi\u00f3
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-2, 2], y: [-1, 2] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={2} opacity={0.3} />
@@ -270,7 +270,7 @@ const VisTaylorComportament = () => {
                 <Circle center={[0, 1]} radius={0.1} color={Theme.yellow} />
                 <LaTeX at={[0, 1.4]} tex="a=0" color={Theme.yellow} />
             </Mafs>
-            <div className="bg-slate-800/80 p-4 border-t border-white/10">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="flex justify-center gap-4 mb-3">
                     <button onClick={() => setN(2)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 2 ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 2 (Parell)</button>
                     <button onClick={() => setN(3)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 3 ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 3 (Senar)</button>
@@ -292,7 +292,7 @@ const VisExtremsRelatius = () => {
     }
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-0.2, 1.2], y: [-0.05, 0.3] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
                 <Plot.OfX y={f} color={Theme.blue} weight={4} />
@@ -316,7 +316,7 @@ const VisTaylorTeorema = () => {
     const p1 = (val: number) => 1 + 0.5 * val; // Tangent a 0
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-1, 3], y: [0, 5] }} pan={false} zoom={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -331,7 +331,7 @@ const VisTaylorTeorema = () => {
                 <LaTeX at={[x[0] + 0.2, (f(x[0]) + p1(x[0])) / 2]} tex="R_n(x)" color={Theme.red} />
                 <LaTeX at={[0, 1.3]} tex="a" color={Theme.blue} />
             </Mafs>
-            <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-sm text-slate-300">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10 text-center">
                 El <span className="text-red-400 font-bold italic">Resta de Taylor</span> <InlineMath math="R_n(x)" /> és la distància vertical real entre la funció i el polinomi aproximat.
             </div>
         </div>
@@ -349,7 +349,7 @@ const VisTaylorLagrange = () => {
     const cVal = x[0] === 0 ? 0 : Math.asin(Math.max(-1, Math.min(1, 2 * (x[0] - Math.sin(x[0])) / (x[0] * x[0]))));
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-1, 4], y: [-1, 2] }} pan={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -438,7 +438,7 @@ const VisTaylorMaclaurin = () => {
     ];
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {configs.map((c, i) => (
                     <button key={i} onClick={() => setMode(i)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === i ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-700'}`}>{c.label}</button>
@@ -450,7 +450,7 @@ const VisTaylorMaclaurin = () => {
                 <Plot.OfX y={(x) => configs[mode].p(x, n)} color={Theme.yellow} weight={3} />
                 <Circle center={[0, configs[mode].f(0)]} radius={0.1} color={Theme.blue} />
             </Mafs>
-            <div className="bg-slate-800/80 p-4 border-t border-white/10">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="flex items-center gap-4">
                     <span className="text-[10px] text-slate-400 font-bold uppercase w-12 text-center">Grau {n}</span>
                     <input type="range" min="0" max="15" step="1" value={n} onChange={(e) => setN(parseInt(e.target.value))} className="flex-1 accent-blue-500 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer" />
@@ -468,8 +468,8 @@ const VisDerivacioLogaritmica = () => {
     const logF = (x: number) => x > 0 ? x * Math.log(x) : -5;
 
     return (
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
-            <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 p-2">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="overflow-hidden p-2">
                 <Mafs viewBox={{ x: [0, 3], y: [0, 5] }} pan={false} preserveAspectRatio={false}>
                     <Coordinates.Cartesian />
                     <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -479,7 +479,7 @@ const VisDerivacioLogaritmica = () => {
                 </Mafs>
                 <div className="p-2 text-center text-[10px] text-slate-400 uppercase font-bold tracking-widest">Funció Original <InlineMath math="f(x) = x^x" /></div>
             </div>
-            <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 p-2">
+            <div className="overflow-hidden p-2">
                 <Mafs viewBox={{ x: [0, 3], y: [-1, 2] }} pan={false} preserveAspectRatio={false}>
                     <Coordinates.Cartesian />
                     <Plot.OfX y={logF} color={Theme.green} weight={3} />
@@ -501,7 +501,7 @@ const VisTeoremaRolle = () => {
     const c = (a + b) / 2; // El punt on f'(c)=0 per una par\u00e0bola
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -536,7 +536,7 @@ const VisTeoremaValorMitja = () => {
     const cVal = Math.sqrt(Math.abs((slope + 0.2) / 0.3)) * (slope < 0 ? -1 : 1);
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -572,7 +572,7 @@ const VisReglaHopital = () => {
     const g = (xVal: number) => Math.sin(xVal);
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-1, 1.5], y: [-1, 2.5] }} pan={false} zoom={true}>
                 <Coordinates.Cartesian />
                 <Plot.OfX y={f} color={Theme.blue} weight={3} />
@@ -610,7 +610,7 @@ const VisParametrizadaExp = () => {
     }
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-5, 15], y: [-1, 5] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
                 <Plot.OfX y={f} color={a > 0 ? Theme.blue : Theme.red} weight={4} />
@@ -652,7 +652,7 @@ const VisUnicitat3x = () => {
     const df = (x: number) => -Math.pow(3, -x) * Math.log(3) - 1;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-2, 3], y: [-4, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
 
@@ -688,7 +688,7 @@ const VisTeoremaFonamental = () => {
 
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-1, 5], y: [-1, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -734,7 +734,7 @@ const VisTeoremaFonamental = () => {
 
                 <LaTeX at={[3, 4.5]} tex={`F(x) = \\int_0^x f(t) dt`} color={Theme.blue} />
             </Mafs>
-            <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-sm text-slate-300">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10 text-center">
                 A mesura que incrementem <InlineMath math="x" /> per un trosset <InlineMath math="dx" />, l'àrea augmenta exactament en <InlineMath math="f(x) \cdot dx" />.
                 <br /><span className="text-yellow-400 font-bold mt-1 inline-block">És a dir, el ritme de canvi de l'àrea és l'alçada de la funció!</span>
             </div>
@@ -751,7 +751,7 @@ const VisPrimitivaFamilia = () => {
     const df = (t: number) => Math.cos(t);
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-3, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -805,9 +805,9 @@ const VisReglaBarrow = () => {
     const F = (x: number) => 0.2 * x * x + 0.8 * x;
 
     return (
-        <div className="w-full flex flex-col gap-4 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 p-2">
+                <div className="overflow-hidden p-2">
                     <Mafs viewBox={{ x: [-0.5, 4.5], y: [-0.5, 3.5] }} pan={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
                         <Polygon
@@ -821,7 +821,7 @@ const VisReglaBarrow = () => {
                     </Mafs>
                 </div>
 
-                <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 p-2">
+                <div className="overflow-hidden p-2">
                     <Mafs viewBox={{ x: [-0.5, 4.5], y: [-0.5, 7] }} pan={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
                         <Plot.OfX y={F} color={Theme.red} weight={3} />
@@ -836,7 +836,7 @@ const VisReglaBarrow = () => {
                     </Mafs>
                 </div>
             </div>
-            <div className="bg-slate-800/80 p-4 rounded-xl text-center text-sm border border-white/10 shadow-inner">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10 text-center">
                 <p className="font-light text-slate-200">
                     La <span className="text-blue-400 font-bold uppercase tracking-tighter">Àrea</span> sota la corba representa el guany total.
                     Aquest guany és exactament igual al <span className="text-yellow-400 font-bold uppercase tracking-tighter">Salt Vertical</span> en la funció primitiva.
@@ -856,7 +856,7 @@ const VisLimitsIntegracio = () => {
     const v = (val: number) => val + 1.5;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-0.2, 5.5], y: [-0.2, 4.5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -886,7 +886,7 @@ const VisLimitsIntegracio = () => {
 
                 <LaTeX at={[2.5, 4]} tex="F'(x) = f(v(x)) \cdot v'(x) - f(u(x)) \cdot u'(x)" color={Theme.indigo} />
             </Mafs>
-            <div className="bg-slate-800/80 p-5 border-t border-white/10">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="grid grid-cols-2 gap-4 text-[10px] md:text-xs">
                     <div className="bg-green-500/10 p-2 rounded border border-green-500/20">
                         <span className="text-green-400 font-bold">Límit Superior (v):</span> Al moure <InlineMath math="x" />, el límit dret corre cap endavant, sumant àrea proporcional a la seva velocitat <InlineMath math="v'(x)" />.
@@ -923,37 +923,35 @@ const VisIntegracioTrapezi = () => {
     }
 
     return (
-        <InteractionLock className="my-8">
-            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10">
-                <Mafs viewBox={{ x: [-1, 7], y: [-1, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
-                    <Coordinates.Cartesian subdivisions={5} />
+        <div className="w-full h-full flex flex-col">
+            <Mafs viewBox={{ x: [-1, 7], y: [-1, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
+                <Coordinates.Cartesian subdivisions={5} />
 
-                    {polygons}
+                {polygons}
 
-                    <Plot.OfX y={f} color={Theme.red} weight={4} />
+                <Plot.OfX y={f} color={Theme.red} weight={4} />
 
-                    <LaTeX at={[Math.PI, 3.5]} tex="\int_0^{2\pi} (\sin(x) + 2) dx \approx T_n" color={Theme.red} />
-                </Mafs>
-                <div className="bg-slate-800/80 p-6 border-t border-white/10 text-white">
-                    <div className="flex items-center gap-4 mb-2">
-                        <span className="text-sm font-medium w-32">Subintervals (n):</span>
-                        <input
-                            type="range"
-                            min="1"
-                            max="20"
-                            step="1"
-                            value={n}
-                            onChange={(e) => setN(parseInt(e.target.value))}
-                            className="flex-1 accent-blue-400"
-                        />
-                        <span className="font-mono bg-black/40 px-3 py-1 rounded w-12 text-center">{n}</span>
-                    </div>
-                    <div className="text-xs text-slate-400 italic mt-2 text-center">
-                        Mètode dels trapezis per aproximar l'àrea sota la corba d'una funció.
-                    </div>
+                <LaTeX at={[Math.PI, 3.5]} tex="\int_0^{2\pi} (\sin(x) + 2) dx \approx T_n" color={Theme.red} />
+            </Mafs>
+            <div className="bg-slate-800/50 p-4 border-t border-white/10 text-white">
+                <div className="flex items-center gap-4 mb-2">
+                    <span className="text-sm font-medium w-32">Subintervals (n):</span>
+                    <input
+                        type="range"
+                        min="1"
+                        max="20"
+                        step="1"
+                        value={n}
+                        onChange={(e) => setN(parseInt(e.target.value))}
+                        className="flex-1 accent-blue-400"
+                    />
+                    <span className="font-mono bg-black/40 px-3 py-1 rounded w-12 text-center">{n}</span>
+                </div>
+                <div className="text-xs text-slate-400 italic mt-2 text-center">
+                    Mètode dels trapezis per aproximar l'àrea sota la corba d'una funció.
                 </div>
             </div>
-        </InteractionLock>
+        </div>
     );
 };
 
@@ -1012,37 +1010,35 @@ const VisIntegracioSimpson = () => {
     }
 
     return (
-        <InteractionLock className="my-8">
-            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10">
-                <Mafs viewBox={{ x: [-1, 7], y: [-1, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
-                    <Coordinates.Cartesian subdivisions={5} />
+        <div className="w-full h-full flex flex-col">
+            <Mafs viewBox={{ x: [-1, 7], y: [-1, 4] }} pan={true} zoom={true} preserveAspectRatio={false}>
+                <Coordinates.Cartesian subdivisions={5} />
 
-                    {polygons}
+                {polygons}
 
-                    <Plot.OfX y={f} color={Theme.red} weight={4} />
+                <Plot.OfX y={f} color={Theme.red} weight={4} />
 
-                    <LaTeX at={[Math.PI, 3.5]} tex="\int_0^{2\pi} (\sin(x) + 2) dx \approx S_n" color={Theme.red} />
-                </Mafs>
-                <div className="bg-slate-800/80 p-6 border-t border-white/10 text-white">
-                    <div className="flex items-center gap-4 mb-2">
-                        <span className="text-sm font-medium w-auto">Subintervals (n parell):</span>
-                        <input
-                            type="range"
-                            min="2"
-                            max="20"
-                            step="2"
-                            value={n}
-                            onChange={(e) => setN(parseInt(e.target.value))}
-                            className="flex-1 accent-green-400"
-                        />
-                        <span className="font-mono bg-black/40 px-3 py-1 rounded w-12 text-center">{n}</span>
-                    </div>
-                    <div className="text-xs text-slate-400 italic mt-2 text-center">
-                        El mètode de Simpson aproxima la corba usant arcs parabòlics definits per tres punts consecutius.
-                    </div>
+                <LaTeX at={[Math.PI, 3.5]} tex="\int_0^{2\pi} (\sin(x) + 2) dx \approx S_n" color={Theme.red} />
+            </Mafs>
+            <div className="bg-slate-800/50 p-4 border-t border-white/10 text-white">
+                <div className="flex items-center gap-4 mb-2">
+                    <span className="text-sm font-medium w-auto">Subintervals (n parell):</span>
+                    <input
+                        type="range"
+                        min="2"
+                        max="20"
+                        step="2"
+                        value={n}
+                        onChange={(e) => setN(parseInt(e.target.value))}
+                        className="flex-1 accent-green-400"
+                    />
+                    <span className="font-mono bg-black/40 px-3 py-1 rounded w-12 text-center">{n}</span>
+                </div>
+                <div className="text-xs text-slate-400 italic mt-2 text-center">
+                    El mètode de Simpson aproxima la corba usant arcs parabòlics definits per tres punts consecutius.
                 </div>
             </div>
-        </InteractionLock>
+        </div>
     );
 };
 
@@ -1055,7 +1051,7 @@ const VisAreaEntreCorbes = () => {
     const b = 1.56;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-1, 5] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
 
@@ -1100,48 +1096,46 @@ const VisTeoremaMitjana = () => {
     const c = 3.0; // Punt on f(c) = fMitja aproximat
 
     return (
-        <InteractionLock className="my-8">
-            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10">
-                <Mafs viewBox={{ x: [-0.5, 5], y: [-0.5, 4] }} pan={false} zoom={false} preserveAspectRatio={false}>
-                    <Coordinates.Cartesian />
+        <div className="w-full h-full flex flex-col">
+            <Mafs viewBox={{ x: [-0.5, 5], y: [-0.5, 4] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                <Coordinates.Cartesian />
 
-                    {/* Àrea sota la corba */}
-                    <Polygon
-                        points={[
-                            [a, 0],
-                            ...Array.from({ length: 30 }, (_, i) => {
-                                const x = a + (i / 29) * (b - a);
-                                return [x, f(x)] as [number, number];
-                            }),
-                            [b, 0]
-                        ]}
-                        color={Theme.blue}
-                        fillOpacity={0.2}
-                    />
+                {/* Àrea sota la corba */}
+                <Polygon
+                    points={[
+                        [a, 0],
+                        ...Array.from({ length: 30 }, (_, i) => {
+                            const x = a + (i / 29) * (b - a);
+                            return [x, f(x)] as [number, number];
+                        }),
+                        [b, 0]
+                    ]}
+                    color={Theme.blue}
+                    fillOpacity={0.2}
+                />
 
-                    {/* Rectangle de la mitjana */}
-                    <Polygon
-                        points={[[a, 0], [b, 0], [b, fMitja], [a, fMitja]]}
-                        color={Theme.green}
-                        fillOpacity={0.2}
-                        weight={2}
-                    />
+                {/* Rectangle de la mitjana */}
+                <Polygon
+                    points={[[a, 0], [b, 0], [b, fMitja], [a, fMitja]]}
+                    color={Theme.green}
+                    fillOpacity={0.2}
+                    weight={2}
+                />
 
-                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
-                    <Line.Segment point1={[a, fMitja]} point2={[b, fMitja]} color={Theme.green} weight={3} />
+                <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                <Line.Segment point1={[a, fMitja]} point2={[b, fMitja]} color={Theme.green} weight={3} />
 
-                    <circle cx={c} cy={f(c)} r={0.15} fill={Theme.green} stroke="white" />
+                <circle cx={c} cy={f(c)} r={0.15} fill={Theme.green} stroke="white" />
 
-                    <LaTeX at={[c, f(c) + 0.4]} tex="f(c)" color={Theme.green} />
-                    <LaTeX at={[a, -0.4]} tex="a" color="white" />
-                    <LaTeX at={[b, -0.4]} tex="b" color="white" />
-                </Mafs>
-                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-400 leading-relaxed">
-                    L'àrea del <span className="text-green-400 font-bold">rectangle verd</span> és exactament igual a l'àrea <span className="text-blue-400 font-bold">blava</span> sota la corba.
-                    L'alçada <InlineMath math="f(c)" /> representa el valor mitjà de la funció en l'interval.
-                </div>
+                <LaTeX at={[c, f(c) + 0.4]} tex="f(c)" color={Theme.green} />
+                <LaTeX at={[a, -0.4]} tex="a" color="white" />
+                <LaTeX at={[b, -0.4]} tex="b" color="white" />
+            </Mafs>
+            <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-400 leading-relaxed">
+                L'àrea del <span className="text-green-400 font-bold">rectangle verd</span> és exactament igual a l'àrea <span className="text-blue-400 font-bold">blava</span> sota la corba.
+                L'alçada <InlineMath math="f(c)" /> representa el valor mitjà de la funció en l'interval.
             </div>
-        </InteractionLock>
+        </div>
     );
 };
 
@@ -1169,13 +1163,13 @@ const VisRiemannSums = () => {
     }
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-1, 6], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
                 {rectangles}
                 <Plot.OfX y={f} color={Theme.red} weight={3} />
             </Mafs>
-            <div className="bg-slate-800/80 p-4 border-t border-white/10">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex gap-2">
                         <button onClick={() => setType('lower')} className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase ${type === 'lower' ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>Inferiors</button>
@@ -1198,7 +1192,7 @@ const VisParitatIntegrals = () => {
     const F = mode === 'even' ? (t: number) => Math.sin(t) : (t: number) => -Math.cos(t) + 1; // Integral de sin(t) des de 0 \u00e9s 1 - cos(t)
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <div className="p-4 flex gap-4 bg-slate-800/50 border-b border-white/10 justify-center">
                 <button onClick={() => setMode('even')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'even' ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Parella</button>
                 <button onClick={() => setMode('odd')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'odd' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Imparella</button>
@@ -1235,41 +1229,39 @@ const VisInversioLimits = () => {
     const integralValue = calcInt(a, b);
 
     return (
-        <InteractionLock className="my-8">
-            <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10">
-                <Mafs viewBox={{ x: [-1, 5], y: [-0.5, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
-                    <Coordinates.Cartesian />
+        <div className="w-full h-full flex flex-col">
+            <Mafs viewBox={{ x: [-1, 5], y: [-0.5, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                <Coordinates.Cartesian />
 
-                    {/* Àrea */}
-                    <Polygon
-                        points={[
-                            [a, 0],
-                            ...Array.from({ length: 20 }, (_, i) => {
-                                const x = a + (i / 19) * (b - a);
-                                return [x, f(x)] as [number, number];
-                            }),
-                            [b, 0]
-                        ]}
-                        color={integralValue >= 0 ? Theme.blue : Theme.red}
-                        fillOpacity={0.3}
-                    />
+                {/* Àrea */}
+                <Polygon
+                    points={[
+                        [a, 0],
+                        ...Array.from({ length: 20 }, (_, i) => {
+                            const x = a + (i / 19) * (b - a);
+                            return [x, f(x)] as [number, number];
+                        }),
+                        [b, 0]
+                    ]}
+                    color={integralValue >= 0 ? Theme.blue : Theme.red}
+                    fillOpacity={0.3}
+                />
 
-                    <Plot.OfX y={f} color={Theme.blue} weight={3} />
+                <Plot.OfX y={f} color={Theme.blue} weight={3} />
 
-                    <MovablePoint point={[a, 0]} onMove={(p) => setA(p[0])} color={Theme.yellow} />
-                    <MovablePoint point={[b, 0]} onMove={(p) => setB(p[0])} color={Theme.yellow} />
+                <MovablePoint point={[a, 0]} onMove={(p) => setA(p[0])} color={Theme.yellow} />
+                <MovablePoint point={[b, 0]} onMove={(p) => setB(p[0])} color={Theme.yellow} />
 
-                    <LaTeX at={[a, -0.4]} tex="a" color={Theme.yellow} />
-                    <LaTeX at={[b, -0.4]} tex="b" color={Theme.yellow} />
+                <LaTeX at={[a, -0.4]} tex="a" color={Theme.yellow} />
+                <LaTeX at={[b, -0.4]} tex="b" color={Theme.yellow} />
 
-                    <LaTeX at={[2, 2.5]} tex={`\\int_{${a.toFixed(1)}}^{${b.toFixed(1)}} f(x)dx = ${integralValue.toFixed(2)}`} color="white" />
-                </Mafs>
-                <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs text-slate-400">
-                    Arrossega els punts <span className="text-yellow-400 font-bold italic">a</span> i <span className="text-yellow-400 font-bold italic">b</span>.
-                    Si <InlineMath math="b < a" />, la integral computa l'àrea en sentit contrari i el resultat canvia de signe (es torna <span className="text-red-400 font-bold">vermell</span>).
-                </div>
+                <LaTeX at={[2, 2.5]} tex={`\\int_{${a.toFixed(1)}}^{${b.toFixed(1)}} f(x)dx = ${integralValue.toFixed(2)}`} color="white" />
+            </Mafs>
+            <div className="bg-slate-800/50 p-4 border-t border-white/10 text-center text-xs text-slate-400">
+                Arrossega els punts <span className="text-yellow-400 font-bold italic">a</span> i <span className="text-yellow-400 font-bold italic">b</span>.
+                Si <InlineMath math="b < a" />, la integral computa l'àrea en sentit contrari i el resultat canvia de signe (es torna <span className="text-red-400 font-bold">vermell</span>).
             </div>
-        </InteractionLock>
+        </div>
     );
 };
 
@@ -1280,7 +1272,7 @@ const VisAdditivitatInterval = () => {
     const f = (x: number) => 0.2 * Math.pow(x - 2.5, 2) + 0.5;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-0.5, 5.5], y: [-0.5, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -1337,7 +1329,7 @@ const VisCotaError = () => {
 
     const a = 0; const b = 3;
     const f = mode === 'low' ? (x: number) => 0.1 * x * x + 1 : (x: number) => 3 / (x + 1.2);
-    
+
     // Theoretical M2 and M4 values
     const M2 = mode === 'low' ? 0.2 : 6 / Math.pow(1.2, 3);
     const M4 = mode === 'low' ? 0.0001 : 72 / Math.pow(1.2, 5);
@@ -1347,17 +1339,17 @@ const VisCotaError = () => {
     const cotaS = (Math.pow(b - a, 5) * M4) / (180 * Math.pow(n % 2 === 0 ? n : n + 1, 4));
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             {/* 1. Curvature Mode Selection */}
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-center gap-3">
-                <button 
-                    onClick={() => setMode('low')} 
+                <button
+                    onClick={() => setMode('low')}
                     className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${mode === 'low' ? 'bg-blue-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400'}`}
                 >
                     Baixa Curvatura
                 </button>
-                <button 
-                    onClick={() => setMode('high')} 
+                <button
+                    onClick={() => setMode('high')}
                     className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${mode === 'high' ? 'bg-red-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400'}`}
                 >
                     Alta Curvatura
@@ -1368,7 +1360,7 @@ const VisCotaError = () => {
             <div className="h-80 relative">
                 <Mafs viewBox={{ x: [-0.5, 3.5], y: [-0.5, 4] }} pan={false} preserveAspectRatio={false}>
                     <Coordinates.Cartesian />
-                    
+
                     {/* Trapezoids visualization (Yellow) */}
                     {Array.from({ length: n }).map((_, i) => {
                         const dx = (b - a) / n;
@@ -1406,15 +1398,15 @@ const VisCotaError = () => {
                         <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Nombre d'intervals (n)</span>
                         <span className="bg-indigo-500 text-white font-mono px-3 py-1 rounded-lg text-lg font-bold shadow-lg shadow-indigo-500/20">{n}</span>
                     </div>
-                    <input 
-                        type="range" min="2" max="30" step="1" value={n} 
-                        onChange={(e) => setN(parseInt(e.target.value))} 
-                        className="w-full accent-indigo-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" 
+                    <input
+                        type="range" min="2" max="30" step="1" value={n}
+                        onChange={(e) => setN(parseInt(e.target.value))}
+                        className="w-full accent-indigo-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
                     />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-slate-900 shadow-inner p-5 rounded-3xl border border-white/5 relative overflow-hidden">
+                    <div className="bg-black/20 p-5 rounded-2xl border border-white/5 relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-3 opacity-10">
                             <InlineMath math="E_T" />
                         </div>
@@ -1428,7 +1420,7 @@ const VisCotaError = () => {
                         </div>
                     </div>
 
-                    <div className="bg-slate-900 shadow-inner p-5 rounded-3xl border border-white/5 relative overflow-hidden">
+                    <div className="bg-black/20 p-5 rounded-2xl border border-white/5 relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-3 opacity-10">
                             <InlineMath math="E_S" />
                         </div>
@@ -1445,8 +1437,8 @@ const VisCotaError = () => {
 
                 <div className="mt-6 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4 text-center">
                     <p className="text-xs text-indigo-300">
-                        Per a <InlineMath math={"n = " + n} />, el mètode de Simpson és aproximadament 
-                        <span className="text-white font-bold mx-1">{(cotaT / cotaS).toFixed(0)} cops</span> 
+                        Per a <InlineMath math={"n = " + n} />, el mètode de Simpson és aproximadament
+                        <span className="text-white font-bold mx-1">{(cotaT / cotaS).toFixed(0)} cops</span>
                         més precís que el dels trapezis.
                     </p>
                 </div>
@@ -1464,7 +1456,7 @@ const VisLinealitat = () => {
     const b = 3.5;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-0.5, 4.5], y: [-0.2, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
 
@@ -1549,7 +1541,7 @@ const VisBolaInteractiva = () => {
     const isIn = isClosed ? dist <= r : dist < r;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full flex flex-col">
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Radi:</span>
@@ -1618,7 +1610,7 @@ const VisExPissarraTopologia = () => {
     const isActuallyBoundary = touchesInside && touchesOutside;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full flex flex-col">
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Radi ε:</span>
@@ -1650,7 +1642,7 @@ const VisExPissarraTopologia = () => {
                 />
             </Mafs>
 
-            <div className="p-5 bg-slate-800/50 border-t border-white/10">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className={`p-3 rounded-xl border transition-all ${isActuallyInterior ? 'bg-green-500/10 border-green-500/30 ring-1 ring-green-500/20' : 'bg-black/20 border-white/5 opacity-50'}`}>
                         <div className="text-[9px] uppercase font-black text-green-500 mb-2 tracking-widest">Punt Interior (Definició)</div>
@@ -1672,7 +1664,7 @@ const VisExPissarraTopologia = () => {
 
 const VisDominisComplexos = () => {
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-5, 5], y: [-3, 3] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian subdivisions={5} />
 
@@ -1771,7 +1763,7 @@ const VisCheatSheetConiques = () => {
     };
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {['ellipse', 'hiperbola', 'parabola', 'rectes', 'diamant'].map((m) => (
                     <button key={m} onClick={() => setMode(m as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === m ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:bg-slate-700'}`}>
@@ -1802,7 +1794,7 @@ const VisClassificacioConjunts = () => {
     const isIn = type === 'obert' ? dist < r : dist <= r;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {['obert', 'tancat', 'acotat', 'compacte'].map((t) => (
                     <button key={t} onClick={() => setType(t as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-black transition-all ${type === t ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'text-slate-500 hover:bg-slate-700'}`}>{t}</button>
@@ -1840,7 +1832,7 @@ const VisClassificacioConjunts = () => {
                 />
             </Mafs>
 
-            <div className="bg-slate-800/80 p-4 border-t border-white/10">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <p className="text-[11px] text-slate-300 text-center italic">
                     {type === 'obert' && "Vora discontínua: els punts del límit NO són del conjunt."}
                     {type === 'tancat' && "Vora contínua: el conjunt inclou la seva frontera."}
@@ -1856,7 +1848,7 @@ const VisMapsTopograficsInteractiu = () => {
     const [k, setK] = React.useState(1);
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-3, 3] }} pan={true} zoom={true}>
                 <Coordinates.Cartesian />
 
@@ -1882,7 +1874,7 @@ const VisMapsTopograficsInteractiu = () => {
 
                 <LaTeX at={[0, 2.5]} tex={`x^2 - y^2 = ${k.toFixed(1)}`} color={k > 0 ? Theme.yellow : (k < 0 ? Theme.blue : Theme.green)} />
             </Mafs>
-            <div className="bg-slate-800/80 p-5 border-t border-white/10">
+            <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <span className="text-xs text-slate-400 block mb-2 font-bold tracking-wider">Ajusta l'altura (k):</span>
                 <input type="range" min="-3" max="3" step="0.5" value={k} onChange={(e) => setK(parseFloat(e.target.value))} className="w-full accent-yellow-400" />
             </div>
@@ -1900,7 +1892,7 @@ const VisDistanciaEuclidia = () => {
     const dist = Math.sqrt(dx * dx + dy * dy);
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-1, 6], y: [-1, 5] }} pan={false} zoom={false}>
                 <Coordinates.Cartesian />
 
@@ -1959,7 +1951,7 @@ const VisMetodePuntsProva = () => {
             </Mafs>
             <div className="bg-slate-800/80 p-4 border-t border-white/10 text-center text-xs">
                 <span className={isIn ? "text-green-400 font-bold" : "text-red-400 font-bold"}>
-                    {isIn ? "PUNT DENTRE: Sombregem tot l'interior." : "PUNT FORA: Aquesta zona no és del domini."}
+                    {isIn ? "PUNT DINTRE: Sombregem tot l'interior." : "PUNT FORA: Aquesta zona no és del domini."}
                 </span>
                 <br /> <span className="text-slate-500 italic">Mou el punt per provar la inecuació.</span>
             </div>
@@ -1973,7 +1965,7 @@ const VisEx72a = () => {
     const isInDomain = val > 0;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8 flex flex-col">
+        <div className="w-full h-[500px] flex flex-col">
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-20">
                 <div className="flex flex-col">
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Condició: $1 + xy &gt; 0$</span>
@@ -2038,7 +2030,7 @@ const VisEx72b = () => {
     const isInDomain = val >= 0;
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-white/10 my-8 flex flex-col">
+        <div className="w-full h-[500px] flex flex-col">
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-20">
                 <div className="flex flex-col">
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Condició: $y \\sin(x) \\ge 0$</span>
@@ -2070,17 +2062,17 @@ const VisEx74a = () => {
     const isInDomain = (x * y > 0) && (y > x * x - 1);
 
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-2, 6] }} pan={false}>
                 <Coordinates.Cartesian />
-                
+
                 {/* Quadrant 1: y > x^2 - 1 i x,y > 0 */}
-                <Polygon 
+                <Polygon
                     points={[
                         [0, 0], [1, 0],
                         ...Array.from({ length: 31 }, (_, i) => {
                             const xi = 1 + i * 0.1;
-                            return [xi, xi*xi - 1] as [number, number];
+                            return [xi, xi * xi - 1] as [number, number];
                         }),
                         [4, 15], [0, 15]
                     ]}
@@ -2089,12 +2081,12 @@ const VisEx74a = () => {
 
                 {/* Quadrant 3: y > x^2 - 1 i x,y < 0 
                     Només existeix quan x^2 - 1 < 0 => x entre -1 i 0 */}
-                <Polygon 
+                <Polygon
                     points={[
-                        [0, 0], 
+                        [0, 0],
                         ...Array.from({ length: 21 }, (_, i) => {
                             const xi = -i * 0.05;
-                            return [xi, xi*xi - 1] as [number, number];
+                            return [xi, xi * xi - 1] as [number, number];
                         }),
                         [-1, 0], [0, 0]
                     ]}
@@ -2116,7 +2108,7 @@ const VisEx74a = () => {
 
 const VisEx74b = () => {
     return (
-        <div className="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 my-8">
+        <div className="w-full h-[500px] flex flex-col">
             <Mafs viewBox={{ x: [-4, 4], y: [-2, 6] }} pan={false}>
                 <Coordinates.Cartesian />
                 {/* Ombrejat suau per context */}
@@ -2125,7 +2117,7 @@ const VisEx74b = () => {
 
                 {/* Corba de nivell y = 1/x */}
                 <Plot.OfX y={(x) => 1 / x} color={Theme.red} weight={3} />
-                
+
                 {/* Punt (1,1) */}
                 <Circle center={[1, 1]} radius={0.08} color={Theme.red} fillOpacity={1} />
                 <LaTeX at={[1.5, 1.5]} tex="(1,1)" color={Theme.red} />
@@ -2135,7 +2127,1049 @@ const VisEx74b = () => {
     );
 };
 
+const VisM1T6Ex6_2 = () => {
+    const v1: [number, number] = [2, 6];
+    const v2: [number, number] = [-4, -8];
+    const v3: [number, number] = [-1, 5];
+    const v4: [number, number] = [3, 0];
+
+    return (
+        <div className="w-full h-[500px] flex flex-col">
+            <Mafs viewBox={{ x: [-5, 5], y: [-10, 8] }} pan={true} zoom={true}>
+                <Coordinates.Cartesian subdivisions={5} />
+                <Vector tail={[0, 0]} tip={v1} color={Theme.blue} weight={4} />
+                <LaTeX at={[v1[0], v1[1] + 0.5]} tex="v_1 = (2, 6)" color={Theme.blue} />
+                <Vector tail={[0, 0]} tip={v2} color={Theme.red} weight={4} />
+                <LaTeX at={[v2[0], v2[1] - 0.5]} tex="v_2 = (-4, -8)" color={Theme.red} />
+                <Vector tail={[0, 0]} tip={v3} color={Theme.green} weight={4} />
+                <LaTeX at={[v3[0], v3[1] + 0.5]} tex="v_3 = (-1, 5)" color={Theme.green} />
+                <Vector tail={[0, 0]} tip={v4} color={Theme.orange} weight={4} />
+                <LaTeX at={[v4[0], v4[1] + 0.5]} tex="v_4 = (3, 0)" color={Theme.orange} />
+            </Mafs>
+            <div className="bg-slate-800/80 p-4 border-t border-white/10 flex flex-wrap justify-center gap-4 text-xs font-mono">
+                <span className="flex items-center gap-2"><div className="w-3 h-3 bg-blue-500 rounded-full" /> v1</span>
+                <span className="flex items-center gap-2"><div className="w-3 h-3 bg-red-500 rounded-full" /> v2</span>
+                <span className="flex items-center gap-2"><div className="w-3 h-3 bg-green-500 rounded-full" /> v3</span>
+                <span className="flex items-center gap-2"><div className="w-3 h-3 bg-orange-500 rounded-full" /> v4</span>
+            </div>
+        </div>
+    );
+};
+
+const VisM1T6Ex6_3 = () => {
+    const [op, setOp] = React.useState<'sum' | 'sub1' | 'sub2'>('sum');
+    const v1: [number, number] = [2, 6];
+    const v2: [number, number] = [-4, -8];
+    const v3: [number, number] = [-1, 5];
+    const v4: [number, number] = [3, 0];
+
+    let result: [number, number] = [0, 0];
+    if (op === 'sum') result = [v1[0] + v2[0], v1[1] + v2[1]];
+    else if (op === 'sub1') result = [v1[0] - v3[0], v1[1] - v3[1]];
+    else result = [v2[0] - v4[0], v2[1] - v4[1]];
+
+    return (
+        <div className="w-full h-[500px] flex flex-col">
+            <div className="p-2 flex justify-center gap-2 bg-slate-900/40 border-b border-white/5">
+                <button onClick={() => setOp('sum')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sum' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 + v2</button>
+                <button onClick={() => setOp('sub1')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sub1' ? 'bg-green-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 - v3</button>
+                <button onClick={() => setOp('sub2')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sub2' ? 'bg-orange-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v2 - v4</button>
+            </div>
+            <Mafs viewBox={{ x: [-8, 5], y: [-10, 8] }} pan={true} zoom={true}>
+                <Coordinates.Cartesian subdivisions={5} />
+                {op === 'sum' && (
+                    <>
+                        <Vector tail={[0, 0]} tip={v1} color={Theme.blue} />
+                        <Vector tail={v1} tip={[v1[0] + v2[0], v1[1] + v2[1]]} color={Theme.blue} opacity={0.5} />
+                        <Vector tail={[0, 0]} tip={result} color={Theme.yellow} weight={4} />
+                        <LaTeX at={v1} tex="v_1" color={Theme.blue} />
+                        <LaTeX at={result} tex="v_1 + v_2" color={Theme.yellow} />
+                    </>
+                )}
+                {op === 'sub1' && (
+                    <>
+                        <Vector tail={[0, 0]} tip={v1} color={Theme.blue} />
+                        <Vector tail={v1} tip={[v1[0] - v3[0], v1[1] - v3[1]]} color={Theme.green} opacity={0.5} />
+                        <Vector tail={[0, 0]} tip={result} color={Theme.yellow} weight={4} />
+                        <LaTeX at={v1} tex="v_1" color={Theme.blue} />
+                        <LaTeX at={result} tex="v_1 - v_3" color={Theme.yellow} />
+                    </>
+                )}
+                {op === 'sub2' && (
+                    <>
+                        <Vector tail={[0, 0]} tip={v2} color={Theme.red} />
+                        <Vector tail={v2} tip={[v2[0] - v4[0], v2[1] - v4[1]]} color={Theme.orange} opacity={0.5} />
+                        <Vector tail={[0, 0]} tip={result} color={Theme.yellow} weight={4} />
+                        <LaTeX at={v2} tex="v_2" color={Theme.red} />
+                        <LaTeX at={result} tex="v_2 - v_4" color={Theme.yellow} />
+                    </>
+                )}
+            </Mafs>
+            <div className="bg-slate-800/80 p-3 border-t border-white/10 text-[10px] text-center text-slate-400 italic">
+                Mètode punta-cua: El vector groc és el resultat de l'operació.
+            </div>
+        </div>
+    );
+};
+
+
+const VisVectorAdditionIntro = () => (
+    <div className="w-full h-[400px]">
+        <Mafs viewBox={{ x: [-4, 4], y: [-3, 3] }} pan={true} zoom={true}>
+            <Coordinates.Cartesian />
+            <Vector tail={[0, 0]} tip={[2, 1]} color={Theme.blue} />
+            <LaTeX at={[2.2, 1.2]} tex="u" color={Theme.blue} />
+            <Vector tail={[0, 0]} tip={[1, 2]} color={Theme.red} />
+            <LaTeX at={[1.2, 2.2]} tex="v" color={Theme.red} />
+            <Vector tail={[0, 0]} tip={[3, 3]} color={Theme.indigo} />
+            <LaTeX at={[3.2, 3.2]} tex="u + v" color={Theme.indigo} />
+            <Line.Segment point1={[2, 1]} point2={[3, 3]} style="dashed" color="gray" />
+            <Line.Segment point1={[1, 2]} point2={[3, 3]} style="dashed" color="gray" />
+        </Mafs>
+    </div>
+);
+
+const VisUnioSevAtencio = () => {
+    const [uVal, setUVal] = React.useState<[number, number]>([1, 1]);
+    const [vVal, setVVal] = React.useState<[number, number]>([-1, 1]);
+
+    // Snap u to y=x and v to y=-x
+    const u = [(uVal[0] + uVal[1]) / 2, (uVal[0] + uVal[1]) / 2] as [number, number];
+    const v = [(vVal[0] - vVal[1]) / 2, -(vVal[0] - vVal[1]) / 2] as [number, number];
+    const sum = [u[0] + v[0], u[1] + v[1]] as [number, number];
+    const isInS = Math.abs(sum[0] - sum[1]) < 0.01;
+    const isInSPrime = Math.abs(sum[0] + sum[1]) < 0.01;
+    const isInside = isInS || isInSPrime;
+
+    return (
+        <div className="w-full h-[500px] flex flex-col">
+            <div className="flex-1 relative overflow-hidden bg-slate-950/40">
+                <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+
+                    {/* Line S (y=x) */}
+                    <Plot.OfX y={(x) => x} color={Theme.blue} opacity={0.3} weight={1} />
+                    {/* Line S' (y=-x) */}
+                    <Plot.OfX y={(x) => -x} color={Theme.red} opacity={0.3} weight={1} />
+
+                    <MovablePoint point={uVal} onMove={setUVal} color={Theme.blue} />
+                    <MovablePoint point={vVal} onMove={setVVal} color={Theme.red} />
+
+                    <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                    <Vector tail={[0, 0]} tip={v} color={Theme.red} />
+                    <Vector tail={u} tip={sum} color={Theme.red} opacity={0.3} weight={1} />
+                    <Vector tail={v} tip={sum} color={Theme.blue} opacity={0.3} weight={1} />
+                    <Vector tail={[0, 0]} tip={sum} color={isInside ? Theme.yellow : Theme.pink} weight={3} />
+
+                    <LaTeX at={u} tex="u \in S" color={Theme.blue} />
+                    <LaTeX at={v} tex="v \in S'" color={Theme.red} />
+                    <LaTeX at={sum} tex={isInside ? "u+v \\in S \\cup S'" : "u+v \\notin S \\cup S'"} color={isInside ? Theme.yellow : Theme.pink} />
+                </Mafs>
+
+                <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl z-20 w-56">
+                    <h5 className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-3">Contra-exemple: Unió</h5>
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                            <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold ${isInside ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                {isInside ? "✓" : "✗"}
+                            </div>
+                            <span className="text-[9px] text-slate-400 font-medium">Suma tancada?</span>
+                        </div>
+                        <div className="pt-2 mt-2 border-t border-white/5">
+                            <p className="text-[8px] text-slate-500 leading-relaxed italic">
+                                Observa com la suma <span className="text-pink-400 font-bold">"surt"</span> de les dues rectes. Perquè fos subespai, el resultat hauria de caure obligatòriament en una de les dues.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="p-3 bg-slate-900/80 border-t border-white/5 text-[9px] text-center text-slate-400 italic">
+                <span className="text-white">Arrossega els punts</span> per veure com la suma de vectors de diferents SEV no es manté en la unió.
+            </div>
+        </div>
+    );
+};
+
+const VisAxiomesSuma = () => {
+    const [axiom, setAxiom] = React.useState<'e2' | 'e1' | 'e3' | 'e4'>('e2');
+    const [u, setU] = React.useState<[number, number]>([2, 1]);
+    const [v, setV] = React.useState<[number, number]>([1, 2]);
+    const [w, setW] = React.useState<[number, number]>([-1, 1]);
+
+    const sumUV: [number, number] = [u[0] + v[0], u[1] + v[1]];
+    const sumUVW: [number, number] = [u[0] + v[0] + w[0], u[1] + v[1] + w[1]];
+
+    return (
+        <div className="w-full h-[500px] flex flex-col">
+            <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
+                <button onClick={() => setAxiom('e2')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e2' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e2 Commutativa</button>
+                <button onClick={() => setAxiom('e1')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e1' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e1 Associativa</button>
+                <button onClick={() => setAxiom('e3')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e3' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e3 Neutre</button>
+                <button onClick={() => setAxiom('e4')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e4' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e4 Oposat</button>
+            </div>
+
+            <div className="flex-1 relative overflow-hidden">
+                <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+
+                    {axiom === 'e2' && (
+                        <>
+                            <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                            <MovablePoint point={v} onMove={setV} color={Theme.red} />
+                            <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={v} color={Theme.red} />
+                            <Vector tail={u} tip={sumUV} color={Theme.red} opacity={0.4} weight={1} />
+                            <Vector tail={v} tip={sumUV} color={Theme.blue} opacity={0.4} weight={1} />
+                            <Vector tail={[0, 0]} tip={sumUV} color={Theme.yellow} weight={3} />
+                            <LaTeX at={u} tex="u" color={Theme.blue} />
+                            <LaTeX at={v} tex="v" color={Theme.red} />
+                            <LaTeX at={sumUV} tex="u+v = v+u" color={Theme.yellow} />
+                        </>
+                    )}
+
+                    {axiom === 'e1' && (
+                        <>
+                            <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                            <MovablePoint point={v} onMove={setV} color={Theme.red} />
+                            <MovablePoint point={w} onMove={setW} color={Theme.green} />
+
+                            <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                            <Vector tail={u} tip={sumUV} color={Theme.red} />
+                            <Vector tail={sumUV} tip={sumUVW} color={Theme.green} />
+                            <Vector tail={[0, 0]} tip={sumUVW} color={Theme.yellow} weight={3} />
+
+                            <LaTeX at={u} tex="u" color={Theme.blue} />
+                            <LaTeX at={sumUV} tex="u+v" color={Theme.red} />
+                            <LaTeX at={sumUVW} tex="(u+v)+w" color={Theme.yellow} />
+                        </>
+                    )}
+
+                    {axiom === 'e3' && (
+                        <>
+                            <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                            <Circle center={[0, 0]} radius={0.15} color={Theme.yellow} fillOpacity={1} />
+                            <LaTeX at={u} tex="u + 0_E = u" color={Theme.blue} />
+                            <LaTeX at={[0.3, -0.3]} tex="0_E" color={Theme.yellow} />
+                        </>
+                    )}
+
+                    {axiom === 'e4' && (
+                        <>
+                            <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={[-u[0], -u[1]]} color={Theme.red} />
+                            <Circle center={[0, 0]} radius={0.15} color={Theme.yellow} fillOpacity={1} />
+                            <LaTeX at={u} tex="u" color={Theme.blue} />
+                            <LaTeX at={[-u[0], -u[1]]} tex="-u" color={Theme.red} />
+                        </>
+                    )}
+                </Mafs>
+            </div>
+            <div className="bg-slate-900/80 p-3 border-t border-white/5 text-[9px] text-center text-slate-500 font-medium">
+                <span className="text-white">Arrossega els punts</span> per modificar els vectors i comprovar que l'axioma sempre es compleix.
+            </div>
+        </div>
+    );
+};
+
+const VisAxiomesProducte = () => {
+    const [axiom, setAxiom] = React.useState<'e5' | 'e6' | 'e7' | 'e8'>('e6');
+    const [u, setU] = React.useState<[number, number]>([2, 1]);
+    const [v, setV] = React.useState<[number, number]>([0, 2]);
+    const lambda = 1.5;
+    const mu = 2;
+
+    return (
+        <div className="w-full h-[500px] flex flex-col">
+            <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
+                <button onClick={() => setAxiom('e6')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e6' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e6 Distr u+v</button>
+                <button onClick={() => setAxiom('e7')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e7' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e7 Distr λ+μ</button>
+                <button onClick={() => setAxiom('e5')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e5' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e5 Pseudo-assoc</button>
+                <button onClick={() => setAxiom('e8')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e8' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e8 Neutre K</button>
+            </div>
+
+            <div className="flex-1 relative overflow-hidden">
+                <Mafs viewBox={{ x: [-1, 5], y: [-1, 5] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+
+                    {axiom === 'e6' && (
+                        <>
+                            <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                            <MovablePoint point={v} onMove={setV} color={Theme.red} />
+                            <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={v} color={Theme.red} />
+                            <Vector tail={[0, 0]} tip={[u[0] + v[0], u[1] + v[1]]} color={Theme.pink} opacity={0.3} />
+                            <Vector tail={[0, 0]} tip={[lambda * (u[0] + v[0]), lambda * (u[1] + v[1])]} color={Theme.yellow} weight={3} />
+                            <LaTeX at={u} tex="u" color={Theme.blue} />
+                            <LaTeX at={v} tex="v" color={Theme.red} />
+                            <LaTeX at={[lambda * (u[0] + v[0]), lambda * (u[1] + v[1])]} tex="\lambda(u+v)" color={Theme.yellow} />
+                        </>
+                    )}
+
+                    {axiom === 'e7' && (
+                        <>
+                            <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={[lambda * u[0], lambda * u[1]]} color={Theme.indigo} opacity={0.5} />
+                            <Vector tail={[0, 0]} tip={[(lambda + mu) * u[0], (lambda + mu) * u[1]]} color={Theme.yellow} weight={3} />
+                            <LaTeX at={u} tex="u" color={Theme.blue} />
+                            <LaTeX at={[lambda * u[0], lambda * u[1]]} tex="\lambda u" color={Theme.indigo} />
+                            <LaTeX at={[(lambda + mu) * u[0], (lambda + mu) * u[1]]} tex="(\lambda+\mu)u" color={Theme.yellow} />
+                        </>
+                    )}
+
+                    {axiom === 'e5' && (
+                        <>
+                            <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={[mu * u[0], mu * u[1]]} color={Theme.indigo} />
+                            <Vector tail={[0, 0]} tip={[lambda * mu * u[0], lambda * mu * u[1]]} color={Theme.yellow} weight={3} />
+                            <LaTeX at={u} tex="u" color={Theme.blue} />
+                            <LaTeX at={[mu * u[0], mu * u[1]]} tex="\mu u" color={Theme.indigo} />
+                            <LaTeX at={[lambda * mu * u[0], lambda * mu * u[1]]} tex="\lambda(\mu u)" color={Theme.yellow} />
+                        </>
+                    )}
+
+                    {axiom === 'e8' && (
+                        <>
+                            <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                            <Vector tail={[0, 0]} tip={u} color={Theme.yellow} weight={3} opacity={0.5} />
+                            <LaTeX at={u} tex="1 \cdot u = u" color={Theme.yellow} />
+                        </>
+                    )}
+                </Mafs>
+            </div>
+            <div className="bg-slate-900/80 p-3 border-t border-white/5 text-[9px] text-center text-slate-500 font-medium">
+                <span className="text-white">Arrossega els punts</span> per modificar els vectors i observar les propietats del producte escalar.
+            </div>
+        </div>
+    );
+};
+
+const VisExemplesEspais = () => {
+    const [view, setView] = React.useState<'polys' | 'matrius' | 'trivial' | 'propietats'>('polys');
+    const [scalar, setScalar] = React.useState(1.5);
+    const [scalarProp, setScalarProp] = React.useState(0);
+    const [vProp, setVProp] = React.useState<[number, number]>([2, 1]);
+
+    // Polynomials: P(x) = x^2, Q(x) = x + 1
+    const p = (x: number) => 0.5 * x * x;
+    const q = (x: number) => x + 1;
+    const sum = (x: number) => p(x) + q(x);
+
+    // Matrices
+    const m = [[1, -2], [0, 3]];
+
+    return (
+        <div className="w-full h-[500px] flex flex-col">
+            <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
+                <button onClick={() => setView('polys')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'polys' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Polinomis</button>
+                <button onClick={() => setView('matrius')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'matrius' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Matrius</button>
+                <button onClick={() => setView('trivial')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'trivial' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Espai Trivial</button>
+                <button onClick={() => setView('propietats')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'propietats' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Propietats</button>
+            </div>
+
+            <div className="relative flex-1 overflow-hidden bg-slate-950/40">
+                {view === 'polys' && (
+                    <div className="flex-1 h-full">
+                        <Mafs viewBox={{ x: [-3, 3], y: [-2, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                            <Coordinates.Cartesian />
+                            <Plot.OfX y={p} color={Theme.blue} />
+                            <Plot.OfX y={q} color={Theme.red} />
+                            <Plot.OfX y={sum} color={Theme.yellow} weight={3} />
+                            <LaTeX at={[-2, p(-2)]} tex="P(x)" color={Theme.blue} />
+                            <LaTeX at={[2, q(2)]} tex="Q(x)" color={Theme.red} />
+                            <LaTeX at={[1, sum(1) + 0.5]} tex="(P+Q)(x)" color={Theme.yellow} />
+                        </Mafs>
+                    </div>
+                )}
+
+                {view === 'matrius' && (
+                    <div className="h-full flex flex-col items-center justify-center gap-6 p-8">
+                        <div className="flex items-center gap-8">
+                            <div className="flex flex-col items-center gap-2">
+                                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Matriu <InlineMath math="A" /></span>
+                                <div className="grid grid-cols-2 gap-2 p-3 bg-slate-900 rounded-lg border border-white/5 font-mono text-sm">
+                                    {m.flat().map((v, i) => <div key={i} className="w-10 h-10 flex items-center justify-center bg-black/40 rounded border border-white/5 text-blue-400">{v}</div>)}
+                                </div>
+                            </div>
+                            <div className="text-2xl text-slate-600 font-black">× {scalar.toFixed(1)} =</div>
+                            <div className="flex flex-col items-center gap-2">
+                                <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">λ · A</span>
+                                <div className="grid grid-cols-2 gap-2 p-3 bg-slate-900 rounded-lg border border-emerald-500/30 font-mono text-sm">
+                                    {m.flat().map((v, i) => <div key={i} className="w-10 h-10 flex items-center justify-center bg-emerald-950/40 rounded border border-emerald-500/10 text-emerald-400">{(v * scalar).toFixed(1)}</div>)}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-64 flex flex-col gap-2">
+                            <input type="range" min="-2" max="2" step="0.1" value={scalar} onChange={(e) => setScalar(parseFloat(e.target.value))} className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                            <div className="flex justify-between text-[8px] text-slate-600 font-bold uppercase"><span>Min (-2)</span><span>Escalar λ</span><span>Max (2)</span></div>
+                        </div>
+                    </div>
+                )}
+
+                {view === 'trivial' && (
+                    <div className="flex-1 h-full">
+                        <Mafs viewBox={{ x: [-2, 2], y: [-2, 2] }} pan={false} preserveAspectRatio={false}>
+                            <Coordinates.Cartesian />
+                            <Circle center={[0, 0]} radius={0.15} color={Theme.yellow} fillOpacity={1} />
+                            <LaTeX at={[0, 0.5]} tex="E = \\{0_E\\}" color={Theme.yellow} />
+                            <LaTeX at={[0, -0.7]} tex="0+0=0, \\, \\lambda \\cdot 0 = 0" color="gray" />
+                        </Mafs>
+                    </div>
+                )}
+
+                {view === 'propietats' && (
+                    <div className="relative h-full flex flex-col">
+                        <div className="flex-1">
+                            <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} preserveAspectRatio={false}>
+                                <Coordinates.Cartesian />
+                                <MovablePoint point={vProp} onMove={setVProp} color={Theme.blue} />
+                                <Vector tail={[0, 0]} tip={vProp} color={Theme.blue} />
+                                <Vector tail={[0, 0]} tip={[scalarProp * vProp[0], scalarProp * vProp[1]]} color={Theme.yellow} weight={3} />
+                                <LaTeX at={vProp} tex="v" color={Theme.blue} />
+                                {scalarProp === 0 && <Circle center={[0, 0]} radius={0.15} color={Theme.yellow} fillOpacity={1} />}
+                                <LaTeX at={[scalarProp * vProp[0], scalarProp * vProp[1]]} tex="\\lambda v" color={Theme.yellow} />
+                            </Mafs>
+                        </div>
+                        <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-white/5 shadow-2xl z-20 w-48">
+                            <div className="flex flex-col gap-4">
+                                <div className="space-y-1">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-[9px] font-bold text-slate-400 uppercase">Escalar <InlineMath math="\\lambda" /></span>
+                                        <span className="text-xs font-mono text-indigo-400">{scalarProp.toFixed(1)}</span>
+                                    </div>
+                                    <input
+                                        type="range" min="-2" max="2" step="1"
+                                        value={scalarProp}
+                                        onChange={(e) => setScalarProp(parseInt(e.target.value))}
+                                        className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                                    />
+                                    <div className="flex justify-between text-[7px] text-slate-600 font-bold">
+                                        <button onClick={() => setScalarProp(-1)} className="hover:text-white transition-colors">-1</button>
+                                        <button onClick={() => setScalarProp(0)} className="hover:text-white transition-colors">0</button>
+                                        <button onClick={() => setScalarProp(1)} className="hover:text-white transition-colors">1</button>
+                                    </div>
+                                </div>
+                                <div className="pt-2 border-t border-white/5 space-y-1.5">
+                                    <p className={`text-[9px] transition-all ${scalarProp === 0 ? 'text-yellow-400 font-bold' : 'text-slate-500'}`}>
+                                        {scalarProp === 0 ? <span>✓ <InlineMath math="0 \cdot v = 0_E" /></span> : <InlineMath math="0 \cdot v = 0_E" />}
+                                    </p>
+                                    <p className={`text-[9px] transition-all ${scalarProp === -1 ? 'text-indigo-400 font-bold' : 'text-slate-500'}`}>
+                                        {scalarProp === -1 ? <span>✓ <InlineMath math="(-1)v = -v" /></span> : <InlineMath math="(-1)v = -v" />}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="p-3 bg-slate-800/80 border-t border-white/5 text-[10px] text-center text-slate-500 italic">
+                {view === 'polys' && <span>Suma de funcions: Es defineix punt a punt.</span>}
+                {view === 'matrius' && <span>Escalar una matriu: Es multiplica cada component per <InlineMath math="\\lambda" />.</span>}
+                {view === 'trivial' && <span>Espai Trivial: El conjunt format només pel zero.</span>}
+                {view === 'propietats' && <span>Propietats: Observa com varien el producte quan <InlineMath math="\\lambda" /> és 0 o -1.</span>}
+            </div>
+        </div>
+    );
+};
+
+const VisSEVIntro = () => {
+    const [mode, setMode] = React.useState<'sev' | 'non_sev'>('sev');
+    const [u, setU] = React.useState<[number, number]>([1, 1]);
+    const [v, setV] = React.useState<[number, number]>([-0.5, -0.5]);
+
+    // SEV: y = x (Line through origin)
+    // Non-SEV: y = x + 1 (Line NOT through origin)
+
+    // Projection functions to "snap" u and v to S
+    const snapToS = (pt: [number, number]): [number, number] => {
+        if (mode === 'sev') {
+            const avg = (pt[0] + pt[1]) / 2;
+            return [avg, avg];
+        } else {
+            // y = x + 1 => x - y + 1 = 0. Normal (1, -1). 
+            // Dist = (x0 - y0 + 1) / sqrt(2).
+            // Pt = (x0, y0) - Dist * (1, -1) / sqrt(2)
+            const d = (pt[0] - pt[1] + 1) / 2;
+            return [pt[0] - d, pt[1] + d];
+        }
+    };
+
+    const uSnapped: [number, number] = snapToS(u);
+    const vSnapped: [number, number] = snapToS(v);
+    const sum: [number, number] = [uSnapped[0] + vSnapped[0], uSnapped[1] + vSnapped[1]];
+
+    const isSumInS = mode === 'sev'
+        ? Math.abs(sum[0] - sum[1]) < 0.01
+        : Math.abs(sum[0] - sum[1] + 1) < 0.01;
+
+    return (
+        <div className="w-full h-[500px] flex flex-col">
+            <div className="p-2 flex justify-center gap-2 bg-slate-900/60 border-b border-white/5">
+                <button onClick={() => setMode('sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'sev' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Recta SEV (y = x)</button>
+                <button onClick={() => setMode('non_sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'non_sev' ? 'bg-rose-600 text-white shadow-[0_0_10px_rgba(225,29,72,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>No és SEV (y = x + 1)</button>
+            </div>
+
+            <div className="flex-1 relative overflow-hidden bg-slate-950/40">
+                <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+
+                    {/* The Set S */}
+                    <Plot.OfX
+                        y={mode === 'sev' ? ((_x: number) => _x) : ((_x: number) => _x + 1)}
+                        color={mode === 'sev' ? Theme.indigo : Theme.red}
+                        weight={mode === 'sev' ? 2 : 4}
+                        opacity={0.5}
+                    />
+
+                    <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                    <MovablePoint point={v} onMove={setV} color={Theme.red} />
+
+                    {/* Visual vectors snapped to S */}
+                    <Vector tail={[0, 0]} tip={uSnapped} color={Theme.blue} />
+                    <Vector tail={[0, 0]} tip={vSnapped} color={Theme.red} />
+                    <Vector tail={uSnapped} tip={sum} color={Theme.red} opacity={0.3} weight={1} />
+                    <Vector tail={[0, 0]} tip={sum} color={isSumInS ? Theme.yellow : Theme.pink} weight={3} />
+
+                    <LaTeX at={uSnapped} tex="u \in S" color={Theme.blue} />
+                    <LaTeX at={vSnapped} tex="v \in S" color={Theme.red} />
+                    <LaTeX at={sum} tex={isSumInS ? "u+v \\in S" : "u+v \\notin S"} color={isSumInS ? Theme.yellow : Theme.pink} />
+
+                    {mode === 'non_sev' && <Circle center={[0, 0]} radius={0.1} color={Theme.foreground} />}
+                </Mafs>
+
+                <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl z-20 w-56">
+                    <h5 className="text-[10px] font-black text-white uppercase tracking-widest mb-3">Verificació SEV</h5>
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                            <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold ${mode === 'sev' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                {mode === 'sev' ? "✓" : "✗"}
+                            </div>
+                            <span className="text-[9px] text-slate-400 font-medium">Conté el vector nul <InlineMath math="0_E" />?</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold ${isSumInS ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                {isSumInS ? "✓" : "✗"}
+                            </div>
+                            <span className="text-[9px] text-slate-400 font-medium">Suma tancada (<InlineMath math="u+v \in S" />)?</span>
+                        </div>
+                        <div className="pt-2 mt-2 border-t border-white/5">
+                            <p className="text-[8px] text-slate-500 leading-relaxed italic">
+                                {mode === 'sev'
+                                    ? "Com que la recta passa per l'origen, qualsevol suma de vectors de la recta es manté dins de la recta."
+                                    : "En no passar per l'origen, la suma s'escapa del conjunt. No es compleix la clausura."}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="p-3 bg-slate-900/80 border-t border-white/5 text-[9px] text-center text-slate-400 italic">
+                <span className="text-white">Arrossega els punts</span> sobre la recta per comprovar les condicions de subespai.
+            </div>
+        </div>
+    );
+};
+
+const VisOperacionsSEV = () => {
+    const [tab, setTab] = React.useState<'inter' | 'unio' | 'suma' | 'directa'>('inter');
+    const [uVal, setUVal] = React.useState<[number, number]>([1, 1]);
+    const [wVal, setWVal] = React.useState<[number, number]>([-1, 1]);
+
+    // Snapping logic for u \in S and w \in W
+    // S: y = x, W: y = -x (for Inter/Unio/Suma)
+    const u = [(uVal[0] + uVal[1]) / 2, (uVal[0] + uVal[1]) / 2] as [number, number];
+    const w = [(wVal[0] - wVal[1]) / 2, -(wVal[0] - wVal[1]) / 2] as [number, number];
+
+    // For Direct Sum, let's use S: y=0 and W: x=0 (eixos)
+    const uAxis = [uVal[0], 0] as [number, number];
+    const wAxis = [0, wVal[1]] as [number, number];
+
+    const currentU = (tab === 'directa') ? uAxis : u;
+    const currentW = (tab === 'directa') ? wAxis : w;
+    const sum = [currentU[0] + currentW[0], currentU[1] + currentW[1]] as [number, number];
+
+    return (
+        <div className="w-full h-[500px] flex flex-col">
+            <div className="p-2 flex justify-center gap-1 bg-slate-900/60 border-b border-white/5 overflow-x-auto no-scrollbar">
+                {[
+                    { id: 'inter', label: 'Intersecció', color: 'bg-emerald-600' },
+                    { id: 'unio', label: 'Unió', color: 'bg-rose-600' },
+                    { id: 'suma', label: 'Suma', color: 'bg-indigo-600' },
+                    { id: 'directa', label: 'Suma Directa', color: 'bg-amber-600' }
+                ].map((t) => (
+                    <button
+                        key={t.id}
+                        onClick={() => setTab(t.id as any)}
+                        className={`px-3 py-1.5 rounded text-[9px] font-black uppercase transition-all whitespace-nowrap ${tab === t.id ? `${t.color} text-white shadow-lg` : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}`}
+                    >
+                        {t.label}
+                    </button>
+                ))}
+            </div>
+
+            <div className="flex-1 relative overflow-hidden bg-slate-950/40">
+                <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} preserveAspectRatio={false}>
+                    <Coordinates.Cartesian />
+
+                    {/* S and W subspaces */}
+                    {tab !== 'directa' ? (
+                        <>
+                            <Plot.OfX y={() => 0} color={Theme.blue} opacity={0.3} weight={1} />
+                            <Plot.OfX y={() => 0} color={Theme.red} opacity={0.3} weight={1} />
+                        </>
+                    ) : (
+                        <>
+                            <Plot.OfX y={() => 0} color={Theme.blue} opacity={0.3} weight={1} />
+                            <Plot.OfY x={() => 0} color={Theme.red} opacity={0.3} weight={1} />
+                        </>
+                    )}
+
+                    <MovablePoint point={uVal} onMove={setUVal} color={Theme.blue} />
+                    <MovablePoint point={wVal} onMove={setWVal} color={Theme.red} />
+
+                    <Vector tail={[0, 0]} tip={currentU} color={Theme.blue} />
+                    <Vector tail={[0, 0]} tip={currentW} color={Theme.red} />
+
+                    {/* Operation Visuals */}
+                    {tab === 'inter' && (
+                        <Circle center={[0, 0]} radius={0.15} color={Theme.green} fillOpacity={1} />
+                    )}
+
+                    {tab === 'unio' && (
+                        <>
+                            <Vector tail={currentU} tip={sum} color={Theme.red} opacity={0.3} weight={1} />
+                            <Vector tail={[0, 0]} tip={sum} color={Theme.pink} weight={3} />
+                        </>
+                    )}
+
+                    {(tab === 'suma' || tab === 'directa') && (
+                        <>
+                            <Vector tail={currentU} tip={sum} color={Theme.red} opacity={0.3} weight={1} />
+                            <Vector tail={currentW} tip={sum} color={Theme.blue} opacity={0.3} weight={1} />
+                            <Vector tail={[0, 0]} tip={sum} color={tab === 'suma' ? Theme.indigo : Theme.orange} weight={3} />
+                        </>
+                    )}
+
+                    <LaTeX at={currentU} tex="s \in S" color={Theme.blue} />
+                    <LaTeX at={currentW} tex="w \in W" color={Theme.red} />
+                    {tab === 'inter' && <LaTeX at={[0.3, 0.4]} tex="S \cap W = \{0_E\}" color={Theme.green} />}
+                    {['unio', 'suma', 'directa'].includes(tab) && (
+                        <LaTeX at={sum} tex={tab === 'unio' ? "s+w \\notin S \\cup W" : "v = s+w"} color={tab === 'unio' ? Theme.pink : (tab === 'suma' ? Theme.indigo : Theme.orange)} />
+                    )}
+                </Mafs>
+
+                <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl z-20 w-60">
+                    <h5 className={`text-[10px] font-black uppercase tracking-widest mb-3 ${tab === 'inter' ? 'text-emerald-400' : (tab === 'unio' ? 'text-rose-400' : (tab === 'suma' ? 'text-indigo-400' : 'text-amber-400'))}`}>
+                        {tab === 'inter' ? 'Intersecció' : (tab === 'unio' ? 'Unió (No SEV)' : (tab === 'suma' ? 'Suma' : 'Suma Directa'))}
+                    </h5>
+
+                    <div className="space-y-2 text-[9px] text-slate-400 leading-relaxed italic">
+                        {tab === 'inter' && (
+                            <p>Els elements que pertanyen a <InlineMath math="S" /> i <InlineMath math="W" /> alhora. Si només és el zero, l'espai és el trivial.</p>
+                        )}
+                        {tab === 'unio' && (
+                            <p>La unió NO és tancada per la suma. En sumar vectors de diferents rectes, el resultat "surt" del conjunt.</p>
+                        )}
+                        {tab === 'suma' && (
+                            <p>El conjunt de totes les possibles sumes <InlineMath math="s+w" />. En aquest cas, la suma de dues rectes cobreix tot el pla <InlineMath math="\\mathbb{R}^2" />.</p>
+                        )}
+                        {tab === 'directa' && (
+                            <p>Si <InlineMath math="S \cap W = \{0_E\}" />, qualsevol vector <InlineMath math="v" /> té una descomposició ÚNICA. Només hi ha un camí possible per arribar a <InlineMath math="v" />.</p>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="p-3 bg-slate-900/80 border-t border-white/5 text-[10px] text-center text-slate-500 italic">
+                <span className="text-white">Explora les 4 operacions</span> arrossegant los vectors de cada subespai.
+            </div>
+        </div>
+    );
+};
+
+const VisIndependenciaLineal = () => {
+    const [u, setU] = React.useState<[number, number]>([2, 0.5]);
+    const [v, setV] = React.useState<[number, number]>([0.5, 2]);
+    const [l1, setL1] = React.useState(1);
+    const [l2, setL2] = React.useState(1);
+    const [showSpan, setShowSpan] = React.useState(false);
+
+    const comb = [l1 * u[0] + l2 * v[0], l1 * u[1] + l2 * v[1]] as [number, number];
+
+    // Determinant to check LI/LD
+    const det = Math.abs(u[0] * v[1] - u[1] * v[0]);
+    const isLD = det < 0.2; // Threshold for visual feedback
+
+    return (
+        <div className="w-full h-[500px] flex flex-col bg-slate-950">
+            <div className="flex-1 relative overflow-hidden">
+                <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false}>
+                    <Coordinates.Cartesian />
+
+                    {/* Span Visualization - Skewed Grid */}
+                    {showSpan && (
+                        isLD ? (
+                            <Line.ThroughPoints point1={[0, 0]} point2={u} color={Theme.indigo} opacity={0.5} weight={12} />
+                        ) : (
+                            <>
+                                <Polygon
+                                    points={[
+                                        [-10, -10], [10, -10], [10, 10], [-10, 10]
+                                    ]}
+                                    color={Theme.indigo}
+                                    fillOpacity={0.15}
+                                    weight={0}
+                                />
+                                {[...Array(21)].map((_, i) => {
+                                    const val = i - 10;
+                                    return (
+                                        <React.Fragment key={i}>
+                                            <Line.ThroughPoints
+                                                point1={[val * u[0] - 10 * v[0], val * u[1] - 10 * v[1]]}
+                                                point2={[val * u[0] + 10 * v[0], val * u[1] + 10 * v[1]]}
+                                                color={Theme.indigo} opacity={0.2} weight={1}
+                                            />
+                                            <Line.ThroughPoints
+                                                point1={[-10 * u[0] + val * v[0], -10 * u[1] + val * v[1]]}
+                                                point2={[10 * u[0] + val * v[0], 10 * u[1] + val * v[1]]}
+                                                color={Theme.indigo} opacity={0.2} weight={1}
+                                            />
+                                        </React.Fragment>
+                                    );
+                                })}
+                            </>
+                        )
+                    )}
+
+                    {/* Parallelogram helpers */}
+                    <Line.Segment point1={[l1 * u[0], l1 * u[1]]} point2={comb} color="gray" opacity={0.3} weight={1} style="dashed" />
+                    <Line.Segment point1={[l2 * v[0], l2 * v[1]]} point2={comb} color="gray" opacity={0.3} weight={1} style="dashed" />
+
+                    <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                    <MovablePoint point={v} onMove={setV} color={Theme.red} />
+
+                    <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
+                    <Vector tail={[0, 0]} tip={v} color={Theme.red} />
+
+                    {/* Components along u and v */}
+                    <Vector tail={[0, 0]} tip={[l1 * u[0], l1 * u[1]]} color={Theme.blue} opacity={0.5} weight={2} />
+                    <Vector tail={[0, 0]} tip={[l2 * v[0], l2 * v[1]]} color={Theme.red} opacity={0.5} weight={2} />
+
+                    <Vector tail={[0, 0]} tip={comb} color={Theme.yellow} weight={3} />
+
+                    <LaTeX at={u} tex="u" color={Theme.blue} />
+                    <LaTeX at={v} tex="v" color={Theme.red} />
+                    <LaTeX at={comb} tex="w = \lambda_1 u + \lambda_2 v" color={Theme.yellow} />
+                </Mafs>
+
+                {/* Info Panel */}
+                <div className="absolute top-4 right-4 w-64 bg-slate-900/90 backdrop-blur-md rounded-xl border border-white/10 p-4 shadow-2xl z-20">
+                    <div className="flex justify-between items-center mb-4">
+                        <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Estat del Sistema</h4>
+                        <div className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase ${isLD ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}`}>
+                            {isLD ? 'Linealment Dependent (LD)' : 'Linealment Independent (LI)'}
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="space-y-1.5">
+                            <div className="flex justify-between text-[9px] font-mono">
+                                <span className="text-blue-400 font-bold italic"><InlineMath math={"\\lambda_1"} /> (Escalar u)</span>
+                                <span className="text-white bg-blue-500/20 px-1 rounded">{l1.toFixed(1)}</span>
+                            </div>
+                            <input type="range" min="-2" max="2" step="0.1" value={l1} onChange={(e) => setL1(parseFloat(e.target.value))} className="w-full accent-blue-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <div className="flex justify-between text-[9px] font-mono">
+                                <span className="text-red-400 font-bold italic"><InlineMath math={"\\lambda_2"} /> (Escalar v)</span>
+                                <span className="text-white bg-red-500/20 px-1 rounded">{l2.toFixed(1)}</span>
+                            </div>
+                            <input type="range" min="-2" max="2" step="0.1" value={l2} onChange={(e) => setL2(parseFloat(e.target.value))} className="w-full accent-red-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
+                        </div>
+
+                        <button
+                            onClick={() => setShowSpan(!showSpan)}
+                            className={`w-full py-2 rounded-lg text-[9px] font-bold uppercase transition-all border ${showSpan ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-transparent border-slate-700 text-slate-400 hover:border-indigo-500 hover:text-indigo-400'}`}
+                        >
+                            {showSpan ? 'Amagar Subespai Generat' : 'Mostrar Subespai Generat (Span)'}
+                        </button>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-white/5 space-y-2">
+                        <p className="text-[9px] text-slate-500 italic leading-relaxed">
+                            {isLD
+                                ? "Els vectors són col·lineals (LD). El subespai generat és només una RECTA."
+                                : "Els vectors apunten en direccions diferents (LI). El subespai generat és tot el PLA."}
+                        </p>
+                        <div className="bg-black/20 p-2 rounded text-[9px] font-mono text-slate-300">
+                            Rang(u, v) = {isLD ? '1' : '2'}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="p-3 bg-slate-900 border-t border-white/5 text-[10px] text-center text-slate-500">
+                <span className="text-white font-bold tracking-tight">LABORATORI DE GENERADORS:</span> Mou els punts <span className="text-blue-400">u</span> i <span className="text-red-400">v</span> per canviar la base del subespai.
+            </div>
+        </div>
+    );
+};
+
+const VisReglesOrBase = () => {
+    const [k, setK] = React.useState(2);
+    const [vectors, setVectors] = React.useState<[number, number][]>([
+        [1.5, 0.5],
+        [0.5, 1.5],
+        [1, 1],
+    ]);
+
+    const handleMove = (index: number, newPos: [number, number]) => {
+        const next = [...vectors];
+        next[index] = newPos;
+        setVectors(next);
+    };
+
+    const activeVectors = vectors.slice(0, k);
+
+    // Simple 2D Rank calculation
+    // If only 1 vector, rank is 1 (unless 0). If 2+, check determinant
+    let rank = 0;
+    if (k >= 1) {
+        const v1 = activeVectors[0];
+        if (Math.abs(v1[0]) > 0.01 || Math.abs(v1[1]) > 0.01) rank = 1;
+    }
+    if (k >= 2) {
+        const v1 = activeVectors[0];
+        const v2 = activeVectors[1];
+        const det = Math.abs(v1[0] * v2[1] - v1[1] * v2[0]);
+        if (det > 0.1) rank = 2;
+    }
+    // With 3 vectors in R2, rank can still be at most 2
+    if (k >= 3 && rank < 2) {
+        // ... (simplified rank check)
+    }
+
+    const isLI = rank === k;
+    const isBase = rank === 2 && k === 2;
+    const canGenerate = rank === 2;
+
+    return (
+        <div className="w-full h-[500px] flex flex-col bg-slate-950">
+            <div className="p-2 flex justify-between items-center bg-slate-900/60 border-b border-white/5 px-4">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Dimensió de l'espai: <InlineMath math={"n=2"} /></span>
+                <div className="flex items-center gap-3">
+                    <span className="text-[9px] font-bold text-slate-500 uppercase">Vectors (k):</span>
+                    <input type="range" min="1" max="3" step="1" value={k} onChange={(e) => setK(parseInt(e.target.value))} className="w-24 accent-indigo-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
+                    <span className="text-[10px] font-black text-white w-4 text-center">{k}</span>
+                </div>
+            </div>
+
+            <div className="flex-1 relative overflow-hidden">
+                <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false}>
+                    <Coordinates.Cartesian />
+
+                    {activeVectors.map((v, i) => (
+                        <React.Fragment key={i}>
+                            <MovablePoint point={v} onMove={(p) => handleMove(i, p)} color={i === 0 ? Theme.blue : (i === 1 ? Theme.red : Theme.green)} />
+                            <Vector tail={[0, 0]} tip={v} color={i === 0 ? Theme.blue : (i === 1 ? Theme.red : Theme.green)} />
+                            <LaTeX at={v} tex={`u_${i + 1}`} color={i === 0 ? Theme.blue : (i === 1 ? Theme.red : Theme.green)} />
+                        </React.Fragment>
+                    ))}
+                </Mafs>
+
+                <div className="absolute top-4 right-4 w-60 bg-slate-900/90 backdrop-blur-md rounded-xl border border-white/10 p-4 shadow-2xl z-20">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 border-b border-white/5 pb-2">Diagnòstic del Conjunt</h4>
+
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-2">
+                            <div className="bg-black/20 p-2 rounded text-center">
+                                <div className="text-[8px] text-slate-500 mb-1 uppercase font-bold">Vectors</div>
+                                <div className="text-sm font-black text-white">{k}</div>
+                            </div>
+                            <div className="bg-black/20 p-2 rounded text-center border border-white/5">
+                                <div className="text-[8px] text-slate-500 mb-1 uppercase font-bold">Rang</div>
+                                <div className={`text-sm font-black ${rank === 2 ? 'text-indigo-400' : 'text-amber-400'}`}>{rank}</div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                                <div className={`w-3 h-3 rounded-full flex items-center justify-center text-[7px] font-bold ${isLI ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                    {isLI ? "✓" : "✗"}
+                                </div>
+                                <span className="text-[9px] text-slate-300 font-medium">Linealment Independent (LI)</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className={`w-3 h-3 rounded-full flex items-center justify-center text-[7px] font-bold ${canGenerate ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                    {canGenerate ? "✓" : "✗"}
+                                </div>
+                                <span className="text-[9px] text-slate-300 font-medium">Generador de <InlineMath math={"\\mathbb{R}^2"} /></span>
+                            </div>
+                            {k === 2 && (
+                                <div className="flex items-center gap-2 pt-1 border-t border-white/5">
+                                    <div className={`w-3 h-3 rounded-full flex items-center justify-center text-[7px] font-bold ${isBase ? 'bg-indigo-500/20 text-indigo-400' : 'bg-slate-700/20 text-slate-500'}`}>
+                                        {isBase ? "✓" : "✗"}
+                                    </div>
+                                    <span className={`text-[9px] font-bold ${isBase ? 'text-indigo-400' : 'text-slate-500'}`}>És una BASE</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="text-[9px] text-slate-500 leading-relaxed italic p-2 bg-black/10 rounded-lg">
+                            {k === 3 && <p><span className="text-white font-bold underline">Regla 1 (k &gt; n):</span> En haver-hi més vectors que dimensions, el conjunt és SEMPRE dependent (LD).</p>}
+                            {k === 1 && <p><span className="text-white font-bold underline">Regla 2 (k &lt; n):</span> Amb un sol vector no podem generar tot el pla. Falten vectors.</p>}
+                            {k === 2 && isBase && <p><span className="text-white font-bold underline">Regla 3 (k = n):</span> Com que hi ha 2 vectors i són LI, formen automàticament una base.</p>}
+                            {k === 2 && !isBase && <p><span className="text-white font-bold underline">Observació:</span> Tot i tenir k=n vectors, com que són col·lineals (LD), no poden ser base.</p>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="p-3 bg-slate-900 border-t border-white/5 text-[10px] text-center text-slate-500">
+                <span className="text-white font-bold tracking-tight uppercase">Base Explorer:</span> Canvia <span className="text-white italic">k</span> per veure com afecten les regles d'examen.
+            </div>
+        </div>
+    );
+};
+
+const VisCanviBase = () => {
+    const [u1, setU1] = React.useState<[number, number]>([1.5, 0.5]);
+    const [u2, setU2] = React.useState<[number, number]>([-0.5, 1.5]);
+    const [v, setV] = React.useState<[number, number]>([1, 2]);
+    const [showGrid, setShowGrid] = React.useState(true);
+
+    // Calculate coordinates (l1, l2) such that v = l1*u1 + l2*u2
+    // Matrix: [u1 u2] * [l1 l2]^T = v
+    const det = u1[0] * u2[1] - u1[1] * u2[0];
+    const isBase = Math.abs(det) > 0.1;
+
+    // Inverse matrix for coordinates
+    const l1 = isBase ? (v[0] * u2[1] - v[1] * u2[0]) / det : 0;
+    const l2 = isBase ? (u1[0] * v[1] - u1[1] * v[0]) / det : 0;
+
+    return (
+        <div className="w-full h-[500px] flex flex-col bg-slate-950">
+            <div className="flex-1 relative overflow-hidden">
+                <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false}>
+                    <g opacity={showGrid ? 0.05 : 0.3}>
+                        <Coordinates.Cartesian />
+                    </g>
+
+                    {/* The Skewed Basis Grid - Manual High Visibility Loop */}
+                    {showGrid && isBase && (
+                        <>
+                            {[...Array(41)].map((_, i) => {
+                                const val = i - 20;
+                                return (
+                                    <React.Fragment key={i}>
+                                        {/* Lines parallel to u2, spaced along u1 */}
+                                        <Line.ThroughPoints
+                                            point1={[val * u1[0] - 20 * u2[0], val * u1[1] - 20 * u2[1]]}
+                                            point2={[val * u1[0] + 20 * u2[0], val * u1[1] + 20 * u2[1]]}
+                                            color={Theme.indigo} opacity={0.3} weight={1}
+                                        />
+                                        {/* Lines parallel to u1, spaced along u2 */}
+                                        <Line.ThroughPoints
+                                            point1={[-20 * u1[0] + val * u2[0], -20 * u1[1] + val * u2[1]]}
+                                            point2={[20 * u1[0] + val * u2[0], 20 * u1[1] + val * u2[1]]}
+                                            color={Theme.indigo} opacity={0.3} weight={1}
+                                        />
+                                    </React.Fragment>
+                                );
+                            })}
+                        </>
+                    )}
+
+                    {/* Parallelogram Projection */}
+                    {isBase && (
+                        <>
+                            <Line.Segment point1={[l1 * u1[0], l1 * u1[1]]} point2={v} color="gray" opacity={0.3} weight={1} style="dashed" />
+                            <Line.Segment point1={[l2 * u2[0], l2 * u2[1]]} point2={v} color="gray" opacity={0.3} weight={1} style="dashed" />
+                        </>
+                    )}
+
+                    <MovablePoint point={u1} onMove={setU1} color={Theme.blue} />
+                    <MovablePoint point={u2} onMove={setU2} color={Theme.red} />
+                    <MovablePoint point={v} onMove={setV} color={Theme.yellow} />
+
+                    <Vector tail={[0, 0]} tip={u1} color={Theme.blue} weight={2} />
+                    <Vector tail={[0, 0]} tip={u2} color={Theme.red} weight={2} />
+                    <Vector tail={[0, 0]} tip={v} color={Theme.yellow} weight={3} />
+
+                    <LaTeX at={u1} tex="u_1" color={Theme.blue} />
+                    <LaTeX at={u2} tex="u_2" color={Theme.red} />
+                    <LaTeX at={v} tex="v" color={Theme.yellow} />
+                </Mafs>
+
+                {/* Info Panel */}
+                <div className="absolute top-4 right-4 w-64 bg-slate-900/90 backdrop-blur-md rounded-xl border border-white/10 p-4 shadow-2xl z-20">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-yellow-400" />
+                        Laboratori de Coordenades
+                    </h4>
+
+                    <div className="space-y-4">
+                        <div className="p-3 bg-black/30 rounded-lg border border-white/5">
+                            <h5 className="text-[8px] font-bold text-slate-500 uppercase mb-2 italic">Vector en base canònica</h5>
+                            <div className="flex justify-between items-center font-mono text-xs">
+                                <span className="text-yellow-400 font-black">v =</span>
+                                <div className="text-white">({v[0].toFixed(1)}, {v[1].toFixed(1)})</div>
+                            </div>
+                        </div>
+
+                        <div className="p-3 bg-indigo-500/10 rounded-lg border border-indigo-500/20">
+                            <h5 className="text-[8px] font-bold text-indigo-400 uppercase mb-2 italic">Coordenades en base <InlineMath math={"B = \\{u_1, u_2\\}"} /></h5>
+                            <div className="flex justify-between items-center font-mono text-xs">
+                                <span className="text-indigo-300 font-black">v_B =</span>
+                                <div className="text-white bg-indigo-500/20 px-2 rounded tracking-tighter">
+                                    ({l1.toFixed(2)}, {l2.toFixed(2)})
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <button
+                                onClick={() => setShowGrid(!showGrid)}
+                                className={`w-full py-2 rounded-lg text-[9px] font-bold uppercase transition-all border ${showGrid ? 'bg-blue-600 border-blue-500 text-white' : 'bg-transparent border-slate-700 text-slate-400 hover:border-blue-500 hover:text-blue-400'}`}
+                            >
+                                {showGrid ? 'Amagar Graella de la Base' : 'Mostrar Graella de la Base'}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-white/5">
+                        <p className="text-[9px] text-slate-500 leading-relaxed italic">
+                            Les coordenades són els "pesos" que donem a cada vector de la base per arribar al destí.
+                            <span className="text-white block mt-1">
+                                <InlineMath math={`v = ${l1.toFixed(1)} \\cdot u_1 + ${l2.toFixed(1)} \\cdot u_2`} />
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="p-3 bg-slate-900 border-t border-white/5 text-[10px] text-center text-slate-500">
+                <span className="text-white font-bold tracking-tight uppercase">Base & Coordinates:</span> Mou els vectors <span className="text-blue-400">u1, u2</span> per canviar el sistema de referència.
+            </div>
+        </div>
+    );
+};
+
 const VISUALIZERS: Record<string, React.ComponentType<any>> = {
+    'vis_canvi_base': VisCanviBase,
+    'vis_regles_or_base': VisReglesOrBase,
+    'vis_independencia_lineal': VisIndependenciaLineal,
+    'vis_operacions_sev': VisOperacionsSEV,
+    'vis_sev_intro': VisSEVIntro,
+    'vis_exemples_espais': VisExemplesEspais,
+    'vis_axiomes_producte': VisAxiomesProducte,
+    'vis_axiomes_suma': VisAxiomesSuma,
     'successio_1_n': VisSuccessio1N,
     'successio_oscilant': VisSuccessioOscilant,
     'teorema_bolzano': VisTeoremaBolzano,
@@ -2173,6 +3207,10 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'ex_7_2_b': VisEx72b,
     'ex_7_4_a': VisEx74a,
     'ex_7_4_b': VisEx74b,
+    'm1_t6_ex6_2': VisM1T6Ex6_2,
+    'm1_t6_ex6_3': VisM1T6Ex6_3,
+    'vis_vector_addition_intro': VisVectorAdditionIntro,
+    'vis_unio_sev_atencio': VisUnioSevAtencio,
     'vis_bola_interactiva': VisBolaInteractiva,
     'vis_ex_pissarra_topologia': VisExPissarraTopologia,
     'vis_dominis_complexos': VisDominisComplexos,
@@ -2182,8 +3220,6 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'vis_metode_punts_prova': VisMetodePuntsProva,
     'vis_classificacio_conjunts': VisClassificacioConjunts,
 };
-
-
 
 
 import { useInteraction } from '../../contexts/InteractionContext';
@@ -2201,8 +3237,8 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
     }
 
     return (
-        <InteractionLock>
-            <div className={`w-full overflow-hidden shadow-lg transition-all duration-500 ${isFullScreen ? 'h-full border-none rounded-none' : 'rounded-2xl border border-white/10 my-8'}`}>
+        <InteractionLock className="my-8">
+            <div className={`w-full overflow-hidden transition-all duration-500 ${isFullScreen ? 'h-full' : ''}`}>
                 <Component />
             </div>
         </InteractionLock>
