@@ -34,6 +34,7 @@ d) Són conjunts compactes?`,
 
 ### b) Topologia dels conjunts
 
+Recordem que:
 - **$S^\\circ$** (Interior): Punts que pertanyen a $S$ amb un entorn totalment contingut en $S$.
 - **$\\bar{S}$** (Adherència): Conjunt de punts que són límit de successions de $S$.
 - **$Fr(S)$** (Frontera): Punts que compleixen $\\bar{S} \\setminus S^\\circ$.

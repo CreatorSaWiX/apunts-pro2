@@ -289,6 +289,47 @@ const VisDistancia3D = () => {
     );
 };
 
+const VisEx76c = () => {
+    const center = new THREE.Vector3(1/3, 1/3, 1/3);
+    const radius = Math.sqrt(2/3);
+    const normal = new THREE.Vector3(1, 1, 1).normalize();
+
+    return (
+        <group>
+            {/* Unit Sphere (Transparent) */}
+            <mesh>
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshStandardMaterial color="#3b82f6" transparent opacity={0.3} side={THREE.DoubleSide} />
+            </mesh>
+            <mesh>
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshBasicMaterial color="#ffffff" wireframe transparent opacity={0.1} />
+            </mesh>
+
+            {/* Plane x + y + z = 1 (Cutout) */}
+            <mesh position={center} onUpdate={(self) => self.lookAt(center.clone().add(normal))}>
+                <planeGeometry args={[4, 4]} />
+                <meshStandardMaterial color="#8b5cf6" transparent opacity={0.2} side={THREE.DoubleSide} />
+            </mesh>
+
+            {/* Intersection Disk (The set C) */}
+            <mesh position={center} onUpdate={(self) => self.lookAt(center.clone().add(normal))}>
+                <circleGeometry args={[radius, 64]} />
+                <meshStandardMaterial color="#f43f5e" side={THREE.DoubleSide} emissive="#f43f5e" emissiveIntensity={0.2} />
+            </mesh>
+
+            {/* Labels */}
+            <Point position={[1, 0, 0]} color="white" />
+            <Point position={[0, 1, 0]} color="white" />
+            <Point position={[0, 0, 1]} color="white" />
+            
+            <Text position={[1.2, 0, 0]} color="white" fontSize={0.2}>(1,0,0)</Text>
+            <Text position={[0, 1.2, 0]} color="white" fontSize={0.2}>(0,1,0)</Text>
+            <Text position={[0, 0, 1.2]} color="white" fontSize={0.2}>(0,0,1)</Text>
+        </group>
+    );
+};
+
 
 const VisSuperficiesBasiques3D = () => {
     const [mode, setMode] = React.useState('pla');
@@ -569,7 +610,187 @@ const VisEx73a = () => {
     );
 };
 
+const VisEx78a = () => {
+    const isMobile = useIsMobile();
+    const [k, setK] = React.useState<number>(1);
+    const f3D = React.useMemo(() => (x: number, y: number) => (x * x * y) * 0.1, []);
+    const { isFullScreen, resizeKey } = useInteraction();
+
+    return (
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[600px]'}`}>
+            <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
+                <div className="flex items-center gap-3">
+                    <span className="bg-blue-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-blue-500/20">Apartat A</span>
+                    <span className="text-sm font-mono text-slate-300"><InlineMath math="z = x^2 y" /></span>
+                </div>
+                <div className="flex-1 w-full max-w-sm">
+                    <div className="flex justify-between mb-1.5 px-1">
+                        <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest text-slate-500">Nivell (z)</span>
+                        <span className="text-xs font-mono text-white bg-blue-600 px-2 py-0.5 rounded">{k.toFixed(1)}</span>
+                    </div>
+                    <input
+                        type="range" min="-2" max="2" step="1" value={k}
+                        onChange={(e) => setK(parseFloat(e.target.value))}
+                        className="w-full h-1.2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
+                </div>
+            </div>
+
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                <div className="relative bg-slate-950/50 h-full overflow-hidden border-b md:border-b-0 md:border-r border-white/5">
+                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                        <Coordinates.Cartesian />
+                        {k === 0 ? (
+                            <>
+                                <Plot.OfX y={() => 0} color={Theme.blue} weight={3} />
+                                <Plot.OfY x={() => 0} color={Theme.blue} weight={3} />
+                            </>
+                        ) : (
+                            <>
+                                <Plot.OfX y={(x) => (x**2 > 0.01 ? k / (x**2) : NaN)} color={Theme.blue} weight={3} />
+                                <Plot.OfX y={(x) => (x**2 > 0.01 ? k / (x**2) : NaN)} color={Theme.blue} weight={3} />
+                            </>
+                        )}
+                        <MafsLaTeX at={[0, -4]} tex={`x^2 y = ${k.toFixed(1)}`} color={Theme.blue} />
+                    </Mafs>
+                </div>
+                <div className="relative h-full overflow-hidden">
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[8, 8, 8]} />
+                        <OrbitControls enableZoom={false} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} />
+                        <FunctionSurface f={f3D} showWireframe={true} colorScale={1} />
+                        <mesh position={[0, k * 0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                            <planeGeometry args={[10, 10]} />
+                            <meshPhongMaterial color="#3b82f6" transparent opacity={0.4} side={THREE.DoubleSide} depthWrite={false} />
+                        </mesh>
+                    </Canvas>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const VisEx78b = () => {
+    const isMobile = useIsMobile();
+    const [k, setK] = React.useState<number>(1);
+    const f3D = React.useMemo(() => (x: number, y: number) => (x * x + y * y - 1) * 0.1, []);
+    const { isFullScreen, resizeKey } = useInteraction();
+
+    return (
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[600px]'}`}>
+            <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
+                <div className="flex items-center gap-3">
+                    <span className="bg-emerald-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-emerald-500/20">Apartat B</span>
+                    <span className="text-sm font-mono text-slate-300"><InlineMath math="z = x^2 + y^2 - 1" /></span>
+                </div>
+                <div className="flex-1 w-full max-w-sm">
+                    <div className="flex justify-between mb-1.5 px-1">
+                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest text-slate-500">Nivell (z)</span>
+                        <span className="text-xs font-mono text-white bg-emerald-600 px-2 py-0.5 rounded">{k.toFixed(1)}</span>
+                    </div>
+                    <input
+                        type="range" min="-2" max="2" step="1" value={k}
+                        onChange={(e) => setK(parseFloat(e.target.value))}
+                        className="w-full h-1.2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    />
+                </div>
+            </div>
+
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                <div className="relative bg-slate-950/50 h-full overflow-hidden border-b md:border-b-0 md:border-r border-white/5">
+                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                        <Coordinates.Cartesian />
+                        {k + 1 > 0 ? (
+                            <Circle center={[0, 0]} radius={Math.sqrt(k + 1)} color={Theme.green} weight={3} />
+                        ) : k + 1 === 0 ? (
+                            <Circle center={[0, 0]} radius={0.1} color={Theme.green} fillOpacity={1} />
+                        ) : null}
+                        <MafsLaTeX at={[0, -4]} tex={`x^2 + y^2 = ${k + 1}`} color={Theme.green} />
+                    </Mafs>
+                </div>
+                <div className="relative h-full overflow-hidden">
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[8, 8, 8]} />
+                        <OrbitControls enableZoom={false} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} />
+                        <FunctionSurface f={f3D} showWireframe={true} colorScale={1.5} />
+                        <mesh position={[0, k * 0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                            <planeGeometry args={[10, 10]} />
+                            <meshPhongMaterial color="#10b981" transparent opacity={0.4} side={THREE.DoubleSide} depthWrite={false} />
+                        </mesh>
+                    </Canvas>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const VisEx78c = () => {
+    const isMobile = useIsMobile();
+    const [k, setK] = React.useState<number>(2);
+    const f3D = React.useMemo(() => (x: number, y: number) => (Math.abs(x + y) + Math.abs(x - y)) * 0.2, []);
+    const { isFullScreen, resizeKey } = useInteraction();
+
+    return (
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[600px]'}`}>
+            <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
+                <div className="flex items-center gap-3">
+                    <span className="bg-rose-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-rose-500/20">Apartat C</span>
+                    <span className="text-sm font-mono text-slate-300"><InlineMath math="z = |x+y| + |x-y|" /></span>
+                </div>
+                <div className="flex-1 w-full max-w-sm">
+                    <div className="flex justify-between mb-1.5 px-1">
+                        <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest text-slate-500">Nivell (z)</span>
+                        <span className="text-xs font-mono text-white bg-rose-600 px-2 py-0.5 rounded">{k.toFixed(1)}</span>
+                    </div>
+                    <input
+                        type="range" min="0" max="4" step="1" value={k}
+                        onChange={(e) => setK(parseFloat(e.target.value))}
+                        className="w-full h-1.2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-rose-500"
+                    />
+                </div>
+            </div>
+
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                <div className="relative bg-slate-950/50 h-full overflow-hidden border-b md:border-b-0 md:border-r border-white/5">
+                    <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} zoom={false} preserveAspectRatio={false}>
+                        <Coordinates.Cartesian />
+                        {k > 0 ? (
+                            <Polygon
+                                points={[
+                                    [k/2, k/2], [-k/2, k/2], [-k/2, -k/2], [k/2, -k/2]
+                                ]}
+                                color={Theme.pink} weight={3} fillOpacity={0.1}
+                            />
+                        ) : k === 0 ? (
+                            <Circle center={[0, 0]} radius={0.1} color={Theme.pink} fillOpacity={1} />
+                        ) : null}
+                        <MafsLaTeX at={[0, -2.5]} tex={`2 \\max(|x|, |y|) = ${k.toFixed(1)}`} color={Theme.pink} />
+                    </Mafs>
+                </div>
+                <div className="relative h-full overflow-hidden">
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[8, 8, 8]} />
+                        <OrbitControls enableZoom={false} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} />
+                        <FunctionSurface f={f3D} showWireframe={true} colorScale={2} />
+                        <mesh position={[0, k * 0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                            <planeGeometry args={[10, 10]} />
+                            <meshPhongMaterial color="#f43f5e" transparent opacity={0.4} side={THREE.DoubleSide} depthWrite={false} />
+                        </mesh>
+                    </Canvas>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const VisEx73b = () => {
+
     const isMobile = useIsMobile();
     const [k, setK] = React.useState<number>(0);
     const f3D = React.useMemo(() => (x: number, y: number) => (1 - Math.abs(x) - Math.abs(y)) * 1.5, []);
@@ -1221,6 +1442,10 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'vis_distancia_sync_3d_2d': VisDistanciaSync3D2D,
     'vis_ex7_3_a': VisEx73a,
     'vis_ex7_3_b': VisEx73b,
+    'vis_ex_7_8_a': VisEx78a,
+    'vis_ex_7_8_b': VisEx78b,
+    'vis_ex_7_8_c': VisEx78c,
+    'vis_ex_7_6_c': VisEx76c,
     'punts_sella': VisPuntsSella,
     'paraboloide': VisParaboloide,
     'pla_tangent': VisPlaTangentINormalHibrid,
@@ -1297,6 +1522,9 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
         'vis_distancia_sync_3d_2d',
         'vis_ex7_3_a',
         'vis_ex7_3_b',
+        'vis_ex_7_8_a',
+        'vis_ex_7_8_b',
+        'vis_ex_7_8_c',
         'vis_derivada_direccional_hibrida',
         'vis_derivades_parcials_hibrida',
         'pla_tangent',

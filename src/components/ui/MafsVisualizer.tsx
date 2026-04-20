@@ -1591,16 +1591,17 @@ const VisBolaInteractiva = () => {
 
 const VisExPissarraTopologia = () => {
     const [point, setPoint] = React.useState<[number, number]>([0.4, 0.4]);
-    const [view, setView] = React.useState<'set' | 'int' | 'fr'>('set');
+    const [view, setView] = React.useState<'set' | 'int' | 'fr' | 'adh'>('set');
     const [epsilon, setEpsilon] = React.useState(0.2);
 
-    // Definició del triangle A: x>=0, y>=0, x+y < 1
-    const checkInside = (px: number, py: number) => px > 0 && py > 0 && (px + py < 1);
+    // Definició del triangle A: x>=0, y>=0, x+y < 1 (segons teoria)
+    const checkInside = (px: number, py: number) => px >= 0 && py >= 0 && (px + py < 1);
 
     // Verificació d'Interior i Frontera mostrejant la bola
     const isInsideTriangle = checkInside(point[0], point[1]);
     const samples = [[0, epsilon], [0, -epsilon], [epsilon, 0], [-epsilon, 0],
     [epsilon * 0.7, epsilon * 0.7], [-epsilon * 0.7, -epsilon * 0.7],
+    [epsilon * 1, epsilon * 1], [-epsilon * 1, -epsilon * 1], // Mostres extra per precisió
     [epsilon * 0.7, -epsilon * 0.7], [-epsilon * 0.7, epsilon * 0.7]];
 
     const touchesInside = samples.some(s => checkInside(point[0] + s[0], point[1] + s[1])) || checkInside(point[0], point[1]);
@@ -1611,14 +1612,16 @@ const VisExPissarraTopologia = () => {
 
     return (
         <div className="w-full flex flex-col">
-            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex flex-wrap items-center justify-between gap-4 h-auto md:h-16">
                 <div className="flex items-center gap-3">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Radi ε:</span>
                     <input type="range" min="0.05" max="0.4" step="0.01" value={epsilon} onChange={(e) => setEpsilon(parseFloat(e.target.value))} className="w-24 accent-blue-500" />
                 </div>
                 <div className="flex gap-1 bg-black/20 p-1 rounded-lg">
-                    {['set', 'int', 'fr'].map((v) => (
-                        <button key={v} onClick={() => setView(v as any)} className={`px-2 py-1 rounded text-[9px] font-bold transition uppercase ${view === v ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-white'}`}>{v === 'set' ? 'Conjunt A' : v === 'int' ? 'A° (Int)' : 'Fr (Front)'}</button>
+                    {['set', 'int', 'fr', 'adh'].map((v) => (
+                        <button key={v} onClick={() => setView(v as any)} className={`px-2 py-1 rounded text-[9px] font-black transition uppercase ${view === v ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-500 hover:text-white'}`}>
+                            {v === 'set' ? 'Conjunt A' : v === 'int' ? 'A° (Int)' : v === 'fr' ? 'Fr (Front)' : ' \u0304A (Adh)'}
+                        </button>
                     ))}
                 </div>
             </div>
@@ -1626,8 +1629,28 @@ const VisExPissarraTopologia = () => {
             <Mafs viewBox={{ x: [-0.2, 1.2], y: [-0.2, 1.2] }} pan={false} zoom={false}>
                 <Coordinates.Cartesian subdivisions={2} />
 
-                {/* Conjunt A - SEMPRE PINTAT per context */}
-                <Polygon points={[[0, 0], [1, 0], [0, 1]]} color={Theme.blue} fillOpacity={0.2} strokeStyle={view === 'fr' ? 'solid' : 'dashed'} />
+                {/* Ombrejat del conjunt (només per a modes que inclouen interior) */}
+                {view !== 'fr' && (
+                    <Polygon points={[[0, 0], [1, 0], [0, 1]]} color={Theme.blue} fillOpacity={0.15} weight={0} />
+                )}
+
+                {/* Dibuix de les vores (específic per cada mode) */}
+                {view === 'set' && (
+                    <>
+                        <Line.Segment point1={[0, 0]} point2={[1, 0]} weight={3} color={Theme.blue} />
+                        <Line.Segment point1={[0, 0]} point2={[0, 1]} weight={3} color={Theme.blue} />
+                        <Line.Segment point1={[1, 0]} point2={[0, 1]} weight={3} color={Theme.blue} style="dashed" />
+                    </>
+                )}
+                {view === 'int' && (
+                    <Polygon points={[[0, 0], [1, 0], [0, 1]]} color={Theme.blue} fillOpacity={0} weight={3} strokeStyle="dashed" />
+                )}
+                {view === 'adh' && (
+                    <Polygon points={[[0, 0], [1, 0], [0, 1]]} color={Theme.blue} fillOpacity={0} weight={3} strokeStyle="solid" />
+                )}
+                {view === 'fr' && (
+                    <Polygon points={[[0, 0], [1, 0], [0, 1]]} color={Theme.blue} fillOpacity={0} weight={3} strokeStyle="solid" />
+                )}
 
                 {/* Bola de definició */}
                 <Circle center={point} radius={epsilon} color={isActuallyInterior ? Theme.green : (isActuallyBoundary ? Theme.orange : Theme.red)} fillOpacity={0.15} weight={2} />
@@ -1642,17 +1665,31 @@ const VisExPissarraTopologia = () => {
                 />
             </Mafs>
 
-            <div className="bg-slate-800/50 p-4 border-t border-white/10">
+            <div className="bg-slate-900 border-t border-white/5 p-5">
+                <div className="mb-4">
+                    <p className="text-[10px] text-slate-400 italic">
+                        {view === 'set' && "Conjunt original: Inclou els eixos (línia plena) però no la hipotenusa (discontínua)."}
+                        {view === 'int' && "Interior: Tots els punts amb un entorn totalment blau. Totes les vores són discontínues."}
+                        {view === 'fr' && "Frontera: Punts on qualsevol bola toca el conjunt i el seu exterior simultàniament."}
+                        {view === 'adh' && "Adherència: El conjunt original més tota la seva frontera (tot tancat)."}
+                    </p>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className={`p-3 rounded-xl border transition-all ${isActuallyInterior ? 'bg-green-500/10 border-green-500/30 ring-1 ring-green-500/20' : 'bg-black/20 border-white/5 opacity-50'}`}>
-                        <div className="text-[9px] uppercase font-black text-green-500 mb-2 tracking-widest">Punt Interior (Definició)</div>
-                        <div className="mb-2"><InlineMath math="\exists \epsilon > 0 : B(x, \epsilon) \subseteq A" /></div>
-                        <p className="text-[9px] text-slate-400 leading-relaxed">Tota la bola entra dins del color blau.</p>
+                    <div className={`p-4 rounded-xl border transition-all duration-300 ${isActuallyInterior ? 'bg-emerald-500/10 border-emerald-500/30 ring-1 ring-emerald-500/20' : 'bg-black/20 border-white/5 opacity-40'}`}>
+                        <div className="text-[9px] uppercase font-black text-emerald-400 mb-2 tracking-widest flex justify-between">
+                            Punt Interior
+                            {isActuallyInterior && <span>✓</span>}
+                        </div>
+                        <div className="mb-2"><InlineMath math="B(x, \epsilon) \subseteq A" /></div>
+                        <p className="text-[9px] text-slate-500 leading-relaxed">La bola de radi $\epsilon$ està totalment dins del triangle.</p>
                     </div>
-                    <div className={`p-3 rounded-xl border transition-all ${isActuallyBoundary ? 'bg-orange-500/10 border-orange-500/30 ring-1 ring-orange-500/20' : 'bg-black/20 border-white/5 opacity-50'}`}>
-                        <div className="text-[9px] uppercase font-black text-orange-500 mb-2 tracking-widest">Punt Frontera (Definició)</div>
-                        <div className="mb-2"><InlineMath math="\forall \epsilon > 0 : B \cap A \neq \emptyset \wedge B \cap A^c \neq \emptyset" /></div>
-                        <p className="text-[9px] text-slate-400 leading-relaxed">La bola toca blau i negre alhora.</p>
+                    <div className={`p-4 rounded-xl border transition-all duration-300 ${isActuallyBoundary ? 'bg-amber-500/10 border-amber-500/30 ring-1 ring-amber-500/20' : 'bg-black/20 border-white/5 opacity-40'}`}>
+                        <div className="text-[9px] uppercase font-black text-amber-400 mb-2 tracking-widest flex justify-between">
+                            Punt Frontera
+                            {isActuallyBoundary && <span>✓</span>}
+                        </div>
+                        <div className="mb-2"><InlineMath math="B \cap A \neq \emptyset \wedge B \cap A^c \neq \emptyset" /></div>
+                        <p className="text-[9px] text-slate-500 leading-relaxed">La bola talla tant el conjunt blau com el buit exterior.</p>
                     </div>
                 </div>
             </div>
@@ -1959,7 +1996,482 @@ const VisMetodePuntsProva = () => {
     );
 };
 
+const VisEx71a = () => {
+    const [point, setPoint] = React.useState<[number, number]>([0.5, 0.5]);
+    const dist = Math.sqrt(point[0] ** 2 + point[1] ** 2);
+    const isIn = dist < 1;
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt A: <InlineMath math="x^2 + y^2 < 1" /></span>
+                    <span className="text-xs font-mono text-white">Distància = {dist.toFixed(3)}</span>
+                </div>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                    {isIn ? '✓ Dins del Conjunt' : '✗ Fora del Conjunt'}
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-1.5, 1.5], y: [-1.5, 1.5] }} pan={false} zoom={false}>
+                <Coordinates.Cartesian />
+                <Circle
+                    center={[0, 0]}
+                    radius={1}
+                    color={Theme.blue}
+                    fillOpacity={0.15}
+                    strokeStyle="dashed"
+                    weight={3}
+                />
+                <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
+                <LaTeX at={[0.1, -1.2]} tex="x^2 + y^2 < 1" color={Theme.blue} />
+            </Mafs>
+            <div className="p-4 bg-slate-900 border-t border-white/5 text-[10px] text-slate-500 leading-relaxed italic text-center">
+                El <span className="text-blue-400 font-bold">Disc Unitat Obert</span> inclou l'interior però no la vora. 
+                Observa com en moure el punt cap a la frontera (r=1) l'indicador canvia a vermell.
+            </div>
+        </div>
+    );
+};
+
+const VisEx71b = () => {
+    const [point, setPoint] = React.useState<[number, number]>([1, 0.5]);
+    const x = point[0];
+    const y = point[1];
+    const isIn = Math.abs(y) <= x * x && y !== 0 && Math.abs(x) <= 2;
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt B: <InlineMath math="|y| \le x^2, y \ne 0, x \in [-2, 2]" /></span>
+                    <span className="text-xs font-mono text-white">|y| = {Math.abs(y).toFixed(2)} | x² = {(x * x).toFixed(2)}</span>
+                </div>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                    {isIn ? '✓ Punt de B' : '✗ Fora de B'}
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-2.5, 2.5], y: [-4.5, 4.5] }} pan={false}>
+                <Coordinates.Cartesian />
+
+                {/* Region B filling - Top */}
+                <Polygon
+                    points={[
+                        ...Array.from({ length: 41 }, (_, i) => {
+                            const xi = -2 + (i / 40) * 4;
+                            return [xi, xi * xi] as [number, number];
+                        }),
+                        [2, 0],
+                        [-2, 0]
+                    ]}
+                    color={Theme.blue} fillOpacity={0.12} weight={0}
+                />
+                {/* Region B filling - Bottom */}
+                <Polygon
+                    points={[
+                        ...Array.from({ length: 41 }, (_, i) => {
+                            const xi = -2 + (i / 40) * 4;
+                            return [xi, -xi * xi] as [number, number];
+                        }),
+                        [2, 0],
+                        [-2, 0]
+                    ]}
+                    color={Theme.blue} fillOpacity={0.12} weight={0}
+                />
+
+                {/* Boundaries */}
+                <Plot.OfX y={(x) => (Math.abs(x) <= 2 ? x * x : NaN)} color={Theme.blue} weight={2} />
+                <Plot.OfX y={(x) => (Math.abs(x) <= 2 ? -x * x : NaN)} color={Theme.blue} weight={2} />
+                <Line.Segment point1={[-2, -4]} point2={[-2, 4]} color={Theme.blue} weight={2} />
+                <Line.Segment point1={[2, -4]} point2={[2, 4]} color={Theme.blue} weight={2} />
+
+                {/* Excluded axis */}
+                <Line.Segment point1={[-2, 0]} point2={[2, 0]} color={Theme.red} weight={2} style="dashed" opacity={0.5} />
+
+                <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
+
+                <LaTeX at={[1.8, 3.8]} tex="y = x^2" color={Theme.blue} />
+                <LaTeX at={[1.8, -3.8]} tex="y = -x^2" color={Theme.blue} />
+            </Mafs>
+            <div className="p-4 bg-slate-900 border-t border-white/5 text-[10px] text-slate-500 leading-relaxed italic text-center">
+                Regió entre paràboles. L'eix <span className="text-red-400 font-bold">y=0</span> (vermell) està exclòs del conjunt $B$ però és frontera. 
+                Arrossega el punt sobre l'eix per veure com canvia l'estat.
+            </div>
+        </div>
+    );
+};
+
+const VisEx79 = () => {
+    const [a, setA] = React.useState<number>(1);
+    const levelValue = React.useMemo(() => (a**4) / Math.pow(1 + a**2, 3), [a]);
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">
+                        Funció: <InlineMath math="f(x,y) = \frac{x^4 y^4}{(x^4 + y^2)^3}" />
+                    </span>
+                    <span className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest leading-none">
+                        Corba de nivell: <InlineMath math={"y = " + a.toFixed(1) + "x^2"} />
+                    </span>
+                </div>
+                <div className="flex items-center gap-4 bg-slate-900/50 px-4 py-2 rounded-xl border border-white/5">
+                    <div className="flex flex-col items-center">
+                        <span className="text-[9px] text-slate-500 font-bold uppercase">Paràmetre a</span>
+                        <input
+                            type="range" min="-5" max="5" step="0.1" value={a}
+                            onChange={(e) => setA(parseFloat(e.target.value))}
+                            className="w-32 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                        />
+                    </div>
+                    <div className="h-8 w-[1px] bg-white/10 mx-2" />
+                    <div className="flex flex-col items-center">
+                        <span className="text-[9px] text-slate-500 font-bold uppercase">Valor f(a)</span>
+                        <span className="text-sm font-mono text-white font-bold">{levelValue.toFixed(4)}</span>
+                    </div>
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={true}>
+                <Coordinates.Cartesian />
+                <Plot.OfX y={(x) => a * x**2} color={Theme.indigo} weight={3} />
+                {/* Background levels */}
+                {[-2, -1, 0, 1, 2].map(k => k !== a && (
+                    <Plot.OfX key={k} y={(x) => k * x**2} color="#64748b" opacity={0.2} weight={1} />
+                ))}
+                <LaTeX at={[0, -3.5]} tex={"f(x, ax^2) = \\frac{a^4}{(1+a^2)^3}"} color={Theme.indigo} />
+            </Mafs>
+            <div className="p-3 bg-slate-900/80 border-t border-white/5 text-[10px] text-slate-400 italic text-center">
+                Observeu que per a cada paràbola (valor de <InlineMath math="a" />), el valor de la funció és constant.
+            </div>
+        </div>
+    );
+};
+
+const VisEx77a = () => {
+
+    const [point, setPoint] = React.useState<[number, number]>([1, 1]);
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Domini A: <InlineMath math="f(x,y) = x^2 - y^2" /></span>
+                    <span className="text-xs font-mono text-white">Dom(f) = ℝ²</span>
+                </div>
+                <div className="px-4 py-1.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-black uppercase shadow-lg">
+                    ✓ Sempre definit
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={true}>
+                <Coordinates.Cartesian />
+                <Polygon
+                    points={[[-10,-10], [10,-10], [10,10], [-10,10]]}
+                    color={Theme.blue} fillOpacity={0.15} weight={0}
+                />
+                <MovablePoint point={point} onMove={setPoint} color={Theme.green} />
+            </Mafs>
+        </div>
+    );
+};
+
+const VisEx77b = () => {
+    const [point, setPoint] = React.useState<[number, number]>([0.5, 0.5]);
+    const d2 = point[0]**2 + point[1]**2;
+    const isIn = d2 <= 1;
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Domini B: <InlineMath math="g(x,y) = \sqrt{1-x^2-y^2}" /></span>
+                    <span className="text-xs font-mono text-white">x² + y² ≤ 1</span>
+                </div>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                    {isIn ? '✓ Definit' : '✗ Fora del domini'}
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-1.5, 1.5], y: [-1.5, 1.5] }} pan={false} zoom={false}>
+                <Coordinates.Cartesian />
+                <Circle center={[0,0]} radius={1} color={Theme.blue} fillOpacity={0.15} weight={3} />
+                <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
+            </Mafs>
+        </div>
+    );
+};
+
+const VisEx77c = () => {
+    const [point, setPoint] = React.useState<[number, number]>([1, 1]);
+    const isIn = point[0] + point[1] > 0;
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Domini C: <InlineMath math="h(x,y) = \ln(x+y)" /></span>
+                    <span className="text-xs font-mono text-white"><InlineMath math="y > -x" /></span>
+                </div>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                    {isIn ? '✓ Definit' : '✗ Fora del domini'}
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={true}>
+                <Coordinates.Cartesian />
+                <Polygon
+                    points={[[-10, 10], [10, 10], [10, -10], [-10, 10]]}
+                    color={Theme.blue} fillOpacity={0.15} weight={0}
+                />
+                <Plot.OfX y={(x) => -x} color={Theme.blue} weight={3} style="dashed" />
+                <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
+            </Mafs>
+        </div>
+    );
+};
+
+const VisEx76a = () => {
+
+    const [point, setPoint] = React.useState<[number, number]>([0.5, 0.5]);
+    const x = point[0];
+    const y = point[1];
+    const isIn = x * x - y * y < 1;
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt A: <InlineMath math="x^2 - y^2 < 1" /></span>
+                    <span className="text-xs font-mono text-white">x² - y² = {(x * x - y * y).toFixed(2)}</span>
+                </div>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                    {isIn ? '✓ Punt de A' : '✗ Fora de A'}
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={true}>
+                <Coordinates.Cartesian />
+                
+                {/* Hyperbola region filling */}
+                <Polygon
+                    points={[
+                        ...Array.from({ length: 41 }, (_, i) => {
+                            const yi = -4 + (i / 40) * 8;
+                            return [Math.sqrt(Math.max(0, 1 + yi * yi)) - 0.01, yi] as [number, number];
+                        }).reverse(),
+                        ...Array.from({ length: 41 }, (_, i) => {
+                            const yi = -4 + (i / 40) * 8;
+                            return [-Math.sqrt(Math.max(0, 1 + yi * yi)) + 0.01, yi] as [number, number];
+                        })
+                    ]}
+                    color={Theme.blue} fillOpacity={0.15} weight={0}
+                />
+
+                {/* Boundaries (Dashed because < 1) */}
+                <Plot.OfY x={(y) => Math.sqrt(1 + y * y)} color={Theme.blue} weight={2} style="dashed" />
+                <Plot.OfY x={(y) => -Math.sqrt(1 + y * y)} color={Theme.blue} weight={2} style="dashed" />
+
+                <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
+            </Mafs>
+            <div className="p-4 bg-slate-900 border-t border-white/5 text-[10px] text-slate-500 leading-relaxed italic text-center">
+                Regió compresa entre les dues branques de la hipèrbola. Com que la desigualtat és estricta, la frontera <InlineMath math="x^2-y^2=1" /> no hi pertany.
+            </div>
+        </div>
+    );
+};
+
+const VisEx76b = () => {
+    const [point, setPoint] = React.useState<[number, number]>([0.5, 0.5]);
+    const x = point[0];
+    const y = point[1];
+    const isIn = x > 0 && y > 0 && x * y <= 1;
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt B: <InlineMath math="x > 0, y > 0, xy \le 1" /></span>
+                    <span className="text-xs font-mono text-white">xy = {(x * y).toFixed(2)}</span>
+                </div>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                    {isIn ? '✓ Punt de B' : '✗ Fora de B'}
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-0.5, 5], y: [-0.5, 5] }} pan={true}>
+                <Coordinates.Cartesian />
+                
+                {/* Hyperbola region filling */}
+                <Polygon
+                    points={[
+                        [0.1, 0.1], // Avoid 0 for cleaner visuals
+                        [5, 0.1],
+                        [5, 1/5],
+                        ...Array.from({ length: 41 }, (_, i) => {
+                            const xi = 5 - (i / 40) * 4.8;
+                            return [xi, 1 / xi] as [number, number];
+                        }),
+                        [0.2, 5],
+                        [0.1, 5]
+                    ]}
+                    color={Theme.blue} fillOpacity={0.15} weight={0}
+                />
+
+                {/* Boundaries */}
+                <Plot.OfX y={(x) => (x >= 0.01 && x <= 5 ? 1 / x : NaN)} color={Theme.blue} weight={3} />
+                <Line.Segment point1={[0, 0]} point2={[5, 0]} color={Theme.blue} weight={2} style="dashed" />
+                <Line.Segment point1={[0, 0]} point2={[0, 5]} color={Theme.blue} weight={2} style="dashed" />
+
+                <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
+            </Mafs>
+            <div className="p-4 bg-slate-900 border-t border-white/5 text-[10px] text-slate-500 leading-relaxed italic text-center">
+                Regió al primer quadrant sota la hipèrbola. Els eixos <span className="text-blue-300 font-bold">x=0</span> i <span className="text-blue-300 font-bold">y=0</span> són frontera però no pertanyen al conjunt.
+            </div>
+        </div>
+    );
+};
+
+const VisEx75a = () => {
+
+    const [point, setPoint] = React.useState<[number, number]>([3, 1]);
+    const x = point[0];
+    const y = point[1];
+    const isIn = Math.abs(x - 3) < 2 && Math.abs(1 - y) <= 5;
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt A: <InlineMath math="|x-3|<2, |1-y|\le 5" /></span>
+                    <span className="text-xs font-mono text-white">x ∈ (1, 5) | y ∈ [-4, 6]</span>
+                </div>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                    {isIn ? '✓ Punt de A' : '✗ Fora de A'}
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [0, 6], y: [-6, 8] }} pan={true}>
+                <Coordinates.Cartesian />
+                <Polygon
+                    points={[[1, -4], [5, -4], [5, 6], [1, 6]]}
+                    color={Theme.blue}
+                    fillOpacity={0.15}
+                    weight={0}
+                />
+                {/* Horizontal borders (included) */}
+                <Line.Segment point1={[1, -4]} point2={[5, -4]} color={Theme.blue} weight={3} />
+                <Line.Segment point1={[1, 6]} point2={[5, 6]} color={Theme.blue} weight={3} />
+                {/* Vertical borders (excluded) */}
+                <Line.Segment point1={[1, -4]} point2={[1, 6]} color={Theme.blue} weight={3} style="dashed" />
+                <Line.Segment point1={[5, -4]} point2={[5, 6]} color={Theme.blue} weight={3} style="dashed" />
+
+                <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
+            </Mafs>
+            <div className="p-4 bg-slate-900 border-t border-white/5 text-[10px] text-slate-500 leading-relaxed italic text-center">
+                Rectangle amb vores mixtes: Les línies <span className="text-blue-400 font-bold">sòlides</span> pertanyen al conjunt, les <span className="text-blue-400 font-bold opacity-70">discontínues</span> no.
+            </div>
+        </div>
+    );
+};
+
+const VisEx75b = () => {
+    const [point, setPoint] = React.useState<[number, number]>([-2, 2]);
+    const x = point[0];
+    const y = point[1];
+    
+    // |x^2+4x+1| = -x^2-4x-1  <=> x^2+4x+1 <= 0
+    const xMin = -2 - Math.sqrt(3);
+    const xMax = -2 + Math.sqrt(3);
+    const isInX = x >= xMin && x <= xMax;
+    const isInY = Math.abs(y - 2) < 10;
+    const isIn = isInX && isInY;
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt B: <InlineMath math="x^2+4x+1 \le 0, |y-2|<10" /></span>
+                    <span className="text-xs font-mono text-white">x ∈ [{xMin.toFixed(2)}, {xMax.toFixed(2)}] | y ∈ (-8, 12)</span>
+                </div>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                    {isIn ? '✓ Punt de B' : '✗ Fora de B'}
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-6, 2], y: [-10, 15] }} pan={true}>
+                <Coordinates.Cartesian />
+                <Polygon
+                    points={[[xMin, -8], [xMax, -8], [xMax, 12], [xMin, 12]]}
+                    color={Theme.indigo}
+                    fillOpacity={0.15}
+                    weight={0}
+                />
+                {/* Vertical borders (included) */}
+                <Line.Segment point1={[xMin, -8]} point2={[xMin, 12]} color={Theme.indigo} weight={3} />
+                <Line.Segment point1={[xMax, -8]} point2={[xMax, 12]} color={Theme.indigo} weight={3} />
+                {/* Horizontal borders (excluded) */}
+                <Line.Segment point1={[xMin, -8]} point2={[xMax, -8]} color={Theme.indigo} weight={3} style="dashed" />
+                <Line.Segment point1={[xMin, 12]} point2={[xMax, 12]} color={Theme.indigo} weight={3} style="dashed" />
+
+                <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
+            </Mafs>
+        </div>
+    );
+};
+
+const VisEx75c = () => {
+    const [point, setPoint] = React.useState<[number, number]>([-0.2, 0.5]);
+    const d2 = point[0] ** 2 + point[1] ** 2;
+    const isIn = d2 <= 1 && point[0] < point[1];
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-between items-center h-16">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt C: <InlineMath math="x^2+y^2 \le 1, x < y" /></span>
+                    <span className="text-xs font-mono text-white">Disc unitat tallat per $y=x$</span>
+                </div>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                    {isIn ? '✓ Punt de C' : '✗ Fora de C'}
+                </div>
+            </div>
+            <Mafs viewBox={{ x: [-1.5, 1.5], y: [-1.5, 1.5] }} pan={false} zoom={false}>
+                <Coordinates.Cartesian />
+                
+                {/* Semicircle filling */}
+                <Polygon
+                    points={[
+                        ...Array.from({ length: 51 }, (_, i) => {
+                            const angle = Math.PI / 4 + (i / 50) * Math.PI;
+                            return [Math.cos(angle), Math.sin(angle)] as [number, number];
+                        }),
+                        [-Math.sqrt(0.5), -Math.sqrt(0.5)]
+                    ]}
+                    color={Theme.blue}
+                    fillOpacity={0.15}
+                    weight={0}
+                />
+
+                {/* Boundary Arc (included) */}
+                <Plot.OfX y={(x) => (x**2 <= 1 && x <= Math.sqrt(0.5) && x >= -Math.sqrt(0.5) && Math.sqrt(1-x**2) >= x ? Math.sqrt(1-x**2) : NaN)} color={Theme.blue} weight={3} />
+                <Plot.OfX y={(x) => (x**2 <= 1 && x <= -Math.sqrt(0.5) ? -Math.sqrt(1-x**2) : NaN)} color={Theme.blue} weight={3} />
+                {/* Wait, simpler way to draw the arc: */}
+                <Circle center={[0,0]} radius={1} color={Theme.blue} fillOpacity={0} weight={3} strokeStyle="solid" />
+                {/* Wait, I should only draw the part of the circle that is x < y. 
+                    Circle doesn't support domain. I'll use a trick with Polygon or many segments.
+                */}
+                
+                {/* Chord y=x (excluded) */}
+                <Line.Segment 
+                    point1={[-Math.sqrt(0.5), -Math.sqrt(0.5)]} 
+                    point2={[Math.sqrt(0.5), Math.sqrt(0.5)]} 
+                    color={Theme.blue} weight={3} style="dashed" 
+                />
+
+                <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
+                
+                {/* Line y=x for context */}
+                <Plot.OfX y={(x) => x} color={"#64748b"} weight={1} style="dashed" opacity={0.3} />
+            </Mafs>
+        </div>
+    );
+};
+
 const VisEx72a = () => {
+
+
     const [point, setPoint] = React.useState<[number, number]>([1, 1]);
     const val = 1 + point[0] * point[1];
     const isInDomain = val > 0;
@@ -3201,8 +3713,17 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'propietat_inversio': VisInversioLimits,
     'propietat_additivitat': VisAdditivitatInterval,
     'propietat_linealitat': VisLinealitat,
-    'ex_7_1_a': VisExPissarraTopologia,
-    'ex_7_1_b': VisClassificacioConjunts,
+    'ex_7_9': VisEx79,
+    'ex_7_7_a': VisEx77a,
+    'ex_7_7_b': VisEx77b,
+    'ex_7_7_c': VisEx77c,
+    'ex_7_6_a': VisEx76a,
+    'ex_7_6_b': VisEx76b,
+    'ex_7_5_a': VisEx75a,
+    'ex_7_5_b': VisEx75b,
+    'ex_7_5_c': VisEx75c,
+    'ex_7_1_a': VisEx71a,
+    'ex_7_1_b': VisEx71b,
     'ex_7_2_a': VisEx72a,
     'ex_7_2_b': VisEx72b,
     'ex_7_4_a': VisEx74a,

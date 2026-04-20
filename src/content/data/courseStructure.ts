@@ -513,7 +513,12 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M2-T7-Ex1", title: "Problema 1: Topologia a R^2 (Conjunts)" },
             { id: "M2-T7-Ex2", title: "Problema 2: Domini de funcions" },
             { id: "M2-T7-Ex3", title: "Problema 3: Dibuix de corbes de nivell" },
-            { id: "M2-T7-Ex4", title: "Problema 4: Domini i corbes de nivell complexes" }
+            { id: "M2-T7-Ex4", title: "Problema 4: Domini i corbes de nivell complexes" },
+            { id: "M2-T7-Ex5", title: "Problema 5: Dibuix de subconjunts de R^2" },
+            { id: "M2-T7-Ex6", title: "Problema 6: Topologia i Compacitat" },
+            { id: "M2-T7-Ex7", title: "Problema 7: Representació de dominis" },
+            { id: "M2-T7-Ex8", title: "Problema 8: Dibuix de corbes de nivell" },
+            { id: "M2-T7-Ex9", title: "Problema 9: Verificació de corbes de nivell" }
         ]
     },
     {
