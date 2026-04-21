@@ -8,8 +8,17 @@ export const ex6_5: Solution = {
   type: 'notebook',
   statement: `Sigui $P(\\mathbb{R})_p$ el conjunt de tots els polinomis amb coeficients a $\\mathbb{R}$ i on totes les potències de $x$ tenen grau parell. Esbrineu si $P(\\mathbb{R})_p$ és un espai vectorial amb les operacions de suma i producte per escalar habituals. (Considerem que el polinomi 0 té grau 0.)`,
   content: `
-Per determinar si $P(\\mathbb{R})_p$ és un espai vectorial, comprovarem si compleix les propietats de **subespai vectorial** del conjunt de tots els polinomis $\\mathbb{R}[x]$, que ja sabem que és un espai vectorial.
 
+**Espai Vectorial**: Un conjunt $V$ d'elements (vectors) dotat d'una suma i un producte per escalars que compleix 8 propietats fonamentals (associativitat, commutativitat, element neutre, invers, etc.).
+
+**Subespai Vectorial**: Un subconjunt $S \\subseteq V$ que ell mateix és un espai vectorial aplicant les operacions de $V$. Per comprovar-ho, només cal verificar:
+  1. Que conté el vector nul: $\\vec{0} \\in S$.
+  2. Que és tancat per la suma: la suma de dos elements del conjunt continua sent del conjunt $\\vec{u}, \\vec{v} \\in S \\implies \\vec{u} + \\vec{v} \\in S$.
+  3. Que és tancat pel producte d'escalars: multiplicar per un escalar continua donant un element del conjunt $\\vec{u} \\in S, \\lambda \\in \\mathbb{R} \\implies \\lambda \\vec{u} \\in S$.
+
+::three{type="vis_subespai_3d"}
+
+Per determinar si $P(\\mathbb{R})_p$ és un espai vectorial, comprovarem si compleix les propietats de **subespai vectorial** del conjunt de tots els polinomis $\\mathbb{R}[x]$, que ja sabem que és un espai vectorial.
 Un subconjunt $S$ és un subespai vectorial si conté el vector nul i és tancat per la suma i el producte per escalar.
 
 ### 1) Existència de l'element neutre (Polinomi nul)
@@ -21,7 +30,9 @@ $$0 \\in P(\\mathbb{R})_p$$
 ### 2) Tancament respecte a la suma
 
 Siguin $p(x)$ i $q(x)$ dos polinomis de $P(\\mathbb{R})_p$. Això vol dir que es poden escriure com:
+
 $$p(x) = a_0 + a_2 x^2 + a_4 x^4 + \\dots + a_{2n} x^{2n}$$
+
 $$q(x) = b_0 + b_2 x^2 + b_4 x^4 + \\dots + b_{2m} x^{2m}$$
 
 Si els sumem:
@@ -37,8 +48,6 @@ $$(\\lambda p)(x) = \\lambda(a_0 + a_2 x^2 + a_4 x^4 + \\dots) = (\\lambda a_0) 
 
 Totes les potències de $x$ en el polinomi resultant són parelles. Per tant:
 $$(\\lambda p)(x) \\in P(\\mathbb{R})_p$$
-
-### Conclusió
 
 Com que es compleixen les tres condicions, $P(\\mathbb{R})_p$ és un **subespai vectorial** de $\\mathbb{R}[x]$ i, per tant, és un **espai vectorial** amb les operacions habituals.
 `,

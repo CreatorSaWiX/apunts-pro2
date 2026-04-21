@@ -290,8 +290,8 @@ const VisDistancia3D = () => {
 };
 
 const VisEx76c = () => {
-    const center = new THREE.Vector3(1/3, 1/3, 1/3);
-    const radius = Math.sqrt(2/3);
+    const center = new THREE.Vector3(1 / 3, 1 / 3, 1 / 3);
+    const radius = Math.sqrt(2 / 3);
     const normal = new THREE.Vector3(1, 1, 1).normalize();
 
     return (
@@ -322,7 +322,7 @@ const VisEx76c = () => {
             <Point position={[1, 0, 0]} color="white" />
             <Point position={[0, 1, 0]} color="white" />
             <Point position={[0, 0, 1]} color="white" />
-            
+
             <Text position={[1.2, 0, 0]} color="white" fontSize={0.2}>(1,0,0)</Text>
             <Text position={[0, 1.2, 0]} color="white" fontSize={0.2}>(0,1,0)</Text>
             <Text position={[0, 0, 1.2]} color="white" fontSize={0.2}>(0,0,1)</Text>
@@ -610,6 +610,69 @@ const VisEx73a = () => {
     );
 };
 
+const VisSubespai3D = () => {
+    const isMobile = useIsMobile();
+    const { isFullScreen } = useInteraction();
+    const u = new THREE.Vector3(2, 1, 1);
+    const v = new THREE.Vector3(-1, 2, 0.5);
+    const sum = new THREE.Vector3().addVectors(u, v);
+
+    return (
+        <div className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-950 ${isFullScreen ? 'h-screen' : 'h-[500px] rounded-2xl border border-white/10 my-8'}`}>
+            <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+                <span className="bg-indigo-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg">Subespai a ℝ³</span>
+                <div className="bg-black/40 backdrop-blur-md p-2 rounded border border-white/10 text-[10px] text-slate-300 font-mono">
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-500" />
+                        <InlineMath math="\vec{u}" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-red-500" />
+                        <InlineMath math="\vec{v}" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <InlineMath math="\vec{u} + \vec{v}" />
+                    </div>
+                </div>
+            </div>
+
+            <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                <PerspectiveCamera makeDefault position={[5, 5, 5]} />
+                <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+                <ambientLight intensity={0.5} />
+                <pointLight position={[10, 10, 10]} intensity={1} />
+                <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+
+                {/* Subspace Plane (Passing through origin) */}
+                <mesh rotation={[-Math.PI / 4, 0, 0]}>
+                    <planeGeometry args={[10, 10]} />
+                    <meshStandardMaterial color="#6366f1" transparent opacity={0.3} side={THREE.DoubleSide} depthWrite={false} />
+                </mesh>
+
+                {/* Vectors */}
+                <Arrow memoDir={u.clone().normalize()} length={u.length()} color="#3b82f6" head={0.2} width={0.05} />
+                <Arrow memoDir={v.clone().normalize()} length={v.length()} color="#ef4444" head={0.2} width={0.05} />
+                <Arrow memoDir={sum.clone().normalize()} length={sum.length()} color="#10b981" head={0.2} width={0.05} />
+
+                {/* Parallelogram Lines */}
+                <Line points={[u.toArray(), sum.toArray()]} color="#ffffff" lineWidth={1} dashed opacity={0.3} />
+                <Line points={[v.toArray(), sum.toArray()]} color="#ffffff" lineWidth={1} dashed opacity={0.3} />
+
+                {/* Point at Origin */}
+                <Point position={[0, 0, 0]} color="white" />
+                <Text position={[0.2, 0.2, 0.2]} color="white" fontSize={0.2}>0</Text>
+            </Canvas>
+
+            <div className="absolute bottom-4 left-4 right-4 text-center pointer-events-none">
+                <p className="text-[10px] text-slate-500 italic bg-black/20 backdrop-blur-sm inline-block px-3 py-1 rounded-full border border-white/5">
+                    Un pla que passa per l'origen és un subespai vectorial. Conté el zero i és tancat per operacions.
+                </p>
+            </div>
+        </div>
+    );
+};
+
 const VisEx78a = () => {
     const isMobile = useIsMobile();
     const [k, setK] = React.useState<number>(1);
@@ -647,8 +710,8 @@ const VisEx78a = () => {
                             </>
                         ) : (
                             <>
-                                <Plot.OfX y={(x) => (x**2 > 0.01 ? k / (x**2) : NaN)} color={Theme.blue} weight={3} />
-                                <Plot.OfX y={(x) => (x**2 > 0.01 ? k / (x**2) : NaN)} color={Theme.blue} weight={3} />
+                                <Plot.OfX y={(x) => (x ** 2 > 0.01 ? k / (x ** 2) : NaN)} color={Theme.blue} weight={3} />
+                                <Plot.OfX y={(x) => (x ** 2 > 0.01 ? k / (x ** 2) : NaN)} color={Theme.blue} weight={3} />
                             </>
                         )}
                         <MafsLaTeX at={[0, -4]} tex={`x^2 y = ${k.toFixed(1)}`} color={Theme.blue} />
@@ -761,7 +824,7 @@ const VisEx78c = () => {
                         {k > 0 ? (
                             <Polygon
                                 points={[
-                                    [k/2, k/2], [-k/2, k/2], [-k/2, -k/2], [k/2, -k/2]
+                                    [k / 2, k / 2], [-k / 2, k / 2], [-k / 2, -k / 2], [k / 2, -k / 2]
                                 ]}
                                 color={Theme.pink} weight={3} fillOpacity={0.1}
                             />
@@ -1155,7 +1218,7 @@ const VisRnDimensionality = () => {
     // Primary Vector State
     const [v1_2d, setV1_2d] = React.useState<[number, number]>([2, 1]);
     const [v1_3d, setV1_3d] = React.useState<[number, number, number]>([2, 2, 2]);
-    
+
     // Secondary Vector State (for Sum)
     const [v2_2d, setV2_2d] = React.useState<[number, number]>([1, 2]);
     const [v2_3d, setV2_3d] = React.useState<[number, number, number]>([-1, 2, 1]);
@@ -1171,7 +1234,7 @@ const VisRnDimensionality = () => {
                 <div className="h-full bg-slate-950/20">
                     <Mafs viewBox={{ x: [-5, 5], y: [-1, 1] }} pan={false} zoom={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian subdivisions={5} />
-                        
+
                         {mode === 'single' && (
                             <>
                                 <MovablePoint point={[v1_2d[0], 0]} onMove={(p) => setV1_2d([p[0], 0])} color={Theme.blue} />
@@ -1211,7 +1274,7 @@ const VisRnDimensionality = () => {
                 <div className="h-full bg-slate-950/20">
                     <Mafs viewBox={{ x: [-5, 5], y: [-4, 4] }} pan={true} zoom={true}>
                         <Coordinates.Cartesian />
-                        
+
                         {mode === 'single' && (
                             <>
                                 <MafsLine.Segment point1={[0, 0]} point2={v1_2d} color={Theme.indigo} weight={3} />
@@ -1227,10 +1290,10 @@ const VisRnDimensionality = () => {
                                 <MafsLine.Segment point1={v1_2d} point2={vSum} color={Theme.red} weight={1} style="dashed" />
                                 <MafsLine.Segment point1={v2_2d} point2={vSum} color={Theme.blue} weight={1} style="dashed" />
                                 <MafsLine.Segment point1={[0, 0]} point2={vSum} color={Theme.yellow} weight={3} />
-                                
+
                                 <MovablePoint point={v1_2d} onMove={setV1_2d} color={Theme.blue} />
                                 <MovablePoint point={v2_2d} onMove={setV2_2d} color={Theme.red} />
-                                
+
                                 <MafsLaTeX at={v1_2d} tex="u" color={Theme.blue} />
                                 <MafsLaTeX at={v2_2d} tex="v" color={Theme.red} />
                                 <MafsLaTeX at={vSum} tex="u+v" color={Theme.yellow} />
@@ -1252,11 +1315,11 @@ const VisRnDimensionality = () => {
                 </div>
             );
         }
-        
+
         // 3D Render
         const vSum3d: [number, number, number] = [v1_3d[0] + v2_3d[0], v1_3d[1] + v2_3d[1], v1_3d[2] + v2_3d[2]];
         const vProd3d: [number, number, number] = [v1_3d[0] * scalar, v1_3d[1] * scalar, v1_3d[2] * scalar];
-        
+
         return (
             <div className="h-full bg-slate-950/40 relative">
                 <Canvas shadows dpr={isMobile ? 1 : [1, 2]}>
@@ -1265,7 +1328,7 @@ const VisRnDimensionality = () => {
                     <ambientLight intensity={0.5} />
                     <pointLight position={[10, 10, 10]} intensity={1} />
                     <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
-                    
+
                     {/* Primary Vector */}
                     <group>
                         <Arrow memoDir={new THREE.Vector3(...v1_3d).normalize()} length={new THREE.Vector3(...v1_3d).length()} color={mode === 'single' ? "#6366f1" : "rgba(99, 102, 241, 0.6)"} head={0.4} width={0.2} />
@@ -1281,7 +1344,7 @@ const VisRnDimensionality = () => {
                         <>
                             <Arrow memoDir={new THREE.Vector3(...v2_3d).normalize()} length={new THREE.Vector3(...v2_3d).length()} color="rgba(239, 68, 68, 0.6)" head={0.4} width={0.15} />
                             <Arrow memoDir={new THREE.Vector3(...vSum3d).normalize()} length={new THREE.Vector3(...vSum3d).length()} color="#eab308" head={0.4} width={0.2} />
-                            
+
                             {/* Dotted Parallelogram lines */}
                             <Line points={[v1_3d, vSum3d]} color="#ef4444" lineWidth={1} dashed dashScale={5} />
                             <Line points={[v2_3d, vSum3d]} color="#6366f1" lineWidth={1} dashed dashScale={5} />
@@ -1294,11 +1357,11 @@ const VisRnDimensionality = () => {
                     {/* Product Mode Visuals */}
                     {mode === 'product' && (
                         <>
-                           <Arrow memoDir={new THREE.Vector3(...vProd3d).normalize()} length={new THREE.Vector3(...vProd3d).length()} color="#eab308" head={0.4} width={0.2} />
-                           <Html position={vProd3d}><div className="text-[10px] text-yellow-500 font-bold bg-black/40 px-1 rounded">λv</div></Html>
+                            <Arrow memoDir={new THREE.Vector3(...vProd3d).normalize()} length={new THREE.Vector3(...vProd3d).length()} color="#eab308" head={0.4} width={0.2} />
+                            <Html position={vProd3d}><div className="text-[10px] text-yellow-500 font-bold bg-black/40 px-1 rounded">λv</div></Html>
                         </>
                     )}
-                    
+
                     <axesHelper args={[3]} />
                 </Canvas>
 
@@ -1318,9 +1381,9 @@ const VisRnDimensionality = () => {
                                     <span>{axis.toUpperCase()}</span>
                                     <span className={mode === 'sum' ? 'text-indigo-400' : 'text-white'}>{n === 3 ? v1_3d[i].toFixed(1) : v1_2d[i].toFixed(1)}</span>
                                 </div>
-                                <input 
-                                    type="range" min="-4" max="4" step="0.1" 
-                                    value={n === 3 ? v1_3d[i] : v1_2d[i]} 
+                                <input
+                                    type="range" min="-4" max="4" step="0.1"
+                                    value={n === 3 ? v1_3d[i] : v1_2d[i]}
                                     onChange={(e) => {
                                         const val = parseFloat(e.target.value);
                                         if (n === 3) {
@@ -1349,9 +1412,9 @@ const VisRnDimensionality = () => {
                                         <span>{axis.toUpperCase()}</span>
                                         <span className="text-red-400">{n === 3 ? v2_3d[i].toFixed(1) : v2_2d[i].toFixed(1)}</span>
                                     </div>
-                                    <input 
-                                        type="range" min="-4" max="4" step="0.1" 
-                                        value={n === 3 ? v2_3d[i] : v2_2d[i]} 
+                                    <input
+                                        type="range" min="-4" max="4" step="0.1"
+                                        value={n === 3 ? v2_3d[i] : v2_2d[i]}
                                         onChange={(e) => {
                                             const val = parseFloat(e.target.value);
                                             if (n === 3) {
@@ -1378,8 +1441,8 @@ const VisRnDimensionality = () => {
                                 <span className="text-[9px] text-yellow-500 font-bold uppercase tracking-wider">Escalar λ</span>
                                 <span className="text-white text-xs font-mono">{scalar.toFixed(1)}</span>
                             </div>
-                            <input 
-                                type="range" min="-3" max="3" step="0.1" value={scalar} 
+                            <input
+                                type="range" min="-3" max="3" step="0.1" value={scalar}
                                 onChange={(e) => setScalar(parseFloat(e.target.value))}
                                 className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-yellow-500"
                             />
@@ -1406,7 +1469,7 @@ const VisRnDimensionality = () => {
                     />
                     <span className="text-xs font-mono text-white bg-indigo-600 px-2 py-0.5 rounded shadow-lg shadow-indigo-500/20">n = {n}</span>
                 </div>
-                
+
                 {/* Mode Selector */}
                 <div className="flex bg-black/40 p-1 rounded-lg border border-white/5">
                     <button onClick={() => setMode('single')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'single' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Vector</button>
@@ -1442,6 +1505,7 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'vis_distancia_sync_3d_2d': VisDistanciaSync3D2D,
     'vis_ex7_3_a': VisEx73a,
     'vis_ex7_3_b': VisEx73b,
+    'vis_subespai_3d': VisSubespai3D,
     'vis_ex_7_8_a': VisEx78a,
     'vis_ex_7_8_b': VisEx78b,
     'vis_ex_7_8_c': VisEx78c,
@@ -1518,6 +1582,7 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
 
     const hybridTypes = [
         'vis_rn_dimensionality',
+        'vis_subespai_3d',
         'vis_corbes_nivell_3d_2d',
         'vis_distancia_sync_3d_2d',
         'vis_ex7_3_a',

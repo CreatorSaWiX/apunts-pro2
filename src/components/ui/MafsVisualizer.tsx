@@ -2026,7 +2026,7 @@ const VisEx71a = () => {
                 <LaTeX at={[0.1, -1.2]} tex="x^2 + y^2 < 1" color={Theme.blue} />
             </Mafs>
             <div className="p-4 bg-slate-900 border-t border-white/5 text-[10px] text-slate-500 leading-relaxed italic text-center">
-                El <span className="text-blue-400 font-bold">Disc Unitat Obert</span> inclou l'interior però no la vora. 
+                El <span className="text-blue-400 font-bold">Disc Unitat Obert</span> inclou l'interior però no la vora.
                 Observa com en moure el punt cap a la frontera (r=1) l'indicador canvia a vermell.
             </div>
         </div>
@@ -2093,16 +2093,85 @@ const VisEx71b = () => {
                 <LaTeX at={[1.8, -3.8]} tex="y = -x^2" color={Theme.blue} />
             </Mafs>
             <div className="p-4 bg-slate-900 border-t border-white/5 text-[10px] text-slate-500 leading-relaxed italic text-center">
-                Regió entre paràboles. L'eix <span className="text-red-400 font-bold">y=0</span> (vermell) està exclòs del conjunt $B$ però és frontera. 
+                Regió entre paràboles. L'eix <span className="text-red-400 font-bold">y=0</span> (vermell) està exclòs del conjunt $B$ però és frontera.
                 Arrossega el punt sobre l'eix per veure com canvia l'estat.
             </div>
         </div>
     );
 };
 
+const VisCombinacioLineal = () => {
+    const [alpha, setAlpha] = React.useState(1.5);
+    const [beta, setBeta] = React.useState(0.8);
+    const [v, setV] = React.useState<[number, number]>([2, 1]);
+    const [w, setW] = React.useState<[number, number]>([1, 2]);
+
+    const res = [alpha * v[0] + beta * w[0], alpha * v[1] + beta * w[1]] as [number, number];
+    const alphaV = [alpha * v[0], alpha * v[1]] as [number, number];
+    const betaW = [beta * w[0], beta * w[1]] as [number, number];
+
+    return (
+        <div className="w-full flex flex-col">
+            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex flex-col gap-1 min-w-[150px]">
+                    <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-none">Resultat</span>
+                    <span className="text-sm font-mono text-white bg-indigo-600/30 px-2 py-1 rounded inline-block border border-indigo-500/20">
+                        <InlineMath math={`\\vec{u} = ${alpha.toFixed(1)} \\vec{v} + ${beta.toFixed(1)} \\vec{w}`} />
+                    </span>
+                </div>
+
+                <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                        <div className="flex justify-between text-[9px] font-black uppercase tracking-wider">
+                            <span className="text-slate-400">Escalar α (v)</span>
+                            <span className="text-white bg-slate-900 px-1.5 py-0.5 rounded">{alpha.toFixed(1)}</span>
+                        </div>
+                        <input type="range" min="-3" max="3" step="0.1" value={alpha} onChange={(e) => setAlpha(parseFloat(e.target.value))}
+                            className="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
+                    </div>
+                    <div className="space-y-1.5">
+                        <div className="flex justify-between text-[9px] font-black uppercase tracking-wider">
+                            <span className="text-slate-400">Escalar β (w)</span>
+                            <span className="text-white bg-slate-900 px-1.5 py-0.5 rounded">{beta.toFixed(1)}</span>
+                        </div>
+                        <input type="range" min="-3" max="3" step="0.1" value={beta} onChange={(e) => setBeta(parseFloat(e.target.value))}
+                            className="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
+                    </div>
+                </div>
+            </div>
+
+            <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={true}>
+                <Coordinates.Cartesian />
+
+                {/* Projected vectors and parallelogram */}
+                <Line.Segment point1={[0, 0]} point2={alphaV} color={Theme.blue} weight={2} style="dashed" opacity={0.4} />
+                <Line.Segment point1={[0, 0]} point2={betaW} color={Theme.red} weight={2} style="dashed" opacity={0.4} />
+                <Line.Segment point1={alphaV} point2={res} color={Theme.red} weight={1} style="dashed" opacity={0.2} />
+                <Line.Segment point1={betaW} point2={res} color={Theme.blue} weight={1} style="dashed" opacity={0.2} />
+
+                {/* Base vectors */}
+                <Vector tail={[0, 0]} tip={v} color={Theme.blue} weight={3} />
+                <Vector tail={[0, 0]} tip={w} color={Theme.red} weight={3} />
+
+                {/* Result vector */}
+                <Vector tail={[0, 0]} tip={res} color={Theme.indigo} weight={4} />
+
+                {/* Markers for base vectors */}
+                <MovablePoint point={v} onMove={setV} color={Theme.blue} />
+                <MovablePoint point={w} onMove={setW} color={Theme.red} />
+
+                <LaTeX at={v} tex={String.raw`\vec{v}`} color={Theme.blue} />
+                <LaTeX at={w} tex={String.raw`\vec{w}`} color={Theme.red} />
+                <LaTeX at={res} tex={String.raw`\vec{u}`} color={Theme.indigo} />
+            </Mafs>
+        </div>
+    );
+};
+
 const VisEx79 = () => {
+
     const [a, setA] = React.useState<number>(1);
-    const levelValue = React.useMemo(() => (a**4) / Math.pow(1 + a**2, 3), [a]);
+    const levelValue = React.useMemo(() => (a ** 4) / Math.pow(1 + a ** 2, 3), [a]);
 
     return (
         <div className="w-full flex flex-col">
@@ -2133,10 +2202,10 @@ const VisEx79 = () => {
             </div>
             <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={true}>
                 <Coordinates.Cartesian />
-                <Plot.OfX y={(x) => a * x**2} color={Theme.indigo} weight={3} />
+                <Plot.OfX y={(x) => a * x ** 2} color={Theme.indigo} weight={3} />
                 {/* Background levels */}
                 {[-2, -1, 0, 1, 2].map(k => k !== a && (
-                    <Plot.OfX key={k} y={(x) => k * x**2} color="#64748b" opacity={0.2} weight={1} />
+                    <Plot.OfX key={k} y={(x) => k * x ** 2} color="#64748b" opacity={0.2} weight={1} />
                 ))}
                 <LaTeX at={[0, -3.5]} tex={"f(x, ax^2) = \\frac{a^4}{(1+a^2)^3}"} color={Theme.indigo} />
             </Mafs>
@@ -2164,7 +2233,7 @@ const VisEx77a = () => {
             <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={true}>
                 <Coordinates.Cartesian />
                 <Polygon
-                    points={[[-10,-10], [10,-10], [10,10], [-10,10]]}
+                    points={[[-10, -10], [10, -10], [10, 10], [-10, 10]]}
                     color={Theme.blue} fillOpacity={0.15} weight={0}
                 />
                 <MovablePoint point={point} onMove={setPoint} color={Theme.green} />
@@ -2175,7 +2244,7 @@ const VisEx77a = () => {
 
 const VisEx77b = () => {
     const [point, setPoint] = React.useState<[number, number]>([0.5, 0.5]);
-    const d2 = point[0]**2 + point[1]**2;
+    const d2 = point[0] ** 2 + point[1] ** 2;
     const isIn = d2 <= 1;
 
     return (
@@ -2191,7 +2260,7 @@ const VisEx77b = () => {
             </div>
             <Mafs viewBox={{ x: [-1.5, 1.5], y: [-1.5, 1.5] }} pan={false} zoom={false}>
                 <Coordinates.Cartesian />
-                <Circle center={[0,0]} radius={1} color={Theme.blue} fillOpacity={0.15} weight={3} />
+                <Circle center={[0, 0]} radius={1} color={Theme.blue} fillOpacity={0.15} weight={3} />
                 <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
             </Mafs>
         </div>
@@ -2246,7 +2315,7 @@ const VisEx76a = () => {
             </div>
             <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={true}>
                 <Coordinates.Cartesian />
-                
+
                 {/* Hyperbola region filling */}
                 <Polygon
                     points={[
@@ -2294,13 +2363,13 @@ const VisEx76b = () => {
             </div>
             <Mafs viewBox={{ x: [-0.5, 5], y: [-0.5, 5] }} pan={true}>
                 <Coordinates.Cartesian />
-                
+
                 {/* Hyperbola region filling */}
                 <Polygon
                     points={[
                         [0.1, 0.1], // Avoid 0 for cleaner visuals
                         [5, 0.1],
-                        [5, 1/5],
+                        [5, 1 / 5],
                         ...Array.from({ length: 41 }, (_, i) => {
                             const xi = 5 - (i / 40) * 4.8;
                             return [xi, 1 / xi] as [number, number];
@@ -2371,7 +2440,7 @@ const VisEx75b = () => {
     const [point, setPoint] = React.useState<[number, number]>([-2, 2]);
     const x = point[0];
     const y = point[1];
-    
+
     // |x^2+4x+1| = -x^2-4x-1  <=> x^2+4x+1 <= 0
     const xMin = -2 - Math.sqrt(3);
     const xMax = -2 + Math.sqrt(3);
@@ -2429,7 +2498,7 @@ const VisEx75c = () => {
             </div>
             <Mafs viewBox={{ x: [-1.5, 1.5], y: [-1.5, 1.5] }} pan={false} zoom={false}>
                 <Coordinates.Cartesian />
-                
+
                 {/* Semicircle filling */}
                 <Polygon
                     points={[
@@ -2445,23 +2514,23 @@ const VisEx75c = () => {
                 />
 
                 {/* Boundary Arc (included) */}
-                <Plot.OfX y={(x) => (x**2 <= 1 && x <= Math.sqrt(0.5) && x >= -Math.sqrt(0.5) && Math.sqrt(1-x**2) >= x ? Math.sqrt(1-x**2) : NaN)} color={Theme.blue} weight={3} />
-                <Plot.OfX y={(x) => (x**2 <= 1 && x <= -Math.sqrt(0.5) ? -Math.sqrt(1-x**2) : NaN)} color={Theme.blue} weight={3} />
+                <Plot.OfX y={(x) => (x ** 2 <= 1 && x <= Math.sqrt(0.5) && x >= -Math.sqrt(0.5) && Math.sqrt(1 - x ** 2) >= x ? Math.sqrt(1 - x ** 2) : NaN)} color={Theme.blue} weight={3} />
+                <Plot.OfX y={(x) => (x ** 2 <= 1 && x <= -Math.sqrt(0.5) ? -Math.sqrt(1 - x ** 2) : NaN)} color={Theme.blue} weight={3} />
                 {/* Wait, simpler way to draw the arc: */}
-                <Circle center={[0,0]} radius={1} color={Theme.blue} fillOpacity={0} weight={3} strokeStyle="solid" />
+                <Circle center={[0, 0]} radius={1} color={Theme.blue} fillOpacity={0} weight={3} strokeStyle="solid" />
                 {/* Wait, I should only draw the part of the circle that is x < y. 
                     Circle doesn't support domain. I'll use a trick with Polygon or many segments.
                 */}
-                
+
                 {/* Chord y=x (excluded) */}
-                <Line.Segment 
-                    point1={[-Math.sqrt(0.5), -Math.sqrt(0.5)]} 
-                    point2={[Math.sqrt(0.5), Math.sqrt(0.5)]} 
-                    color={Theme.blue} weight={3} style="dashed" 
+                <Line.Segment
+                    point1={[-Math.sqrt(0.5), -Math.sqrt(0.5)]}
+                    point2={[Math.sqrt(0.5), Math.sqrt(0.5)]}
+                    color={Theme.blue} weight={3} style="dashed"
                 />
 
                 <MovablePoint point={point} onMove={setPoint} color={isIn ? Theme.green : Theme.red} />
-                
+
                 {/* Line y=x for context */}
                 <Plot.OfX y={(x) => x} color={"#64748b"} weight={1} style="dashed" opacity={0.3} />
             </Mafs>
@@ -2740,67 +2809,6 @@ const VisVectorAdditionIntro = () => (
         </Mafs>
     </div>
 );
-
-const VisUnioSevAtencio = () => {
-    const [uVal, setUVal] = React.useState<[number, number]>([1, 1]);
-    const [vVal, setVVal] = React.useState<[number, number]>([-1, 1]);
-
-    // Snap u to y=x and v to y=-x
-    const u = [(uVal[0] + uVal[1]) / 2, (uVal[0] + uVal[1]) / 2] as [number, number];
-    const v = [(vVal[0] - vVal[1]) / 2, -(vVal[0] - vVal[1]) / 2] as [number, number];
-    const sum = [u[0] + v[0], u[1] + v[1]] as [number, number];
-    const isInS = Math.abs(sum[0] - sum[1]) < 0.01;
-    const isInSPrime = Math.abs(sum[0] + sum[1]) < 0.01;
-    const isInside = isInS || isInSPrime;
-
-    return (
-        <div className="w-full flex flex-col">
-            <div className="flex-1 relative overflow-hidden bg-slate-950/40">
-                <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} preserveAspectRatio={false}>
-                    <Coordinates.Cartesian />
-
-                    {/* Line S (y=x) */}
-                    <Plot.OfX y={(x) => x} color={Theme.blue} opacity={0.3} weight={1} />
-                    {/* Line S' (y=-x) */}
-                    <Plot.OfX y={(x) => -x} color={Theme.red} opacity={0.3} weight={1} />
-
-                    <MovablePoint point={uVal} onMove={setUVal} color={Theme.blue} />
-                    <MovablePoint point={vVal} onMove={setVVal} color={Theme.red} />
-
-                    <Vector tail={[0, 0]} tip={u} color={Theme.blue} />
-                    <Vector tail={[0, 0]} tip={v} color={Theme.red} />
-                    <Vector tail={u} tip={sum} color={Theme.red} opacity={0.3} weight={1} />
-                    <Vector tail={v} tip={sum} color={Theme.blue} opacity={0.3} weight={1} />
-                    <Vector tail={[0, 0]} tip={sum} color={isInside ? Theme.yellow : Theme.pink} weight={3} />
-
-                    <LaTeX at={u} tex="u \in S" color={Theme.blue} />
-                    <LaTeX at={v} tex="v \in S'" color={Theme.red} />
-                    <LaTeX at={sum} tex={isInside ? "u+v \\in S \\cup S'" : "u+v \\notin S \\cup S'"} color={isInside ? Theme.yellow : Theme.pink} />
-                </Mafs>
-
-                <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl z-20 w-56">
-                    <h5 className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-3">Contra-exemple: Unió</h5>
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                            <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold ${isInside ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
-                                {isInside ? "✓" : "✗"}
-                            </div>
-                            <span className="text-[9px] text-slate-400 font-medium">Suma tancada?</span>
-                        </div>
-                        <div className="pt-2 mt-2 border-t border-white/5">
-                            <p className="text-[8px] text-slate-500 leading-relaxed italic">
-                                Observa com la suma <span className="text-pink-400 font-bold">"surt"</span> de les dues rectes. Perquè fos subespai, el resultat hauria de caure obligatòriament en una de les dues.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="p-3 bg-slate-900/80 border-t border-white/5 text-[9px] text-center text-slate-400 italic">
-                <span className="text-white">Arrossega els punts</span> per veure com la suma de vectors de diferents SEV no es manté en la unió.
-            </div>
-        </div>
-    );
-};
 
 const VisAxiomesSuma = () => {
     const [axiom, setAxiom] = React.useState<'e2' | 'e1' | 'e3' | 'e4'>('e2');
@@ -3713,6 +3721,7 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'propietat_inversio': VisInversioLimits,
     'propietat_additivitat': VisAdditivitatInterval,
     'propietat_linealitat': VisLinealitat,
+    'vis_combinacio_lineal': VisCombinacioLineal,
     'ex_7_9': VisEx79,
     'ex_7_7_a': VisEx77a,
     'ex_7_7_b': VisEx77b,
@@ -3731,7 +3740,6 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'm1_t6_ex6_2': VisM1T6Ex6_2,
     'm1_t6_ex6_3': VisM1T6Ex6_3,
     'vis_vector_addition_intro': VisVectorAdditionIntro,
-    'vis_unio_sev_atencio': VisUnioSevAtencio,
     'vis_bola_interactiva': VisBolaInteractiva,
     'vis_ex_pissarra_topologia': VisExPissarraTopologia,
     'vis_dominis_complexos': VisDominisComplexos,

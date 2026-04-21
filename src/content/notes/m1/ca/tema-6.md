@@ -8,9 +8,9 @@ draft: false
 isNew: true
 ---
 
-## 1. Definició i exemples d'espai vectorial
+## 1. Espai vectorial
 
-Tot i que sovint pensem en vectors com a "fletxes" a l'espai $\mathbb{R}^2$ o $\mathbb{R}^3$, molts altres objectes (com matrius o polinomis) es comporten com a vectors si tenen una **suma** i un **producte per escalar** definits. L'exemple més intuïtiu d'espai vectorial és $\mathbb{R}^n$, el conjunt de totes les $n$-uples de nombres reals:
+Tot i que sovint pensem en vectors com a "fletxes" a l'espai, per a un matemàtic, un vector és qualsevol cosa que es pugui sumar amb una altra de la seva espècie i es pugui estirar/multiplicar per un número. Per exemple, $\mathbb{R}^2$ o $\mathbb{R}^3$, molts altres objectes (com matrius o polinomis) es comporten com a vectors si tenen una **suma** i un **producte per escalar** definits. L'exemple més intuïtiu d'espai vectorial és $\mathbb{R}^n$:
 
 $$\mathbb{R}^n = \left\{ \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix} : x_i \in \mathbb{R}, \, 1 \leq i \leq n \right\}$$
 
@@ -23,13 +23,9 @@ Siguin $x = (x_1, \dots, x_n)$ i $y = (y_1, \dots, y_n)$ dos elements de $\mathb
 1.  **Suma**: $x + y = (x_1 + y_1, x_2 + y_2, \dots, x_n + y_n)$
 2.  **Producte per escalar**: $\lambda x = (\lambda x_1, \lambda x_2, \dots, \lambda x_n)$
 
----
-
-## 2. Definició general d'espai vectorial
-
 Un **espai vectorial** sobre un cos $\mathbb{K}$ (que serà normalment $\mathbb{R}$) consisteix en un conjunt no buit $E$, amb una operació interna (suma) i una aplicació externa (producte per escalars) que compleixen 8 axiomes:
 
-### Axiomes de la suma (Operació interna)
+### Axiomes de la suma
 
 | Axioma | Definició | Exemple (a $\mathbb{R}^2$) |
 | :--- | :--- | :--- |
@@ -40,7 +36,7 @@ Un **espai vectorial** sobre un cos $\mathbb{K}$ (que serà normalment $\mathbb{
 
 ::mafs{type="vis_axiomes_suma"}
 
-### Axiomes del producte (Aplicació externa)
+### Axiomes del producte
 
 | Axioma | Definició | Exemple |
 | :--- | :--- | :--- |
@@ -72,85 +68,100 @@ Si $v \in E$ i $\lambda \in \mathbb{K}$, sempre es compleix:
 3.  **Si $\lambda v = 0_E$**, llavors **$\lambda = 0$** o **$v = 0_E$**. (Producte nul implica un dels factors nul).
 4.  L'element oposat de $v$ és **$(-1)v$**. Normalment l'escrivim com $-v$.
 
----
+## 2. Combinació lineal i subespais vectorials
 
-## 3. Subespais Vectorials (SEV)
+### 2.1 Combinació lineal
+Imaginem que els ingredients son $\vec{v}$ i $\vec{w}$ (els vectors) i els números: $\lambda = 2$ i $\mu = 3$ (els escalars). La combinació lineal és el plat final: $2\vec{v} + 3\vec{w}$.
 
-Un subconjunt $S \subseteq E$ és un **subespai vectorial** si ell mateix té estructura d'espai vectorial amb les mateixes operacions que $E$. Per comprovar-ho, només cal verificar 3 condicions:
+Donats els vectors $u_1, \dots, u_k \in E$, una **combinació lineal** d'aquests és qualsevol expressió de la forma:
+$$v = \lambda_1 u_1 + \lambda_2 u_2 + \dots + \lambda_k u_k$$
+on els $\lambda_i$ són escalars. 
 
-1.  **$S \neq \emptyset$**: Normalment comprovem que $0_E \in S$.
-2.  **Suma tancada**: Per a tot $u, v \in S$, llavors $u + v \in S$.
-3.  **Producte tancat**: Per a tot $u \in S$ i $\lambda \in \mathbb{K}$, llavors $\lambda u \in S$.
+::mafs{type="vis_combinacio_lineal"}
+
+### 2.2 Subespais vectorials
+Un **subespai vectorial** és un subconjunt d'un espai que **es comporta exactament igual que l'espai original**. 
+
+És un univers dins d'un altre univers que conserva la mateixa "física" (les operacions de suma i producte). Aquest subconjunt és **autònom**: si et limites a operar amb els seus vectors fent **combinacions lineals**, mai podràs escapar-ne.
+
+Perquè això sigui possible, hi ha dos requisits:
+1.  **L'origen ha de ser-hi**: No pots tenir un univers sense un centre de coordenades $(0,0,0)$.
+2.  **L'estructura ha de ser plana**: Qualsevol curvatura o límit finit faria que, en estirar un vector, sortissis a l'espai exterior. Per això els subespais sempre són rectes, plans o hiperplans que passen per l'origen.
+
+Formalment, un subconjunt no buit $S \subseteq E$ és un **subespai vectorial** si ell mateix té estructura d'espai vectorial amb les mateixes operacions que $E$. A la pràctica, només cal verificar que és **tancat per combinacions lineals**:
+
+1.  **Conté el vector nul**: $0_E \in S$. (Si no hi és, ja sabem segur que no és subespai).
+2.  **Suma tancada**: Per a tot $u, v \in S \implies u + v \in S$.
+3.  **Producte tancat**: Per a tot $u \in S$ i $\lambda \in \mathbb{K} \implies \lambda u \in S$.
 
 ::mafs{type="vis_sev_intro"}
 
 > El vector nul **$0_E$** pertany a tots els subespais vectorials. Si un conjunt no conté el zero, **no** pot ser un subespai.
 
-### Exemples de SEV
-*   **$\mathcal{P}_d(\mathbb{R})$** (polinomis de grau $\leq d$) és un SEV de l'espai de tots els polinomis.
-*   Les **matrius triangulars superiors** formen un SEV de $\mathcal{M}_n(\mathbb{R})$.
-*   El conjunt de **solucions d'un sistema lineal homogeni** $Ax = 0$ és un SEV de $\mathbb{R}^n$.
+### 2.3 Independència lineal
 
-### Operacions amb subespais
+Un conjunt de vectors $\{u_1, \dots, u_k\}$ és **linealment independent (LI)** si cadascun t'aporta una **informació nova**. Si un fos **linealment dependent (LD)**, voldria dir que "sobra" perquè el pots fabricar combinant els altres. Per exemple: 
+*   **LI (Independents)**: $u = (1, 0)$ i $v = (0, 1)$. No hi ha cap forma de multiplicar el $(1,0)$ per un número i que et doni el $(0,1)$. Són camins totalment diferents.
+*   **LD (Dependents)**: $u = (1, 2)$ i $v = (2, 4)$. Aquí $v = 2u$. El vector $v$ no ens diu res de nou, és només el vector $u$ estirat. **Sobra**.
 
-::mafs{type="vis_operacions_sev"}
+Per saber si un conjunt és LI o LD, tenim tres mètodes principals:
 
-### Intersecció
-Si $S$ i $S'$ són subespais de $E$, llavors la seva intersecció **$S \cap S'$** també és un subespai vectorial.
+### Mètode 1: L'equació fonamental (Definició)
+A partir de la definició, plantegem l'equació:
+$$\lambda_1 u_1 + \lambda_2 u_2 + \dots + \lambda_k u_k = 0_E$$
 
-:::warning
-La unió de subespais **no és normalment un subespai**. 
-Si agafem dues rectes que passen per l'origen a $\mathbb{R}^2$, la seva unió són només els punts de les dues rectes. Si sumem un vector d'una recta amb un de l'altra, el resultat "surt" de la unió (no es compleix el requisit de suma tancada).
-:::
+*   Si l'**única** solució és la trivial ($\lambda_1 = \dots = \lambda_k = 0$) $\implies$ **LI**.
+*   Si trobem qualsevol altra combinació $\implies$ **LD**.
 
-::mafs{type="vis_unio_sev_atencio"}
+**Exemple (Polinomis)**: Són $p_1 = x+1$ i $p_2 = x-1$ independents?
+$\lambda_1(x+1) + \lambda_2(x-1) = 0 \implies (\lambda_1+\lambda_2)x + (\lambda_1-\lambda_2) = 0$.
+Resolent el sistema $\lambda_1+\lambda_2=0$ i $\lambda_1-\lambda_2=0$, obtenim $\lambda_1=0$ i $\lambda_2=0$. Són **LI**.
 
-### Suma de subespais
-Si $S$ i $W$ són subespais de $E$, la seva **suma** es defineix com:
-$$S + W = \{ s + w : s \in S, w \in W \}$$
-Aquest conjunt sempre és un subespai vectorial. Una forma fàcil de trobar una base de $S+W$ és ajuntar les bases de $S$ i $W$ i eliminar els vectors que siguin dependents.
+### Mètode 2: El Rang (Per a vectors a $\mathbb{R}^n$)
+Si tenim vectors numèrics, el més ràpid és posar-los per columnes en una matriu $A$ i calcular el seu **rang** ($r$).
+*   Si **$r = \text{nombre de vectors}$** $\implies$ **LI**.
+*   Si **$r < \text{nombre de vectors}$** $\implies$ **LD**.
 
-### Suma directa
-Diem que la suma és **directa** ($S \oplus W$) si $S \cap W = \{0_E\}$. En aquest cas, cada vector de la suma s'expressa de forma única.
+**Exemple**: Per a $u=(1,0,1)$, $v=(0,1,1)$ i $w=(1,1,2)$, el rang de la matriu és 2 (perquè $w = u + v$). Com que tenim 3 vectors però el rang és 2, el conjunt és **LD**.
 
----
+### Mètode 3: Resolució de sistemes (SCD/SCI)
+Quan plantegem l'equació fonamental com un sistema d'equacions lineals homogeni ($Ax=0$):
+*   Si el sistema és **Compatible Determinat (SCD)** $\implies$ l'única solució és la zero $\implies$ **LI**.
+*   Si el sistema és **Compatible Indeterminat (SCI)** $\implies$ hi ha infinites combinacions possibles $\implies$ **LD**.
 
-## 4. Independència i combinació lineal
-
-### Combinació lineal
-Donats els vectors $u_1, \dots, u_k \in E$, una **combinació lineal** d'aquests és qualsevol expressió de la forma:
-$$v = \lambda_1 u_1 + \lambda_2 u_2 + \dots + \lambda_k u_k$$
-on els $\lambda_i$ són escalars.
-
-### Subespai generat
-El **subespai generat** per un conjunt de vectors $\{u_1, \dots, u_k\}$, simbolitzat per $\langle u_1, \dots, u_k \rangle$, és el conjunt de **totes** les seves combinacions lineals possibles:
-$$\langle u_1, \dots, u_k \rangle = \{ \lambda_1 u_1 + \dots + \lambda_k u_k : \lambda_i \in \mathbb{K} \}$$
-
-*   Aquest conjunt sempre és un subespai vectorial (el més petit que conté els vectors donats).
-*   Diem que $\{u_1, \dots, u_k\}$ és un **conjunt de generadors** de l'espai $S = \langle u_1, \dots, u_k \rangle$.
+### 2.4 Subespai generat
+El **subespai generat** per un conjunt de vectors $\{u_1, \dots, u_k\}$, simbolitzat per $\langle u_1, \dots, u_k \rangle$, és el conjunt de **totes** les seves combinacions lineals possibles. És el subespai vectorial més petit que conté aquests vectors.
 
 ::mafs{type="vis_independencia_lineal"}
 
-Un conjunt de vectors $\{u_1, \dots, u_k\}$ és **linealment independent (LI)** si cap d'ells es pot expressar com a combinació lineal dels altres. Formalment, l'equació:
-$$\lambda_1 u_1 + \lambda_2 u_2 + \dots + \lambda_k u_k = 0_E$$
-té com a **única solució** la trivial: $\lambda_1 = \dots = \lambda_k = 0$.
+### 2.5 Operacions amb subespais
 
-Si existeix alguna solució on algun $\lambda_i \neq 0$, diem que el conjunt és **linealment dependent (LD)**.
+Quan tenim dos subespais $S$ i $W$ (dos mini-universos), podem intentar combinar-los. Però no totes les combinacions respecten les "lleis de la física" vectorial.
 
-### A l'espai $\mathbb{R}^n$ (Mètode del rang)
-1.  Formem una matriu $A$ amb els vectors com a columnes.
-2.  Calculem el **rang** ($r$) de la matriu $A$.
-3.  Si $r = k$ (nombre de vectors), llavors són **LI**.
-4.  Si $r < k$, llavors són **LD**.
+::mafs{type="vis_operacions_sev"}
 
-### En el cas general (Sistemes homogenis)
-Plantegem el sistema d'equacions lineals que sorgeix de l'equació vectorial:
-- Si el sistema és **Compatible Determinat (SCD)** $\implies$ **LI**.
-- Si el sistema és **Compatible Indeterminat (SCI)** $\implies$ **LD**.
+### 1. Intersecció ($S \cap W$)
+La intersecció és el conjunt de vectors que **pertanyen als dos universos alhora**.
+*   **Intuïció**: Si tens dos plans que passen per l'origen, la seva intersecció és la recta on es tallen. Com que els dos plans són "estables", el terreny que comparteixen també ho és.
+*   **Regla d'or**: La intersecció de subespais **SEMPRE** és un subespai vectorial.
+
+### 2. Unió ($S \cup W$)
+Intentar unir dos subespais simplement "ajuntant-los" (com si fossin dues enganxines) **no funciona**.
+*   **Intuïció**: Imagina dues rectes (l'eix X i l'eix Y). La unió són només els punts que estan sobre els eixos. Però si sumes el vector $(1,0)$ de l'eix X i el $(0,1)$ de l'eix Y, obtens el $(1,1)$, que està al mig del pla i **fora dels eixos**. Has sortit del "club"!
+*   **Conclusió**: La unió **NO** és normalment un subespai.
+
+### 3. Suma ($S + W$): L'expansió
+Com que la unió falla, la **suma** és la solució per fusionar subespais. Consisteix en agafar totes les sumes possibles entre un vector de $S$ i un de $W$.
+*   **Intuïció**: És com agafar dues rectes i "omplir" tot l'espai que hi ha entre elles fins a formar un pla complet. La suma **sempre** és un subespai (el més petit que conté a $S$ i $W$).
+*   **A la pràctica**: Per trobar una base de $S+W$, ajuntem els generadors de $S$ i els de $W$ i eliminem els que sobrin (els dependents).
+
+### 4. Suma Directa ($S \oplus W$): Independència absoluta
+Diem que la suma és **directa** si els dos universos **només es toquen en el vector nul** ($S \cap W = \{0_E\}$). 
+*   **Intuïció**: És la fusió més "neta" possible. Significa que cada vector de l'espai resultant es pot escriure de **forma única** com una part de $S$ i una part de $W$. No hi ha redundància.
 
 ---
 
-## 5. Bases i Dimensió
+## 3. Bases i dimensió
 
 ### Dimensió
 La **dimensió** ($\dim E$) és el nombre de vectors que té qualsevol de les seves bases. 
@@ -175,7 +186,7 @@ Siguin $k$ vectors en un espai $E$ de dimensió $n$:
 
 ---
 
-## 6. Coordenades i canvi de base
+## 4. Coordenades i canvi de base
 
 Qualsevol vector $v$ s'expressa de forma única en una base $B$ mitjançant les seves **coordenades** $v_B$. La matriu de canvi de base $P_{B'}^B$ les relaciona:
 $$v_{B'} = P_{B'}^B \cdot v_B$$

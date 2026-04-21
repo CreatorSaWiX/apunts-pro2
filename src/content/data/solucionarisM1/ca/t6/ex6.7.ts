@@ -23,8 +23,7 @@ $E_6 = \\{ (x, y) \\in \\mathbb{R}^2 : x^2 + 2xy + y^2 = 0 \\}$
 $E_7 = \\{ (a+b, a-2b, c, 2a+c) : a,b,c \\in \\mathbb{R} \\}$
 
 $E_8 = \\{ (a^2, a, b+a, 2+a) : a,b \\in \\mathbb{R} \\}$`,
-  content: `
-Recordem que un subconjunt $E \\subseteq V$ és un subespai vectorial si conté el vector nul, és tancat per la suma i és tancat pel producte per escalar. Una forma ràpida de detectar-ho és comprovar si el conjunt està definit per equacions lineals homogènies.
+  content: `Recordem que un subconjunt $E \\subseteq V$ és un subespai vectorial si conté el vector nul, és tancat per la suma i és tancat pel producte per escalar. Una forma ràpida de detectar-ho és comprovar si el conjunt està definit per equacions lineals homogènies (terme independent 0, $ax + by = 0$, ex: $x + \\pi y = 0$, etc.).
 
 ---
 
@@ -42,7 +41,7 @@ L'equació $x + z = \\pi$ no és homogènia perquè el terme independent $\\pi$ 
 La condició $xy = 0$ no és lineal. Tot i que conté el vector nul, **no és tancat per la suma**. Per exemple:
 *   $(1, 0, 0) \\in E_3$ (perquè $1 \\cdot 0 = 0$)
 *   $(0, 1, 0) \\in E_3$ (perquè $0 \\cdot 1 = 0$)
-*   Però la seva suma $(1, 1, 0) \\notin E_3$ perquè $1 \\cdot 1 = 1 \\neq 0$.
+*   Però la seva suma $(1,0,0)+(0,1,0) = (1, 1, 0) \\notin E_3$ perquè $1 \\cdot 1 = 1 \\neq 0$.
 
 ---
 

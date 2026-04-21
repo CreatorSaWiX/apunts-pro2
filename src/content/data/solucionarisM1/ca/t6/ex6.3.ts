@@ -13,8 +13,6 @@ $v_1 = \\begin{pmatrix} 2 \\\\ 6 \\end{pmatrix}, v_2 = \\begin{pmatrix} -4 \\\\ 
 
 ### Resolució Algebràica
 
-L'operació algebràica de suma o resta de vectors es fa component a component:
-
 1) **Càlcul de $v_1 + v_2$**:
 $$v_1 + v_2 = \\begin{pmatrix} 2 \\\\ 6 \\end{pmatrix} + \\begin{pmatrix} -4 \\\\ -8 \\end{pmatrix} = \\begin{pmatrix} 2-4 \\\\ 6-8 \\end{pmatrix} = \\mathbf{\\begin{pmatrix} -2 \\\\ -2 \\end{pmatrix}}$$
 
@@ -27,8 +25,6 @@ $$v_2 - v_4 = \\begin{pmatrix} -4 \\\\ -8 \\end{pmatrix} - \\begin{pmatrix} 3 \\
 ---
 
 ### Resolució Gràfica
-
-Per sumar vectors gràficament usem el **mètode punta-cua**: situem l'origen del segon vector a l'extrem del primer. El vector resultant va des de l'origen del primer fins a l'extrem del segon. Per a la resta $u - v$, sumem al primer el vector oposat del segon: $u + (-v)$.
 
 ::mafs{type="m1_t6_ex6_3"}
 `,
