@@ -74,6 +74,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const restoringRef = useRef(true);
     const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
+    const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
     const metricsRef = useRef<{ center: number, index: number }[]>([]);
 
     const sortedTopics = useMemo(() => {
@@ -109,19 +110,37 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     // Load seen topics from localStorage on mount
     useEffect(() => {
         try {
-            const saved = localStorage.getItem('seen-new-topics');
-            if (saved) {
-                setSeenNewTopics(JSON.parse(saved));
+            const savedNew = localStorage.getItem('seen-new-topics');
+            if (savedNew) {
+                setSeenNewTopics(JSON.parse(savedNew));
+            }
+            const savedVersions = localStorage.getItem('seen-topic-versions');
+            if (savedVersions) {
+                setSeenVersions(JSON.parse(savedVersions));
             }
         } catch (e) { }
     }, []);
 
-    const markAsSeen = (slug: string) => {
+    const markAsSeen = (slug: string, version?: number) => {
         try {
-            const saved = localStorage.getItem('seen-new-topics');
-            const prev = saved ? JSON.parse(saved) : [];
-            if (!prev.includes(slug)) {
-                localStorage.setItem('seen-new-topics', JSON.stringify([...prev, slug]));
+            // Mark as new-seen
+            const savedNew = localStorage.getItem('seen-new-topics');
+            const prevNew = savedNew ? JSON.parse(savedNew) : [];
+            if (!prevNew.includes(slug)) {
+                const updatedNew = [...prevNew, slug];
+                localStorage.setItem('seen-new-topics', JSON.stringify(updatedNew));
+                // We don't update state here to avoid the badge disappearing before navigation
+            }
+
+            // Mark version as seen
+            if (version !== undefined) {
+                const savedVersions = localStorage.getItem('seen-topic-versions');
+                const prevVersions = savedVersions ? JSON.parse(savedVersions) : {};
+                if (prevVersions[slug] !== version) {
+                    const updatedVersions = { ...prevVersions, [slug]: version };
+                    localStorage.setItem('seen-topic-versions', JSON.stringify(updatedVersions));
+                    // We don't update state here to avoid the badge disappearing before navigation
+                }
             }
         } catch (e) { }
     };
@@ -302,9 +321,13 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 >
                     {sortedTopics.map((topic, i) => {
                         const isActive = activeIndex === i;
-                        // Check if ANY language version of this topic is marked as new
-                        const hasNewTag = allPersonalNotes.some(n => n.slug === topic.slug && (n as any).isNew);
+                        // Check if ANY language version of this topic is marked as new or updated
+                        const versions = allPersonalNotes.filter(n => n.slug === topic.slug);
+                        const hasNewTag = versions.some(n => (n as any).isNew);
+                        const newestUpdate = Math.max(0, ...versions.map(n => (n as any).isUpdated || 0));
+
                         const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
+                        const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
 
                         return (
                             <div
@@ -321,7 +344,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                         e.preventDefault();
                                         scrollTo(i);
                                     } else {
-                                        markAsSeen(topic.slug);
+                                        markAsSeen(topic.slug, newestUpdate);
                                         navigate(`/tema/${topic.slug}`);
                                     }
                                 }}
@@ -350,6 +373,18 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                                 <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_5px_white]" />
                                                 <span className="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider drop-shadow-sm">
                                                     {preferredLang === 'es' ? 'Nuevo' : 'Nou'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* "Updated" Badge */}
+                                    {isTopicUpdated && (
+                                        <div className={`absolute top-6 right-6 md:top-8 md:right-8 z-30 transition-all duration-300 ${isActive ? 'opacity-100 scale-100' : 'opacity-60 scale-90'}`}>
+                                            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-linear-to-r from-emerald-500/90 to-teal-500/90 border border-emerald-300/30 shadow-[0_0_20px_rgba(16,185,129,0.4)] backdrop-blur-md">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_5px_white]" />
+                                                <span className="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider drop-shadow-sm">
+                                                    {preferredLang === 'es' ? 'Actualizado' : 'Actualitzat'}
                                                 </span>
                                             </div>
                                         </div>
@@ -411,7 +446,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                         <div className="flex flex-col gap-3 md:gap-4">
                                             <Link
                                                 to={`/tema/${topic.slug}`}
-                                                onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug); }}
+                                                onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
                                                 className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-3.5 py-2 md:px-4 md:py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0 text-[13px] md:text-sm"
                                             >
                                                 <span>Explorar tema</span>
@@ -420,7 +455,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
                                             <Link
                                                 to={`/tema/${topic.slug}/test`}
-                                                onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug); }}
+                                                onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
                                                 className="text-slate-500 hover:text-amber-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/test"
                                             >
                                                 <div className="p-1 rounded bg-white/5 group-hover/test:bg-amber-500/10 transition-colors">
@@ -431,7 +466,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
                                             <Link
                                                 to={subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : `/tema/${topic.slug}/solucionaris`}
-                                                onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug); }}
+                                                onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
                                                 className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol"
                                             >
                                                 <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">

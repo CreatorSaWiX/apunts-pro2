@@ -5,7 +5,7 @@ order: 7
 readTime: "25 min"
 subject: "m1"
 draft: false
-isNew: true
+isUpdated: 1
 ---
 
 ## 1. Espai vectorial

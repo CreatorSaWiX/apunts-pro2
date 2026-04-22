@@ -12,6 +12,7 @@ const personalNotes = defineCollection({
         order: z.number(),
         draft: z.boolean().optional().default(false),
         isNew: z.boolean().optional().default(false),
+        isUpdated: z.number().optional(),
         content: z.string()
     }),
     transform: (document) => {

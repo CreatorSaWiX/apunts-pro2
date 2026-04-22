@@ -1,31 +1,31 @@
 ---
 title: "Tema 1: Conceptos básicos de grafos"
-description: "Introducción a la teoría de grafos: vèrtexs, arestes, graus i representacions."
-readTime: "15 Min"
+description: "Introducción a la teoría de grafos: vértices, aristas, grados y representaciones."
 order: 1
+readTime: "15 Min"
 ---
 
-Benvinguts al món dels **Grafs**! 🕸️
+¡Bienvenidos al mundo de los **Grafos**! 🕸️
 
-A FM, potser estem acostumats a notacions feixugues. Aquí la cosa canvia. La Teoria de Grafs és **visual**, és **tàngible** i és la base de tot: des de com Instagram et suggereix amics fins a com Google Maps troba el camí més ràpid a casa.
+En FM, quizás estamos acostumbrados a notaciones pesadas. Aquí la cosa cambia. La Teoría de Grafos es **visual**, es **tangible** y es la base de todo: desde cómo Instagram te sugiere amigos hasta cómo Google Maps encuentra el camino más rápido a casa.
 
-## 1. Què és, realment, un graf?
+## 1. ¿Qué es, realmente, un grafo?
 
-Un graf és simplement un conjunt de **punts** connectats per **línies**.
+Un grafo es simplemente un conjunto de **puntos** conectados por **líneas**.
 
-*   Els punts es diuen **vèrtexs** ($V$).
-*   Les línies es diuen **arestes** ($A$).
+*   Los puntos se llaman **vértices** ($V$).
+*   Las líneas se llaman **aristas** ($A$).
 
-Prova de moure els vèrtexs d'aquí sota. Veus com les connexions es mantenen encara que els moguis? Això és l'essència d'un graf: no importa *on* estan dibuixats els punts, sinó *com* estan connectats.
+Prueba a mover los vértices de aquí abajo. ¿Ves cómo las conexiones se mantienen aunque los muevas? Esta es la esencia de un grafo: no importa *dónde* están dibujados los puntos, sino *cómo* están conectados.
 
 :::graph
 ```json
 {
   "nodes": [
-    { "id": "A", "label": "Tu" },
-    { "id": "B", "label": "Amic 1" },
-    { "id": "C", "label": "Amic 2" },
-    { "id": "D", "label": "Conegut" }
+    { "id": "A", "label": "Tú" },
+    { "id": "B", "label": "Amigo 1" },
+    { "id": "C", "label": "Amigo 2" },
+    { "id": "D", "label": "Conocido" }
   ],
   "links": [
     { "source": "A", "target": "B" },
@@ -37,17 +37,17 @@ Prova de moure els vèrtexs d'aquí sota. Veus com les connexions es mantenen en
 ```
 :::
 
-Un graf $G$ és una parella $(V, A)$ on $V$ és el conjunt de vèrtexs (no buit) i $A$ és el conjunt d'arestes.
+Un grafo $G$ es una pareja $(V, A)$ donde $V$ es el conjunto de vértices (no vacío) y $A$ es el conjunto de aristas.
 
-- **Ordre ($n$)**: El nombre de vèrtexs, $n = |V|$.
-- **Mida ($m$)**: El nombre d'arestes, $m = |A|$.
+- **Orden ($n$)**: El número de vértices, $n = |V|$.
+- **Tamaño ($m$)**: El número de aristas, $m = |A|$.
 
-## 2. Relacions: veïns i incidència
+## 2. Relaciones: vecinos e incidencia
 
-Quan dos vèrtexs estan units per una aresta, diem que són **adjacents** (o veïns). 
+Cuando dos vértices están unidos por una arista, decimos que son **adyacentes** (o vecinos). 
 
-*   Si $u$ i $v$ estan connectats, escrivim: $u \sim v$
-*   L'aresta que ens uneix diem que és **incident** en nosaltres.
+*   Si $u$ y $v$ están conectados, escribimos: $u \sim v$
+*   La arista que nos une decimos que es **incidente** en nosotros.
 
 :::graph
 ```json
@@ -55,7 +55,7 @@ Quan dos vèrtexs estan units per una aresta, diem que són **adjacents** (o ve�
   "nodes": [
     { "id": 1, "label": "u", "color": "#ef4444" },
     { "id": 2, "label": "v", "color": "#3b82f6" },
-    { "id": 3, "label": "No adjacent", "color": "#9ca3af" }
+    { "id": 3, "label": "No adyacente", "color": "#9ca3af" }
   ],
   "links": [
     { "source": 1, "target": 2, "label": "u ~ v" }
@@ -64,17 +64,17 @@ Quan dos vèrtexs estan units per una aresta, diem que són **adjacents** (o ve�
 ```
 :::
 
-Al graf de dalt, $u$ i $v$ són adjacents. El vèrtex gris està sol i no és adjacent a ningú.
+En el grafo de arriba, $u$ y $v$ son adyacentes. El vértice gris está solo y no es adyacente a nadie.
 
-## 3. Com ho veu l'ordinador?
+## 3. ¿Cómo lo ve el ordenador?
 
-Tenim dues grans maneres de guardar un graf a la memòria:
+Tenemos dos grandes maneras de guardar un grafo en la memoria:
 
-### A. Llista d'adjacències
-Per a cada persona, tenim una llista dels seus amics. Ideal per grafs amb poques arestes ja que estalvia memòria. **Exemple**: "L'usuari u és amic de [v, w, z]".
+### A. Lista de adyacencias
+Para cada persona, tenemos una lista de sus amigos. Ideal para grafos con pocas aristas ya que ahorra memoria. **Ejemplo**: "El usuario u es amigo de [v, w, z]".
 
-### B. Matriu d'adjacències
-Una taula ($n \times n$) de 0 i 1. Si la matriu té un $1$ a la posició $(i, j)$, el vèrtex $i$ està connectat amb el $j$. 
+### B. Matriz de adyacencias
+Una tabla ($n \times n$) de 0 y 1. Si la matriz tiene un $1$ en la posición $(i, j)$, el vértice $i$ está conectado con el $j$. 
 
 $$
 M_A = \begin{pmatrix}
@@ -84,29 +84,29 @@ M_A = \begin{pmatrix}
 \end{pmatrix}
 $$
 
-*   $1$ si hi ha aresta (connexió).
-*   $0$ si no n'hi ha.
+*   $1$ si hay arista (conexión).
+*   $0$ si no la hay.
 
-Veiem que com les amistats són mútues, la matriu és **simètrica**. I la diagonal tot zeros, perquè ningú és amic d'ell mateix (no hi ha llaços).
+Vemos que como las amistades son mutuas, la matriz es **simétrica**. Y la diagonal todo ceros, porque nadie es amigo de sí mismo (no hay lazos).
 
-:::tip{title="Graus a la Matriu"}
-La suma numèrica dels valors d'una fila $i$ (o columna) és **exactament el grau** d'aquell vèrtex.
+:::tip{title="Grados en la Matriz"}
+La suma numérica de los valores de una fila $i$ (o columna) es **exactamente el grado** de aquel vértice.
 $$ \sum_{j=1}^n (M_A)_{ij} = g(v_i) $$
-*Si a l'examen et diuen: "Tenim una matriu d'adjacència on cada fila suma 5", t'estan dient que estem davant d'un graf **5-regular**.*
+*Si en el examen te dicen: "Tenemos una matriz de adyacencia donde cada fila suma 5", te están diciendo que estamos ante un grafo **5-regular**.*
 :::
 
-## 4. Graus i el "lema de les encaixades"
+## 4. Grados y el "lema de los apretones de manos"
 
-El **grau** d'un vèrtex $g(v)$ és el nombre d'arestes que hi toquen. O sigui, el nombre d'amics que té.
+El **grado** de un vértice $g(v)$ es el número de aristas que inciden en él. O sea, el número de amigos que tiene.
 
 :::graph
 ```json
 {
   "nodes": [
-    { "id": "A", "label": "Grau 3" },
-    { "id": "B", "label": "Grau 1" },
-    { "id": "C", "label": "Grau 1" },
-    { "id": "D", "label": "Grau 1" }
+    { "id": "A", "label": "Grado 3" },
+    { "id": "B", "label": "Grado 1" },
+    { "id": "C", "label": "Grado 1" },
+    { "id": "D", "label": "Grado 1" }
   ],
   "links": [
     { "source": "A", "target": "B" },
@@ -117,41 +117,41 @@ El **grau** d'un vèrtex $g(v)$ és el nombre d'arestes que hi toquen. O sigui, 
 ```
 :::
 
-Al graf de dalt, el vèrtex central té grau 3. Els altres, grau 1.
+En el grafo de arriba, el vértice central tiene grado 3. Los otros, grado 1.
 
-**Si sumem els graus de TOTS els vèrtexs, què ens dóna?**
+**Si sumamos los grados de TODOS los vértices, ¿qué nos da?**
 
-Imaginem una festa. Cada vegada que dues persones es donen la mà (una aresta), hi ha **dues** mans implicades. Si al final comptem quantes mans ha donat cadascú i ho sumem tot, estarem comptant **el doble** de les encaixades reals. Això és el **lema de les encaixades**:
+Imaginemos una fiesta. Cada vez que dos personas se dan la mano (una arista), hay **dos** manos implicadas. Si al final contamos cuántas manos ha dado cada uno y lo sumamos todo, estaremos contando **el doble** de los apretones reales. Este es el **lema de los apretones de manos**:
 
 $$
 \sum g(v) = 2m
 $$
 
-> **Seqüència de graus**:
-> És simplement fer una llista amb els graus de tots els vèrtexs, endreçada generalment de més gran a més petit.
-> Ex: Un graf "triangle amb una cua penjant" té llista de graus $S = (3, 2, 2, 1)$.
+> **Secuencia de grados**:
+> Es simplemente hacer una lista con los grados de todos los vértices, ordenada generalmente de mayor a menor.
+> Ej: Un grafo "triángulo con una cola colgando" tiene lista de grados $S = (3, 2, 2, 1)$.
 
-Com que $2|A|$ sempre és un nombre PARELL, la suma dels graus ha de ser parella. Això vol dir que és **impossible** que hi hagi un nombre senar de gent amb un nombre senar d'amics.
+Como $2|A|$ siempre es un número PAR, la suma de los grados debe ser par. Esto significa que es **imposible** que haya un número impar de gente con un número impar de amigos.
 
-:::tip{title="Havel-Hakimi: Comprovar la seqüència de graus"}
-El Lema de les encaixades és necessari (suma parella), però no suficient per garantir que un graf existeix. Per saber si una seqüència és **gràfica**, usem l'algorisme de **Havel-Hakimi**:
+:::tip{title="Havel-Hakimi: Comprobar la secuencia de grados"}
+El Lema de los apretones de manos es necesario (suma par), pero no suficiente para garantizar que un grafo existe. Para saber si una secuencia es **gráfica**, usamos el algoritmo de **Havel-Hakimi**:
 
-1.  **Ordena** la seqüència de major a menor.
-2.  **Elimina** el primer element ($d_1$).
-3.  **Resta 1** als següents $d_1$ elements.
-4.  **Si apareix un negatiu**, la seqüència NO és gràfica.
-5.  **Repeteix** fins que només quedin zeros ($\exists$) o fallis ($\nexists$).
+1.  **Ordena** la secuencia de mayor a menor.
+2.  **Elimina** el primer elemento ($d_1$).
+3.  **Resta 1** a los siguientes $d_1$ elementos.
+4.  **Si aparece un negativo**, la secuencia NO es gráfica.
+5.  **Repite** hasta que solo queden ceros ($\exists$) o falles ($\nexists$).
 
-**Exemple: S = (3, 3, 2, 2, 1, 1)**
-*   Treiem el **3**: Restem 1 als 3 següents $\to$ (3-1, 2-1, 2-1, 1, 1) = **(2, 1, 1, 1, 1)**
-*   Treiem el **2**: Restem 1 als 2 següents $\to$ (1-1, 1-1, 1, 1) = **(0, 0, 1, 1)**
-*   Ordenem $\to$ **(1, 1, 0, 0)**
-*   Treiem l'**1**: Restem 1 al següent $\to$ (1-1, 0, 0) = **(0, 0, 0)** $\to$ **SÍ és gràfica!**
+**Ejemplo: S = (3, 3, 2, 2, 1, 1)**
+*   Quitamos el **3**: Restamos 1 a los 3 siguientes $\to$ (3-1, 2-1, 2-1, 1, 1) = **(2, 1, 1, 1, 1)**
+*   Quitamos el **2**: Restamos 1 a los 2 siguientes $\to$ (1-1, 1-1, 1, 1) = **(0, 0, 1, 1)**
+*   Ordenamos $\to$ **(1, 1, 0, 0)**
+*   Quitamos el **1**: Restamos 1 al siguiente $\to$ (1-1, 0, 0) = **(0, 0, 0)** $\to$ **¡SÍ es gráfica!**
 :::
 
-## 5. Isomorfisme
+## 5. Isomorfismo
 
-Dos grafs són **isomorfs** si tenen la mateixa estructura interna, encara que tinguin etiquetes diferents o estiguin dibuixats de forma diferent. En aquests dos grafs, el de la dreta és un cicle (un pentàgon) i l'esquerre és una estrella.
+Dos grafos son **isomorfos** si tienen la misma estructura interna, aunque tengan etiquetas diferentes o estén dibujados de forma distinta. En estos dos grafos, el de la derecha es un ciclo (un pentágono) y el izquierdo es una estrella.
 
 ::::grid{cols=2}
 :::graph{height=220}
@@ -181,27 +181,27 @@ Dos grafs són **isomorfs** si tenen la mateixa estructura interna, encara que t
 :::
 ::::
 
-**Són el mateix graf?** La resposta és **sí**. Són isomorfs. Perquè podem trobar un **diccionari de traducció** (una bijecció) que converteix un en l'altre sense trencar cap connexió.
+**¿Son el mismo grafo?** La respuesta es **sí**. Son isomorfos. Porque podemos encontrar un **diccionario de traducción** (una bijección) que convierte uno en el otro sin romper ninguna conexión.
 
-**El diccionari**:
+**El diccionario**:
 *   $1 \to A$
 *   $2 \to C$
 *   $3 \to E$
 *   $4 \to B$
 *   $5 \to D$
 
-Comprovem: al primer graf **1** toca **2**. Al segon, la traducció de 1 (**A**) toca la traducció de 2 (**C**)? Sí. I així amb tots.
+Comprobamos: en el primer grafo **1** toca a **2**. En el segundo, ¿la traducción de 1 (**A**) toca a la traducción de 2 (**C**)? Sí. Y así con todos.
 
-Un isomorfisme és simplement **reetiquetar** els vèrtexs. Si canviant els noms dels vèrtexs d'un graf puc obtenir exactament l'altre, són isomorfs. No importa com dibuixi (la forma visual enganya), importa qui està connectat amb qui.
+Un isomorfismo es simplemente **reetiquetar** los vértices. Si cambiando los nombres de los vértices de un grafo puedo obtener exactamente el otro, son isomorfos. No importa cómo dibuje (la forma visual engaña), importa quién está conectado con quién.
 
-## 6. Tipus de grafs
+## 6. Tipos de grafos
 
-A continuació es detallen els grafs fonamentals que s'utilitzen contínuament i cal dominar per als problemes teòrics:
+A continuación se detallan los grafos fundamentales que se utilizan continuamente y hay que dominar para los problemas teóricos:
 
 ::::::grid{cols=5 class="gap-3 mb-8"}
 
 :::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-2 bg-slate-900/20 text-center"}
-#### Nul ($N_n$)
+#### Nulo ($N_n$)
 
 :::graph{height=130 transparentBg=true}
 ```json
@@ -211,7 +211,7 @@ A continuació es detallen els grafs fonamentals que s'utilitzen contínuament i
 :::::
 
 :::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-2 bg-slate-900/20 text-center"}
-#### Trajecte ($T_n$)
+#### Trayecto ($T_n$)
 
 :::graph{height=130 transparentBg=true}
 ```json
@@ -221,7 +221,7 @@ A continuació es detallen els grafs fonamentals que s'utilitzen contínuament i
 :::::
 
 :::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-2 bg-slate-900/20 text-center"}
-#### Cicle ($C_5$)
+#### Ciclo ($C_5$)
 
 :::graph{height=130 transparentBg=true}
 ```json
@@ -231,7 +231,7 @@ A continuació es detallen els grafs fonamentals que s'utilitzen contínuament i
 :::::
 
 :::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-2 bg-slate-900/20 text-center"}
-#### Complet ($K_5$)
+#### Completo ($K_5$)
 
 :::graph{height=130 transparentBg=true}
 ```json
@@ -251,7 +251,7 @@ A continuació es detallen els grafs fonamentals que s'utilitzen contínuament i
 :::::
 
 :::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-2 bg-slate-900/20 text-center"}
-#### Bipartit
+#### Bipartito
 
 :::graph{height=130 transparentBg=true}
 ```json
@@ -271,7 +271,7 @@ A continuació es detallen els grafs fonamentals que s'utilitzen contínuament i
 :::::
 
 :::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-2 bg-slate-900/20 text-center"}
-#### $r$-Partit
+#### $r$-Partido
 
 :::graph{height=130 transparentBg=true}
 ```json
@@ -291,7 +291,7 @@ A continuació es detallen els grafs fonamentals que s'utilitzen contínuament i
 :::::
 
 :::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-2 bg-slate-900/20 text-center"}
-#### Roda ($W_n$)
+#### Rueda ($W_n$)
 
 :::graph{height=130 transparentBg=true}
 ```json
@@ -302,34 +302,31 @@ A continuació es detallen els grafs fonamentals que s'utilitzen contínuament i
 
 ::::::
 
-| Tipus de graf | Notació | Propietats i definicions | Mida | Grau |
+| Tipo de grafo | Notación | Propiedades y definiciones | Tamaño | Grado |
 | --- | :---: | --- | --- | --- |
-| **Nul** | $N_n$ | El conjunt d'arestes és buit. Els vèrtexs estan totalment aïllats a l'espai. | $0$ | $0$ |
-| **Trivial** | $N_1$ | Graf que conté 1 vèrtex i 0 arestes. | $0$ | $0$ |
-| **Trajecte** | $T_n$ | Seqüència simple on la llista d'adjacència és oberta. No tanca cap cicle de relació. | $n-1$ | Extrems: 1<br/>Int: 2 |
-| **Cicle** | $C_n$ | Subgraf tancat sense interseccions diagonals on l'ordre cardinal i la mida són idèntics. | $n$ | $2$ |
-| **Complet** | $K_n$ | El conjunt d'arestes $A$ conté absolutament tots els parells possibles. | $\frac{n(n-1)}{2}$ | $n-1$ |
-| **$r$-Regular** | - | La totalitat dels integrants forcen un grau paramètric idèntic. | $\frac{rn}{2}$ | $r$ |
-| **Bipartit** | - | $V = V_1 \cup V_2$ amb $V_1 \cap V_2 = \emptyset$. Exigeix absència de cicles de longitud senar internament. | $\le \frac{n^2}{4}$ | Limitades |
-| **Bip. Complet** | $K_{r,s}$ | Màxima existència teòrica de lligams creuats incondicionals entre ambdues faccions formals. | $r \cdot s$ | $r$ i $s$ |
-| **Estrella** | $K_{1,s}$ | El cas particular clàssic del bipartit complet previ asimètric on un extrem de la partició val u. | $s$ | $1$ i $s$ |
-| **Roda** | $W_n$ | Composició pura formativa per subgraf $C_{n-1}$ unit amb un vèrtex de tipus nexe exterior. | $2(n-1)$ | $3$ i $n-1$ |
-| **$r$-Partit** | $G(V_1 \dots V_r)$ | Partició de $V$ en $r$ conjunts estables $V_i$ tals que no hi ha arestes entre vèrtexs del mateix grup. | - | Limitades |
+| **Nulo** | $N_n$ | El conjunto de aristas es vacío. Los vértices están totalmente aislados en el espacio. | $0$ | $0$ |
+| **Trivial** | $N_1$ | Grafo que contiene 1 vértice y 0 aristas. | $0$ | $0$ |
+| **Trayecto** | $T_n$ | Secuencia simple donde la lista de adyacencia es abierta. No cierra ningún ciclo de relación. | $n-1$ | Extremos: 1<br/>Int: 2 |
+| **Ciclo** | $C_n$ | Subgrafo cerrado sin intersecciones diagonales donde el orden cardinal y el tamaño son idénticos. | $n$ | $2$ |
+| **Completo** | $K_n$ | El conjunto de aristas $A$ contiene absolutamente todos los pares posibles. | $\frac{n(n-1)}{2}$ | $n-1$ |
+| **$r$-Regular** | - | La totalidad de los integrantes fuerzan un grado paramétrico idéntico. | $\frac{rn}{2}$ | $r$ |
+| **Bipartito** | - | $V = V_1 \cup V_2$ con $V_1 \cap V_2 = \emptyset$. Exige ausencia de ciclos de longitud impar internamente. | $\le \frac{n^2}{4}$ | Limitados |
+| **Bip. Completo** | $K_{r,s}$ | Máxima existencia teórica de vínculos cruzados incondicionales entre ambas facciones formales. | $r \cdot s$ | $r$ y $s$ |
+| **Estrella** | $K_{1,s}$ | El caso particular clásico del bipartito completo previo asimétrico donde un extremo de la partición vale uno. | $s$ | $1$ y $s$ |
+| **Rueda** | $W_n$ | Composición pura formativa por subgrafo $C_{n-1}$ unido con un vértice de tipo nexo exterior. | $2(n-1)$ | $3$ y $n-1$ |
+| **$r$-Partido** | $G(V_1 \dots V_r)$ | Partición de $V$ en $r$ conjuntos estables $V_i$ tales que no hay aristas entre vértices del mismo grupo. | - | Limitados |
 
-## 7. Subgrafs
+## 7. Subgrafos
 
-Abans d'entrar en detalls, entenguem la diferència entre estar "sencer" i que et faltin peces.
+Antes de entrar en detalles, entendamos la diferencia entre estar "entero" y que te falten piezas.
 
 :::::grid{cols=2 class="gap-4"}
-
-
 
 :::graph{height=120}
 ```json
 { "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 } ], "links": [ { "source": 1, "target": 2 }, { "source": 1, "target": 3 }, { "source": 1, "target": 4 }, { "source": 2, "target": 3 }, { "source": 2, "target": 4 }, { "source": 3, "target": 4 } ] }
 ```
 :::
-
 
 :::graph{height=120}
 ```json
@@ -339,15 +336,15 @@ Abans d'entrar en detalls, entenguem la diferència entre estar "sencer" i que e
 
 :::::
 
-Si tenim un graf $G$, un **subgraf** és qualsevol resultat d'eliminar vèrtexs o arestes. Mai podem afegir res nou!
+Si tenemos un grafo $G$, un **subgrafo** es cualquier resultado de eliminar vértices o aristas. ¡Nunca podemos añadir nada nuevo!
 
-Hi ha dos tipus de "retalls" especials:
+Hay dos tipos de "recortes" especiales:
 
 :::::grid{cols=2 class="gap-4"}
 
 ::::grid{cols=1 class="h-full border border-slate-700/50 rounded-xl p-3 bg-slate-900/20 hover:bg-slate-900/40 transition-all !my-0"}
-#### **Subgraf generador**
-Mantenim **TOTS els vèrtexs**, però esborrem algunes arestes.
+#### **Subgrafo generador**
+Mantenemos **TODOS los vértices**, pero borramos algunas aristas.
 
 :::graph{height=120}
 ```json
@@ -357,12 +354,12 @@ Mantenim **TOTS els vèrtexs**, però esborrem algunes arestes.
 }
 ```
 :::
-<div class="text-xs text-center text-slate-400 mt-2">Original era un triangle. El vèrtex 3 (vermell) segueix allà, sol.</div>
+<div class="text-xs text-center text-slate-400 mt-2">Original era un triángulo. El vértice 3 (rojo) sigue ahí, solo.</div>
 ::::
 
 ::::grid{cols=1 class="h-full border border-slate-700/50 rounded-xl p-3 bg-slate-900/20 hover:bg-slate-900/40 transition-all !my-0"}
-#### **Subgraf induït ($G[S]$)**
-Triem un "equip" de vèrtexs $S$ i ens quedem amb **TOTES** les seves arestes internes.
+#### **Subgrafo inducido ($G[S]$)**
+Elegimos un "equipo" de vértices $S$ y nos quedamos con **TODAS** sus aristas internas.
 
 :::graph{height=120}
 ```json
@@ -372,20 +369,20 @@ Triem un "equip" de vèrtexs $S$ i ens quedem amb **TOTES** les seves arestes in
 }
 ```
 :::
-<div class="text-xs text-center text-slate-400 mt-2">Retallem un tros de la xarxa, mantenint les connexions locals.</div>
+<div class="text-xs text-center text-slate-400 mt-2">Recortamos un trozo de la red, manteniendo las conexiones locales.</div>
 ::::
 
 :::::
 
-## 8. El graf complementari ($G^c$)
+## 8. El grafo complementario ($G^c$)
 
-Imagineu l'univers paral·lel del graf. És el **negatiu** de la foto. Hi ha grafs que són **autocomplementaris**: són idèntics al seu "negatiu" ($G \cong G^c$). El pentàgon ($C_5$) n'és un.
+Imaginad el universo paralelo del grafo. Es el **negativo** de la foto. Hay grafos que son **autocomplementarios**: son idénticos a su "negativo" ($G \cong G^c$). El pentágono ($C_5$) es uno de ellos.
 
 :::::grid{cols=2 class="gap-4"}
 
 ::::grid{cols=1 class="h-full border border-slate-700/50 rounded-xl p-3 bg-slate-900/20 hover:bg-slate-900/40 transition-all !my-0"}
-#### **Graf original ($G$)**
-Dos vèrtexs connectats (Amics).
+#### **Grafo original ($G$)**
+Dos vértices conectados (Amigos).
 
 :::graph{height=120}
 ```json
@@ -398,8 +395,8 @@ Dos vèrtexs connectats (Amics).
 ::::
 
 ::::grid{cols=1 class="h-full border border-slate-700/50 rounded-xl p-3 bg-slate-900/20 hover:bg-slate-900/40 transition-all !my-0"}
-#### **Graf complementari ($G^c$)**
-Ara els amics es barallen, i els desconeguts es fan amics.
+#### **Grafo complementario ($G^c$)**
+Ahora los amigos se pelean, y los desconocidos se hacen amigos.
 
 :::graph{height=120}
 ```json
@@ -418,27 +415,27 @@ Ara els amics es barallen, i els desconeguts es fan amics.
 
 :::::
 
-:::tip{title="Àlgebra del complementari"}
-No intentis dibuixar el complementari si a l'examen et demanen números. L'ordinador de la teva ment ha d'usar aquestes 3 regles d'or:
-1.  **Ordre igual:** $n_{G^c} = n$
-2.  **Mida invertida:** $m_{G^c} = \frac{n(n-1)}{2} - m$  (Són les arestes totals possibles menys les que ja tens a $G$).
-3.  **Grau invertit (Imprescindible):** El nou grau d'un vèrtex és tot allò amb el que no estava connectat a la teva xarxa original. Aquesta fórmula s'usa contínuament:
+:::tip{title="Álgebra del complementario"}
+No intentes dibujar el complementario si en el examen te piden números. El ordenador de tu mente debe usar estas 3 reglas de oro:
+1.  **Orden igual:** $n_{G^c} = n$
+2.  **Tamaño invertido:** $m_{G^c} = \frac{n(n-1)}{2} - m$  (Son las aristas totales posibles menos las que ya tienes en $G$).
+3.  **Grado invertido (Imprescindible):** El nuevo grado de un vértice es todo aquello con lo que no estaba conectado en tu red original. Esta fórmula se usa continuamente:
     $$ g_{G^c}(v) = (n - 1) - g_G(v) $$
 :::
 
 
-- **Conjunt independent**: Subconjunt de vèrtexs $S \subseteq V$ on **cap parell** de vèrtexs és adjacent (0 arestes internes). A $G$ és un subgraf complet (tros que forma un graf complet) al graf complementari $G^c$.
-- **Nombre d'independència $\alpha(G)$**: Mida del conjunt independent més gran del graf.
+- **Conjunto independiente**: Subconjunto de vértices $S \subseteq V$ donde **ningún par** de vértices es adyacente (0 aristas internas). En $G$ es un subgrafo completo (trozo que forma un grafo completo) en el grafo complementario $G^c$.
+- **Número de independencia $\alpha(G)$**: Tamaño del conjunto independiente más grande del grafo.
 
 
-## 9. Operacions amb grafs
+## 9. Operaciones con grafos
 
-### Graf reunió ($G \cup G'$)
-És la unió disjunta de dos grafs. Simplement els dibuixem un al costat de l'altre.
-- **Vèrtex i Arestes**: $V_{total} = V \cup V'$ i $A_{total} = A \cup A'$.
-- Si $V \cap V' = \emptyset$ (no comparteixen nodes), l'ordre total és exactament $n + n'$.
+### Grafo reunión ($G \cup G'$)
+Es la unión disjunta de dos grafos. Simplemente los dibujamos uno al lado del otro.
+- **Vértices y Aristas**: $V_{total} = V \cup V'$ y $A_{total} = A \cup A'$.
+- Si $V \cap V' = \emptyset$ (no comparten nodos), el orden total es exactamente $n + n'$.
 
-**Exemple**: $C_3 \cup C_3$
+**Ejemplo**: $C_3 \cup C_3$
 :::graph{height=150}
 ```json
 {
@@ -454,12 +451,12 @@ No intentis dibuixar el complementari si a l'examen et demanen números. L'ordin
 ```
 :::
 
-### Potència de Grafs ($G^k$)
-- **Definició ($G^2$):** Manté els nodes de $G$. Dos nodes són adjacents si la seva distància original a $G$ és **$\le 2$**.
+### Potencia de Grafos ($G^k$)
+- **Definición ($G^2$):** Mantiene los nodos de $G$. Dos nodos son adyacentes si su distancia original en $G$ es **$\le 2$**.
 - **Regla general ($G^k$):** $u \sim v$ si $dist_G(u, v) \le k$.
-- **Examen:** Si $G$ és connex (tema 2), $G^2$ també ho és i el seu diàmetre es redueix (més "dreceres").
+- **Examen:** Si $G$ es conexo (tema 2), $G^2$ también lo es y su diámetro se reduce (más "atajos").
 
-**Exemple**: $P_4^2$ (Nodes distància $\le 2$ connectats)
+**Ejemplo**: $P_4^2$ (Nodos distancia $\le 2$ conectados)
 :::graph{height=150}
 ```json
 {
@@ -472,10 +469,10 @@ No intentis dibuixar el complementari si a l'examen et demanen números. L'ordin
 ```
 :::
 
-### Graf producte ($G \times H$)
-El **producte cartesià** genera estructures tipus "reixa". Substituïm cada vèrtex de $G$ per una còpia de $H$ i els connectem seguint l'estructura de $G$.
+### Grafo producto ($G \times H$)
+El **producto cartesiano** genera estructuras tipo "rejilla". Sustituimos cada vértice de $G$ por una copia de $H$ y los conectamos siguiendo la estructura de $G$.
 
-**Exemple**: $P_3 \times P_2$ (una escala)
+**Ejemplo**: $P_3 \times P_2$ (una escalera)
 
 :::graph
 ```json
@@ -494,22 +491,22 @@ El **producte cartesià** genera estructures tipus "reixa". Substituïm cada vè
 ```
 :::
 
-- **Ordre**: $n_{G \times H} = n_G \cdot n_H$
-- **Mida**: $m_{G \times H} = n_G \cdot m_H + n_H \cdot m_G$
+- **Orden**: $n_{G \times H} = n_G \cdot n_H$
+- **Tamaño**: $m_{G \times H} = n_G \cdot m_H + n_H \cdot m_G$
 
-:::tip{title="Distàncies al Producte"}
-La distància al producte és la suma de les distàncies:
+:::tip{title="Distancias en el Producto"}
+La distancia en el producto es la suma de las distancias:
 $$ d_{G \times H}((u_1, v_1), (u_2, v_2)) = d_G(u_1, u_2) + d_H(v_1, v_2) $$
-$$ \text{Diàmetre}(G \times H) = \text{Diàmetre}(G) + \text{Diàmetre}(H) $$
+$$ \text{Diámetro}(G \times H) = \text{Diámetro}(G) + \text{Diámetro}(H) $$
 :::
 
-### Producte coronal ($G \circ H$)
-Es construeix agafant una còpia de $G$ i $n_G$ còpies de $H$, i connectant cada vèrtex $i$ de $G$ amb **tots** els vèrtexs de la seva còpia corresponent de $H$.
-- **Ordre**: $n_{G \circ H} = n_G(1 + n_H)$
-- **Grau d'un vèrtex $v \in G$**: $g_{original}(v) + n_H$
-- **Mida**: $m_{G \circ H} = m_G + n_G(m_H + n_H)$
+### Producto coronal ($G \circ H$)
+Se construye tomando una copia de $G$ y $n_G$ copias de $H$, y conectando cada vértice $i$ de $G$ con **todos** los vértices de su copia correspondiente de $H$.
+- **Orden**: $n_{G \circ H} = n_G(1 + n_H)$
+- **Grado de un vértice $v \in G$**: $g_{original}(v) + n_H$
+- **Tamaño**: $m_{G \circ H} = m_G + n_G(m_H + n_H)$
 
-**Exemple**: $K_2 \circ N_2$ (Cada node de $K_2$ es connecta a una parella de nodes nous)
+**Ejemplo**: $K_2 \circ N_2$ (Cada nodo de $K_2$ se conecta a una pareja de nodos nuevos)
 :::graph{height=200}
 ```json
 {

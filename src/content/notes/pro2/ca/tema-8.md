@@ -1,10 +1,10 @@
 ---
-title: "Tema 8: Punters i Memòria Dinàmica"
+title: "Tema 8: Punters i memòria dinàmica"
 description: "Gestió de memòria en C++, operadors, aliasing i gestió del 'heap'."
 readTime: "20 min"
 order: 9
 draft: false
-isNew: true
+isUpdated: 1
 ---
 
 ## 1. La memòria en C++: Stack vs Heap
@@ -16,7 +16,19 @@ Per entendre els punters, primer hem de saber on s'emmagatzemen les dades. La me
 | **Gestió** | Automàtica (per l'ordinador). | Manual (pel programador). |
 | **Velocitat** | Molt ràpida. | Més lenta. |
 | **Mida** | Limitada i fixa. | Molt gran (memòria RAM disponible). |
-| **Cicle de vida** | Les variables neixen i moren al sortir del bloc `{}`. | Es mantenen vives fins que es crida `delete`. |
+| **Cicle de vida** | Lligat a les claus `{}` (stack frames). | Decidim quan neixen (`new`) i moren (`delete`). |
+
+**Exemple de scope (Pila)**:
+```cpp
+int f(int a, int b) {
+    int n = a;
+    if (b > n) {
+        int m = 2; // Neix aquí
+        a = b;
+    } // m Mor aquí automàticament
+    return a;
+} // n i a Moren aquí
+```
 
 ## 2. Què és un punter?
 
@@ -24,11 +36,34 @@ Un **punter** és una variable que, en lloc d'emmagatzemar un valor (com un `int
 
 | Operador | Nom | Funció | Exemple |
 | :--- | :--- | :--- | :--- |
-| **`&`** | Adreça de (address-of) | Obté l'adreça de memòria d'una variable. | `p = &x;` |
-| **`*`** | Indirecció (dereference) | Accedeix al contingut de l'adreça que guarda el punter. | `cout << *p;` |
-| **`->`** | Fletxa (arrow) | Accedeix a un membre d'una classe/estructura via punter. | `p->metode();` |
+| **`&`** | Adreça de | Obté l'adreça de memòria d'una variable. | `p = &x;` |
+| **`*`** | Desreferència | Accedeix al contingut de l'adreça que guarda el punter. | `cout << *p;` |
+| **`->`** | Fletxa | Accés a membre via punter. Equivalent a `(*p).membre`. | `pp->first = "b";` |
 
-> **Nota sobre `nullptr`**: Des de C++11, s'utilitza `nullptr` per indicar que un punter no apunta a cap lloc. És molt més segur que el vell `NULL` o `0`.
+### Trampes de declaració i sintaxi
+
+- **Declaració múltiple**: L'asterisc `*` s'ha de posar per cada variable.
+  ```cpp
+  int *pb, *pc; // Dos punters
+  int* pb, pc;  // pb és punter, pc és un ENTER normal! (Error típic)
+  ```
+- **Punter a elements de contenidors**:
+  ```cpp
+  vector<int> v = {1, 2, 3};
+  int *p = &v[1]; // Apunta al '2'
+  *p += 1;        // v[1] ara és 3
+  ```
+- **Punter a membres de `pair` o `struct`**:
+  ```cpp
+  pair<string, int> a = {"a", 7};
+  int *pi = &a.second;
+  *pi = 0; // a.second ara és 0
+  ```
+
+> **`nullptr` vs Inicialització**:
+> - `int *p = nullptr;` -> El punter apunta a "res". Segur.
+> - `int *p;` -> El punter apunta a una **adreça aleatòria** (brossa). Molt perillós.
+> - `int *p = 5;` -> **ERROR**. Estàs dient que l'adreça de memòria es la número 5. Això provocarà un **SEGFAULT** segur.
 
 ```cpp
 int x = 10;
@@ -42,96 +77,90 @@ cout << *p;  // Imprimeix el valor de x: 10
 
 Aquesta és la utilitat real dels punters: demanar memòria en temps d'execució.
 
-### `new` i `delete`
+### Objectes vs vectors dinàmics
 
-1.  **`new T`**: Reserva espai al **heap** per a un objecte de tipus `T` i retorna la seva adreça.
-2.  **`delete p`**: Allibera la memòria reservada prèviament amb `new`.
+Podem demanar un sol objecte o un bloc sencer (vector) al Heap usant `new`, i alliberar-lo amb `delete`.
 
 ```cpp
-// Reserva dinàmica
-int* p = new int; 
-*p = 42;
+// Objectes simples
+Data *pd = new Data(2025, 4, 2);
+pair<int, int> *pp = new pair<int, int>(1, 2);
 
-// Ús
-cout << *p;
-
-// Alliberament
-delete p; 
-p = nullptr; // Bona pràctica: evitar punters penjants
+// Vectors dinàmics (Molt comú a C)
+int *pv = new int[100]; 
+char *pc = new char[100000];
 ```
 
-> Per cada `new` que facis, hi ha d'haver un `delete`. Si no, tindràs un **memory leak** (fuga de memòria).
+**Memory Leak**: Es produeix quan perds l'adreça i ja no pots fer `delete`.
+```cpp
+int *p = new int[100];
+p = new int[100]; // ERROR: S'ha perdut l'adreça del primer vector! Fuga de memòria.
+```
 
 ## 4. Aliasing i assignació
 
 L'**aliasing** passa quan dos o més punters apunten a la mateixa adreça de memòria. Modificar el valor a través d'un punter afecta a tots els altres "àlies".
+
 ```cpp
-int* p1 = new int(10);
+int x = 10;
+int* p1 = &x;
 int* p2 = p1; // Aliasing: p2 apunta on apunta p1
 
 *p2 = 20;
-cout << *p1; // Imprimirà 20!
+cout << x; // Imprimirà 20!
+```
+
+**Exemple avançat**: Un vector de punters apuntant al mateix objecte.
+```cpp
+int x = 3;
+vector<int*> v(10, &x); // 10 punters que apunten TOTS a la x
+
+for (int i = 0; i < v.size(); ++i) {
+    (*v[i])++; // Incrementem x 10 vegades!
+}
+cout << x; // Imprimirà 13
 ```
 
 ## 5. El perill dels punters: errors comuns
 
 L'ús de punters requereix molta disciplina. Els errors més habituals a PRO2 són:
 
-1.  **Segmentation Fault**: Intentar accedir a una adreça no vàlida (ex: punter `nullptr` o no inicialitzat).
-2.  **Memory Leak**: Perdre l'adreça d'una zona de memòria reservada sense haver fet `delete`.
-3.  **Dangling Pointer (Punter penjant)**: Tenir un punter que apunta a una adreça que ja ha estat alliberada.
+1.  **Segmentation Fault (SEGFAULT)**: Intentar accedir a una adreça que no et pertany.
+    - Desreferenciar `nullptr`: `int *p = nullptr; *p = 5;`.
+    - Accés fora de rang en vectors: `vector<int> v; v[13] = 0;`
+2.  **Memory Leak**: Destruir l'única referència a una memòria dinàmica sense alliberar-la.
+3.  **Dangling Pointer (Punter penjant)**: Punter que apunta a una adreça que ja ha estat alliberada amb `delete`.
+4.  **Double-Delete**: Fer `delete` dues vegades sobre la mateixa adreça (corromp el heap).
 
-## 6. Implementació d'estructures enllaçades
+> Al `Makefile`, utilitza el flag `-D_GLIBCXX_DEBUG`. Això activa comprovacions de seguretat en els contenidors de la STL i t'avisarà dels accessos fora de rang en lloc de donar-te un SEGFAULT silent o dades brossa.
 
-Els punters ens permeten crear estructures de mida variable anomenades **nodes enllaçats**. Un node típic conté una dada i un punter al següent node.
-
-```cpp
-struct Node {
-    int info;
-    Node* seg;
-};
-```
-
-### Visualització de nodes
-Un conjunt de nodes ens permet implementar Piles, Cues i Llistes sense les limitacions de mida dels vectors estàtics.
-
-:::graph
-```json
-{
-  "nodes": [
-    { "id": "n1", "label": "Node 1 (info: 10)" },
-    { "id": "n2", "label": "Node 2 (info: 20)" },
-    { "id": "n3", "label": "Node 3 (info: 30)" },
-    { "id": "null", "label": "nullptr", "color": "#ef4444" }
-  ],
-  "links": [
-    { "source": "n1", "target": "n2", "label": "seg" },
-    { "source": "n2", "target": "n3", "label": "seg" },
-    { "source": "n3", "target": "null", "label": "seg" }
-  ]
-}
-```
-:::
-
----
-
-## 7. Punters vs Iteradors
-
-A PRO2, sovint utilitzem **iteradors** per recórrer llistes, conjunts o mapes. Tot i que semblen similars (tots dos usen `*` i `++`), hi ha diferències clau:
-
-- **Punter**: És una adreça de memòria real. És "baix nivell".
-- **Iterador**: És un objecte que "simula" ser un punter per recórrer una estructura. És "alt nivell".
+| Operació | Iterador (STL) | Punter (Baix Nivell) |
+| :--- | :--- | :--- |
+| **Inici** | `auto it = v.begin();` | `int *px = &x;` |
+| **Accés** | `*it = 5;` | `*px = 5;` |
+| **Avançar** | `it++;` | `px++;` (Avança una adreça) |
+| **Reassignar** | `it = v.erase(it);` | `px = &y;` |
 
 > Un punter pot ser vist com un iterador d'un vector, però un iterador d'un `std::list` no és necessàriament un punter (internament pot ser més complex).
 
 ---
 
-## 8. Pas de paràmetres 
+## 6. Pas de paràmetres 
 
 | Tipus | Sintaxi | Efecte | Eficiència |
 | :--- | :--- | :--- | :--- |
 | **Per valor** | `f(int x)` | Còpia del valor. | Baixa (si l'objecte és gran). |
 | **Per referència** | `f(int& x)` | Àlies directe. | Alta. |
-| **Per punter** | `f(int* x)` | Passa l'adreça. | Alta. |
+| **Per punter** | `f(int* pi)` | Passa l'adreça. Més ràpid que per valor. |
 
-> A PRO2, preferim **referències constants** (`const T& x`) per a objectes grans que no volem modificar, i **punters** només quan necessitem que el paràmetre pugui ser opcional (`nullptr`) o per a estructures dinàmiques.
+**Exemple d'increment**:
+```cpp
+void inc(int *pi) {
+    (*pi)++; // vol dir *pi += 1;
+}
+
+int i = 5;
+inc(&i); // i ara val 6
+```
+
+A PRO2, preferim **referències constants** (`const T& x`) per a objectes grans que no volem modificar, i **punters** només quan necessitem que el paràmetre pugui ser opcional (`nullptr`) o per a estructures dinàmiques.
