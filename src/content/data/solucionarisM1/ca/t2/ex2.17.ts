@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex2_17: Solution = {
-    id: 'M1-T2-Ex2.17',
-    title: 'Exercici 2.17: Centre, Radi i Diàmetre',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `1) Trobeu l'excentricitat de tots els vèrtexs, el radi, els vèrtexs centrals i el centre:\n&nbsp;&nbsp;&nbsp;&nbsp;a) dels grafs de l'ex 2.1\n&nbsp;&nbsp;&nbsp;&nbsp;b) del graf $G = ([8], \\{12, 14, 15, 23, 34, 38, 46, 47, 56, 67, 78\\})$\n2) Doneu un exemple d'un graf connex amb el radi i el diàmetre iguals.\n3) Doneu un exemple d'un graf connex tal que el diàmetre sigui el doble del radi.`,
-    content: `
+  id: 'M1-T2-Ex2.17',
+  title: 'Exercici 2.17: Centre, Radi i Diàmetre',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `1) Trobeu l'excentricitat de tots els vèrtexs, el radi, els vèrtexs centrals i el centre:\n&nbsp;&nbsp;&nbsp;&nbsp;a) dels grafs de l'ex 2.1\n&nbsp;&nbsp;&nbsp;&nbsp;b) del graf $G = ([8], \\{12, 14, 15, 23, 34, 38, 46, 47, 56, 67, 78\\})$\n2) Doneu un exemple d'un graf connex amb el radi i el diàmetre iguals.\n3) Doneu un exemple d'un graf connex tal que el diàmetre sigui el doble del radi.`,
+  content: `
 Recordem les definicions clau:
 *   **Excentricitat $e(v)$:** La distància més gran entre $v$ i qualsevol altre vèrtex de $G$.
 *   **Radi $Rad(G)$:** La mínima de les excentricitats de $G$.
@@ -112,5 +112,5 @@ Aquesta relació se sol donar en camins llargs on el centre és el punt mitjà.
     *   Vèrtexs extrems **1** o **5**: $e(1) = e(5) = 4$ (distància entre ells). Per tant, $D(G) = 4$.
     *   Efectivament, $4 = 2 \\cdot 2$. $\\square$
   `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_10: Solution = {
   id: 'M1-T3-Ex3.10',
   title: 'Exercici 3.10: Bipartits i Hamiltonians',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Demostreu que si un graf bipartit és hamiltonià, aleshores les parts estables tenen el mateix cardinal.`,

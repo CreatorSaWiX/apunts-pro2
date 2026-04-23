@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_12: Solution = {
   id: 'M1-T3-Ex3.12',
   title: 'Exercici 3.12: Unir components hamiltonians',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf que té exactament dos components connexos que són grafs hamiltonians. Trobeu el mínim nombre d'arestes que cal afegir per obtenir un graf hamiltonià.`,

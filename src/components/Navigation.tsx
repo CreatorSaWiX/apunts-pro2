@@ -136,6 +136,14 @@ const Navigation: React.FC = () => {
                             <Menu size={20} />
                         </button>
 
+                        {/* <Link
+                            to="/comunitat"
+                            className={`p-2.5 rounded-full transition-colors ${location.pathname === '/comunitat' ? 'text-primary bg-primary/10' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                            title="Comunitat"
+                        >
+                            <Users size={20} />
+                        </Link> */}
+
                         <div className="w-px h-5 bg-white/10 mx-1" />
 
                         {user ? (

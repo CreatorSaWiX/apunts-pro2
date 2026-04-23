@@ -525,13 +525,29 @@ export const courseStructure: TopicDefinition[] = [
         id: "m2-tema-8-derivades-parcials",
         title: "Tema 8: Derivades parcials i direccionals. Vector Gradient",
         description: "Derivada direccional i parcial. Vector Gradient. Pla tangent a una superfície.",
-        problems: []
+        problems: [
+            { id: "M2-T8-Ex1", title: "Problema 1: Derivades parcials de primer ordre" },
+            { id: "M2-T8-Ex2", title: "Problema 2: Derivada direccional" },
+            { id: "M2-T8-Ex3", title: "Problema 3: Derivada direccional amb angle" },
+            { id: "M2-T8-Ex4", title: "Problema 4: Determinació de paràmetres" },
+            { id: "M2-T8-Ex5", title: "Problema 5: Pla tangent i recta normal" },
+            { id: "M2-T8-Ex6", title: "Problema 6: Pla tangent paral·lel a XY" },
+            { id: "M2-T8-Ex7", title: "Problema 7: Càlcul de gradients" },
+            { id: "M2-T8-Ex8", title: "Problema 8: Propietats del gradient" },
+            { id: "M2-T8-Ex9", title: "Problema 9: Corbes de nivell i creixement" },
+            { id: "M2-T8-Ex10", title: "Problema 10: Pla tangent i recta normal (II)" }
+        ]
     },
     {
-        id: "m2-tema-9-taylor-diverses",
+        id: "m2-tema-9-taylor-multivariable",
         title: "Tema 9: Polinomi de Taylor en diverses variables",
         description: "Derivades parcials d'ordre superior. Matriu Hessiana. Polinomi de Taylor i residu.",
-        problems: []
+        problems: [
+            { id: "M2-T9-Ex1", title: "Problema 1: Polinomi de Taylor de grau 2" },
+            { id: "M2-T9-Ex2", title: "Problema 2: Pla tangent i aproximació" },
+            { id: "M2-T9-Ex3", title: "Problema 3: Extrems relatius i Hessian nul" },
+            { id: "M2-T9-Ex4", title: "Problema 4: Determinació de paràmetres" }
+        ]
     },
     {
         id: "m2-tema-10-optimitzacio",

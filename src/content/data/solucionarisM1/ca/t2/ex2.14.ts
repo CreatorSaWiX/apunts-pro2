@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex2_14: Solution = {
-    id: 'M1-T2-Ex2.14',
-    title: 'Exercici 2.14: Distàncies amb algorisme BFS',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Considereu els grafs de l'exercici 2.4. Doneu la distància dels vèrtexs $a$ i $b$ a tots els vèrtexs del component connex on es troben aplicant l'algorisme BFS.`,
-    content: `
+  id: 'M1-T2-Ex2.14',
+  title: 'Exercici 2.14: Distàncies amb algorisme BFS',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `Considereu els grafs de l'exercici 2.4. Doneu la distància dels vèrtexs $a$ i $b$ a tots els vèrtexs del component connex on es troben aplicant l'algorisme BFS.`,
+  content: `
 L'algorisme **BFS** divideix el graf en **capes expansives** que representen directament la distància al destí respectiu iteratiu de manera més visual:
 
 ### Distàncies pel Graf 1
@@ -45,5 +45,5 @@ El component principal on habiten només té $\\{a, b, d, e, g, h, j, m\\}$.
 | **$d(b, v)$** | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 2 |
 
   `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

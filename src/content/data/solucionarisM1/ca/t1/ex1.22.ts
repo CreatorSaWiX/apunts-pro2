@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_22: Solution = {
   id: 'M1-T1-Ex1.22',
   title: 'Exercici 1.22: Subgrafs i Isomorfia',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $V = \\{a, b, c, d\\}$ i $A = \\{ab, ac, ad, dc\\}$. Determineu, llevat d'isomorfismes, tots els subgrafs del graf $G = (V, A)$`,

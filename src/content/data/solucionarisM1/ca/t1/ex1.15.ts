@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_15: Solution = {
     id: 'M1-T1-Ex1.15',
     title: 'Exercici 1.15: Seqüències de Graus',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Per a cadascuna de les seqüències següents, esbrineu si existeixen grafs d'ordre 5 de forma que els graus dels vèrtexs siguin els valors donats. Si existeixen, doneu-ne un exemple.

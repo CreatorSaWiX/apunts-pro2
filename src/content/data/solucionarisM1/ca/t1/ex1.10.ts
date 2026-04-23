@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex1_10: Solution = {
-    id: 'M1-T1-Ex1.10',
-    title: 'Exercici 1.10: Unió i Producte',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Doneu el conjunt d'arestes i una representació gràfica dels grafs $K_3 \\cup T_3$ i $T_3 \\times K_3$, suposant que els conjunts de vèrtexs de $K_3$ i de $T_3$ són disjunts.`,
-    content: `
+  id: 'M1-T1-Ex1.10',
+  title: 'Exercici 1.10: Unió i Producte',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `Doneu el conjunt d'arestes i una representació gràfica dels grafs $K_3 \\cup T_3$ i $T_3 \\times K_3$, suposant que els conjunts de vèrtexs de $K_3$ i de $T_3$ són disjunts.`,
+  content: `
 Definim els nostres jugadors:
 *   $K_3$ (Triangle): Vèrtexs $\\{1,2,3\\}$, Arestes $\\{12, 23, 31\\}$.
 *   $T_3$ (Trajecte/Camí 3): Vèrtexs $\\{a,b,c\\}$, Arestes $\\{ab, bc\\}$.
@@ -55,5 +55,5 @@ Vèrtexs: $(a,1), (a,2), (a,3), (b,1)...$ etc.
 \`\`\`
 :::
         `,
-    availableLanguages: ['ca']
-  };
+  availableLanguages: ['ca']
+};

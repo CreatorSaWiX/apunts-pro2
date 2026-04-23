@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_12: Solution = {
   id: 'M1-T2-Ex2.12',
   title: 'Exercici 2.12: Ponts i Talls dependents als regulars',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Demostreu que un graf 3-regular té un vèrtex de tall si, i només si, té alguna aresta pont.`,

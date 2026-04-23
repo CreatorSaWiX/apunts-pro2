@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_13: Solution = {
     id: 'M1-T2-Ex2.13',
     title: 'Exercici 2.13: Propietats del Complementari i els talls',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Siguin $G = (V, A)$ un graf i $v$ un vèrtex de $G$. Proveu que:  

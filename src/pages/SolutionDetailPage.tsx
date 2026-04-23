@@ -10,6 +10,7 @@ import CommentsSection from '../components/comments/CommentsSection';
 import CodeEditor from '../components/ui/CodeEditor';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
 
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();
@@ -24,7 +25,7 @@ const SolutionDetailPage = () => {
     const [currentCode, setCurrentCode] = useState('');
 
     useEffect(() => {
-        if (solution) setCurrentCode(solution.code);
+        if (solution) setCurrentCode(solution.code || '');
     }, [solution]);
 
     // Fetch author data
@@ -108,7 +109,10 @@ const SolutionDetailPage = () => {
     };
 
     // Helper to check if it's a "real" solved solution
-    const isSolved = solution && solution.authorId && !solution.code.includes('// Solució no disponible encara');
+    const isSolved = solution && solution.authorId && (
+        (solution.type === 'notebook' && solution.content) || 
+        (solution.code && !solution.code.includes('// Solució no disponible encara'))
+    );
 
     // Evaluate if this problem is a Jutge problem. Most PRO2 problems that are exactly 6 letters/numbers are Jutge IDs.
     const isJutgeId = solution && /^[A-Z0-9]{6}$/.test(solution.id) && topicId?.startsWith('pro2-');
@@ -281,7 +285,7 @@ const SolutionDetailPage = () => {
                     <CommentsSection solutionId={solution.id} solutionTitle={solution.title} />
                 </motion.div>
 
-                {/* Right Panel: Code */}
+                {/* Right Panel: Content (Code or Notebook) */}
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -289,8 +293,14 @@ const SolutionDetailPage = () => {
                     className="relative lg:col-span-1 h-full flex flex-col"
                 >
                     <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden shadow-xl flex-1 flex flex-col min-h-[500px] backdrop-blur-sm transition-all duration-500 hover:border-white/10 hover:shadow-2xl hover:-translate-y-1">
-                        <div className="relative flex-1 bg-transparent overflow-hidden flex flex-col">
-                            {isEditing ? (
+                        <div className="relative flex-1 bg-transparent overflow-hidden flex flex-col p-px">
+                            {solution.type === 'notebook' ? (
+                                <div className="p-8 md:p-10 h-full overflow-y-auto custom-scrollbar">
+                                    <div className="prose prose-invert prose-emerald max-w-none heading-reset text-lg">
+                                        <MarkdownRenderer content={solution.content || ''} />
+                                    </div>
+                                </div>
+                            ) : isEditing ? (
                                 <>
                                     <div className="px-5 py-3 bg-white/[0.03] border-b border-white/[0.06] flex items-center justify-between shrink-0">
                                         <div className="flex items-center gap-3">
@@ -330,7 +340,7 @@ const SolutionDetailPage = () => {
                                 </>
                             ) : (
                                 <CodeBlock
-                                    code={solution.code}
+                                    code={solution.code || ''}
                                     language="cpp"
                                     title={`${solution.id}.cpp`}
                                     titleHref={jutgeUrl}

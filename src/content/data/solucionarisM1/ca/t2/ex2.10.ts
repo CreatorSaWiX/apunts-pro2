@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex2_10: Solution = {
-   id: 'M1-T2-Ex2.10',
-   title: 'Exercici 2.10: Graf estrella adherent G+z',
-   author: 'Profe',
-   code: '',
-   type: 'notebook',
-   statement: `Sigui $G = (V, A)$ un graf connex d'ordre almenys 2. Prenem $z \\notin V$ i definim $G + z$ com el graf que té $V \\cup \\{z\\}$ com a conjunt de vèrtexs i $A \\cup \\{zv : v \\in V\\}$ com a conjunt d'arestes. Demostreu que $G + z$ no té vèrtexs de tall.`,
-   content: `
+  id: 'M1-T2-Ex2.10',
+  title: 'Exercici 2.10: Graf estrella adherent G+z',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `Sigui $G = (V, A)$ un graf connex d'ordre almenys 2. Prenem $z \\notin V$ i definim $G + z$ com el graf que té $V \\cup \\{z\\}$ com a conjunt de vèrtexs i $A \\cup \\{zv : v \\in V\\}$ com a conjunt d'arestes. Demostreu que $G + z$ no té vèrtexs de tall.`,
+  content: `
 $G+z$ s'obté afegint un súper-node $z$ connectat a **tots** els vèrtexs del graf original.
 
 :::graph{height=200}
@@ -32,5 +32,5 @@ Anem a veure que cap eliminació aïllada i concreta no desconnecta el mapa fina
 
 **Conclusió:** No hi ha forma de desconnectar-ho traient 1 sol element. Sense talls! $\\square$
   `,
-   availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

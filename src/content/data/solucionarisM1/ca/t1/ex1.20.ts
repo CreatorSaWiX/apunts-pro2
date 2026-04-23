@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_20: Solution = {
   id: 'M1-T1-Ex1.20',
   title: 'Exercici 1.20: Festa i Salutacions',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `L'Aran i la seva parella organitzen una festa on es reuneixen un total de 5 parelles. Es produeixen un cert nombre de salutacions però, com és natural, ningú no saluda la pròpia parella. A la sortida l'Aran pregunta a tothom quantes persones ha saludat i rep nou respostes diferents. Quantes persones ha saludat l'Aran i quantes la seva parella?\n_Indicació_: Descriviu un graf que modeli la situació. Esbrineu quantes salutacions fa cada membre d'una parella.`,

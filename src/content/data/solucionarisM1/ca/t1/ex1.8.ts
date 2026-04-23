@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_8: Solution = {
     id: 'M1-T1-Ex1.8',
     title: 'Exercici 1.8: Ordre i mida',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Considereu un graf $G = (V, A)$ d'ordre $n$ i mida $m$. Siguin $v$ un vèrtex i $a$ una aresta de $G$. Doneu l'ordre i la mida de $G^c$, $G - v$ i $G - a$.`,

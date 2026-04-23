@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_14: Solution = {
     id: 'M1-T1-Ex1.14',
     title: 'Exercici 1.14: Comptant Grafs',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Considereu els grafs que tenen conjunt de vèrtexs $[7] = \\{1, 2, 3, 4, 5, 6, 7\\}$. Calculeu quants grafs n'hi ha ...

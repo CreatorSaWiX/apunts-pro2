@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex2_1: Solution = {
-    id: 'M1-T2-Ex2.1',
-    title: 'Exercici 2.1: Trobar camins i cicles',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Trobeu en els grafs següents, si és possible, camins de longitud 9 i 11, i cicles de longitud 5, 6, 8 i 9.`,
-    content: `
+  id: 'M1-T2-Ex2.1',
+  title: 'Exercici 2.1: Trobar camins i cicles',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `Trobeu en els grafs següents, si és possible, camins de longitud 9 i 11, i cicles de longitud 5, 6, 8 i 9.`,
+  content: `
 Recordem: un **camí** té longitud màxima $n-1$ i un **cicle** longitud màxima $n$.
 
 ### Graf $G_1$ (Petersen, $n = 10$)
@@ -78,5 +78,5 @@ Recordem: un **camí** té longitud màxima $n-1$ i un **cicle** longitud màxim
 La limitació és purament d'ordre: un camí simple no pot superar longitud $n-1$ ni un cicle longitud $n$, independentment de com d'enrevessat sigui el graf.
 :::
   `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

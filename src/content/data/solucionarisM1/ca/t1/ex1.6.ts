@@ -1,18 +1,18 @@
 import type { Solution } from '../../../solutions';
 
 export const ex1_6: Solution = {
-    id: 'M1-T1-Ex1.6',
-    title: 'Exercici 1.6: Subgrafs Induïts',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `El graf $G$ té vèrtexs $V = \\{0..8\\}$. $u \\sim v \\iff |u-v| \\in \\{1, 4, 5, 8\\}$. Determineu ordre i mida de:
+  id: 'M1-T1-Ex1.6',
+  title: 'Exercici 1.6: Subgrafs Induïts',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `El graf $G$ té vèrtexs $V = \\{0..8\\}$. $u \\sim v \\iff |u-v| \\in \\{1, 4, 5, 8\\}$. Determineu ordre i mida de:
 
 1. El subgraf induït pels parells.
 2. El subgraf induït pels senars.
 3. El subgraf induït per $\\{0, 1, 2, 3, 4\\}$.
 4. Un subgraf generador amb màxim d'arestes sense cicles.`,
-    content: `
+  content: `
 Traduïm l'enunciat: Tenim graf $G$ amb vèrtexs de 0 a 8 (9 en total). Dos vèrtexs estan connectats si la distància és de 1, 4, 5 o 8. Primer, llistem les adjacències.
 
 *   0: 1, 4, 5, 8
@@ -143,5 +143,5 @@ Mida màxima = $9 - 1 = 8$.
 
 **Resultat: Ordre 9, Mida 8.**
         `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_27: Solution = {
   id: 'M1-T1-Ex1.27',
   title: 'Exercici 1.27: Grafs Autocomplementaris (General)',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Un graf és *autocomplementari* si és isomorf al seu graf complementari.\n\n1) Quantes arestes té un graf autocomplementari d'ordre $n$?\n2) Demostreu que si $n$ és l'ordre d'un graf autocomplementari, aleshores $n$ és congruent amb 0 o amb 1 mòdul 4.\n3) Comproveu que si $n = 4k$ per $k \\ge 1$, la construcció següent dona un graf autocomplementari: prenem $V = V_1 \\cup V_2 \\cup V_3 \\cup V_4$, on cada $V_i$ conté $k$ vèrtexs; els vèrtexs de $V_1$ i de $V_2$ indueixen grafs complets; a més, tenim totes les arestes entre $V_1$ i $V_3$, entre $V_3$ i $V_4$, i entre $V_4$ i $V_2$.\n4) Com podem modificar la construcció anterior per obtenir un graf autocomplementari amb $n = 4k + 1$ vèrtexs?`,

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex7_1: Solution = {
   id: 'M2-T7-Ex1',
   title: 'Exercici 1: Topologia a R^2',
-  author: 'asdf',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Considereu els conjunts:

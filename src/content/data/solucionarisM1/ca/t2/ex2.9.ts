@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_9: Solution = {
   id: 'M1-T2-Ex2.9',
   title: 'Exercici 2.9: Vèrtexs de tall i arestes pont',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu tots els vèrtexs de tall i arestes pont dels grafs següents.`,

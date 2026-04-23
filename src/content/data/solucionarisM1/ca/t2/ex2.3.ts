@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_3: Solution = {
   id: 'M1-T2-Ex2.3',
   title: 'Exercici 2.3: Components Connexos i Vèrtexs',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Un graf té ordre 13 i 3 components connexos. Demostreu que un dels components té un mínim de 5 vèrtexs.`,

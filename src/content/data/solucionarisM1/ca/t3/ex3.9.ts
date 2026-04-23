@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_9: Solution = {
   id: 'M1-T3-Ex3.9',
   title: 'Exercici 3.9: Cicles Hamiltonians',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `A cadascun del grafs de l'exercici 3.1 trobeu-hi un cicle hamiltonià, o demostreu-ne la no existència.

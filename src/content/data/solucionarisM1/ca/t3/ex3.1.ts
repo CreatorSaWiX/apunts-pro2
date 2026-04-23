@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_1: Solution = {
   id: 'M1-T3-Ex3.1',
   title: 'Exercici 3.1: Existència de Circuits Eulerians',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Per a cadascun dels grafs següents, trobeu-ne un circuit eulerià, o demostreu-ne la no existència.

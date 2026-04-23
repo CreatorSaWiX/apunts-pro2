@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_8: Solution = {
   id: 'M1-T2-Ex2.8',
   title: 'Exercici 2.8: Construcció Fita Superior (Mida i Connexió)',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf d'ordre $n$ amb exactament $k+1$ components connexos. En aquest exercici volem trobar una fita superior per la mida de $G$. Per a fer-ho definim el graf auxiliar $H$ d'ordre $n$ amb $k+1$ components connexos, $k \\ge 1$: $k$ són isomorfs a $K_1$ i un component és isomorf a $K_{n-k}$.\n\n1) Calculeu la mida de $H$.\n2) Demostreu que la mida de $H$ és més gran o igual que la mida de $G$.`,

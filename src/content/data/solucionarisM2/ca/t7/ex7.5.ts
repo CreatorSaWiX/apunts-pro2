@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex7_5: Solution = {
   id: 'M2-T7-Ex5',
   title: 'Exercici 5: Dibuix de subconjunts de R^2',
-  author: 'asdf',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Dibuixeu els subconjunts de $\\mathbb{R}^2$ següents:

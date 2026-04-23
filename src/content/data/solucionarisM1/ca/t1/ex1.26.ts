@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_26: Solution = {
    id: 'M1-T1-Ex1.26',
    title: 'Exercici 1.26: Grafs Autocomplementaris (Ordres Petits)',
-   author: 'Profe',
+   author: 'SaWiX',
    code: '',
    type: 'notebook',
    statement: `Un graf és *autocomplementari* si és isomorf al seu graf complementari. Demostreu que no hi ha grafs autocomplementaris d'ordre 3, però sí d'ordres 4 i 5.`,

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex7_7: Solution = {
   id: 'M2-T7-Ex7',
   title: 'Exercici 7: Representació de dominis',
-  author: 'asdf',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu i representeu el domini de les funcions següents:

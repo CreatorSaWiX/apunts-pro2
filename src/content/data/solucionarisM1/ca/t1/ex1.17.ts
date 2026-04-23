@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_17: Solution = {
     id: 'M1-T1-Ex1.17',
     title: 'Exercici 1.17: Bipartit Regular',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Sigui $G$ un graf bipartit d'ordre $n$ i regular de grau $d \\ge 1$. Quina és la mida de $G$? Pot ser que l'ordre de $G$ sigui senar?`,
@@ -32,4 +32,4 @@ Per tant, **$n$ ha de ser parell**.
 2.  **Pot ser l'ordre senar?** **No**. Ha de ser parell, perquè $V_1$ i $V_2$ han de tenir els mateixos vèrtexs per mantenir la regularitat.
         `,
     availableLanguages: ['ca']
-  };
+};

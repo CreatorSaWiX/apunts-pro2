@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex1_23: Solution = {
-  id: 'M1-T1-Ex1.23',
-  title: 'Exercici 1.23: Classes Isomorfia',
-  author: 'Profe',
-  code: '',
-  type: 'notebook',
-  statement: `Classifiqueu per classes d'isomorfia els grafs de la figura 1.1.`,
-  content: `
+   id: 'M1-T1-Ex1.23',
+   title: 'Exercici 1.23: Classes Isomorfia',
+   author: 'SaWiX',
+   code: '',
+   type: 'notebook',
+   statement: `Classifiqueu per classes d'isomorfia els grafs de la figura 1.1.`,
+   content: `
 Agrupem els grafs analitzant el seu ordre, mida, regularitat i l'existència de cicles característics.
 
 1. **Classe 1: $K_4$**
@@ -25,5 +25,5 @@ Agrupem els grafs analitzant el seu ordre, mida, regularitat i l'existència de 
 7. **Classe 7: Arbre no regular d'ordre 6**
    * **$G_{11}, G_{12}, G_{13}$**: Pertanyen a la mateixa classe arbòria on tenim un vèrtex central de grau 3 i rames simples; només varia la representació plana.
 `,
-  availableLanguages: ['ca']
+   availableLanguages: ['ca']
 };

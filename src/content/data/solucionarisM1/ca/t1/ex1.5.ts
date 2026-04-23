@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex1_5: Solution = {
-    id: 'M1-T1-Ex1.5',
-    title: 'Exercici 1.5: Cerca de Subgrafs',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Siguin $V = \\{a,b,c,d,e,f\\}$ i $A = \\{ab, af, ad, be, de, ef\\}$. Determineu tots els subgrafs de $G$ d'ordre 4 i mida 4.`,
-    content: `
+  id: 'M1-T1-Ex1.5',
+  title: 'Exercici 1.5: Cerca de Subgrafs',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `Siguin $V = \\{a,b,c,d,e,f\\}$ i $A = \\{ab, af, ad, be, de, ef\\}$. Determineu tots els subgrafs de $G$ d'ordre 4 i mida 4.`,
+  content: `
 Primer, dibuixem el graf per veure què tenim.
 
 *   $a$ connectat a: $b, f, d$ (Grau 3)
@@ -42,5 +42,5 @@ Primer, dibuixem el graf per veure què tenim.
 2.  $\\{a, d, e, f\\}$
 3.  $\\{a, b, e, f\\}$
         `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

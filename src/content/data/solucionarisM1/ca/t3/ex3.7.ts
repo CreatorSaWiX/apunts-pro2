@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_7: Solution = {
   id: 'M1-T3-Ex3.7',
   title: 'Exercici 3.7: El Problema del Dòmino',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Esbrineu si és possible posar en successió totes les fitxes d'un dòmino de forma que coincideixen les puntuacions dels extrems en contacte i que els dos extrems lliures tinguin la mateixa puntuació. Si és possible, expliciteu una solució.`,

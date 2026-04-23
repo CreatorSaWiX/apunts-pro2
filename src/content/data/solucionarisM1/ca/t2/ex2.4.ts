@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex2_4: Solution = {
-    id: 'M1-T2-Ex2.4',
-    title: 'Exercici 2.4: Algorisme DFS',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Useu l'algorisme DFS per esbrinar si els grafs següents, representats mitjançant la seva llista d'adjacències, són connexos, i en cas contrari determineu-ne els components connexos. Considereu que el conjunt de vèrtexs està ordenat alfabèticament.`,
-    content: `
+  id: 'M1-T2-Ex2.4',
+  title: 'Exercici 2.4: Algorisme DFS',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `Useu l'algorisme DFS per esbrinar si els grafs següents, representats mitjançant la seva llista d'adjacències, són connexos, i en cas contrari determineu-ne els components connexos. Considereu que el conjunt de vèrtexs està ordenat alfabèticament.`,
+  content: `
 **Regla del DFS:** des del vèrtex actual, saltem al veí **no visitat** de menor ordre alfabètic. Quan tots els veïns estan visitats, fem *backtrack*.
 
 ### Graf 1
@@ -88,5 +88,5 @@ Queden $c, f, i, k, l$. Nou DFS des de $c$: $c \\to f \\to k \\to i \\to l$.
 
 **Conclusió:** Graf **NO connex**. 2 components connexos. $\\square$
   `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

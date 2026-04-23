@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex1_2: Solution = {
-    id: 'M1-T1-Ex1.2',
-    title: 'Exercici 1.2: Construcció de Grafs',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Doneu un graf amb la propietat que es demana, explicitant-ne la llista d'adjacències i una representació gràfica.`,
-    content: `
+  id: 'M1-T1-Ex1.2',
+  title: 'Exercici 1.2: Construcció de Grafs',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `Doneu un graf amb la propietat que es demana, explicitant-ne la llista d'adjacències i una representació gràfica.`,
+  content: `
 ### 1) Graf 3-regular d'ordre com a mínim 5
 
 Un graf és $r$-regular si tots els vèrtexs tenen grau $r$. Busquem que tothom tingui 3 amics.
@@ -103,5 +103,5 @@ Un cas particular de bipartit complet on un conjunt té només 1 vèrtex (el cen
 \`\`\`
 :::
         `,
-    availableLanguages: ['ca']
-  };
+  availableLanguages: ['ca']
+};

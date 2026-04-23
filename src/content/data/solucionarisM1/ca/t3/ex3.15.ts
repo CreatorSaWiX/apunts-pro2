@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex3_15: Solution = {
-  id: 'M1-T3-Ex3.15',
-  title: 'Exercici 3.15: Hamiltonianitat del Graf Complementari',
-  author: 'Profe',
-  code: '',
-  type: 'notebook',
-  statement: `Sigui $G$ un graf $d$-regular d'ordre $\\ge 2d+2$, amb $d \\ge 1$. Demostreu que el complementari de $G$ és hamiltonià.`,
-  content: `
+   id: 'M1-T3-Ex3.15',
+   title: 'Exercici 3.15: Hamiltonianitat del Graf Complementari',
+   author: 'SaWiX',
+   code: '',
+   type: 'notebook',
+   statement: `Sigui $G$ un graf $d$-regular d'ordre $\\ge 2d+2$, amb $d \\ge 1$. Demostreu que el complementari de $G$ és hamiltonià.`,
+   content: `
 Per demostrar que el graf complementari $\\bar{G}$ és hamiltonià, utilitzarem el **Teorema de Dirac**.
 
 ### Teorema de Dirac
@@ -46,5 +46,5 @@ Si $G$ és un graf 1-regular (un aparellament) de 4 vèrtexs ($n=4, d=1$), $2d+2
 El complementari $\\bar{G}$ tindrà vèrtexs de grau $4-1-1 = 2$. Un graf de 4 vèrtexs on tots tenen grau 2 és un cicle $C_4$, que és hamiltonià.
 :::
   `,
-  availableLanguages: ['ca']
+   availableLanguages: ['ca']
 };

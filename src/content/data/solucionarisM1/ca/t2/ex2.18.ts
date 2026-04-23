@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_18: Solution = {
   id: 'M1-T2-Ex2.18',
   title: 'Exercici 2.18: Diàmetre Mínim per Densitat Alta',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf d'ordre $1001$ tal que cada vèrtex té grau $\\ge 500$. Demostreu que $G$ té diàmetre $\\le 2$.`,

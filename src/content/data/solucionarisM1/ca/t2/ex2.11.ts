@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_11: Solution = {
   id: 'M1-T2-Ex2.11',
   title: 'Exercici 2.11: Graf regular més petit amb pont',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu el més petit $n$ tal que existeix un graf 3-regular d'ordre $n$ que té una aresta pont.`,

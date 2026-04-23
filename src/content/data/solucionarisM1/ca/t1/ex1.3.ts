@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_3: Solution = {
     id: 'M1-T1-Ex1.3',
     title: 'Exercici 1.3: Regularitat i Bipartició',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Esbrineu si els grafs complet ($K_n$), trajecte ($T_n$) i cicle ($C_n$) d'ordre $n$, amb $n \\ge 1$ o $n \\ge 3$ segons el cas, són bipartits i/o regulars.`,

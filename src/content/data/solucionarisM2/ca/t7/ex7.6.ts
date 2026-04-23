@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex7_6: Solution = {
   id: 'M2-T7-Ex6',
   title: 'Exercici 6: Topologia i Compacitat',
-  author: 'asdf',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Considereu els conjunts:

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, FileText, LayoutList, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FileText, LayoutList, CheckCircle2, X } from 'lucide-react';
 import type { Solution } from '../../content/data/solutions';
 import type { TopicDefinition } from '../../content/data/courseStructure';
 import { MarkdownRenderer } from '../../markdown/MarkdownRenderer';
@@ -28,6 +28,9 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
         localStorage.setItem(STORAGE_KEY, id);
     };
 
+    const [availablePdfs, setAvailablePdfs] = useState<{ ca: boolean; es: boolean }>({ ca: false, es: false });
+    const [isPdfMenuOpen, setIsPdfMenuOpen] = useState(false);
+
     // Initialize with first problem if available OR nothing fetched
     useEffect(() => {
         if (topic.problems.length > 0 && !selectedProblemId) {
@@ -35,6 +38,32 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
             setSelectedProblemId(firstId);
         }
     }, [topic, selectedProblemId]);
+
+    // Check for PDFs
+    useEffect(() => {
+        const subject = topic.id.split('-')[0];
+        const checkPdfs = async () => {
+            try {
+                const [caRes, esRes] = await Promise.all([
+                    fetch(`/pdfs/solucionaris/${subject}/ca/solucionari-${topic.id}.pdf`, { method: 'HEAD' }),
+                    fetch(`/pdfs/solucionaris/${subject}/es/solucionari-${topic.id}.pdf`, { method: 'HEAD' })
+                ]);
+
+                const isValidPdf = (res: Response) => {
+                    return res.ok && res.headers.get('content-type')?.includes('application/pdf');
+                };
+
+                setAvailablePdfs({
+                    ca: !!isValidPdf(caRes),
+                    es: !!isValidPdf(esRes)
+                });
+            } catch (e) {
+                console.error("Error comprovant PDFs de solucionaris", e);
+                setAvailablePdfs({ ca: false, es: false });
+            }
+        };
+        checkPdfs();
+    }, [topic.id]);
 
     if (loading && solutions.length === 0) {
         return (
@@ -76,11 +105,77 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-4 pl-2 shrink-0"
             >
-                <div className="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-6">
-                    <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight whitespace-nowrap">
-                        {topic.title}
-                    </h1>
-                    <p className="text-slate-400 text-sm md:text-base truncate max-w-full md:max-w-3xl">{topic.description}</p>
+                <div className="flex flex-col md:flex-row md:items-stretch justify-between gap-8 mb-4 relative">
+                    <div className="flex-1 min-w-0">
+                        <h1 className="text-2xl md:text-4xl font-black text-white tracking-tight leading-tight mb-2">
+                            {topic.title}
+                        </h1>
+                        <p className="text-slate-400 text-sm md:text-lg font-medium opacity-70 max-w-4xl">
+                            {topic.description}
+                        </p>
+                    </div>
+
+                    {/* PDF Large Square Button - Right Aligned */}
+                    {(availablePdfs.ca || availablePdfs.es) && (
+                        <div className="relative shrink-0 self-center md:self-stretch flex items-center">
+                            <button
+                                onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
+                                className="flex flex-col items-center justify-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl border transition-all select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-[100px] h-full max-h-[100px]"
+                            >
+                                <FileText size={28} className="group-hover:scale-110 transition-transform duration-300" />
+                                <span>PDF</span>
+                            </button>
+
+                            <AnimatePresence>
+                                {isPdfMenuOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        className="absolute right-0 top-full mt-3 w-56 bg-[#0b1221]/90 backdrop-blur-xl border border-red-500/20 rounded-2xl shadow-[0_20px_50px_-12px_rgba(239,68,68,0.3)] z-50 overflow-hidden"
+                                    >
+                                        <div className="p-4 border-b border-red-500/10 flex justify-between items-center">
+                                            <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">Idioma Solucionari</span>
+                                            <button onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                                                <X size={16} />
+                                            </button>
+                                        </div>
+                                        <div className="p-2">
+                                            {availablePdfs.ca && (
+                                                <a
+                                                    href={`/pdfs/solucionaris/${topic.id.split('-')[0]}/ca/solucionari-${topic.id}.pdf`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={() => setIsPdfMenuOpen(false)}
+                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition-all group"
+                                                >
+                                                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                                                        <span className="text-xs font-bold text-red-400">CA</span>
+                                                    </div>
+                                                    <span>Català</span>
+                                                </a>
+                                            )}
+                                            {availablePdfs.es && (
+                                                <a
+                                                    href={`/pdfs/solucionaris/${topic.id.split('-')[0]}/es/solucionari-${topic.id}.pdf`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={() => setIsPdfMenuOpen(false)}
+                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition-all group"
+                                                >
+                                                    <div className="w-4 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                                                        <span className="text-xs font-bold text-red-400">ES</span>
+                                                    </div>
+                                                    <span>Español</span>
+                                                </a>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    )}
                 </div>
             </motion.div>
 

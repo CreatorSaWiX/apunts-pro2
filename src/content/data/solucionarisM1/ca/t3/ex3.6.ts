@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_6: Solution = {
   id: 'M1-T3-Ex3.6',
   title: 'Exercici 3.6: Ponts i Graus Parells',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Demostreu que un graf connex amb tots els vèrtexs de grau parell no té arestes pont.`,

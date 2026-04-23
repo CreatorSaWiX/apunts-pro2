@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_4: Solution = {
   id: 'M1-T3-Ex3.4',
   title: 'Exercici 3.4: Eulerianitat en Bipartits Complets',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu els valors de $r$ i $s$ tals que el graf bipartit complet $K_{r,s}$ és eulerià.`,

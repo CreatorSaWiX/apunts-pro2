@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_13: Solution = {
   id: 'M1-T3-Ex3.13',
   title: 'Exercici 3.13: Graus en Grafs Hamiltonians',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf hamiltonià que no és un graf cicle. Demostreu que $G$ té almenys dos vèrtexs de grau $\ge 3$.`,

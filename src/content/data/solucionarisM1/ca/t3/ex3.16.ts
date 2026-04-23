@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_16: Solution = {
   id: 'M1-T3-Ex3.16',
   title: 'Exercici 3.16: Existència de Camí Hamiltonià',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf d'ordre $n \\ge 2$ tal que cada vèrtex té grau $\\ge (n-1)/2$. Demostreu que $G$ té un camí hamiltonià.`,

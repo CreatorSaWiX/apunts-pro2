@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_28: Solution = {
   id: 'M1-T1-Ex1.28',
   title: 'Exercici 1.28: Cicles en Grafs Grans',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf d'ordre $n \\ge 6$.\n\n1) Demostreu que $G$ o $G^c$ conté un vèrtex $v$ de grau almenys 3.\n2) Demostreu que $G$ o $G^c$ conté un cicle de longitud 3. (Considereu les adjacències entre els veïns del vèrtex $v$ del primer apartat.)\n3) Demostreu que en una reunió de $n \\ge 6$ persones, sempre n'hi ha 3 que es coneixen dos a dos o 3 que no es coneixen dos a dos.`,

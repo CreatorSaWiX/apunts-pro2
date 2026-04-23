@@ -17,9 +17,9 @@ interface Contributor {
 }
 
 const APP_DATA: Record<string, { version: string; updated: string }> = {
-    pro2: { version: 'v1.5.1', updated: '18/04/2026' },
-    m1: { version: 'v1.5.0', updated: '19/04/2026' },
-    m2: { version: 'v1.3.1', updated: '19/04/2026' }
+    pro2: { version: 'v1.6.0', updated: '22/04/2026' },
+    m1: { version: 'v1.5.1', updated: '23/04/2026' },
+    m2: { version: 'v1.4.0', updated: '23/04/2026' }
 };
 
 const letterContainerVariants = {
@@ -152,13 +152,13 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride }) => {
             <MotionConfig reducedMotion={isMobile && isMenuOpen ? "always" : "never"}>
                 {/* Main Title with Staggered Letters - Hard Bypass on Mobile Menu */}
                 {isMobile && isMenuOpen ? (
-                   <div className="relative">
+                    <div className="relative">
                         <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
                             <span className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl">
                                 APUNTS {theme.label}
                             </span>
                         </h1>
-                   </div>
+                    </div>
                 ) : (
                     <AnimatePresence mode="wait">
                         <motion.div

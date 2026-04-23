@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_2: Solution = {
   id: 'M1-T2-Ex2.2',
   title: 'Exercici 2.2: Camí en Graf de Grau Mínim',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Demostreu que si $G$ és un graf de grau mínim $d$, aleshores $G$ conté un camí de longitud $d$.`,

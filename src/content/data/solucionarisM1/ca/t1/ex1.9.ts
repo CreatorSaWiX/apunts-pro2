@@ -1,13 +1,13 @@
 import type { Solution } from '../../../solutions';
 
 export const ex1_9: Solution = {
-    id: 'M1-T1-Ex1.9',
-    title: 'Exercici 1.9: Complementaris Regulars i Bipartits',
-    author: 'Profe',
-    code: '',
-    type: 'notebook',
-    statement: `Esbrineu si el complementari d'un graf regular és regular, i si el complementari d'un graf bipartit és bipartit. En cas afirmatiu, demostreu-ho; en cas negatiu, doneu un contraexemple.`,
-    content: `
+  id: 'M1-T1-Ex1.9',
+  title: 'Exercici 1.9: Complementaris Regulars i Bipartits',
+  author: 'SaWiX',
+  code: '',
+  type: 'notebook',
+  statement: `Esbrineu si el complementari d'un graf regular és regular, i si el complementari d'un graf bipartit és bipartit. En cas afirmatiu, demostreu-ho; en cas negatiu, doneu un contraexemple.`,
+  content: `
 ### 1. El complementari d'un graf regular... és regular?
 
 **Sí**. Si tots els vèrtexs tenen el mateix nombre d'amics en $G$, tots tindran el mateix nombre de *no-amics* en $G^c$. Com que tots perden el mateix, tots guanyen el mateix.
@@ -80,5 +80,5 @@ $G^c = K_3 \\cup K_3$ (dos triangles sense connexió entre ells):
 
 Un triangle ($K_3$) **no és bipartit** perquè té un cicle de longitud 3 (senar). Per ser bipartit cal no tenir cicles senars. Per tant, $G^c$ **no és bipartit**. ✗
         `,
-    availableLanguages: ['ca']
+  availableLanguages: ['ca']
 };

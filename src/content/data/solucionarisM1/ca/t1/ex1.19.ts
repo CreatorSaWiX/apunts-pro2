@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_19: Solution = {
   id: 'M1-T1-Ex1.19',
   title: 'Exercici 1.19: Graus i Ordre',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf d'ordre 9 tal que tots els vèrtexs tenen grau 5 o 6. Proveu que hi ha un mínim de 5 vèrtexs de grau 6 o un mínim de 6 vèrtexs de grau 5.`,

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_15: Solution = {
   id: 'M1-T2-Ex2.15',
   title: 'Exercici 2.15: Càlcul de Diàmetres',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Trobeu el diàmetre dels grafs següents: $K_n$, Grafs de 2.1, $K_{r,s}$, $C_n$, $W_n$, $T_n$.`,

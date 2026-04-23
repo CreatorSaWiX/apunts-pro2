@@ -30,6 +30,9 @@ import { m2t4Solutions } from './solucionarisM2/ca/t4/index';
 import { m2t5Solutions } from './solucionarisM2/ca/t5/index';
 import { m2t6Solutions } from './solucionarisM2/ca/t6/index';
 import { m2t7Solutions } from './solucionarisM2/ca/t7/index';
+import { m2t8Solutions } from './solucionarisM2/ca/t8/index';
+import { m2t9Solutions } from './solucionarisM2/ca/t9/index';
+
 
 export const allSolutions: TopicSolutions[] = [
     {
@@ -83,6 +86,14 @@ export const allSolutions: TopicSolutions[] = [
     {
         topicId: 'm2-tema-7-funcions-variables',
         solutions: m2t7Solutions
+    },
+    {
+        topicId: 'm2-tema-8-derivades-parcials',
+        solutions: m2t8Solutions
+    },
+    {
+        topicId: 'm2-tema-9-taylor-multivariable',
+        solutions: m2t9Solutions
     }
 ];
 

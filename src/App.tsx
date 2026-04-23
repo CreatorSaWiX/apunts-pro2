@@ -16,6 +16,7 @@ const SolutionsListPage = lazy(() => import('./pages/SolutionsListPage'));
 const SolutionDetailPage = lazy(() => import('./pages/SolutionDetailPage'));
 const NewSolutionPage = lazy(() => import('./pages/NewSolutionPage'));
 const QuizPage = lazy(() => import('./pages/QuizPage'));
+const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 import { AuthProvider } from './contexts/AuthContext';
 import { SubjectProvider } from './contexts/SubjectContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -49,6 +50,7 @@ function App() {
               <Route path="/tema/:id/test" element={<QuizPage />} />
               <Route path="/tema/:id/solucionaris" element={<SolutionsListPage />} />
               <Route path="/tema/:id/solucionaris/:problemId" element={<SolutionDetailPage />} />
+              <Route path="/comunitat" element={<CommunityPage />} />
               <Route path="/register" element={<RegisterPage />} />
             </Routes>
           </Suspense>

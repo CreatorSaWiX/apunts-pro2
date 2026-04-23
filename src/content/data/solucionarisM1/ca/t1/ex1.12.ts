@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_12: Solution = {
   id: 'M1-T1-Ex1.12',
   title: 'Exercici 1.12: Teoria de Productes',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Proveu o refuteu les afirmacions següents:

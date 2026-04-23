@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_16: Solution = {
     id: 'M1-T1-Ex1.16',
     title: 'Exercici 1.16: Regularitat i Paritat',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Demostreu que si un graf és regular de grau senar, aleshores té ordre parell.`,

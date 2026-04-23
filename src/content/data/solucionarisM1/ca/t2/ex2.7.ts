@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_7: Solution = {
   id: 'M1-T2-Ex2.7',
   title: 'Exercici 2.7: Extrems de Mida segons Components Connexos i Arbres',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf d'ordre $n$ amb exactament $k$ components connexos. Demostreu que la mida de $G$ és més gran o igual que $n - k$.`,

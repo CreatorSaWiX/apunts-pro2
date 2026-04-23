@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_18: Solution = {
     id: 'M1-T1-Ex1.18',
     title: 'Exercici 1.18: Fita de la Mida',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Demostreu que en un graf bipartit d'ordre $n$ la mida és menor o igual que $n^2/4$.`,

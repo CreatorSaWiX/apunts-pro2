@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_21: Solution = {
   id: 'M1-T1-Ex1.21',
   title: 'Exercici 1.21: Isomorfismes (Ordre 4, Mida 2)',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Determineu, llevat d'isomorfismes, tots els grafs d'ordre quatre i mida dos.`,

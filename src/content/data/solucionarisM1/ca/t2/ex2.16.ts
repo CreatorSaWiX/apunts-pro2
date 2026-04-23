@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_16: Solution = {
   id: 'M1-T2-Ex2.16',
   title: 'Exercici 2.16: Impacte del tall al Diàmetre',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Per a cadascuna de les relacions següents sobre el diàmetre, doneu un graf $G = (V, A)$ connex i un vèrtex $u \\in V$ que les satisfacin:\n1) $D(G) = D(G - u)$.\n2) $D(G) < D(G - u)$.\n3) $D(G) > D(G - u)$.`,

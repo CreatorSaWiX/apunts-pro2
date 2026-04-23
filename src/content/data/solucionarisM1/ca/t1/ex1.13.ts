@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_13: Solution = {
     id: 'M1-T1-Ex1.13',
     title: 'Exercici 1.13: Grafs d\'ordre 3',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Doneu tots els grafs que tenen $V = \\{a, b, c\\}$ com a conjunt de vèrtexs i representeu-los gràficament.`,
@@ -61,4 +61,4 @@ El graf complet $K_3$ (Triangle). Només n'hi ha 1.
 **Total**: $1 + 3 + 3 + 1 = 8$ grafs etiquetats.
         `,
     availableLanguages: ['ca']
-  };
+};

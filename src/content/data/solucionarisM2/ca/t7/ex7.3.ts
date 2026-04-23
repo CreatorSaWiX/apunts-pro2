@@ -3,7 +3,7 @@ import type { Solution } from "../../../solutions";
 export const ex7_3: Solution = {
   id: "M2-T7-Ex3",
   title: "Exercici 3: Dibuix de corbes de nivell",
-  author: "Antigravity",
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Per a cada una de les funcions següents, dibuixeu les corbes de nivell corresponents als nivells $z = -2, -1, 0, 1, 2$:

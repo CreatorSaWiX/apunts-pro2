@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_11: Solution = {
   id: 'M1-T3-Ex3.11',
   title: 'Exercici 3.11: Hamiltonianitat en Bipartits Complets',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Demostreu que un graf bipartit $K_{r,s}$ d'ordre $\\ge 3$ és hamiltonià si, i només si, $r = s$.`,

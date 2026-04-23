@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid, Stars, Text, Html, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { useIsMobile } from '../../hooks/useIsMobile';
-import { Mafs, Coordinates, Plot, Theme, LaTeX as MafsLaTeX, Circle, Polygon, MovablePoint, Line as MafsLine } from "mafs";
+import { Mafs, Coordinates, Plot, Theme, LaTeX as MafsLaTeX, Circle, Polygon, MovablePoint, Line as MafsLine, Vector } from "mafs";
 import { InlineMath } from 'react-katex';
 import "mafs/core.css";
 import { InteractionLock } from './InteractionLock';
@@ -219,6 +219,136 @@ const VisVectorGradient = () => {
     );
 };
 
+const VisVectorDirectorAngle = () => {
+    const isMobile = useIsMobile();
+    const { isFullScreen, resizeKey } = useInteraction();
+    const [alpha, setAlpha] = React.useState(Math.PI / 4);
+    const [p, setP] = React.useState<[number, number]>([1, 1]);
+
+    const f = (x: number, y: number) => 0.1 * (x * x + y * y);
+
+    // Gradients: df/dx = 0.2x, df/dy = 0.2y
+    const grad = { x: 0.2 * p[0], y: 0.2 * p[1] };
+    const v = { x: Math.cos(alpha), y: Math.sin(alpha) };
+    const dotProduct = grad.x * v.x + grad.y * v.y;
+    const gradNorm = Math.sqrt(grad.x ** 2 + grad.y ** 2);
+
+    return (
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[650px]'}`}>
+            {/* Header Control Panel */}
+            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
+                <div className="flex-1 w-full max-w-sm">
+                    <div className="flex justify-between items-center mb-1.5 px-1">
+                        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Angle de direcció (α)</span>
+                        <span className="text-xs font-mono text-white bg-indigo-600 px-2 py-0.5 rounded shadow-lg shadow-indigo-500/20">α = {(alpha * 180 / Math.PI).toFixed(0)}°</span>
+                    </div>
+                    <input
+                        type="range" min="0" max={Math.PI * 2} step="0.01" value={alpha}
+                        onChange={(e) => setAlpha(parseFloat(e.target.value))}
+                        className="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                    />
+                </div>
+
+                <div className="flex gap-4 md:gap-8 bg-black/40 px-6 py-3 rounded-2xl border border-white/5 shadow-inner">
+                    <div className="text-center">
+                        <div className="text-[9px] text-slate-500 uppercase font-black tracking-tighter mb-1">Derivada (∇f · v)</div>
+                        <div className={`text-xl font-mono font-black ${dotProduct >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {dotProduct.toFixed(2)}
+                        </div>
+                    </div>
+                    <div className="w-px h-8 bg-white/10 self-center" />
+                    <div className="text-center">
+                        <div className="text-[9px] text-slate-500 uppercase font-black tracking-tighter mb-1">Màxim (||∇f||)</div>
+                        <div className="text-xl font-mono font-black text-indigo-400">
+                            {gradNorm.toFixed(2)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                {/* 2D Domain Section */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-950/30 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-[10px] text-slate-300 font-bold uppercase tracking-widest border border-white/5">Domini (XY)</div>
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+
+                        {/* Escala visual per a que els vectors es vegin (x4) */}
+                        {(() => {
+                            const vScale = 1.5;
+                            const gScale = 5; // El gradient és petit (0.2), el multipliquem més
+
+                            return (
+                                <>
+                                    {/* Direction Vector v */}
+                                    <MafsLine.Segment point1={p} point2={[p[0] + v.x * vScale, p[1] + v.y * vScale]} color={Theme.green} weight={4} />
+                                    <MafsLaTeX at={[p[0] + v.x * vScale * 1.2, p[1] + v.y * vScale * 1.2]} tex="\vec{v}" color={Theme.green} />
+
+                                    {/* Gradient Vector grad */}
+                                    <MafsLine.Segment point1={p} point2={[p[0] + grad.x * gScale, p[1] + grad.y * gScale]} color={Theme.indigo} weight={4} />
+                                    <MafsLaTeX at={[p[0] + grad.x * gScale, p[1] + grad.y * gScale + 0.3]} tex="\nabla f" color={Theme.indigo} />
+
+                                    {/* Projecció visual */}
+                                    <MafsLine.Segment point1={p} point2={[p[0] + v.x * dotProduct * vScale, p[1] + v.y * dotProduct * vScale]} color={Theme.pink} weight={6} opacity={0.6} />
+                                </>
+                            );
+                        })()}
+
+                        <MovablePoint point={p} onMove={setP} color={Theme.foreground} />
+                    </Mafs>
+                    <div className="absolute bottom-4 left-4 flex flex-col gap-1 pointer-events-none">
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-0.5 bg-green-500" />
+                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">Direcció (Unitari)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-0.5 bg-indigo-500" />
+                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">Gradient (Pendents)</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 3D Space Section */}
+                <div className="relative h-full overflow-hidden bg-slate-950/50">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-[10px] text-slate-300 font-bold uppercase tracking-widest border border-white/5">Espai (XYZ)</div>
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[8, 5, 8]} />
+                        <OrbitControls enableZoom={true} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+                        <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+
+                        <FunctionSurface f={f} showWireframe />
+
+                        {/* Active Point */}
+                        <Point position={[p[0], f(p[0], p[1]), p[1]]} color="white" />
+
+                        {/* Directional Plane (Vertical) */}
+                        <mesh position={[p[0], 2, p[1]]} rotation={[0, -alpha, 0]}>
+                            <planeGeometry args={[10, 8]} />
+                            <meshPhongMaterial color="#818cf8" transparent opacity={0.15} side={THREE.DoubleSide} depthWrite={false} />
+                        </mesh>
+
+                        {/* Intersection Curve */}
+                        <DirectionalCurvePoints a={p} vx={v.x} vy={v.y} f={f} />
+
+                        {/* Gradient Arrow on surface */}
+                        <group position={[p[0], f(p[0], p[1]) + 0.1, p[1]]}>
+                            <Arrow memoDir={new THREE.Vector3(grad.x, 0, grad.y).normalize()} length={gradNorm * 2} color={Theme.indigo} head={0.2} width={0.1} />
+                        </group>
+                    </Canvas>
+                </div>
+            </div>
+
+            <div className="p-3 bg-slate-950 text-center border-t border-white/10 shrink-0">
+                <p className="text-[10px] text-slate-500 italic">
+                    Mou el <span className="text-white font-bold">punt blanc</span> al domini per canviar la posició. La derivada és el pendent de la <span className="text-indigo-400 font-bold">corba blava</span> en el punt.
+                </p>
+            </div>
+        </div>
+    );
+};
+
 const VisMaximLocal = () => {
     const f = (x: number, y: number) => 4 - 0.2 * (x * x + y * y);
     return (
@@ -264,9 +394,9 @@ const VisTaylor3d = () => {
 
     return (
         <>
-            <FunctionSurface f={f} colorScale={3} />
+            <FunctionSurface f={f} showWireframe />
             <group position={[0, 0.1, 0]}>
-                <FunctionSurface f={p1} colorScale={3} />
+                <FunctionSurface f={p1} showWireframe colorScale={3} />
             </group>
             <Text position={[0, 4, 0]} color="white" fontSize={0.4} textAlign="center">
                 Aproximació de Taylor: Superfície vs Pla Tangent
@@ -438,7 +568,7 @@ const VisCorbesNivell3D2D = () => {
                 <div className="relative h-full overflow-hidden">
                     <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 8, 8]} />
-                        <OrbitControls enableZoom={false} />
+                        <OrbitControls enableZoom={true} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} castShadow />
                         <gridHelper args={[20, 20, "#333", "#222"]} rotation={[0, 0, 0]} position={[0, -0.01, 0]} />
@@ -520,7 +650,7 @@ const VisDistanciaSync3D2D = () => {
                     </div>
                     <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 5, 8]} />
-                        <OrbitControls enableZoom={false} />
+                        <OrbitControls enableZoom={true} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} />
                         <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
@@ -595,7 +725,7 @@ const VisEx73a = () => {
                 <div className="relative h-full overflow-hidden">
                     <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 8, 8]} />
-                        <OrbitControls enableZoom={false} />
+                        <OrbitControls enableZoom={true} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} />
                         <FunctionSurface f={f3D} showWireframe={true} colorScale={2} />
@@ -639,7 +769,7 @@ const VisSubespai3D = () => {
 
             <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                 <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+                <OrbitControls enableZoom={true} autoRotate autoRotateSpeed={0.5} />
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} intensity={1} />
                 <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
@@ -720,7 +850,7 @@ const VisEx78a = () => {
                 <div className="relative h-full overflow-hidden">
                     <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 8, 8]} />
-                        <OrbitControls enableZoom={false} />
+                        <OrbitControls enableZoom={true} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} />
                         <FunctionSurface f={f3D} showWireframe={true} colorScale={1} />
@@ -776,7 +906,7 @@ const VisEx78b = () => {
                 <div className="relative h-full overflow-hidden">
                     <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 8, 8]} />
-                        <OrbitControls enableZoom={false} />
+                        <OrbitControls enableZoom={true} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} />
                         <FunctionSurface f={f3D} showWireframe={true} colorScale={1.5} />
@@ -837,7 +967,7 @@ const VisEx78c = () => {
                 <div className="relative h-full overflow-hidden">
                     <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 8, 8]} />
-                        <OrbitControls enableZoom={false} />
+                        <OrbitControls enableZoom={true} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} />
                         <FunctionSurface f={f3D} showWireframe={true} colorScale={2} />
@@ -879,7 +1009,7 @@ const VisEx73b = () => {
                 </div>
             </div>
 
-            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+            <div className={`flex-none md:flex-1 grid grid-cols-1 ${isFullScreen ? 'h-full grid-rows-[1fr_1fr]' : 'h-[500px] grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
                 <div className="relative bg-slate-950/50 h-full overflow-hidden border-b md:border-b-0 md:border-r border-white/5">
                     <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
@@ -899,7 +1029,7 @@ const VisEx73b = () => {
                 <div className="relative h-full overflow-hidden">
                     <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 8, 8]} />
-                        <OrbitControls enableZoom={false} />
+                        <OrbitControls enableZoom={true} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} />
                         <FunctionSurface f={f3D} showWireframe={true} colorScale={1.5} />
@@ -909,6 +1039,671 @@ const VisEx73b = () => {
                         </mesh>
                     </Canvas>
                 </div>
+            </div>
+        </div>
+    );
+};
+
+const VisDiferencialIncrement = () => {
+    const [d, setD] = React.useState<[number, number]>([0.8, 0.8]); // dx, dy
+    const a = 1, b = 1; // Punt base fix
+    const { isFullScreen, resizeKey } = useInteraction();
+    const isMobile = useIsMobile();
+
+    // Funció: f(x,y) = 0.2 * (x^2 + y^2)
+    const f = (x: number, y: number) => 0.2 * (x * x + y * y);
+    const fx = (x: number) => 0.4 * x;
+    const fy = (y: number) => 0.4 * y;
+
+    const f0 = f(a, b);
+    const dfx = fx(a), dfy = fy(b);
+    
+    const dx = d[0], dy = d[1];
+    const incrementReal = f(a + dx, b + dy) - f0;
+    const diferencialLineal = dfx * dx + dfy * dy;
+    const error = Math.abs(incrementReal - diferencialLineal);
+
+    return (
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
+            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
+                <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest text-slate-500">Diferencial vs Increment</span>
+                    <span className="text-[9px] text-slate-500 font-mono italic">Punt base P(1, 1)</span>
+                </div>
+                
+                <div className="flex gap-2">
+                    <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex flex-col items-center min-w-[80px]">
+                        <span className="text-[7px] text-emerald-400 font-black uppercase mb-0.5">Increment (Δf)</span>
+                        <span className="text-xs font-mono text-white">{incrementReal.toFixed(3)}</span>
+                    </div>
+                    <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex flex-col items-center min-w-[80px]">
+                        <span className="text-[7px] text-amber-400 font-black uppercase mb-0.5">Diferencial (df)</span>
+                        <span className="text-xs font-mono text-white">{diferencialLineal.toFixed(3)}</span>
+                    </div>
+                    <div className="bg-rose-500/10 px-3 py-2 rounded-xl border border-rose-500/20 flex flex-col items-center min-w-[80px]">
+                        <span className="text-[7px] text-rose-400 font-black uppercase mb-0.5">Error (R_1)</span>
+                        <span className="text-xs font-mono text-rose-300">{error.toFixed(4)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className={`flex-none md:flex-1 grid grid-cols-1 ${isFullScreen ? 'h-full grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'h-[500px] grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                {/* 2D Control of dx, dy */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-950/30 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-slate-300 font-bold uppercase tracking-widest border border-white/5">Plànol XY: Variació (dx, dy)</div>
+                    <Mafs viewBox={{ x: [-2, 2], y: [-2, 2] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Vector tail={[0, 0]} tip={d} color={Theme.yellow} weight={4} />
+                        <MovablePoint point={d} onMove={setD} color={Theme.yellow} />
+                        <MafsLaTeX at={[d[0], d[1] + 0.3]} tex={`(dx, dy) = (${dx.toFixed(1)}, ${dy.toFixed(1)})`} color={Theme.yellow} />
+                    </Mafs>
+                </div>
+
+                {/* 3D View */}
+                <div className="relative bg-slate-950/50 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-slate-300 font-bold uppercase tracking-widest border border-white/5 italic">Geometria de l'aproximació</div>
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[6, 4, 6]} fov={40} />
+                        <OrbitControls enableZoom={true} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+                        <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+
+                        <FunctionSurface f={f} showWireframe={true} opacity={0.6} colorScale={1.5} />
+                        
+                        {/* Punt Base */}
+                        <Point position={[a, f0, b]} color="#fbbf24" />
+                        
+                        {/* Punt Real sobre superfície */}
+                        <Point position={[a + dx, f(a + dx, b + dy), b + dy]} color="#10b981" />
+                        
+                        {/* Punt sobre Pla Tangent */}
+                        <Point position={[a + dx, f0 + diferencialLineal, b + dy]} color="#fbbf24" />
+
+                        {/* Línia d'error */}
+                        <Line 
+                            points={[[a + dx, f0 + diferencialLineal, b + dy], [a + dx, f(a + dx, b + dy), b + dy]]} 
+                            color="#f43f5e" 
+                            lineWidth={3} 
+                        />
+                        
+                        {/* Pla Tangent parcial */}
+                        <group position={[a, f0, b]}>
+                            <mesh rotation={[-Math.atan(dfx), 0, -Math.atan(dfy)]}>
+                                <planeGeometry args={[3, 3]} />
+                                <meshPhongMaterial color="#fbbf24" transparent opacity={0.2} side={THREE.DoubleSide} depthWrite={false} />
+                            </mesh>
+                        </group>
+                    </Canvas>
+                </div>
+            </div>
+            
+            <div className="p-4 bg-slate-950 border-t border-white/10 text-center">
+                <p className="text-[10px] text-slate-300 italic max-w-2xl mx-auto leading-relaxed">
+                    L'**Increment (Δf)** és el salt real per la muntanya (verd). El **Diferencial (df)** és el salt que faríem si ens moguéssim pel plànol inclinat (groc). L'error (vermell) es fa més petit com més a prop estem del punt base.
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisExtremsHessiana = () => {
+    const [tipus, setTipus] = React.useState<'min' | 'max' | 'sella' | 'inconcloent'>('min');
+    const { isFullScreen, resizeKey } = useInteraction();
+    const isMobile = useIsMobile();
+
+    const config = {
+        min: {
+            f: (x: number, y: number) => 0.2 * (x * x + y * y),
+            title: 'Mínim Relatiu',
+            delta: 1,
+            fxx: 2,
+            desc: 'La superfície creix en totes les direccions (Delta > 0, fxx > 0).',
+            color: '#10b981'
+        },
+        max: {
+            f: (x: number, y: number) => -0.2 * (x * x + y * y),
+            title: 'Màxim Relatiu',
+            delta: 1,
+            fxx: -2,
+            desc: 'La superfície decreix en totes les direccions (Delta > 0, fxx < 0).',
+            color: '#f43f5e'
+        },
+        sella: {
+            f: (x: number, y: number) => 0.2 * (x * x - y * y),
+            title: 'Punt de Sella',
+            delta: -1,
+            fxx: 2,
+            desc: 'La superfície puja en una direcció i baixa en l\'altra (Delta < 0).',
+            color: '#818cf8'
+        },
+        inconcloent: {
+            f: (x: number, y: number) => 0.05 * (x * x * x * x + y * y * y * y),
+            title: 'Cas Inconcloent (Δ=0)',
+            delta: 0,
+            fxx: 0,
+            desc: 'La Hessiana és nul·la a l\'origen. Cal un estudi local (en aquest cas és un mínim).',
+            color: '#f59e0b'
+        }
+    };
+
+    const current = config[tipus];
+
+    return (
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
+            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
+                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
+                    {(Object.keys(config) as Array<keyof typeof config>).map((k) => (
+                        <button
+                            key={k}
+                            onClick={() => setTipus(k)}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${tipus === k ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                        >
+                            {k}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex gap-4">
+                    <div className="flex flex-col items-center px-4 py-2 bg-black/20 rounded-xl border border-white/5 min-w-[100px]">
+                        <span className="text-[8px] text-slate-500 uppercase font-black tracking-widest mb-1">Determinant Δ</span>
+                        <span className={`text-xs font-mono font-bold ${current.delta > 0 ? 'text-emerald-400' : current.delta < 0 ? 'text-rose-400' : 'text-amber-400'}`}>
+                            {current.delta > 0 ? '> 0' : current.delta < 0 ? '< 0' : '= 0'}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div className={`${isFullScreen ? 'flex-1' : 'h-[500px]'} relative bg-slate-950/50 overflow-hidden border-b border-white/5`}>
+                <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-slate-300 font-bold uppercase tracking-widest border border-white/5 italic">{current.title}</div>
+                <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                    <PerspectiveCamera makeDefault position={[5, 4, 5]} fov={40} />
+                    <OrbitControls enableZoom={true} />
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+                    <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+
+                    <FunctionSurface f={current.f} showWireframe={true} opacity={0.8} colorScale={2} />
+                    <Point position={[0, 0, 0]} color={current.color} />
+                </Canvas>
+            </div>
+            
+            <div className="p-4 bg-slate-950 border-t border-white/10 text-center">
+                <p className="text-[11px] text-slate-300 italic max-w-2xl mx-auto leading-relaxed">
+                    <span className="text-white font-bold uppercase mr-2">{current.title}:</span>
+                    {current.desc}
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisFitaErrorLagrange = () => {
+    const [delta, setDelta] = React.useState(0.5); // Radi de la regió
+    const { isFullScreen, resizeKey } = useInteraction();
+    const isMobile = useIsMobile();
+
+    // Funció d'examen: f(x,y) = ln(1 + 0.5x + 0.3y)
+    // Aproximació a (0,0): P1 = 0.5x + 0.3y
+    const f = (x: number, y: number) => Math.log(1 + 0.5 * x + 0.3 * y);
+    const p1 = (x: number, y: number) => 0.5 * x + 0.3 * y;
+
+    // Derivades segones per a la fita M:
+    // fxx = -0.25 / (1 + 0.5x + 0.3y)^2
+    // fyy = -0.09 / (1 + 0.5x + 0.3y)^2
+    // fxy = -0.15 / (1 + 0.5x + 0.3y)^2
+    // El màxim valor absolut d'aquestes és a la cantonada on el denominador és mínim (x=-delta, y=-delta)
+    const getM = (d: number) => {
+        const denom = Math.pow(1 - 0.5 * d - 0.3 * d, 2);
+        return {
+            xx: 0.25 / denom,
+            yy: 0.09 / denom,
+            xy: 0.15 / denom
+        };
+    };
+
+    const M = getM(delta);
+    const fitaTeorica = 0.5 * (M.xx * delta * delta + 2 * M.xy * delta * delta + M.yy * delta * delta);
+    
+    // Error real màxim (aproximat per mostreig a les cantonades)
+    const errorReal = Math.max(
+        Math.abs(f(delta, delta) - p1(delta, delta)),
+        Math.abs(f(-delta, -delta) - p1(-delta, -delta))
+    );
+
+    return (
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
+            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
+                <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest">Fita d'Error de Lagrange</span>
+                    <span className="text-[9px] text-slate-500 font-mono italic">f(x,y) = ln(1 + 0.5x + 0.3y)</span>
+                </div>
+                
+                <div className="flex gap-2">
+                    <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex flex-col items-center min-w-[100px]">
+                        <span className="text-[7px] text-slate-400 font-black uppercase mb-0.5">Radi Regió (δ)</span>
+                        <input type="range" min="0.1" max="0.9" step="0.05" value={delta} onChange={e => setDelta(parseFloat(e.target.value))} className="w-20 accent-rose-500" />
+                    </div>
+                    <div className="bg-rose-500/10 px-3 py-2 rounded-xl border border-rose-500/20 flex flex-col items-center min-w-[100px]">
+                        <span className="text-[7px] text-rose-400 font-black uppercase mb-0.5">Fita Lagrange</span>
+                        <span className="text-xs font-mono text-rose-300">≤ {fitaTeorica.toFixed(4)}</span>
+                    </div>
+                    <div className="bg-emerald-500/10 px-3 py-2 rounded-xl border border-emerald-500/20 flex flex-col items-center min-w-[100px]">
+                        <span className="text-[7px] text-emerald-400 font-black uppercase mb-0.5">Error Real</span>
+                        <span className="text-xs font-mono text-emerald-300">≈ {errorReal.toFixed(4)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className={`flex-none md:flex-1 grid grid-cols-1 ${isFullScreen ? 'h-full grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'h-[500px] grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                {/* 2D: Regió de control */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-950/30 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-slate-300 font-bold uppercase tracking-widest border border-white/5 italic">Domini de l'aproximació</div>
+                    <Mafs viewBox={{ x: [-1.5, 1.5], y: [-1.5, 1.5] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Polygon points={[[-delta, -delta], [delta, -delta], [delta, delta], [-delta, delta]]} color={Theme.pink} fillOpacity={0.1} />
+                        <MafsLaTeX at={[delta + 0.2, delta + 0.2]} tex="\delta" color={Theme.pink} />
+                    </Mafs>
+                </div>
+
+                {/* 3D: Error Visual */}
+                <div className="relative bg-slate-950/50 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-slate-300 font-bold uppercase tracking-widest border border-white/5">Vista 3D: La "Resta" de Lagrange</div>
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[5, 4, 5]} fov={40} />
+                        <OrbitControls enableZoom={true} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+                        <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+
+                        <FunctionSurface f={f} showWireframe={false} opacity={0.6} />
+                        <FunctionSurface f={p1} colorScale={3} showWireframe={true} opacity={0.4} />
+                        
+                        {/* Indicadors a les cantonades on l'error és màxim */}
+                        <Line points={[[-delta, f(-delta, -delta), -delta], [-delta, p1(-delta, -delta), -delta]]} color="#f43f5e" lineWidth={4} />
+                        <Point position={[0, 0, 0]} color="white" />
+                    </Canvas>
+                </div>
+            </div>
+            
+            <div className="p-4 bg-slate-950 border-t border-white/10 text-center">
+                <p className="text-[10px] text-slate-300 italic max-w-2xl mx-auto leading-relaxed">
+                    Com més gran és la regió (més $\delta$), més creixen les derivades segones ($M$) i el factor quadrat. Fixa't que la **Fita de Lagrange** (teòrica) sempre és una mica superior a l'**Error Real**; és un "paraigua" de seguretat que ens garanteix que l'error mai superarà aquest valor.
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisTaylorGrauN = () => {
+    const [p, setP] = React.useState<[number, number]>([0, 0]);
+    const [grau, setGrau] = React.useState<0 | 1 | 2>(2);
+    const { isFullScreen, resizeKey } = useInteraction();
+    const isMobile = useIsMobile();
+
+    // Funció base: f(x,y) = cos(x) * exp(-y^2/4)
+    const f = (x: number, y: number) => Math.cos(x) * Math.exp(-(y * y) / 4);
+
+    // Derivades en (a,b)
+    const a = p[0], b = p[1];
+    const fa = f(a, b);
+
+    const dax = -Math.sin(a) * Math.exp(-(b * b) / 4);
+    const day = f(a, b) * (-b / 2);
+
+    const daxx = -Math.cos(a) * Math.exp(-(b * b) / 4);
+    const dayy = f(a, b) * (-(1 / 2) + (b * b / 4));
+    const daxy = -Math.sin(a) * Math.exp(-(b * b) / 4) * (-b / 2);
+
+    // Polinomi de Taylor
+    const taylor = (x: number, y: number) => {
+        const h = x - a;
+        const k = y - b;
+        if (grau === 0) return fa;
+        if (grau === 1) return fa + dax * h + day * k;
+        // Grau 2
+        return fa + (dax * h + day * k) + 0.5 * (daxx * h * h + 2 * daxy * h * k + dayy * k * k);
+    };
+
+    return (
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : ''}`}>
+            {/* Control Panel */}
+            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
+                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
+                    {([0, 1, 2] as const).map((g) => (
+                        <button
+                            key={g}
+                            onClick={() => setGrau(g)}
+                            className={`px-5 py-2 rounded-lg text-xs font-black transition-all ${grau === g ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                        >
+                            Grau {g}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex gap-4 items-center">
+                    <div className="flex flex-col">
+                        <span className="text-[8px] text-slate-500 uppercase font-black tracking-widest mb-1 text-center">Punt (a, b)</span>
+                        <div className="flex gap-2">
+                            <input type="range" min="-2" max="2" step="0.1" value={p[0]} onChange={e => setP([parseFloat(e.target.value), p[1]])} className="w-16 accent-indigo-500" />
+                            <input type="range" min="-2" max="2" step="0.1" value={p[1]} onChange={e => setP([p[0], parseFloat(e.target.value)])} className="w-16 accent-indigo-500" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className={`flex-none md:flex-1 grid grid-cols-1 ${isFullScreen ? 'h-full grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'h-[500px] grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                {/* 2D: Mapa de calor i Error */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-950/30 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-indigo-300 font-bold uppercase tracking-widest border border-white/5">Error d'aproximació |f - P|</div>
+                    <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <MovablePoint point={p} onMove={setP} color={Theme.indigo} />
+                    </Mafs>
+                    <div className="absolute bottom-4 left-4 text-[10px] text-slate-300 italic font-bold">Mou el punt per veure com canvia l'aproximació en 3D.</div>
+                </div>
+
+                {/* 3D: Superfície i Taylor */}
+                <div className="relative bg-slate-950/50 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-rose-300 font-bold uppercase tracking-widest border border-white/5">Vista 3D: Superfície vs Polinomi</div>
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[8, 5, 8]} fov={40} />
+                        <OrbitControls enableZoom={true} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+                        <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+
+                        {/* Superfície original */}
+                        <FunctionSurface f={f} opacity={0.6} showWireframe={false} />
+
+                        {/* Polinomi de Taylor */}
+                        <FunctionSurface
+                            f={taylor}
+                            colorScale={1.5}
+                            showWireframe={true}
+                            opacity={0.8}
+                        />
+
+                        <Point position={[a, fa, b]} color="white" />
+                    </Canvas>
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 border-t border-white/10">
+                <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
+                    <div className="flex flex-col items-center">
+                        <span className="text-[8px] text-slate-400 uppercase font-black tracking-widest mb-1">Aproximació</span>
+                        <div className="text-[11px] font-mono text-indigo-300">
+                            <InlineMath math={`P_{${grau}}(x,y) \\approx f(a,b)`} />
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-[8px] text-slate-400 uppercase font-black tracking-widest mb-1">Geometria</span>
+                        <span className="text-[11px] font-bold text-white">
+                            {grau === 0 ? 'Punt d\'ancoratge' : grau === 1 ? 'Pla Tangent (Lineal)' : 'Paraboloide (Curvatura)'}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const VisTeoremaSchwarz = () => {
+    const [p, setP] = React.useState<[number, number]>([1, 1]);
+    const { isFullScreen, resizeKey } = useInteraction();
+    const isMobile = useIsMobile();
+
+    // Funció amb "gir" (twist): f(x,y) = sin(x)*sin(y)
+    const f = (x: number, y: number) => Math.sin(x) * Math.sin(y);
+
+    // Derivades
+    const fx = (x: number, y: number) => Math.cos(x) * Math.sin(y);
+    const fy = (x: number, y: number) => Math.sin(x) * Math.cos(y);
+
+    const fxx = (x: number, y: number) => -Math.sin(x) * Math.sin(y);
+    const fyy = (x: number, y: number) => -Math.sin(x) * Math.sin(y);
+    const fxy = (x: number, y: number) => Math.cos(x) * Math.cos(y);
+    const fyx = (x: number, y: number) => Math.cos(x) * Math.cos(y);
+
+    const valFxy = fxy(p[0], p[1]);
+    const valFyx = fyx(p[0], p[1]);
+
+    return (
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : ''}`}>
+            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
+                <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Teorema de Schwarz</span>
+                    <span className="text-[9px] text-slate-500 font-mono">f(x,y) = sin(x) · sin(y)</span>
+                </div>
+
+                <div className="flex gap-2">
+                    <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex flex-col items-center">
+                        <span className="text-[8px] text-indigo-400 font-black uppercase mb-1">f_xy</span>
+                        <span className="text-xs font-mono text-white">{valFxy.toFixed(3)}</span>
+                    </div>
+                    <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex flex-col items-center">
+                        <span className="text-[8px] text-rose-400 font-black uppercase mb-1">f_yx</span>
+                        <span className="text-xs font-mono text-white">{valFyx.toFixed(3)}</span>
+                    </div>
+                    <div className="bg-emerald-500/10 px-3 py-2 rounded-xl border border-emerald-500/20 flex flex-col items-center">
+                        <span className="text-[8px] text-emerald-400 font-black uppercase mb-1">Estat</span>
+                        <span className="text-[10px] font-bold text-emerald-400">SIMÈTRIC</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className={`flex-none md:flex-1 grid grid-cols-1 ${isFullScreen ? 'h-full grid-rows-[1fr_1fr]' : 'h-[500px] grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                {/* Hessiana Interactiva */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-950/30 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-slate-300 font-bold uppercase tracking-widest border border-white/5 italic">Domini (x, y)</div>
+
+                    {/* Floating Hessian Matrix - Moved to top right and smaller */}
+                    <div className="absolute top-4 right-4 z-20 pointer-events-none group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="bg-slate-900/90 backdrop-blur-md p-3 rounded-2xl border border-white/10 shadow-2xl">
+                            <div className="grid grid-cols-2 gap-2">
+                                <div className="flex flex-col items-center p-1.5 rounded-lg bg-white/5 border border-white/5">
+                                    <span className="text-[6px] text-slate-500 font-black mb-0.5">f_xx</span>
+                                    <span className="text-[10px] font-mono text-white">{fxx(p[0], p[1]).toFixed(2)}</span>
+                                </div>
+                                <div className="flex flex-col items-center p-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+                                    <span className="text-[6px] text-indigo-400 font-black mb-0.5">f_xy</span>
+                                    <span className="text-[10px] font-mono text-indigo-300">{valFxy.toFixed(2)}</span>
+                                </div>
+                                <div className="flex flex-col items-center p-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20">
+                                    <span className="text-[6px] text-rose-400 font-black mb-0.5">f_yx</span>
+                                    <span className="text-[10px] font-mono text-rose-300">{valFyx.toFixed(2)}</span>
+                                </div>
+                                <div className="flex flex-col items-center p-1.5 rounded-lg bg-white/5 border border-white/5">
+                                    <span className="text-[6px] text-slate-500 font-black mb-0.5">f_yy</span>
+                                    <span className="text-[10px] font-mono text-white">{fyy(p[0], p[1]).toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <Mafs viewBox={{ x: [-Math.PI, Math.PI], y: [-Math.PI, Math.PI] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <MovablePoint point={p} onMove={setP} color={Theme.indigo} />
+                    </Mafs>
+                    <div className="absolute bottom-2 left-4 z-10 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                        <span className="text-[8px] text-slate-400 font-bold uppercase tracking-wider">Arrossega el punt per provar Schwarz</span>
+                    </div>
+                </div>
+
+                {/* 3D View */}
+                <div className="relative bg-slate-950/50 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-slate-300 font-bold uppercase tracking-widest border border-white/5 italic">Geometria del "Twist"</div>
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[6, 4, 6]} fov={40} />
+                        <OrbitControls enableZoom={true} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+                        <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+
+                        <FunctionSurface f={f} showWireframe={true} opacity={0.7} colorScale={2} />
+
+                        <Point position={[p[0], f(p[0], p[1]), p[1]]} color="white" />
+
+                        {/* Tangent Plane to show twist */}
+                        <group position={[p[0], f(p[0], p[1]), p[1]]}>
+                            <mesh onUpdate={(self) => self.lookAt(new THREE.Vector3(fx(p[0], p[1]), 1, fy(p[0], p[1])).normalize().add(self.position))}>
+                                <planeGeometry args={[2, 2]} />
+                                <meshPhongMaterial color="#818cf8" transparent opacity={0.4} side={THREE.DoubleSide} depthWrite={false} />
+                            </mesh>
+                        </group>
+                    </Canvas>
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 text-center border-t border-white/10">
+                <p className="text-[10px] text-slate-300 italic max-w-xl mx-auto leading-relaxed">
+                    Moure el punt en el domini (esquerra) actualitza la matriu Hessiana. Fixa't que, independentment de la posició, les derivades creuades (blau i rosa) són exactament iguals. Això és el cor del Teorema de Schwarz.
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisRegularitatHibrida = () => {
+    const [classe, setClasse] = React.useState<'C0' | 'C1' | 'C2' | 'Cinf'>('C0');
+    const { isFullScreen, resizeKey } = useInteraction();
+    const isMobile = useIsMobile();
+
+    // Funció en 2D (per al tall x)
+    const f2d = (x: number) => {
+        if (classe === 'C0') return Math.abs(x) * 0.5;
+        if (classe === 'C1') return x * Math.abs(x) * 0.2;
+        if (classe === 'C2') return x * x * 0.15;
+        return (Math.sin(x) + 1) * 0.8;
+    };
+
+    const df2d = (x: number) => {
+        if (classe === 'C0') return x > 0 ? 0.5 : -0.5;
+        if (classe === 'C1') return Math.abs(x) * 0.4;
+        if (classe === 'C2') return 0.3 * x;
+        return Math.cos(x) * 0.8;
+    };
+
+    // Funció en 3D
+    const f3d = (x: number, y: number) => {
+        if (classe === 'C0') return (Math.abs(x) + Math.abs(y)) * 0.5;
+        if (classe === 'C1') return (x * Math.abs(x) + y * Math.abs(y)) * 0.2;
+        if (classe === 'C2') return (x * x + y * y) * 0.2;
+        return (Math.sin(x) + Math.cos(y)) * 0.5;
+    };
+
+    // Derivades parcials per al pla tangent (R3F usa Y com a vertical, i Z en math és Y en Three)
+    const grad = (x: number, y: number) => {
+        if (classe === 'C0') return { dx: x > 0 ? 0.5 : -0.5, dy: y > 0 ? 0.5 : -0.5 };
+        if (classe === 'C1') return { dx: Math.abs(x) * 0.4, dy: Math.abs(y) * 0.4 };
+        if (classe === 'C2') return { dx: 0.4 * x, dy: 0.4 * y };
+        return { dx: 0.5 * Math.cos(x), dy: -0.5 * Math.sin(y) };
+    };
+
+    const [p, setP] = React.useState<[number, number]>([1, 1]);
+    const g = grad(p[0], p[1]);
+    const z0 = f3d(p[0], p[1]);
+
+    // Normal vector for lookAt: (dx, 1, dy)
+    const normalDir = new THREE.Vector3(g.dx, 1, g.dy).normalize();
+
+    return (
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[650px]'}`}>
+            {/* Header Panel */}
+            <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
+                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
+                    {(['C0', 'C1', 'C2', 'Cinf'] as const).map((c) => (
+                        <button
+                            key={c}
+                            onClick={() => setClasse(c)}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${classe === c ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                        >
+                            {c === 'Cinf' ? 'C∞' : c}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex gap-4">
+                    <div className="flex flex-col items-center px-4 py-2 bg-black/20 rounded-xl border border-white/5 min-w-[120px]">
+                        <span className="text-[8px] text-slate-500 uppercase font-black tracking-widest mb-1">Diferenciabilitat</span>
+                        <span className={`text-[10px] font-bold ${classe === 'C0' ? 'text-rose-400' : 'text-emerald-400'}`}>
+                            {classe === 'C0' ? 'NO DIFERENCIABLE' : 'DIFERENCIABLE'}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                {/* 2D View: The "Cut" analysis */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-950/30 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-indigo-500/20 backdrop-blur-md px-2 py-1 rounded text-[9px] text-indigo-300 font-bold uppercase tracking-widest border border-indigo-500/30">Anàlisi del pendent (2D)</div>
+                    <Mafs viewBox={{ x: [-4, 4], y: [-1, 2.5] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Plot.OfX y={f2d} color={Theme.indigo} weight={4} />
+                        <Plot.OfX y={df2d} color={Theme.pink} weight={2} opacity={0.4} />
+
+                        <MovablePoint point={[p[0], 0]} onMove={(pt) => setP([pt[0], p[1]])} color={Theme.foreground} />
+                        <Circle center={[p[0], f2d(p[0])]} radius={0.12} color={Theme.indigo} fillOpacity={1} />
+
+                        {/* Tangent line in 2D */}
+                        <Plot.OfX y={(x) => f2d(p[0]) + df2d(p[0]) * (x - p[0])} color={Theme.yellow} weight={2} style="dashed" opacity={0.6} />
+                    </Mafs>
+                    <div className="absolute bottom-4 left-4 flex flex-col gap-1 pointer-events-none">
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-0.5 bg-indigo-500" />
+                            <span className="text-[8px] text-slate-500 font-black uppercase">Funció f(x)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-0.5 bg-rose-500" />
+                            <span className="text-[8px] text-slate-500 font-black uppercase">Derivada f'(x)</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 3D View: The surface and Tangent Plane */}
+                <div className="relative bg-slate-950/50 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-rose-500/20 backdrop-blur-md px-2 py-1 rounded text-[9px] text-rose-300 font-bold uppercase tracking-widest border border-rose-500/30">Superfície i Pla Tangent</div>
+                    <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                        <PerspectiveCamera makeDefault position={[8, 5, 8]} fov={40} />
+                        <OrbitControls enableZoom={true} />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+                        <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+
+                        <FunctionSurface f={f3d} showWireframe={true} opacity={0.8} colorScale={classe === 'C0' ? 1.5 : 2} />
+
+                        {/* Current Point */}
+                        <Point position={[p[0], z0, p[1]]} color="white" />
+
+                        {/* Tangent Plane: Only show if derivatives exist (or approximate for visualization) */}
+                        <group position={[p[0], z0, p[1]]}>
+                            <mesh onUpdate={(self) => self.lookAt(normalDir.clone().add(self.position))}>
+                                <planeGeometry args={[4, 4]} />
+                                <meshPhongMaterial
+                                    color="#6366f1"
+                                    transparent
+                                    opacity={classe === 'C0' && Math.abs(p[0]) < 0.1 ? 0 : 0.5}
+                                    side={THREE.DoubleSide}
+                                    depthWrite={false}
+                                />
+                            </mesh>
+                            {/* Normal Vector */}
+                            <Arrow memoDir={normalDir} color="#fbbf24" length={2} head={0.4} width={0.15} />
+                        </group>
+                    </Canvas>
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 text-center border-t border-white/10">
+                <p className="text-[10px] text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                    <span className="text-white font-bold uppercase mr-2">{classe}:</span>
+                    {classe === 'C0' && "Contínua però amb una 'cresta' o punxa a l'origen. Fixa't que la derivada (rosa) té un salt i el pla tangent balla bruscament."}
+                    {classe === 'C1' && "La primera derivada és contínua. El pla tangent existeix a tot arreu i es mou de forma suau, tot i que la curvatura pot ser brusca."}
+                    {classe === 'C2' && "Dues vegades derivable amb continuïtat. És el mínim necessari per a una aproximació quadràtica (Taylor grau 2) fiable."}
+                    {classe === 'Cinf' && "Infinitament derivable. Representa les funcions més 'nobles' de les matemàtiques, totalment suaus en qualsevol ordre."}
+                </p>
             </div>
         </div>
     );
@@ -959,12 +1754,12 @@ const VisPlaTangentINormalHibrid = () => {
                     <div className="absolute top-2 left-2 z-10 bg-black/40 px-2 py-0.5 rounded text-[9px] text-indigo-300 font-bold uppercase border border-indigo-500/20">Espai R3 (3D)</div>
                     <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[8, 6, 8]} fov={40} />
-                        <OrbitControls enableZoom={false} />
+                        <OrbitControls enableZoom={true} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} />
                         {!isMobile && <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />}
 
-                        <FunctionSurface f={f} showWireframe={false} opacity={0.9} colorScale={5} />
+                        <FunctionSurface f={f} showWireframe={true} opacity={0.9} colorScale={5} />
 
                         {/* Grup del Plànol i Normal */}
                         <group position={[a, fa, b]}>
@@ -1054,10 +1849,10 @@ const VisDerivadaDireccionalHibrida = () => {
                     </div>
                     <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                         <PerspectiveCamera makeDefault position={[6, 6, 6]} />
-                        <OrbitControls enableZoom={false} />
+                        <OrbitControls enableZoom={true} />
                         <ambientLight intensity={0.5} />
                         <pointLight position={[10, 10, 10]} intensity={1} castShadow />
-                        <FunctionSurface f={(x, y) => f(x, y)} opacity={0.6} colorScale={1.2} />
+                        <FunctionSurface f={(x, y) => f(x, y)} showWireframe={true} opacity={0.6} colorScale={1.2} />
                         <group rotation={[0, -angle, 0]} position={[a[0], 0, a[1]]}>
                             <mesh position={[0, 2.5, 0]}>
                                 <planeGeometry args={[10, 5]} />
@@ -1138,72 +1933,6 @@ const VisDerivadesParcialsHibrida = () => {
             </div>
             <div className="p-3 bg-slate-800/30 text-[10px] text-slate-400 text-center border-t border-white/5 italic">
                 A l'esquerra triem on som. A la dreta veiem la derivada "de tota la vida" que resulta de mantenir una variable fixa.
-            </div>
-        </div>
-    );
-};
-
-const VisJacobianaDeformacioHibrida = () => {
-    const [uv, setUv] = React.useState<[number, number]>([1, 1]);
-
-    // Funció vectorial f: R2 -> R2 (transformació ondulada)
-    const f = (u: number, v: number): [number, number] => [
-        u + Math.cos(v),
-        v + Math.sin(u)
-    ];
-
-    // Matriu Jacobiana Local Jf
-    const df1dv = -Math.sin(uv[1]);
-    const df2du = Math.cos(uv[0]);
-
-    const eps = 0.5;
-    const p0 = f(uv[0], uv[1]);
-    const p1 = f(uv[0] + eps, uv[1]);
-    const p12 = f(uv[0] + eps, uv[1] + eps);
-    const p2 = f(uv[0], uv[1] + eps);
-
-    return (
-        <div className="w-full h-[500px] flex flex-col">
-            <div className="p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Matriu Jacobiana Local</span>
-                    <div className="text-xs text-slate-400 mt-1 italic">Transformació de (u,v) → (x,y)</div>
-                </div>
-                <div className="bg-black/40 p-3 rounded-xl border border-white/5 font-mono text-indigo-300">
-                    <InlineMath math={`\\mathcal{J}f(\\mathbf{a}) = \\begin{pmatrix} 1 & ${df1dv.toFixed(2)} \\\\ ${df2du.toFixed(2)} & 1 \\end{pmatrix}`} />
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 h-[500px]">
-                {/* Espai Original */}
-                <div className="relative border-r border-white/5 bg-slate-950/20">
-                    <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-300 font-bold">ESPAI ORIGINAL (u, v)</div>
-                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false}>
-                        <Coordinates.Cartesian />
-                        <Polygon points={[[uv[0], uv[1]], [uv[0] + eps, uv[1]], [uv[0] + eps, uv[1] + eps], [uv[0], uv[1] + eps]]} color={Theme.indigo} fillOpacity={0.2} />
-                        <MovablePoint point={uv} onMove={setUv} color={Theme.indigo} />
-                    </Mafs>
-                </div>
-
-                {/* Espai Transformat */}
-                <div className="relative bg-slate-950/40">
-                    <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-300 font-bold">ESPAI DEFORMAT (x, y)</div>
-                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false}>
-                        <Coordinates.Cartesian />
-                        {/* Dibuixem una graella deformada simplificada */}
-                        {[-4, -2, 0, 2, 4].map(t => (
-                            <React.Fragment key={t}>
-                                <Plot.Parametric xy={u => f(u, t)} t={[-4, 4]} color={Theme.foreground} opacity={0.1} />
-                                <Plot.Parametric xy={v => f(t, v)} t={[-4, 4]} color={Theme.foreground} opacity={0.1} />
-                            </React.Fragment>
-                        ))}
-                        <Polygon points={[p0, p1, p12, p2]} color={Theme.pink} fillOpacity={0.4} />
-                        <Circle center={p0} radius={0.1} color={Theme.pink} />
-                    </Mafs>
-                </div>
-            </div>
-            <div className="p-4 bg-slate-800/30 text-[11px] text-slate-400 text-center border-t border-white/10">
-                La matriu Jacobiana descriu com el quadrat blau del domini es converteix en el paral·lelogram rosa de la imatge.
             </div>
         </div>
     );
@@ -1324,7 +2053,7 @@ const VisRnDimensionality = () => {
             <div className="h-full bg-slate-950/40 relative">
                 <Canvas shadows dpr={isMobile ? 1 : [1, 2]}>
                     <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={50} />
-                    <OrbitControls enableZoom={false} />
+                    <OrbitControls enableZoom={true} />
                     <ambientLight intensity={0.5} />
                     <pointLight position={[10, 10, 10]} intensity={1} />
                     <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
@@ -1518,7 +2247,13 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'minim_local': VisMinimLocal,
     'punt_sella_optim': VisPuntSellaOptim,
     'taylor_3d': VisTaylor3d,
-    'vis_jacobiana': VisJacobianaDeformacioHibrida,
+    'vis_vector_director_angle': VisVectorDirectorAngle,
+    'vis_regularitat_hibrida': VisRegularitatHibrida,
+    'vis_teorema_schwarz': VisTeoremaSchwarz,
+    'vis_taylor_graun': VisTaylorGrauN,
+    'vis_diferencial_increment': VisDiferencialIncrement,
+    'vis_extrems_hessiana': VisExtremsHessiana,
+    'vis_fita_error_lagrange': VisFitaErrorLagrange,
 };
 
 
@@ -1593,7 +2328,13 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
         'vis_derivada_direccional_hibrida',
         'vis_derivades_parcials_hibrida',
         'pla_tangent',
-        'vis_jacobiana'
+        'vis_vector_director_angle',
+        'vis_regularitat_hibrida',
+        'vis_teorema_schwarz',
+        'vis_taylor_graun',
+        'vis_diferencial_increment',
+        'vis_extrems_hessiana',
+        'vis_fita_error_lagrange'
     ];
 
     const isHybrid = hybridTypes.includes(type);

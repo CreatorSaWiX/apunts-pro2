@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_1: Solution = {
   id: 'M1-T1-Ex1.1',
   title: 'Exercici 1.1: Famílies de Grafs',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Per a cadascun dels grafs $N_n$, $K_n$, $T_n$, $C_n$ i $W_n$, doneu-ne:

@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_6: Solution = {
   id: 'M1-T2-Ex2.6',
   title: 'Exercici 2.6: Mida en Dos Components Complets',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G$ un graf d'ordre $n$ que té exactament dos components connexos i tots dos són grafs complets. Demostreu que la mida de $G$ és, almenys, $(n^2 - 2n)/4$.`,

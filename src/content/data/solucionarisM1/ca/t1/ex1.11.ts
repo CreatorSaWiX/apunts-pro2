@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_11: Solution = {
     id: 'M1-T1-Ex1.11',
     title: 'Exercici 1.11: Propietats del Producte',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Considereu els grafs $G_1 = (V_1, A_1)$ i $G_2 = (V_2, A_2)$. Doneu l'ordre, el grau dels vèrtexs i la mida de $G_1 \\times G_2$ en funció dels de $G_1$ i $G_2$.`,

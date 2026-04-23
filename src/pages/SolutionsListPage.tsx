@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Search, Check, Code2, ExternalLink } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Search, Check, Code2, ExternalLink, FileText, X } from 'lucide-react';
 import { useSolutions } from '../hooks/useSolutions';
 import { courseStructure } from '../content/data/courseStructure';
 import NotebookLayout from '../components/layout/NotebookLayout';
@@ -11,6 +11,9 @@ const SolutionsListPage = () => {
     const { id: topicId } = useParams();
     const [searchQuery, setSearchQuery] = useState('');
     const { preferredLang } = useLanguage();
+    
+    const [availablePdfs, setAvailablePdfs] = useState<{ ca: boolean; es: boolean }>({ ca: false, es: false });
+    const [isPdfMenuOpen, setIsPdfMenuOpen] = useState(false);
 
     // 1. Get definitions for the current topic from our static structure
     const topicDefinition = courseStructure.find(t => t.id === topicId);
@@ -23,7 +26,32 @@ const SolutionsListPage = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
         document.body.style.overflow = 'auto';
-    }, []);
+
+        if (topicId) {
+            const subject = topicId.split('-')[0];
+            const checkPdfs = async () => {
+                try {
+                    const [caRes, esRes] = await Promise.all([
+                        fetch(`/pdfs/solucionaris/${subject}/ca/solucionari-${topicId}.pdf`, { method: 'HEAD' }),
+                        fetch(`/pdfs/solucionaris/${subject}/es/solucionari-${topicId}.pdf`, { method: 'HEAD' })
+                    ]);
+                    
+                    const isValidPdf = (res: Response) => {
+                        return res.ok && res.headers.get('content-type')?.includes('application/pdf');
+                    };
+
+                    setAvailablePdfs({ 
+                        ca: !!isValidPdf(caRes), 
+                        es: !!isValidPdf(esRes) 
+                    });
+                } catch (e) {
+                    console.error("Error comprovant PDFs de solucionaris", e);
+                    setAvailablePdfs({ ca: false, es: false });
+                }
+            };
+            checkPdfs();
+        }
+    }, [topicId]);
 
     // 2. M1 & M2 Special Layout Check
     if ((topicId?.startsWith('m1-') || topicId?.startsWith('m2-')) && topicDefinition) {
@@ -84,16 +112,77 @@ const SolutionsListPage = () => {
                     <ArrowLeft size={16} /> <span className="font-medium">Tornar a l'Inici</span>
                 </Link>
 
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                    <div className="flex-1">
-                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+                <div className="flex flex-col md:flex-row md:items-stretch justify-between gap-8 mb-8 relative">
+                    <div className="flex-1 min-w-0">
+                        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
                             {(preferredLang === 'es' && topicDefinition?.title_es) ? topicDefinition.title_es : (topicDefinition?.title || 'Llista de Problemes')}
                         </h1>
-                        <p className="text-slate-400 text-lg max-w-2xl leading-relaxed">
+                        <p className="text-slate-400 text-lg max-w-4xl leading-relaxed opacity-70 font-medium">
                             {(preferredLang === 'es' && topicDefinition?.description_es) ? topicDefinition.description_es : (topicDefinition?.description || `Col·lecció d'exercicis del tema ${topicId}.`)}
                         </p>
                     </div>
 
+                    {/* PDF Large Square Button - Right Aligned */}
+                    {(availablePdfs.ca || availablePdfs.es) && (
+                        <div className="relative shrink-0 self-center md:self-stretch flex items-center">
+                            <button 
+                                onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
+                                className="flex flex-col items-center justify-center gap-2 px-8 py-6 text-xs font-black uppercase tracking-[0.2em] rounded-2xl border transition-all select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-[120px] h-full max-h-[120px]"
+                            >
+                                <FileText size={32} className="group-hover:scale-110 transition-transform duration-300" />
+                                <span>PDF</span>
+                            </button>
+                            
+                            <AnimatePresence>
+                                {isPdfMenuOpen && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        className="absolute right-0 top-full mt-3 w-56 bg-[#0b1221]/90 backdrop-blur-xl border border-red-500/20 rounded-2xl shadow-[0_20px_50px_-12px_rgba(239,68,68,0.3)] z-50 overflow-hidden"
+                                    >
+                                        <div className="p-4 border-b border-red-500/10 flex justify-between items-center">
+                                            <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">Idioma Solucionari</span>
+                                            <button onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                                                <X size={16} />
+                                            </button>
+                                        </div>
+                                        <div className="p-2">
+                                            {availablePdfs.ca && topicId && (
+                                                <a 
+                                                    href={`/pdfs/solucionaris/${topicId.split('-')[0]}/ca/solucionari-${topicId}.pdf`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={() => setIsPdfMenuOpen(false)}
+                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition-all group"
+                                                >
+                                                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                                                        <span className="text-xs font-bold text-red-400">CA</span>
+                                                    </div>
+                                                    <span>Català</span>
+                                                </a>
+                                            )}
+                                            {availablePdfs.es && topicId && (
+                                                <a 
+                                                    href={`/pdfs/solucionaris/${topicId.split('-')[0]}/es/solucionari-${topicId}.pdf`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={() => setIsPdfMenuOpen(false)}
+                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition-all group"
+                                                >
+                                                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                                                        <span className="text-xs font-bold text-red-400">ES</span>
+                                                    </div>
+                                                    <span>Español</span>
+                                                </a>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    )}
                     <div className="w-full lg:w-80">
                         <div className="relative flex items-center bg-slate-900 border border-white/10 rounded-xl px-4 py-3 focus-within:border-emerald-500/30 transition-colors">
                             <Search size={18} className="text-slate-500 mr-3" />

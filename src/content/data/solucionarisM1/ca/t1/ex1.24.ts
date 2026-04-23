@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_24: Solution = {
   id: 'M1-T1-Ex1.24',
   title: 'Exercici 1.24: Isomorfismes de Complementaris',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Sigui $G=(V,A)$ i $H=(W,B)$ dos grafs. Demostreu que $G$ i $H$ són isomorfs, si i només si, $G^c$ i $H^c$ són isomorfs.`,

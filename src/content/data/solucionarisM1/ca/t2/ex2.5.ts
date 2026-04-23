@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex2_5: Solution = {
   id: 'M1-T2-Ex2.5',
   title: 'Exercici 2.5: Dos Vèrtexs Senars connectats per un Camí',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Demostreu que si un graf té exactament dos vèrtexs de grau senar, aleshores existeix un camí que va d'un a l'altre.`,

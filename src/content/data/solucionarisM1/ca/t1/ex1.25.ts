@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_25: Solution = {
   id: 'M1-T1-Ex1.25',
   title: 'Exercici 1.25: Comptants Grafs No Isomorfs',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Determineu el nombre de grafs no isomorfs d'ordre 20 i mida 188.`,

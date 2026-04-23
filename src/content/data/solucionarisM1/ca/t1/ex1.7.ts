@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_7: Solution = {
   id: 'M1-T1-Ex1.7',
   title: 'Exercici 1.7: Operacions amb Grafs',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Considereu un graf $G = (V, A)$ amb $V = \\{1, 2, 3, 4, 5\\}$ i $A = \\{12, 13, 23, 24, 34, 45\\}$. Doneu el conjunt d'arestes, la matriu d'adjacència i una representació gràfica dels grafs $G^c$, $G - 4$, $G - 45$ i $G + 25$.`,

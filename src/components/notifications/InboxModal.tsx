@@ -127,7 +127,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                         <div className="space-y-2">
                             {notifications.map(notification => (
                                 <Link
-                                    to={`/tema/unknown/solucionaris/${notification.resourceId}`}
+                                    to={notification.commentId === 'community_post' || notification.type === 'reply' && !notification.resourceId.includes('-tema-') ? '/comunitat' : `/tema/unknown/solucionaris/${notification.resourceId}`}
                                     key={notification.id}
                                     onClick={() => markAsRead(notification)}
                                     className={`flex items-start gap-4 p-4 rounded-xl border transition-all ${notification.read

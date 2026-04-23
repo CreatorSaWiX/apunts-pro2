@@ -47,6 +47,27 @@ service cloud.firestore {
       allow create: if request.auth != null;
     }
 
+    // Comunitat
+    match /community_posts/{postId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && (
+        // Reaccions i reports: qualsevol autenticat
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions', 'reports']) ||
+        // Rank i Pin: només moderadors
+        isModerator() ||
+        // Propi contingut: l'autor
+        (request.auth.uid == resource.data.userId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content', 'subject', 'type']))
+      );
+      allow delete: if request.auth != null && (request.auth.uid == resource.data.userId || isModerator());
+
+      match /replies/{replyId} {
+        allow read: if true;
+        allow create, update: if request.auth != null;
+        allow delete: if request.auth != null && (request.auth.uid == resource.data.userId || isModerator());
+      }
+    }
+
     // Fallback
     match /{document=**} {
       allow read: if request.auth != null;

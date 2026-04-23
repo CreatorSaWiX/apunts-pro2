@@ -3,7 +3,7 @@ import type { Solution } from "../../../solutions";
 export const ex7_4: Solution = {
   id: "M2-T7-Ex4",
   title: "Exercici 4: Domini i Corbes de Nivell complexes",
-  author: "Antigravity",
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Considereu la funció $f(x,y) = \\frac{\\ln(xy)}{\\sqrt{1 - x^2 + y}}$.

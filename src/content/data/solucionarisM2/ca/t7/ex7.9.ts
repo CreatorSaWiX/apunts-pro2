@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex7_9: Solution = {
   id: 'M2-T7-Ex9',
   title: 'Exercici 9: Verificació de corbes de nivell',
-  author: 'asdf',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `Comproveu que les paràboles $y = ax^2$ són corbes de nivell de la funció:

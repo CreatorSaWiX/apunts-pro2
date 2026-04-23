@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex1_4: Solution = {
     id: 'M1-T1-Ex1.4',
     title: 'Exercici 1.4: Càlcul de Mides',
-    author: 'Profe',
+    author: 'SaWiX',
     code: '',
     type: 'notebook',
     statement: `Doneu la mida de:
@@ -41,4 +41,4 @@ També ho pots veure sumant graus:
 *   Total suma: $2rs$. Dividit per 2: $rs$.
         `,
     availableLanguages: ['ca']
-  };
+};

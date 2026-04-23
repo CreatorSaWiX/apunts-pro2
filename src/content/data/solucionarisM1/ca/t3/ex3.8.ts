@@ -3,7 +3,7 @@ import type { Solution } from '../../../solutions';
 export const ex3_8: Solution = {
   id: 'M1-T3-Ex3.8',
   title: 'Exercici 3.8: El Graf n-cub (Qn)',
-  author: 'Profe',
+  author: 'SaWiX',
   code: '',
   type: 'notebook',
   statement: `El graf $n$-cub $Q_n$ té per conjunt de vèrtexs $\{0, 1\}^n$ i dos vèrtexs $(x_1, x_2, \\dots, x_n), (y_1, y_2, \\dots, y_n)$ són adjacents si difereixen en exactament una coordenada.
