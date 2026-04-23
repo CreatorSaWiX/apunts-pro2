@@ -173,7 +173,16 @@ export const courseStructure: TopicDefinition[] = [
         id: "pro2-tema-8",
         title: "Tema 8: Punters",
         description: "Gestió de memòria en C++, operadors, aliasing i gestió del 'heap'.",
-        problems: []
+        problems: [
+            { id: "X94161", title: "Mètode de Stack per a accedir al segon element des del top" },
+            { id: "X72693", title: "Mètode de Stack per a esborrar el segon element des del top" },
+            { id: "X82586", title: "Mètode de la classe Stack per a intercanviar els dos elements del top" },
+            { id: "X80037", title: "Mètode per a sumar el contingut que ve d'una altra pila" },
+            { id: "X87185", title: "Mètode de Stack per a esborrar el primer element igual al paràmetre" },
+            { id: "X17005", title: "Mètode per a moure el primer element d'una cua cap a la última posició" },
+            { id: "X80705", title: "Nou mètode de la classe Queue per a accedir indexadament als seus elements" },
+            { id: "X86445", title: "Mètode de Queue per a multiplicar els elements de la cua per un paràmetre" }
+        ]
     },
     {
         id: "pro2-tema-9",

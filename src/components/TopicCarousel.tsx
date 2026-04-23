@@ -465,14 +465,14 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                             </Link>
 
                                             <Link
-                                                to={subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : `/tema/${topic.slug}/solucionaris`}
+                                                to={subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : subject === 'pro2' && topic.slug === 'pro2-tema-9' ? '/tema/pro2-lab-7' : `/tema/${topic.slug}/solucionaris`}
                                                 onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
                                                 className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol"
                                             >
                                                 <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">
                                                     {subject === 'pro2' ? <Terminal size={12} /> : <Calculator size={12} />}
                                                 </div>
-                                                <span>{subject === 'm1' ? 'Solucionaris M1' : subject === 'm2' ? 'Solucionaris M2' : (subject === 'pro2' && (topic.slug === 'pro2-tema-1' || topic.slug === 'pro2-tema-2') ? 'Solucionaris Lab' : 'Solucionaris Jutge')}</span>
+                                                <span>{subject === 'm1' ? 'Solucionaris M1' : subject === 'm2' ? 'Solucionaris M2' : (subject === 'pro2' && (topic.slug === 'pro2-tema-1' || topic.slug === 'pro2-tema-2' || topic.slug === 'pro2-tema-9') ? 'Solucionaris Lab' : 'Solucionaris Jutge')}</span>
                                             </Link>
                                         </div>
                                     </div>
