@@ -13,7 +13,7 @@ Sigui $u$ un vector de $\\mathbb{R}^3$ que en la base $B$ té coordenades $u_B =
 ### 1) Comprovació de les bases
 
 *   **Det($P_C^B$)**: $\\begin{vmatrix} 2 & 1 & 1 \\\\ 1 & 2 & 1 \\\\ 1 & 1 & 2 \\end{vmatrix} = 2(4-1) - 1(2-1) + 1(1-2) = 6 - 1 - 1 = 4 \\neq 0$.
-*   **Det($P_C^{B'$)**: $\\begin{vmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{vmatrix} = -1(0-1) + 1(1-0) = 2 \\neq 0$.
+*   **Det($P_C^{B'}$)**: $\\begin{vmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{vmatrix} = -1(0-1) + 1(1-0) = 2 \\neq 0$.
 Ambdós conjunts són bases de $\\mathbb{R}^3$.
 
 ---
