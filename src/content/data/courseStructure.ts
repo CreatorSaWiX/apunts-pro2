@@ -174,14 +174,14 @@ export const courseStructure: TopicDefinition[] = [
         title: "Tema 8: Punters",
         description: "Gestió de memòria en C++, operadors, aliasing i gestió del 'heap'.",
         problems: [
-            { id: "X94161", title: "Mètode de Stack per a accedir al segon element des del top" },
-            { id: "X72693", title: "Mètode de Stack per a esborrar el segon element des del top" },
-            { id: "X82586", title: "Mètode de la classe Stack per a intercanviar els dos elements del top" },
-            { id: "X80037", title: "Mètode per a sumar el contingut que ve d'una altra pila" },
-            { id: "X87185", title: "Mètode de Stack per a esborrar el primer element igual al paràmetre" },
-            { id: "X17005", title: "Mètode per a moure el primer element d'una cua cap a la última posició" },
-            { id: "X80705", title: "Nou mètode de la classe Queue per a accedir indexadament als seus elements" },
-            { id: "X86445", title: "Mètode de Queue per a multiplicar els elements de la cua per un paràmetre" }
+            { id: "X94161", title: "Stack: Accedir segon element" },
+            { id: "X72693", title: "Stack: Esborrar segon element" },
+            { id: "X82586", title: "Stack: Intercanviar elements top" },
+            { id: "X80037", title: "Stack: Sumar contingut altra pila" },
+            { id: "X87185", title: "Stack: Esborrar element per valor" },
+            { id: "X17005", title: "Queue: Moure primer a l'últim" },
+            { id: "X80705", title: "Queue: Accés indexat" },
+            { id: "X86445", title: "Queue: Multiplicar elements" }
         ]
     },
     {
