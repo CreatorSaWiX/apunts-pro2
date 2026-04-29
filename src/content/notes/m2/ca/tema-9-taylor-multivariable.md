@@ -29,10 +29,13 @@ Si una funció $f$ admet derivades parcials en un entorn, aquestes funcions pode
 
 El polinomi de Taylor de grau $n$ en el punt $\mathbf{a}$ aproxima la funció $f$ prop d'aquell punt.
 
-### Fórmula desplegada (Grau 2)
+### Fórmula desplegada (Grau 1 i 2)
 Per a càlculs manuals en dues variables prop de $(a, b)$:
 $$
-P_2(x, y) = f(a, b) + \left[ f_x(a,b)(x-a) + f_y(a,b)(y-b) \right] + \frac{1}{2} \left[ f_{xx}(a,b)(x-a)^2 + 2f_{xy}(a,b)(x-a)(y-b) + f_{yy}(a,b)(y-b)^2 \right]
+P_1(x, y) = f(a, b) + \left[ f_x(a,b)(x-a) + f_y(a,b)(y-b) \right] 
+$$
+$$
+P_2(x, y) = f(a, b) + \left[ f_x(a,b)(x-a) + f_y(a,b)(y-b) \right] + \frac{1}{2!} \left[ f_{xx}(a,b)(x-a)^2 + 2f_{xy}(a,b)(x-a)(y-b) + f_{yy}(a,b)(y-b)^2 \right]
 $$
 
 ::three{type="vis_taylor_graun"}

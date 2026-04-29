@@ -19,6 +19,7 @@ Plantegem la matriu per columnes i l'escalonem:
 $$\\begin{pmatrix} 1 & 3 & -3 \\\\ 1 & -1 & 5 \\\\ 0 & b & a \\\\ a & -1 & -4 \\end{pmatrix}$$
 
 1.  Fem zeros a la primera columna ($F_2 \\to F_2 - F_1$ i $F_4 \\to F_4 - aF_1$):
+
 $$\\begin{pmatrix} 1 & 3 & -3 \\\\ 0 & -4 & 8 \\\\ 0 & b & a \\\\ 0 & -1-3a & -4+3a \\end{pmatrix} \\xrightarrow{F_2 \\div (-4)} \\begin{pmatrix} 1 & 3 & -3 \\\\ 0 & 1 & -2 \\\\ 0 & b & a \\\\ 0 & -1-3a & -4+3a \\end{pmatrix}$$
 
 2.  Fem zeros sota el segon pivot ($F_3 \\to F_3 - bF_2$ i $F_4 \\to F_4 + (1+3a)F_2$):

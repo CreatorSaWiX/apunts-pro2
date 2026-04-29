@@ -7,6 +7,7 @@ export const ex6_23: Solution = {
   code: '',
   type: 'notebook',
   statement: `Considereu el conjunt de vectors $\\mathcal{B} = \\{ v_1, v_2, v_3, v_4 \\}$ a $\\mathbb{R}^4$:
+
 $$v_1 = \\begin{pmatrix} 1 \\\\ 1 \\\\ 0 \\\\ 0 \\end{pmatrix}, \\quad v_2 = \\begin{pmatrix} 0 \\\\ 0 \\\\ 1 \\\\ 1 \\end{pmatrix}, \\quad v_3 = \\begin{pmatrix} 1 \\\\ 0 \\\\ 0 \\\\ 4 \\end{pmatrix}, \\quad v_4 = \\begin{pmatrix} 0 \\\\ 0 \\\\ 0 \\\\ 2 \\end{pmatrix}$$
 
 1) Demostreu que formen una base de $\\mathbb{R}^4$.

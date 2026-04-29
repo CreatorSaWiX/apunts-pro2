@@ -391,6 +391,22 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M1-T6-Ex6.40", title: "Exercici 6.40: Determinació d'una base" }
         ]
     },
+    {
+        id: "m1-tema-7",
+        title: "Tema 7: Aplicacions Lineals",
+        description: "Introducció a les aplicacions lineals, nucli, imatge i matriu associada.",
+        problems: [
+            { id: "M1-T7-Ex7.1", title: "Exercici 7.1: Determinació d'aplicacions lineals" },
+            { id: "M1-T7-Ex7.2", title: "Exercici 7.2: Aplicacions en espais de polinomis" },
+            { id: "M1-T7-Ex7.3", title: "Exercici 7.3: Aplicacions en espais de matrius" },
+            { id: "M1-T7-Ex7.4", title: "Exercici 7.4: Imatge d'un polinomi per linealitat" },
+            { id: "M1-T7-Ex7.5", title: "Exercici 7.5: Existència i unicitat d'endomorfismes" },
+            { id: "M1-T7-Ex7.6", title: "Exercici 7.6: Propietats de les imatges de conjunts de vectors" },
+            { id: "M1-T7-Ex7.7", title: "Exercici 7.7: Existència d'aplicacions definides sobre subespais" },
+            { id: "M1-T7-Ex7.8", title: "Exercici 7.8: Matriu associada, nucli i imatge" },
+            { id: "M1-T7-Ex7.9", title: "Exercici 7.9: Dimensió de la imatge segons un paràmetre" }
+        ]
+    },
 
     // --- M2 (Càlcul i Optimitació) ---
     {

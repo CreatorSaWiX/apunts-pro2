@@ -9,7 +9,9 @@ export const ex8_7: Solution = {
   statement: `Trobeu el gradient de les funcions següents:
   
 a) $f(x,y,z) = \\ln(z + \\sin(y^2 - x))$ en el punt $(1, -1, 1)$;
+
 b) $f(x,y,z) = e^{3x+y} \\sin(5z)$ en el punt $(0, 0, \\pi/6)$;
+
 c) $f(x,y,z) = \\int_x^{xy+z^2} \\frac{\\sin t}{t} dt$ en el punt $(\\pi/2, 1, 0)$.`,
   content: `### Apartat a) $f(x,y,z) = \\ln(z + \\sin(y^2 - x))$ a $(1, -1, 1)$
 1. **Derivades parcials**:

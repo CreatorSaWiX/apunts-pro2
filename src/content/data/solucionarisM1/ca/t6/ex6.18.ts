@@ -21,13 +21,13 @@ Considerem els vectors del conjunt:
 
 Sumem els tres vectors (triant els coeficients $c_1 = c_2 = c_3 = 1$):
 $$(u - v) + (v - w) + (w - u) = u - v + v - w + w - u$$
+
 Rearrangem els termes mitjançant les propietats commutativa i associativa de l'espai vectorial:
 $$(u - u) + (v - v) + (w - w) = \\vec{0} + \\vec{0} + \\vec{0} = \\vec{0}$$
 
-### Conclusió
-
 Hem trobat una combinació lineal amb coeficients no nuls ($1, 1, 1$) que dóna el vector nul:
 $$1(u-v) + 1(v-w) + 1(w-u) = \\vec{0}$$
+
 Per tant, per la definició de dependència lineal, el conjunt és **Linealment Dependent (LD)**, independentment de quins siguin els vectors $u, v, w$ originals.
 `,
   availableLanguages: ['ca']

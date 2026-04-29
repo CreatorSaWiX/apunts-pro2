@@ -9,6 +9,7 @@ export const ex9_1: Solution = {
   statement: `Donada la funció $f(x, y) = \\ln(1 + 2x + 3y)$:
   
 a) Escriviu el polinomi de Taylor de grau 2 per a $f$ en el punt $(0,0)$.
+
 b) Utilitzant el polinomi obtingut, calculeu un valor aproximat per a $f(1/10, 1/10)$ i fiteu l'error.`,
   content: `### Apartat a) Polinomi de Taylor de grau 2
 Podem fer-ho mitjançant derivades o usant el desenvolupament de $\\ln(1+t) = t - \\frac{t^2}{2} + o(t^2)$.

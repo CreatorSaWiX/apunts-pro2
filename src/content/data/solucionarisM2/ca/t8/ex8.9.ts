@@ -9,8 +9,11 @@ export const ex8_9: Solution = {
   statement: `Considereu la funció $f(x,y) = x^2 + (y - 1)^2 - 1$.
   
 a) Feu un esboç de les corbes de nivell de $z = f(x,y)$ corresponents als nivells $z = -2, -1, 0, 3$.
+
 b) Quina és la direcció en la qual $f(x,y)$ creix més ràpidament en el punt $P = (-1,3)$? Trobeu la derivada direccional en aquesta direcció.
+
 c) Quina és la direcció en la qual $f(x,y)$ decreix més ràpidament en el punt $P = (-1,3)$? Trobeu la derivada direccional en aquesta direcció.
+
 d) Quina és la direcció en la qual $f(x,y)$ és constant en el punt $P = (-1,3)$? Trobeu la derivada direccional en aquesta direcció.`,
   content: `### Apartat a) Esboç de les corbes de nivell
 L'equació de les corbes de nivell $k$ és:

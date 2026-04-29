@@ -31,8 +31,10 @@ Com que el determinant és **zero**, els vectors (i per tant els polinomis) són
 
 Podem trobar la combinació lineal que dóna el polinomi nul buscant els coeficients $x, y, z$ tals que $x p_1 + y p_2 + z p_3 = 0$:
 $$x(-1 + 2x + x^2) + y(1 + x^2) + z(x + x^2) = 0$$
+
 Observem que:
 $$1 \\cdot p_1(x) + 1 \\cdot p_2(x) = (-1+1) + (2x) + (1+1)x^2 = 2x + 2x^2 = 2(x + x^2) = 2 p_3(x)$$
+
 Per tant, la relació és:
 $$\\mathbf{p_1(x) + p_2(x) - 2 p_3(x) = 0}$$
 `,

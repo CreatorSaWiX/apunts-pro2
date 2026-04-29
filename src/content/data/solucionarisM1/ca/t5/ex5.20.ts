@@ -16,9 +16,10 @@ Apliquem l'eliminació gaussiana a cada sistema per determinar-ne la compatibili
 
 ### 1) Sistema de 4 equacions i 3 incògnites
 Matriu ampliada i passos de Gauss:
+
 $$\\begin{pmatrix} 1 & 1 & 2 & | & 8 \\\\ -1 & -2 & 3 & | & 1 \\\\ 3 & -7 & 4 & | & 10 \\\\ 0 & 3 & -2 & | & -1 \\end{pmatrix} \\xrightarrow[F_3 - 3F_1]{F_2 + F_1} \\begin{pmatrix} 1 & 1 & 2 & | & 8 \\\\ 0 & -1 & 5 & | & 9 \\\\ 0 & -10 & -2 & | & -14 \\\\ 0 & 3 & -2 & | & -1 \\end{pmatrix} \\xrightarrow[F_4+3F_2]{F_3-10F_2} \\begin{pmatrix} 1 & 1 & 2 & | & 8 \\\\ 0 & -1 & 5 & | & 9 \\\\ 0 & 0 & -52 & | & -104 \\\\ 0 & 0 & 13 & | & 26 \\end{pmatrix}$$
-De la tercera fila: $-52z = -104 \\implies z = 2$.
-Substituint:
+
+De la tercera fila: $-52z = -104 \\implies z = 2$. Substituint:
 - $-y + 5(2) = 9 \\implies -y = -1 \\implies y = 1$
 - $x + 1 + 2(2) = 8 \\implies x = 3$
 

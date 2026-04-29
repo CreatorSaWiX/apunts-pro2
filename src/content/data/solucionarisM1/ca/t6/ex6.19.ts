@@ -7,6 +7,7 @@ export const ex6_19: Solution = {
   code: '',
   type: 'notebook',
   statement: `Demostreu que les matrius $A, B$ i $C$ següents formen un conjunt linealment independent a $\\mathcal{M}_{2 \\times 3}(\\mathbb{R})$.
+
 $$A = \\begin{pmatrix} 0 & 1 & -2 \\\\ 1 & 1 & 1 \\end{pmatrix}, \\quad B = \\begin{pmatrix} 1 & 1 & -2 \\\\ 0 & 1 & 1 \\end{pmatrix}, \\quad C = \\begin{pmatrix} -1 & 1 & -2 \\\\ 3 & -2 & 0 \\end{pmatrix}$$
 
 Proveu que per a qualsevol valor de $\\lambda$ la matriu següent és combinació lineal d'$A$ i $B$:
@@ -15,6 +16,7 @@ $$M_\\lambda = \\begin{pmatrix} \\lambda & 2 & -4 \\\\ 2-\\lambda & 2 & 2 \\end{
 ### 1) Demostració d'Independència Lineal
 
 Plantegem l'equació $x A + y B + z C = \\mathbf{0}$:
+
 $$x \\begin{pmatrix} 0 & 1 & -2 \\\\ 1 & 1 & 1 \\end{pmatrix} + y \\begin{pmatrix} 1 & 1 & -2 \\\\ 0 & 1 & 1 \\end{pmatrix} + z \\begin{pmatrix} -1 & 1 & -2 \\\\ 3 & -2 & 0 \\end{pmatrix} = \\begin{pmatrix} 0 & 0 & 0 \\\\ 0 & 0 & 0 \\end{pmatrix}$$
 
 Això ens dóna el següent sistema d'equacions per components:
@@ -24,6 +26,7 @@ Això ens dóna el següent sistema d'equacions per components:
 
 Substituint en les unes a les altres:
 Com que $x = -y$ i $z = y$, l'equació $x + 3z = 0$ esdevé $-y + 3y = 0 \\implies 2y = 0 \\implies y = 0$.
+
 Això implica $x = 0$ i $z = 0$.
 
 Com que l'única solució és la trivial ($x=y=z=0$), les matrius $\\{A, B, C\\}$ són **Linealment Independents (LI)**.

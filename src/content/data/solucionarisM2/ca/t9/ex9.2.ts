@@ -6,9 +6,7 @@ export const ex9_2: Solution = {
   author: 'SaWiX',
   code: '',
   type: 'notebook',
-  statement: `Es demana,
-  
-a) Escriviu l'equació del pla tangent a la superfície de $\\mathbb{R}^3$ definida per l'equació: $z = \\sqrt[3]{xy}$, en el punt $P(1, 1, 1)$.
+  statement: `a) Escriviu l'equació del pla tangent a la superfície de $\\mathbb{R}^3$ definida per l'equació: $z = \\sqrt[3]{xy}$, en el punt $P(1, 1, 1)$.
 
 b) Calculeu aproximadament mitjançant un polinomi de Taylor de primer grau la quantitat $\\sqrt[3]{0.99 \\cdot 1.01}$. Calculeu l'error en aquesta aproximació, és a dir doneu una fita superior del residu en aquest càlcul.`,
   content: `### Apartat a) Equació del pla tangent

@@ -16,27 +16,39 @@ El determinant de la matriu ha de ser igual a zero. Això equival a trobar les a
 ---
 
 ### 1) Matriu $2 \\times 2$
+
 $$ \\det(A) = (\\lambda - 1)(\\lambda - 4) - (-2)(1) = 0 $$
+
 $$ \\lambda^2 - 5\\lambda + 4 + 2 = 0 \\implies \\lambda^2 - 5\\lambda + 6 = 0 $$
+
 Resolem l'equació de segon grau:
 $$ \\lambda = \\frac{5 \\pm \\sqrt{25 - 24}}{2} = \\frac{5 \\pm 1}{2} \\implies \\mathbf{\\lambda \\in \\{2, 3\\}} $$
 
 ### 2) Matriu $3 \\times 3$
 Desenvolupem per la primera fila (ja que té dos zeros):
 $$ \\det(A) = (\\lambda - 6) \\begin{vmatrix} \\lambda & -1 \\\\ 4 & \\lambda - 4 \\end{vmatrix} = 0 $$
+
 $$ (\\lambda - 6)(\\lambda(\\lambda - 4) - (-1)(4)) = 0 $$
+
 $$ (\\lambda - 6)(\\lambda^2 - 4\\lambda + 4) = 0 $$
+
 $$ (\\lambda - 6)(\\lambda - 2)^2 = 0 $$
+
 Els valors són: **$\\lambda \\in \\{2, 6\\}$** (on el 2 és una arrel doble).
 
 ### 3) Matriu $3 \\times 3$ (Simètrica)
 Podem simplificar restant la fila 3 a la fila 1 ($F_1 \\to F_1 - F_3$):
 $$ \\begin{vmatrix} 2 - \\lambda & 0 & \\lambda - 2 \\\\ 2 & 4 - \\lambda & 2 \\\\ 1 & 1 & 3 - \\lambda \\end{vmatrix} = 0 $$
+
 Treiem factor comú $(\\lambda - 2)$ de la primera fila:
 $$ (\\lambda - 2) \\begin{vmatrix} -1 & 0 & 1 \\\\ 2 & 4 - \\lambda & 2 \\\\ 1 & 1 & 3 - \\lambda \\end{vmatrix} = 0 $$
+
 Sumem la primera columna a la tercera ($C_3 \\to C_3 + C_1$):
+
 $$ (\\lambda - 2) \\begin{vmatrix} -1 & 0 & 0 \\\\ 2 & 4 - \\lambda & 4 \\\\ 1 & 1 & 4 - \\lambda \\end{vmatrix} = (\\lambda - 2) (-1) ((4-\\lambda)^2 - 4) = 0 $$
+
 $$ (2 - \\lambda) ((\\lambda - 4)^2 - 4) = 0 $$
+
 L'equació $(\\lambda - 4)^2 = 4$ té solucions $\\lambda - 4 = 2 \\to \\lambda = 6$ i $\\lambda - 4 = -2 \\to \\lambda = 2$.
 Per tant, els valors són: **$\\mathbf{\\lambda \\in \\{2, 6\\}}$**.
 `,

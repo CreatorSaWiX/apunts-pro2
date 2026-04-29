@@ -17,7 +17,9 @@ $$F = \\left\\langle \\begin{pmatrix} 1 \\\\ -1 \\\\ 1 \\\\ 0 \\end{pmatrix}, \\
 
 ### Per al subespai $F$:
 Comprovem si els vectors generadors $\\{v_1, v_2, v_3\\}$ són linealment independents (LI):
+
 $$\\begin{pmatrix} 1 & 0 & 1 \\\\ -1 & 1 & 0 \\\\ 1 & -1 & 0 \\\\ 0 & 1 & -1 \\end{pmatrix} \\xrightarrow[f_3+f_2]{f_2+f_1} \\begin{pmatrix} 1 & 0 & 1 \\\\ 0 & 1 & 1 \\\\ 0 & 0 & 0 \\\\ 0 & 1 & -1 \\end{pmatrix} \\implies \\text{Rang } 3$$
+
 (Els vectors són LI, per tant formen una base de $F$). Observant els vectors, tots compleixen la condició $y + z = 0$. Per tant, l'equació de $F$ és **$y + z = 0$**.
 
 ### Per al subespai $G$:

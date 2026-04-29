@@ -61,7 +61,7 @@ L'última fila de la matriu escalonada ens diu que:
 *   El rang de la matriu de coeficients és **2**.
 *   El rang de la matriu ampliada serà **2** només si l'últim terme és zero.
 
-$$a + 1 = 0 \implies a = -1$$
+$$a + 1 = 0 \\implies a = -1$$
 
 ### Conclusió
 

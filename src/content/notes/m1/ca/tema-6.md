@@ -163,6 +163,12 @@ Diem que la suma és **directa** si els dos universos **només es toquen en el v
 
 ## 3. Bases i dimensió
 
+### Base
+Un conjunt de vectors $B = \{u_1,\dots,u_n\}$ es diu que és una base d'un SEV $S$ si i només si rang $P^B_C = n = \dim(S)$:
+
+1. **Linealment independent (LI)**.
+2. **Generador** de $S$.
+
 ### Dimensió
 La **dimensió** ($\dim E$) és el nombre de vectors que té qualsevol de les seves bases. 
 
