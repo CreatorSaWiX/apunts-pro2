@@ -404,7 +404,25 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M1-T7-Ex7.6", title: "Exercici 7.6: Propietats de les imatges de conjunts de vectors" },
             { id: "M1-T7-Ex7.7", title: "Exercici 7.7: Existència d'aplicacions definides sobre subespais" },
             { id: "M1-T7-Ex7.8", title: "Exercici 7.8: Matriu associada, nucli i imatge" },
-            { id: "M1-T7-Ex7.9", title: "Exercici 7.9: Dimensió de la imatge segons un paràmetre" }
+            { id: "M1-T7-Ex7.9", title: "Exercici 7.9: Dimensió de la imatge segons un paràmetre" },
+            { id: "M1-T7-Ex7.10", title: "Exercici 7.10: Matriu associada i base de la imatge" },
+            { id: "M1-T7-Ex7.11", title: "Exercici 7.11: Nucli, imatges i antiimatges" },
+            { id: "M1-T7-Ex7.12", title: "Exercici 7.12: Aplicacions bijectives i dimensions" },
+            { id: "M1-T7-Ex7.13", title: "Exercici 7.13: Estudi complet d'aplicacions lineals" },
+            { id: "M1-T7-Ex7.14", title: "Exercici 7.14: Endomorfisme bijectiu de matrius" },
+            { id: "M1-T7-Ex7.15", title: "Exercici 7.15: Composició d'aplicacions lineals" },
+            { id: "M1-T7-Ex7.16", title: "Exercici 7.16: Càlcul de la matriu associada en base canònica" },
+            { id: "M1-T7-Ex7.17", title: "Exercici 7.17: Canvi de base en la matriu associada" },
+            { id: "M1-T7-Ex7.18", title: "Exercici 7.18: Matriu associada en diferents bases" },
+            { id: "M1-T7-Ex7.19", title: "Exercici 7.19: Endomorfisme de producte de matrius" },
+            { id: "M1-T7-Ex7.20", title: "Exercici 7.20: Forma normal i cerca de base" },
+            { id: "M1-T7-Ex7.21", title: "Exercici 7.21: Aplicació entre subespais i canvi de base" },
+            { id: "M1-T7-Ex7.22", title: "Exercici 7.22: Interpretació geomètrica de matrius 2x2" },
+            { id: "M1-T7-Ex7.23", title: "Exercici 7.23: Composició de transformacions geomètriques" },
+            { id: "M1-T7-Ex7.24", title: "Exercici 7.24: Commutativitat d'aplicacions lineals" },
+            { id: "M1-T7-Ex7.25", title: "Exercici 7.25: Interpretació geomètrica de matrius 3x3" },
+            { id: "M1-T7-Ex7.26", title: "Exercici 7.26: Composició de transformacions en 3D" },
+            { id: "M1-T7-Ex7.27", title: "Exercici 7.27: Commutativitat en 3D" }
         ]
     },
 

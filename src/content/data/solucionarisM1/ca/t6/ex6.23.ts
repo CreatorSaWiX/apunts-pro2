@@ -21,6 +21,7 @@ En un espai de dimensió $n$, un conjunt de $n$ vectors formen una base si i nom
 $$\\Delta = \\begin{vmatrix} 1 & 0 & 1 & 0 \\\\ 1 & 0 & 0 & 0 \\\\ 0 & 1 & 0 & 0 \\\\ 0 & 1 & 4 & 2 \\end{vmatrix}$$
 
 Desenvolupant per la segona fila (que només té un element no nul):
+
 $$\\Delta = -1 \\cdot \\begin{vmatrix} 0 & 1 & 0 \\\\ 1 & 0 & 0 \\\\ 1 & 4 & 2 \\end{vmatrix} = (-1) \\cdot (-1) \\cdot \\begin{vmatrix} 1 & 0 \\\\ 4 & 2 \\end{vmatrix} = 1 \\cdot (2 - 0) = 2$$
 
 Com que $\\Delta = 2 \\neq 0$, els vectors són linealment independents i formen una **base de $\\mathbb{R}^4$**.

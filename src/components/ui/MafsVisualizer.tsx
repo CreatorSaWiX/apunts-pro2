@@ -799,6 +799,277 @@ const VisPrimitivaFamilia = () => {
     );
 };
 
+const VisPropietatsLineals = () => {
+    const [u, setU] = React.useState<[number, number]>([2, 1]);
+    const [v, setV] = React.useState<[number, number]>([-1, 2]);
+    const [isLinear, setIsLinear] = React.useState(true);
+
+    const sum = [u[0] + v[0], u[1] + v[1]] as [number, number];
+
+    // Transformació lineal (Shear + Rotation-ish)
+    const fLinear = (p: [number, number]): [number, number] => [
+        p[0] * 0.8 + p[1] * 0.4,
+        -p[0] * 0.2 + p[1] * 0.9
+    ];
+
+    // Transformació no lineal (Exp/Quadràtica que deforma el pla)
+    const fNonLinear = (p: [number, number]): [number, number] => {
+        const r = Math.sqrt(p[0]**2 + p[1]**2);
+        const factor = 1 + 0.05 * r**2; // Deformació radial
+        return [
+            (p[0] * 0.8 + p[1] * 0.4) * factor,
+            (-p[0] * 0.2 + p[1] * 0.9) * factor
+        ];
+    };
+
+    const f = isLinear ? fLinear : fNonLinear;
+
+    const fu = f(u);
+    const fv = f(v);
+    const fsum = f(sum);
+    const fSumExpected = [fu[0] + fv[0], fu[1] + fv[1]] as [number, number];
+
+    return (
+        <div className="flex flex-col h-full bg-slate-950 overflow-hidden">
+            {/* Control Panel */}
+            <div className="p-4 bg-slate-900/80 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
+                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                    <button 
+                        onClick={() => setIsLinear(true)}
+                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${isLinear ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        Lineal
+                    </button>
+                    <button 
+                        onClick={() => setIsLinear(false)}
+                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${!isLinear ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        No Lineal
+                    </button>
+                </div>
+                
+                <div className={`px-3 py-1.5 rounded-lg border font-mono text-[10px] transition-all duration-500 ${isLinear ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-400'}`}>
+                    {isLinear ? "f(u + v) = f(u) + f(v)" : "f(u + v) ≠ f(u) + f(v)"}
+                </div>
+            </div>
+
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
+                {/* DOMINI (E) */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-900/20">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Espai de Sortida (E)</span>
+                        <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                            <span className="text-[10px] text-slate-300 font-bold">Base del Paral·lelogram</span>
+                        </div>
+                    </div>
+
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        
+                        {/* Parallelogram Construction */}
+                        <Line.Segment point1={u} point2={sum} color="white" opacity={0.1} style="dashed" />
+                        <Line.Segment point1={v} point2={sum} color="white" opacity={0.1} style="dashed" />
+
+                        <Vector tail={[0, 0]} tip={u} color={Theme.blue} weight={3} />
+                        <Vector tail={[0, 0]} tip={v} color={Theme.red} weight={3} />
+                        <Vector tail={[0, 0]} tip={sum} color={Theme.green} weight={4} opacity={0.8} />
+
+                        <MovablePoint point={u} onMove={setU} color={Theme.blue} />
+                        <MovablePoint point={v} onMove={setV} color={Theme.red} />
+
+                        <LaTeX at={u} tex="\vec{u}" color={Theme.blue} />
+                        <LaTeX at={v} tex="\vec{v}" color={Theme.red} />
+                        <LaTeX at={sum} tex="\vec{u}+\vec{v}" color={Theme.green} />
+                    </Mafs>
+                </div>
+
+                {/* IMATGE (F) */}
+                <div className="relative bg-slate-900/10">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Espai d'Arribada (F)</span>
+                        <div className="flex items-center gap-2">
+                            <div className={`w-1.5 h-1.5 rounded-full transition-colors ${isLinear ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`} />
+                            <span className="text-[10px] text-slate-300 font-bold">Transformació f(v)</span>
+                        </div>
+                    </div>
+
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        
+                        {/* Ghost Parallelogram (Where the sum SHOULD be if it were linear) */}
+                        {!isLinear && (
+                            <>
+                                <Line.Segment point1={fu} point2={fSumExpected} color={Theme.green} opacity={0.2} style="dashed" />
+                                <Line.Segment point1={fv} point2={fSumExpected} color={Theme.green} opacity={0.2} style="dashed" />
+                                <Circle center={fSumExpected} radius={0.15} color={Theme.green} fillOpacity={0.2} weight={1} />
+                                <LaTeX at={[fSumExpected[0], fSumExpected[1] - 0.5]} tex="f(\vec{u})+f(\vec{v})" color={Theme.green} />
+                            </>
+                        )}
+
+                        {/* Transformed Components */}
+                        <Vector tail={[0, 0]} tip={fu} color={Theme.blue} opacity={0.4} weight={2} />
+                        <Vector tail={[0, 0]} tip={fv} color={Theme.red} opacity={0.4} weight={2} />
+                        
+                        {/* THE RESULT: f(u+v) */}
+                        <Vector tail={[0, 0]} tip={fsum} color={isLinear ? Theme.green : Theme.yellow} weight={4} />
+
+                        {/* Error Vector when non-linear */}
+                        {!isLinear && (
+                            <Line.Segment point1={fSumExpected} point2={fsum} color={Theme.red} weight={2} />
+                        )}
+
+                        <LaTeX at={fu} tex="f(\vec{u})" color={Theme.blue} />
+                        <LaTeX at={fv} tex="f(\vec{v})" color={Theme.red} />
+                        <LaTeX at={fsum} tex="f(\vec{u}+\vec{v})" color={isLinear ? Theme.green : Theme.yellow} />
+                    </Mafs>
+
+                    {/* Non-linear Alert */}
+                    {!isLinear && (
+                        <div className="absolute bottom-4 right-4 bg-rose-500/10 backdrop-blur-md border border-rose-500/20 px-3 py-2 rounded-xl">
+                            <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest block mb-1">Error de Linealitat</span>
+                            <p className="text-[10px] text-slate-400 leading-tight max-w-[120px]">
+                                La transformació corba l'espai, trencant la suma de vectors.
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Educational Footer */}
+            <div className="p-4 bg-slate-950 border-t border-white/5 flex items-center justify-center min-h-[60px]">
+                <p className="text-[10px] text-slate-400 max-w-2xl text-center leading-relaxed">
+                    {isLinear 
+                        ? "Les aplicacions lineals conserven les graelles paral·leles. Si sumes dos vectors i després els transformes, arribes al mateix lloc que si primer els transformes i després els sumes."
+                        : "Les funcions no lineals (com les quadràtiques o exponencials) 'estiren' o 'dobleguen' l'espai de forma desigual. Això fa que el resultat de la suma es desplaci."}
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisMatriuAssociada = () => {
+    const [m11, setM11] = React.useState(1);
+    const [m12, setM12] = React.useState(0.5);
+    const [m21, setM21] = React.useState(0.5);
+    const [m22, setM22] = React.useState(1);
+    const [v, setV] = React.useState<[number, number]>([1, 1]);
+
+    const transform = (p: [number, number]): [number, number] => [
+        m11 * p[0] + m12 * p[1],
+        m21 * p[0] + m22 * p[1]
+    ];
+
+    const e1: [number, number] = [1, 0];
+    const e2: [number, number] = [0, 1];
+    const fe1 = transform(e1);
+    const fe2 = transform(e2);
+    const fv = transform(v);
+
+    return (
+        <div className="flex flex-col h-full bg-slate-950 overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
+            {/* Matrix Input Panel - More compact */}
+            <div className="px-6 py-4 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex flex-col gap-4">
+                    <div className="flex gap-8">
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-[8px] font-black text-blue-400 uppercase tracking-widest">Columna 1: f(e₁)</span>
+                            <div className="flex gap-2">
+                                <input type="range" min="-2" max="2" step="0.1" value={m11} onChange={(e) => setM11(parseFloat(e.target.value))} className="w-16 accent-blue-500" />
+                                <input type="range" min="-2" max="2" step="0.1" value={m21} onChange={(e) => setM21(parseFloat(e.target.value))} className="w-16 accent-blue-500" />
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-[8px] font-black text-rose-400 uppercase tracking-widest">Columna 2: f(e₂)</span>
+                            <div className="flex gap-2">
+                                <input type="range" min="-2" max="2" step="0.1" value={m12} onChange={(e) => setM12(parseFloat(e.target.value))} className="w-16 accent-rose-500" />
+                                <input type="range" min="-2" max="2" step="0.1" value={m22} onChange={(e) => setM22(parseFloat(e.target.value))} className="w-16 accent-rose-500" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="relative p-4 bg-black/40 rounded-xl border border-white/5 shadow-xl flex items-center gap-4">
+                    <div className="text-xl text-slate-500 font-serif italic">M =</div>
+                    <div className="relative px-5 py-2 flex flex-col gap-2 font-mono text-lg">
+                        <div className="absolute left-0 top-0 bottom-0 w-2 border-l-2 border-t-2 border-b-2 border-white/20 rounded-l-lg" />
+                        <div className="absolute right-0 top-0 bottom-0 w-2 border-r-2 border-t-2 border-b-2 border-white/20 rounded-r-lg" />
+                        <div className="flex gap-8">
+                            <span className="w-8 text-center text-blue-400 font-bold">{m11.toFixed(1)}</span>
+                            <span className="w-8 text-center text-rose-400 font-bold">{m12.toFixed(1)}</span>
+                        </div>
+                        <div className="flex gap-8">
+                            <span className="w-8 text-center text-blue-400 font-bold">{m21.toFixed(1)}</span>
+                            <span className="w-8 text-center text-rose-400 font-bold">{m22.toFixed(1)}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 min-h-[400px]">
+                {/* DOMINI */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-900/20">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Domini (E)</span>
+                        <div className="flex items-center gap-2">
+                            <div className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-[8px] text-emerald-400 font-black uppercase">Intervenció lliure</div>
+                        </div>
+                    </div>
+
+                    <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        
+                        <Polygon points={[[0, 0], [1, 0], [1, 1], [0, 1]]} color="white" fillOpacity={0.03} weight={1} />
+
+                        <Vector tail={[0, 0]} tip={e1} color={Theme.blue} weight={2} opacity={0.5} />
+                        <Vector tail={[0, 0]} tip={e2} color={Theme.red} weight={2} opacity={0.5} />
+                        
+                        <Vector tail={[0, 0]} tip={v} color={Theme.green} weight={4} />
+                        <MovablePoint point={v} onMove={setV} color={Theme.green} />
+                        
+                        <LaTeX at={e1} tex="\vec{e}_1" color={Theme.blue} />
+                        <LaTeX at={e2} tex="\vec{e}_2" color={Theme.red} />
+                        <LaTeX at={v} tex="\vec{v}" color={Theme.green} />
+                    </Mafs>
+                </div>
+
+                {/* IMATGE */}
+                <div className="relative bg-slate-900/10">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Imatge (f(E))</span>
+                        <span className="text-[10px] text-indigo-400 font-bold uppercase">L'espai transformat</span>
+                    </div>
+
+                    <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        
+                        <Polygon 
+                            points={[[0, 0], fe1, [fe1[0] + fe2[0], fe1[1] + fe2[1]], fe2]}
+                            color={Theme.indigo}
+                            fillOpacity={0.1}
+                            weight={1}
+                        />
+
+                        <Vector tail={[0, 0]} tip={fe1} color={Theme.blue} weight={3} />
+                        <Vector tail={[0, 0]} tip={fe2} color={Theme.red} weight={3} />
+                        <Vector tail={[0, 0]} tip={fv} color={Theme.green} weight={4} />
+
+                        <LaTeX at={fe1} tex="f(\vec{e}_1)" color={Theme.blue} />
+                        <LaTeX at={fe2} tex="f(\vec{e}_2)" color={Theme.red} />
+                        <LaTeX at={fv} tex="f(\vec{v})" color={Theme.green} />
+                    </Mafs>
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 border-t border-white/5">
+                <p className="text-[10px] text-slate-400 text-center leading-relaxed">
+                    <strong className="text-white">Interactua:</strong> Mou el vector <span className="text-emerald-400 font-bold">verd</span> a l'esquerra per veure com la seva imatge es mou a la dreta segons la matriu <strong className="text-white">M</strong>. 
+                    Fixa't com {"$f(\\vec{e}_1)$"} i {"$f(\\vec{e}_2)$"} (columnes de $M$) defineixen tota la quadrícula.
+                </p>
+            </div>
+        </div>
+    );
+};
 const VisReglaBarrow = () => {
     const [interval, setInterval] = React.useState({ a: 1, b: 3 });
     const f = (x: number) => 0.4 * x + 0.8;
@@ -3681,6 +3952,720 @@ const VisCanviBase = () => {
     );
 };
 
+const VisAntiimatgeSubespais = () => {
+    const [w, setW] = React.useState<[number, number]>([2, 1]);
+    
+    // Aplicació: f(x,y) = (x+y, 0.5(x+y))
+    // Imatge: recta y = 0.5x, Nucli: recta y = -x
+    const t = (w[0] + 0.5 * w[1]) / (1 + 0.25);
+    const wProj: [number, number] = [t, 0.5 * t];
+    const distToIm = Math.sqrt(Math.pow(w[0] - wProj[0], 2) + Math.pow(w[1] - wProj[1], 2));
+    const isCompatible = distToIm < 0.2; // Slightly more tolerant for better UX
+
+    const snapToImage = () => setW(wProj);
+
+    // Una solució particular: x+y = t -> x=t, y=0
+    const v0: [number, number] = [t, 0];
+
+    return (
+        <div className="flex flex-col h-full bg-slate-950 overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
+            {/* Header / Legend */}
+            <div className="p-6 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Laboratori d'Antiimatges</span>
+                    <p className="text-[11px] text-slate-400 italic leading-tight">Explora com subespais enters van a parar a un sol punt.</p>
+                </div>
+                <div className="flex gap-4">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-lg border border-white/5">
+                        <div className="w-2 h-2 rounded-full bg-red-500" />
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">Nucli</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-lg border border-white/5">
+                        <div className="w-2 h-2 rounded-full bg-blue-500" />
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">Imatge</span>
+                    </div>
+                    {!isCompatible && (
+                        <button 
+                            onClick={snapToImage}
+                            className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-black uppercase rounded-lg shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
+                        >
+                            Ajustar a la Imatge
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
+                {/* DOMINI */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-900/20 overflow-hidden min-h-[350px]">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Domini (E)</span>
+                        {isCompatible ? (
+                            <div className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-[9px] text-emerald-400 font-bold">
+                                {"f⁻¹(w) = v₀ + Ker(f)"}
+                            </div>
+                        ) : (
+                            <div className="px-2 py-0.5 bg-rose-500/10 border border-rose-500/20 rounded text-[9px] text-rose-400 font-bold">
+                                Antiimatge buida (∅)
+                            </div>
+                        )}
+                    </div>
+
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        
+                        {/* El Nucli Ker(f) */}
+                        <Plot.OfX y={(x: number) => -x} color={Theme.red} opacity={0.2} weight={1} />
+                        
+                        {isCompatible && (
+                            <>
+                                {/* L'Antiimatge: Recta paral·lela al nucli passant per v0 */}
+                                <Plot.OfX y={(x: number) => -x + (v0[0] + v0[1])} color={Theme.green} weight={4} />
+                                <LaTeX at={[v0[0], v0[1] + 0.4]} tex="f^{-1}(\vec{w})" color={Theme.green} />
+                            </>
+                        )}
+                    </Mafs>
+
+                    {!isCompatible && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-rose-950/20 backdrop-blur-[1px] pointer-events-none z-10">
+                            <span className="text-[11px] font-black text-rose-500 uppercase tracking-[0.2em] px-6 py-2 bg-black/40 rounded-full border border-rose-500/30">Incompatible</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* CODOMINI */}
+                <div className="relative bg-slate-900/10 overflow-hidden min-h-[350px]">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Codomini (F)</span>
+                        <div className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded text-[9px] text-blue-400 font-bold">
+                            Im(f): y = 0.5x
+                        </div>
+                    </div>
+
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        
+                        {/* La Imatge Im(f) */}
+                        <Plot.OfX y={(x: number) => 0.5 * x} color={Theme.blue} opacity={0.4} weight={2} />
+                        
+                        {/* Projecció si és incompatible */}
+                        {!isCompatible && (
+                            <>
+                                <Vector tail={wProj} tip={w} color="white" weight={1} opacity={0.3} />
+                                <Circle center={wProj} radius={0.08} color={Theme.blue} />
+                            </>
+                        )}
+
+                        {/* El vector w que volem assolir */}
+                        <MovablePoint point={w} onMove={setW} color={isCompatible ? Theme.green : Theme.red} />
+                        <Vector tail={[0, 0]} tip={w} color={isCompatible ? Theme.green : Theme.red} weight={4} />
+                        <LaTeX at={w} tex="\vec{w}" color={isCompatible ? Theme.green : Theme.red} />
+
+                        {!isCompatible && (
+                            <LaTeX at={[w[0], w[1] - 0.7]} tex="\vec{w} \notin \text{Im}(f)" color={Theme.red} />
+                        )}
+                    </Mafs>
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 border-t border-white/5">
+                <p className="text-[10px] text-slate-400 text-center leading-relaxed">
+                    <strong className="text-white">Interactua:</strong> Mou el vector <span className="text-emerald-400 font-bold">w</span>. Si cau dins la recta blava (Imatge), l'aplicació té solució i a l'esquerra veuràs tota la <span className="text-emerald-400 font-bold">recta d'antiimatges</span> que van a parar a ell.
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisClassificacioAplicacions = () => {
+    const [mode, setMode] = React.useState<'injective' | 'singular'>('injective');
+    const [[e1x, e1y], setE1] = React.useState<[number, number]>([1, 0]);
+    const [[e2x, e2y], setE2] = React.useState<[number, number]>([0, 1]);
+    
+    // Matrius predefinides però basades en la base mòbil si calgués.
+    // Per simplicitat pedagògica, usem transformacions fixes que representen el concepte:
+    const matrices = {
+        'injective': [1, 0.4, -0.2, 0.8],
+        'singular': [1, 1, 0.5, 0.5]
+    };
+
+    const m = matrices[mode];
+    const f = (x: number, y: number): [number, number] => [m[0]*x + m[1]*y, m[2]*x + m[3]*y];
+
+    const fe1 = f(e1x, e1y);
+    const fe2 = f(e2x, e2y);
+
+    return (
+        <div className="flex flex-col h-full bg-slate-950 overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
+            <div className="p-4 bg-slate-900/80 border-b border-white/10 flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                    <button 
+                        onClick={() => setMode('injective')} 
+                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${mode === 'injective' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        Bijectiva
+                    </button>
+                    <button 
+                        onClick={() => setMode('singular')} 
+                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${mode === 'singular' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        No Injectiva
+                    </button>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                    <div className={`px-3 py-1.5 rounded-lg border font-mono text-[10px] transition-all duration-500 ${mode === 'injective' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-400'}`}>
+                        {mode === 'injective' ? "Isomorfisme: Det ≠ 0" : "Singular: Det = 0"}
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-900/20 min-h-[300px]">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Domini (Sortida)</span>
+                        <span className="text-[10px] text-slate-300 font-bold uppercase italic">Espai Integre</span>
+                    </div>
+
+                    <Mafs viewBox={{ x: [-2.5, 2.5], y: [-2.5, 2.5] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Circle center={[0, 0]} radius={1} color={Theme.blue} fillOpacity={0.05} weight={1} />
+                        
+                        <Vector tail={[0, 0]} tip={[e1x, e1y]} color={Theme.blue} weight={3} />
+                        <Vector tail={[0, 0]} tip={[e2x, e2y]} color={Theme.red} weight={3} />
+                        
+                        <MovablePoint point={[e1x, e1y]} onMove={setE1} color={Theme.blue} />
+                        <MovablePoint point={[e2x, e2y]} onMove={setE2} color={Theme.red} />
+                        
+                        <LaTeX at={[e1x, e1y]} tex="\vec{e}_1" color={Theme.blue} />
+                        <LaTeX at={[e2x, e2y]} tex="\vec{e}_2" color={Theme.red} />
+                    </Mafs>
+                </div>
+
+                <div className="relative bg-slate-900/10 min-h-[300px]">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Codomini (Arribada)</span>
+                        <span className={`text-[10px] font-bold uppercase ${mode === 'singular' ? 'text-rose-400' : 'text-emerald-400'}`}>
+                            {mode === 'singular' ? 'Col·lapse de Dimensió' : 'Deformació Conservativa'}
+                        </span>
+                    </div>
+
+                    <Mafs viewBox={{ x: [-2.5, 2.5], y: [-2.5, 2.5] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        
+                        {/* Circle transformed */}
+                        <Plot.Parametric
+                            t={[0, 2 * Math.PI]}
+                            xy={(t: number) => f(Math.cos(t), Math.sin(t))}
+                            color={mode === 'singular' ? Theme.red : Theme.green}
+                            weight={mode === 'singular' ? 4 : 2}
+                        />
+
+                        <Vector tail={[0, 0]} tip={fe1} color={Theme.blue} weight={3} opacity={0.8} />
+                        <Vector tail={[0, 0]} tip={fe2} color={Theme.red} weight={3} opacity={0.8} />
+                        
+                        <LaTeX at={fe1} tex="f(\vec{e}_1)" color={Theme.blue} />
+                        <LaTeX at={fe2} tex="f(\vec{e}_2)" color={Theme.red} />
+                    </Mafs>
+
+                    {mode === 'singular' && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] pointer-events-none">
+                            <div className="bg-rose-500/20 border border-rose-500/40 px-6 py-2 rounded-full shadow-2xl flex flex-col items-center">
+                                <span className="text-[12px] font-black text-rose-100 uppercase tracking-[0.3em]">Rang 1</span>
+                                <span className="text-[8px] text-rose-400/80 font-mono">Injectivitat perduda</span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 border-t border-white/5">
+                <p className="text-[10px] text-slate-400 text-center leading-relaxed">
+                    <strong className="text-white">Interactua:</strong> Mou <span className="text-blue-400 font-bold">e₁</span> i <span className="text-red-400 font-bold">e₂</span>. 
+                    En mode <span className="text-indigo-400 font-bold">Bijectiu</span>, el cercle es deforma en una el·lipse però manté l'àrea i la dimensió. 
+                    En mode <span className="text-rose-400 font-bold">Singular</span>, tot el domini es col·lapsa en una sola línia: el cercle "mor" i es torna un segment.
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisEndomorfismeNilpotent = () => {
+    const [v, setV] = React.useState<[number, number]>([3, 2]);
+    const [step, setStep] = React.useState(0);
+    
+    // f(x,y) = (y, 0) -> Nilpotent de grau 2
+    const v0 = v;
+    const v1: [number, number] = [v[1], 0];
+    const v2: [number, number] = [0, 0];
+    
+    const points = [v0, v1, v2];
+    const currentV = points[step];
+
+    return (
+        <div className="flex flex-col bg-slate-950 overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
+            <div className="p-6 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em]">Endomorfisme Nilpotent</span>
+                    <span className="text-[12px] text-slate-400 font-serif italic font-medium tracking-tight">Aplicació Iterada: fᵏ(v) = 0</span>
+                </div>
+                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                    {[0, 1, 2].map((s) => (
+                        <button
+                            key={s}
+                            onClick={() => setStep(s)}
+                            className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${step === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                        >
+                            Pas {s}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="h-[400px] relative bg-slate-900/20">
+                <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                    <Coordinates.Cartesian />
+                    
+                    {/* Trails */}
+                    {step > 0 && <Vector tail={[0, 0]} tip={v0} color={Theme.blue} opacity={0.05} style="dashed" />}
+                    {step > 1 && <Vector tail={[0, 0]} tip={v1} color={Theme.indigo} opacity={0.1} style="dashed" />}
+                    
+                    <Vector tail={[0, 0]} tip={currentV} color={step === 0 ? Theme.blue : step === 1 ? Theme.indigo : Theme.red} weight={4} />
+                    
+                    {step === 0 && <MovablePoint point={v} onMove={setV} color={Theme.blue} />}
+                    
+                    <LaTeX at={currentV} tex={step === 0 ? "\\vec{v}" : step === 1 ? "f(\\vec{v})" : "f^2(\\vec{v}) = \\vec{0}"} color={step === 0 ? Theme.blue : step === 1 ? Theme.indigo : Theme.red} />
+                </Mafs>
+
+                {step === 2 && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md animate-in fade-in duration-700">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-indigo-500 blur-3xl opacity-20 animate-pulse" />
+                            <div className="relative text-center p-8 rounded-3xl border border-white/10 bg-black/40">
+                                <span className="text-5xl block mb-4">🌀</span>
+                                <span className="text-[14px] font-black text-white uppercase tracking-[0.4em] drop-shadow-2xl">Vòrtex Nul</span>
+                                <p className="text-[10px] text-slate-400 mt-2 font-mono italic">L'espai s'ha col·lapsat a l'origen.</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="p-4 bg-slate-950 border-t border-white/5">
+                <p className="text-[10px] text-slate-400 text-center leading-relaxed">
+                    <strong className="text-white">Interactua:</strong> Mou el vector <span className="text-blue-400 font-bold">v</span> al Pas 0. 
+                    Canvia als passos 1 i 2 per veure com l'aplicació "menja" dimensions fins a fer desaparèixer el vector al centre. 
+                    Un endomorfisme nilpotent és una transformació que, tard o d'hora, ho envia tot al zero.
+                </p>
+            </div>
+        </div>
+    );
+};
+const VisComposicioAplicacions = () => {
+    const [v, setV] = React.useState<[number, number]>([1, 1]);
+    
+    // f: rotació 45º
+    const angleF = Math.PI / 4;
+    const mF = [Math.cos(angleF), -Math.sin(angleF), Math.sin(angleF), Math.cos(angleF)];
+    
+    // g: escalat (2, 0.5)
+    const mG = [2, 0, 0, 0.5];
+    
+    const f = (p: [number, number]): [number, number] => [mF[0]*p[0] + mF[1]*p[1], mF[2]*p[0] + mF[3]*p[1]];
+    const g = (p: [number, number]): [number, number] => [mG[0]*p[0] + mG[1]*p[1], mG[2]*p[0] + mG[3]*p[1]];
+
+    const fv = f(v);
+    const gfv = g(fv);
+
+    return (
+        <div className="flex flex-col h-full bg-slate-950 overflow-hidden rounded-2xl border border-white/5 shadow-2xl">
+            <div className="p-6 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Cadenes de Transformació</span>
+                    <span className="text-[12px] text-slate-400 font-serif italic">{"Composició: (g ∘ f)(v) = g(f(v))"}</span>
+                </div>
+                <div className="flex items-center gap-4 bg-black/40 p-2 rounded-xl border border-white/10">
+                    <div className="flex flex-col items-center">
+                        <span className="text-[8px] text-slate-500 uppercase font-black">Entrada</span>
+                        <span className="text-[10px] font-mono text-blue-400">({v[0].toFixed(1)}, {v[1].toFixed(1)})</span>
+                    </div>
+                    <div className="w-4 h-px bg-white/10" />
+                    <div className="flex flex-col items-center">
+                        <span className="text-[8px] text-slate-500 uppercase font-black">Sortida</span>
+                        <span className="text-[10px] font-mono text-emerald-400">({gfv[0].toFixed(1)}, {gfv[1].toFixed(1)})</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/5 min-h-[300px]">
+                {/* 1. DOMINI */}
+                <div className="relative bg-slate-900/20">
+                    <div className="absolute top-4 left-4 z-10">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">1. Vector Original</span>
+                    </div>
+                    <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Vector tail={[0, 0]} tip={v} color={Theme.blue} weight={4} />
+                        <MovablePoint point={v} onMove={setV} color={Theme.blue} />
+                        <LaTeX at={v} tex="\vec{v}" color={Theme.blue} />
+                    </Mafs>
+                </div>
+
+                {/* 2. INTERMEDI (f) */}
+                <div className="relative bg-slate-900/10">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">2. Pas f: Rotació 45º</span>
+                    </div>
+                    <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Vector tail={[0, 0]} tip={v} color={Theme.blue} opacity={0.1} style="dashed" />
+                        <Vector tail={[0, 0]} tip={fv} color={Theme.indigo} weight={4} />
+                        <LaTeX at={fv} tex="f(\vec{v})" color={Theme.indigo} />
+                    </Mafs>
+                </div>
+
+                {/* 3. FINAL (g ∘ f) */}
+                <div className="relative bg-slate-900/5">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">3. Pas g: Escalat (2, 0.5)</span>
+                    </div>
+                    <Mafs viewBox={{ x: [-3, 3], y: [-3, 3] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Vector tail={[0, 0]} tip={fv} color={Theme.indigo} opacity={0.1} style="dashed" />
+                        <Vector tail={[0, 0]} tip={gfv} color={Theme.green} weight={4} />
+                        <LaTeX at={gfv} tex="g(f(\vec{v}))" color={Theme.green} />
+                    </Mafs>
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 border-t border-white/5 text-center">
+                <p className="text-[10px] text-slate-400 italic max-w-2xl mx-auto leading-relaxed">
+                    La composició és com una cadena de muntatge. L'ordre importa: <strong className="text-white italic">M(g ∘ f) = M(g) · M(f)</strong>. 
+                    Fixa't com el vector primer rota (f) i després s'estira (g). Si canviéssim l'ordre, el resultat seria diferent!
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisInversaAplicacio = () => {
+    const [v, setV] = React.useState<[number, number]>([2, 1]);
+    
+    // f: Deformació (Shear)
+    const m = [1, 1, 0, 1];
+    // f^-1: Deformació inversa
+    const minv = [1, -1, 0, 1];
+    
+    const f = (p: [number, number]): [number, number] => [m[0]*p[0] + m[1]*p[1], m[2]*p[0] + m[3]*p[1]];
+    const finv = (p: [number, number]): [number, number] => [minv[0]*p[0] + minv[1]*p[1], minv[2]*p[0] + minv[3]*p[1]];
+    
+    const fv = f(v);
+    const restoredV = finv(fv);
+
+    return (
+        <div className="flex flex-col h-full bg-slate-950 overflow-hidden rounded-2xl border border-white/5 shadow-2xl">
+            <div className="p-6 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Inversió d'Aplicacions</span>
+                    <span className="text-[12px] text-slate-400 font-serif italic">{"L'efecte CTRL+Z: f⁻¹(f(v)) = v"}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="px-3 py-1.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-[10px] font-black text-emerald-400 uppercase tracking-widest flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        Isomorfisme (Det ≠ 0)
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/5 min-h-[350px]">
+                {/* 1. DIRECTA */}
+                <div className="relative bg-slate-900/20">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">1. Transformació f</span>
+                        <span className="text-[8px] text-slate-500 font-mono uppercase">Shear Horitzontal</span>
+                    </div>
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <MovablePoint point={v} onMove={setV} color={Theme.blue} />
+                        <Vector tail={[0, 0]} tip={v} color={Theme.blue} opacity={0.1} style="dashed" />
+                        <Vector tail={[0, 0]} tip={fv} color={Theme.indigo} weight={4} />
+                        
+                        <LaTeX at={v} tex="\vec{v}" color={Theme.blue} />
+                        <LaTeX at={fv} tex="f(\vec{v})" color={Theme.indigo} />
+                    </Mafs>
+                </div>
+
+                {/* 2. INVERSA */}
+                <div className="relative bg-slate-900/10">
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">2. Recuperació f⁻¹</span>
+                        <span className="text-[8px] text-slate-500 font-mono uppercase">Matriu Inversa</span>
+                    </div>
+                    <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        <Vector tail={[0, 0]} tip={fv} color={Theme.indigo} opacity={0.1} style="dashed" />
+                        <Vector tail={[0, 0]} tip={restoredV} color={Theme.green} weight={4} />
+                        
+                        <LaTeX at={fv} tex="f(\vec{v})" color={Theme.indigo} />
+                        <LaTeX at={restoredV} tex="f^{-1}(f(\vec{v}))" color={Theme.green} />
+                    </Mafs>
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 border-t border-white/5">
+                <p className="text-[10px] text-slate-400 text-center leading-relaxed max-w-2xl mx-auto">
+                    <strong className="text-white">Interactua:</strong> Mou el vector <span className="text-blue-400 font-bold">v</span>. 
+                    Si l'aplicació és bijectiva, sempre podem trobar una matriu inversa que ens retorni exactament al punt d'origen. 
+                    És com si la segona màquina desfés la deformació de la primera.
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisCanviBaseSandvitx = () => {
+    const [step, setStep] = React.useState(0);
+    const [v_B, setV_B] = React.useState<[number, number]>([1, 1]);
+
+    // Base B: b1=(2,0.5), b2=(0.5,1.5)
+    const mB = [[2, 0.5], [0.5, 1.5]]; 
+    // Base W: w1=(1,0), w2=(1,1)
+    const mW = [[1, 1], [0, 1]];
+    const mW_inv = [[1, -1], [0, 1]];
+    
+    // Aplicació f en canònica: Rotació 30º + Escalat
+    const mF = [[1.5 * Math.cos(Math.PI/6), -Math.sin(Math.PI/6)], [1.5 * Math.sin(Math.PI/6), Math.cos(Math.PI/6)]];
+
+    const v_C: [number, number] = [mB[0][0]*v_B[0] + mB[0][1]*v_B[1], mB[1][0]*v_B[0] + mB[1][1]*v_B[1]];
+    const fv_C: [number, number] = [mF[0][0]*v_C[0] + mF[0][1]*v_C[1], mF[1][0]*v_C[0] + mF[1][1]*v_C[1]];
+    const fv_W: [number, number] = [mW_inv[0][0]*fv_C[0] + mW_inv[0][1]*fv_C[1], mW_inv[1][0]*fv_C[0] + mW_inv[1][1]*fv_C[1]];
+
+    const steps = [
+        { 
+            label: "1. Inici en Base B", 
+            desc: "Comencem amb les coordenades relatives a la base B.", 
+            vec: v_B, 
+            grid: mB, 
+            color: Theme.blue, 
+            formula: "[v]_B", 
+            isCanonical: false 
+        },
+        { 
+            label: "2. Salt a Canònica", 
+            desc: "Multipliquem per P(C←B) per 'desxifrar' el vector en l'espai estàndard.", 
+            vec: v_C, 
+            grid: [[1, 0], [0, 1]], 
+            color: Theme.indigo, 
+            formula: "P_{C \\leftarrow B} \\cdot [v]_B = [v]_C", 
+            isCanonical: true 
+        },
+        { 
+            label: "3. Transformació f", 
+            desc: "Apliquem la matriu de l'aplicació en bases canòniques (la més fàcil).", 
+            vec: fv_C, 
+            grid: [[1, 0], [0, 1]], 
+            color: Theme.orange, 
+            formula: "M_C^C \\cdot [v]_C = [f(v)]_C", 
+            isCanonical: true 
+        },
+        { 
+            label: "4. Salt a Base W", 
+            desc: "Multipliquem per P(W←C) per expressar el resultat en la base d'arribada.", 
+            vec: fv_W, 
+            grid: mW, 
+            color: Theme.green, 
+            formula: "P_{W \\leftarrow C} \\cdot [f(v)]_C = [f(v)]_W", 
+            isCanonical: false 
+        }
+    ];
+
+    const current = steps[step];
+
+    return (
+        <div className="flex flex-col h-full bg-slate-950 overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
+            <div className="p-6 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">{current.label}</span>
+                    <p className="text-[11px] text-slate-400 italic max-w-sm leading-tight">{current.desc}</p>
+                </div>
+                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                    {steps.map((_, s) => (
+                        <button
+                            key={s}
+                            onClick={() => setStep(s)}
+                            className={`px-3 py-1.5 text-[9px] font-black uppercase rounded-lg transition-all ${step === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                        >
+                            Pas {s+1}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="flex-1 relative bg-slate-900/20 min-h-[400px]">
+                <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
+                    <Coordinates.Cartesian xAxis={{ lines: 1 }} yAxis={{ lines: 1 }} />
+                    
+                    {!current.isCanonical && Array.from({ length: 11 }).map((_, i) => {
+                        const idx = i - 5;
+                        return (
+                            <React.Fragment key={idx}>
+                                <Line.Segment 
+                                    point1={[idx * current.grid[0][0] - 10 * current.grid[0][1], idx * current.grid[1][0] - 10 * current.grid[1][1]]}
+                                    point2={[idx * current.grid[0][0] + 10 * current.grid[0][1], idx * current.grid[1][0] + 10 * current.grid[1][1]]}
+                                    color="white" opacity={0.05} weight={1}
+                                />
+                                <Line.Segment 
+                                    point1={[-10 * current.grid[0][0] + idx * current.grid[0][1], -10 * current.grid[1][0] + idx * current.grid[1][1]]}
+                                    point2={[10 * current.grid[0][0] + idx * current.grid[0][1], 10 * current.grid[1][0] + idx * current.grid[1][1]]}
+                                    color="white" opacity={0.05} weight={1}
+                                />
+                            </React.Fragment>
+                        );
+                    })}
+
+                    <Vector tail={[0,0]} tip={[current.grid[0][0], current.grid[1][0]]} color={Theme.blue} weight={3} />
+                    <Vector tail={[0,0]} tip={[current.grid[0][1], current.grid[1][1]]} color={Theme.red} weight={3} />
+                    
+                    {/* Basis vector labels with offsets to avoid axis overlap */}
+                    <LaTeX at={[current.grid[0][0] + 0.3, current.grid[1][0] - 0.2]} tex="\vec{b}_1" color={Theme.blue} />
+                    <LaTeX at={[current.grid[0][1] - 0.4, current.grid[1][1] + 0.3]} tex="\vec{b}_2" color={Theme.red} />
+
+                    <Vector tail={[0, 0]} tip={current.vec} color={current.color} weight={5} />
+                    {step === 0 && <MovablePoint point={v_B} onMove={setV_B} color={Theme.blue} />}
+                </Mafs>
+                
+                {/* Modern UI Formula Overlay */}
+                <div className="absolute top-4 right-4 animate-in slide-in-from-right-4 duration-500 pointer-events-none">
+                    <div className="bg-slate-900/90 backdrop-blur-xl px-5 py-4 rounded-2xl border border-white/10 shadow-2xl">
+                        <span className="block text-[8px] font-black text-slate-500 uppercase mb-3 tracking-[0.2em]">Fórmula del Pas</span>
+                        <div className="text-white flex justify-center scale-110 origin-center">
+                            <InlineMath math={current.formula} />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Progress Indicators */}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/40 backdrop-blur-md px-6 py-2 rounded-full border border-white/5">
+                    {[0, 1, 2, 3].map((s) => (
+                        <React.Fragment key={s}>
+                            <div className={`w-2.5 h-2.5 rounded-full transition-all duration-700 ${step >= s ? 'bg-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.6)] scale-110' : 'bg-slate-800'}`} />
+                            {s < 3 && <div className={`h-0.5 w-10 rounded-full transition-all duration-700 ${step > s ? 'bg-indigo-500' : 'bg-slate-800'}`} />}
+                        </React.Fragment>
+                    ))}
+                </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 border-t border-white/5 text-center">
+                <p className="text-[10px] text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                    La tècnica de la <strong className="text-white">Sandvitx</strong> ens permet aplicar una transformació f d'una base qualsevol B a una base qualsevol W, passant per la canònica.
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const VisTransformacionsGeometricas = () => {
+    const [type, setType] = React.useState<'rot' | 'ref' | 'proj' | 'esc'>('rot');
+    const [alpha, setAlpha] = React.useState(45);
+    const [k, setK] = React.useState(1.5);
+    
+    const rad = (alpha * Math.PI) / 180;
+    
+    const getMatrix = () => {
+        switch(type) {
+            case 'rot': return [Math.cos(rad), -Math.sin(rad), Math.sin(rad), Math.cos(rad)];
+            case 'ref': return [1, 0, 0, -1];
+            case 'proj': return [1, 0, 0, 0];
+            case 'esc': return [k, 0, 0, k];
+        }
+    };
+
+    const m = getMatrix();
+    const f = (x: number, y: number): [number, number] => [m[0]*x + m[1]*y, m[2]*x + m[3]*y];
+
+    const shape = [
+        [0, 0], [0, 3], [2, 3], [2, 2.5], [0.5, 2.5], [0.5, 1.8], [1.5, 1.8], [1.5, 1.3], [0.5, 1.3], [0.5, 0], [0, 0]
+    ];
+
+    return (
+        <div className="flex flex-col h-full bg-slate-950 overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
+            {/* Control Header */}
+            <div className="p-6 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                    <button onClick={() => setType('rot')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'rot' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Rotació</button>
+                    <button onClick={() => setType('ref')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'ref' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Reflexió</button>
+                    <button onClick={() => setType('proj')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'proj' ? 'bg-amber-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Projecció</button>
+                    <button onClick={() => setType('esc')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'esc' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Escalat</button>
+                </div>
+
+                <div className="flex gap-8 min-w-[200px]">
+                    {type === 'rot' && (
+                        <div className="flex flex-col gap-2 flex-1">
+                            <div className="flex justify-between">
+                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Angle</span>
+                                <span className="text-[10px] font-mono text-indigo-400">{alpha}º</span>
+                            </div>
+                            <input type="range" min="0" max="360" value={alpha} onChange={(e) => setAlpha(parseInt(e.target.value))} className="w-full accent-indigo-500" />
+                        </div>
+                    )}
+                    {type === 'esc' && (
+                        <div className="flex flex-col gap-2 flex-1">
+                            <div className="flex justify-between">
+                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Factor</span>
+                                <span className="text-[10px] font-mono text-emerald-400">{k.toFixed(1)}x</span>
+                            </div>
+                            <input type="range" min="0.1" max="2.5" step="0.1" value={k} onChange={(e) => setK(parseFloat(e.target.value))} className="w-full accent-emerald-500" />
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
+                {/* Visualizer */}
+                <div className="relative bg-slate-900/20 min-h-[400px] border-b md:border-b-0 md:border-r border-white/5">
+                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+                        {/* Original Shadow */}
+                        <Polygon points={shape as any} color={Theme.blue} fillOpacity={0.05} weight={1} />
+                        {/* Transformed Shape */}
+                        <Polygon 
+                            points={shape.map(p => f(p[0], p[1])) as any} 
+                            color={type === 'rot' ? Theme.indigo : (type === 'ref' ? Theme.red : (type === 'proj' ? Theme.orange : Theme.green))} 
+                            fillOpacity={0.15}
+                            weight={3}
+                        />
+                    </Mafs>
+                </div>
+
+                {/* Matrix Panel */}
+                <div className="bg-slate-900/10 p-8 flex flex-col justify-center items-center gap-8">
+                    <div className="relative p-8 bg-black/40 rounded-3xl border border-white/5 shadow-2xl flex items-center gap-8">
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 rounded-full text-[10px] font-black text-slate-400 uppercase border border-white/5 tracking-[0.2em]">Matriu Associada</div>
+                        <div className="text-4xl text-slate-700 font-serif italic">M =</div>
+                        <div className="relative px-8 py-6 flex flex-col gap-6 font-mono text-2xl">
+                            {/* Brackets */}
+                            <div className="absolute left-0 top-0 bottom-0 w-4 border-l-2 border-t-2 border-b-2 border-white/20 rounded-l-2xl" />
+                            <div className="absolute right-0 top-0 bottom-0 w-4 border-r-2 border-t-2 border-b-2 border-white/20 rounded-r-2xl" />
+                            
+                            <div className="flex gap-16">
+                                <span className="w-16 text-center text-white transition-all hover:scale-125 hover:text-indigo-400">{m[0].toFixed(2)}</span>
+                                <span className="w-16 text-center text-white transition-all hover:scale-125 hover:text-indigo-400">{m[1].toFixed(2)}</span>
+                            </div>
+                            <div className="flex gap-16">
+                                <span className="w-16 text-center text-white transition-all hover:scale-125 hover:text-indigo-400">{m[2].toFixed(2)}</span>
+                                <span className="w-16 text-center text-white transition-all hover:scale-125 hover:text-indigo-400">{m[3].toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p className="text-[10px] text-slate-500 font-medium uppercase tracking-[0.1em] text-center max-w-[200px] leading-relaxed">
+                        Aquesta matriu defineix com es mou cada punt de la "F"
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'vis_canvi_base': VisCanviBase,
     'vis_regles_or_base': VisReglesOrBase,
@@ -3748,6 +4733,15 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'vis_distancia_euclidia': VisDistanciaEuclidia,
     'vis_metode_punts_prova': VisMetodePuntsProva,
     'vis_classificacio_conjunts': VisClassificacioConjunts,
+    'vis_propietats_lineals': VisPropietatsLineals,
+    'vis_matriu_associada': VisMatriuAssociada,
+    'vis_antiimatge_subespais': VisAntiimatgeSubespais,
+    'vis_classificacio_aplicacions': VisClassificacioAplicacions,
+    'vis_endomorfisme_nilpotent': VisEndomorfismeNilpotent,
+    'vis_composicio_aplicacions': VisComposicioAplicacions,
+    'vis_inversa_aplicacio': VisInversaAplicacio,
+    'vis_canvi_base_sandvitx': VisCanviBaseSandvitx,
+    'vis_transformacions_geometriques': VisTransformacionsGeometricas,
 };
 
 

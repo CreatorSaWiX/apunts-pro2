@@ -802,6 +802,104 @@ const VisSubespai3D = () => {
         </div>
     );
 };
+const VisKernelImatge3D = () => {
+    const isMobile = useIsMobile();
+    const [p, setP] = React.useState<[number, number, number]>([2, 2, 2]);
+
+    return (
+        <div className="w-full h-[600px] relative group flex flex-col bg-slate-950 overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
+            <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
+                <div className="bg-black/40 backdrop-blur-md p-3 rounded-xl border border-white/10 flex flex-col gap-2">
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50" />
+                        <span className="text-[9px] text-slate-300 font-bold uppercase tracking-tighter">Vector Original (v)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50" />
+                        <span className="text-[9px] text-slate-300 font-bold uppercase tracking-tighter">Imatge f(v) ∈ Im(f)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-rose-500 shadow-lg shadow-rose-500/50" />
+                        <span className="text-[9px] text-slate-300 font-bold uppercase tracking-tighter">Nucli Ker(f) (Eix Y)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
+                <div className="bg-slate-900/80 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Alçada (Altura Ker)</span>
+                            <input type="range" min="-4" max="4" step="0.1" value={p[1]} onChange={(e) => setP([p[0], parseFloat(e.target.value), p[2]])} className="w-32 accent-rose-500" />
+                        </div>
+                        <div className="text-[10px] text-slate-400 italic max-w-[150px]">
+                            Si l'alçada és 0, el vector cau totalment a la Imatge. Si X i Z són 0, el vector "mor" al Nucli.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex-1 relative">
+                <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
+                <PerspectiveCamera makeDefault position={[8, 5, 8]} />
+                <OrbitControls enableZoom={true} />
+                <ambientLight intensity={0.5} />
+                <pointLight position={[10, 10, 10]} intensity={1} />
+                <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+
+                {/* IMAGE PLANE (XY en matema, XZ en ThreeJS grid) */}
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+                    <planeGeometry args={[10, 10]} />
+                    <meshStandardMaterial color="#10b981" transparent opacity={0.15} side={THREE.DoubleSide} depthWrite={false} />
+                </mesh>
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+                    <planeGeometry args={[10, 10, 10, 10]} />
+                    <meshBasicMaterial color="#10b981" wireframe transparent opacity={0.1} />
+                </mesh>
+
+                {/* KERNEL LINE (Z axis en matema, Y axis en ThreeJS) */}
+                <Line points={[[0, -5, 0], [0, 5, 0]]} color="#f43f5e" lineWidth={4} opacity={0.6} />
+
+                {/* Vectors */}
+                <Arrow memoDir={new THREE.Vector3(p[0], p[1], p[2]).normalize()} length={new THREE.Vector3(p[0], p[1], p[2]).length()} color="#3b82f6" head={0.2} width={0.06} />
+                <Arrow memoDir={new THREE.Vector3(p[0], 0, p[2]).normalize()} length={new THREE.Vector3(p[0], 0, p[2]).length()} color="#10b981" head={0.2} width={0.06} />
+
+                {/* Vertical Projection Line */}
+                <Line points={[[p[0], 0, p[2]], [p[0], p[1], p[2]]]} color="white" lineWidth={1} dashed opacity={0.3} />
+
+                {/* Points */}
+                <Point position={[p[0], p[1], p[2]]} color="#3b82f6" />
+                <Point position={[p[0], 0, p[2]]} color="#10b981" />
+
+                {/* Interaction Domain */}
+                <Html position={[p[0], p[1] + 0.5, p[2]]}>
+                    <div className="bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[8px] text-white font-mono border border-white/10 whitespace-nowrap">
+                        v = ({p[0].toFixed(1)}, {p[1].toFixed(1)}, {p[2].toFixed(1)})
+                    </div>
+                </Html>
+
+                {/* Labels */}
+                <Text position={[5, 0.2, 5]} color="#10b981" fontSize={0.3} rotation={[-Math.PI / 2, 0, 0]}>Imatge (Pla)</Text>
+                <Text position={[0.5, 4.5, 0]} color="#f43f5e" fontSize={0.3}>Nucli (Eix)</Text>
+            </Canvas>
+            </div>
+
+            <div className="p-4 bg-slate-900 border-t border-white/10 flex justify-between items-center px-8">
+                <div className="flex flex-col gap-1">
+                    <span className="text-[9px] text-slate-500 uppercase font-black">Control Domini (XZ)</span>
+                    <div className="flex items-center gap-4">
+                        <input type="range" min="-4" max="4" step="0.1" value={p[0]} onChange={(e) => setP([parseFloat(e.target.value), p[1], p[2]])} className="w-24 accent-blue-500" />
+                        <input type="range" min="-4" max="4" step="0.1" value={p[2]} onChange={(e) => setP([p[0], p[1], parseFloat(e.target.value)])} className="w-24 accent-blue-500" />
+                    </div>
+                </div>
+                <p className="text-[10px] text-slate-400 italic max-w-sm text-right leading-tight">
+                    Projectem el vector blava sobre el pla verd. <br />
+                    Si el vector cau a l'eix vermell, la seva imatge és zero $\to$ és del **Nucli**.
+                </p>
+            </div>
+        </div>
+    );
+};
 
 const VisEx78a = () => {
     const isMobile = useIsMobile();
@@ -1057,7 +1155,7 @@ const VisDiferencialIncrement = () => {
 
     const f0 = f(a, b);
     const dfx = fx(a), dfy = fy(b);
-    
+
     const dx = d[0], dy = d[1];
     const incrementReal = f(a + dx, b + dy) - f0;
     const diferencialLineal = dfx * dx + dfy * dy;
@@ -1070,7 +1168,7 @@ const VisDiferencialIncrement = () => {
                     <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest text-slate-500">Diferencial vs Increment</span>
                     <span className="text-[9px] text-slate-500 font-mono italic">Punt base P(1, 1)</span>
                 </div>
-                
+
                 <div className="flex gap-2">
                     <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex flex-col items-center min-w-[80px]">
                         <span className="text-[7px] text-emerald-400 font-black uppercase mb-0.5">Increment (Δf)</span>
@@ -1110,23 +1208,23 @@ const VisDiferencialIncrement = () => {
                         <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
 
                         <FunctionSurface f={f} showWireframe={true} opacity={0.6} colorScale={1.5} />
-                        
+
                         {/* Punt Base */}
                         <Point position={[a, f0, b]} color="#fbbf24" />
-                        
+
                         {/* Punt Real sobre superfície */}
                         <Point position={[a + dx, f(a + dx, b + dy), b + dy]} color="#10b981" />
-                        
+
                         {/* Punt sobre Pla Tangent */}
                         <Point position={[a + dx, f0 + diferencialLineal, b + dy]} color="#fbbf24" />
 
                         {/* Línia d'error */}
-                        <Line 
-                            points={[[a + dx, f0 + diferencialLineal, b + dy], [a + dx, f(a + dx, b + dy), b + dy]]} 
-                            color="#f43f5e" 
-                            lineWidth={3} 
+                        <Line
+                            points={[[a + dx, f0 + diferencialLineal, b + dy], [a + dx, f(a + dx, b + dy), b + dy]]}
+                            color="#f43f5e"
+                            lineWidth={3}
                         />
-                        
+
                         {/* Pla Tangent parcial */}
                         <group position={[a, f0, b]}>
                             <mesh rotation={[-Math.atan(dfx), 0, -Math.atan(dfy)]}>
@@ -1137,7 +1235,7 @@ const VisDiferencialIncrement = () => {
                     </Canvas>
                 </div>
             </div>
-            
+
             <div className="p-4 bg-slate-950 border-t border-white/10 text-center">
                 <p className="text-[10px] text-slate-300 italic max-w-2xl mx-auto leading-relaxed">
                     L'**Increment (Δf)** és el salt real per la muntanya (verd). El **Diferencial (df)** és el salt que faríem si ens moguéssim pel plànol inclinat (groc). L'error (vermell) es fa més petit com més a prop estem del punt base.
@@ -1227,7 +1325,7 @@ const VisExtremsHessiana = () => {
                     <Point position={[0, 0, 0]} color={current.color} />
                 </Canvas>
             </div>
-            
+
             <div className="p-4 bg-slate-950 border-t border-white/10 text-center">
                 <p className="text-[11px] text-slate-300 italic max-w-2xl mx-auto leading-relaxed">
                     <span className="text-white font-bold uppercase mr-2">{current.title}:</span>
@@ -1264,7 +1362,7 @@ const VisFitaErrorLagrange = () => {
 
     const M = getM(delta);
     const fitaTeorica = 0.5 * (M.xx * delta * delta + 2 * M.xy * delta * delta + M.yy * delta * delta);
-    
+
     // Error real màxim (aproximat per mostreig a les cantonades)
     const errorReal = Math.max(
         Math.abs(f(delta, delta) - p1(delta, delta)),
@@ -1278,7 +1376,7 @@ const VisFitaErrorLagrange = () => {
                     <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest">Fita d'Error de Lagrange</span>
                     <span className="text-[9px] text-slate-500 font-mono italic">f(x,y) = ln(1 + 0.5x + 0.3y)</span>
                 </div>
-                
+
                 <div className="flex gap-2">
                     <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex flex-col items-center min-w-[100px]">
                         <span className="text-[7px] text-slate-400 font-black uppercase mb-0.5">Radi Regió (δ)</span>
@@ -1318,14 +1416,14 @@ const VisFitaErrorLagrange = () => {
 
                         <FunctionSurface f={f} showWireframe={false} opacity={0.6} />
                         <FunctionSurface f={p1} colorScale={3} showWireframe={true} opacity={0.4} />
-                        
+
                         {/* Indicadors a les cantonades on l'error és màxim */}
                         <Line points={[[-delta, f(-delta, -delta), -delta], [-delta, p1(-delta, -delta), -delta]]} color="#f43f5e" lineWidth={4} />
                         <Point position={[0, 0, 0]} color="white" />
                     </Canvas>
                 </div>
             </div>
-            
+
             <div className="p-4 bg-slate-950 border-t border-white/10 text-center">
                 <p className="text-[10px] text-slate-300 italic max-w-2xl mx-auto leading-relaxed">
                     Com més gran és la regió (més $\delta$), més creixen les derivades segones ($M$) i el factor quadrat. Fixa't que la **Fita de Lagrange** (teòrica) sempre és una mica superior a l'**Error Real**; és un "paraigua" de seguretat que ens garanteix que l'error mai superarà aquest valor.
@@ -2224,7 +2322,271 @@ const VisRnDimensionality = () => {
     );
 };
 
+const VisTransformacionsHibrida = () => {
+    const { isFullScreen, resizeKey } = useInteraction();
+    const [type, setType] = React.useState<'rot' | 'ref' | 'proj' | 'esc'>('rot');
+    const [alpha, setAlpha] = React.useState(45);
+    const [k, setK] = React.useState(1.5);
+    const [axis, setAxis] = React.useState<'x' | 'y' | 'z'>('z');
+    const [showWireframe, setShowWireframe] = React.useState(true);
+
+    const rad = (alpha * Math.PI) / 180;
+
+    const matrix = useMemo(() => {
+        const m = new THREE.Matrix3();
+        const s = Math.sin(rad);
+        const c = Math.cos(rad);
+
+        switch (type) {
+            case 'rot':
+                // Rotation matrices (standard 3D)
+                if (axis === 'z') m.set(c, -s, 0, s, c, 0, 0, 0, 1);
+                else if (axis === 'x') m.set(1, 0, 0, 0, c, -s, 0, s, c);
+                else if (axis === 'y') m.set(c, 0, s, 0, 1, 0, -s, 0, c);
+                break;
+            case 'ref':
+                if (axis === 'z') m.set(1, 0, 0, 0, 1, 0, 0, 0, -1); // Reflection XY plane
+                else if (axis === 'x') m.set(-1, 0, 0, 0, 1, 0, 0, 0, 1); // Reflection YZ plane
+                else if (axis === 'y') m.set(1, 0, 0, 0, -1, 0, 0, 0, 1); // Reflection XZ plane
+                break;
+            case 'proj':
+                if (axis === 'z') m.set(1, 0, 0, 0, 1, 0, 0, 0, 0); // Projection onto XY plane
+                else if (axis === 'x') m.set(0, 0, 0, 0, 1, 0, 0, 0, 1); // Projection onto YZ plane
+                else if (axis === 'y') m.set(1, 0, 0, 0, 0, 0, 0, 0, 1); // Projection onto XZ plane
+                break;
+            case 'esc':
+                m.set(k, 0, 0, 0, k, 0, 0, 0, k);
+                break;
+        }
+        return m;
+    }, [type, alpha, k, axis]);
+
+    const shape2D = [
+        [0, 0], [0, 3], [2, 3], [2, 2.5], [0.5, 2.5], [0.5, 1.8], [1.5, 1.8], [1.5, 1.3], [0.5, 1.3], [0.5, 0], [0, 0]
+    ];
+
+    const f2D = (x: number, y: number): [number, number] => {
+        const e = matrix.elements;
+        // matrix.elements is column-major: [m11, m21, m31, m12, m22, m32, m13, m23, m33]
+        return [e[0] * x + e[3] * y, e[1] * x + e[4] * y];
+    };
+
+    return (
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-950 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[700px]'}`}>
+            {/* Header Control Panel */}
+            <div className="p-4 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
+                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                    {[
+                        { id: 'rot', label: 'Rotació', color: 'bg-indigo-600' },
+                        { id: 'ref', label: 'Reflexió', color: 'bg-rose-600' },
+                        { id: 'proj', label: 'Projecció', color: 'bg-amber-600' },
+                        { id: 'esc', label: 'Escalat', color: 'bg-emerald-600' }
+                    ].map((btn) => (
+                        <button
+                            key={btn.id}
+                            onClick={() => setType(btn.id as any)}
+                            className={`px-3 py-1.5 text-[9px] font-black uppercase rounded-lg transition-all ${type === btn.id ? `${btn.color} text-white shadow-lg` : 'text-slate-500 hover:text-slate-300'}`}
+                        >
+                            {btn.label}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex flex-1 w-full max-w-sm gap-4">
+                    {type === 'rot' && (
+                        <div className="flex-1">
+                            <div className="flex justify-between mb-1 px-1">
+                                <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Angle: {alpha}º</span>
+                            </div>
+                            <input type="range" min="0" max="360" value={alpha} onChange={(e) => setAlpha(parseInt(e.target.value))} className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
+                        </div>
+                    )}
+                    {type === 'esc' && (
+                        <div className="flex-1">
+                            <div className="flex justify-between mb-1 px-1">
+                                <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Factor: {k.toFixed(1)}x</span>
+                            </div>
+                            <input type="range" min="0.1" max="2.5" step="0.1" value={k} onChange={(e) => setK(parseFloat(e.target.value))} className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                        </div>
+                    )}
+                    {(type === 'rot' || type === 'ref' || type === 'proj') && (
+                        <div className="flex bg-black/40 p-1 rounded-lg border border-white/5 h-fit self-end">
+                            {(['x', 'y', 'z'] as const).map((a) => (
+                                <button
+                                    key={a}
+                                    onClick={() => setAxis(a)}
+                                    className={`w-6 h-6 flex items-center justify-center text-[9px] font-black uppercase rounded transition-all ${axis === a ? 'bg-slate-700 text-white' : 'text-slate-600 hover:text-slate-400'}`}
+                                >
+                                    {a}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <button
+                    onClick={() => setShowWireframe(!showWireframe)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all ${showWireframe ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300' : 'bg-slate-800/50 border-white/5 text-slate-500'}`}
+                >
+                    <div className={`w-2 h-2 rounded-sm border ${showWireframe ? 'bg-indigo-400 border-indigo-300' : 'border-slate-500'}`} />
+                    <span className="text-[9px] font-black uppercase tracking-widest">Wireframe</span>
+                </button>
+            </div>
+
+            <div className={`flex-1 grid grid-cols-1 ${isFullScreen ? 'grid-rows-[1fr_1fr] landscape:grid-cols-2 landscape:grid-rows-1' : 'grid-rows-2 md:grid-cols-2 md:grid-rows-1'}`}>
+                {/* 2D View */}
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-950/30 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-[10px] text-slate-400 font-bold uppercase tracking-widest border border-white/5 flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                        Pla XY (R²)
+                    </div>
+                    <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
+                        <Coordinates.Cartesian />
+
+                        {/* Shadow Original */}
+                        <Plot.Parametric
+                            t={[0, shape2D.length - 1]}
+                            xy={(t: number) => {
+                                const i = Math.floor(t);
+                                const next = Math.min(i + 1, shape2D.length - 1);
+                                const alpha = t - i;
+                                return [
+                                    shape2D[i][0] * (1 - alpha) + shape2D[next][0] * alpha,
+                                    shape2D[i][1] * (1 - alpha) + shape2D[next][1] * alpha
+                                ];
+                            }}
+                            color={Theme.blue} opacity={0.1} weight={2}
+                        />
+
+                        {/* Transformed */}
+                        <Plot.Parametric
+                            t={[0, shape2D.length - 1]}
+                            xy={(t: number) => {
+                                const i = Math.floor(t);
+                                const next = Math.min(i + 1, shape2D.length - 1);
+                                const alpha = t - i;
+                                const px = shape2D[i][0] * (1 - alpha) + shape2D[next][0] * alpha;
+                                const py = shape2D[i][1] * (1 - alpha) + shape2D[next][1] * alpha;
+                                return f2D(px, py);
+                            }}
+                            color={type === 'rot' ? Theme.indigo : (type === 'ref' ? Theme.red : (type === 'proj' ? Theme.orange : Theme.green))}
+                            weight={4}
+                        />
+                    </Mafs>
+                </div>
+
+                {/* 3D View */}
+                <div className="relative h-full overflow-hidden bg-slate-900/20">
+                    <div className="absolute top-4 left-4 z-10 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-[10px] text-slate-400 font-bold uppercase tracking-widest border border-white/5 flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                        Espai R³
+                    </div>
+                    <Canvas shadows dpr={[1, 2]} camera={{ position: [6, 6, 6], fov: 40 }}>
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1.5} castShadow />
+                        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#6366f1" />
+
+                        <OrbitControls enableZoom={true} makeDefault />
+                        <Grid infiniteGrid fadeDistance={30} cellColor="#333" sectionColor="#555" />
+                        <axesHelper args={[5]} />
+
+                        <TransformMesh matrix={matrix} type={type} showWireframe={showWireframe} />
+                    </Canvas>
+                </div>
+            </div>
+
+            {/* Matrix Panel */}
+            <div className="p-4 bg-slate-900/90 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 overflow-x-auto">
+                <div className="flex flex-col gap-1 min-w-fit">
+                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Matriu Associada (M)</span>
+                    <div className="flex items-center gap-3 font-mono text-sm">
+                        <span className="text-3xl font-light text-slate-800 leading-none">[</span>
+                        <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-center">
+                            {matrix.elements.map((val, i) => (
+                                <span key={i} className={`transition-all duration-300 ${val === 0 ? 'text-slate-700' : 'text-indigo-400 font-bold'}`}>
+                                    {val.toFixed(2)}
+                                </span>
+                            ))}
+                        </div>
+                        <span className="text-3xl font-light text-slate-800 leading-none">]</span>
+                    </div>
+                </div>
+
+                <div className="flex-1 max-w-md bg-black/30 p-3 rounded-xl border border-white/5">
+                    <p className="text-[10px] text-slate-400 leading-relaxed italic">
+                        {type === 'rot' && `Rotació d'un objecte 3D respecte a l'eix ${axis.toUpperCase()}. Fixa't com el determinant es manté igual a 1.`}
+                        {type === 'ref' && `Reflexió especular. El determinant canvia de signe (-1), indicant un canvi d'orientació (l'objecte "es gira" com un guant).`}
+                        {type === 'proj' && `Projecció ortogonal. El determinant és 0 perquè l'espai s'ha "col·lapsat" cap a una dimensió inferior.`}
+                        {type === 'esc' && `Homotècia o escalat uniforme. El determinant és k³, que és el factor de canvi del volum.`}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const TransformMesh = ({ matrix, type, showWireframe }: { matrix: THREE.Matrix3, type: string, showWireframe: boolean }) => {
+    const shape = useMemo(() => {
+        const s = new THREE.Shape();
+        s.moveTo(0, 0);
+        s.lineTo(0, 3);
+        s.lineTo(2, 3);
+        s.lineTo(2, 2.5);
+        s.lineTo(0.5, 2.5);
+        s.lineTo(0.5, 1.8);
+        s.lineTo(1.5, 1.8);
+        s.lineTo(1.5, 1.3);
+        s.lineTo(0.5, 1.3);
+        s.lineTo(0.5, 0);
+        s.lineTo(0, 0);
+        return s;
+    }, []);
+
+    const meshRef = React.useRef<THREE.Mesh>(null);
+    const color = type === 'rot' ? '#6366f1' : (type === 'ref' ? '#f43f5e' : (type === 'proj' ? '#f59e0b' : '#10b981'));
+
+    React.useEffect(() => {
+        if (meshRef.current) {
+            const e = matrix.elements;
+            const m4 = new THREE.Matrix4();
+            m4.set(
+                e[0], e[3], e[6], 0,
+                e[1], e[4], e[7], 0,
+                e[2], e[5], e[8], 0,
+                0, 0, 0, 1
+            );
+            meshRef.current.matrixAutoUpdate = false;
+            meshRef.current.matrix.copy(m4);
+        }
+    }, [matrix]);
+
+    return (
+        <group>
+            <mesh scale={[1, 1, 1]}>
+                <extrudeGeometry args={[shape, { depth: 0.2, bevelEnabled: false }]} />
+                <meshStandardMaterial color="#ffffff" transparent opacity={0.05} wireframe />
+            </mesh>
+            <mesh ref={meshRef}>
+                <extrudeGeometry args={[shape, { depth: 0.5, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05 }]} />
+                <meshStandardMaterial
+                    color={color}
+                    emissive={color}
+                    emissiveIntensity={0.2}
+                    metalness={0.8}
+                    roughness={0.2}
+                    transparent
+                    opacity={0.9}
+                />
+                
+                {/* Wireframe Overlay for structural clarity */}
+                {showWireframe && <meshBasicMaterial color="white" wireframe transparent opacity={0.5} />}
+            </mesh>
+        </group>
+    );
+};
+
 const VISUALIZERS: Record<string, React.ComponentType<any>> = {
+    'vis_transformacions_hibrida': VisTransformacionsHibrida,
     'vis_rn_dimensionality': VisRnDimensionality,
     'vis_derivades_parcials_hibrida': VisDerivadesParcialsHibrida,
     'vis_derivada_direccional_hibrida': VisDerivadaDireccionalHibrida,
@@ -2254,6 +2616,7 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'vis_diferencial_increment': VisDiferencialIncrement,
     'vis_extrems_hessiana': VisExtremsHessiana,
     'vis_fita_error_lagrange': VisFitaErrorLagrange,
+    'vis_kernel_imatge_3d': VisKernelImatge3D,
 };
 
 
@@ -2316,6 +2679,7 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
     if (!SurfaceComponent) return <div className="p-4 bg-red-900/20 text-red-400 rounded-xl border border-red-500/30">Tipus 3D no trobat: {type}</div>;
 
     const hybridTypes = [
+        'vis_transformacions_hibrida',
         'vis_rn_dimensionality',
         'vis_subespai_3d',
         'vis_corbes_nivell_3d_2d',
@@ -2334,7 +2698,8 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
         'vis_taylor_graun',
         'vis_diferencial_increment',
         'vis_extrems_hessiana',
-        'vis_fita_error_lagrange'
+        'vis_fita_error_lagrange',
+        'vis_kernel_imatge_3d'
     ];
 
     const isHybrid = hybridTypes.includes(type);
