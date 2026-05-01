@@ -23,11 +23,9 @@ export default function VectorVisualizer() {
     const handlePush = async () => {
         if (isReallocating) return;
 
-        let currentCap = capacity;
         if (elements.length === capacity) {
             const newCap = capacity === 0 ? 1 : Math.min(capacity * 2, MAX_VIZ_CAPACITY);
             await reallocate(newCap);
-            currentCap = newCap;
         }
         
         const val = Math.floor(Math.random() * 99) + 1;

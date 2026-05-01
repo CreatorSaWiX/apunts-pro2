@@ -4,7 +4,7 @@ description: "Gestió de memòria en C++, operadors, aliasing i gestió del 'hea
 readTime: "20 min"
 order: 9
 draft: false
-isUpdated: 1
+isUpdated: 2
 ---
 
 ## 1. La memòria en C++: Stack vs Heap
@@ -164,3 +164,53 @@ inc(&i); // i ara val 6
 ```
 
 A PRO2, preferim **referències constants** (`const T& x`) per a objectes grans que no volem modificar, i **punters** només quan necessitem que el paràmetre pugui ser opcional (`nullptr`) o per a estructures dinàmiques.
+
+---
+
+## 7. Aplicació: Estructures Enllaçades (Nodes)
+
+La utilitat real dels punters a PRO2 és crear col·leccions de dades que creixen i decreixen node a node. Cada element s'emmagatzema en un **Node** (o `Item`).
+
+### El Node Bàsic
+```cpp
+struct Item {
+    T value;    // La dada
+    Item* next; // El "cable" cap al següent node
+};
+```
+
+### 7.1 La Pila (Stack) - Model LIFO
+En una pila enllaçada, només tenim un punter al cim (`ptopitem`). Cada vegada que fem `push`, el nou node apunta a l'antic cim.
+
+::stackviz
+
+> [!TIP]
+> **Exercici `swap2Topmost()`**: Per intercanviar els dos primers nodes sense tocar els `.value`, has de:
+> 1. Guardar el segon node en un punter auxiliar: `Item *p2 = ptopitem->next;`
+> 2. Reenllaçar: `ptopitem->next = p2->next;`
+> 3. Fer que el nou primer sigui el que era segon: `p2->next = ptopitem;`
+> 4. Actualitzar el cim: `ptopitem = p2;`
+
+### 7.2 La Cua (Queue) - Model FIFO
+En una cua, necessitem dos punters: `first` (per treure) i `last` (per afegir).
+
+::queueviz
+
+> [!IMPORTANT]
+> **Exercici `operator[]`**: Com que una cua enllaçada no és un vector, per trobar l'element `i` has de fer un bucle `for` que avanci el punter `p = p->next` exactament `i` vegades començant des de `first`.
+
+### 7.3 Com esborrar nodes pel mig
+Per esborrar un node (com a `removeFirstOccurrence`), necessites "saltar-te'l":
+1. Trobar el node **anterior** al que vols esborrar (`ant`).
+2. Fer el salt: `ant->next = ant->next->next;`
+3. Alliberar la memòria: `delete p_a_esborrar;`
+
+::pointerviz
+
+---
+
+## Checklist per al Jutge (Punters)
+- [ ] **Has posat `nullptr`?** Comprova sempre si un punter és nul abans de fer `p->next`.
+- [ ] **Has fet `delete`?** Cada `new` ha de tenir el seu `delete` per evitar Memory Leaks.
+- [ ] **Casos buits**: Què fa el teu codi si la pila/cua està buida? I si té només 1 element?
+- [ ] **Auto-assignació**: En l'ús de `operator=`, has comprovat `if (this != &s)`?

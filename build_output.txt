@@ -1,0 +1,182 @@
+
+> apunts@0.0.0 build
+> vite build && tsc -b
+
+Starting content-collections with config content-collections.ts
+vite v7.3.1 building client environment for production...
+Start initial build
+build started ...
+... finished build of 1 collection and 64 documents in 32ms
+transforming...
+The glob option "as" has been deprecated in favour of "query". Please update `as: 'url'` to `query: '?url', import: 'default'`.
+The glob option "as" has been deprecated in favour of "query". Please update `as: 'url'` to `query: '?url', import: 'default'`.
+The glob option "as" has been deprecated in favour of "query". Please update `as: 'url'` to `query: '?url', import: 'default'`.
+The glob option "as" has been deprecated in favour of "query". Please update `as: 'url'` to `query: '?url', import: 'default'`.
+✓ 5354 modules transformed.
+rendering chunks...
+[plugin vite:reporter] 
+(!) /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/lib/firebase.ts is dynamically imported by /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/Navigation.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/contexts/AuthContext.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/contexts/AuthContext.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/contexts/AuthContext.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/contexts/AuthContext.tsx but also statically imported by /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/Hero.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/MobileActionMenu.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/comments/CommentsSection.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/community/PostComposer.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/community/PublicationCard.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/community/ReplySection.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/mailing/ComposeMessageModal.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/mailing/MailboxModal.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/components/notifications/InboxModal.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/hooks/useSolutions.ts, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/pages/CommunityPage.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/pages/NewSolutionPage.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/pages/ProfilePage.tsx, /Users/creatorsawix/Desktop/GEI 1/PRO 2/Apunts/apunts/src/pages/SolutionDetailPage.tsx, dynamic import will not move module into another chunk.
+
+computing gzip size...
+dist/manifest.webmanifest                               0.51 kB
+dist/index.html                                         3.43 kB │ gzip:   1.32 kB
+dist/assets/KaTeX_Size3-Regular-CTq5MqoE.woff           4.42 kB
+dist/assets/KaTeX_Size4-Regular-Dl5lxZxV.woff2          4.93 kB
+dist/assets/KaTeX_Size2-Regular-Dy4dx90m.woff2          5.21 kB
+dist/assets/KaTeX_Size1-Regular-mCD8mA8B.woff2          5.47 kB
+dist/assets/neko_aw-Cf6EbBgP.PNG                        5.77 kB
+dist/assets/KaTeX_Size4-Regular-BF-4gkZK.woff           5.98 kB
+dist/assets/KaTeX_Size2-Regular-oD1tc_U0.woff           6.19 kB
+dist/assets/neko cat-BmLfKMwZ.webp                      6.42 kB
+dist/assets/KaTeX_Size1-Regular-C195tn64.woff           6.50 kB
+dist/assets/KaTeX_Caligraphic-Regular-Di6jR-x-.woff2    6.91 kB
+dist/assets/KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2       6.91 kB
+dist/assets/catpeek-DU5Jt6HD.png                        7.35 kB
+dist/assets/KaTeX_Size3-Regular-DgpXs0kz.ttf            7.59 kB
+dist/assets/KaTeX_Caligraphic-Regular-CTRA-rTL.woff     7.66 kB
+dist/assets/KaTeX_Caligraphic-Bold-BEiXGLvX.woff        7.72 kB
+dist/assets/KaTeX_Script-Regular-D3wIWfF6.woff2         9.64 kB
+dist/assets/Neko3-CMJALRpm.png                          9.85 kB
+dist/assets/Neko_Cat_Ok87-DLOsk7-e.PNG                  9.89 kB
+dist/assets/cat_mustache46-1OknrQ6j.PNG                 9.97 kB
+dist/assets/cat_think-C3zKvxt3.PNG                     10.27 kB
+dist/assets/KaTeX_SansSerif-Regular-DDBCnlJ7.woff2     10.34 kB
+dist/assets/KaTeX_Size4-Regular-DWFBv043.ttf           10.36 kB
+dist/assets/nekosmirk17-BNLQ4HWP.PNG                   10.48 kB
+dist/assets/KaTeX_Script-Regular-D5yQViql.woff         10.59 kB
+dist/assets/ik_kawaiiCatMind-DMPGbeTl.PNG              11.28 kB
+dist/assets/KaTeX_Fraktur-Regular-CTYiF6lA.woff2       11.32 kB
+dist/assets/KaTeX_Fraktur-Bold-CL6g_b3V.woff2          11.35 kB
+dist/assets/nekocatshrug19-NRdvKV98.PNG                11.45 kB
+dist/assets/KaTeX_Size2-Regular-B7gKUWhC.ttf           11.51 kB
+dist/assets/nekodumb-JngvAGzN.png                      11.53 kB
+dist/assets/nekostress-ZojBzs-p.png                    11.74 kB
+dist/assets/nekofat-BjCRpVT2.png                       11.77 kB
+dist/assets/neko_sleep8-h1f8YCKZ.PNG                   11.99 kB
+dist/assets/nekodrunk-CPaq7tWB.PNG                     12.03 kB
+dist/assets/KaTeX_SansSerif-Italic-C3H0VqGB.woff2      12.03 kB
+dist/assets/KaTeX_SansSerif-Bold-D1sUS0GD.woff2        12.22 kB
+dist/assets/KaTeX_Size1-Regular-Dbsnue_I.ttf           12.23 kB
+dist/assets/KaTeX_SansSerif-Regular-CS6fqUqJ.woff      12.32 kB
+dist/assets/KaTeX_Caligraphic-Regular-wX97UBjC.ttf     12.34 kB
+dist/assets/KaTeX_Caligraphic-Bold-ATXxdsX0.ttf        12.37 kB
+dist/assets/neko_giggle5-DN375w_H.PNG                  12.75 kB
+dist/assets/KaTeX_Fraktur-Regular-Dxdc4cR9.woff        13.21 kB
+dist/assets/KaTeX_Fraktur-Bold-BsDP51OF.woff           13.30 kB
+dist/assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2    13.57 kB
+dist/assets/KaTeX_SansSerif-Italic-DN2j7dab.woff       14.11 kB
+dist/assets/Neko_pout-DhgrQK8S.png                     14.24 kB
+dist/assets/KaTeX_SansSerif-Bold-DbIhKOiC.woff         14.41 kB
+dist/assets/cutieanger-DvTZfOsf.PNG                    14.73 kB
+dist/assets/catafraid14-ZI-MiSyJ.PNG                   15.32 kB
+dist/assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff     16.03 kB
+dist/assets/KaTeX_Math-BoldItalic-CZnvNsCZ.woff2       16.40 kB
+dist/assets/KaTeX_Math-Italic-t53AETM-.woff2           16.44 kB
+dist/assets/nekogiveup-B_wgeHm6.png                    16.48 kB
+dist/assets/KaTeX_Script-Regular-C5JkGWo-.ttf          16.65 kB
+dist/assets/KaTeX_Main-BoldItalic-DxDJ3AOS.woff2       16.78 kB
+dist/assets/KaTeX_Main-Italic-NWA7e6Wa.woff2           16.99 kB
+dist/assets/KaTeX_Math-BoldItalic-iY-2wyZ7.woff        18.67 kB
+dist/assets/KaTeX_Math-Italic-DA0__PXp.woff            18.75 kB
+dist/assets/Lick-DqYuUrqD.png                          18.92 kB
+dist/assets/need73-AczZzDeq.PNG                        18.94 kB
+dist/assets/nekocat_lie-CVOS3FAC.PNG                   19.40 kB
+dist/assets/KaTeX_Main-BoldItalic-SpSLRI95.woff        19.41 kB
+dist/assets/KaTeX_SansSerif-Regular-BNo7hRIc.ttf       19.44 kB
+dist/assets/KaTeX_Fraktur-Regular-CB_wures.ttf         19.57 kB
+dist/assets/KaTeX_Fraktur-Bold-BdnERNNW.ttf            19.58 kB
+dist/assets/KaTeX_Main-Italic-BMLOBm91.woff            19.68 kB
+dist/assets/emoji120-aUzG88RD.PNG                      21.82 kB
+dist/assets/nekoshy69-BQoJWQYX.PNG                     21.94 kB
+dist/assets/KaTeX_SansSerif-Italic-YYjJ1zSn.ttf        22.36 kB
+dist/assets/nekosmug-DbCaFZOJ.png                      22.43 kB
+dist/assets/cat_omg_ty-C5tJrE-J.PNG                    22.56 kB
+dist/assets/nekosimp-D1fvx3Rj.png                      23.04 kB
+dist/assets/file35519-Cw1-iWwt.PNG                     23.52 kB
+dist/assets/neko_blep-DzSPamnY.PNG                     24.21 kB
+dist/assets/KaTeX_SansSerif-Bold-CFMepnvq.ttf          24.50 kB
+dist/assets/KaTeX_Main-Bold-Cx986IdX.woff2             25.32 kB
+dist/assets/KaTeX_Main-Regular-B22Nviop.woff2          26.27 kB
+dist/assets/michifasha84-BeNTRh4C.PNG                  26.57 kB
+dist/assets/neko_expect-BuaLZrsZ.PNG                   26.61 kB
+dist/assets/cathammer-DwsnZA0z.PNG                     26.91 kB
+dist/assets/file35511-QTwYPEdt.PNG                     27.00 kB
+dist/assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf      27.56 kB
+dist/assets/KaTeX_AMS-Regular-BQhdFMY1.woff2           28.08 kB
+dist/assets/catdrama-CRHlMkn0.PNG                      28.39 kB
+dist/assets/nekocandy-DJwqntGF.PNG                     28.89 kB
+dist/assets/KaTeX_Main-Bold-Jm3AIy58.woff              29.91 kB
+dist/assets/KaTeX_Main-Regular-Dr94JaBh.woff           30.77 kB
+dist/assets/KaTeX_Math-BoldItalic-B3XSjfu4.ttf         31.20 kB
+dist/assets/nekocatmummy-DVZa7j21.PNG                  31.30 kB
+dist/assets/KaTeX_Math-Italic-flOr_0UB.ttf             31.31 kB
+dist/assets/KaTeX_Main-BoldItalic-DzxPMmG6.ttf         32.97 kB
+dist/assets/KaTeX_AMS-Regular-DMm9YOAa.woff            33.52 kB
+dist/assets/KaTeX_Main-Italic-3WenGoN9.ttf             33.58 kB
+dist/assets/catfire-DaLoqSDc.PNG                       35.54 kB
+dist/assets/KaTeX_Main-Bold-waoOVXN0.ttf               51.34 kB
+dist/assets/KaTeX_Main-Regular-ypZvNtVU.ttf            53.58 kB
+dist/assets/KaTeX_AMS-Regular-DRggAlZN.ttf             63.63 kB
+dist/assets/neko-CMUnsF_z.png                          71.57 kB
+dist/assets/cmu-serif-700-italic-CxA60R0R.woff2       161.18 kB
+dist/assets/cmu-serif-500-italic-Ea3rjVFP.woff2       170.07 kB
+dist/assets/cmu-serif-700-roman-CFvVWXrf.woff2        213.62 kB
+dist/assets/cmu-serif-500-roman-eT-JDYhI.woff2        222.84 kB
+dist/assets/cmu-serif-700-italic-ysTsm4l3.ttf         476.44 kB
+dist/assets/cmu-serif-500-italic-DmklLiNq.ttf         486.98 kB
+dist/assets/cmu-serif-700-roman-BjpK3YEj.ttf          609.80 kB
+dist/assets/cmu-serif-500-roman-DzIVZ5Ds.ttf          639.13 kB
+dist/assets/MarkdownRenderer-CwatV24U.css              32.07 kB │ gzip:   8.82 kB
+dist/assets/index-Go_q9SMz.css                        185.74 kB │ gzip:  23.97 kB
+dist/assets/Accordion-4HD6XWvE.js                       1.47 kB │ gzip:   0.75 kB
+dist/assets/CodeEditor-Kp58NBzA.js                      1.58 kB │ gzip:   0.85 kB
+dist/assets/VideoPlayer-KRzHe6Iz.js                     2.81 kB │ gzip:   1.14 kB
+dist/assets/StackVisualizer-7_f5QWLO.js                 3.52 kB │ gzip:   1.45 kB
+dist/assets/VectorVisualizer-ChdF6Z5R.js                3.57 kB │ gzip:   1.45 kB
+dist/assets/LoginPage-DF74u1De.js                       3.63 kB │ gzip:   1.42 kB
+dist/assets/QueueVisualizer-CHRB7Qyi.js                 3.74 kB │ gzip:   1.47 kB
+dist/assets/NavigationMenu-D42GGewY.js                  3.79 kB │ gzip:   1.29 kB
+dist/assets/ListGraphVisualizer-cA9GGTyf.js             4.27 kB │ gzip:   1.53 kB
+dist/assets/PlayerControls-B7jH3c7m.js                  4.69 kB │ gzip:   1.71 kB
+dist/assets/CodeBlock-D1V9V3RV.js                       5.01 kB │ gzip:   1.96 kB
+dist/assets/RegisterPage-kzruB-09.js                    5.18 kB │ gzip:   1.69 kB
+dist/assets/GraphVisualizer-QUNu00vV.js                 5.30 kB │ gzip:   2.45 kB
+dist/assets/GifPicker-Zl6Vf9Ax.js                       5.44 kB │ gzip:   2.46 kB
+dist/assets/NewSolutionPage-577gX2fv.js                 5.76 kB │ gzip:   1.88 kB
+dist/assets/workbox-window.prod.es5-BIl4cyR9.js         5.76 kB │ gzip:   2.37 kB
+dist/assets/MobileActionMenu-1FYQVaHV.js                6.00 kB │ gzip:   2.20 kB
+dist/assets/TopicPage-sFoxEib0.js                       6.08 kB │ gzip:   2.14 kB
+dist/assets/BinTreeVisualizer-CTSfS4ai.js               6.16 kB │ gzip:   1.99 kB
+dist/assets/MarkdownRenderer-mNl7LJ4B.js               10.93 kB │ gzip:   3.30 kB
+dist/assets/ProofPlayer-BTkdZ9fO.js                    11.31 kB │ gzip:   3.57 kB
+dist/assets/ca-C1nNsJgL.js                             16.46 kB │ gzip:   4.97 kB
+dist/assets/vendor-icons-X8rPwDpy.js                   17.88 kB │ gzip:   6.50 kB
+dist/assets/SolutionsListPage-un9XucLU.js              21.03 kB │ gzip:   5.31 kB
+dist/assets/CommunityPage-4q4eM3ZS.js                  25.91 kB │ gzip:   6.89 kB
+dist/assets/SolutionDetailPage-C-NFoIL9.js             28.60 kB │ gzip:   8.10 kB
+dist/assets/AlgoPlayer-CbasF3f1.js                     46.69 kB │ gzip:  15.61 kB
+dist/assets/index-CSghCyta.js                          50.05 kB │ gzip:  16.58 kB
+dist/assets/OOPPlayer-DV78QElo.js                      89.55 kB │ gzip:  24.55 kB
+dist/assets/QuizPage-GX1AxpjR.js                      103.78 kB │ gzip:  35.03 kB
+dist/assets/ProfilePage-CjzblKeJ.js                   116.66 kB │ gzip:  37.59 kB
+dist/assets/vendor-framer-CDfy5jeH.js                 136.04 kB │ gzip:  44.96 kB
+dist/assets/MafsVisualizer-fYFL7wug.js                164.58 kB │ gzip:  30.56 kB
+dist/assets/vendor-graphs-Dt0qCYYO.js                 188.01 kB │ gzip:  61.82 kB
+dist/assets/vendor-react-DyuJW_vS.js                  229.81 kB │ gzip:  73.51 kB
+dist/assets/react-katex-CmhRlcND.js                   262.56 kB │ gzip:  77.64 kB
+dist/assets/ThreeVisualizer-Qd7Myulz.js               267.62 kB │ gzip:  77.06 kB
+dist/assets/index-BmdedMWv.js                         480.04 kB │ gzip: 156.16 kB
+dist/assets/vendor-firebase-Cv-wKSsL.js               518.82 kB │ gzip: 156.17 kB
+dist/assets/courseStructure-4a-c26LB.js               579.77 kB │ gzip: 151.37 kB
+dist/assets/vendor-markdown-DiM9gdFL.js               617.75 kB │ gzip: 186.03 kB
+dist/assets/vendor-codemirror-BI-iVoSF.js             675.04 kB │ gzip: 230.48 kB
+dist/assets/InteractionLock-CpsO6tX8.js               894.49 kB │ gzip: 243.14 kB
+✓ built in 6.43s
+
+PWA v1.2.0
+mode      generateSW
+precache  98 entries (7592.01 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-d24cdb67.js
+src/components/ui/VectorVisualizer.tsx(26,13): error TS6133: 'currentCap' is declared but its value is never read.

@@ -25,6 +25,8 @@ const ProofPlayer = React.lazy(() => import("../components/ui/ProofPlayer"));
 const MafsVisualizer = React.lazy(() => import("../components/ui/MafsVisualizer"));
 const VideoPlayer = React.lazy(() => import("../components/ui/VideoPlayer"));
 const VectorVisualizer = React.lazy(() => import("../components/ui/VectorVisualizer"));
+const ListVisualizer = React.lazy(() => import("../components/ui/ListVisualizer"));
+const PointerVisualizer = React.lazy(() => import("../components/ui/PointerVisualizer"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
 const ThreeVisualizer = React.lazy(() =>
     import("../components/ui/ThreeVisualizer").catch(() => ({
@@ -116,6 +118,20 @@ const defaultComponents: any = {
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <VectorVisualizer {...props} />
+            </React.Suspense>
+        );
+    },
+    linkedlistviz: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <ListVisualizer {...props} />
+            </React.Suspense>
+        );
+    },
+    pointerviz: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <PointerVisualizer {...props} />
             </React.Suspense>
         );
     },
