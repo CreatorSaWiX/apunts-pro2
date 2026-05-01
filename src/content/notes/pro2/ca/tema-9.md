@@ -1,80 +1,138 @@
 ---
 title: "Tema 9: Implementació de vectors"
-description: "Gestió de memòria, capacitat i cost amortitzat."
+description: "Gestió de memòria, la Regla dels Tres i el cost amortitzat."
 readTime: "15 min"
 order: 10
 draft: false
-isNew: true
+isUpdated: 1
 ---
 
-## 1. Atributs i estructura interna
+## 1. Estructura interna i Atributs
 
-Un vector no és més que un **array dinàmic** que gestiona la seva pròpia memòria al *heap*. Per fer-ho, necessita tres atributs bàsics:
+Un vector és un **array dinàmic** al *heap*. Per gestionar-lo, usem un `namespace` propi i tres atributs:
 
 - **`T* data_`**: Punter al bloc de memòria on guardem els elements.
-- **`int size_`**: Quantes caselles estem usant realment.
-- **`int capacity_`**: Quantes caselles hem reservat en total (mida del bloc al heap).
+- **`int size_`**: Elements ocupats actualment.
+- **`int capacity_`**: Memòria total reservada.
 
 ```cpp
-template <typename T>
-class Vector {
-    T* data_;
-    int size_;
-    int capacity_;
-    
-    void reallocate_(int new_cap); // El "motor" del vector
-public:
-    // ... mètodes públics ...
-};
+namespace pro2 {
+    template <typename T>
+    class Vector {
+        T* data_;
+        int size_, capacity_;
+        void reallocate_(int new_cap); // La "mudanza"
+    public:
+        using iterator = T*; // Iterador simple = Punter
+        // ... mètodes ...
+    };
+}
 ```
 
-## 2. El motor: `reallocate_`
+## 2. Regla de tres (Gestió de memòria)
 
-Aquest mètode privat és l'únic que demana memòria nova. Segueix sempre aquests 4 passos:
+Si una classe gestiona memòria dinàmica, necessita aquests 3 mètodes per evitar **segfaults** o **leaks**:
 
-1. Demana un nou bloc de mida `new_cap`.
-2. Copia els elements del bloc vell al nou.
-3. Allibera la memòria vella (`delete[] data_`).
-4. Actualitza el punter `data_` i la `capacity_`.
+### A. Constructor de còpia (Deep Copy)
+Crea una còpia real en un nou bloc de memòria, no només copia el punter.
+```cpp
+Vector(const Vector& v) {
+    data_ = new T[v.capacity_];
+    size_ = v.size_;
+    capacity_ = v.capacity_;
+    for (int i = 0; i < size_; ++i) data_[i] = v.data_[i];
+}
+```
+
+### B. Operador d'assignació
+Allibera la memòria vella abans de copiar la nova.
+```cpp
+Vector& operator=(const Vector& v) {
+    if (this != &v) {
+        delete[] data_; // 1. Neteja
+        data_ = new T[v.capacity_]; // 2. Reserva
+        size_ = v.size_;
+        capacity_ = v.capacity_;
+        for (int i = 0; i < size_; ++i) data_[i] = v.data_[i]; // 3. Copia
+    }
+    return *this;
+}
+```
+
+### C. Destructor
+L'únic que allibera la memòria definitivament.
+```cpp
+~Vector() { delete[] data_; }
+```
+
+## 3. Operadors
+
+| Categoria | Definició de la funció (cpp) | Crida des del main |
+| :--- | :--- | :--- |
+| **Accés** | `T& operator[](int i)` | `v[i] = x;` |
+| **Comparació** | `bool operator<(const V& v)` | `if (a < b)` |
+| **Assignació** | `void operator+=(const V& v)` | `a += b;` |
+| **Aritmètics** | `V operator+(const V& v)` | `c = a + b;` |
+| **Flux** | `ostream& operator<<(ostream& o, const V& v)` | `cout << v;` |
+
+```cpp
+Stack<int> s1, s2;
+s1 += s2;           // Sintaxi natural (al main)
+s1.operator+=(s2);  // Equivalent a s1 += s2;
+```
+Quan tu escrius `s += s2` al main, el compilador de C++ busca si la classe té definida una funció que es digui literalment `operator+=`. Si la troba i accepta els arguments que li passes (en aquest cas un objecte de tipus Stack), fa la crida directa.
+
+## 4. Accés i iteradors
+
+L'accés és $\Theta(1)$ directe per aritmètica de punters.
+- **L'operador `[]`**: Es duplica per permetre lectura en objectes `const`.
+- **Iteradors**: En un vector, un `iterator` és simplement un `T*`.
+
+```cpp
+T& operator[](int i) { return data_[i]; }
+const T& operator[](int i) const { return data_[i]; }
+
+iterator begin() { return data_; }
+iterator end() { return data_ + size_; }
+```
+
+## 5. El motor: `reallocate_` (La mudanza)
+Mètode privat que canvia la capacitat del vector. Operació cara $\mathcal{O}(n)$.
+1. Demana nou bloc.
+2. Copia elements vells.
+3. **`delete[]`** bloc vell.
+4. Actualitza punter i capacitat.
 
 ```cpp
 void reallocate_(int new_cap) {
-    T* new_data = new T[new_cap];
+    T* new_data = new T[new_cap];      // 1. Nou bloc
     for (int i = 0; i < size_; ++i) {
-        new_data[i] = data_[i];
+        new_data[i] = data_[i];       // 2. Copia
     }
-    delete[] data_;
-    data_ = new_data;
+    delete[] data_;                   // 3. Neteja vell
+    data_ = new_data;                 // 4. Actualitza
     capacity_ = new_cap;
 }
 ```
 
-## 3. Inserció: `push_back` i Creixement Exponencial
-
-Quan volem afegir un element i el vector està ple (`size_ == capacity_`), el vector **dobla la seva capacitat**.
+## 6. Inserció i creixement
+- **`push_back`**: Si està ple, **dobla** la capacitat.
+- **Cost Amortitzat**: Tot i que redimensionar és $\mathcal{O}(n)$, només passa cada $2^k$ vegades. La mitjana és **$\mathcal{O}(1)$**.
 
 ```cpp
 void push_back(const T& x) {
     if (size_ == capacity_) {
-        int new_cap = (capacity_ == 0) ? 1 : 2 * capacity_;
-        reallocate_(new_cap);
+        reallocate_(capacity_ == 0 ? 1 : 2 * capacity_);
     }
-    data_[size_] = x;
-    ++size_;
+    data_[size_++] = x;
 }
 ```
 
-### El Cost Amortitzat $\mathcal{O}(1)$
-Tot i que fer un `reallocate_` costa $\mathcal{O}(n)$, només es fa de tant en tant. Si analitzem 1000 insercions, la mitjana de cost per inserció acaba sent **constant**. Això es coneix com a **Cost Amortitzat**.
+::vectorviz
 
-## 4. Extracció: `pop_back` i el "Thrashing"
-
-Per no malbaratar memòria, si el vector s'està buidant, hauríem de reduir la seva capacitat. Però, si la reduíssim just quan `size_ == capacity_ / 2`, podríem caure en el **Thrashing**:
-- Fas `push_back` -> Dobles (car).
-- Fas `pop_back` -> Redueixes (car).
-- Fas `push_back` -> Tornes a doblar (car).
-
-**La solució**: Esperar que el vector estigui molt buit (**1/4 de la capacitat**) per reduir-lo a la **meitat**.
+## 7. Extracció i Thrashing
+Per evitar oscil·lacions cares (doblar/reduir constantment):
+- **Estratègia**: Esperar a estar a **1/4** de capacitat per reduir-la a la **meitat**.
 
 ```cpp
 void pop_back() {
@@ -85,20 +143,27 @@ void pop_back() {
 }
 ```
 
-## 5. `reserve` vs `resize`
-
-Són mètodes que sovint es confonen però fan coses molt diferents:
-
-- **`reserve(n)`**: Canvia la **capacitat**. No toca els elements. Útil si saps que hauràs de fer molts `push_back` i vols evitar redimensionaments.
-- **`resize(n)`**: Canvia el **tamany** real (`size_`). Si `n` és més gran que `size_`, "crea" elements nous amb el valor per defecte.
-
 ---
 
-## Resum de complexitat
+## Resum de Complexitat
 
 | Operació | Complexitat | Nota |
 | :--- | :--- | :--- |
-| **Accés `[i]`** | $\Theta(1)$ | Directe per punter. |
-| **`push_back`** | $\mathcal{O}(1)$ amortitzat | $\mathcal{O}(n)$ en el pitjor cas (redimensionament). |
-| **`pop_back`** | $\mathcal{O}(1)$ amortitzat | $\mathcal{O}(n)$ si es redueix la memòria. |
-| **`size() / empty()`** | $\Theta(1)$ | No canvien segons el tamany. |
+| **Accés `[i]`** | $\Theta(1)$ | Directe. |
+| **`push_back`** | $\mathcal{O}(1)^*$ | *Amortitzat. Pitjor cas $\mathcal{O}(n)$. |
+| **`pop_back`** | $\mathcal{O}(1)^*$ | *Amortitzat. Evitem el Thrashing. |
+| **`insert/erase`** | $\mathcal{O}(n)$ | Cal desplaçar tots els elements posteriors. |
+| **`size/empty`** | $\Theta(1)$ | Consulta d'atributs. |
+
+## Extra: Operador de sortida
+Molt útil per debugar la implementació:
+```cpp
+template <typename T>
+ostream& operator<<(ostream& os, const Vector<T>& v) {
+    os << "[";
+    for (int i = 0; i < v.size(); ++i) {
+        os << v[i] << (i == v.size() - 1 ? "" : ",");
+    }
+    return os << "]";
+}
+```

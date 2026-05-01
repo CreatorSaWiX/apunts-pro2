@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "note" | "tip" | "warning" | "info" | "accordion";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "vectorviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "note" | "tip" | "warning" | "info" | "accordion";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -75,6 +75,15 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
     const attrs = node.attributes ?? {};
 
     data.hName = "queueviz";
+    data.hProperties = {
+      ...attrs,
+    };
+  },
+  vectorviz: function (node: DirectiveNode): void {
+    const data = (node.data ??= {});
+    const attrs = node.attributes ?? {};
+
+    data.hName = "vectorviz";
     data.hProperties = {
       ...attrs,
     };

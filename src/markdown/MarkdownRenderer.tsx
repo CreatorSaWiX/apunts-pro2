@@ -24,6 +24,7 @@ const BinTreeVisualizer = React.lazy(() => import("../components/ui/BinTreeVisua
 const ProofPlayer = React.lazy(() => import("../components/ui/ProofPlayer"));
 const MafsVisualizer = React.lazy(() => import("../components/ui/MafsVisualizer"));
 const VideoPlayer = React.lazy(() => import("../components/ui/VideoPlayer"));
+const VectorVisualizer = React.lazy(() => import("../components/ui/VectorVisualizer"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
 const ThreeVisualizer = React.lazy(() =>
     import("../components/ui/ThreeVisualizer").catch(() => ({
@@ -108,6 +109,13 @@ const defaultComponents: any = {
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <QueueVisualizer {...props} />
+            </React.Suspense>
+        );
+    },
+    vectorviz: (props: any) => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <VectorVisualizer {...props} />
             </React.Suspense>
         );
     },

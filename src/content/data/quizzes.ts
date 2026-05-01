@@ -1282,5 +1282,259 @@ export const quizzes: TopicQuiz[] = [
                 explanation: 'Tal com indica la taula 6.9, el `unordered_map` és més ràpid però no manté els elements en ordre ascendent per clau.'
             }
         ]
+    },
+    {
+        topicId: 'pro2-tema-8', // Punters i Estructures Dinàmiques
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'q8-1',
+                question: 'Quin és el tipus real de la variable `q` en la declaració: `int* p, q;`?',
+                options: [
+                    { id: 'a', text: 'Punter a enter (`int*`)' },
+                    { id: 'b', text: 'Enter simple (`int`)' },
+                    { id: 'c', text: 'Punter genèric (`void*`)' },
+                    { id: 'd', text: 'Error de sintaxi' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'L\'asterisc només vincula a la primera variable. `q` és un enter.'
+            },
+            {
+                id: 'q8-2',
+                codeSnippet: 'int *p = new int(10);\np = new int(20);',
+                question: 'Quina fallada crítica de gestió de memòria s\'ha produït?',
+                options: [
+                    { id: 'a', text: 'Segmentation Fault' },
+                    { id: 'b', text: 'Dangling Pointer' },
+                    { id: 'c', text: 'Memory Leak' },
+                    { id: 'd', text: 'Double Delete' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'S\'ha perdut la referència al primer `int` sense fer `delete`.'
+            },
+            {
+                id: 'q8-3',
+                question: 'Implementant `swap2Topmost()` en una Stack enllaçada. Quina via és la més eficient?',
+                options: [
+                    { id: 'a', text: 'Intercanviar els valors `T` dels nodes.' },
+                    { id: 'b', text: 'Relincar els punters `next` dels nodes.' },
+                    { id: 'c', text: 'Usar una Stack auxiliar.' },
+                    { id: 'd', text: 'Fer dos `pop()` i dos `push()`.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Canviar punters és O(1) i evita copiar objectes `T` potencialment grans.'
+            },
+            {
+                id: 'q8-4',
+                question: 'Per què `s1 += s2` (Stack) sol requerir un pas per còpia o estructura auxiliar?',
+                options: [
+                    { id: 'a', text: 'Perquè per recórrer una Stack cal fer `pop()`, destruint `s2`.' },
+                    { id: 'b', text: 'Perquè el compilador prohibeix sumes directes.' },
+                    { id: 'c', text: 'Per evitar injeccions al Heap.' },
+                    { id: 'd', text: 'Perquè `this` és immutable en operadors.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'L\'accés a l\'interior d\'una Stack és destructiu (LIFO).'
+            },
+            {
+                id: 'q8-5',
+                question: 'En una Queue enllaçada manualment, quin és el cost de `operator[](int i)`?',
+                options: [
+                    { id: 'a', text: 'O(1)' },
+                    { id: 'b', text: 'O(log N)' },
+                    { id: 'c', text: 'O(i)' },
+                    { id: 'd', text: 'O(N^2)' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Cal fer salts de punters seqüencials des del front.'
+            },
+            {
+                id: 'q8-6',
+                codeSnippet: 'int x = 5;\nvector<int*> v(2, &x);\n(*v[0])++;\ncout << *v[1];',
+                question: 'Quin és el resultat de l\'execució?',
+                options: [
+                    { id: 'a', text: '5' },
+                    { id: 'b', text: '6' },
+                    { id: 'c', text: 'Brossa (UB)' },
+                    { id: 'd', text: 'Segfault' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Aliasing: Ambdós punters referencien la mateixa adreça.'
+            },
+            {
+                id: 'q8-7',
+                question: 'Què succeeix en C++ si executes `delete p;` quan `p` és `nullptr`?',
+                options: [
+                    { id: 'a', text: 'Crash immediat (Segfault).' },
+                    { id: 'b', text: 'No passa res, operació segura.' },
+                    { id: 'c', text: 'Memory Leak.' },
+                    { id: 'd', text: 'UB (Undefined Behavior).' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'L\'estàndard garanteix que `delete nullptr` és inofensiu.'
+            },
+            {
+                id: 'q8-8',
+                question: 'A `removeFirstOccurrence(T val)`, trobes el node. Quina és la prioritat?',
+                options: [
+                    { id: 'a', text: 'Relincar punters i fer `delete` del node.' },
+                    { id: 'b', text: 'Posar el valor a 0.' },
+                    { id: 'c', text: 'Fer `return void` per velocitat.' },
+                    { id: 'd', text: 'Ignorar el `delete` per seguretat.' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'La gestió manual exigeix alliberar memòria per evitar leaks.'
+            },
+            {
+                id: 'q8-9',
+                question: 'On resideix la dada després d\'un `int *p = new int(5);`?',
+                options: [
+                    { id: 'a', text: 'Stack (Pila)' },
+                    { id: 'b', text: 'Heap (Monticle)' },
+                    { id: 'c', text: 'Cache L1' },
+                    { id: 'd', text: 'Data Segment' }
+                ],
+                correctOptionId: 'b',
+                explanation: '`new` reserva memòria al monticle (Heap).'
+            },
+            {
+                id: 'q8-10',
+                question: 'Quina és la definició més precisa d\'un "Dangling Pointer"?',
+                options: [
+                    { id: 'a', text: 'Punter que apunta a `nullptr`.' },
+                    { id: 'b', text: 'Punter a una adreça alliberada amb `delete`.' },
+                    { id: 'c', text: 'Punter que ha perdut la seva adreça.' },
+                    { id: 'd', text: 'Punter no inicialitzat.' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Apunta a memòria que ja no és vàlida per al procés.'
+            }
+        ]
+    },
+    {
+        topicId: 'pro2-tema-9', // Implementació de vectors
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'q9-1',
+                question: 'Quin és el tipus real d\'un `iterator` en la nostra implementació de `Vector<T>`?',
+                options: [
+                    { id: 'a', text: 'Punter simple al tipus (`T*`)' },
+                    { id: 'b', text: 'Classe especial amb sobrecàrrega d\'operadors' },
+                    { id: 'c', text: 'Punter a Node (`Node<T>*`)' },
+                    { id: 'd', text: 'Un enter amb l\'índex de posició' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'En vectors, l\'aritmètica de punters directa és suficient per actuar com a iterador.'
+            },
+            {
+                id: 'q9-2',
+                question: 'Què succeeix si no implementem el Constructor de Còpia i copiem un Vector?',
+                options: [
+                    { id: 'a', text: 'Error de compilació immediat' },
+                    { id: 'b', text: 'Aliasing: Ambdós vectors apunten al mateix bloc de memòria al Heap' },
+                    { id: 'c', text: 'C++ realitza una còpia profunda automàticament' },
+                    { id: 'd', text: 'El programa es tanca per seguretat' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'La còpia per defecte és "shallow" (bit a bit), duplicant el punter però no les dades.'
+            },
+            {
+                id: 'q9-3',
+                question: 'Per què `operator=` ha de comprovar obligatòriament `if (this != &v)`?',
+                options: [
+                    { id: 'a', text: 'Per optimitzar la velocitat de còpia' },
+                    { id: 'b', text: 'Per evitar alliberar la teva pròpia memòria (`delete[]`) abans de copiar-la' },
+                    { id: 'c', text: 'Perquè ho exigeix l\'estàndard C++17' },
+                    { id: 'd', text: 'Per prevenir un bucle infinit de crides' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'En una auto-assignació (`v = v`), esborraríem les dades que necessitem copiar.'
+            },
+            {
+                id: 'q9-4',
+                question: 'Quin és el cost amortitzat de `push_back` si seguim l\'estratègia de doblar la capacitat?',
+                options: [
+                    { id: 'a', text: 'O(1)' },
+                    { id: 'b', text: 'O(log N)' },
+                    { id: 'c', text: 'O(N)' },
+                    { id: 'd', text: 'O(N^2)' }
+                ],
+                correctOptionId: 'a',
+                explanation: 'Tot i que el redimensionat és O(N), la seva freqüència disminueix exponencialment.'
+            },
+            {
+                id: 'q9-5',
+                question: 'Si en lloc de doblar, suméssim una capacitat fixa (+100) cada cop, quin seria el cost de N insercions?',
+                options: [
+                    { id: 'a', text: 'O(N)' },
+                    { id: 'b', text: 'O(N log N)' },
+                    { id: 'c', text: 'O(N^2)' },
+                    { id: 'd', text: 'O(2^N)' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Hauríem de fer O(N) redimensionats de cost O(N) cadascun, sumant O(N^2).'
+            },
+            {
+                id: 'q9-6',
+                question: 'Quina és la definició de "Thrashing" en la gestió d\'un vector dinàmic?',
+                options: [
+                    { id: 'a', text: 'Quan el vector es queda sense memòria RAM' },
+                    { id: 'b', text: 'Oscil·lació constant de redimensionats (expandir/reduir) en un límit crític' },
+                    { id: 'c', text: 'Fragmentació extrema del Heap per moltes insercions' },
+                    { id: 'd', text: 'L\'ús excessiu d\'iteradors invalidats' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Passa si reduïm mida al 50% i l\'usuari fa push/pop constantment en aquest punt.'
+            },
+            {
+                id: 'q9-7',
+                question: 'Per què reduïm la capacitat a la meitat només quan el vector està al **1/4** de la seva ocupació?',
+                options: [
+                    { id: 'a', text: 'Per estalviar cicles de CPU de divisió' },
+                    { id: 'b', text: 'Per evitar el Thrashing i deixar marge per a nous `push` sense redimensionar' },
+                    { id: 'c', text: 'Perquè el `delete[]` és més ràpid en blocs petits' },
+                    { id: 'd', text: 'Per compatibilitat amb l\'arquitectura de 64 bits' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Aquest "histèresi" garanteix que les operacions segueixin sent O(1) amortitzat.'
+            },
+            {
+                id: 'q9-8',
+                question: 'Dins de `reallocate_(int new_cap)`, quan s\'ha d\'executar `delete[] data_`?',
+                options: [
+                    { id: 'a', text: 'Abans de demanar el nou bloc per alliberar espai' },
+                    { id: 'b', text: 'Després de copiar els elements al nou bloc' },
+                    { id: 'c', text: 'Només en el destructor de la classe' },
+                    { id: 'd', text: 'Mai, s\'encarrega el Sistema Operatiu' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Si esborrem abans, perdem les dades que hem de copiar al nou espai.'
+            },
+            {
+                id: 'q9-9',
+                question: 'Quin és el cost algorísmic d\'esborrar el primer element d\'un vector (`v.erase(v.begin())`)?',
+                options: [
+                    { id: 'a', text: 'O(1)' },
+                    { id: 'b', text: 'O(log N)' },
+                    { id: 'c', text: 'O(N)' },
+                    { id: 'd', text: 'O(1) amortitzat' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Cal desplaçar tots els elements restants una posició a l\'esquerra.'
+            },
+            {
+                id: 'q9-10',
+                question: 'Quina d\'aquestes afirmacions sobre `size_` i `capacity_` és certa?',
+                options: [
+                    { id: 'a', text: 'Sempre han de ser iguals per ser eficients' },
+                    { id: 'b', text: '`size_` <= `capacity_` sempre ha de ser cert' },
+                    { id: 'c', text: '`capacity_` indica el nombre de bytes totals del vector' },
+                    { id: 'd', text: '`size_` és privat i `capacity_` és públic' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'L\'espai reservat (capacitat) ha de ser igual o superior als elements realment usats.'
+            }
+        ]
     }
 ];
