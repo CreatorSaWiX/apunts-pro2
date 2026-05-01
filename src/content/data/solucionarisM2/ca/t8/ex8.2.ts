@@ -11,8 +11,8 @@ export const ex8_2: Solution = {
 
 $$|\\vec{v}| = \\sqrt{\\left(\\frac{3}{5}\\right)^2 + \\left(\\frac{4}{5}\\right)^2} = \\sqrt{\\frac{9}{25} + \\frac{16}{25}} = 1 \\implies \\text{Unitari}$$
 
-$f_x = 2x \\implies f_x(2,3) = 4$
-$f_y = 2y \\implies f_y(2,3) = 6$
+$\\frac{\\partial f}{\\partial x} = 2x \\implies \\frac{\\partial f}{\\partial x}(2,3) = 4$
+$\\frac{\\partial f}{\\partial y} = 2y \\implies \\frac{\\partial f}{\\partial y}(2,3) = 6$
 $$\\nabla f(2,3) = (4, 6)$$
 
 $$D_{\\vec{v}} f(P) = \\nabla f(P) \\cdot \\vec{v} = (4, 6) \\cdot \\left(\\frac{3}{5}, \\frac{4}{5}\\right)$$

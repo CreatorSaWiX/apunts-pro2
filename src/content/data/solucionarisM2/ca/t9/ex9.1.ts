@@ -29,10 +29,10 @@ $$f(0.1, 0.1) \\approx 0.2 + 0.3 - 0.02 - 0.06 - 0.045 = 0.375$$
 
 **Fita de l'error (Residu de Lagrange):**
 Les derivades de tercer ordre tenen la forma:
-* $f_{xxx} = 16(1+2x+3y)^{-3}$
-* $f_{xxy} = 24(1+2x+3y)^{-3}$
-* $f_{xyy} = 36(1+2x+3y)^{-3}$
-* $f_{yyy} = 54(1+2x+3y)^{-3}$
+* $\\frac{\\partial^3 f}{\\partial x^3} = 16(1+2x+3y)^{-3}$
+* $\\frac{\\partial^3 f}{\\partial x^2 \\partial y} = 24(1+2x+3y)^{-3}$
+* $\\frac{\\partial^3 f}{\\partial x \\partial y^2} = 36(1+2x+3y)^{-3}$
+* $\\frac{\\partial^3 f}{\\partial y^3} = 54(1+2x+3y)^{-3}$
 
 Totes es maximitzen al punt $(0,0)$ dins del segment que uneix l'origen amb $(0.1, 0.1)$.
 $$|R_2| \\leq \\frac{1}{3!} \\sum_{i+j+k=3} \\binom{3}{i,j,k} |\\partial_{ijk} f| |h^i k^j l^k|$$

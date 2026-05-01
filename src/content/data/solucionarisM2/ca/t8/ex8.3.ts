@@ -16,8 +16,8 @@ $$\\vec{v} = (\\cos \\alpha, \\sin \\alpha) = (\\cos(\\pi/3), \\sin(\\pi/3)) = \
 
 ### 3. Gradient $\\nabla f(M)$
 Calculm les derivades parcials al punt $M(1,1)$:
-* $f_x = 2x \\implies f_x(1,1) = 2$
-* $f_y = -2y \\implies f_y(1,1) = -2$
+* $\\frac{\\partial f}{\\partial x} = 2x \\implies \\frac{\\partial f}{\\partial x}(1,1) = 2$
+* $\\frac{\\partial f}{\\partial y} = -2y \\implies \\frac{\\partial f}{\\partial y}(1,1) = -2$
 $$\\nabla f(1,1) = (2, -2)$$
 
 ### 4. Derivada direccional

@@ -34,6 +34,8 @@ import { m2t6Solutions } from './solucionarisM2/ca/t6/index';
 import { m2t7Solutions } from './solucionarisM2/ca/t7/index';
 import { m2t8Solutions } from './solucionarisM2/ca/t8/index';
 import { m2t9Solutions } from './solucionarisM2/ca/t9/index';
+import { m2t10Solutions } from './solucionarisM2/ca/t10/index';
+
 
 
 export const allSolutions: TopicSolutions[] = [
@@ -101,7 +103,12 @@ export const allSolutions: TopicSolutions[] = [
     {
         topicId: 'm2-tema-9-taylor-multivariable',
         solutions: m2t9Solutions
+    },
+    {
+        topicId: 'm2-tema-10-optimitzacio',
+        solutions: m2t10Solutions
     }
+
 ];
 
 export const getSolutionsByTopic = (topicId: string) => {

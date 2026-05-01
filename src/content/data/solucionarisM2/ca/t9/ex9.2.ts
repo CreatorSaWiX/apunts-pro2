@@ -13,11 +13,11 @@ b) Calculeu aproximadament mitjançant un polinomi de Taylor de primer grau la q
 Considerem la funció $f(x,y) = \\sqrt[3]{xy} = x^{1/3}y^{1/3}$. El punt de tangència és $P(1,1,1)$, per tant $a=1, b=1$ i $f(1,1)=1$.
 
 Calculem les derivades parcials de primer ordre:
-*   $f_x = \\frac{1}{3} x^{-2/3} y^{1/3} \\implies f_x(1,1) = \\frac{1}{3}$
-*   $f_y = \\frac{1}{3} x^{1/3} y^{-2/3} \\implies f_y(1,1) = \\frac{1}{3}$
+*   $\\frac{\\partial f}{\\partial x} = \\frac{1}{3} x^{-2/3} y^{1/3} \\implies \\frac{\\partial f}{\\partial x}(1,1) = \\frac{1}{3}$
+*   $\\frac{\\partial f}{\\partial y} = \\frac{1}{3} x^{1/3} y^{-2/3} \\implies \\frac{\\partial f}{\\partial y}(1,1) = \\frac{1}{3}$
 
 L'equació del pla tangent és:
-$$z = f(1,1) + f_x(1,1)(x-1) + f_y(1,1)(y-1)$$
+$$z = f(1,1) + \frac{\partial f}{\partial x}(1,1)(x-1) + \frac{\partial f}{\partial y}(1,1)(y-1)$$
 $$z = 1 + \\frac{1}{3}(x-1) + \\frac{1}{3}(y-1)$$
 Multiplicant per 3 per simplificar: **$x + y - 3z + 1 = 0$**.
 
@@ -33,9 +33,9 @@ $$f(0.99, 1.01) \\approx 1 + \\frac{1}{3}(0.99-1) + \\frac{1}{3}(1.01-1) = 1 + \
 
 **2. Fita de l'error (Residu de Lagrange):**
 L'error és $|R_1(x,y)|$. Necessitem les derivades de segon ordre:
-*   $f_{xx} = -\\frac{2}{9} x^{-5/3} y^{1/3}$
-*   $f_{yy} = -\\frac{2}{9} x^{1/3} y^{-5/3}$
-*   $f_{xy} = \\frac{1}{9} x^{-2/3} y^{-2/3}$
+*   $\\frac{\\partial^2 f}{\\partial x^2} = -\\frac{2}{9} x^{-5/3} y^{1/3}$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = -\\frac{2}{9} x^{1/3} y^{-5/3}$
+*   $\\frac{\\partial^2 f}{\\partial x \\partial y} = \\frac{1}{9} x^{-2/3} y^{-2/3}$
 
 En el segment que uneix $(1,1)$ amb $(0.99, 1.01)$, les derivades es poden fitar prenent el valor més desfavorable (més gran en valor absolut). Com que $x, y \\approx 1$, podem prendre una fita conservadora $M$ per a $|f_{ij}|$:
 Si prenem $x, y \\in [0.99, 1.01]$, tenim:

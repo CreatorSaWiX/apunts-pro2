@@ -27,12 +27,15 @@ Si una función $f$ admite derivadas parciales en un entorno, estas funciones pu
 
 ## 2. El Polinomio de Taylor Multivariable
 
-El polinomio de Taylor de grado $n$ en el punto $\mathbf{a}$ aproxima la función $f$ cerca de aquel punto.
+El polinomio de Taylor de grado $n$ en el punto $\mathbf{a}$ aproxima la función $f$ cerca de dicho punto.
 
-### Fórmula desplegada (Grau 2)
+### Fórmula desplegada (Grado 1 y 2)
 Para cálculos manuales en dos variables cerca de $(a, b)$:
 $$
-P_2(x, y) = f(a, b) + \left[ f_x(a,b)(x-a) + f_y(a,b)(y-b) \right] + \frac{1}{2} \left[ f_{xx}(a,b)(x-a)^2 + 2f_{xy}(a,b)(x-a)(y-b) + f_{yy}(a,b)(y-b)^2 \right]
+P_1(x, y) = f(a, b) + \left[ \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\partial y}(a,b)(y-b) \right] 
+$$
+$$
+P_2(x, y) = P_1(x,y) + \frac{1}{2!} \left[ \frac{\partial^2 f}{\partial x^2}(a,b)(x-a)^2 + 2\frac{\partial^2 f}{\partial x \partial y}(a,b)(x-a)(y-b) + \frac{\partial^2 f}{\partial y^2}(a,b)(y-b)^2 \right]
 $$
 
 ::three{type="vis_taylor_graun"}
@@ -55,7 +58,7 @@ $$P_2(\mathbf{x}) = f(\mathbf{a}) + \nabla f(\mathbf{a})^T (\mathbf{x}-\mathbf{a
 
 ## 3. El Diferencial y el Incremento
 Una interpretación clave de Taylor es separar la función en parte constante, lineal y error:
-$$f(x,y) = f(a,b) + \underbrace{f_x dx + f_y dy}_{df \text{ (Diferencial)}} + R_1$$
+$$f(x,y) = f(a,b) + \underbrace{\frac{\partial f}{\partial x} dx + \frac{\partial f}{\partial y} dy}_{df \text{ (Diferencial)}} + R_1$$
 
 ::three{type="vis_diferencial_increment"}
 
@@ -65,17 +68,17 @@ El **Diferencial** ($df$) representa el incremento aproximado de la función cua
 
 ## 4. Matriz Hessiana y Geometría de los Extremos
 
-La **Matriz Hessiana** define la "curva" de la superficie en todas las direcciones simultáneamente.
+La **Matriz Hessiana** define la "curvatura" de la superficie en todas las direcciones simultáneamente.
 
 ### Criterio e Interpretación Visual
 Sea $\Delta = \det(Hf(a))$ el determinante:
 
 | Criterio | Tipo de extremo | Forma Geométrica |
 | :--- | :--- | :--- |
-| $\Delta > 0, f_{xx} > 0$ | **Mínimo relativo** | **Bol / Taza**: Crece en todas direcciones. |
-| $\Delta > 0, f_{xx} < 0$ | **Máximo relativo** | **Montaña / Cúpula**: Decrece en todas direcciones. |
+| $\Delta > 0, \frac{\partial^2 f}{\partial x^2} > 0$ | **Mínimo relativo** | **Bol / Taza**: Crece en todas direcciones. |
+| $\Delta > 0, \frac{\partial^2 f}{\partial x^2} < 0$ | **Máximo relativo** | **Montaña / Cúpula**: Decrece en todas direcciones. |
 | $\Delta < 0$ | **Punto de silla** | **Silla de montar**: Sube en una vía y baja en la otra. |
-| $\Delta = 0$ | **Inconcluyente** | Hay que hacer un **estudio local** o por rectas. |
+| $\Delta = 0$ | **Inconcluyente** | Hay que realizar un **estudio local** o por rectas. |
  
 ::three{type="vis_extrems_hessiana"}
 
@@ -85,7 +88,7 @@ Sea $\Delta = \det(Hf(a))$ el determinante:
 
 ## 5. Aproximación y Cota del Error
 
-El error cometido al usar $P_n$ se llama **Resto de Lagrange**. Para una aproximación lineal (grado 1), el error se acota por:
+El error cometido al usar $P_n$ se denomina **Resto de Lagrange**. Para una aproximación lineal (grado 1), el error se acota por:
 
 $$|R_1(x,y)| \leq \frac{1}{2} \left[ M_{xx} |h|^2 + 2M_{xy} |hk| + M_{yy} |k|^2 \right]$$
 

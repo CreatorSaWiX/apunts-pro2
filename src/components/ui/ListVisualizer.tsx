@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, Trash2, ArrowLeft, ArrowRight, MousePointer2 } from 'lucide-react';
+import { Trash2, ArrowLeft, ArrowRight, MousePointer2 } from 'lucide-react';
 
 interface Node {
     id: string;

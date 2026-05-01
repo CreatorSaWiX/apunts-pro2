@@ -5,13 +5,13 @@ order: 8
 readTime: "20 min"
 subject: "m2"
 draft: false
-isNew: true
+isUpdated: 1
 ---
 
 ## 1. Derivadas parciales y direccionales
 
 ### 1.1 Interpretación geométrica
-Para entender qué es la **derivada direccional** $D_{\mathbf{v}}f(\mathbf{a})$ (Derivada direccional de $f$ en el punto $\mathbf{a}$ según el vector $\mathbf{v}$), pensemos en el método del **corte vertical**:
+Para entender qué es la **derivada direccional** $D_{\mathbf{v}}f(\mathbf{a})$ (también escrita como $\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a})$), pensemos en el método del **corte vertical**:
 
 1.  **Plano $\pi$**: Imaginamos un cuchillo vertical que pasa por $\mathbf{a}$ siguiendo la dirección de $\mathbf{v}$.
 2.  **Curva de intersección $C$**: El corte sobre la superficie (el "pastel").
@@ -19,7 +19,7 @@ Para entender qué es la **derivada direccional** $D_{\mathbf{v}}f(\mathbf{a})$ 
 
 ::three{type="vis_derivada_direccional_hibrida"}
 
-Las **derivadas parciales** son el caso donde la dirección coincide con los ejes coordenados ($X, Y, Z$). En la práctica, cuando derivas parcialmente, tratas todas las demás variables como si fuesen **constantes**.
+Las **derivadas parciales** son el caso donde la dirección coincide con los ejes coordenados ($X, Y, Z$). En la práctica, cuando derivas parcialmente, tratas todas las demás variables como si fueran **constantes**.
 
 - **Respecto a x**: $\frac{\partial f}{\partial x}$ (*"Derivada parcial de f respecto a x"*).
 - **Respecto a y**: $\frac{\partial f}{\partial y}$ (*"Derivada parcial de f respecto a y"*).
@@ -28,7 +28,7 @@ Las **derivadas parciales** son el caso donde la dirección coincide con los eje
 
 ::three{type="vis_derivades_parcials_hibrida"}
 
-Siguiendo la visualización anterior, cuando derivas parcialmente estás convirtiendo la función en una de **1 variable**. Por tanto, todas las demás se tratan como si fuesen **números constantes**.
+Siguiendo la visualización anterior, cuando derivas parcialmente estás convirtiendo la función en una de **1 variable**. Por lo tanto, todas las demás se tratan como si fueran **números constantes**.
 Sea $f(x, y, z) = e^{xy+2z} + \sin(5xy) + \cos(z)$:
 *   $\frac{\partial f}{\partial x} = \mathbf{y} \cdot e^{xy+2z} + \mathbf{5y} \cdot \cos(5xy) + 0$
 *   $\frac{\partial f}{\partial y} = \mathbf{x} \cdot e^{xy+2z} + \mathbf{5x} \cdot \cos(5xy) + 0$
@@ -51,22 +51,23 @@ $$\nabla f(\mathbf{a}) = \left( \frac{\partial f}{\partial x_1}(\mathbf{a}), \do
 
 **Ejemplo:** Siguiendo con la función anterior, calculamos su gradiente en el punto $\mathbf{a} = (2, 0, \pi)$:
 *   Punto: $(x,y,z) = (2,0,\pi) \implies xy+2z = 2\pi$.
-*   $\frac{\partial f}{\partial x} = 0 \cdot e^{2\pi} + 0 = \mathbf{0}$
-*   $\frac{\partial f}{\partial y} = 2 \cdot e^{2\pi} + 10 \cdot \cos(0) = \mathbf{2e^{2\pi} + 10}$
-*   $\frac{\partial f}{\partial z} = 2 \cdot e^{2\pi} - \sin(\pi) = \mathbf{2e^{2\pi}}$
+*   $\frac{\partial f}{\partial x}(2, 0, \pi) = \mathbf{0}$
+*   $\frac{\partial f}{\partial y}(2, 0, \pi) = \mathbf{2e^{2\pi} + 10}$
+*   $\frac{\partial f}{\partial z}(2, 0, \pi) = \mathbf{2e^{2\pi}}$
 
-$$ \nabla f(2, 0, \pi) = (0, \, 2e^{2\pi} + 10, \, 2e^{2\pi}) $$
+$$ \nabla f(2, 0, \pi) = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right) = (0, \, 2e^{2\pi} + 10, \, 2e^{2\pi}) $$
 
-> **Fórmula fundamental**: $D_{\mathbf{v}}f(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v}$
+> **Fórmula fundamental**: $\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v}$
 
 ### 2.1 Propiedades geométricas:
 ¿Por qué el gradiente apunta al máximo crecimiento? Si analizamos la fórmula del producto escalar:
-$$D_{\mathbf{v}}f(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v} = \|\nabla f(\mathbf{a})\| \cdot \|\mathbf{v}\| \cdot \cos \theta$$
+
+$$\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v} = \|\nabla f(\mathbf{a})\| \cdot \|\mathbf{v}\| \cdot \cos \theta$$
 
 Como el vector $\mathbf{v}$ es unitario ($\|\mathbf{v}\| = 1$), el valor de la derivada depende solo del ángulo $\theta$ entre el gradiente y la dirección:
 
-1.  **Máximo crecimiento**: Se alcanza cuando $\cos \theta = 1$ ($\theta = 0^\circ$). El vector $\mathbf{v}$ tiene la **misma dirección y sentido** que el gradiente. Valor máximo: \|\nabla f(\mathbf{a})\|.
-2.  **Máximo decrecimiento**: Se alcanza cuando $\cos \theta = -1$ ($\theta = 180^\circ$). El vector $\mathbf{v}$ tiene la **misma dirección pero sentido opuesto**. Valor mínimo: -\|\nabla f(\mathbf{a})\|.
+1.  **Máximo crecimiento**: Se alcanza cuando $\cos \theta = 1$ ($\theta = 0^\circ$). El vector $\mathbf{v}$ tiene la **misma dirección y sentido** que el gradiente. Valor máximo: $\|\nabla f(\mathbf{a})\|$.
+2.  **Máximo decrecimiento**: Se alcanza cuando $\cos \theta = -1$ ($\theta = 180^\circ$). El vector $\mathbf{v}$ tiene la **misma dirección pero sentido opuesto**. Valor mínimo: $-\|\nabla f(\mathbf{a})\|$.
 3.  **Crecimiento nulo**: Se alcanza cuando $\cos \theta = 0$ ($\theta = 90^\circ$). La dirección es **perpendicular** al gradiente (dirección de la curva de nivel).
 
 ::threeviz{type="vector_gradient"}
@@ -87,7 +88,7 @@ La **regularidad** de una función mide su grado de "suavidad" geométrica: nos 
 
 ::three{type="vis_regularitat_hibrida"}
 
-> **Condición de diferenciabilidad**: Una función es diferenciable en un punto si es de clase $C^1$ en un entorno de aquel punto. Si no lo es, hay que recurrir a la definición formal de límite para ver si existe el plano tangente.
+> **Condición de diferenciabilidad**: Una función es diferenciable en un punto si es de clase $C^1$ en un entorno de dicho punto. Si no lo es, hay que recurrir a la definición formal de límite para ver si existe el plano tangente.
 
 ---
 
@@ -121,5 +122,5 @@ $$\frac{x-a}{F_x(a,b,c)} = \frac{y-b}{F_y(a,b,c)} = \frac{z-c}{F_z(a,b,c)}$$
 
 ### 4.3 Plano tangente horizontal
 Si el plano tangente es **paralelo al plano $XY$**:
-*   **Condición**: $f_x = 0$ e $f_y = 0$ (gradiente nulo).
+*   **Condición**: $f_x = 0$ y $f_y = 0$ (gradiente nulo).
 *   Esto ocurre en los puntos críticos de la función.

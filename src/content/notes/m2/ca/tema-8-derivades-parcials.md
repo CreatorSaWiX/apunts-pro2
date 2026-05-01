@@ -11,7 +11,7 @@ isUpdated: 1
 ## 1. Derivades parcials i direccionals
 
 ### 1.1 Interpretació geomètrica
-Per entendre què és la **derivada direccional** $D_{\mathbf{v}}f(\mathbf{a})$ (Derivada direccional de $f$ en el punt $\mathbf{a}$ segons el vector $\mathbf{v}$), pensem en el mètode del **tall vertical**:
+Per entendre què és la **derivada direccional** $D_{\mathbf{v}}f(\mathbf{a})$ (també escrita com $\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a})$), pensem en el mètode del **tall vertical**:
 
 1.  **Plànol $\pi$**: Imaginem un ganivet vertical que passa per $\mathbf{a}$ seguint la direcció de $\mathbf{v}$.
 2.  **Corba d'intersecció $C$**: El tall sobre la superfície (el "pastís").
@@ -51,17 +51,18 @@ $$\nabla f(\mathbf{a}) = \left( \frac{\partial f}{\partial x_1}(\mathbf{a}), \do
 
 **Exemple:** Seguint amb la funció anterior, calculem el seu gradient en el punt $\mathbf{a} = (2, 0, \pi)$:
 *   Punt: $(x,y,z) = (2,0,\pi) \implies xy+2z = 2\pi$.
-*   $\frac{\partial f}{\partial x} = 0 \cdot e^{2\pi} + 0 = \mathbf{0}$
-*   $\frac{\partial f}{\partial y} = 2 \cdot e^{2\pi} + 10 \cdot \cos(0) = \mathbf{2e^{2\pi} + 10}$
-*   $\frac{\partial f}{\partial z} = 2 \cdot e^{2\pi} - \sin(\pi) = \mathbf{2e^{2\pi}}$
+*   $\frac{\partial f}{\partial x}(2, 0, \pi) = \mathbf{0}$
+*   $\frac{\partial f}{\partial y}(2, 0, \pi) = \mathbf{2e^{2\pi} + 10}$
+*   $\frac{\partial f}{\partial z}(2, 0, \pi) = \mathbf{2e^{2\pi}}$
 
-$$ \nabla f(2, 0, \pi) = (0, \, 2e^{2\pi} + 10, \, 2e^{2\pi}) $$
+$$ \nabla f(2, 0, \pi) = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right) = (0, \, 2e^{2\pi} + 10, \, 2e^{2\pi}) $$
 
-> **Fórmula fonamental**: $D_{\mathbf{v}}f(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v}$
+> **Fórmula fonamental**: $\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v}$
 
 ### 2.1 Propietats geomètriques:
 Per què el gradient apunta al màxim creixement? Si analitzem la fórmula del producte escalar:
-$$D_{\mathbf{v}}f(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v} = \|\nabla f(\mathbf{a})\| \cdot \|\mathbf{v}\| \cdot \cos \theta$$
+
+$$\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v} = \|\nabla f(\mathbf{a})\| \cdot \|\mathbf{v}\| \cdot \cos \theta$$
 
 Com que el vector $\mathbf{v}$ és unitari ($\|\mathbf{v}\| = 1$), el valor de la derivada depèn només de l'angle $\theta$ entre el gradient i la direcció:
 

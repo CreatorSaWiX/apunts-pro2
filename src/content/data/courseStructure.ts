@@ -186,15 +186,21 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "pro2-tema-9",
-        title: "Tema 9: Cerca i Ordenació",
-        description: "Algorismes fonamentals de cerca i ordenació.",
+        title: "Tema 9: Implementació de vectors",
+        description: "Gestió de memòria, la Regla dels Tres i el cost amortitzat.",
         problems: []
     },
     {
         id: "pro2-tema-10",
-        title: "Tema 10: Grafs",
-        description: "Introducció als grafs i els seus algorismes bàsics.",
-        problems: []
+        title: "Tema 10: Implementació de llistes",
+        description: "Nodes doblement enllaçats, sentinelles i iteradors.",
+        problems: [
+            { id: "X96416", title: "Intercanviar el primer i l'últim element" },
+            { id: "X25312", title: "Moure el segon element al final" },
+            { id: "X41197", title: "Moure l'element de l'iterador al final" },
+            { id: "X75139", title: "Moure l'element de l'iterador una posició cap al final" },
+            { id: "X48340", title: "Iteradors circulars" }
+        ]
     },
     {
         id: "pro2-tema-11",
@@ -596,6 +602,20 @@ export const courseStructure: TopicDefinition[] = [
         id: "m2-tema-10-optimitzacio",
         title: "Tema 10: Optimització de funcions de diverses variables",
         description: "Weierstrass. Multiplicadors de Lagrange. Extrems relatius, condicionats i absoluts.",
-        problems: []
+        problems: [
+            { id: "M2-T10-Ex1", title: "Exercici 1: Extrems condicionats" },
+            { id: "M2-T10-Ex2", title: "Exercici 2: Extrems condicionats (I)" },
+            { id: "M2-T10-Ex3", title: "Exercici 3: Extrems absoluts en un disc" },
+            { id: "M2-T10-Ex4", title: "Exercici 4: Extrems en un domini triangular" },
+            { id: "M2-T10-Ex5", title: "Exercici 5: Aplicació (Alarma Tèrmica)" },
+            { id: "M2-T10-Ex6", title: "Exercici 6: Distància mínima a l'el·lipse" }
+        ]
+
+
+
+
     }
+
+
+
 ];

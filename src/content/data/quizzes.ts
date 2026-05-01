@@ -1536,5 +1536,131 @@ export const quizzes: TopicQuiz[] = [
                 explanation: 'L\'espai reservat (capacitat) ha de ser igual o superior als elements realment usats.'
             }
         ]
+    },
+    {
+        topicId: 'pro2-tema-10', // Implementació de llistes
+        timeLimitSeconds: 600,
+        questions: [
+            {
+                id: 'q10-1',
+                question: 'Quin és el principal benefici algorísmic d\'utilitzar nodes **Sentinella** (`iteminf`, `itemsup`) en una llista doblement enllaçada?',
+                options: [
+                    { id: 'a', text: 'Redueix l\'espai total ocupat al Heap' },
+                    { id: 'b', text: 'Elimina la necessitat de comprovar punters NULL en cada inserció o esborrat' },
+                    { id: 'c', text: 'Permet l\'accés directe O(1) a qualsevol índex [i]' },
+                    { id: 'd', text: 'Augmenta la velocitat del recorregut seqüencial' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Com que els sentinelles sempre hi són, els veïns d\'un node real mai seran `nullptr`, simplificant dràsticament la lògica de punters.'
+            },
+            {
+                id: 'q10-2',
+                question: 'En una implementació amb sentinelles, com accedim al **primer element real** des de la pròpia classe?',
+                options: [
+                    { id: 'a', text: 'iteminf' },
+                    { id: 'b', text: 'iteminf.next' },
+                    { id: 'c', text: 'itemsup.prev' },
+                    { id: 'd', text: 'itemsup.next' }
+                ],
+                correctOptionId: 'b',
+                explanation: '`iteminf` és el node fictici inicial; el seu `next` apunta obligatòriament a la primera dada real de la llista.'
+            },
+            {
+                id: 'q10-3',
+                question: 'Per què una llista té cost **O(1)** d\'inserció davant de l\'**O(n)** d\'un vector (un cop tenim la posició)?',
+                options: [
+                    { id: 'a', text: 'Perquè la memòria es reserva en blocs contigus' },
+                    { id: 'b', text: 'Perquè només cal "recosir" un nombre fix de punters (normalment 4)' },
+                    { id: 'c', text: 'Perquè no utilitza el Heap per a nodes nous' },
+                    { id: 'd', text: 'Perquè el compilador paral·litza l\'operació' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'No cal moure cap element físicament per la memòria; només s\'ajusten els enllaços dels nodes veïns.'
+            },
+            {
+                id: 'q10-4',
+                question: 'Si un exercici prohibeix copiar `.value` i demana moure un node al final, quin és el primer pas crític?',
+                options: [
+                    { id: 'a', text: 'Fer un delete[] i un new Item' },
+                    { id: 'b', text: 'Desconnectar el node unint el seu anterior amb el seu següent' },
+                    { id: 'c', text: 'Intercanviar els punters begin() i end()' },
+                    { id: 'd', text: 'Copiar tota la llista de forma recursiva' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Per moure un node físicament cal extreure\'l de la seva posició actual relincant els veïns perquè no quedi un forat.'
+            },
+            {
+                id: 'q10-5',
+                question: 'Quin és el cost algorísmic de cercar el valor `X` en una llista de `N` elements?',
+                options: [
+                    { id: 'a', text: 'O(1)' },
+                    { id: 'b', text: 'O(log N)' },
+                    { id: 'c', text: 'O(N)' },
+                    { id: 'd', text: 'O(N^2)' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'En no estar els nodes contigus, cal recórrer la llista element per element fins trobar el valor desitjat.'
+            },
+            {
+                id: 'q10-6',
+                question: 'Per què l\'operació `it + 5` és il·legal en un iterador de llista de PRO2?',
+                options: [
+                    { id: 'a', text: 'Per seguretat contra buffer overflows' },
+                    { id: 'b', text: 'Perquè els nodes no estan contigus i no hi ha aritmètica de punters directa' },
+                    { id: 'c', text: 'Perquè l\'operador + està reservat per a vectors i strings' },
+                    { id: 'd', text: 'Perquè la llista és constant per defecte' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'L\'iterador ha de saltar de node en node usant els punters `next`. L\'accés directe per suma només funciona en memòria contigua.'
+            },
+            {
+                id: 'q10-7',
+                question: 'A què apunta exactament `L.end()` en la nostra implementació estàndard?',
+                options: [
+                    { id: 'a', text: 'A l\'últim element real de la llista' },
+                    { id: 'b', text: 'Al node sentinella final (`itemsup`)' },
+                    { id: 'c', text: 'A la constant NULL o nullptr' },
+                    { id: 'd', text: 'Al primer element real' }
+                ],
+                correctOptionId: 'b',
+                explanation: '`end()` representa la posició "past-the-end", que en la nostra estructura és el node sentinella de tancament.'
+            },
+            {
+                id: 'q10-8',
+                question: 'Què retorna la funció `L.erase(it)` segons la convenció de l\'STL i PRO2?',
+                options: [
+                    { id: 'a', text: 'Un booleà d\'èxit' },
+                    { id: 'b', text: 'El valor T de l\'element eliminat' },
+                    { id: 'c', text: 'L\'iterador al següent element vàlid de la llista' },
+                    { id: 'd', text: 'Un punter al node pare' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'Aquest retorn permet seguir recorrent la llista sense que l\'iterador quedi invalidat (mort) després de l\'esborrat.'
+            },
+            {
+                id: 'q10-9',
+                question: 'Quin és l\'ordre de les operacions en `operator=` per evitar desastres de memòria?',
+                options: [
+                    { id: 'a', text: '1. Netejar, 2. Copiar' },
+                    { id: 'b', text: '1. Comprovar auto-assignació, 2. Netejar, 3. Copiar' },
+                    { id: 'c', text: '1. Copiar, 2. delete' },
+                    { id: 'd', text: '1. Invertir llista, 2. Comparar punters' }
+                ],
+                correctOptionId: 'b',
+                explanation: 'Sense el pas de `this != &l`, una auto-assignació esborraria les dades abans de començar a copiar-les, perdent-ho tot.'
+            },
+            {
+                id: 'q10-10',
+                question: 'En quin escenari és **estrictament superior** una llista a un vector?',
+                options: [
+                    { id: 'a', text: 'Quan fem moltes cerques aleatòries per índex' },
+                    { id: 'b', text: 'Quan el consum mínim de memòria és la prioritat absoluta' },
+                    { id: 'c', text: 'Quan fem moltes insercions o esborrats al principi o posicions intermèdies' },
+                    { id: 'd', text: 'Per a recorreguts seqüencials de dades primitives' }
+                ],
+                correctOptionId: 'c',
+                explanation: 'En llistes aquestes operacions són O(1), mentre que en vectors obliguen a desplaçar milers d\'elements O(n).'
+            }
+        ]
     }
 ];

@@ -32,10 +32,10 @@ El polinomi de Taylor de grau $n$ en el punt $\mathbf{a}$ aproxima la funció $f
 ### Fórmula desplegada (Grau 1 i 2)
 Per a càlculs manuals en dues variables prop de $(a, b)$:
 $$
-P_1(x, y) = f(a, b) + \left[ f_x(a,b)(x-a) + f_y(a,b)(y-b) \right] 
+P_1(x, y) = f(a, b) + \left[ \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\partial y}(a,b)(y-b) \right] 
 $$
 $$
-P_2(x, y) = f(a, b) + \left[ f_x(a,b)(x-a) + f_y(a,b)(y-b) \right] + \frac{1}{2!} \left[ f_{xx}(a,b)(x-a)^2 + 2f_{xy}(a,b)(x-a)(y-b) + f_{yy}(a,b)(y-b)^2 \right]
+P_2(x, y) = P_1(x,y) + \frac{1}{2!} \left[ \frac{\partial^2 f}{\partial x^2}(a,b)(x-a)^2 + 2\frac{\partial^2 f}{\partial x \partial y}(a,b)(x-a)(y-b) + \frac{\partial^2 f}{\partial y^2}(a,b)(y-b)^2 \right]
 $$
 
 ::three{type="vis_taylor_graun"}
@@ -58,7 +58,7 @@ $$P_2(\mathbf{x}) = f(\mathbf{a}) + \nabla f(\mathbf{a})^T (\mathbf{x}-\mathbf{a
 
 ## 3. El Diferencial i l'Increment
 Una interpretació clau de Taylor és separar la funció en part constant, lineal i error:
-$$f(x,y) = f(a,b) + \underbrace{f_x dx + f_y dy}_{df \text{ (Diferencial)}} + R_1$$
+$$f(x,y) = f(a,b) + \underbrace{\frac{\partial f}{\partial x} dx + \frac{\partial f}{\partial y} dy}_{df \text{ (Diferencial)}} + R_1$$
 
 ::three{type="vis_diferencial_increment"}
 
@@ -75,8 +75,8 @@ Sigui $\Delta = \det(Hf(a))$ el determinant:
 
 | Criteri | Tipus d'extrem | Forma Geomètrica |
 | :--- | :--- | :--- |
-| $\Delta > 0, f_{xx} > 0$ | **Mínim relatiu** | **Bol / Tassa**: Creix en totes direccions. |
-| $\Delta > 0, f_{xx} < 0$ | **Màxim relatiu** | **Muntanya / Cúpula**: Decreix en totes direccions. |
+| $\Delta > 0, \frac{\partial^2 f}{\partial x^2} > 0$ | **Mínim relatiu** | **Bol / Tassa**: Creix en totes direccions. |
+| $\Delta > 0, \frac{\partial^2 f}{\partial x^2} < 0$ | **Màxim relatiu** | **Muntanya / Cúpula**: Decreix en totes direccions. |
 | $\Delta < 0$ | **Punt de sella** | **Cadira de muntar**: Puja en una via i baixa en l'altra. |
 | $\Delta = 0$ | **Inconcloent** | Cal fer un **estudi local** o per rectes. |
  
