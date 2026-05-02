@@ -44,7 +44,6 @@ $$
 Molt útil en computació i per a més de 2 variables:
 $$P_2(\mathbf{x}) = f(\mathbf{a}) + \nabla f(\mathbf{a})^T (\mathbf{x}-\mathbf{a}) + \frac{1}{2} (\mathbf{x}-\mathbf{a})^T Hf(\mathbf{a}) (\mathbf{x}-\mathbf{a})$$
 
-> [!TIP]
 > **Estratègia d'Examen: El "Truc de la Substitució"**
 > Si has de calcular el polinomi a l'origen $(0,0)$ d'una funció composta com $f(x,y) = \ln(1+2x+3y)$, **no derivis 5 vegades!** 
 > 1. Identifica el cor de la funció: $\ln(1+t)$.

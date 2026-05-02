@@ -32,9 +32,7 @@ Sea $(a,b)$ un punto crítico de $f \in \mathcal{C}^2$. Analizamos el determinan
  
 ::three{type="vis_extrems_hessiana"}
  
-> [!TIP]
-> **Ninja Trick: Completar Cuadrados**
-> Si la función es un polinomio de grado 2 (como $f(x,y) = x^2 + 2xy + 3y^2$), puedes completar cuadrados para ver si es una suma de cuadrados positivos (mínimo) o negativos (máximo). ¡Es mucho más rápido que calcular la Hessiana!
+Si la función es un polinomio de grado 2 (como $f(x,y) = x^2 + 2xy + 3y^2$), puedes completar cuadrados para ver si es una suma de cuadrados positivos (mínimo) o negativos (máximo). ¡Es mucho más rápido que calcular la Hessiana!
 
 > **Cuando $\Delta = 0$**: Prueba estudiar $f$ sobre rectas que pasen por el punto (ej. $y = 0$ o $y = x$). Otra herramienta muy potente es **completar cuadrados**: si puedes escribir $f(x,y) - f(a,b)$ como una forma que es siempre positiva (o siempre negativa), tienes un mínimo (o máximo) global sin necesidad de la Hessiana.
 
@@ -58,7 +56,6 @@ Donde $\lambda$ es el **multiplicador de Lagrange**. Para múltiples restriccion
 
 ::three{type="vis_lagrange_multiplicadors"}
 
-> [!IMPORTANT]
 > **El Significado de $\lambda$**
 > El multiplicador $\lambda$ indica la tasa de variación del valor optimizado de $f$ respecto a cambios en la restricción $c$. Si "relajamos" un poco la restricción, ¿cuánto mejorará nuestro beneficio? Eso es $\lambda$.
 

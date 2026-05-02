@@ -7,7 +7,9 @@ export const ex6_30: Solution = {
   code: '',
   type: 'notebook',
   statement: `Considereu els vectors de $\\mathcal{M}_2(\\mathbb{R})$:
+
 $$A_1 = \\begin{pmatrix} 1 & 4 \\\\ -1 & 10 \\end{pmatrix}, \\quad A_2 = \\begin{pmatrix} 6 & 10 \\\\ 1 & 0 \\end{pmatrix}, \\quad A_3 = \\begin{pmatrix} 2 & 2 \\\\ 1 & 1 \\end{pmatrix}$$
+
 Demostreu que formen un conjunt linealment independent i trobeu un vector que juntament amb aquests tres formi una base de $\\mathcal{M}_2(\\mathbb{R})$.`,
   content: `
 ### 1) Demostració de la Independència Lineal
@@ -37,7 +39,9 @@ Provem d'afegir la matriu de la base canònica $E_{2,1} = \\begin{pmatrix} 0 & 0
 $$\\Delta = \\begin{vmatrix} 1 & 4 & -1 & 10 \\\\ 6 & 10 & 1 & 0 \\\\ 2 & 2 & 1 & 1 \\\\ 0 & 0 & 1 & 0 \\end{vmatrix}$$
 
 Desenvolupant per l'última fila:
+
 $$\\Delta = -1 \\cdot \\begin{vmatrix} 1 & 4 & 10 \\\\ 6 & 10 & 0 \\\\ 2 & 2 & 1 \\end{vmatrix}$$
+
 $$\\Delta = -1 \\cdot \\left[ 1(10-0) - 4(6-0) + 10(12-20) \\right] = -1 \\cdot (10 - 24 - 80) = -1 \\cdot (-94) = 94$$
 
 Com que el determinant és **94 $\\neq 0$**, el conjunt format per $\\{A_1, A_2, A_3, A_4\\}$ és linealment independent i, per tant, és una base de $\\mathcal{M}_2(\\mathbb{R})$.

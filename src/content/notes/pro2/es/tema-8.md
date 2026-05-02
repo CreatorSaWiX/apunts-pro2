@@ -184,7 +184,6 @@ En una pila enlazada, solo tenemos un puntero a la cima (`ptopitem`). Cada vez q
 
 ::stackviz
 
-> [!TIP]
 > **Ejercicio `swap2Topmost()`**: Para intercambiar los dos primeros nodos sin tocar los `.value`, debes:
 > 1. Guardar el segundo nodo en un puntero auxiliar: `Item *p2 = ptopitem->next;`
 > 2. Reenlazar: `ptopitem->next = p2->next;`
@@ -196,7 +195,6 @@ En una cola, necesitamos dos punteros: `first` (para sacar) y `last` (para añad
 
 ::queueviz
 
-> [!IMPORTANT]
 > **Ejercicio `operator[]`**: Como una cola enlazada no es un vector, para encontrar el elemento `i` tienes que hacer un bucle `for` que avance el puntero `p = p->next` exactamente `i` veces empezando desde `first`.
 
 ### 7.3 Cómo borrar nodos por el medio

@@ -44,7 +44,6 @@ $$
 Muy útil en computación y para más de 2 variables:
 $$P_2(\mathbf{x}) = f(\mathbf{a}) + \nabla f(\mathbf{a})^T (\mathbf{x}-\mathbf{a}) + \frac{1}{2} (\mathbf{x}-\mathbf{a})^T Hf(\mathbf{a}) (\mathbf{x}-\mathbf{a})$$
 
-> [!TIP]
 > **Estrategia de Examen: El "Truco de la Sustitución"**
 > Si tienes que calcular el polinomio en el origen $(0,0)$ de una función compuesta como $f(x,y) = \ln(1+2x+3y)$, **¡no derives 5 veces!** 
 > 1. Identifica el núcleo de la función: $\ln(1+t)$.

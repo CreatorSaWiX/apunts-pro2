@@ -184,7 +184,6 @@ En una pila enllaçada, només tenim un punter al cim (`ptopitem`). Cada vegada 
 
 ::stackviz
 
-> [!TIP]
 > **Exercici `swap2Topmost()`**: Per intercanviar els dos primers nodes sense tocar els `.value`, has de:
 > 1. Guardar el segon node en un punter auxiliar: `Item *p2 = ptopitem->next;`
 > 2. Reenllaçar: `ptopitem->next = p2->next;`
@@ -196,7 +195,6 @@ En una cua, necessitem dos punters: `first` (per treure) i `last` (per afegir).
 
 ::queueviz
 
-> [!IMPORTANT]
 > **Exercici `operator[]`**: Com que una cua enllaçada no és un vector, per trobar l'element `i` has de fer un bucle `for` que avanci el punter `p = p->next` exactament `i` vegades començant des de `first`.
 
 ### 7.3 Com esborrar nodes pel mig

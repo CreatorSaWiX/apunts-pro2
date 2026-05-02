@@ -7,6 +7,7 @@ export const ex6_31: Solution = {
   code: '',
   type: 'notebook',
   statement: `Per a quins valors de $\\lambda$ els vectors generen un subespai vectorial de $\\mathbb{R}^4$ de dimensió 2?
+
 $$v_1 = \\begin{pmatrix} \\lambda \\\\ 0 \\\\ 1 \\\\ \\lambda \\end{pmatrix}, \\quad v_2 = \\begin{pmatrix} \\lambda \\\\ 1 \\\\ 2 \\\\ 1 \\end{pmatrix}, \\quad v_3 = \\begin{pmatrix} 1 \\\\ 0 \\\\ \\lambda \\\\ \\lambda \\end{pmatrix}$$`,
   content: `
 ### Resolució del Problema

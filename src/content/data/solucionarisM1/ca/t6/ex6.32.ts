@@ -31,10 +31,13 @@ Igualant (2) i (3), veiem immediatament que **$a = -1$**.
 
 ### 2) Equacions implícites de $F_{a_0}$ ($a = -1$)
 
-Una matriu $\\begin{pmatrix} x & y \\\\ z & t \\end{pmatrix}$ pertany a $F_{-1}$ si el vector $(x, y, z, t)$ és combinació de $v_1$ i $v_2$.
-D'una banda, és evident que el tercer component ha de ser zero: **$z = 0$**.
-D'altra banda, observem que tant en $v_1$ com en $v_2$ (i per tant en qualsevol combinació), el segon i quart component coincideixen ($y = t$).
-Per tant, el sistema d'equacions implícites és:
+Una matriu $\\begin{pmatrix} x & y \\\\ z & t \\end{pmatrix}$ pertany a $F_{-1}$ si el vector $(x, y, z, t)$ és combinació lineal de $v_1 = (1, 2, 0, 2)$ i $v_2 = (-1, 1, 0, 1)$.
+
+Per trobar les equacions, plantegem la matriu formada pels generadors i un vector genèric, i forcem que el rang sigui 2 (la dimensió del subespai):
+
+$$\\begin{pmatrix} 1 & -1 & x \\\\ 2 & 1 & y \\\\ 0 & 0 & z \\\\ 2 & 1 & t \\end{pmatrix} \\xrightarrow[f_4-2f_1]{f_2-2f_1} \\begin{pmatrix} 1 & -1 & x \\\\ 0 & 3 & y-2x \\\\ 0 & 0 & z \\\\ 0 & 3 & t-2x \\end{pmatrix} \\xrightarrow{f_4-f_2} \\begin{pmatrix} 1 & -1 & x \\\\ 0 & 3 & y-2x \\\\ 0 & 0 & z \\\\ 0 & 0 & t-y \\end{pmatrix}$$
+
+Perquè el rang sigui 2, les files que han quedat amb zeros a la part de l'esquerra també han de tenir un zero a la columna de les incògnites. Així obtenim el sistema d'equacions implícites:
 $$\\begin{cases} z = 0 \\\\ y - t = 0 \\end{cases}$$
 
 ---

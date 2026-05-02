@@ -10,12 +10,14 @@ export const ex6_26: Solution = {
   content: `
 ### 1) Càlcul de la Base de $F$
 
-Tenim tres vectors generadors: $v_1 = (0, 1, 1)$, $v_2 = (4, 1, -1)$ i $v_3 = (2, 1, 0)$. Comprovem si són linealment independents observant si un es pot escriure com a combinació dels altres:
-$$\\frac{1}{2} v_1 + \\frac{1}{2} v_2 = \\begin{pmatrix} 0 \\\\ 0.5 \\\\ 0.5 \\end{pmatrix} + \\begin{pmatrix} 2 \\\\ 0.5 \\\\ -0.5 \\end{pmatrix} = \\begin{pmatrix} 2 \\\\ 1 \\\\ 0 \\end{pmatrix} = v_3$$
+Tenim tres vectors generadors: $v_1 = (0, 1, 1)$, $v_2 = (4, 1, -1)$ i $v_3 = (2, 1, 0)$. Per trobar una base, col·loquem els vectors en files i apliquem el mètode de Gauss per identificar el rang i eliminar redundàncies:
 
-Com que $v_3$ és combinació lineal de $v_1$ i $v_2$, el podem descartar. Els vectors $v_1$ i $v_2$ són linealment independents (no són proporcionals), per tant una base de $F$ és:
-$$\\mathbf{\\mathcal{B}_F = \\left\\{ \\begin{pmatrix} 0 \\\\ 1 \\\\ 1 \\end{pmatrix}, \\begin{pmatrix} 4 \\\\ 1 \\\\ -1 \\end{pmatrix} \\right\\}}$$
-Això implica que $\\dim(F) = 2$ (és un pla a $\\mathbb{R}^3$).
+$$\\begin{pmatrix} 0 & 1 & 1 \\\\ 4 & 1 & -1 \\\\ 2 & 1 & 0 \\end{pmatrix} \\xrightarrow{F_1 \\leftrightarrow F_2} \\begin{pmatrix} 4 & 1 & -1 \\\\ 0 & 1 & 1 \\\\ 2 & 1 & 0 \\end{pmatrix} \\xrightarrow{2F_3 - F_1} \\begin{pmatrix} 4 & 1 & -1 \\\\ 0 & 1 & 1 \\\\ 0 & 1 & 1 \\end{pmatrix} \\xrightarrow{F_3 - F_2} \\begin{pmatrix} 4 & 1 & -1 \\\\ 0 & 1 & 1 \\\\ 0 & 0 & 0 \\end{pmatrix}$$
+
+El rang és 2, per tant la dimensió de $F$ és 2. Les files no nul·les de la matriu esglaonada formen una base de $F$:
+$$\\mathbf{\\mathcal{B}_F = \\left\\{ \\begin{pmatrix} 4 \\\\ 1 \\\\ -1 \\end{pmatrix}, \\begin{pmatrix} 0 \\\\ 1 \\\\ 1 \\end{pmatrix} \\right\\}}$$
+
+*(Nota: Qualsevol parella de vectors LI de $F$, com els originals $v_1$ i $v_2$, també serien una base vàlida).*
 
 ---
 
