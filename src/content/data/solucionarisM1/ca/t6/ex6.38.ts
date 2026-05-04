@@ -19,19 +19,29 @@ La base $B$ és la base canònica de les matrius. La base $B'$ està formada pel
 $v'_1 = (1, 1, 0, 0), \\, v'_2 = (0, 1, 1, 0), \\, v'_3 = (0, 0, 1, 1), \\, v'_4 = (0, 0, 0, 1)$.
 
 ### 1) Matriu $P_B^{B'}$ (de $B'$ a $B$)
-Aquesta matriu té per columnes les coordenades dels vectors de $B'$ expressats en la base $B$. Com que $B$ és la base canònica, només hem de col·locar els vectors de $B'$ directament:
+Aquesta matriu té per columnes les coordenades dels vectors de la base $B'$ expressats en la base $B$. Com que $B$ és la base canònica de les matrius, les coordenades coincideixen amb els components dels vectors:
+*   $[v'_1]_B = (1, 1, 0, 0)^T$
+*   $[v'_2]_B = (0, 1, 1, 0)^T$
+*   $[v'_3]_B = (0, 0, 1, 1)^T$
+*   $[v'_4]_B = (0, 0, 0, 1)^T$
+
+Col·locant-los en columnes obtenim:
 $$\\mathbf{P_B^{B'} = \\begin{pmatrix} 1 & 0 & 0 & 0 \\\\ 1 & 1 & 0 & 0 \\\\ 0 & 1 & 1 & 0 \\\\ 0 & 0 & 1 & 1 \\end{pmatrix}}$$
 
 ### 2) Matriu $P_{B'}^B$ (de $B$ a $B'$)
-Aquesta matriu és la inversa de l'anterior: $P_{B'}^B = (P_B^{B'})^{-1}$.
-Podem calcular-la resolent el sistema $Y = P_B^{B'} X$:
-*   $y_1 = x_1 \\implies x_1 = y_1$
-*   $y_2 = x_1 + x_2 \\implies x_2 = y_2 - y_1$
-*   $y_3 = x_2 + x_3 \\implies x_3 = y_3 - (y_2 - y_1) = y_3 - y_2 + y_1$
-*   $y_4 = x_3 + x_4 \\implies x_4 = y_4 - (y_3 - y_2 + y_1) = y_4 - y_3 + y_2 - y_1$
+Aquesta matriu és la inversa de l'anterior: $P_{B'}^B = (P_B^{B'})^{-1}$. En lloc d'utilitzar adjunts, resoldrem el sistema d'equacions $Y = P_B^{B'} X$ per aïllar les coordenades originals $X$ en funció de les noves $Y$:
 
-Escrivint els coeficients en la matriu:
+$$ \\begin{pmatrix} y_1 \\\\ y_2 \\\\ y_3 \\\\ y_4 \\end{pmatrix} = \\begin{pmatrix} 1 & 0 & 0 & 0 \\\\ 1 & 1 & 0 & 0 \\\\ 0 & 1 & 1 & 0 \\\\ 0 & 0 & 1 & 1 \\end{pmatrix} \\begin{pmatrix} x_1 \\\\ x_2 \\\\ x_3 \\\\ x_4 \\end{pmatrix} \\implies \\begin{cases} y_1 = x_1 \\\\ y_2 = x_1 + x_2 \\\\ y_3 = x_2 + x_3 \\\\ y_4 = x_3 + x_4 \\end{cases} $$
+
+Resolem pas a pas per substitució:
+*   $x_1 = y_1$
+*   $x_2 = y_2 - x_1 = \\mathbf{-y_1 + y_2}$
+*   $x_3 = y_3 - x_2 = y_3 - (-y_1 + y_2) = \\mathbf{y_1 - y_2 + y_3}$
+*   $x_4 = y_4 - x_3 = y_4 - (y_1 - y_2 + y_3) = \\mathbf{-y_1 + y_2 - y_3 + y_4}$
+
+Escrivint els coeficients de les $y_i$ a cada fila de la matriu inversa:
 $$\\mathbf{P_{B'}^B = \\begin{pmatrix} 1 & 0 & 0 & 0 \\\\ -1 & 1 & 0 & 0 \\\\ 1 & -1 & 1 & 0 \\\\ -1 & 1 & -1 & 1 \\end{pmatrix}}$$
+
 `,
   availableLanguages: ['ca']
 };

@@ -67,7 +67,7 @@ La recepta és sempre la mateixa (i és la pregunta típica d'examen):
 3.  **Expressa els resultats en coordenades** de la base d'arribada $W$.
 4.  **Posa els resultats per columnes** a la matriu.
 
-> **Consell de professor**: "Imatges per columnes". Si recordes aquesta frase, tens mig examen fet. Com veus a la visualització superior, moure els valors de la matriu és literalment moure cap a on apunten les imatges dels vectors base.
+> **Imatges per columnes**. Si recordes aquesta frase, tens mig examen fet. Com veus a la visualització superior, moure els valors de la matriu és literalment moure cap a on apunten les imatges dels vectors base.
 
 **L'equació fonamental:**
 $$[f(\vec{v})]_W = M_W^B(f) \cdot [\vec{v}]_B$$

@@ -31,6 +31,7 @@ $$\\mathbf{P_B^C = \\begin{pmatrix} -1 & 0 & 0 \\\\ 7 & 2 & 1 \\\\ -5 & -1 & -1 
 ### 2) Coordenades del polinomi $p(x)$
 
 El polinomi $p(x) = 3 - x + 2x^2$ té coordenades $(3, -1, 2)$ en la base canònica. Per trobar les seves coordenades en la base $B$, apliquem la matriu de canvi de base:
+
 $$[p]_B = P_B^C \\cdot [p]_C = \\begin{pmatrix} -1 & 0 & 0 \\\\ 7 & 2 & 1 \\\\ -5 & -1 & -1 \\end{pmatrix} \\begin{pmatrix} 3 \\\\ -1 \\\\ 2 \\end{pmatrix}$$
 
 Realitzem el producte:

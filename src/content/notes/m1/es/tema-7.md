@@ -67,7 +67,7 @@ La receta es siempre la misma (y es la pregunta típica de examen):
 3.  **Expresa los resultados en coordenadas** de la base de llegada $W$.
 4.  **Pon los resultados por columnas** en la matriz.
 
- > **Consejo de profesor**: "Imágenes por columnas". Si recuerdas esta frase, tienes medio examen hecho. Como ves en la visualización superior, mover los valores de la matriz es literalmente mover hacia dónde apuntan las imágenes de los vectores base.
+ > **Imágenes por columnas**. Si recuerdas esta frase, tienes medio examen hecho. Como ves en la visualización superior, mover los valores de la matriz es literalmente mover hacia dónde apuntan las imágenes de los vectores base.
 
 **La ecuación fundamental:**
 $$[f(\vec{v})]_W = M_W^B(f) \cdot [\vec{v}]_B$$

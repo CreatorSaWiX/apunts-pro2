@@ -18,15 +18,18 @@ Ambdós conjunts són bases de $\\mathbb{R}^3$.
 
 ---
 
-### 2) Exprexió de $(x, y, z)$ en funció de $(x', y', z')$
+### 2) Expressió de $(x, y, z)$ en funció de $(x', y', z')$
 
 S'obté mitjançant la matriu de canvi de base $P_B^{B'}$:
+
 $$U_B = P_B^{B'} U_{B'} \\implies P_B^{B'} = (P_C^B)^{-1} \\cdot P_C^{B'}$$
 
 Calculem la inversa $(P_C^B)^{-1} = \\frac{1}{4} \\begin{pmatrix} 3 & -1 & -1 \\\\ -1 & 3 & -1 \\\\ -1 & -1 & 3 \\end{pmatrix}$. Multiplicant per $P_C^{B'}$:
+
 $$P_B^{B'} = \\frac{1}{4} \\begin{pmatrix} 3 & -1 & -1 \\\\ -1 & 3 & -1 \\\\ -1 & -1 & 3 \\end{pmatrix} \\begin{pmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{pmatrix} = \\begin{pmatrix} -1/2 & 1/2 & 1/2 \\\\ 1/2 & -1/2 & 1/2 \\\\ 1/2 & 1/2 & -1/2 \\end{pmatrix}$$
 
 Les equacions són:
+
 $$\\begin{cases} x = -\\frac{1}{2}x' + \\frac{1}{2}y' + \\frac{1}{2}z' \\\\ y = \\frac{1}{2}x' - \\frac{1}{2}y' + \\frac{1}{2}z' \\\\ z = \\frac{1}{2}x' + \\frac{1}{2}y' - \\frac{1}{2}z' \\end{cases}$$
 
 ---
@@ -34,12 +37,15 @@ $$\\begin{cases} x = -\\frac{1}{2}x' + \\frac{1}{2}y' + \\frac{1}{2}z' \\\\ y = 
 ### 3) Expressió de $(x', y', z')$ en funció de $(x, y, z)$
 
 S'obté mitjançant la matriu $P_{B'}^B$:
+
 $$U_{B'} = P_{B'}^B U_B \\implies P_{B'}^B = (P_C^{B'})^{-1} \\cdot P_C^B$$
 
 Calculem la inversa $(P_C^{B'})^{-1} = \\frac{1}{2} \\begin{pmatrix} -1 & 1 & 1 \\\\ 1 & -1 & 1 \\\\ 1 & 1 & -1 \\end{pmatrix}$. Multiplicant per $P_C^B$:
+
 $$P_{B'}^B = \\frac{1}{2} \\begin{pmatrix} -1 & 1 & 1 \\\\ 1 & -1 & 1 \\\\ 1 & 1 & -1 \\end{pmatrix} \\begin{pmatrix} 2 & 1 & 1 \\\\ 1 & 2 & 1 \\\\ 1 & 1 & 2 \\end{pmatrix} = \\begin{pmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{pmatrix}$$
 
 Les equacions són:
+
 $$\\begin{cases} x' = y + z \\\\ y' = x + z \\\\ z' = x + y \\end{cases}$$
 `,
   availableLanguages: ['ca']
