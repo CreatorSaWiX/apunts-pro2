@@ -17,13 +17,20 @@ c) Calculeu $I$ amb un error menor que $10^{-4}$.`,
 ### a) Derivació de la funció
 
 Tenim $f(x) = (\\cos x)^3$. Calculem les derivades successives:
-1. $f'(x) = 3\\cos^2 x (-\\sin x) = -3\\cos^2 x \\sin x$.
-2. $f''(x) = -3 [ 2\\cos x (-\\sin x) \\sin x + \\cos^2 x \\cos x ] = -3 [ -2\\sin^2 x \\cos x + \\cos^3 x ]$.
-   Utilitzant $\\sin^2 x = 1 - \\cos^2 x$:
-   $f''(x) = -3 [ -2(1-\\cos^2 x)\\cos x + \\cos^3 x ] = -3 [ -2\\cos x + 3\\cos^3 x ] = \\mathbf{6\\cos x - 9\\cos^3 x}$.
-3. $f'''(x) = (-6 + 27\\cos^2 x)\\sin x$.
-4. $f^{(4)}(x) = (-54\\cos x \\sin^2 x) + (-6 + 27\\cos^2 x)\\cos x = -54\\cos x (1-\\cos^2 x) - 6\\cos x + 27\\cos^3 x$.
-   $f^{(4)}(x) = -54\\cos x + 54\\cos^3 x - 6\\cos x + 27\\cos^3 x = \\mathbf{81\\cos^3 x - 60\\cos x}$.
+
+$f'(x) = 3\\cos^2 x (-\\sin x) = -3\\cos^2 x \\sin x$.
+
+$f''(x) = -3 [ 2\\cos x (-\\sin x) \\sin x + \\cos^2 x \\cos x ] = -3 [ -2\\sin^2 x \\cos x + \\cos^3 x ]$.
+
+Utilitzant $\\sin^2 x = 1 - \\cos^2 x$:
+
+$f''(x) = -3 [ -2(1-\\cos^2 x)\\cos x + \\cos^3 x ] = -3 [ -2\\cos x + 3\\cos^3 x ] = \\mathbf{6\\cos x - 9\\cos^3 x}$.
+
+$f'''(x) = (-6 + 27\\cos^2 x)\\sin x$.
+
+$f^{(4)}(x) = (-54\\cos x \\sin^2 x) + (-6 + 27\\cos^2 x)\\cos x = -54\\cos x (1-\\cos^2 x) - 6\\cos x + 27\\cos^3 x$.
+
+$f^{(4)}(x) = -54\\cos x + 54\\cos^3 x - 6\\cos x + 27\\cos^3 x = \\mathbf{81\\cos^3 x - 60\\cos x}$.
 
 ---
 
@@ -47,17 +54,24 @@ Per tant, $|f^{(4)}(x)| \\leq \\mathbf{21}$.
 
 ### c) Càlcul de $I$ amb error $< 10^{-4}$
 
-Utilitzarem la **Regla de Simpson**. Busquem $n$ tal que $|E_S| < 10^{-4}$:
-$\\frac{(b-a)h^4}{180} M_4 < 10^{-4} \\implies \\frac{1 \\cdot h^4}{180} \\cdot 21 < 10^{-4}$
-$h^4 < \\frac{180 \\cdot 10^{-4}}{21} \\approx 0.000857 \\implies h < \\sqrt[4]{0.000857} \\approx 0.171$
-$n = \\frac{1}{h} \\geq 5.85$. Com que $n$ ha de ser parell, triem **$n = 6$**.
+Utilitzarem la **Regla de Simpson**. Busquem el nombre de subintervals $n$ necessari perquè $|E_S| < 10^{-4}$. Substituint $h = 1/n$ i $M_4 = 21$:
 
-Càlcul per Simpson ($n=6, h=1/6$):
-$I \\approx \\frac{1}{18} [f(0) + 4f(1/6) + 2f(2/6) + 4f(3/6) + 2f(4/6) + 4f(5/6) + f(1)]$
-Operant amb els valors de $\\cos^3(x)$:
-$I \\approx \\frac{1}{18} [1 + 3.8213 + 1.6375 + 2.6582 + 0.9424 + 1.1576 + 0.1577] \\approx \\mathbf{0.6429}$
+$$\\frac{(b-a)h^4}{180} M_4 < 10^{-4} \\implies \\frac{1}{180n^4} \\cdot 21 < 10^{-4}$$
 
-*(Nota: El valor exacte integrant analíticament és $\\sin(1) - \\frac{\\sin^3(1)}{3} \\approx 0.64287$, el que confirma que l'error amb $n=6$ és inferior a $10^{-4}$).*
+$$n^4 > \\frac{21}{180 \\cdot 10^{-4}} = \\frac{21}{0.018} = \\frac{21000}{18} = \\frac{3500}{3}$$
+
+$$n > \\sqrt[4]{\\frac{3500}{3}} \\approx 5.84 \\implies \\mathbf{n \\geq 6} \\text{ (ha de ser parell)}$$
+
+**Càlcul per Simpson ($n=6, h=1/6$):**
+Punts: $x_i = \\{0, \\frac{1}{6}, \\frac{2}{6}, \\frac{3}{6}, \\frac{4}{6}, \\frac{5}{6}, 1\\}$
+
+$$I \\approx \\frac{1/6}{3} \\left[ f(0) + f(1) + 4\\left(f\\left(\\frac{1}{6}\\right) + f\\left(\\frac{3}{6}\\right) + f\\left(\\frac{5}{6}\\right)\\right) + 2\\left(f\\left(\\frac{2}{6}\\right) + f\\left(\\frac{4}{6}\\right)\\right) \\right]$$
+
+Substituint la funció $f(x) = \\cos^3(x)$:
+$$I \\approx \\frac{1}{18} \\left[ \\cos^3(0) + \\cos^3(1) + 4\\left(\\cos^3\\left(\\frac{1}{6}\\right) + \\cos^3\\left(\\frac{3}{6}\\right) + \\cos^3\\left(\\frac{5}{6}\\right)\\right) + 2\\left(\\cos^3\\left(\\frac{2}{6}\\right) + \\cos^3\\left(\\frac{4}{6}\\right)\\right) \\right]$$
+
+$$I \\approx \\mathbf{0.6429}$$
+
 `,
   availableLanguages: ['ca']
 };

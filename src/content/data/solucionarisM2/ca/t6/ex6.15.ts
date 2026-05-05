@@ -16,11 +16,13 @@ c) Sabent que per $f(t) = \\frac{e^t}{t}$ es té $|f^{(4)}(t)| < 25$ per a tot $
   content: `
 ### a) Punt crític
 
-Per trobar els punts crítics, derivem $F(x)$ utilitzant el Teorema Fonamental del Càlcul i la regla de la cadena:
-$F'(x) = \\frac{d}{dx} \\left( \\int_1^{x^2+2} \\frac{e^t}{t} \\, dt \\right) = \\frac{e^{x^2+2}}{x^2+2} \\cdot \\frac{d}{dx}(x^2+2) = \\frac{e^{x^2+2}}{x^2+2} \\cdot 2x$
+La funció $f(t) = \\frac{e^t}{t}$ és contínua en tot el seu domini ($\\mathbb{R} \\setminus \{0\}$). Com que l'interval d'integració $[1, x^2+2]$ no conté el zero per a cap valor de $x$, la funció és contínua en l'interval de treball i podem aplicar el Teorema Fonamental del Càlcul i la regla de la cadena per derivar $F(x)$:
 
-Substituint $x = 0$:
-$F'(0) = \\frac{e^{0^2+2}}{0^2+2} \\cdot 2(0) = \\frac{e^2}{2} \\cdot 0 = 0$
+$$F'(x) = f(x^2+2) \\cdot (x^2+2)' - f(1) \\cdot (1)'$$
+
+$$F'(x) = \\frac{e^{x^2+2}}{x^2+2} \\cdot 2x - \\frac{e^1}{1} \\cdot 0 = \\frac{e^{x^2+2}}{x^2+2} \\cdot 2x$$
+
+$F'(0) = \\frac{e^2}{2} \\cdot 0 = 0$
 
 Com que l'anul·lació de la derivada és la condició de punt crític, quedat comprovat que **$x=0$ és un punt crític**.
 
@@ -28,29 +30,30 @@ Com que l'anul·lació de la derivada és la condició de punt crític, quedat c
 
 ### b) Aproximació de $F(0)$
 
-Tenim $F(0) = \\int_1^2 \\frac{e^t}{t} \\, dt$. Aplicarem Simpson amb $n=4$ i $h = \\frac{2-1}{4} = 0.25$.
+Tenim $F(0) = \\int_1^2 \\frac{e^t}{t} \\, dt$. Aplicarem la regla de Simpson amb $n=4$:
+- Interval: $[1, 2]$, per tant $a=1$ i $b=2$.
+- $h = \\frac{2-1}{4} = \\frac{1}{4}$
+- Punts: $t_i = 1 + i \\cdot \\frac{1}{4} \\implies \\{t_0=1, t_1=\\frac{5}{4}, t_2=\\frac{6}{4}, t_3=\\frac{7}{4}, t_4=2\\}$
 
-**Taula de valors ($f(t) = e^t/t$):**
-- $t_0 = 1.00 \\implies f(1.00) = e/1 \\approx 2.71828$
-- $t_1 = 1.25 \\implies f(1.25) = e^{1.25}/1.25 \\approx 2.79227$
-- $t_2 = 1.50 \\implies f(1.50) = e^{1.5}/1.5 \\approx 2.98779$
-- $t_3 = 1.75 \\implies f(1.75) = e^{1.75}/1.75 \\approx 3.28834$
-- $t_4 = 2.00 \\implies f(2.00) = e^2/2 \\approx 3.69453$
+La fórmula de Simpson és:
+$$S = \\frac{h}{3} \\left[ f(t_0) + 4f(t_1) + 2f(t_2) + 4f(t_3) + f(t_4) \\right]$$
 
-**Càlcul per Simpson:**
-$S = \\frac{0.25}{3} [f(t_0) + 4f(t_1) + 2f(t_2) + 4f(t_3) + f(t_4)]$
-$S = \\frac{1}{12} [2.71828 + 11.16908 + 5.97558 + 13.15336 + 3.69453]$
-$S = \\frac{1}{12} [36.71083] \\approx \\mathbf{3.05924}$
+Substituïm els valors de la funció $f(t) = \\frac{e^t}{t}$ sense aproximar:
+
+$$S = \\frac{1}{12} \\left[ \\frac{e^1}{1} + 4 \\cdot \\frac{e^{5/4}}{5/4} + 2 \\cdot \\frac{e^{6/4}}{6/4} + 4 \\cdot \\frac{e^{7/4}}{7/4} + \\frac{e^2}{2} \\right]$$
+
+$$S = \\frac{1}{12} \\left[ e + \\frac{16}{5} e^{5/4} + \\frac{4}{3} e^{3/2} + \\frac{16}{7} e^{7/4} + \\frac{e^2}{2} \\right] \\approx \\mathbf{3.05924}$$
 
 ---
 
 ### c) Cota superior de l'error
 
-Utilitzem la fórmula de l'error per a Simpson amb $M_4 = 25$ i $h = 0.25$:
-$|E_S| \\leq \\frac{(b-a)h^4}{180} M_4 = \\frac{1 \\cdot (0.25)^4}{180} \\cdot 25$
-$|E_S| \\leq \\frac{0.00390625}{180} \\cdot 25 = \\frac{0.09765625}{180} \\approx \\mathbf{0.0005425}$
+Utilitzem la fórmula de l'error per a Simpson amb $M_4 = 25$ i $h = \\frac{1}{4}$:
 
-L'error comès és inferior a $5.43 \\cdot 10^{-4}$.
+$$|E_S| \\leq \\frac{(b-a)h^4}{180} M_4 = \\frac{1 \\cdot (1/4)^4}{180} \\cdot 25$$
+
+$$|E_S| \\leq \\frac{1/256}{180} \\cdot 25 = \\frac{25}{46080} = \\frac{5}{9216} \\approx \\mathbf{5.425 \\cdot 10^{-4}}$$
+
 `,
   availableLanguages: ['ca']
 };

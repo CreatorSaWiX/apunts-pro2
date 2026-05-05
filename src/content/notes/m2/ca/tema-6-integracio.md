@@ -5,10 +5,20 @@ order: 6
 readTime: "30 min"
 subject: "m2"
 draft: false
-isNew: true
+isUpdated: 1
 ---
 
-L'objectiu principal d'aquest tema és estudiar l'àrea sota la corba d'una funció mitjançant diferents mètodes analítics i numèrics, i relacionar la integració amb la derivació.
+## 0. Introducció
+
+Quan escrivim $\int_a^b f(x)dx$:
+
+- **El símbol $\int$**: Prové del llatí *Summa* (és una "S" estilitzada). Indica que estem sumant infinits elements.
+- **La funció $f(x)$**: Representa l'**alçada** de cada rectangle en el punt $x$.
+- **El diferencial $dx$**: Representa una **amplada** infinitament petita (la base de cada rectangle).
+
+Estem calculant l'àrea d'un rectangle infinitesimal. La integral suma tots aquests rectangles des de $a$ fins a $b$.
+
+::mafs{type="riemann_sums"}
 
 ## 1. El teorema fonamental del càlcul (TFC)
 
@@ -20,20 +30,17 @@ llavors es compleix que:
 
 ::mafs{type="teorema_fonamental"}
 
-### Primitiva i regla de Barrow
+### Derivada d'una integral
 
-Si tenim dues funcions $f$ i $F$ definides en l'interval $(a,b)$ tal que $F'(x) = f(x)$ per a tot $x \in (a,b)$, es diu que $F$ és una **primitiva** de $f$ en l'interval $(a,b)$.
+Sigui $f$ contínua i $u(x), v(x)$ funcions derivables. Si definim: $F(x) = \int_{u(x)}^{v(x)} f(t)dt$ , aleshores la derivada és:
 
-::mafs{type="primitiva_familia"}
+$$
+F'(x) = f(v(x)) \cdot v'(x) - f(u(x)) \cdot u'(x)
+$$
 
-* **Corol·lari**: Si $f$ és contínua en $[a,b]$ i definim $F(x) = \int_a^x f$, aleshores $F$ és derivable en $[a,b]$ i és una primitiva de $f$ en $(a,b)$.
+*En paraules:* Substituïm la $x$ en la funció i multipliquem per la derivada del límit.
 
-Aquest concepte ens introdueix una de les eines més importants i pràctiques per avaluar integrals definides: la **Regla de Barrow**. Ens permet calcular l'integral definida d'una funció contínua de manera molt senzilla si podem trobar una de les seves primitives.
-
-> **Regla de Barrow**: Si $f$ és contínua en $[a,b]$ i $F$ és contínua en $[a,b]$ i derivable en $(a,b)$ sent una primitiva ($F'(x) = f(x)$), llavors:
-> $$\int_a^b f(x) dx = F(b) - F(a)$$
-
-::mafs{type="regla_barrow"}
+::mafs{type="limits_integracio"}
 
 ### Propietats fonamentals
 
@@ -54,6 +61,21 @@ Per treballar amb integrals definides, és essencial recordar aquestes propietat
 
 ::mafs{type="propietat_additivitat"}
 
+<!-- ### Primitiva i regla de Barrow
+
+Si tenim dues funcions $f$ i $F$ definides en l'interval $(a,b)$ tal que $F'(x) = f(x)$ per a tot $x \in (a,b)$, es diu que $F$ és una **primitiva** de $f$ en l'interval $(a,b)$.
+
+::mafs{type="primitiva_familia"}
+
+* **Corol·lari**: Si $f$ és contínua en $[a,b]$ i definim $F(x) = \int_a^x f$, aleshores $F$ és derivable en $[a,b]$ i és una primitiva de $f$ en $(a,b)$.
+
+Aquest concepte ens introdueix una de les eines més importants i pràctiques per avaluar integrals definides: la **Regla de Barrow**. Ens permet calcular l'integral definida d'una funció contínua de manera molt senzilla si podem trobar una de les seves primitives.
+
+> **Regla de Barrow**: Si $f$ és contínua en $[a,b]$ i $F$ és contínua en $[a,b]$ i derivable en $(a,b)$ sent una primitiva ($F'(x) = f(x)$), llavors:
+> $$\int_a^b f(x) dx = F(b) - F(a)$$
+
+::mafs{type="regla_barrow"}
+
 ### Propietats de simetria i paritat
 
 Si la funció $f$ presenta simetries, l'estudi de la funció àrea $F(x) = \int_0^x f(t)dt$ se simplifica:
@@ -62,20 +84,7 @@ Si la funció $f$ presenta simetries, l'estudi de la funció àrea $F(x) = \int_
 
 ::mafs{type="paritat_integrals"}
 
-> **Truc d'examen**: Recorda que la integral d'una funció imparella en un interval simètric $[-a, a]$ és sempre $0$.
-
-### Derivada d'una integral
-
-Quan els límits d'integració depenen d'una variable $x$, no podem aplicar el TFC directament; cal utilitzar la **Regla de la Cadena**.
-
-> **Teorema**: Sigui $f$ contínua i $u(x), v(x)$ funcions derivables. Si definim:
-> $$F(x) = \int_{u(x)}^{v(x)} f(t)dt$$
-> Aleshores la seva derivada és:
-> $$F'(x) = f(v(x)) \cdot v'(x) - f(u(x)) \cdot u'(x)$$
-
-*En paraules:* Substituïm la $x$ en la funció i multipliquem per la derivada del límit.
-
-::mafs{type="limits_integracio"}
+> Recorda que la integral d'una funció imparella en un interval simètric $[-a, a]$ és sempre $0$.
 
 ### Límits i indeterminacions amb integrals
 
@@ -93,7 +102,7 @@ Podem estudiar el comportament de $F(x) = \int_a^x f(t)dt$ sense calcular la int
 - **Punts crítics**: Són els valors de $x$ on $F'(x) = f(x) = 0$.
 - **Creixement**: $F$ creix on $f(x) > 0$ i decreix on $f(x) < 0$.
 - **Concavitat**: Estudiem $F''(x) = f'(x)$. Si $f'(x) > 0$, $F$ és convexa ($\cup$).
-- **Punts d'Inflexió**: On $f'(x) = 0$ i hi ha canvi de curvatura.
+- **Punts d'Inflexió**: On $f'(x) = 0$ i hi ha canvi de curvatura. -->
 
 ---
 
@@ -105,11 +114,18 @@ En molts de problemes pràctics i en l'enginyeria, calcular l'integral d'una fun
 
 Consisteix en subdividir l'interval $[a,b]$ en $n$ subintervals d'amplada $h = \frac{b-a}{n}$. En cada interval, se substitueix la corba per un trapezi recte.
 
-$$ T_n = \frac{h}{2} \left[ f(a) + f(b) + 2 \sum_{i=1}^{n-1} f(x_i) \right] $$
+$$ 
+T_n = \frac{h}{2} \left[ f(a) + f(b) + 2 \sum_{i=1}^{n-1} f(x_i) \right] = h \left[ \frac{f(a)+f(b)}{2} + \sum_{i=1}^{n-1} f(x_i) \right]
+$$
 
 **Càlcul de l'error i cerca de $n$:**
 L'error màxim admès ve fita per:
-$$ |E_T| \leq \frac{(b-a)h^2}{12} M_2 = \frac{(b-a)^3}{12n^2} M_2 $$
+
+$$ 
+|E_T| \leq \frac{(b-a)h^2}{12} M_2 = \frac{(b-a)^3}{12n^2} M_2 
+$$
+
+
 *On $M_2$ és el valor màxim de $|f''(x)|$ en l'interval.*
 
 Per trobar el nombre d'intervals $n$ necessari per a una precisió $\varepsilon$:
@@ -122,11 +138,17 @@ Per trobar el nombre d'intervals $n$ necessari per a una precisió $\varepsilon$
 
 Aquest mètode millora la precisió aproximant la corba mitjançant fragments de paràboles (polinomis de grau 2). Per aplicar-lo, és fonamental que el nombre de **subintervals ($n$) sigui parell**.
 
-$$ S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{i=1}^{n/2} f(x_{2i-1}) + 2\sum_{i=1}^{\frac{n}{2}-1} f(x_{2i}) \right] $$
+$$ 
+S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{i=1}^{n/2} f(x_{2i-1}) + 2\sum_{i=1}^{\frac{n}{2}-1} f(x_{2i}) \right] 
+$$
 
 **Càlcul de l'error i cerca de $n$:**
 L'error màxim admès ve fita per:
-$$ |E_S| \leq \frac{(b-a)h^4}{180} M_4 = \frac{(b-a)^5}{180n^4} M_4 $$
+
+$$ 
+|E_S| \leq \frac{(b-a)h^4}{180} M_4 = \frac{(b-a)^5}{180n^4} M_4 
+$$
+
 *On $M_4$ és el valor màxim de $|f^{(4)}(x)|$ en l'interval.*
 
 Per trobar el nombre d'intervals $n$ necessari per a una precisió $\varepsilon$:

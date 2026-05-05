@@ -1413,16 +1413,21 @@ const VisTeoremaMitjana = () => {
 const VisRiemannSums = () => {
     const [n, setN] = React.useState(6);
     const [type, setType] = React.useState<'lower' | 'upper'>('lower');
+    const [a, setA] = React.useState(0);
+    const [b, setB] = React.useState(5);
+    
     const f = (x: number) => 0.1 * x * x + 1;
-    const a = 0;
-    const b = 5;
     const dx = (b - a) / n;
 
     const rectangles = [];
     for (let i = 0; i < n; i++) {
         const x0 = a + i * dx;
         const x1 = a + (i + 1) * dx;
-        const h = type === 'lower' ? f(x0) : f(x1); // Com que és creixent, ínfim és esquerra i suprem dreta
+        // Suposem f creixent en l'interval per simplicitat didàctica
+        const h = type === 'lower' 
+            ? (dx > 0 ? f(x0) : f(x1)) 
+            : (dx > 0 ? f(x1) : f(x0));
+        
         rectangles.push(
             <Polygon
                 key={i}
@@ -1439,6 +1444,13 @@ const VisRiemannSums = () => {
                 <Coordinates.Cartesian />
                 {rectangles}
                 <Plot.OfX y={f} color={Theme.red} weight={3} />
+                
+                {/* Límits de l'integral */}
+                <MovablePoint point={[a, 0]} onMove={(p) => setA(p[0])} color={Theme.blue} />
+                <MovablePoint point={[b, 0]} onMove={(p) => setB(p[0])} color={Theme.blue} />
+                
+                <LaTeX at={[a, -0.4]} tex="a" color={Theme.blue} />
+                <LaTeX at={[b, -0.4]} tex="b" color={Theme.blue} />
             </Mafs>
             <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">

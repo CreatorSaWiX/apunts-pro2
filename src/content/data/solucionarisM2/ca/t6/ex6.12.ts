@@ -13,71 +13,67 @@ a) $\\int_0^1 e^{x^2} \\, dx$;
 b) $\\int_0^1 \\cos(x^2) \\, dx$.
 
 Calculeu també la cota superior de l'error comès en cada cas.`,
-  content: `
-Per a ambdues integrals tenim $n=4$ subintervals en l'interval $[0, 1]$, per tant $h = \\frac{1-0}{4} = 0.25$.
-Els punts de la partició són $x_i = a + i \\cdot h = 0 + \\frac i 4 = \\{0, 0.25, 0.5, 0.75, 1\\}$.
-
----
-
-### a) $\\int_0^1 e^{x^2} \\, dx$
-
-Taula de valors ($f(x) = e^{x^2}$):
-- $f(0) = 1$
-- $f(0.25) \\approx 1.06449$
-- $f(0.5) \\approx 1.28403$
-- $f(0.75) \\approx 1.75505$
-- $f(1) \\approx 2.71828$
+  content: `### a) $\\int_0^1 e^{x^2} \\, dx$
+- Interval: $[a, b] = [0, 1]$
+- Nombre de subintervals: $n = 4$
+- Amplada dels intervals: $h = \\frac{b-a}{n} = \\frac{1-0}{4} = \\frac{1}{4}$
+- Punts de la partició ($x_i = a + i \\cdot h$):
+  - $x_0 = 0 + 0 \\cdot \\frac{1}{4} = 0$
+  - $x_1 = 0 + 1 \\cdot \\frac{1}{4} = \\frac{1}{4}$
+  - $x_2 = 0 + 2 \\cdot \\frac{1}{4} = \\frac{2}{4}$ (o $0.5$)
+  - $x_3 = 0 + 3 \\cdot \\frac{1}{4} = \\frac{3}{4}$
+  - $x_4 = 0 + 4 \\cdot \\frac{1}{4} = 1$
 
 **Mètode dels Trapezis ($T$):**
-$T_n = \\frac{h}{2} \\left[ f(x_0) + 2 \\sum_{i=1}^{n-1} f(x_i) + f(x_n) \\right]$
+Fórmula: $T_n = h \\left[ \\frac{f(a)+f(b)}{2} + \\sum_{i=1}^{n-1} f(x_i) \\right]$
 
-$T = \\frac{0.25}{2} [f(0) + 2(f(0.25) + f(0.5) + f(0.75)) + f(1)]$
+$$T = \\frac{1}{4} \\left[ \\frac{f(0)+f(1)}{2} + f\\left(\\frac{1}{4}\\right) + f\\left(\\frac{2}{4}\\right) + f\\left(\\frac{3}{4}\\right) \\right]$$
 
-$T = 0.125 [1 + 2(4.10357) + 2.71828] = 0.125 [11.92542] \\approx \\mathbf{1.49068}$
+$$T = \\frac{1}{4} \\left[ \\frac{e^{0^2}+e^{1^2}}{2} + e^{(1/4)^2} + e^{(2/4)^2} + e^{(3/4)^2} \\right]\\approx \\mathbf{1.490679}$$
 
 **Regla de Simpson ($S$):**
-$S_n = \\frac{h}{3} \\left[ f(x_0) + 4 \\sum_{\\text{senars}} f(x_i) + 2 \\sum_{\\text{parells}} f(x_i) + f(x_n) \\right]$
+Fórmula: $S_{2m} = \\frac{h}{3} \\left[ f(a)+f(b) + 4\\sum_{j=1}^{m} f(x_{2j-1}) + 2\\sum_{j=1}^{m-1} f(x_{2j}) \\right]$ (amb $n=2m=4 \\implies m=2$)
 
-$S = \\frac{0.25}{3} [f(0) + 4f(0.25) + 2f(0.5) + 4f(0.75) + f(1)]$
+$$S = \\frac{1/4}{3} \\left[ f(0)+f(1) + 4\\left(f\\left(\\frac{1}{4}\\right) + f\\left(\\frac{3}{4}\\right)\\right) + 2f\\left(\\frac{2}{4}\\right) \\right]$$
 
-$S = \\frac{0.25}{3} [1 + 4.25796 + 2.56806 + 7.02020 + 2.71828] = \\frac{0.25}{3} [17.56450] \\approx \\mathbf{1.46371}$
+$$S = \\frac{1}{12} \\left[ e^0 + e^1 + 4e^{(1/4)^2} + 2e^{(2/4)^2} + 4e^{(3/4)^2} \\right] \\approx \\mathbf{1.46371}$$
 
 **Cotes d'error (a):**
 Necessitem les derivades: $f''(x) = (2+4x^2)e^{x^2}$ i $f^{(4)}(x) = (12+48x^2+16x^4)e^{x^2}$.
-- $max |f''(x)| = f''(1) = 6e \\approx 16.31$
-- $max |f^{(4)}(x)| = f^{(4)}(1) = 76e \\approx 206.59$
+- $M_2 = \\max |f''(x)|$ en $[0, 1] = f''(1) = 6e$
+- $M_4 = \\max |f^{(4)}(x)|$ en $[0, 1] = f^{(4)}(1) = 76e$
 
-Fórmules de l'error:
-$|E_T| \\leq \\frac{(b-a)h^2}{12} M_2, \\quad |E_S| \\leq \\frac{(b-a)h^4}{180} M_4$
+$$|E_T| \\leq \\frac{(b-a)h^2}{12} M_2 = \\frac{1 \\cdot (1/4)^2}{12} \\cdot 6e = \\frac{1/16}{12} \\cdot 6e = \\frac{6e}{192} = \\frac{e}{32} \\approx \\mathbf{0.0849}$$
 
-$|E_T| \\leq \\frac{1 \\cdot 0.25^2}{12} \\cdot 16.31 \\approx \\mathbf{0.0849}$
-$|E_S| \\leq \\frac{1 \\cdot 0.25^4}{180} \\cdot 206.59 \\approx \\mathbf{0.00448}$
+$$|E_S| \\leq \\frac{(b-a)h^4}{180} M_4 = \\frac{1 \\cdot (1/4)^4}{180} \\cdot 76e = \\frac{1/256}{180} \\cdot 76e = \\frac{76e}{46080} = \\frac{19e}{11520} \\approx \\mathbf{0.00448}$$
 
 ---
 
 ### b) $\\int_0^1 \\cos(x^2) \\, dx$
 
-Taula de valors ($g(x) = \\cos(x^2)$):
-- $g(0) = 1$
-- $g(0.25) \\approx 0.99805$
-- $g(0.5) \\approx 0.96891$
-- $g(0.75) \\approx 0.84592$
-- $g(1) \\approx 0.54030$
+**Dades inicials:**
+- Interval: $[a, b] = [0, 1]$
+- $h = \\frac{1}{4}$ i punts $x_i = \\{0, \\frac{1}{4}, \\frac{2}{4}, \\frac{3}{4}, 1\\}$
 
 **Mètode dels Trapezis ($T$):**
-$T = \\frac{0.25}{2} [g(0) + 2(g(0.25) + g(0.5) + g(0.75)) + g(1)]$
-$T = 0.125 [1 + 2(2.81288) + 0.54030] = 0.125 [7.16606] \\approx \\mathbf{0.89576}$
+
+$$T = \\frac{1}{4} \\left[ \\frac{g(0)+g(1)}{2} + g\\left(\\frac{1}{4}\\right) + g\\left(\\frac{2}{4}\\right) + g\\left(\\frac{3}{4}\\right) \\right]$$
+
+$$T = \\frac{1}{4} \\left[ \\frac{\\cos(0)+\\cos(1)}{2} + \\cos(1/16) + \\cos(4/16) + \\cos(9/16) \\right] \\approx \\mathbf{0.89576}$$
 
 **Regla de Simpson ($S$):**
-$S = \\frac{0.25}{3} [g(0) + 4g(0.25) + 2g(0.5) + 4g(0.75) + g(1)]$
-$S = \\frac{0.25}{3} [1 + 3.99220 + 1.93782 + 3.38368 + 0.54030] = \\frac{0.25}{3} [10.85400] \\approx \\mathbf{0.90450}$
+
+$$S = \\frac{1}{12} \\left[ g(0) + g(1) + 4\\left(g\\left(\\frac{1}{4}\\right) + g\\left(\\frac{3}{4}\\right)\\right) + 2g\\left(\\frac{2}{4}\\right) \\right]$$
+
+$$S = \\frac{1}{12} \\left[ \\cos(0) + \\cos(1) + 4\\cos(1/16) + 2\\cos(4/16) + 4\\cos(9/16) \\right] \\approx \\mathbf{0.90450}$$
 
 **Cotes d'error (b):**
 Derivada segona: $g''(x) = -2\\sin(x^2) - 4x^2\\cos(x^2)$.
-- $max |g''(x)| \\approx |g''(1)| = |-2\\sin(1) - 4\\cos(1)| \\approx 3.844$
+- $M_2 = \\max |g''(x)|$ en $[0, 1] \\approx |g''(1)| = 2\\sin(1) + 4\\cos(1) \\approx 3.844$
 
-$|E_T| \\leq \\frac{1 \\cdot 0.0625}{12} \\cdot 3.844 \\approx \\mathbf{0.0200}$
-*(Nota: Les derivades de Simpson per $\\cos(x^2)$ són més complexes però segueixen la mateixa metodologia de cotes superiors).*
+$$|E_T| \\leq \\frac{(b-a)h^2}{12} M_2 = \\frac{1 \\cdot (1/4)^2}{12} \\cdot 3.844 \\approx \\mathbf{0.0200}$$
+
+*(Nota: Les derivades de Simpson per a $\\cos(x^2)$ són més complexes però seguirien la mateixa metodologia de cotes superiors).*
 `,
   availableLanguages: ['ca']
 };

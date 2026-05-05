@@ -30,6 +30,17 @@ Aquesta taula recull el **"on i què"** del projecte per validar la teva compren
 *   **Col·lisions**: Es miren via `overlaps` comparant `Rect`. Mario és un `Rect` dinàmic.
 *   **Eixos**: Origen (0,0) a dalt-esquerra. X creix a la dreta, Y creix **avall**.
 
+### Coses que no ensenyen a classe 
+
+*   `@brief`: Doxygen - text que surt anant a l'arxiu amb `Ctrl` + click sobre el nom de la funció.
+*   `@param`: Doxygen - text que surt quan escrius paràmetres de la funció.
+*   `@return`: Doxygen - text que surt quan escrius el tipus de retorn de la funció.
+*   **Getter**: Mètode `const` per "llegir" la variable (ex: `get_pos()` -> retorna pos).
+*   **Setter**: Mètode per "escriure" o modificar-la, sovint amb validacions (ex: `set_speed(v)` -> modifca speed).
+*   **PascalCase**: Separar paraules amb majúscula (`UpdateObjects`).
+*   **camelCase**: Separar paraules amb la primera lletra minúscula i resta majúscula (`updateObjects()`).
+*   **snake_case_**: Separar paraules amb '_' (`update_objects`).
+
 ---
 ## Part 0: Exercicis inicials
 

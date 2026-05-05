@@ -33,7 +33,7 @@ Aquesta matriu és la inversa de l'anterior: $P_{B'}^B = (P_B^{B'})^{-1}$. En ll
 
 $$ \\begin{pmatrix} y_1 \\\\ y_2 \\\\ y_3 \\\\ y_4 \\end{pmatrix} = \\begin{pmatrix} 1 & 0 & 0 & 0 \\\\ 1 & 1 & 0 & 0 \\\\ 0 & 1 & 1 & 0 \\\\ 0 & 0 & 1 & 1 \\end{pmatrix} \\begin{pmatrix} x_1 \\\\ x_2 \\\\ x_3 \\\\ x_4 \\end{pmatrix} \\implies \\begin{cases} y_1 = x_1 \\\\ y_2 = x_1 + x_2 \\\\ y_3 = x_2 + x_3 \\\\ y_4 = x_3 + x_4 \\end{cases} $$
 
-Resolem pas a pas per substitució:
+Resolem pas a pas per substitució:x
 *   $x_1 = y_1$
 *   $x_2 = y_2 - x_1 = \\mathbf{-y_1 + y_2}$
 *   $x_3 = y_3 - x_2 = y_3 - (-y_1 + y_2) = \\mathbf{y_1 - y_2 + y_3}$
