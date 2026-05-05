@@ -198,7 +198,7 @@ En una cua, necessitem dos punters: `first` (per treure) i `last` (per afegir).
 > **Exercici `operator[]`**: Com que una cua enllaçada no és un vector, per trobar l'element `i` has de fer un bucle `for` que avanci el punter `p = p->next` exactament `i` vegades començant des de `first`.
 
 ### 7.3 Com esborrar nodes pel mig
-Per esborrar un node (com a `removeFirstOccurrence`), necessites "saltar-te'l":
+Per esborrar un node (com a `removeFirstOccurrence` - Jutge: X87185), necessites "saltar-te'l":
 1. Trobar el node **anterior** al que vols esborrar (`ant`).
 2. Fer el salt: `ant->next = ant->next->next;`
 3. Alliberar la memòria: `delete p_a_esborrar;`
@@ -208,7 +208,7 @@ Per esborrar un node (com a `removeFirstOccurrence`), necessites "saltar-te'l":
 ---
 
 ## Checklist per al Jutge (Punters)
-- [ ] **Has posat `nullptr`?** Comprova sempre si un punter és nul abans de fer `p->next`.
-- [ ] **Has fet `delete`?** Cada `new` ha de tenir el seu `delete` per evitar Memory Leaks.
-- [ ] **Casos buits**: Què fa el teu codi si la pila/cua està buida? I si té només 1 element?
-- [ ] **Auto-assignació**: En l'ús de `operator=`, has comprovat `if (this != &s)`?
+- **Has posat `nullptr`?** Comprova sempre si un punter és nul abans de fer `p->next`.
+- **Has fet `delete`?** Cada `new` ha de tenir el seu `delete` per evitar Memory Leaks.
+- **Casos buits**: Què fa el teu codi si la pila/cua està buida? I si té només 1 element?
+- **Auto-assignació**: En l'ús de `operator=`, has comprovat `if (this != &s)`?

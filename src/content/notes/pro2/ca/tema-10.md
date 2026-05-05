@@ -42,7 +42,7 @@ La llista és l'estructura ideal per inserir/esborrar en qualsevol punt si ja te
 2. El connectem amb el seu següent i anterior.
 3. Actualitzem els punters dels veïns perquè apuntin al nou node.
 
-```cpp
+<!-- ```cpp
 void insertItem(Item *pitemprev, const T &value) {
     Item *pitem = new Item;
     pitem->value = value;
@@ -53,7 +53,9 @@ void insertItem(Item *pitemprev, const T &value) {
     pitemprev->next = pitem;
     _size++;
 }
-```
+``` -->
+
+::algoviz{algorithm="list_insert"}
 
 ### Com moure nodes (la regla dels 4 punters)
 En molts exercicis (com `moveToEnd` o `moveSecondToLast`), el Jutge prohibeix intercanviar els `.value`. Has de moure el node físicament:

@@ -54,13 +54,20 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
     const handleReset = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(0); }); };
     const handleFullEnd = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(steps.length - 1); }); };
 
-    // Update node colors and labels dynamically without changing graph array reference
+    // Update node colors and labels dynamically
+    // We modify the stable nodes in-place to preserve their physics state (x, y)
     graphData.nodes.forEach((n: any) => {
         n.color = step.highlights[n.id] || '#334155';
         if (step.nodeLabels && step.nodeLabels[n.id]) {
             n.label = step.nodeLabels[n.id];
         }
     });
+
+    // Create a new graph data object for the visualizer to trigger its useEffect
+    const currentGraphData = {
+        nodes: graphData.nodes,
+        links: (step.links || algo.initialGraph.links).map(l => ({ ...l }))
+    };
 
     const customTheme = EditorView.theme({
         "&": { backgroundColor: "transparent !important", height: "100%" },
@@ -175,7 +182,7 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
                     {/* Visualizer Canvas */}
                     <div className="absolute inset-x-0 top-0 bottom-[140px] sm:bottom-[150px] z-10 mix-blend-screen opacity-90">
                         <GraphVisualizer
-                            initialData={graphData}
+                            initialData={currentGraphData}
                             showControls={false}
                             updateTrigger={currentStep}
                             isAnimating={isPlaying}

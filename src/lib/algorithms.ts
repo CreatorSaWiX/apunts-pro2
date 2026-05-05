@@ -3,6 +3,7 @@ export interface AlgoStep {
     description: string;
     highlights: Record<string | number, string>; // nodeId -> color
     nodeLabels?: Record<string | number, string>; // nodeId -> label text
+    links?: { source: string | number; target: string | number; label?: string; color?: string; curvature?: number }[];
     variables: Record<string, string>;
 }
 
@@ -11,7 +12,7 @@ export interface Algorithm {
     code: string;
     initialGraph: {
         nodes: { id: string | number; label: string; group?: number; fx?: number; fy?: number; color?: string }[];
-        links: { source: string | number; target: string | number; label?: string }[];
+        links: { source: string | number; target: string | number; label?: string; color?: string; curvature?: number }[];
     };
     generateSteps: () => AlgoStep[];
 }
@@ -1548,6 +1549,87 @@ export const algorithms: Record<string, Algorithm> = {
             addStep(7, "Tornem a node 20. Es reconstrueix amb la nova branca dreta (que conte 30 i 25). L'esquerra (10) es reutilitza.", { reconstruint: "BinTree(20, [10], [30→25])" });
             hl[1] = "#22c55e";
             addStep(7, "Tornem a l'arrel. Nou BST reconstruït amb el node 25 al seu lloc. Cost total: O(log n).", { cost: "O(log n)", arbre_final: "50{20{10,30{25,NULL}},80{70,90}}" });
+
+            return steps;
+        }
+    },
+    list_insert: {
+        id: "list_insert",
+        code: `void insertItem(Item *pitemprev, const T &value) {
+    Item *pitem = new Item;
+    pitem->value = value;
+    
+    pitem->next = pitemprev->next;
+    pitem->next->prev = pitem;
+    pitem->prev = pitemprev;
+    pitemprev->next = pitem;
+    _size++;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: 0, label: "pitemprev (A)", fx: -160, fy: 0, color: "#3b82f6" },
+                { id: 1, label: "next (B)", fx: 160, fy: 0, color: "#3b82f6" },
+                { id: 2, label: "pitem (N)", fx: 0, fy: -100, color: "rgba(255,255,255,0.05)" },
+            ],
+            links: [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 0, curvature: 0.2, color: "#475569" },
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<number, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const hBase = { 0: "#3b82f6", 1: "#3b82f6", 2: "rgba(255,255,255,0.05)" };
+            const lBase = [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 0, curvature: 0.2, color: "#475569" }
+            ];
+
+            addStep(1, "Volem inserir un nou valor després de A (pitemprev). Inicialment A i B estan connectats.", 
+                { ...hBase }, [...lBase], { pitemprev: "A", value: "42" });
+
+            addStep(2, "Pas 1: Creem el nou node N en memòria.", 
+                { ...hBase, 2: "#facc15" }, [...lBase], { pitem: "Node N (0x...)" });
+
+            addStep(3, "Pas 2: Assignem el valor 42 al nou node.", 
+                { ...hBase, 2: "#10b981" }, [...lBase], { "pitem->value": "42" });
+
+            const l5 = [
+                ...lBase,
+                { source: 2, target: 1, curvature: -0.2, color: "#facc15" } // N -> B
+            ];
+            addStep(5, "Pas 3: Connectem N amb el seu següent. pitem->next = pitemprev->next (que és B).", 
+                { 0: "#3b82f6", 1: "#3b82f6", 2: "#10b981" }, l5, { "pitem->next": "B" });
+
+            const l6 = [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 2, curvature: -0.2, color: "#facc15" }, // B -> N
+                { source: 2, target: 1, curvature: -0.2, color: "#475569" }  // N -> B
+            ];
+            addStep(6, "Pas 4: El node B ha d'apuntar enrere cap a N. pitem->next->prev = pitem.", 
+                { 0: "#3b82f6", 1: "#facc15", 2: "#10b981" }, l6, { "B->prev": "N" });
+
+            const l7 = [
+                ...l6,
+                { source: 2, target: 0, curvature: 0.2, color: "#facc15" } // N -> A
+            ];
+            addStep(7, "Pas 5: Connectem N amb el seu anterior (A). pitem->prev = pitemprev.", 
+                { 0: "#3b82f6", 1: "#3b82f6", 2: "#10b981" }, l7, { "pitem->prev": "A" });
+
+            const l8 = [
+                { source: 0, target: 2, curvature: 0.2, color: "#facc15" }, // A -> N
+                { source: 1, target: 2, curvature: -0.2, color: "#475569" },
+                { source: 2, target: 1, curvature: -0.2, color: "#475569" },
+                { source: 2, target: 0, curvature: 0.2, color: "#475569" }
+            ];
+            addStep(8, "Pas 6: Finalment, A apunta a N com el seu següent. Hem 'recosit' la llista!", 
+                { 0: "#facc15", 1: "#3b82f6", 2: "#10b981" }, l8, { "A->next": "N" });
+
+            addStep(9, "Operació finalitzada. La mida de la llista s'ha incrementat.", 
+                { 0: "#10b981", 1: "#10b981", 2: "#10b981" }, l8, { _size: "3" });
 
             return steps;
         }

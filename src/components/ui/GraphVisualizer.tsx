@@ -254,7 +254,8 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     // Stable references for ForceGraph props to prevent hidden-canvas thrashing
     const getNodeColor = useCallback((node: any) => node.color || theme.primary || '#8b5cf6', [theme.primary]);
     const getNodeCanvasObjectMode = useCallback(() => 'after', []);
-    const getLinkColor = useCallback(() => '#475569', []);
+    const getLinkColor = useCallback((link: any) => link.color || '#475569', []);
+    const getLinkCurvature = useCallback((link: any) => link.curvature || 0, []);
 
     const handleEngineStop = useCallback(() => {
         if (fgRef.current) {
@@ -340,6 +341,12 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                         onNodeHover={handleNodeHover}
                         nodeLabel="label"
                         linkColor={getLinkColor}
+                        linkCurvature={getLinkCurvature}
+                        linkDirectionalParticles={2}
+                        linkDirectionalParticleSpeed={0.005}
+                        linkDirectionalParticleWidth={2}
+                        linkDirectionalArrowLength={6}
+                        linkDirectionalArrowRelPos={1}
                         backgroundColor="rgba(0,0,0,0)"
                         linkWidth={2.5} // Thicker connections
                         d3VelocityDecay={0.15} // Slightly more floaty

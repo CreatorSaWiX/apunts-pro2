@@ -56,6 +56,8 @@ void insertItem(Item *pitemprev, const T &value) {
 }
 ```
 
+::algoviz{algorithm="list_insert"}
+
 ### Cómo mover nodos (la regla de los 4 punteros)
 En muchos ejercicios (como `moveToEnd` o `moveSecondToLast`), el Juez prohíbe intercambiar los `.value`. Tienes que mover el nodo físicamente:
 1. **Desconectar**: Une el vecino anterior con el siguiente (`p->prev->next = p->next` y `p->next->prev = p->prev`).

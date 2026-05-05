@@ -67,20 +67,21 @@ L'únic que allibera la memòria definitivament.
 
 ## 3. Operadors
 
-| Categoria | Definició de la funció (cpp) | Crida des del main |
-| :--- | :--- | :--- |
-| **Accés** | `T& operator[](int i)` | `v[i] = x;` |
-| **Comparació** | `bool operator<(const V& v)` | `if (a < b)` |
-| **Assignació** | `void operator+=(const V& v)` | `a += b;` |
-| **Aritmètics** | `V operator+(const V& v)` | `c = a + b;` |
-| **Flux** | `ostream& operator<<(ostream& o, const V& v)` | `cout << v;` |
+Quan tu escrius `s += s2` al main, el compilador de C++ busca si la classe té definida una funció que es digui literalment `operator+=`. Si la troba i accepta els arguments que li passes (en aquest cas un objecte de tipus Stack), fa la crida directa.
 
 ```cpp
 Stack<int> s1, s2;
 s1 += s2;           // Sintaxi natural (al main)
 s1.operator+=(s2);  // Equivalent a s1 += s2;
 ```
-Quan tu escrius `s += s2` al main, el compilador de C++ busca si la classe té definida una funció que es digui literalment `operator+=`. Si la troba i accepta els arguments que li passes (en aquest cas un objecte de tipus Stack), fa la crida directa.
+
+| Categoria | Definició de la funció (c+pp) | Crida des del main |
+| :--- | :--- | :--- |
+| **Accés** | `T& operator[](int i)` | `v[i] = x;` |
+| **Comparació** | `bool operator<(const V& v)` | `if (a < b)` |
+| **Assignació** | `void operator+=(const V& v)` | `a += b;` |
+| **Aritmètics** | `V operator+(const V& v)` | `c = a + b;` |
+| **Flux** | `ostream& operator<<(ostream& o, const V& v)` | `cout << v;` |
 
 ## 4. Accés i iteradors
 
