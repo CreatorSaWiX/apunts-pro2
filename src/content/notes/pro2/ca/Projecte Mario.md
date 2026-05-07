@@ -4,7 +4,7 @@ description: "Resum del projecte i solucionaris dels problemes"
 readTime: "15 min"
 order: 14
 draft: false
-isNew: true
+isUpdated: 1
 ---
 
 ## Resum d'arquitectura 

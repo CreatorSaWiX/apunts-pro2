@@ -21,6 +21,8 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const [shouldLoad, setShouldLoad] = useState(false);
 
+    const [isLoaded, setIsLoaded] = useState(false);
+
     // Lazy load: only inject the iframe once the card enters the viewport
     useEffect(() => {
         const el = containerRef.current;
@@ -33,7 +35,7 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
                     observer.disconnect();
                 }
             },
-            { rootMargin: '200px' } // start loading 200px before it's visible
+            { rootMargin: '50px' } // Reduced margin so the user is more likely to see the loading state
         );
         observer.observe(el);
         return () => observer.disconnect();
@@ -64,8 +66,8 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
             </div>
 
             {/* Embed area */}
-            <div className="w-full" style={{ height: h }}>
-                {shouldLoad ? (
+            <div className="w-full relative" style={{ height: h }}>
+                {shouldLoad && (
                     <iframe
                         src={src}
                         height={h}
@@ -73,15 +75,17 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
                         frameBorder={0}
                         allowFullScreen
                         title="LinkedIn embed"
-                        className="w-full block"
-                        loading="lazy"
+                        className={`w-full block transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        onLoad={() => setIsLoaded(true)}
                     />
-                ) : (
-                    /* Placeholder shown before intersection */
-                    <div className="w-full h-full flex flex-col items-center justify-center gap-4 bg-slate-950/40">
+                )}
+                
+                {/* Placeholder shown before intersection OR while iframe is loading internal content */}
+                {!isLoaded && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-950/40 backdrop-blur-sm">
                         <div className="w-8 h-8 rounded-full border-2 border-[#0A66C2]/30 border-t-[#0A66C2] animate-spin" />
-                        <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">
-                            Carregant vídeo…
+                        <span className="text-xs font-mono text-slate-500 uppercase tracking-widest animate-pulse">
+                            Carregant contingut…
                         </span>
                     </div>
                 )}
