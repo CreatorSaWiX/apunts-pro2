@@ -97,6 +97,11 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
                     {caption}
                 </p>
             )}
+            
+            {/* Adblock warning */}
+            <div className="text-[10px] text-center text-slate-600/60 pb-2 px-4 font-mono">
+                Si l'embed apareix en blanc, és possible que el teu navegador (ex. Brave) estigui bloquejant el contingut de tercers. Pots <a href={src} target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-400">veure'l directament a LinkedIn</a>.
+            </div>
         </div>
     );
 };
