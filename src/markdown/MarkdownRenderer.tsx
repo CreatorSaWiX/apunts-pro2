@@ -27,6 +27,7 @@ const VideoPlayer = React.lazy(() => import("../components/ui/VideoPlayer"));
 const VectorVisualizer = React.lazy(() => import("../components/ui/VectorVisualizer"));
 const ListVisualizer = React.lazy(() => import("../components/ui/ListVisualizer"));
 const PointerVisualizer = React.lazy(() => import("../components/ui/PointerVisualizer"));
+const LinkedInEmbed = React.lazy(() => import("../components/ui/LinkedInEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
 const ThreeVisualizer = React.lazy(() =>
     import("../components/ui/ThreeVisualizer").catch(() => ({
@@ -177,6 +178,14 @@ const defaultComponents: any = {
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <ThreeVisualizer {...rest} />
+            </React.Suspense>
+        );
+    },
+    linkedinviz: (props: any) => {
+        const { node, ...rest } = props;
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <LinkedInEmbed {...rest} />
             </React.Suspense>
         );
     },

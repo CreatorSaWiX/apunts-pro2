@@ -512,7 +512,10 @@ for (const Platform& p : platforms_) {
 }
 ```
 
-La solució és el **frustum culling**: pintar *només* els objectes visibles a la càmera.
+La solució és el **frustum culling**: pintar *només* els objectes visibles a la càmera. Aquí tens un exemple real del frustum culling en un videojoc 3D (Jettelly Inc.):
+
+:::linkedinviz{src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7433368353206992896?compact=1" height="399" caption="Frustum culling en acció en un motor 3D real — el mateix concepte que apliquem nosaltres en 2D amb Finder."}
+:::
 
 :::accordion{title="**Disseny**: la classe `Finder<T>`"}
 La classe `Finder<T>` és un **contenidor espacial genèric** que indexa objectes per la seva posició al pla. La interfície pública que demana la pràctica és:
