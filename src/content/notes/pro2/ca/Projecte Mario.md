@@ -4,7 +4,7 @@ description: "Resum del projecte i solucionaris dels problemes"
 readTime: "15 min"
 order: 14
 draft: false
-isUpdated: 1
+isUpdated: 2
 ---
 
 ## Resum d'arquitectura 
@@ -312,8 +312,9 @@ Definim la interfície de l'objecte a `coin.hh`. Necessitem saber la seva posici
 #include "geometry.hh"
 #include "window.hh"
 
-using namespace std;
-using namespace pro2;
+//Evitar posar using namespace a un .hh, pot contaminar el namespace global.
+//using namespace std; 
+//using namespace pro2;
 
 class Coin {
  private:
@@ -323,12 +324,12 @@ class Coin {
     // Per l'animació sinusoidal
     double initial_y_;
 
-    static const vector<vector<int>> coin_sprite_;
+    static const std::vector<std::vector<int>> coin_sprite_;
 
  public:
-    Coin(Pt pos) : pos_(pos), initial_y_(pos.y) {}
+    Coin(pro2::Pt pos) : pos_(pos), initial_y_(pos.y) {}
 
-    void paint(Window& window) const;
+    void paint(pro2::Window& window) const;
     void update(int frame_count);
 
     bool is_collected() const {
@@ -517,160 +518,246 @@ La solució és el **frustum culling**: pintar *només* els objectes visibles a 
 :::linkedinviz{src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7433368353206992896?compact=1" height="399" caption="Frustum culling en acció en un motor 3D real — el mateix concepte que apliquem nosaltres en 2D amb Finder."}
 :::
 
-:::accordion{title="**Disseny**: la classe `Finder<T>`"}
-La classe `Finder<T>` és un **contenidor espacial genèric** que indexa objectes per la seva posició al pla. La interfície pública que demana la pràctica és:
+:::accordion{title="**1. Disseny i Implementació**: `Finder<T>` en O(log n)"}
+La classe `Finder<T>` és un **contenidor espacial genèric** que indexa objectes per la seva posició al pla. Si el dissenyem malament (ex. reconstruint estructures lineals O(N) a cada inserció), el joc es quedarà congelat en iniciar quan hagi de carregar 1.000.000 d'objectes (O(N²)).
+
+La clau per una implementació perfecta O(log n) tant a la inserció com a la cerca és organitzar els objectes en un `std::map` ordenat per la coordenada `left`, i mantenir l'amplada màxima (`max_width_`) dels objectes inserits:
 
 ```cpp [finder.hh]
++ #ifndef FINDER_HH
++ #define FINDER_HH
++ #include <map>
++ #include <set>
++ 
++ /**
++  * @brief Contenidor espacial genèric per a frustum culling.
++  *
++  * Emmagatzema punters a objectes del tipus T (que han de tenir un mètode
++  * `get_rect()` que retorni un `pro2::Rect`) i permet consultar en O(log n)
++  * quins objectes se solapen (total o parcialment) amb un rectangle donat.
++  *
++  * Internament s'organitzen els objectes en un arbre de segments sobre
++  * l'eix X (std::map). Mantenim l'amplada màxima (`max_width_`) per permetre
++  * una poda eficient per l'esquerra usant `lower_bound`, i tallem la cerca
++  * amb una poda per la dreta quan superem el límit del rectangle de consulta.
++  *
++  * @tparam T  Tipus dels objectes continguts. Ha de tenir `get_rect() const`.
++  */
++ 
 template <typename T>
 class Finder {
-    // Estructura interna (arbre sobre l'eix X)
++ private:
++   // Clau: left del rect. Valor: punters als objectes amb aquell left
++   std::map<int, std::set<const T*>> by_left_;
++   int max_width_ = 0;     // Ajuda a acotar la cerca per l'esquerra
  public:
     Finder() {}
 
-    void add(const T* t);       // Afegeix un objecte
-    void update(const T* t);    // Actualitza (re-indexa) un objecte mogut
-    void remove(const T* t);    // Elimina un objecte
+-  void add(const T *t);
++   /**
++    * @brief Afegeix un objecte al contenidor en O(log n).
++    * @param t Punter (const) a l'objecte a afegir.
++    */
++   void add(const T *t){
++       pro2::Rect r = t->get_rect();
++       int width = r.right - r.left;
++       if(width > max_width_) max_width_ = width;
++       by_left_[r.left].insert(t);
++   }
 
-    /**
-     * @brief Retorna el conjunt d'objectes amb rectangles total o
-     *        parcialment dins de `rect`.
-     *
-     * Si el nombre de rectangles del contenidor és `n`, el cost
-     * de l'algorisme ha de ser O(log n).
-     *
-     * @param rect El rectangle de cerca
-     * @returns Un conjunt de punters a objectes que tenen un rectangle
-     *          parcial o totalment dins de `rect`
-     */
-    std::set<const T*> query(pro2::Rect rect) const;
+-  void update(const T *t);
++   /**
++    * @brief Actualitza la posició registrada d'un objecte que ja és al contenidor.
++    * @param t Punter (const) a l'objecte a actualitzar.
++    */
++   void update(const T* t) {
++       bool trobat = false;
++       for (auto it = by_left_.begin(); it != by_left_.end() && !trobat; ) {
++           if (it->second.count(t)) {
++               it->second.erase(t);
++               if (it->second.empty()) {
++                   it = by_left_.erase(it);
++               } else {
++                   ++it;
++               }
++               trobat = true;
++           } else {
++               ++it;
++           }
++       }
++       add(t);
++   }
+
+-  void remove(const T *t);
++   /**
++    * @brief Elimina un objecte del contenidor en O(log n).
++    * @param t Punter (const) a l'objecte a eliminar.
++    */
++   void remove(const T *t){
++       pro2::Rect r = t->get_rect();
++       auto it = by_left_.find(r.left);
++       if (it != by_left_.end()) {
++           it->second.erase(t);
++           if (it->second.empty()) {
++               by_left_.erase(it);
++           }
++       }
++   }
+
+    std::set<const T *> query(pro2::Rect rect) const;
 };
-```
 
-El tipus `T` pot ser qualsevol classe que tingui **`get_rect() const`** — tant `Platform` com `Coin` el tenen, per tant podem usar `Finder<Platform>` i `Finder<Coin>`.
++ #endif
+```
 :::
 
-:::accordion{title="**Implementació interna**: arbre ordenat per X"}
-Internament, `Finder<T>` organitza els objectes en un `std::map` ordenat per la coordenada `left` del seu rectangle. Això és clau per la poda:
+:::accordion{title="**2. Consultes ràpides**: poda esquerra i dreta"}
+Al moment de fer `query()` d'una zona (com la càmera), utilitzem el `max_width_` per evitar començar a buscar des del primer objecte del món (poda esquerra), i parem tan bon punt superem la pantalla (poda dreta).
 
 ```cpp [finder.hh]
-template <typename T>
-class Finder {
- private:
-    // Clau: left del rect. Valor: punters als objectes amb aquell left
-    std::map<int, std::set<const T*>> by_left_;
-
-    std::map<int, int> max_right_prefix_; // Màxim right acumulat
-
- public:
     std::set<const T*> query(pro2::Rect rect) const {
         std::set<const T*> result;
 
-        for (auto it = by_left_.begin(); it != by_left_.end(); ++it) {
-            int obj_left = it->first;
+        // PODA ESQUERRA en O(log n): busquem des del primer objecte que
+        // PODRIA solapar-se tenint en compte l'amplada màxima registrada.
+        auto start_it = by_left_.lower_bound(rect.left - max_width_);
 
-            // PODA: si left de l'objecte > right del viewport,
-            // cap objecte d'aquí en endavant pot solapar → parem
-            if (obj_left > rect.right) break;
-
+        // PODA DRETA: afegim `it->first <= rect.right` a la condició del bucle
+        // per parar de buscar un cop superem la càmera
+        for (auto it = start_it; it != by_left_.end() && it->first <= rect.right; ++it) {
             for (const T* t : it->second) {
-                if (pro2::overlaps(t->get_rect(), rect)) {
-                    result.insert(t);
-                }
+                if (pro2::overlaps(t->get_rect(), rect)) result.insert(t);
             }
         }
         return result;
     }
 };
 ```
-
-La poda `if (obj_left > rect.right) break;` garanteix que no visitem objectes que estan clarament a la dreta del viewport. La funció `overlaps()` filtra els que queden a l'esquerra.
+Això garanteix que tant la cerca per pintar com la cerca per físiques sigui estrictament O(log n + k) (on k són els pocs elements visibles).
 :::
 
-:::accordion{title="**Integració** a `Game`"}
-Afegim dos membres `Finder` a la classe `Game`:
+:::accordion{title="**3. Integració a l'orquestrador** `Game`"}
+Afegim dos membres `Finder` a `Game`:
 
 ```cpp [game.hh]
 + #include "finder.hh"
 
 class Game {
-    Mario                 mario_;
-    Mario                 mario2_;
-    std::vector<Platform> platforms_;
-    std::vector<Coin>     coin_;
-    int                   score_;
-    bool                  finished_;
-    bool                  paused_;
-
-+   // Finders per a frustum culling
+    // ... vectors de plataformes i monedes ...
++   // Finders per a frustum culling i físiques
 +   Finder<Platform> platform_finder_;
 +   Finder<Coin>     coin_finder_;
-    // ...
 };
 ```
 
-Al constructor, **primer** omplim els vectors completament i **després** afegim els punters als Finders. Això és crític: si afegíssim punters durant `push_back`, una reallocation invalidaria tots els punters existents!
+Al constructor, **primer** omplim els vectors i **després** afegim els punters als Finders per evitar que una reallocació de memòria del `std::vector` invalidi els punters:
 
 ```cpp [game.cc]
 Game::Game(int width, int height) : /* ... */ {
-    // 1. Construïm el vector completament
+    // 1. Construïm els vectors completament
     for (int i = 1; i < 1000000; i++) {
         platforms_.push_back(Platform(250 + i * 200, 400 + i * 200, 150, 161));
         coin_.push_back(Coin({250 + i * 200 + 75, 140}));
     }
 
-+   // 2. Ara que el vector és estable, afegim punters als Finders
-+   for (const Platform& p : platforms_) {
-+       platform_finder_.add(&p);
-+   }
-+   for (const Coin& c : coin_) {
-+       coin_finder_.add(&c);
-+   }
++   // 2. Afegim punters als Finders en O(log n)
++   for (const Platform& p : platforms_) platform_finder_.add(&p);
++   for (const Coin& c : coin_)          coin_finder_.add(&c);
 }
 ```
 :::
 
-:::accordion{title="**Frustum culling** a `paint()`"}
-A `paint()`, substituïm les iteracions lineals per consultes al Finder amb el viewport de la càmera:
+:::accordion{title="**4. Recuperant els 60 FPS**: `paint()` i `update_objects()`"}
+Si només usem el Finder per dibuixar (`paint`), el joc seguirà anant a 10 FPS perquè cada frame `update_objects` iterarà tot el milió d'objectes per calcular les col·lisions i les físiques de Mario. **El Finder s'ha d'aplicar a tots dos llocs!**
 
 ```cpp [game.cc]
+void Game::update_objects(pro2::Window& window) {
+-    mario_.update(window, platforms_);
+-    //mario2_.update(window, platforms_);
+-
+-    for (Coin& c : coin_) {
+-        c.update(window.frame_count());
+-        
+-        //|| overlaps(mario2_.get_rect(), c.get_rect())
+-        if (!c.is_collected() && (overlaps(mario_.get_rect(), c.get_rect()))) {
+-            c.collect();
+-            score_++;
+-            cout << "Moneda - Puntuació: " << score_ << endl;
+-        }
+-    }
++    // Calculem l'àrea d'actualització (el viewport + marge per físiques)
++    Pt  tl = window.topleft();
++    int w  = window.width();
++    int h  = window.height();
++    pro2::Rect update_area = {tl.x - 100, tl.y - 100, tl.x + w + 100, tl.y + h + 100};
++
++    // 1. Obtenim NOMÉS les plataformes properes en O(log N) per a les físiques
++    std::vector<Platform> nearby_platforms;
++    for (const Platform* p : platform_finder_.query(update_area)) {
++        nearby_platforms.push_back(*p);
++    }
++
++    // Actualitzem els Marios amb un subset minúscul de plataformes (molt més ràpid)
++    mario_.update(window, nearby_platforms);
++    // mario2_.update(window, nearby_platforms);       He deixat amb només 1 mario
++
++    // 2. Actualitzem i comprovem col·lisions NOMÉS per a les monedes properes
++    for (const Coin* const_c : coin_finder_.query(update_area)) {
++        // Obtenim un punter no constant per poder modificar la moneda
++        Coin* c = const_cast<Coin*>(const_c);
++        
++        c->update(window.frame_count());
++
++        if (!c->is_collected() && (overlaps(mario_.get_rect(), c->get_rect()) /*||
++                                   overlaps(mario2_.get_rect(), c->get_rect())*/)) {
++            c->collect();
++            score_++;
++            cout << "Moneda - Puntuació: " << score_ << endl;
++        }
++    }
+}
+
 void Game::paint(pro2::Window& window) {
     window.clear(sky_blue);
 
-+   // Calculem el viewport (amb marge de 20px per evitar pop-in)
-+   Pt  tl      = window.topleft();
-+   int w       = window.width();
-+   int h       = window.height();
-+   pro2::Rect viewport = {tl.x - 20, tl.y - 20, tl.x + w + 20, tl.y + h + 20};
-
--   // ABANS: O(n) — iteràvem TOTS els objectes
--   for (const Platform& p : platforms_) { p.paint(window); }
--   for (const Coin& c : coin_)          { c.paint(window); }
-
-+   // ARA: O(log n + k) — només els k objectes visibles
-+   for (const Platform* p : platform_finder_.query(viewport)) {
-+       p->paint(window);
-+   }
-+   for (const Coin* c : coin_finder_.query(viewport)) {
-+       c->paint(window);
-+   }
+-    for (const Platform& p : platforms_) {
+-        p.paint(window);
+-    }
+-    for (const Coin& c : coin_) {
+-        c.paint(window);
+-    }
++    // Frustum culling: calculem el viewport actual de la càmera
++    Pt  tl = window.topleft();
++    int w  = window.width();
++    int h  = window.height();
++    // Afegim un marge de 20px per evitar aparicions brusques a la vora
++    pro2::Rect viewport = {tl.x - 20, tl.y - 20, tl.x + w + 20, tl.y + h + 20};
++
++    // Pintem NOMÉS les plataformes visibles (O(log n + k) on k = visibles)
++    for (const Platform* p : platform_finder_.query(viewport)) {
++        p->paint(window);
++    }
++
++    // Pintem NOMÉS les monedes visibles
++    for (const Coin* c : coin_finder_.query(viewport)) {
++        c->paint(window);
++    }
 
     mario_.paint(window);
-    mario2_.paint(window);
+    //mario2_.paint(window);
 }
 ```
-
-**Resultat**: amb 1.000.000 d'objectes i ~50 visibles, passem de pintar 1.000.000 sprites a pintar ~50. El joc ara funciona de manera fluida independentment de la mida del nivell.
 :::
 
 **Complexitat** i anàlisi de rendiment:
 
-| Operació | Sense Finder | Amb Finder |
+| Operació per frame | Sense Finder | Amb Finder |
 |----------|:---:|:---:|
-| `paint()` cada frame | **O(n)** | **O(log n + k)** |
-| `add()` objecte | O(1) | O(log n) |
-| `remove()` objecte | O(n) | O(log n) |
+| Físiques (`update()`) | **O(n)** | **O(log n + k)** |
+| Pintat (`paint()`) | **O(n)** | **O(log n + k)** |
+| `add()` a l'inici | O(1) | O(log n) |
 | Memòria extra | 0 | O(n) |
 
-On `n` = total d'objectes, `k` = objectes visibles (k << n). **Per al nostre cas**: n = 1.000.000, k ≈ 50. Sense Finder fem ~20.000x més feina per frame que la necessària.
+On `n` = total d'objectes, `k` = objectes propers (k << n). **Per al nostre cas**: n = 1.000.000, k ≈ 50. Gràcies a usar l'arbre per a les dues coses, evitem més de 2.000.000 d'iteracions innecessàries cada segon.
 
-> **Nota per l'exàmen**: cal saber implementar `Finder` des de zero (30–40 min). Els punts clau: usar `std::map` ordenat per X, la poda `break` quan `obj_left > rect.right`, i entendre per què cal afegir punters *després* que el vector estigui complet.
+> **Nota per l'exàmen**: cal saber implementar `Finder` des de zero (30–40 min). Els punts clau: usar `std::map` ordenat per X, la poda `lower_bound` per l'esquerra usant l'amplada màxima, la poda dreta integrada com a condició al bucle (`it->first <= rect.right`), i entendre que tant el *pintat* com les *físiques* necessiten aquesta optimització per mantenir els 60 FPS.
