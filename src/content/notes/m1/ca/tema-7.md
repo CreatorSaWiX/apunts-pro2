@@ -53,7 +53,7 @@ Quan l'exercici no és de $\mathbb{R}^n$, el primer pas és convertir els object
 
 ---
 
-## 2. La Matriu Associada: El "Cor" de l'Aplicació
+## 2. La matriu associada
 
 Treballar amb fórmules tipus $f(x,y) = (2x+y, x-y)$ és cansat. Per sort, tota la informació d'una aplicació lineal es pot guardar en una **matriu**. Aquesta matriu actua com un "traductor".
 

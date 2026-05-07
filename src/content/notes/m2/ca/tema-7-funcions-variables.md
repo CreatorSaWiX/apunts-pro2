@@ -5,7 +5,7 @@ order: 7
 readTime: "30 min"
 subject: "m2"
 draft: false
-isNew: true
+isUpdated: 1
 ---
 
 ## 1. L'espai euclidi $\mathbb{R}^n$ i la distància
@@ -80,14 +80,15 @@ Podem descriure els conjunts segons el comportament de la seva frontera:
 
 ## 6. Bordes i còniques
 
-| Nom | Equació Canònica | Forma Visual |
+| Nom | Equació Canònica | Significat dels Paràmetres |
 | :--- | :--- | :--- |
-| **Circumferència** | $x^2 + y^2 = r^2$ | Cercle |
-| **El·lipse** | $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ | Ou (Oval) |
-| **Hipèrbola** | $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$ | Dues ales simètriques |
-| **Paràbola** | $y = a x^2$ | Vall o muntanya |
-| **Diamant** | $|x| + |y| = k$ | Quadrat girat $45^\circ$ |
-| **Quadrat** | $\max(|x|, |y|) = k$ | Marc de foto |
+| **Circumferència** | $x^2 + y^2 = r^2$ | $r$: Radi del cercle |
+| **El·lipse** | $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ | $a, b$: Semieixos (radi en $x$ i $y$) |
+| **Hipèrbola** | $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$ | $a$: Distància del centre al vèrtex |
+| **Hipèrbola (Equilàtera)** | $xy = k$ | $k$: Determina la distància als eixos |
+| **Paràbola** | $y = a x^2$ | $a$: Factor d'obertura (més gran $\implies$ més estreta) |
+| **Diamant** | $\lvert x \rvert + \lvert y \rvert = k$ | $k$: Distància del centre als vèrtexs |
+| **Quadrat** | $\max(\lvert x \rvert, \lvert y \rvert) = k$ | $k$: Semicostat (distància del centre als costats) |
 
 ::mafs{type="vis_cheat_sheet_coniques"}
 

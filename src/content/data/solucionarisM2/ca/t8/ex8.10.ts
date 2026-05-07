@@ -11,14 +11,14 @@ export const ex8_10: Solution = {
 a) la superfície $z = \\frac{2xy}{x^2 + y}$ en el punt $(2, -2, -4)$;
 b) la superfície $z = \\sin x + 2\\cos y$ en el punt $(\\pi/2, 0, 3)$.`,
   content: `### Fonaments
-Recordem que per a una superfície $z = f(x,y)$, el vector normal al pla tangent és $(f_x, f_y, -1)$.
+Recordem que per a una superfície $z = f(x,y)$, el vector normal al pla tangent és $(\\frac{\\partial f}{\\partial x}, \\frac{\\partial f}{\\partial y}, -1)$.
 
 ---
 
 ### Apartat a) $z = \\frac{2xy}{x^2 + y}$ a $(2, -2, -4)$
 1. **Derivades parcials**:
-   * $f_x = \\frac{2y(x^2+y) - 2x(2xy)}{(x^2+y)^2} = \\frac{2y^2 - 2x^2y}{(x^2+y)^2} \\implies f_x(2,-2) = \\frac{8 + 16}{(4-2)^2} = \\frac{24}{4} = 6$
-   * $f_y = \\frac{2x(x^2+y) - 2xy}{(x^2+y)^2} = \\frac{2x^3}{(x^2+y)^2} \\implies f_y(2,-2) = \\frac{16}{4} = 4$
+   * $\\frac{\\partial f}{\\partial x} = \\frac{2y(x^2+y) - 2x(2xy)}{(x^2+y)^2} = \\frac{2y^2 - 2x^2y}{(x^2+y)^2} \\implies \\frac{\\partial f}{\\partial x}(2,-2) = \\frac{8 + 16}{(4-2)^2} = \\frac{24}{4} = 6$
+   * $\\frac{\\partial f}{\\partial y} = \\frac{2x(x^2+y) - 2xy}{(x^2+y)^2} = \\frac{2x^3}{(x^2+y)^2} \\implies \\frac{\\partial f}{\\partial y}(2,-2) = \\frac{16}{4} = 4$
 
 2. **Pla Tangent**:
    $6(x-2) + 4(y+2) - (z+4) = 0 \\implies 6x - 12 + 4y + 8 - z - 4 = 0$
@@ -31,15 +31,15 @@ Recordem que per a una superfície $z = f(x,y)$, el vector normal al pla tangent
 
 ### Apartat b) $z = \\sin x + 2\\cos y$ a $(\\pi/2, 0, 3)$
 1. **Derivades parcials**:
-   * $f_x = \\cos x \\implies f_x(\\pi/2, 0) = 0$
-   * $f_y = -2\\sin y \\implies f_y(\\pi/2, 0) = 0$
+   * $\\frac{\\partial f}{\\partial x} = \\cos x \\implies \\frac{\\partial f}{\\partial x}(\\pi/2, 0) = 0$
+   * $\\frac{\\partial f}{\\partial y} = -2\\sin y \\implies \\frac{\\partial f}{\\partial y}(\\pi/2, 0) = 0$
 
 2. **Pla Tangent**:
    $0(x-\\pi/2) + 0(y-0) - (z-3) = 0$
    **$$z = 3$$** (Pla horitzontal)
 
 3. **Recta Normal**:
-   Com que $f_x=0$ i $f_y=0$, el vector director de la normal és $(0,0,-1)$, una recta vertical:
+   Com que les derivades parcials són 0, el vector director de la normal és $(0,0,-1)$, una recta vertical:
    **$$x = \\pi/2, \\quad y = 0$$**
 `,
   availableLanguages: ['ca']

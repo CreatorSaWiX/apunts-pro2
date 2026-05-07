@@ -5,13 +5,13 @@ order: 8
 readTime: "20 min"
 subject: "m2"
 draft: false
-isUpdated: 1
+isUpdated: 2
 ---
 
 ## 1. Derivades parcials i direccionals
 
 ### 1.1 Interpretació geomètrica
-Per entendre què és la **derivada direccional** $D_{\mathbf{v}}f(\mathbf{a})$ (també escrita com $\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a})$), pensem en el mètode del **tall vertical**:
+Per entendre què és la **derivada direccional** $\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a})$ (també escrita com $D_{\mathbf{v}}f(\mathbf{a})$), pensem en el mètode del **tall vertical**:
 
 1.  **Plànol $\pi$**: Imaginem un ganivet vertical que passa per $\mathbf{a}$ seguint la direcció de $\mathbf{v}$.
 2.  **Corba d'intersecció $C$**: El tall sobre la superfície (el "pastís").
@@ -47,7 +47,10 @@ Perquè la derivada direccional representi realment el pendent per unitat de dis
 ## 2. El vector gradient $\nabla$
 
 El Gradient de $f$ en el punt $\mathbf{a}$ $\nabla f(\mathbf{a})$ agrupa totes les derivades parcials en un sol vector:
-$$\nabla f(\mathbf{a}) = \left( \frac{\partial f}{\partial x_1}(\mathbf{a}), \dots, \frac{\partial f}{\partial x_n}(\mathbf{a}) \right)$$
+
+$$
+\nabla f(\mathbf{a}) = \left( \frac{\partial f}{\partial x_1}(\mathbf{a}), \dots, \frac{\partial f}{\partial x_n}(\mathbf{a}) \right)
+$$
 
 **Exemple:** Seguint amb la funció anterior, calculem el seu gradient en el punt $\mathbf{a} = (2, 0, \pi)$:
 *   Punt: $(x,y,z) = (2,0,\pi) \implies xy+2z = 2\pi$.
@@ -55,14 +58,27 @@ $$\nabla f(\mathbf{a}) = \left( \frac{\partial f}{\partial x_1}(\mathbf{a}), \do
 *   $\frac{\partial f}{\partial y}(2, 0, \pi) = \mathbf{2e^{2\pi} + 10}$
 *   $\frac{\partial f}{\partial z}(2, 0, \pi) = \mathbf{2e^{2\pi}}$
 
-$$ \nabla f(2, 0, \pi) = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right) = (0, \, 2e^{2\pi} + 10, \, 2e^{2\pi}) $$
+$$ 
+\nabla f(2, 0, \pi) = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right) = (0, \, 2e^{2\pi} + 10, \, 2e^{2\pi}) 
+$$
 
 > **Fórmula fonamental**: $\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v}$
 
-### 2.1 Propietats geomètriques:
+### 2.1 Resum de notacions
+| Símbol | Nom | Tipus | Què representa? |
+| :--- | :--- | :--- | :--- |
+| $\nabla f$ | **Gradient** | Vector | La direcció i força del màxim creixement. |
+| $\frac{\partial f}{\partial x}$ | **Derivada Parcial** | Número | Pendent en l'eix X (o Y, Z...). |
+| $\frac{\partial f}{\partial \mathbf{v}}$ | **Derivada Direccional** | Número | Pendent en una direcció qualsevol $\mathbf{v}$. |
+
+> El **Gradient** és una fletxa (vector), mentre que les **Derivades** són el pendent d'aquesta fletxa (números).
+
+### 2.2 Propietats geomètriques:
 Per què el gradient apunta al màxim creixement? Si analitzem la fórmula del producte escalar:
 
-$$\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v} = \|\nabla f(\mathbf{a})\| \cdot \|\mathbf{v}\| \cdot \cos \theta$$
+$$
+\frac{\partial f}{\partial \mathbf{v}}(\mathbf{a}) = \nabla f(\mathbf{a}) \cdot \mathbf{v} = \|\nabla f(\mathbf{a})\| \cdot \|\mathbf{v}\| \cdot \cos \theta
+$$
 
 Com que el vector $\mathbf{v}$ és unitari ($\|\mathbf{v}\| = 1$), el valor de la derivada depèn només de l'angle $\theta$ entre el gradient i la direcció:
 
@@ -86,6 +102,11 @@ La **regularitat** d'una funció mesura el seu grau de "suavitat" geomètrica: e
 | **$C^k$** | Classe $k$ | Es pot derivar $k$ vegades amb continuïtat. | Aproximacions de Taylor fins a grau $k$. |
 | **$C^\infty$** | Suau | Es pot derivar infinites vegades (Ex: polinomis, $\sin, e^x$). | Tot funciona sempre. |
 
+> **Per què els polinomis són $C^\infty$ si la derivada acaba sent 0?**
+> "Infinites vegades" no vol dir que la funció s'hagi de fer més gran o complexa, sinó que l'operació de derivar és sempre possible i el resultat és continu.
+> Per exemple: $x^2 \xrightarrow{f'} 2x \xrightarrow{f''} 2 \xrightarrow{f'''} 0 \xrightarrow{f^{(4)}} 0 \dots$
+> Com que el **0** és una funció constant (i per tant contínua), es pot derivar infinitament. Una funció és $C^n$ si la seva $n$-èsima derivada **existeix i és contínua**.
+
 ::three{type="vis_regularitat_hibrida"}
 
 > **Condició de diferenciabilitat**: Una funció és diferenciable en un punt si és de classe $C^1$ en un entorn d'aquell punt. Si no ho és, cal recórrer a la definició formal de límit per veure si existeix el pla tangent.
@@ -105,22 +126,22 @@ Si la superfície ve donada de forma explícita, el pla tangent en el punt $M(a,
 $$z = f(a,b) + \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\partial y}(a,b)(y-b)$$
 
 **Recta normal:**
-Té vector director $(f_x, f_y, -1)$. La seva equació contínua és:
-$$\frac{x-a}{f_x(a,b)} = \frac{y-b}{f_y(a,b)} = \frac{z-f(a,b)}{-1}$$
+Té vector director $(\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, -1)$. La seva equació contínua és:
+$$\frac{x-a}{\frac{\partial f}{\partial x}(a,b)} = \frac{y-b}{\frac{\partial f}{\partial y}(a,b)} = \frac{z-f(a,b)}{-1}$$
 
 ### 4.2 Cas implícit: $F(x, y, z) = 0$
 Si la superfície ve definida per una equació implícita, el pla tangent en $M(a, b, c)$ és:
 
 **Pla tangent:**
-$$F_x(a,b,c)(x-a) + F_y(a,b,c)(y-b) + F_z(a,b,c)(z-c) = 0$$
+$$\frac{\partial F}{\partial x}(a,b,c)(x-a) + \frac{\partial F}{\partial y}(a,b,c)(y-b) + \frac{\partial F}{\partial z}(a,b,c)(z-c) = 0$$
 
 **Recta normal:**
 Té la direcció del gradient $\nabla F(a,b,c)$. L'equació contínua és:
-$$\frac{x-a}{F_x(a,b,c)} = \frac{y-b}{F_y(a,b,c)} = \frac{z-c}{F_z(a,b,c)}$$
+$$\frac{x-a}{\frac{\partial F}{\partial x}(a,b,c)} = \frac{y-b}{\frac{\partial F}{\partial y}(a,b,c)} = \frac{z-c}{\frac{\partial F}{\partial z}(a,b,c)}$$
 
 > **Conversió**: Qualsevol funció explícita $z = f(x,y)$ es pot tractar com una implícita fent $F(x,y,z) = f(x,y) - z = 0$.
 
 ### 4.3 Pla tangent horitzontal
 Si el pla tangent és **paral·lel al pla $XY$**:
-*   **Condició**: $f_x = 0$ i $f_y = 0$ (gradient nul).
+*   **Condició**: $\frac{\partial f}{\partial x} = 0$ i $\frac{\partial f}{\partial y} = 0$ (gradient nul).
 *   Això passa en els punts crítics de la funció.

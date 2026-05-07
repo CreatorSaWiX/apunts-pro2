@@ -301,31 +301,34 @@ Com que el joc corre a uns 60 FPS, `frame_count() / 10` canvia l'estat cada ~0.1
 
 Es tracta d'implementar objectes recollibles que flotin i sumin punts en tocar-los.
 
-:::accordion{title="**1. Estructura de la classe collectible**"}
-Definim la interfície de l'objecte a `collectible.hh`. Necessitem saber la seva posició, si ha estat agafat i la `initial_y_` per a l'animació.
+:::accordion{title="**1. Estructura de la classe Coin**"}
+Definim la interfície de l'objecte a `coin.hh`. Necessitem saber la seva posició, si ha estat agafat i la `initial_y_` per a l'animació.
 
-```cpp [collectible.hh]
-#ifndef COLLECTIBLE_HH
-#define COLLECTIBLE_HH
+```cpp [coin.hh]
+#ifndef COIN_HH
+#define COIN_HH
 
 #include <vector>
 #include "geometry.hh"
 #include "window.hh"
 
-class Collectible {
+using namespace std;
+using namespace pro2;
+
+class Coin {
  private:
     pro2::Pt pos_;
     bool     collected_ = false;
 
     // Per l'animació sinusoidal
-    float initial_y_;
+    double initial_y_;
 
-    static const std::vector<std::vector<int>> coin_sprite_;
+    static const vector<vector<int>> coin_sprite_;
 
  public:
-    Collectible(pro2::Pt pos) : pos_(pos), initial_y_(pos.y) {}
+    Coin(Pt pos) : pos_(pos), initial_y_(pos.y) {}
 
-    void paint(pro2::Window& window) const;
+    void paint(Window& window) const;
     void update(int frame_count);
 
     bool is_collected() const {
@@ -336,7 +339,7 @@ class Collectible {
         collected_ = true;
     }
 
-    pro2::Rect get_rect() const {
+    pro2::Rect get_rect() const {   //MacOs issue
         // Mida aproximada de l'sprite (8x8 píxels)
         return {pos_.x - 4, pos_.y - 4, pos_.x + 4, pos_.y + 4};
     }
@@ -349,19 +352,19 @@ class Collectible {
 :::accordion{title="**2. Lògica d'animació**"}
 Per satisfer el requeriment d'una animació senzilla, fem que la moneda "floti" amunt i avall usant la funció `sin()`.
 
-```cpp [collectible.cc]
-#include "collectible.hh"
+```cpp [coin.cc]
+#include "coin.hh"
 #include "utils.hh"
 #include <cmath>
 
 using namespace std;
 using namespace pro2;
 
-void Collectible::update(int frame_count) {
+void Coin::update(int frame_count) {
     if (!collected_) {
         // Moviment sinusoidal: posició vertical oscil·la +/- 5 píxels
-        // 0.1f controla la velocitat de l'oscil·lació
-        pos_.y = initial_y_ + (int)(5.0f * sin(frame_count * 0.1f));
+        // 0.1 controla la velocitat de l'oscil·lació
+        pos_.y = initial_y_ + (5 * sin(frame_count * 0.1));
     }
 }
 ```
@@ -370,14 +373,25 @@ void Collectible::update(int frame_count) {
 :::accordion{title="**3. Renderitzat i sprites** de moneda"}
 Com que el joc no té imatges externes, definim l'aparença de la moneda píxel a píxel mitjançant una matriu de colors.
 
-```cpp [collectible.cc]
+```cpp [window.hh]
+//...
+
+  const Color black = 0x00000000;
+  //...
+  const Color white = 0x00ffffff;
++ const Color grey = 0xaaaaaa;
+
+//...
+```
+
+```cpp [coin.cc]
 //...
 
 + const int _ = -1;
-+ const int y = pro2::yellow;
-+ const int g = 0xaaaaaa; // Gris per la vora
++ const int y = yellow;
++ const int g = grey; 
 + 
-+ const vector<vector<int>> Collectible::coin_sprite_ = {
++ const vector<vector<int>> Coin::coin_sprite_ = {
 +    {_, _, g, g, g, g, _, _},
 +    {_, g, y, y, y, y, g, _},
 +    {g, y, y, y, y, y, y, g},
@@ -388,7 +402,7 @@ Com que el joc no té imatges externes, definim l'aparença de la moneda píxel 
 +    {_, _, g, g, g, g, _, _},
 + };
 + 
-+ void Collectible::paint(pro2::Window& window) const {
++ void Coin::paint(Window& window) const {
 +    if (!collected_) {
 +        const Pt top_left = {pos_.x - 4, pos_.y - 4};
 +        paint_sprite(window, top_left, coin_sprite_, false);
@@ -416,14 +430,14 @@ namespace pro2 {
 ```
 
 ```cpp [game.hh]
-+ #include "collectible.hh"
++ #include "coin.hh"
 //includes de game.hh
 
 class Game {
     Mario                 mario_;
     Mario                 mario2_;
     std::vector<Platform> platforms_;
-+   std::vector<Collectible> collectibles_;
++   std::vector<Coin>     coin_;
 +   int                   score_;
     //...
 }
@@ -433,11 +447,9 @@ class Game {
 class Mario {
     //...
 public:
-    //... (altres mètodes)
+    //...
 +    pro2::Rect get_rect() const {
-+        // L'sprite és de 12 (amplada) x 16 (alcada)
-+        // El punt pivot (pos_) està centrat a x i a baix a y
-+        return {pos_.x - 6, pos_.y - 15, pos_.x + 5, pos_.y};
++        return { pos_.x - 6, pos_.y - 15, pos_.x + 5, pos_.y }; 
 +    }
     //...
 }
@@ -455,13 +467,13 @@ Game::Game(int width, int height)
     for (int i = 1; i < 20; i++) {
         platforms_.push_back(Platform(250 + i * 200, 400 + i * 200, 150, 161));
         // Afegim una moneda sobre cada plataforma nova
-+       collectibles_.push_back(Collectible({250 + i * 200 + 75, 140}));
++       coin_.push_back(Coin({250 + i * 200 + 75, 140}));
     }
 }
 
 void Game::update_objects(pro2::Window& window) {
     // ... update Marios ...
-+   for (Collectible& c : collectibles_) {
++   for (Coin& c : coin_) {
 +       c.update(window.frame_count());
 +
 +       // Comprovem col·lisió contra ambdós jugadors
@@ -469,7 +481,7 @@ void Game::update_objects(pro2::Window& window) {
 +                                 overlaps(mario2_.get_rect(), c.get_rect()))) {
 +           c.collect();
 +           score_++;
-+           std::cout << "Moneda - Puntuació: " << score_ << std::endl;
++           cout << "Moneda - Puntuació: " << score_ << endl;
 +       }
 +   }
 }
@@ -479,7 +491,7 @@ void Game::paint(pro2::Window& window) {
     for (const Platform& p : platforms_) {
         p.paint(window);
     }
-+   for (const Collectible& c : collectibles_) {
++   for (const Coin& c : coin_) {
 +       c.paint(window);
 +   }
     //...
@@ -487,14 +499,175 @@ void Game::paint(pro2::Window& window) {
 ```
 :::
 
-<!-- ---
+---
 
-## Anàlisi Profunda i Consells
+## Part 2: Frustum Culling amb `Finder<T>`
 
-> **Gestió de Memòria**: Fixeu-vos en com el `Game` gestiona la llista d'objectes. Sol ser més eficient marcar els objectes com a "morts" i netejar-los al final de l'update que no pas esborrar-los mentre s'itera.
+El joc té un loop de pintat que recorre *tots* els objectes cada frame, i amb 1.000.000 de plataformes i monedes, iterar-les totes cada frame a `paint()` és inacceptable. En un moment donat, la càmera veu com a màxim ~50 plataformes. Si n'hi ha un milió, estem fent molta feina innecessària. Necessitem una estructura de dades que ens permeti trobar els objectes visibles en **O(log n)** en lloc de O(n). 
 
-### Punts Crítics
+```cpp
+// PROBLEMA: O(n) on n = 1.000.000 — massa lent!
+for (const Platform& p : platforms_) {
+    p.paint(window); // Es pinta fins i tot si és a km de la càmera
+}
+```
 
-*   **Detecció de Col·lisions**: Recordeu que en Mario és un rectangle dinàmic. La precisió en el `Rect::overlaps()` és vital per a una bona experiència de joc (game feel).
-*   **Càmera**: La càmera no segueix en Mario de forma rígida; implementa una "finestra de confort" perquè le moviment sigui més suau.
-*   **Gravetat**: Al sistema de la UPC, la gravetat és un valor que s'afegeix a la velocitat vertical cada frame. -->
+La solució és el **frustum culling**: pintar *només* els objectes visibles a la càmera.
+
+:::accordion{title="**Disseny**: la classe `Finder<T>`"}
+La classe `Finder<T>` és un **contenidor espacial genèric** que indexa objectes per la seva posició al pla. La interfície pública que demana la pràctica és:
+
+```cpp [finder.hh]
+template <typename T>
+class Finder {
+    // Estructura interna (arbre sobre l'eix X)
+ public:
+    Finder() {}
+
+    void add(const T* t);       // Afegeix un objecte
+    void update(const T* t);    // Actualitza (re-indexa) un objecte mogut
+    void remove(const T* t);    // Elimina un objecte
+
+    /**
+     * @brief Retorna el conjunt d'objectes amb rectangles total o
+     *        parcialment dins de `rect`.
+     *
+     * Si el nombre de rectangles del contenidor és `n`, el cost
+     * de l'algorisme ha de ser O(log n).
+     *
+     * @param rect El rectangle de cerca
+     * @returns Un conjunt de punters a objectes que tenen un rectangle
+     *          parcial o totalment dins de `rect`
+     */
+    std::set<const T*> query(pro2::Rect rect) const;
+};
+```
+
+El tipus `T` pot ser qualsevol classe que tingui **`get_rect() const`** — tant `Platform` com `Coin` el tenen, per tant podem usar `Finder<Platform>` i `Finder<Coin>`.
+:::
+
+:::accordion{title="**Implementació interna**: arbre ordenat per X"}
+Internament, `Finder<T>` organitza els objectes en un `std::map` ordenat per la coordenada `left` del seu rectangle. Això és clau per la poda:
+
+```cpp [finder.hh]
+template <typename T>
+class Finder {
+ private:
+    // Clau: left del rect. Valor: punters als objectes amb aquell left
+    std::map<int, std::set<const T*>> by_left_;
+
+    std::map<int, int> max_right_prefix_; // Màxim right acumulat
+
+ public:
+    std::set<const T*> query(pro2::Rect rect) const {
+        std::set<const T*> result;
+
+        for (auto it = by_left_.begin(); it != by_left_.end(); ++it) {
+            int obj_left = it->first;
+
+            // PODA: si left de l'objecte > right del viewport,
+            // cap objecte d'aquí en endavant pot solapar → parem
+            if (obj_left > rect.right) break;
+
+            for (const T* t : it->second) {
+                if (pro2::overlaps(t->get_rect(), rect)) {
+                    result.insert(t);
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+
+La poda `if (obj_left > rect.right) break;` garanteix que no visitem objectes que estan clarament a la dreta del viewport. La funció `overlaps()` filtra els que queden a l'esquerra.
+:::
+
+:::accordion{title="**Integració** a `Game`"}
+Afegim dos membres `Finder` a la classe `Game`:
+
+```cpp [game.hh]
++ #include "finder.hh"
+
+class Game {
+    Mario                 mario_;
+    Mario                 mario2_;
+    std::vector<Platform> platforms_;
+    std::vector<Coin>     coin_;
+    int                   score_;
+    bool                  finished_;
+    bool                  paused_;
+
++   // Finders per a frustum culling
++   Finder<Platform> platform_finder_;
++   Finder<Coin>     coin_finder_;
+    // ...
+};
+```
+
+Al constructor, **primer** omplim els vectors completament i **després** afegim els punters als Finders. Això és crític: si afegíssim punters durant `push_back`, una reallocation invalidaria tots els punters existents!
+
+```cpp [game.cc]
+Game::Game(int width, int height) : /* ... */ {
+    // 1. Construïm el vector completament
+    for (int i = 1; i < 1000000; i++) {
+        platforms_.push_back(Platform(250 + i * 200, 400 + i * 200, 150, 161));
+        coin_.push_back(Coin({250 + i * 200 + 75, 140}));
+    }
+
++   // 2. Ara que el vector és estable, afegim punters als Finders
++   for (const Platform& p : platforms_) {
++       platform_finder_.add(&p);
++   }
++   for (const Coin& c : coin_) {
++       coin_finder_.add(&c);
++   }
+}
+```
+:::
+
+:::accordion{title="**Frustum culling** a `paint()`"}
+A `paint()`, substituïm les iteracions lineals per consultes al Finder amb el viewport de la càmera:
+
+```cpp [game.cc]
+void Game::paint(pro2::Window& window) {
+    window.clear(sky_blue);
+
++   // Calculem el viewport (amb marge de 20px per evitar pop-in)
++   Pt  tl      = window.topleft();
++   int w       = window.width();
++   int h       = window.height();
++   pro2::Rect viewport = {tl.x - 20, tl.y - 20, tl.x + w + 20, tl.y + h + 20};
+
+-   // ABANS: O(n) — iteràvem TOTS els objectes
+-   for (const Platform& p : platforms_) { p.paint(window); }
+-   for (const Coin& c : coin_)          { c.paint(window); }
+
++   // ARA: O(log n + k) — només els k objectes visibles
++   for (const Platform* p : platform_finder_.query(viewport)) {
++       p->paint(window);
++   }
++   for (const Coin* c : coin_finder_.query(viewport)) {
++       c->paint(window);
++   }
+
+    mario_.paint(window);
+    mario2_.paint(window);
+}
+```
+
+**Resultat**: amb 1.000.000 d'objectes i ~50 visibles, passem de pintar 1.000.000 sprites a pintar ~50. El joc ara funciona de manera fluida independentment de la mida del nivell.
+:::
+
+**Complexitat** i anàlisi de rendiment:
+
+| Operació | Sense Finder | Amb Finder |
+|----------|:---:|:---:|
+| `paint()` cada frame | **O(n)** | **O(log n + k)** |
+| `add()` objecte | O(1) | O(log n) |
+| `remove()` objecte | O(n) | O(log n) |
+| Memòria extra | 0 | O(n) |
+
+On `n` = total d'objectes, `k` = objectes visibles (k << n). **Per al nostre cas**: n = 1.000.000, k ≈ 50. Sense Finder fem ~20.000x més feina per frame que la necessària.
+
+> **Nota per l'exàmen**: cal saber implementar `Finder` des de zero (30–40 min). Els punts clau: usar `std::map` ordenat per X, la poda `break` quan `obj_left > rect.right`, i entendre per què cal afegir punters *després* que el vector estigui complet.

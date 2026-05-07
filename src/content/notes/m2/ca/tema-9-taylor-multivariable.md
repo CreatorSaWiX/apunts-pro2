@@ -89,9 +89,9 @@ Sigui $\Delta = \det(Hf(a))$ el determinant:
 
 L'error comès en usar $P_n$ s'anomena **Resta de Lagrange**. Per a una aproximació lineal (grau 1), l'error es fita per:
 
-$$|R_1(x,y)| \leq \frac{1}{2} \left[ M_{xx} |h|^2 + 2M_{xy} |hk| + M_{yy} |k|^2 \right]$$
+$$|R_1(x,y)| \leq \frac{1}{2} \left[ M_{\frac{\partial^2 f}{\partial x^2}} |h|^2 + 2M_{\frac{\partial^2 f}{\partial x \partial y}} |hk| + M_{\frac{\partial^2 f}{\partial y^2}} |k|^2 \right]$$
 
-On $h = x-a, k = y-b$ i les $M$ són el **valor màxim absolut** de les derivades segones en el segment que connecta $(a,b)$ amb el punt d'aproximació.
+On $h = x-a, k = y-b$ i les $M$ són el **valor màxim absolut** de les derivades segones (en format $\frac{\partial^2 f}{\partial x_i \partial x_j}$) en el segment que connecta $(a,b)$ amb el punt d'aproximació.
 
 ::three{type="vis_fita_error_lagrange"}
 

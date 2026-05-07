@@ -10,17 +10,17 @@ export const ex8_4: Solution = {
   content: `### 1. Anàlisi del problema
 Sabem dues coses fonamentals sobre la derivada direccional màxima:
 1. S'assoleix en la direcció del **gradient** $\\nabla f(1,2,-1)$.
-2. El seu valor és el **mòdul del gradient**: $\|\nabla f(P)\| = 64$.
+2. El seu valor és el **mòdul del gradient**: $\\|\\nabla f(P)\\| = 64$.
 
 Si la direcció ha de ser paral·lela a l'eix $OZ$, el gradient ha de ser de la forma $(0, 0, k)$. Per tant:
-* $f_x(1, 2, -1) = 0$
-* $f_y(1, 2, -1) = 0$
-* $|f_z(1, 2, -1)| = 64$
+* $\\frac{\\partial f}{\\partial x}(1, 2, -1) = 0$
+* $\\frac{\\partial f}{\\partial y}(1, 2, -1) = 0$
+* $\\left|\\frac{\\partial f}{\\partial z}(1, 2, -1)\\right| = 64$
 
 ### 2. Càlcul de les parcials a $P(1, 2, -1)$
-* $f_x = ay^2 + 3cz^2x^2 \\implies f_x(P) = 4a + 3c = 0$
-* $f_y = 2axy + bz \\implies f_y(P) = 4a - b = 0$
-* $f_z = by + 2czx^3 \\implies f_z(P) = 2b - 2c = \\pm 64$
+* $\\frac{\\partial f}{\\partial x} = ay^2 + 3cz^2x^2 \\implies \\frac{\\partial f}{\\partial x}(P) = 4a + 3c = 0$
+* $\\frac{\\partial f}{\\partial y} = 2axy + bz \\implies \\frac{\\partial f}{\\partial y}(P) = 4a - b = 0$
+* $\\frac{\\partial f}{\\partial z} = by + 2czx^3 \\implies \\frac{\\partial f}{\\partial z}(P) = 2b - 2c = \\pm 64$
 
 ### 3. Resolució del sistema
 De les dues primeres equacions obtenim $c = -4a/3$ i $b = 4a$. Substituïm en la tercera:

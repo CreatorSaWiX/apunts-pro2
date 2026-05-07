@@ -2016,10 +2016,11 @@ const VisDominisComplexos = () => {
 };
 
 const VisCheatSheetConiques = () => {
-    const [mode, setMode] = React.useState<'ellipse' | 'hiperbola' | 'parabola' | 'rectes' | 'diamant'>('ellipse');
+    const [mode, setMode] = React.useState<'ellipse' | 'hiperbola' | 'hiperbola_equilatera' | 'parabola' | 'rectes' | 'diamant' | 'quadrat'>('ellipse');
     const [a, setA] = React.useState(2);
     const [b, setB] = React.useState(1.5);
     const [p, setP] = React.useState(1);
+    const [k, setK] = React.useState(1);
 
     const renderContent = () => {
         switch (mode) {
@@ -2047,6 +2048,14 @@ const VisCheatSheetConiques = () => {
                         <MovablePoint point={[a, 0]} onMove={([x]) => setA(Math.max(0.5, x))} color={Theme.red} />
                         <MovablePoint point={[1, b]} onMove={([, y]) => setB(Math.max(0.2, y))} color={Theme.red} />
                         <LaTeX at={[0, 2.5]} tex={`\\frac{x^2}{${a.toFixed(1)}^2} - \\frac{y^2}{${b.toFixed(1)}^2} = 1`} color={Theme.red} />
+                    </>
+                );
+            case 'hiperbola_equilatera':
+                return (
+                    <>
+                        <Plot.OfX y={(x) => k / x} color={Theme.orange} weight={3} />
+                        <MovablePoint point={[Math.sqrt(Math.abs(k)), Math.sqrt(Math.abs(k)) * (k > 0 ? 1 : -1)]} onMove={([x, y]) => setK(x * y)} color={Theme.orange} />
+                        <LaTeX at={[0, 2.5]} tex={`x \\cdot y = ${k.toFixed(1)}`} color={Theme.orange} />
                     </>
                 );
             case 'parabola':
@@ -2078,6 +2087,14 @@ const VisCheatSheetConiques = () => {
                         <LaTeX at={[0, 2.5]} tex={`|x| + |y| = ${a.toFixed(1)}`} color={Theme.pink} />
                     </>
                 );
+            case 'quadrat':
+                return (
+                    <>
+                        <Polygon points={[[a, a], [-a, a], [-a, -a], [a, -a]]} color={Theme.indigo} fillOpacity={0.1} weight={3} />
+                        <MovablePoint point={[a, 0]} onMove={([x]) => setA(Math.max(0.2, x))} color={Theme.indigo} />
+                        <LaTeX at={[0, 2.5]} tex={`\\max(|x|, |y|) = ${a.toFixed(1)}`} color={Theme.indigo} />
+                    </>
+                );
             default: return null;
         }
     };
@@ -2085,9 +2102,14 @@ const VisCheatSheetConiques = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
-                {['ellipse', 'hiperbola', 'parabola', 'rectes', 'diamant'].map((m) => (
+                {['ellipse', 'hiperbola', 'hiperbola_equilatera', 'parabola', 'rectes', 'diamant', 'quadrat'].map((m) => (
                     <button key={m} onClick={() => setMode(m as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === m ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:bg-slate-700'}`}>
-                        {m === 'ellipse' ? 'El·lipse' : m === 'hiperbola' ? 'Hipèrbola' : m === 'parabola' ? 'Paràbola' : m === 'rectes' ? 'Rectes' : 'Diamant'}
+                        {m === 'ellipse' ? 'El·lipse' : 
+                         m === 'hiperbola' ? 'Hipèrbola' : 
+                         m === 'hiperbola_equilatera' ? 'H. Equilàtera' :
+                         m === 'parabola' ? 'Paràbola' : 
+                         m === 'rectes' ? 'Rectes' : 
+                         m === 'diamant' ? 'Diamant' : 'Quadrat'}
                     </button>
                 ))}
             </div>
