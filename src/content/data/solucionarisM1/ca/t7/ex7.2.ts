@@ -45,8 +45,8 @@ Com que l'aplicació es pot escriure com el producte d'una matriu per les coorde
 
 Aquesta aplicació consisteix a substituir la variable $x$ per $1+x$. És a dir, $f(p(x)) = p(1+x)$.
 
-Anem a desenvolupar l'expressió per veure-ho més clar:
 $$f(a_0 + a_1 x + a_2 x^2) = a_0 + a_1 + a_1 x + a_2(1 + 2x + x^2)$$
+
 $$f(a_0 + a_1 x + a_2 x^2) = (a_0 + a_1 + a_2) + (a_1 + 2a_2)x + a_2 x^2$$
 
 De nou, si mirem les coordenades:

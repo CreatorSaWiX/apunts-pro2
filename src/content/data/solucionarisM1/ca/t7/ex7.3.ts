@@ -58,7 +58,10 @@ Siguin $I = \\begin{pmatrix} 1 & 0 \\\\ 0 & 1 \\end{pmatrix}$ i $C = \\begin{pma
 Com que $f(I+C) = 4 \\neq f(I) + f(C) = 1 + 1 = 2$, no es compleix l'additivitat.
 
 **Contraexemple (Homogeneïtat):**
-Sabem que per a una matriu $n \\times n$, $\\det(\\lambda A) = \\lambda^n \\det(A)$. Si $n > 1$, això no coincideix amb $\\lambda \\det(A)$ (tret que $\\lambda$ sigui $0$ o $1$).
+Sigui $I = \\begin{pmatrix} 1 & 0 \\\\ 0 & 1 \\end{pmatrix}$ i l'escalar $\\lambda = 2$.
+- $f(2I) = \\det(2I) = \\det \\begin{pmatrix} 2 & 0 \\\\ 0 & 2 \\end{pmatrix} = 4$.
+- $2f(I) = 2 \\det(I) = 2 \\cdot 1 = 2$.
+Com que $f(2I) = 4 \\neq 2 f(I) = 2$, no es compleix l'homogeneïtat. (En general, per a una matriu $n \\times n$, $\\det(\\lambda A) = \\lambda^n \\det(A)$).
 
 L'aplicació **no és lineal**.
 `,

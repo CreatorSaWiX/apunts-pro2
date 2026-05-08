@@ -30,7 +30,7 @@ Recordem que:
 - Origen: $\\mathbb{R}$ (Base canònica $\\{1\\}$).
 - $f(1) = 3$.
 - Matriu $A = \\begin{pmatrix} 3 \\end{pmatrix}$.
-- **$\text{dim}(\text{Im } f) = 1$**, **$\text{dim}(\ker f) = 1 - 1 = 0$**.
+- **$\\text{dim}(\\text{Im } f) = 1$**, **$\\text{dim}(\\ker f) = 1 - 1 = 0$**.
 
 ---
 
@@ -39,7 +39,7 @@ Recordem que:
 - $f(1, 0) = (1, 0, 1)$, $f(0, 1) = (0, 1, -1)$.
 - Matriu $A = \\begin{pmatrix} 1 & 0 \\\\ 0 & 1 \\\\ 1 & -1 \\end{pmatrix}$.
 - El rang és clarament 2 (les columnes no són proporcionals).
-- **$\text{dim}(\text{Im } f) = 2$**, **$\text{dim}(\ker f) = 2 - 2 = 0$**.
+- **$\\text{dim}(\\text{Im } f) = 2$**, **$\\text{dim}(\\ker f) = 2 - 2 = 0$**.
 
 ---
 
@@ -48,7 +48,7 @@ Recordem que:
 - $f(e_1) = (1, 0, 0)$, $f(e_2) = (1, 1, 0)$, $f(e_3) = (1, 1, 1)$.
 - Matriu $A = \\begin{pmatrix} 1 & 1 & 1 \\\\ 0 & 1 & 1 \\\\ 0 & 0 & 1 \\end{pmatrix}$.
 - La matriu és triangular superior amb valors no nuls a la diagonal. El rang és 3.
-- **$\text{dim}(\text{Im } f) = 3$**, **$\text{dim}(\ker f) = 3 - 3 = 0$**.
+- **$\\text{dim}(\\text{Im } f) = 3$**, **$\\text{dim}(\\ker f) = 3 - 3 = 0$**.
 
 ---
 
@@ -57,7 +57,7 @@ Recordem que:
 - $f(E_{11}) = (0, 0, 2)$, $f(E_{12}) = (1, 0, -1)$, $f(E_{21}) = (1, 1, 1)$, $f(E_{22}) = (0, 1, -1)$.
 - Matriu $A = \\begin{pmatrix} 0 & 1 & 1 & 0 \\\\ 0 & 0 & 1 & 1 \\\\ 2 & -1 & 1 & -1 \\end{pmatrix}$.
 - Rang: Les tres files són linealment independents (podem veure que la submatriu formada per les columnes 1, 2 i 3 té determinant no nul). Per tant, el rang és 3.
-- **$\text{dim}(\text{Im } f) = 3$**, **$\text{dim}(\ker f) = 4 - 3 = 1$**.
+- **$\\text{dim}(\\text{Im } f) = 3$**, **$\\text{dim}(\\ker f) = 4 - 3 = 1$**.
 
 ---
 
@@ -70,7 +70,7 @@ Recordem que:
 - Estudiem el rang:
   $$\\begin{pmatrix} -1 & 2 & 0 \\\\ 0 & 2 & -1 \\\\ 1 & -2 & 3 \\\\ 1 & 1 & 1 \\end{pmatrix} \\xrightarrow{F_3+F_1, F_4+F_1} \\begin{pmatrix} -1 & 2 & 0 \\\\ 0 & 2 & -1 \\\\ 0 & 0 & 3 \\\\ 0 & 3 & 1 \\end{pmatrix} \\xrightarrow{F_4-1.5F_2} \\begin{pmatrix} -1 & 2 & 0 \\\\ 0 & 2 & -1 \\\\ 0 & 0 & 3 \\\\ 0 & 0 & 2.5 \\end{pmatrix}$$
 - El rang és 3.
-- **$\text{dim}(\text{Im } f) = 3$**, **$\text{dim}(\ker f) = 3 - 3 = 0$**.
+- **$\\text{dim}(\\text{Im } f) = 3$**, **$\\text{dim}(\\ker f) = 3 - 3 = 0$**.
 `,
   availableLanguages: ['ca']
 };

@@ -42,8 +42,6 @@ Podem utilitzar l'expressió general que acabem de trobar substituint $a_0 = 2$,
 Per tant:
 $$f(2 - 2x + 3x^2) = 8 + 8x - 7x^2$$
 
----
-
 **Comprovació alternativa:**
 $$f(2 - 2x + 3x^2) = 2f(1) - 2f(x) + 3f(x^2)$$
 $$= 2(1+x) - 2(3-x^2) + 3(4+2x-3x^2)$$

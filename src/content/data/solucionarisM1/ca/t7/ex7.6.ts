@@ -41,8 +41,8 @@ Aquest exercici ens ajuda a entendre com una aplicació lineal "transporta" les 
 
 ### 3) Si $\\{v_i\\}$ generen E, llavors $\\{f(v_i)\\}$ generen F
 
-**FALS.** Les imatges dels generadors de $E$ generen la imatge de l'aplicació ($Im f$), però no necessàriament tot l'espai d'arribada $F$.
-- **Contraexemple:** Sigui $f: \\mathbb{R} \\to \\mathbb{R}^2$ on $f(x) = (x, 0)$. El vector $v_1 = 1$ genera $\mathbb{R}$, però la seva imatge $f(v_1) = (1, 0)$ no genera tot $\mathbb{R}^2$ (només l'eix X).
+**FALS.** Les imatges dels generadors de $E$ generen la imatge de l'aplicació ($\\text{Im } f$), però no necessàriament tot l'espai d'arribada $F$.
+- **Contraexemple:** Sigui $f: \\mathbb{R} \\to \\mathbb{R}^2$ on $f(x) = (x, 0)$. El vector $v_1 = 1$ genera $\\mathbb{R}$, però la seva imatge $f(v_1) = (1, 0)$ no genera tot $\\mathbb{R}^2$ (només l'eix X).
 - **Nota:** Aquesta afirmació només és certa si $f$ és **exhaustiva**.
 
 ---
@@ -50,16 +50,16 @@ Aquest exercici ens ajuda a entendre com una aplicació lineal "transporta" les 
 ### 4) Si $\\{f(v_i)\\}$ generen F, llavors $\\{v_i\\}$ generen E
 
 **FALS.**
-- **Contraexemple:** Sigui $f: \\mathbb{R}^2 \\to \\mathbb{R}$ on $f(x, y) = x$. Si triem $v_1 = (1, 0)$, la seva imatge $f(v_1) = 1$ genera $\mathbb{R}$ (que és $F$). Tanmateix, $v_1$ no genera tot $\mathbb{R}^2$ (no pot generar vectors amb component $y$ diferent de zero).
+- **Contraexemple:** Sigui $f: \\mathbb{R}^2 \\to \\mathbb{R}$ on $f(x, y) = x$. Si triem $v_1 = (1, 0)$, la seva imatge $f(v_1) = 1$ genera $\\mathbb{R}$ (que és $F$). Tanmateix, $v_1$ no genera tot $\\mathbb{R}^2$ (no pot generar vectors amb component $y$ diferent de zero).
 
 ---
 
-### 5) Si $\\{v_i\\}$ generen E, llavors $\\{f(v_i)\\}$ generen $\text{Im } f$
+### 5) Si $\\{v_i\\}$ generen E, llavors $\\{f(v_i)\\}$ generen $\\text{Im } f$
 
 **CERT.**
-- **Demostració:** Per definició, qualsevol vector $w \\in Im f$ és la imatge d'algun vector $v \\in E$, és a dir, $w = f(v)$. Com que $\\{v_i\\}$ genera $E$, podem escriure $v$ com a combinació lineal: $v = \\sum \\alpha_i v_i$. Llavors:
+- **Demostració:** Per definició, qualsevol vector $w \\in \\text{Im } f$ és la imatge d'algun vector $v \\in E$, és a dir, $w = f(v)$. Com que $\\{v_i\\}$ genera $E$, podem escriure $v$ com a combinació lineal: $v = \\sum \\alpha_i v_i$. Llavors:
   $$w = f(v) = f\\left(\\sum \\alpha_i v_i\\right) = \\sum \\alpha_i f(v_i)$$
-  Això demostra que qualsevol vector de $Im f$ es pot escriure com a combinació lineal de $\\{f(v_i)\\}$, per tant, el conjunt $\\{f(v_1), \\dots, f(v_n)\\}$ genera $Im f$.
+  Això demostra que qualsevol vector de $\\text{Im } f$ es pot escriure com a combinació lineal de $\\{f(v_i)\\}$, per tant, el conjunt $\\{f(v_1), \\dots, f(v_n)\\}$ genera $\\text{Im } f$.
 `,
   availableLanguages: ['ca']
 };

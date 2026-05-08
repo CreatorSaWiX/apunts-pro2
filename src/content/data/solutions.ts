@@ -23,6 +23,7 @@ import { m1t4Solutions } from './solucionarisM1/ca/t4/index';
 import { m1t5Solutions } from './solucionarisM1/ca/t5/index';
 import { m1t6Solutions } from './solucionarisM1/ca/t6/index';
 import { m1t7Solutions } from './solucionarisM1/ca/t7/index';
+import { m1t8Solutions } from './solucionarisM1/ca/t8/index';
 
 
 import { m2t1Solutions } from './solucionarisM2/ca/t1/index';
@@ -66,6 +67,10 @@ export const allSolutions: TopicSolutions[] = [
     {
         topicId: 'm1-tema-7',
         solutions: m1t7Solutions
+    },
+    {
+        topicId: 'm1-tema-8',
+        solutions: m1t8Solutions
     },
 
     {

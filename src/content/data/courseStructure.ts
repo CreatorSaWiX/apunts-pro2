@@ -431,6 +431,25 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M1-T7-Ex7.27", title: "Exercici 7.27: Commutativitat en 3D" }
         ]
     },
+    {
+        id: "m1-tema-8",
+        title: "Tema 8: Diagonalització de matrius",
+        description: "Valors i vectors propis. Polinomi característic. Diagonalització i aplicacions.",
+        problems: [
+            { id: "M1-T8-Ex8.1", title: "Exercici 8.1: Diagonalització de matrius" },
+            { id: "M1-T8-Ex8.2", title: "Exercici 8.2: Base de vectors propis de la matriu d'uns" },
+            { id: "M1-T8-Ex8.3", title: "Exercici 8.3: Valors i vectors propis d'endomorfismes" },
+            { id: "M1-T8-Ex8.4", title: "Exercici 8.4: Valors i vectors propis en l'espai de matrius" },
+            { id: "M1-T8-Ex8.5", title: "Exercici 8.5: Discussió de la diagonalització amb paràmetres" },
+            { id: "M1-T8-Ex8.6", title: "Exercici 8.6: Propietats bàsiques dels vectors propis" },
+            { id: "M1-T8-Ex8.7", title: "Exercici 8.7: Bijectivitat i valor propi zero" },
+            { id: "M1-T8-Ex8.8", title: "Exercici 8.8: Diagonalització de matrius triangulars" },
+            { id: "M1-T8-Ex8.9", title: "Exercici 8.9: Existència i determinació d'endomorfismes" },
+            { id: "M1-T8-Ex8.10", title: "Exercici 8.10: Estudi d'un endomorfisme amb paràmetre" },
+            { id: "M1-T8-Ex8.11", title: "Exercici 8.11: Potències de matrius i diagonalització" },
+            { id: "M1-T8-Ex8.12", title: "Exercici 8.12: Trajectòria d'un OVNI" }
+        ]
+    },
 
     // --- M2 (Càlcul i Optimitació) ---
     {

@@ -25,6 +25,7 @@ Perquè existeixi una aplicació lineal que enviï uns vectors $u_i$ a uns $v_i$
 ### Apartat 1
 
 Comprovem si els vectors $u_i$ formen una base calculant el seu determinant:
+
 $$\\det(u_1, u_2, u_3) = \\begin{vmatrix} 1 & 0 & -1 \\\\ 1 & 1 & 1 \\\\ 0 & 1 & 0 \\end{vmatrix} = (0 + 0 - 1) - (0 + 1 + 0) = -2$$
 
 Com que el determinant és diferent de zero, els vectors són linealment independents i formen una base de $\\mathbb{R}^3$. Per tant, l'endomorfisme **existeix i és únic**.
@@ -34,6 +35,7 @@ Com que el determinant és diferent de zero, els vectors són linealment indepen
 ### Apartat 2
 
 Comprovem el determinant dels nous vectors $u_i$:
+
 $$\\det(u_1, u_2, u_3) = \\begin{vmatrix} 1 & 0 & -1 \\\\ 1 & 1 & 2 \\\\ 0 & 1 & 3 \\end{vmatrix} = (3 + 0 - 1) - (0 + 2 + 0) = 2 - 2 = 0$$
 
 Els vectors són linealment dependents. Busquem la relació: $u_3 = a u_1 + b u_2$.
@@ -42,6 +44,7 @@ Els vectors són linealment dependents. Busquem la relació: $u_3 = a u_1 + b u_
 - Comprovem la segona: $-1(1) + 3(1) = 2$. (Correcte!)
 
 Així doncs, $u_3 = -u_1 + 3u_2$. Comprovem si les imatges compleixen la mateixa relació ($v_3 = -v_1 + 3v_2$):
+
 $$-v_1 + 3v_2 = -\\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix} + 3\\begin{pmatrix} 3 \\\\ 2 \\\\ 1 \\end{pmatrix} = \\begin{pmatrix} -1+9 \\\\ -2+6 \\\\ -3+3 \\end{pmatrix} = \\begin{pmatrix} 8 \\\\ 4 \\\\ 0 \\end{pmatrix} = v_3$$
 
 Com que es compleix la relació, l'endomorfisme **existeix**. Com que els vectors no formen una base, l'aplicació no està totalment determinada (podem triar la imatge d'un quart vector independent de $u_1$ i $u_2$ lliurement), per tant n'hi ha **infinits**.
@@ -51,6 +54,7 @@ Com que es compleix la relació, l'endomorfisme **existeix**. Com que els vector
 ### Apartat 3
 
 Els vectors $u_i$ són els mateixos que a l'apartat anterior, per tant seguim tenint la relació $u_3 = -u_1 + 3u_2$. Comprovem les noves imatges:
+
 $$-v_1 + 3v_2 = \\begin{pmatrix} 8 \\\\ 4 \\\\ 0 \\end{pmatrix}$$
 
 En aquest cas, $v_3 = \\begin{pmatrix} 0 \\\\ 1 \\\\ 2 \\end{pmatrix}$. Com que $v_3 \\neq -v_1 + 3v_2$, les imatges no respecten la dependència lineal dels orígens.

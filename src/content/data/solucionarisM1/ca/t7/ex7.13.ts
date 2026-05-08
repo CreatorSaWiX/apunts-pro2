@@ -15,10 +15,7 @@ export const ex7_13: Solution = {
 5) $f: P_2(\\mathbb{R}) \\to P_2(\\mathbb{R})$, on $f(a_0 + a_1 x + a_2 x^2) = 3a_0 + (a_0 - a_1) x + (2a_0 + a_1 + a_2) x^2$;
 6) $f: \\mathcal{M}_2(\\mathbb{R}) \\to \\mathbb{R}^2$, on $f \\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix} = (a + d, b + c)$;
 7) $f: \\mathbb{R}^3 \\to \\mathcal{M}_2(\\mathbb{R})$, on $f(x, y, z) = \\begin{pmatrix} x - y & y - z \\\\ z - y & x - z \\end{pmatrix}$.`,
-  content: `
-A continuació es presenta l'estudi de cadascuna de les aplicacions lineals. Per a cada apartat, considerarem les bases canòniques dels espais corresponents.
-
----
+  content: ` Per a cada apartat considerarem les bases canòniques dels espais corresponents:
 
 ### 1) $f(x) = ax$
 - **Matriu:** $A = (a)$.
@@ -48,7 +45,7 @@ A continuació es presenta l'estudi de cadascuna de les aplicacions lineals. Per
 - **Matriu:** $A = \\begin{pmatrix} 3 & 0 & 0 \\\\ 1 & -1 & 0 \\\\ 2 & 1 & 1 \\end{pmatrix}$.
 - **Rang:** $\\det(A) = -3 \\neq 0 \\implies$ Rang 3.
 - **Classificació:** **Bijectiva**.
-- **Inversa:** $A^{-1} = \\begin{pmatrix} 1/3 & 0 & 0 \\\\ 1/3 & -1 & 0 \\\\ -1 & 1 & 1 \\end{pmatrix} \\implies f^{-1}(b_0, b_1, b_2) = \\frac{1}{3}b_0 + (\\frac{1}{3}b_0 - b_1)x + (-b_0 + b_1 + b_2)x^2$.
+- **Inversa:** $A^{-1} = \\begin{pmatrix} 1/3 & 0 & 0 \\\\ 1/3 & -1 & 0 \\\\ -1 & 1 & 1 \\end{pmatrix} \\implies f^{-1}(b_0, b_1, b_2) = \\frac{1}{3}b_0 + (\\frac{1}{3}b_0 - b_1)x + (-b_0 + b_1 + b_2)x^2$
 
 ### 6) $f(\\mathcal{M}_2) \\to \\mathbb{R}^2$, $f(A) = (a+d, b+c)$
 - **Matriu:** $A = \\begin{pmatrix} 1 & 0 & 0 & 1 \\\\ 0 & 1 & 1 & 0 \\end{pmatrix}$.

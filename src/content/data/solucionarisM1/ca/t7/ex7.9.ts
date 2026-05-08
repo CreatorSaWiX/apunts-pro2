@@ -32,24 +32,21 @@ El determinant s'anul·la per als valors **$m = 0, m = 1, m = 2$**.
 
 ### 2) Discussió del rang segons $m$
 
-#### Cas 1: $m \\neq 0, 1, 2$
-Si el paràmetre no és cap d'aquests valors, $\\det(A) \\neq 0$. La matriu té rang 3.
-- **$\text{dim}(\text{Im } f) = 3$**.
+### Cas 1: $m \\neq 0, 1, 2$
+Si el paràmetre no és cap d'aquests valors, $\\det(A) \\neq 0$. La matriu té rang 3. **$\\text{dim}(\\text{Im } f) = 3$**.
 
-#### Cas 2: $m = 0$
+### Cas 2: $m = 0$
 La matriu és: $A = \\begin{pmatrix} -2 & 2 & -1 \\\\ 2 & 0 & 2 \\\\ 0 & 2 & 1 \\end{pmatrix}$.
 Observem que $F_1 + F_2 = (0, 2, 1) = F_3$. Les files són dependents, però les dues primeres són independents entre elles. El rang és 2.
-- **$\text{dim}(\text{Im } f) = 2$**.
+**$\\text{dim}(\\text{Im } f) = 2$**.
 
-#### Cas 3: $m = 1$
+### Cas 3: $m = 1$
 La matriu és: $A = \\begin{pmatrix} -1 & 2 & -1 \\\\ 2 & 1 & 2 \\\\ 2 & 4 & 2 \\end{pmatrix}$.
-Observem que la primera i la tercera columna són iguals ($C_1 = C_3$). El rang és com a màxim 2. Les dues primeres columnes són independents. El rang és 2.
-- **$\text{dim}(\text{Im } f) = 2$**.
+Observem que la primera i la tercera columna són iguals ($C_1 = C_3$). El rang és com a màxim 2. Les dues primeres columnes són independents. El rang és 2. **$\\text{dim}(\\text{Im } f) = 2$**.
 
-#### Cas 4: $m = 2$
+### Cas 4: $m = 2$
 La matriu és: $A = \\begin{pmatrix} 0 & 2 & -1 \\\\ 2 & 2 & 2 \\\\ 4 & 6 & 3 \\end{pmatrix}$.
-Observem que $F_1 + 2F_2 = (4, 6, 3) = F_3$. De nou, les files són dependents i el rang és 2.
-- **$\text{dim}(\text{Im } f) = 2$**.
+Observem que $F_1 + 2F_2 = (4, 6, 3) = F_3$. De nou, les files són dependents i el rang és 2. **$\\text{dim}(\\text{Im } f) = 2$**.
 
 ---
 

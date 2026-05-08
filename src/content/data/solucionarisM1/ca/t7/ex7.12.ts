@@ -16,7 +16,11 @@ export const ex7_12: Solution = {
 
 4) $f: \\mathbb{R}^n \\to \\mathbb{R}^n$, amb $\\text{Im } f = \\mathbb{R}^n$.`,
   content: `
-Per determinar si una aplicació lineal és bijectiva, recordem que ha de ser **injectiva** ($\ker f = \{0\}$) i **exhaustiva** ($\text{Im } f$ és tot l'espai d'arribada). 
+Recordem que:
+
+- **Injectiva:** Cada vector de l'arribada té, com a màxim, una antiimatge. En aplicacions lineals, això equival a dir: **$\\ker f = \\{0\\}$** ja que  $f(\\vec{0}) = \\vec{0}$. Si el nucli, $\\ker f$, té "més vectors" apart del zero (per exemple, un vector $v \\neq \\vec{0}$), vol dir que, per definició de nucli: $f(v) = \\vec{0}$.
+- **Exhaustiva:** Cada vector de l'arribada té, com a mínim, una antiimatge. Això vol dir que la imatge "omple" tot l'espai de destí: **$\\text{Im } f = F$**. En dimensions, vol dir que $\\dim(\\text{Im } f) = \\dim(F)$.
+- **Bijectiva:** L'aplicació és injectiva i exhaustiva alhora.
 
 En el cas particular d'un endomorfisme (mateixa dimensió en origen i arribada, $n = n$), les tres condicions són equivalents: **injectiva $\\iff$ exhaustiva $\\iff$ bijectiva**.
 
@@ -24,7 +28,7 @@ En el cas particular d'un endomorfisme (mateixa dimensió en origen i arribada, 
 
 ### 1) $f: \\mathbb{R}^n \\to \\mathbb{R}^n$, amb $\\ker f = \\{0_{\\mathbb{R}^n}\\}$
 
-- Com que $\ker f = \{0\}$, l'aplicació és **injectiva**.
+- Com que $\\ker f = \\{0\\}$, l'aplicació és **injectiva**.
 - Com que l'espai d'origen i el d'arribada tenen la mateixa dimensió ($n$), pel Teorema de la Dimensió sabem que l'aplicació també és exhaustiva.
 - **Conclusió:** L'aplicació **és bijectiva**.
 
@@ -40,9 +44,9 @@ En el cas particular d'un endomorfisme (mateixa dimensió en origen i arribada, 
 
 ### 3) $f: \\mathbb{R}^m \\to \\mathbb{R}^n$, amb $n < m$
 
-- Pel Teorema de la Dimensió: $\dim(\ker f) = m - \dim(\text{Im } f)$.
-- Com que la dimensió de la imatge no pot superar $n$, tenim que $\dim(\ker f) \geq m - n$.
-- Com que $m > n$, llavors $\dim(\ker f) \geq 1$. Això implica que $\ker f$ conté més vectors que el zero, així que no és injectiva.
+- Pel Teorema de la Dimensió: $\\dim(\\ker f) = m - \\dim(\\text{Im } f)$.
+- Com que la dimensió de la imatge no pot superar $n$, tenim que $\\dim(\\ker f) \\geq m - n$.
+- Com que $m > n$, llavors $\\dim(\\ker f) \\geq 1$. Això implica que $\\ker f$ conté més vectors que el zero, així que no és injectiva.
 - **Conclusió:** L'aplicació **no és bijectiva**.
 
 ---

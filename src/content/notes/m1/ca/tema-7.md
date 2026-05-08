@@ -41,15 +41,10 @@ Una aplicació lineal **sempre** envia el vector zero al vector zero ($f(\vec{0}
 
 ::mafs{type="vis_propietats_lineals"}
 
-> **Com interpretar el gràfic?**  
-> Prova de moure els vectors $\vec{u}$ i $\vec{v}$. Si l'aplicació és **Lineal**, veuràs que la imatge de la suma $f(\vec{u}+\vec{v})$ coincideix exactament amb el "vèrtex" del paral·lelogram format per $f(\vec{u})$ i $f(\vec{v})$.  
-> Si canvies a **No Lineal**, veuràs com la "física" es trenca i el resultat es desvia.
-
-### Com treballar amb Polinomis i Matrius?
-Quan l'exercici no és de $\mathbb{R}^n$, el primer pas és convertir els objectes en "vectors de números" (coordenades) respecte a una base.
+### Com treballar amb polinomis i matrius?
+Quan l'exercici no és de $\mathbb{R}^n$, el primer pas és convertir els objectes en "vectors de números" (coordenades) respecte a una base. Un cop tens els vectors, l'exercici es resol exactament igual que a $\mathbb{R}^n$.
 *   **Polinomis ($\mathbb{R}_n[x]$)**: Un polinomi $ax^2 + bx + c$ es converteix en el vector $(a, b, c)$ si usem la base $\{x^2, x, 1\}$.
 *   **Matrius ($\mathcal{M}_{2 \times 2}$)**: Una matriu $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ es converteix en el vector $(a, b, c, d)$ usant la base canònica de matrius.
-*   **La clau**: Un cop tens els vectors, l'exercici es resol exactament igual que a $\mathbb{R}^n$.
 
 ---
 
