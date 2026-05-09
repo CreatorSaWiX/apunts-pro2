@@ -18,11 +18,24 @@ d) $f(x, y) = x^2 y^2 (1 - x - y)$`,
   content: `### Apartat a) $f(x, y) = x^3 + y^3 - 9xy + 27$
 
 **1. Punts crítics:**
-*   $\\frac{\\partial f}{\\partial x} = 3x^2 - 9y = 0 \\implies y = x^2/3$
-*   $\\frac{\\partial f}{\\partial y} = 3y^2 - 9x = 0 \\implies (x^2/3)^2 = 3x \\implies x^4 = 27x$
-Les solucions són $x=0$ (llavors $y=0$) i $x=3$ (llavors $y=3$). Tenim els punts **$P_1(0,0)$** i **$P_2(3,3)$**.
+Trobem on s'anul·la el gradient $\\nabla f = \\left( \\frac{\\partial f}{\\partial x}, \\frac{\\partial f}{\\partial y} \\right)$:
+*   $\\frac{\\partial f}{\\partial x} = 3x^2 - 9y = 0 \\implies y = \\frac{x^2}{3}$
+*   $\\frac{\\partial f}{\\partial y} = 3y^2 - 9x = 0$
+
+Substituïm la primera equació en la segona per tenir una sola variable:
+
+$$3\\left(\\frac{x^2}{3}\\right)^2 - 9x = 0 \\implies \\frac{x^4}{3} - 9x = 0 \\implies x^4 - 27x = 0$$
+
+Factoritzem per trobar les arrels:
+
+$$x(x^3 - 27) = 0 \\implies \\begin{cases} x = 0 \\\\ x^3 = 27 \\implies x = 3 \\end{cases}$$
+
+Trobem la $y$ corresponent per a cada $x$ usant $y = x^2/3$:
+*   Si $x=0 \\implies y = 0 \\implies \\mathbf{P_1(0,0)}$
+*   Si $x=3 \\implies y = \\frac{3^2}{3} = 3 \\implies \\mathbf{P_2(3,3)}$
 
 **2. Matriu Hessiana:**
+
 $$H(x,y) = \\begin{pmatrix} 6x & -9 \\\\ -9 & 6y \\end{pmatrix}, \\quad \\Delta = 36xy - 81$$
 
 *   **$P_1(0,0)$:** $\\Delta = -81 < 0 \\implies$ **Punt de sella**.
@@ -31,38 +44,59 @@ $$H(x,y) = \\begin{pmatrix} 6x & -9 \\\\ -9 & 6y \\end{pmatrix}, \\quad \\Delta 
 ---
 
 ### Apartat b) $f(x, y) = (x^2 - 2x + 4y^2 - 8y)^2$
-Podem escriure la funció com $f(x,y) = g(x,y)^2$, on $g(x,y) = (x-1)^2 + 4(y-1)^2 - 5$. Notem que $f(x,y) \\geq 0$ sempre.
+Podem completar quadrats: $f(x,y) = [(x-1)^2 + 4(y-1)^2 - 5]^2 = g(x,y)^2$.
 
 **1. Punts crítics:** $\\nabla f = 2g \\cdot \\nabla g = 0$.
-Això passa si $g(x,y)=0$ (tots els punts de l'el·lipse $(x-1)^2 + 4(y-1)^2 = 5$) o si $\\nabla g = 0$ (punt $(1,1)$).
+Això passa en dos casos:
+*   **Cas 1:** $g(x,y)=0 \\implies (x-1)^2 + 4(y-1)^2 = 5$. Tots els punts d'aquesta el·lipse són crítics. Com que $f(x,y) \\geq 0$ sempre i en aquests punts $f=0$, tots són **Mínims relatius** (i absoluts).
+*   **Cas 2:** $\\nabla g = (2(x-1), 8(y-1)) = (0,0) \\implies \\mathbf{P(1,1)}$.
 
-**2. Estudi de $(1,1)$:**
+**2. Estudi de $P(1,1)$:**
+
 $\\Delta(1,1) = 1600 > 0$ i $\\frac{\\partial^2 f}{\\partial x^2}(1,1) = -20 < 0 \\implies$ **Màxim relatiu**.
-
-**3. Estudi de l'el·lipse $g(x,y)=0$:**
-En aquests punts, la Hessiana té determinant zero. Però per la definició, com que $f(x,y) \\geq 0$ i en l'el·lipse $f=0$, tots aquests punts són **Mínims relatius** (i absoluts).
 
 ---
 
 ### Apartat c) $f(x, y) = y^2 - x^3$
 
-**1. Punt crític:** $\\nabla f = (-3x^2, 2y) = (0,0) \\implies$ **$P(0,0)$**.
+**1. Punt crític:**
 
-**2. Hessiana:** $H(0,0) = \\begin{pmatrix} 0 & 0 \\\\ 0 & 2 \\end{pmatrix}$. El determinant és $\\Delta = 0$.
-Hem d'usar la definició. Estudiem el comportament de $f(x,y)$ a prop de $(0,0)$:
-*   Si ens movem per l'eix $x$ ($y=0$), $f(x,0) = -x^3$.
-*   Per a $x > 0$, $f(x,0) < 0$.
-*   Per a $x < 0$, $f(x,0) > 0$.
-Com que la funció canvia de signe al voltant del punt crític (on val 0), $(0,0)$ és un **Punt de sella**.
+$\\frac{\\partial f}{\\partial x} = -3x^2 = 0 \\implies x=0$
+
+$\\frac{\\partial f}{\\partial y} = 2y = 0 \\implies y=0$
+
+L'únic punt crític és $\\mathbf{P(0,0)}$.
+
+**2. Estudi local (Hessiana nul·la):**
+
+$H(0,0) = \\begin{pmatrix} 0 & 0 \\\\ 0 & 2 \\end{pmatrix}$, per tant $\\Delta = 0$. El criteri no ens diu res.
+
+Analitzem el comportament de la funció prop de $(0,0)$:
+*   Si ens movem per l'eix $y$ ($x=0$): $f(0,y) = y^2 \\geq 0$.
+*   Si ens movem per l'eix $x$ ($y=0$): $f(x,0) = -x^3$. Aquest terme és positiu si $x<0$ i negatiu si $x>0$.
+Com que la funció pren valors positius i negatius en qualsevol entorn de $(0,0)$, el punt és un **Punt de sella**.
 
 ---
 
 ### Apartat d) $f(x, y) = x^2 y^2 (1 - x - y)$
 
-Després de resoldre el sistema de derivades parcials, trobem l'únic punt crític interior: **$P(2/5, 2/5)$**.
-*   Calculant la Hessiana en aquest punt, obtenim $\\Delta > 0$ i $\\frac{\\partial^2 f}{\\partial x^2} < 0$.
-*   Per tant, $P(2/5, 2/5)$ és un **Màxim relatiu**.
-*   Els punts de les rectes $x=0$ i $y=0$ també són crítics amb $\\Delta=0$.
-`,
+**1. Punts crítics:**
+
+$\\frac{\\partial f}{\\partial x} = 2xy^2 - 3x^2 y^2 - 2xy^3 = xy^2 (2 - 3x - 2y) = 0$
+
+$\\frac{\\partial f}{\\partial y} = 2x^2 y - 2x^3 y - 3x^2 y^2 = x^2 y (2 - 2x - 3y) = 0$
+
+*   **Eixos:** Qualsevol punt amb $x=0$ o $y=0$ és crític. En tots ells $f=0$ i $\\Delta = 0$.
+*   **Punt interior:** Si $x,y \\neq 0$, resolem:
+    $$\\begin{cases} 3x + 2y = 2 \\\\ 2x + 3y = 2 \\end{cases} \\implies x = \\frac{2}{5}, y = \\frac{2}{5} \\implies \\mathbf{P(0.4, 0.4)}$$
+
+**2. Estudi de $P(0.4, 0.4)$:**
+Calculant la Hessiana en aquest punt obtenim $\\Delta > 0$ i $\\frac{\\partial^2 f}{\\partial x^2}(0.4, 0.4) < 0 \\implies$ **Màxim relatiu**.
+
+**3. Estudi dels eixos ($f=0$):**
+Si analitzem $f(x,y) = x^2 y^2 (1-x-y)$ prop de l'eix, el signe depèn de $(1-x-y)$.
+*   Si $x+y < 1 \\implies f > 0$.
+*   Si $x+y > 1 \\implies f < 0$.
+Per tant, els punts de l'eix on $x+y=1$ són punts de sella, mentre que en altres trams de l'eix la funció no canvia de signe (mínims no estrictes).`,
   availableLanguages: ['ca']
 };

@@ -72,8 +72,6 @@ On les derivades de tercer ordre al punt intermedi $(c,d)$ són:
 Com que $0 \\leq c \\leq 0.1$ i $0 \\leq d \\leq 0.1$, el valor màxim s'assoleix quan el denominador és mínim (val 1):
 
 $$|R_2| = \\frac{250(0.1)^3}{6(1+2c+3d)^3} \\leq \\frac{250(0.1)^3}{6} \\approx 0.0417$$
-
-**$$|R_2| \\leq \\frac{1}{24} \\approx 0.0417$$**
 `,
   availableLanguages: ['ca']
 };

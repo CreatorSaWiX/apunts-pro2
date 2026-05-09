@@ -4,7 +4,7 @@ description: "Valors propis, vectors propis i el procés per diagonalitzar matri
 order: 9
 readTime: "15 min"
 subject: "m1"
-draft: false
+draft: true
 isNew: true
 ---
 

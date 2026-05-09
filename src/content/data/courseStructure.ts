@@ -614,7 +614,15 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M2-T9-Ex1", title: "Problema 1: Polinomi de Taylor de grau 2" },
             { id: "M2-T9-Ex2", title: "Problema 2: Pla tangent i aproximació" },
             { id: "M2-T9-Ex3", title: "Problema 3: Extrems relatius i Hessian nul" },
-            { id: "M2-T9-Ex4", title: "Problema 4: Determinació de paràmetres" }
+            { id: "M2-T9-Ex4", title: "Problema 4: Determinació de paràmetres" },
+            { id: "M2-T9-Ex5", title: "Problema 5: Derivades parcials de primer i segon ordre" },
+            { id: "M2-T9-Ex6", title: "Problema 6: Polinomi de Taylor de grau 2" },
+            { id: "M2-T9-Ex7", title: "Problema 7: Polinomi de Taylor amb integrals (TFC)" },
+            { id: "M2-T9-Ex8", title: "Problema 8: Aproximacions mitjançant Taylor de grau 2" },
+            { id: "M2-T9-Ex9", title: "Problema 9: Punt de sella amb Hessian nul" },
+            { id: "M2-T9-Ex10", title: "Problema 10: Trobar i classificar punts crítics" },
+            { id: "M2-T9-Ex11", title: "Problema 11: Determinació de paràmetres i classificació d'extrems" },
+            { id: "M2-T9-Ex12", title: "Problema 12: Estudi d'extrems en punts no derivables" }
         ]
     },
     {
@@ -627,7 +635,12 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M2-T10-Ex3", title: "Exercici 3: Extrems absoluts en un disc" },
             { id: "M2-T10-Ex4", title: "Exercici 4: Extrems en un domini triangular" },
             { id: "M2-T10-Ex5", title: "Exercici 5: Aplicació (Alarma Tèrmica)" },
-            { id: "M2-T10-Ex6", title: "Exercici 6: Distància mínima a l'el·lipse" }
+            { id: "M2-T10-Ex6", title: "Exercici 6: Distància mínima a l'el·lipse" },
+            { id: "M2-T10-Ex7", title: "Exercici 7: Extrems absoluts en un recinte compacte" },
+            { id: "M2-T10-Ex8", title: "Exercici 8: Optimització en un segment circular" },
+            { id: "M2-T10-Ex9", title: "Exercici 9: Extrems condicionats (Multiplicadors de Lagrange)" },
+            { id: "M2-T10-Ex10", title: "Exercici 10: Distància mínima a una corba en el espai" },
+            { id: "M2-T10-Ex11", title: "Exercici 11: Aplicació d'extrems condicionats (Repartiment d'herència)" }
         ]
 
 

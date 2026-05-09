@@ -71,6 +71,8 @@ $$
 P_2(x, y) = P_1(x,y) + \frac{1}{2!} \left[ \frac{\partial^2 f}{\partial x^2}(a,b)(x-a)^2 + 2\frac{\partial^2 f}{\partial x \partial y}(a,b)(x-a)(y-b) + \frac{\partial^2 f}{\partial y^2}(a,b)(y-b)^2 \right]
 $$
 
+> El polinomi de Taylor de grau 1 coincideix amb l'equació del pla tangent
+
 ::three{type="vis_taylor_graun"}
 
 <!-- ### Notació Matricial (Compacta)

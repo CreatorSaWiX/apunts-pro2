@@ -68,7 +68,10 @@ Resoldre $\nabla f = \lambda \nabla g$ pot ser algebraicament pesat. Tres estrat
 
 3. **Substitució directa en lloc de Lagrange**: Si la restricció és una recta (e.g. $y = 1 - x$) o permet aïllar fàcilment una variable, substitueix-la directament a $f$ i converteix el problema en una funció d'**una sola variable**. És més ràpid i segur.
 
-> **Substitució parcial per a circumferències**: Si la restricció és $x^2 + y^2 = R^2$ i la funció $f$ conté el terme $x^2 + y^2$, pots substituir-lo directament per $R^2$ i reduir $f$ a una expressió molt més senzilla abans de derivar.
+4. **Combinació de múltiples restriccions**: Quan tinguis dues o més restriccions, no apliquis Lagrange directament sobre totes (el sistema de $\lambda, \mu, \ldots$ pot ser enorme). Intenta usar la restricció més senzilla per simplificar la difícil **abans** de derivar. 
+   > *Exemple*: Si tens $x^2+y^2=1$ i una altra equació amb el terme $x^2+y^2$, substitueix-lo per $1$ immediatament. Això sovint redueix el problema a una sola restricció o elimina variables.
+
+5. **Substitució parcial per a circumferències**: Si la restricció és $x^2 + y^2 = R^2$ i la funció $f$ conté el terme $x^2 + y^2$, pots substituir-lo directament per $R^2$ i reduir $f$ a una expressió molt més senzilla abans de derivar.
 
 ---
 
