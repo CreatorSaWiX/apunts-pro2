@@ -29,11 +29,11 @@ namespace pro2 {
 }
 ```
 
-## 2. Regla de tres (Gestió de memòria)
+## 2. Regla dels tres (Gestió de memòria)
 
 Si una classe gestiona memòria dinàmica, necessita aquests 3 mètodes per evitar **segfaults** o **leaks**:
 
-### A. Constructor de còpia (Deep Copy)
+### A. Constructor de còpia
 Crea una còpia real en un nou bloc de memòria, no només copia el punter.
 ```cpp
 Vector(const Vector& v) {

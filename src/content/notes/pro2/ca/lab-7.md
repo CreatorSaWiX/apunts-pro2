@@ -53,9 +53,7 @@ Aquí tens la implementació completa que passa tots els tests del laboratori:
 ```cpp [vector.hh]
 #ifndef VECTOR_HH
 #define VECTOR_HH
-
 #include "assert.hh"
-#include <algorithm>
 
 namespace pro2 {
 
@@ -65,12 +63,15 @@ class Vector {
     int size_;
     int capacity_;
 
+    // static: No pertany a cap objecte concret (Vector v1, v2...), sinó a la classe sencera. Només hi ha una única còpia del valor 4.
+    // constexpr: el compilador quan veu "initial_capacity_" directament hi posa un 4
     static constexpr int initial_capacity_ = 4;
 
+    //Mudanza
     void reallocate_(int new_capacity) {
         T* new_data = new T[new_capacity];
         int to_copy = (new_capacity < size_) ? new_capacity : size_;
-        for (int i = 0; i < to_copy; ++i) {
+        for(int i = 0; i < to_copy; ++i){
             new_data[i] = data_[i];
         }
         delete[] data_;
@@ -79,97 +80,105 @@ class Vector {
         size_ = to_copy;
     }
 
-public:
-    using iterator = T*;
-    using const_iterator = const T*;
-
-    // Constructors i Destructor
+ public:
+    //Constructor
     Vector() : data_(nullptr), size_(0), capacity_(0) {}
 
-    Vector(int n) {
+    //Sobrecàrrega
+    Vector(int n){
         assert(n >= 0, "Vector::Vector(int): mida negativa!");
         data_ = new T[n];
         size_ = n;
         capacity_ = n;
     }
 
-    Vector(int n, const T& x) {
-        assert(n >= 0, "Vector::Vector(int, const T&): mida negativa!");
+    //Sobrecàrrega
+    Vector(int n, const T& x){
+        assert(n >= 0, "Vector::Vector(int, const T& x): mida negativa!");
         data_ = new T[n];
         size_ = n;
         capacity_ = n;
-        for (int i = 0; i < n; ++i) data_[i] = x;
+        for(int i = 0; i < n; ++i) data_[i] = x;
     }
 
-    Vector(const Vector& other) : data_(new T[other.capacity_]), size_(other.size_), capacity_(other.capacity_) {
-        for (int i = 0; i < size_; ++i) data_[i] = other.data_[i];
+    //Vector nou
+    Vector(const Vector& other) : data_(new T[other.capacity_]), size_(other.size_), capacity_(other.capacity_){
+        for(int i = 0; i < size_; ++i) data_[i] = other.data_[i];
     }
 
+    //Destructor
     ~Vector() {
         delete[] data_;
     }
 
-    Vector& operator=(const Vector& other) {
-        if (this != &other) {
+    Vector& operator=(const Vector& other){
+        //this: punter. Si fem v1=v2, this apunta v1.
+        //"@mem on estic (this) és diferent a l'adreça de l'objecte que vull copiar (&other)?"
+        //Evitar el v1 = v1;
+        if(this != &other){
             delete[] data_;
             size_ = other.size_;
             capacity_ = other.capacity_;
             data_ = new T[capacity_];
-            for (int i = 0; i < size_; ++i) data_[i] = other.data_[i];
+            for(int i = 0; i < size_; ++i) data_[i] = other.data_[i];
         }
         return *this;
     }
 
-    // Accés
-    T& operator[](int i) {
+    // Escriptura ex: v[0] = 5;
+    T& operator[](int i){
         assert(i >= 0 && i < size_, "Vector::operator[]: índex fora de rang!");
         return data_[i];
     }
 
+    // Lectura  ex: cout << v[1] << endl; 
     const T& operator[](int i) const {
         assert(i >= 0 && i < size_, "Vector::operator[]: índex fora de rang!");
         return data_[i];
     }
 
-    // Capacitat
+    // getters
     int size() const { return size_; }
     int capacity() const { return capacity_; }
     bool empty() const { return size_ == 0; }
 
-    void clear() {
+    void clear(){
         delete[] data_;
         data_ = nullptr;
         size_ = 0;
         capacity_ = 0;
     }
 
-    void reserve(int n) {
+    void reserve(int n){
         assert(n >= 0, "Vector::reserve: capacitat negativa!");
-        if (n > capacity_) reallocate_(n);
+        if(n > capacity_) reallocate_(n);
     }
 
-    void resize(int n) {
+    void resize(int n){
         assert(n >= 0, "Vector::resize: mida negativa!");
         reallocate_(n);
         size_ = n;
     }
 
-    // Modificació
     void push_back(const T& x) {
-        if (size_ == capacity_) {
+        if(size_ == capacity_){
             reallocate_(capacity_ == 0 ? initial_capacity_ : 2 * capacity_);
         }
         data_[size_] = x;
         ++size_;
     }
 
-    void pop_back() {
+    void pop_back(){
         assert(size_ > 0, "Vector::pop_back: vector buit!");
         --size_;
-        if (size_ < capacity_ / 4) {
+        if(size_ < capacity_ / 4){
             reallocate_(capacity_ / 2);
         }
     }
+
+    // using: crear un àlies de tipus (és com un typedef)
+    using iterator = T*;
+    using const_iterator = const T*;
 
     // Iteradors
     iterator begin() { return data_; }

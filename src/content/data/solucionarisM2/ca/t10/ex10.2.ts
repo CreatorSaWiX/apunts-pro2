@@ -39,13 +39,17 @@ $$x^2 + (2x)^2 = 5 \\implies 5x^2 = 5 \\implies x^2 = 1 \\implies \\mathbf{x = \
 
 ### Apartat b) $f(x,y,z) = x^2 + y^2 + z^2$ amb dues restriccions
 $g_1 = x^2 + y^2 - 1 = 0$
+
 $g_2 = x + y + z - 1 = 0$
 
 **1. Simplificació del problema**
 Com que a la frontera $x^2 + y^2 = 1$, la funció objectiu esdevé:
+
 $$f(x,y,z) = (x^2 + y^2) + z^2 = 1 + z^2$$
+
 Volem minimitzar/maximitzar $z^2$. De la segona restricció sabem que $z = 1 - x - y$.
 Per tant, el problema es redueix a optimitzar la funció de dues variables:
+
 $$h(x,y) = (1 - x - y)^2 \\quad \\text{subjecte a } x^2 + y^2 = 1$$
 
 **2. Mètode de Lagrange per a $h(x,y)$**

@@ -12,7 +12,7 @@ Determineu els valors dels paràmetres $\\lambda$ i $\\mu$ sabent que $f$ té en
 
 Amb els resultats obtinguts, quin tipus d'extrem és el punt $(0,0)$ per a $f$?`,
   content: `### 1. Determinació de $\\lambda$
-Sabem que $(0,0)$ és un extrem relatiu, per tant ha de ser un punt crític ($\\%nabla f(0,0) = (0,0)$).
+Sabem que $(0,0)$ és un extrem relatiu, per tant ha de ser un punt crític ($\\nabla f(0,0) = (0,0)$).
 Calculem les derivades de primer ordre:
 *   $\\frac{\\partial f}{\\partial x} = e^{\\lambda x + y^2} \\cdot \\lambda + \\mu \\cos(x^2 + y^2) \\cdot 2x$
 *   $\\frac{\\partial f}{\\partial y} = e^{\\lambda x + y^2} \\cdot 2y + \\mu \\cos(x^2 + y^2) \\cdot 2y$

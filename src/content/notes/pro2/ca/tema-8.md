@@ -44,8 +44,8 @@ Un **punter** és una variable que, en lloc d'emmagatzemar un valor (com un `int
 
 - **Declaració múltiple**: L'asterisc `*` s'ha de posar per cada variable.
   ```cpp
-  int *pb, *pc; // Dos punters
-  int* pb, pc;  // pb és punter, pc és un ENTER normal! (Error típic)
+  int *pb, *pc; // Dos punters que apunten a enters
+  int* pb, pc;  // pb és punter, pc és un enter normal! (Error típic)
   ```
 - **Punter a elements de contenidors**:
   ```cpp
