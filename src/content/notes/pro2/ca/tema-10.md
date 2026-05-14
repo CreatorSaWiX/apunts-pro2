@@ -4,7 +4,7 @@ description: "Nodes doblement enllaçats, sentinelles i iteradors."
 readTime: "20 min"
 order: 11
 draft: false
-isNew: true
+isUpdated: 1
 ---
 
 ## 1. Estructura interna: doble enllaç i sentinelles

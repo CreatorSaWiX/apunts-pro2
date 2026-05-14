@@ -31,7 +31,7 @@ export const MobileActionMenu: React.FC<{
         if (contributors.length > 0) return;
         setIsLoadingContributors(true);
         const uids = ["jV5Y63M77PcqIcOUCpLz76GTYMI3", "tHrqAkSatrV6FVcgfdSErLjyXL12",
-            "YU5QuXAZ47dslUX8ruyriHHPfh82", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
+            "YU5QuXAZ47dslUX8ruyriHHPfh82", "3cQsRL8DFch3HEk0nHVV1dMQJZl2", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
         const fetched: Contributor[] = [];
         for (const uid of uids) {
             try {

@@ -17,7 +17,7 @@ interface Contributor {
 }
 
 const APP_DATA: Record<string, { version: string; updated: string }> = {
-    pro2: { version: 'v1.7.3', updated: '08/05/2026' },
+    pro2: { version: 'v1.8.0', updated: '14/05/2026' },
     m1: { version: 'v1.6.3', updated: '09/05/2026' },
     m2: { version: 'v1.6.3', updated: '09/05/2026' }
 };
@@ -63,7 +63,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride }) => {
 
         setIsLoadingContributors(true);
         const uids = ["jV5Y63M77PcqIcOUCpLz76GTYMI3", "tHrqAkSatrV6FVcgfdSErLjyXL12",
-            "YU5QuXAZ47dslUX8ruyriHHPfh82", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
+            "YU5QuXAZ47dslUX8ruyriHHPfh82", "3cQsRL8DFch3HEk0nHVV1dMQJZl2", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
         const fetched: Contributor[] = [];
 
         for (const uid of uids) {
