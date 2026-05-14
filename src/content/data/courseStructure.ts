@@ -204,15 +204,70 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "pro2-tema-11",
-        title: "Tema 11: Disseny d'Algorismes",
-        description: "Estratègies avançades: Divide & Conquer, Greedy...",
-        problems: []
+        title: "Tema 11: Implementació d'arbres binaris",
+        description: "Gestió de memòria dinàmica en estructures recursives binaris.",
+        problems: [
+            { id: "X75329", title: "Nombre d'aparicions d'un valor en un arbre binari" },
+            { id: "X67695", title: "Suma màxima dels camins d'un arbre binari" },
+            { id: "X09609", title: "Cerca de subarbres binaris" },
+            { id: "X15014", title: "Arbre de sumes d'un arbre donat" }
+        ]
     },
     {
-        id: "pro2-examens-finals",
-        title: "Exàmens Finals",
-        description: "Recull d'exàmens finals d'anys anteriors.",
-        problems: []
+        id: "pro2-tema-12",
+        title: "Tema 12: Implementació d'arbres generals",
+        description: "Nodes amb vectors de fills i recursivitat sobre aritat variable.",
+        problems: [
+            { id: "X60365", title: "Cerca en un arbre general" },
+            { id: "X18899", title: "Arbre de sumes d'un arbre n-ari" }
+        ]
+    },
+    {
+        id: "pro2-final-pro2",
+        title: "Exàmens Finals PRO2",
+        description: "Recull de problemes d'exàmens finals de cursos anteriors.",
+        problems: [
+            // Final 2023 Tardor
+            { id: "X94369", title: "23T-Ex1: Afegir el mètode push_front a la classe Queue" },
+            { id: "X16671", title: "23T-Ex2: Push i pop d'elements marcats a la classe Stack" },
+            { id: "X94330", title: "23T-Ex3: ++ i -- amb rebot a la classe List" },
+            { id: "X45696", title: "23T-Ex4: Avaluar expressions booleanes (memòria dinàmica)" },
+            { id: "X68237", title: "23T-Ex5: Suma i mida de molts arbres" },
+            // Final 2024 Primavera
+            { id: "X24836", title: "24P-Ex1: Afegir elements a un Stack només si és creixent" },
+            { id: "X61999", title: "24P-Ex2: Nodes amb valor major que el seu pare" },
+            { id: "X79029", title: "24P-Ex3: Agafar elements del front d'un altre Queue" },
+            { id: "X82913", title: "24P-Ex4: Esquivar a un altre iterador" },
+            { id: "X73395", title: "24P-Ex5: Construeix arbres i accedeix en postordre" },
+            // Reavaluació 2024 Primavera
+            { id: "X72420", title: "24P-Re-Ex1: (BinTree) Fulles amb mateix valor que l'arrel" },
+            { id: "X91879", title: "24P-Re-Ex2: (Arbre) Fulles amb mateix valor que l'arrel" },
+            { id: "X71502", title: "24P-Re-Ex3: Agafar elements del cim d'un altre Stack" },
+            { id: "X87610", title: "24P-Re-Ex4: Nombre de substrings ben parentitzats" },
+            { id: "X22408", title: "24P-Re-Ex5: Arbre amb amplada" },
+            { id: "V55523", title: "24P-Re-Ex6: Llistes iguals circularment" },
+            // Final 2024 Tardor
+            { id: "T43690", title: "24T-Ex1: Inserció ordenada a una pila" },
+            { id: "S32503", title: "24T-Ex2: Rotació a una cua" },
+            { id: "V39031", title: "24T-Ex3: Mou a l'inici a una llista" },
+            { id: "V51216", title: "24T-Ex4: Substitucions a un arbre" },
+            { id: "V84248", title: "24T-Ex5: Subarbre menor de productes" },
+            // Final 2025 Primavera (Torn 1)
+            { id: "S71447", title: "25PT1-Ex1: Comptar valors en un arbre general" },
+            { id: "W19270", title: "25PT1-Ex2: Esborrar nodes amb cert valor d'una llista" },
+            { id: "Z14110", title: "25PT1-Ex3: Partir una cua en dos" },
+            { id: "S94933", title: "25PT1-Ex4: Determinar si un arbre binari està ordenat" },
+            // Final 2025 Primavera (Torn 2)
+            { id: "T10651", title: "25PT2-Ex1: Determinar si un arbre general és binari" },
+            { id: "T44918", title: "25PT2-Ex2: Esborrar nodes amb cert valor d'una cua" },
+            { id: "T29863", title: "25PT2-Ex3: Partir una llista en dos" },
+            { id: "T15126", title: "25PT2-Ex4: Determinar si un arbre binari està ben barrejat" },
+            // Final 2025 Tardor
+            { id: "Y19543", title: "25T-Ex1: Esborra fulles" },
+            { id: "V38718", title: "25T-Ex2: Splice en llistes" },
+            { id: "S33148", title: "25T-Ex3: Pop N" },
+            { id: "V79239", title: "25T-Ex4: Deque" }
+        ]
     },
 
     // --- M1 (Matemàtica Discreta) ---
@@ -642,12 +697,5 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M2-T10-Ex10", title: "Exercici 10: Distància mínima a una corba en el espai" },
             { id: "M2-T10-Ex11", title: "Exercici 11: Aplicació d'extrems condicionats (Repartiment d'herència)" }
         ]
-
-
-
-
     }
-
-
-
 ];
