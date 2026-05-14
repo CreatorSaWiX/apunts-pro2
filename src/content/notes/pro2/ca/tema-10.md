@@ -7,17 +7,14 @@ draft: false
 isNew: true
 ---
 
-## 1. Estructura interna: Doble enllaç i Sentinelles
+## 1. Estructura interna: doble enllaç i sentinelles
 
 A diferència del vector, una llista no guarda els elements junts en memòria. Cada element està en un **Node** (o `Item`) independent que sap qui té davant i qui té darrere.
 
-### Nodes Sentinella (`iteminf` i `itemsup`)
+### Nodes sentinella (`iteminf` i `itemsup`)
 Aquesta implementació utilitza dos nodes especials que **sempre existeixen**, encara que la llista estigui buida:
 - **`iteminf`**: El node "fictici" inicial. El seu `next` apunta al primer element real.
 - **`itemsup`**: El node "fictici" final. El seu `prev` apunta a l'últim element real.
-
-**Avantatge**: No hem de comprovar mai si un punter és `nullptr` en fer insercions o esborrats, simplificant molt el codi.
-- **Truc per als exercicis**: Com que els sentinelles sempre hi són, el primer element real és `iteminf.next` i l'últim és `itemsup.prev`. Pots accedir-hi directament per fer operacions com `swapFirstLast`.
 
 ```cpp
 template <typename T>
@@ -33,30 +30,53 @@ public:
 };
 ```
 
-## 2. El motor: Inserir i Esborrar en $\Theta(1)$
+## 2. El motor: inserir i esborrar en $\Theta(1)$
 
 La llista és l'estructura ideal per inserir/esborrar en qualsevol punt si ja tenim la posició. Només cal "recosir" els punters.
 
-### Inserir un element (`insertItem`)
-1. Creem el nou node.
-2. El connectem amb el seu següent i anterior.
-3. Actualitzem els punters dels veïns perquè apuntin al nou node.
+### Inserir un element per punter de node (`insertItem(punterPrevi, punterNode)`)
 
-<!-- ```cpp
-void insertItem(Item *pitemprev, const T &value) {
-    Item *pitem = new Item;
-    pitem->value = value;
-    
-    pitem->next = pitemprev->next;
-    pitem->next->prev = pitem;
-    pitem->prev = pitemprev;
-    pitemprev->next = pitem;
-    _size++;
-}
-``` -->
+1. Connectem el nou node amb el seu següent i anterior respectius.
+2. Actualitzem els punters dels veïns (`pitemprev` i `pitemprev->next`) perquè recosin l'enllaç amb el node introduït.
 
-::algoviz{algorithm="list_insert"}
+::algoviz{algorithm="list_insert_node"}
 
+### Inserir un element per valor (`insertItem(punterPrevi, valor)`)
+
+1. Creem el nou node `Item` amb `new`.
+2. Emplenem el valor de la dada del node.
+3. Cridem a la funció anterior `insertItem` per recosir el node instanciat.
+
+::algoviz{algorithm="list_insert_value"}
+
+### Extreure un element (`extractItem(punterNode)`)
+
+1. El node següent passa a apuntar directament a l'anterior.
+2. El node anterior passa a apuntar directament al següent.
+3. Restem 1 a la mida de la llista.
+
+::algoviz{algorithm="list_extract_item"}
+
+### Eliminar un element de memòria (`removeItem(punterNode)`)
+
+1. Cridem a `extractItem` per desconnectar de forma segura el node.
+2. Alliberem la memòria del node utilitzant `delete`.
+
+::algoviz{algorithm="list_remove_item"}
+
+### Buidar tota la llista (`removeItem()`)
+
+1. Mentre la mida sigui més gran que 0.
+2. Anem extraient i esborrant sempre el primer element de la llista (`iteminf.next`).
+
+::algoviz{algorithm="list_remove_all"}
+
+### Copiar nodes d'una altra llista (`copyItems(llista_original)`)
+
+1. Iterem la llista original al revés (des de l'últim node cap al primer).
+2. Per cada node original, cridem a `insertItem` al davant de tot (`&iteminf`, fent un efecte _push_front_). En afegir els elements al revés sempre per davant, l'ordre final de la còpia és l'original.
+
+::algoviz{algorithm="list_copy_items"}
 ### Com moure nodes (la regla dels 4 punters)
 En molts exercicis (com `moveToEnd` o `moveSecondToLast`), el Jutge prohibeix intercanviar els `.value`. Has de moure el node físicament:
 1. **Desconnectar**: Uneix el veí anterior amb el següent (`p->prev->next = p->next` i `p->next->prev = p->prev`).
@@ -83,8 +103,6 @@ public:
     }
 };
 ```
-
-> **Iteradors Circulars**: Si un exercici demana que la llista sigui circular, l'`operator++` de l'últim node no ha d'anar a `end()`, sinó a `begin()`. En la nostra implementació amb sentinelles, això significa saltar de `itemsup` a `iteminf.next`.
 
 ::linkedlistviz
 

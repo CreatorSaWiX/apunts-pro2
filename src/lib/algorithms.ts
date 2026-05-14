@@ -1553,17 +1553,84 @@ export const algorithms: Record<string, Algorithm> = {
             return steps;
         }
     },
-    list_insert: {
-        id: "list_insert",
-        code: `void insertItem(Item *pitemprev, const T &value) {
-    Item *pitem = new Item;
-    pitem->value = value;
-    
+    list_insert_node: {
+        id: "list_insert_node",
+        code: `void insertItem(Item *pitemprev, Item *pitem) {
     pitem->next = pitemprev->next;
     pitem->next->prev = pitem;
     pitem->prev = pitemprev;
     pitemprev->next = pitem;
     _size++;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: 0, label: "pitemprev (A)", fx: -160, fy: 0, color: "#3b82f6" },
+                { id: 1, label: "next (B)", fx: 160, fy: 0, color: "#3b82f6" },
+                { id: 2, label: "pitem (N)", fx: 0, fy: -100, color: "#10b981" },
+            ],
+            links: [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 0, curvature: 0.2, color: "#475569" },
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<number, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const hBase = { 0: "#3b82f6", 1: "#3b82f6", 2: "#10b981" };
+            const lBase = [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 0, curvature: 0.2, color: "#475569" }
+            ];
+
+            addStep(1, "Volem inserir el node N (pitem) existent just després de A (pitemprev). A i B estan connectats.", 
+                { ...hBase }, [...lBase], { pitemprev: "A", pitem: "N" });
+
+            const l2 = [
+                ...lBase,
+                { source: 2, target: 1, curvature: -0.2, color: "#facc15" } // N -> B
+            ];
+            addStep(2, "Pas 1: Connectem N amb el seu nou següent. pitem->next = pitemprev->next (que és B).", 
+                { 0: "#3b82f6", 1: "#3b82f6", 2: "#facc15" }, l2, { "pitem->next": "B" });
+
+            const l3 = [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 2, curvature: -0.2, color: "#facc15" }, // B -> N
+                { source: 2, target: 1, curvature: -0.2, color: "#475569" }  // N -> B
+            ];
+            addStep(3, "Pas 2: El node B ha d'apuntar enrere cap a N. pitem->next->prev = pitem.", 
+                { 0: "#3b82f6", 1: "#facc15", 2: "#10b981" }, l3, { "B->prev": "N" });
+
+            const l4 = [
+                ...l3,
+                { source: 2, target: 0, curvature: 0.2, color: "#facc15" } // N -> A
+            ];
+            addStep(4, "Pas 3: Connectem N amb el seu anterior (A). pitem->prev = pitemprev.", 
+                { 0: "#3b82f6", 1: "#3b82f6", 2: "#facc15" }, l4, { "pitem->prev": "A" });
+
+            const l5 = [
+                { source: 0, target: 2, curvature: 0.2, color: "#facc15" }, // A -> N
+                { source: 1, target: 2, curvature: -0.2, color: "#475569" },
+                { source: 2, target: 1, curvature: -0.2, color: "#475569" },
+                { source: 2, target: 0, curvature: 0.2, color: "#475569" }
+            ];
+            addStep(5, "Pas 4: Finalment, A apunta a N com el seu següent. Hem recosit la llista amb èxit!", 
+                { 0: "#facc15", 1: "#3b82f6", 2: "#10b981" }, l5, { "A->next": "N" });
+
+            addStep(6, "Operació finalitzada i actualitzem la mida de la llista.", 
+                { 0: "#10b981", 1: "#10b981", 2: "#10b981" }, l5, { _size: "3" });
+
+            return steps;
+        }
+    },
+    list_insert_value: {
+        id: "list_insert_value",
+        code: `void insertItem(Item *pitemprev, const T &value) {
+    Item *pitem = new Item;
+    pitem->value = value;
+    insertItem(pitemprev, pitem);
 }`,
         initialGraph: {
             nodes: [
@@ -1588,50 +1655,746 @@ export const algorithms: Record<string, Algorithm> = {
                 { source: 1, target: 0, curvature: 0.2, color: "#475569" }
             ];
 
-            addStep(1, "Volem inserir un nou valor després de A (pitemprev). Inicialment A i B estan connectats.", 
+            addStep(1, "Volem afegir un nou valor inèdit després de A (pitemprev).", 
                 { ...hBase }, [...lBase], { pitemprev: "A", value: "42" });
 
-            addStep(2, "Pas 1: Creem el nou node N en memòria.", 
+            addStep(2, "Pas 1: Creem el nou node N en memòria amb l'operador new.", 
                 { ...hBase, 2: "#facc15" }, [...lBase], { pitem: "Node N (0x...)" });
 
-            addStep(3, "Pas 2: Assignem el valor 42 al nou node.", 
+            addStep(3, "Pas 2: Assignem el valor que ens arriba per paràmetre al nou node.", 
                 { ...hBase, 2: "#10b981" }, [...lBase], { "pitem->value": "42" });
 
-            const l5 = [
-                ...lBase,
-                { source: 2, target: 1, curvature: -0.2, color: "#facc15" } // N -> B
-            ];
-            addStep(5, "Pas 3: Connectem N amb el seu següent. pitem->next = pitemprev->next (que és B).", 
-                { 0: "#3b82f6", 1: "#3b82f6", 2: "#10b981" }, l5, { "pitem->next": "B" });
-
-            const l6 = [
-                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
-                { source: 1, target: 2, curvature: -0.2, color: "#facc15" }, // B -> N
-                { source: 2, target: 1, curvature: -0.2, color: "#475569" }  // N -> B
-            ];
-            addStep(6, "Pas 4: El node B ha d'apuntar enrere cap a N. pitem->next->prev = pitem.", 
-                { 0: "#3b82f6", 1: "#facc15", 2: "#10b981" }, l6, { "B->prev": "N" });
-
-            const l7 = [
-                ...l6,
-                { source: 2, target: 0, curvature: 0.2, color: "#facc15" } // N -> A
-            ];
-            addStep(7, "Pas 5: Connectem N amb el seu anterior (A). pitem->prev = pitemprev.", 
-                { 0: "#3b82f6", 1: "#3b82f6", 2: "#10b981" }, l7, { "pitem->prev": "A" });
-
-            const l8 = [
-                { source: 0, target: 2, curvature: 0.2, color: "#facc15" }, // A -> N
+            const lFinal = [
+                { source: 0, target: 2, curvature: 0.2, color: "#475569" },
                 { source: 1, target: 2, curvature: -0.2, color: "#475569" },
                 { source: 2, target: 1, curvature: -0.2, color: "#475569" },
                 { source: 2, target: 0, curvature: 0.2, color: "#475569" }
             ];
-            addStep(8, "Pas 6: Finalment, A apunta a N com el seu següent. Hem 'recosit' la llista!", 
-                { 0: "#facc15", 1: "#3b82f6", 2: "#10b981" }, l8, { "A->next": "N" });
+            addStep(4, "Pas 3: Cridem a la funció que accepta un punter existent per recosir aquest node que acabem de crear.", 
+                { 0: "#10b981", 1: "#10b981", 2: "#10b981" }, lFinal, { "pitem": "inserit" });
 
-            addStep(9, "Operació finalitzada. La mida de la llista s'ha incrementat.", 
-                { 0: "#10b981", 1: "#10b981", 2: "#10b981" }, l8, { _size: "3" });
+            return steps;
+        }
+    },
+    list_extract_item: {
+        id: "list_extract_item",
+        code: `void extractItem(Item *pitem) {
+    pitem->next->prev = pitem->prev;
+    pitem->prev->next = pitem->next;
+    _size--;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: 0, label: "prev (A)", fx: -160, fy: 0, color: "#3b82f6" },
+                { id: 1, label: "pitem (N)", fx: 0, fy: 0, color: "#10b981" },
+                { id: 2, label: "next (B)", fx: 160, fy: 0, color: "#3b82f6" }
+            ],
+            links: [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" }, // A -> N
+                { source: 1, target: 0, curvature: 0.2, color: "#475569" }, // N -> A
+                { source: 1, target: 2, curvature: 0.2, color: "#475569" }, // N -> B
+                { source: 2, target: 1, curvature: 0.2, color: "#475569" }  // B -> N
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<number, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const hBase = { 0: "#3b82f6", 1: "#10b981", 2: "#3b82f6" };
+            const lBase = [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 0, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 2, curvature: 0.2, color: "#475569" },
+                { source: 2, target: 1, curvature: 0.2, color: "#475569" }
+            ];
+
+            addStep(1, "Volem extreure el node N (pitem). Actualment està lligat al seu anterior A i el seu següent B.", 
+                { ...hBase }, [...lBase], { pitem: "N" });
+
+            const l2 = [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 0, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 2, curvature: 0.2, color: "#475569" },
+                { source: 2, target: 0, curvature: 0.3, color: "#facc15" } // B -> A
+            ];
+            addStep(2, "Pas 1: El node següent (B) ara ha d'apuntar enrere directament cap a l'anterior (A), ignorant N.", 
+                { 0: "#facc15", 1: "#10b981", 2: "#3b82f6" }, l2, { "pitem->next->prev": "A" });
+
+            const l3 = [
+                { source: 0, target: 2, curvature: 0.3, color: "#facc15" }, // A -> B
+                { source: 1, target: 0, curvature: 0.2, color: "rgba(71,85,105,0.2)" }, // (ghost)
+                { source: 1, target: 2, curvature: 0.2, color: "rgba(71,85,105,0.2)" }, // (ghost)
+                { source: 2, target: 0, curvature: 0.3, color: "#475569" }
+            ];
+            addStep(3, "Pas 2: El node anterior (A) ara apunta endavant cap al següent (B). Els enllaços originals de N es queden orfes.", 
+                { 0: "#3b82f6", 1: "#ef4444", 2: "#facc15" }, l3, { "pitem->prev->next": "B" });
+
+            addStep(4, "Operació finalitzada. N ja no forma part de la seqüència de la llista (però com no hem fet delete, sobreviu en memòria).", 
+                { 0: "#3b82f6", 1: "rgba(16,185,129,0.3)", 2: "#3b82f6" }, l3, { _size: "mida - 1" });
+
+            return steps;
+        }
+    },
+    list_remove_item: {
+        id: "list_remove_item",
+        code: `void removeItem(Item *pitem) {
+    extractItem(pitem);
+    delete pitem;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: 0, label: "prev (A)", fx: -160, fy: 0, color: "#3b82f6" },
+                { id: 1, label: "pitem (N)", fx: 0, fy: 0, color: "#ef4444" },
+                { id: 2, label: "next (B)", fx: 160, fy: 0, color: "#3b82f6" }
+            ],
+            links: [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 0, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 2, curvature: 0.2, color: "#475569" },
+                { source: 2, target: 1, curvature: 0.2, color: "#475569" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<number, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const lBase = [
+                { source: 0, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 0, curvature: 0.2, color: "#475569" },
+                { source: 1, target: 2, curvature: 0.2, color: "#475569" },
+                { source: 2, target: 1, curvature: 0.2, color: "#475569" }
+            ];
+
+            addStep(1, "Volem eliminar definitivament el node N (pitem) i alliberar la seva memòria.", 
+                { 0: "#3b82f6", 1: "#ef4444", 2: "#3b82f6" }, lBase, { pitem: "N" });
+
+            const lExtracted = [
+                { source: 0, target: 2, curvature: 0.3, color: "#10b981" }, // A -> B
+                { source: 1, target: 0, curvature: 0.2, color: "rgba(71,85,105,0.2)" }, // (ghost)
+                { source: 1, target: 2, curvature: 0.2, color: "rgba(71,85,105,0.2)" }, // (ghost)
+                { source: 2, target: 0, curvature: 0.3, color: "#10b981" }
+            ];
+            addStep(2, "Pas 1: Cridem a extractItem(pitem). Això desconnecta de forma segura el node, unint A amb B directament.", 
+                { 0: "#10b981", 1: "rgba(239,68,68,0.5)", 2: "#10b981" }, lExtracted, { pitem: "N (extret)" });
+
+            const lDeleted = [
+                { source: 0, target: 2, curvature: 0.3, color: "#475569" }, // A -> B
+                { source: 2, target: 0, curvature: 0.3, color: "#475569" }
+            ];
+            addStep(3, "Pas 2: Ara que no hi ha perill de trencar la llista, fem servir l'operador 'delete' per esborrar N.", 
+                { 0: "#3b82f6", 1: "rgba(0,0,0,0)", 2: "#3b82f6" }, lDeleted, { pitem: "N (destruït)" });
+
+            return steps;
+        }
+    },
+    list_remove_all: {
+        id: "list_remove_all",
+        code: `void removeItem() {
+    while (_size > 0) {
+        removeItem(iteminf.next);
+    }
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "inf", label: "iteminf", fx: -160, fy: 0, color: "#3b82f6" },
+                { id: 1, label: "Node 1", fx: -60, fy: 0, color: "#10b981" },
+                { id: 2, label: "Node 2", fx: 60, fy: 0, color: "#10b981" },
+                { id: "sup", label: "itemsup", fx: 160, fy: 0, color: "#3b82f6" }
+            ],
+            links: [
+                { source: "inf", target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: "inf", curvature: 0.2, color: "#475569" },
+                { source: 1, target: 2, curvature: 0.2, color: "#475569" },
+                { source: 2, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 2, target: "sup", curvature: 0.2, color: "#475569" },
+                { source: "sup", target: 2, curvature: 0.2, color: "#475569" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const l0 = [
+                { source: "inf", target: 1, curvature: 0.2, color: "#475569" },
+                { source: 1, target: "inf", curvature: 0.2, color: "#475569" },
+                { source: 1, target: 2, curvature: 0.2, color: "#475569" },
+                { source: 2, target: 1, curvature: 0.2, color: "#475569" },
+                { source: 2, target: "sup", curvature: 0.2, color: "#475569" },
+                { source: "sup", target: 2, curvature: 0.2, color: "#475569" }
+            ];
+
+            addStep(1, "Volem buidar tota la llista cridant al mètode iteratiu que esborra els nodes un per un.", 
+                { "inf": "#3b82f6", "sup": "#3b82f6" }, l0, { _size: "2" });
+
+            addStep(2, "Bucle: Mentre la mida sigui més gran que 0.", 
+                { "inf": "#3b82f6", "sup": "#3b82f6" }, l0, { _size: "2 > 0" });
+
+            addStep(3, "Cridem removeItem per al primer element de la llista (sempre iteminf.next).", 
+                { "inf": "#3b82f6", 1: "#ef4444" }, l0, { "iteminf.next": "Node 1" });
+
+            const l1 = [
+                { source: "inf", target: 2, curvature: 0.3, color: "#10b981" },
+                { source: 2, target: "inf", curvature: 0.3, color: "#10b981" },
+                { source: 2, target: "sup", curvature: 0.2, color: "#475569" },
+                { source: "sup", target: 2, curvature: 0.2, color: "#475569" }
+            ];
+            addStep(3, "El Node 1 queda esborrat. Ara el 'next' de l'iteminf passa a ser el Node 2.", 
+                { "inf": "#10b981", 1: "rgba(0,0,0,0)", 2: "#3b82f6", "sup": "#3b82f6" }, l1, { _size: "1" });
+
+            addStep(2, "Bucle: La mida encara és més gran que 0.", 
+                { "inf": "#3b82f6", "sup": "#3b82f6" }, l1, { _size: "1 > 0" });
+
+            addStep(3, "Tornem a cridar removeItem pel primer element, que ara és el Node 2.", 
+                { "inf": "#3b82f6", 2: "#ef4444" }, l1, { "iteminf.next": "Node 2" });
+
+            const l2 = [
+                { source: "inf", target: "sup", curvature: 0.2, color: "#10b981" },
+                { source: "sup", target: "inf", curvature: 0.2, color: "#10b981" }
+            ];
+            addStep(3, "Node 2 queda esborrat. Els sentinelles queden units directament (llista buida).", 
+                { "inf": "#10b981", 1: "rgba(0,0,0,0)", 2: "rgba(0,0,0,0)", "sup": "#10b981" }, l2, { _size: "0" });
+
+            addStep(2, "Bucle: 0 > 0 és fals. El bucle i la funció acaben. Llista totalment buida de forma segura.", 
+                { "inf": "#3b82f6", "sup": "#3b82f6" }, l2, { _size: "0" });
+
+            return steps;
+        }
+    },
+    list_copy_items: {
+        id: "list_copy_items",
+        code: `void copyItems(const List& l) {
+    for (Item *pitem = l.itemsup.prev; pitem != &l.iteminf; pitem = pitem->prev) {
+        insertItem(&iteminf, pitem->value);
+    }
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "l_inf", label: "l.inf", fx: -160, fy: -60, color: "#8b5cf6" },
+                { id: "l_1", label: "X", fx: -60, fy: -60, color: "#8b5cf6" },
+                { id: "l_2", label: "Y", fx: 60, fy: -60, color: "#8b5cf6" },
+                { id: "l_sup", label: "l.sup", fx: 160, fy: -60, color: "#8b5cf6" },
+                { id: "inf", label: "iteminf", fx: -160, fy: 60, color: "#3b82f6" },
+                { id: "sup", label: "itemsup", fx: 160, fy: 60, color: "#3b82f6" },
+                { id: "new_X", label: "Còpia X", fx: -60, fy: 60, color: "rgba(0,0,0,0)" },
+                { id: "new_Y", label: "Còpia Y", fx: 60, fy: 60, color: "rgba(0,0,0,0)" }
+            ],
+            links: [
+                { source: "l_inf", target: "l_1", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_1", target: "l_inf", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_1", target: "l_2", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_2", target: "l_1", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_2", target: "l_sup", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_sup", target: "l_2", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "inf", target: "sup", curvature: 0.2, color: "#475569" },
+                { source: "sup", target: "inf", curvature: 0.2, color: "#475569" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const lBase = [
+                { source: "l_inf", target: "l_1", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_1", target: "l_inf", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_1", target: "l_2", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_2", target: "l_1", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_2", target: "l_sup", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "l_sup", target: "l_2", curvature: 0.2, color: "rgba(71,85,105,0.4)" },
+                { source: "inf", target: "sup", curvature: 0.2, color: "#475569" },
+                { source: "sup", target: "inf", curvature: 0.2, color: "#475569" }
+            ];
+
+            addStep(2, "Iterem a la inversa per mantenir l'ordre: pitem comença a l'últim element real (l.itemsup.prev).", 
+                { "l_2": "#facc15" }, [...lBase], { "pitem": "Y" });
+
+            const l1 = [
+                ...lBase.slice(0, 6),
+                { source: "inf", target: "new_Y", curvature: 0.2, color: "#10b981" },
+                { source: "new_Y", target: "inf", curvature: 0.2, color: "#10b981" },
+                { source: "new_Y", target: "sup", curvature: 0.2, color: "#10b981" },
+                { source: "sup", target: "new_Y", curvature: 0.2, color: "#10b981" }
+            ];
+            addStep(3, "Inserim al davant de tot (push_front) de la nostra llista buida.", 
+                { "l_2": "#10b981", "new_Y": "#10b981" }, l1, { "pitem": "Y", action: "insertItem(&iteminf, Y)" });
+
+            addStep(2, "El bucle fa pitem = pitem->prev per anar endarrere cap a l'esquerra.", 
+                { "l_1": "#facc15", "new_Y": "#3b82f6" }, l1, { "pitem": "X" });
+
+            const l2 = [
+                ...lBase.slice(0, 6),
+                { source: "inf", target: "new_X", curvature: 0.2, color: "#10b981" },
+                { source: "new_X", target: "inf", curvature: 0.2, color: "#10b981" },
+                { source: "new_X", target: "new_Y", curvature: 0.2, color: "#10b981" },
+                { source: "new_Y", target: "new_X", curvature: 0.2, color: "#10b981" },
+                { source: "new_Y", target: "sup", curvature: 0.2, color: "#475569" },
+                { source: "sup", target: "new_Y", curvature: 0.2, color: "#475569" }
+            ];
+            addStep(3, "Tornem a fer push_front amb X. Fent això X queda per davant d'Y de nou, restaurant l'ordre original!", 
+                { "l_1": "#10b981", "new_X": "#10b981", "new_Y": "#3b82f6" }, l2, { "pitem": "X" });
+
+            addStep(2, "La condició falla quan arribem al node sentinella l.iteminf i s'acaba la còpia.", 
+                { "l_inf": "#ef4444", "new_X": "#3b82f6", "new_Y": "#3b82f6" }, l2, { "pitem": "&l.iteminf" });
+
+            return steps;
+        }
+    },
+    arbre_copia_node: {
+        id: "arbre_copia_node",
+        code: `static node_arbre* copia_node_arbre(node_arbre* m) {
+    node_arbre* n;
+    if (m == NULL) n = NULL;
+    else {
+        n = new node_arbre;
+        n->info = m->info;
+        n->segE = copia_node_arbre(m->segE);
+        n->segD = copia_node_arbre(m->segD);
+    }
+    return n;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "m", label: "m (7)", fx: -100, fy: -80, color: "#8b5cf6" },
+                { id: "mE", label: "mE (2)", fx: -160, fy: 0, color: "#8b5cf6" },
+                { id: "mD", label: "mD (9)", fx: -40, fy: 0, color: "#8b5cf6" },
+                { id: "n", label: "n (7)", fx: 100, fy: -80, color: "rgba(0,0,0,0)" },
+                { id: "nE", label: "nE (2)", fx: 40, fy: 0, color: "rgba(0,0,0,0)" },
+                { id: "nD", label: "nD (9)", fx: 160, fy: 0, color: "rgba(0,0,0,0)" }
+            ],
+            links: [
+                { source: "m", target: "mE", color: "#475569" },
+                { source: "m", target: "mD", color: "#475569" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const lBase = [
+                { source: "m", target: "mE", color: "#475569" },
+                { source: "m", target: "mD", color: "#475569" }
+            ];
+
+            addStep(1, "Iniciem la còpia de l'arbre començant per l'arrel 'm'.", 
+                { "m": "#facc15" }, [...lBase], { "m": "7" });
+
+            addStep(4, "Com que m no és null, reservem memòria (new node_arbre) i copiem el valor.", 
+                { "m": "#3b82f6", "n": "#facc15" }, [...lBase], { "n->info": "7" });
+
+            addStep(7, "Cridem recursivament per copiar el subarbre esquerre (mE).", 
+                { "mE": "#facc15", "n": "#3b82f6" }, [...lBase], { "m": "2" });
+
+            addStep(4, "Reservem memòria per a la còpia de l'esquerra.", 
+                { "mE": "#3b82f6", "nE": "#facc15", "n": "#3b82f6" }, [...lBase], { "nE->info": "2" });
+
+            const l1 = [ ...lBase, { source: "n", target: "nE", color: "#10b981" } ];
+            addStep(7, "Els fills d'mE són nulls, així que retorna i enllacem n->segE.", 
+                { "n": "#10b981", "nE": "#3b82f6" }, l1, { "n->segE": "nE" });
+
+            addStep(8, "Ara cridem recursivament per al subarbre dret (mD).", 
+                { "mD": "#facc15", "n": "#3b82f6", "nE": "#3b82f6" }, l1, { "m": "9" });
+
+            addStep(4, "Reservem memòria per a la còpia de la dreta.", 
+                { "mD": "#3b82f6", "nD": "#facc15", "n": "#3b82f6", "nE": "#3b82f6" }, l1, { "nD->info": "9" });
+
+            const l2 = [ ...l1, { source: "n", target: "nD", color: "#10b981" } ];
+            addStep(8, "Els fills d'mD són nulls, retorna i enllacem n->segD.", 
+                { "n": "#10b981", "nE": "#3b82f6", "nD": "#3b82f6" }, l2, { "n->segD": "nD" });
+
+            addStep(10, "L'arrel original ja té els dos subarbres copiats profundament. Retorna el nou punter complet.", 
+                { "n": "#22c55e", "nE": "#22c55e", "nD": "#22c55e" }, l2, { "return": "n" });
+
+            return steps;
+        }
+    },
+    arbre_esborra_node: {
+        id: "arbre_esborra_node",
+        code: `static void esborra_node_arbre(node_arbre* m) {
+    if (m != NULL) {
+        esborra_node_arbre(m->segE);
+        esborra_node_arbre(m->segD);
+        delete m;
+    }
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "m", label: "7", fx: 0, fy: -80, color: "#3b82f6" },
+                { id: "mE", label: "2", fx: -60, fy: 0, color: "#3b82f6" },
+                { id: "mD", label: "9", fx: 60, fy: 0, color: "#3b82f6" }
+            ],
+            links: [
+                { source: "m", target: "mE", color: "#475569" },
+                { source: "m", target: "mD", color: "#475569" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const lBase = [
+                { source: "m", target: "mE", color: "#475569" },
+                { source: "m", target: "mD", color: "#475569" }
+            ];
+
+            addStep(1, "Anem a destruir l'arbre des de l'arrel (7). Crida a esborra_node_arbre(7).", 
+                { "m": "#facc15" }, [...lBase], { "m": "7" });
+
+            addStep(3, "Post-ordre: Primer hem de baixar pel fill esquerre abans de fer cap delete.", 
+                { "m": "#3b82f6", "mE": "#facc15" }, [...lBase], { "m": "2" });
+
+            const l1 = [ { source: "m", target: "mD", color: "#475569" } ];
+            addStep(5, "El node 2 no té fills (retornen ràpid de les línies 3-4). Executem el seu 'delete m'.", 
+                { "m": "#3b82f6", "mE": "rgba(0,0,0,0)" }, l1, { "deleted": "2" });
+
+            addStep(4, "Tornem a l'arrel (7). Ara hem de baixar pel fill dret.", 
+                { "m": "#3b82f6", "mD": "#facc15" }, l1, { "m": "9" });
+
+            const l2: any[] = [];
+            addStep(5, "El node 9 no té fills. Fem 'delete m' per alliberar-lo.", 
+                { "m": "#3b82f6", "mD": "rgba(0,0,0,0)" }, l2, { "deleted": "9" });
+
+            addStep(5, "Finalment, els dos subarbres han estat destruïts. Ara sí que és segur fer 'delete' de l'arrel (7).", 
+                { "m": "rgba(0,0,0,0)" }, l2, { "deleted": "7" });
+
+            return steps;
+        }
+    },
+    arbre_plantar: {
+        id: "arbre_plantar",
+        code: `void plantar(const T &x, Arbre &a1, Arbre &a2) {
+    node_arbre* aux = new node_arbre;
+    aux->info = x;
+    aux->segE = a1.primer_node;
+    aux->segD = a2.primer_node;
+    primer_node = aux;
+    a1.primer_node = NULL;
+    a2.primer_node = NULL;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "a1", label: "a1 (2)", fx: -60, fy: 0, color: "#10b981" },
+                { id: "a2", label: "a2 (9)", fx: 60, fy: 0, color: "#8b5cf6" },
+                { id: "aux", label: "x (7)", fx: 0, fy: -80, color: "rgba(0,0,0,0)" }
+            ],
+            links: []
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            addStep(1, "Tenim dos arbres existents independents a1 i a2, i un valor x=7 per plantar. L'arbre 'this' ha de ser buit.", 
+                { "a1": "#10b981", "a2": "#8b5cf6" }, [], { "x": "7" });
+
+            addStep(2, "Creem la nova arrel 'aux' en memòria i li donem el valor 7.", 
+                { "a1": "#10b981", "a2": "#8b5cf6", "aux": "#facc15" }, [], { "aux->info": "7" });
+
+            const l1 = [ { source: "aux", target: "a1", color: "#10b981" } ];
+            addStep(4, "Assignem com a fill esquerre l'arrel d'a1.", 
+                { "a1": "#10b981", "a2": "#8b5cf6", "aux": "#3b82f6" }, l1, { "aux->segE": "a1.primer_node" });
+
+            const l2 = [ ...l1, { source: "aux", target: "a2", color: "#8b5cf6" } ];
+            addStep(5, "Assignem com a fill dret l'arrel d'a2.", 
+                { "a1": "#10b981", "a2": "#8b5cf6", "aux": "#3b82f6" }, l2, { "aux->segD": "a2.primer_node" });
+
+            addStep(6, "Ara 'this' passa a ser l'arrel (aux).", 
+                { "a1": "#10b981", "a2": "#8b5cf6", "aux": "#22c55e" }, l2, { "primer_node": "aux" });
+
+            addStep(7, "IMPORTANT: Buidem a1 i a2. Transfereixen la propietat per no tenir aliasing!", 
+                { "a1": "rgba(16,185,129,0.3)", "a2": "rgba(139,92,246,0.3)", "aux": "#22c55e" }, l2, { "a1": "buit", "a2": "buit" });
+
+            return steps;
+        }
+    },
+    arbre_fills: {
+        id: "arbre_fills",
+        code: `void fills(Arbre &fe, Arbre &fd) {
+    node_arbre* aux = primer_node;
+    fe.primer_node = aux->segE;
+    fd.primer_node = aux->segD;
+    primer_node = NULL;
+    delete aux;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "m", label: "this (7)", fx: 0, fy: -80, color: "#facc15" },
+                { id: "mE", label: "fe (2)", fx: -60, fy: 0, color: "#10b981" },
+                { id: "mD", label: "fd (9)", fx: 60, fy: 0, color: "#8b5cf6" }
+            ],
+            links: [
+                { source: "m", target: "mE", color: "#475569" },
+                { source: "m", target: "mD", color: "#475569" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const lBase = [
+                { source: "m", target: "mE", color: "#475569" },
+                { source: "m", target: "mD", color: "#475569" }
+            ];
+
+            addStep(1, "Volem extreure els dos fills de l'arbre actual per donar-los a 'fe' i 'fd' (que venen buits).", 
+                { "m": "#facc15", "mE": "#10b981", "mD": "#8b5cf6" }, [...lBase], { "aux": "primer_node" });
+
+            const l1 = [ { source: "m", target: "mD", color: "#475569" } ];
+            addStep(3, "Passem la propietat del fill esquerre a l'arbre 'fe'. L'enllaç original es trencarà lògicament.", 
+                { "m": "#facc15", "mE": "#22c55e", "mD": "#8b5cf6" }, l1, { "fe.primer_node": "aux->segE" });
+
+            addStep(4, "Passem la propietat del fill dret a l'arbre 'fd'.", 
+                { "m": "#facc15", "mE": "#22c55e", "mD": "#22c55e" }, [], { "fd.primer_node": "aux->segD" });
+
+            addStep(5, "Tallem la connexió de l'arbre actual posant-lo a NULL. Ja no té cap element.", 
+                { "m": "#ef4444", "mE": "#22c55e", "mD": "#22c55e" }, [], { "primer_node": "NULL" });
+
+            addStep(6, "Esborrem només l'antiga arrel amb 'delete', alliberant el seu espai i acabant l'O(1).", 
+                { "m": "rgba(0,0,0,0)", "mE": "#22c55e", "mD": "#22c55e" }, [], { "aux": "deleted" });
+
+            return steps;
+        }
+    },
+    arbgen_copia: {
+        id: "arbgen_copia",
+        code: `static node_arbreGen* copia_node_arbreGen(node_arbreGen* m) { 
+    if (m == NULL) return NULL;
+    node_arbreGen* n = new node_arbreGen;
+    n->info = m->info;
+    int ari = m->seg.size();
+    n->seg = vector<node_arbreGen*>(ari);
+    for (int i = 0; i < ari; ++i) 
+        n->seg[i] = copia_node_arbreGen(m->seg[i]);        
+    return n;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "m", label: "m (A)", fx: -100, fy: -80, color: "#8b5cf6" },
+                { id: "mA", label: "mA (B)", fx: -160, fy: 0, color: "#8b5cf6" },
+                { id: "mB", label: "mB (C)", fx: -40, fy: 0, color: "#8b5cf6" },
+                { id: "n", label: "n (A)", fx: 100, fy: -80, color: "rgba(0,0,0,0)" },
+                { id: "nA", label: "nA (B)", fx: 40, fy: 0, color: "rgba(0,0,0,0)" },
+                { id: "nB", label: "nB (C)", fx: 160, fy: 0, color: "rgba(0,0,0,0)" }
+            ],
+            links: [
+                { source: "m", target: "mA", color: "#475569" },
+                { source: "m", target: "mB", color: "#475569" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const lBase = [
+                { source: "m", target: "mA", color: "#475569" },
+                { source: "m", target: "mB", color: "#475569" }
+            ];
+
+            addStep(1, "Anem a copiar un node de l'arbre general (A) que té 2 fills (B i C).", 
+                { "m": "#facc15" }, [...lBase], { "ari": "?" });
+
+            addStep(3, "Creem el node còpia 'n' i hi posem la informació 'A'.", 
+                { "m": "#3b82f6", "n": "#facc15" }, [...lBase], { "n->info": "A" });
+
+            addStep(6, "Calculem l'aritat (ari = 2 fills) i instanciem el vector de punters del nou node.", 
+                { "m": "#3b82f6", "n": "#facc15" }, [...lBase], { "ari": "2", "n->seg": "vector(2)" });
+
+            addStep(7, "Bucle: Iterem sobre el vector per copiar el primer fill (posició i=0).", 
+                { "mA": "#facc15", "n": "#3b82f6" }, [...lBase], { "i": "0" });
+
+            const l1 = [ ...lBase, { source: "n", target: "nA", color: "#10b981" } ];
+            addStep(8, "El fill mA(B) no té fills, així que la crida recursiva retorna ràpidament el nou node creat. L'assignem a n->seg[0].", 
+                { "n": "#10b981", "nA": "#3b82f6" }, l1, { "n->seg[0]": "nA" });
+
+            addStep(7, "Bucle: Iterem a la posició i=1 per copiar el segon fill.", 
+                { "mB": "#facc15", "n": "#3b82f6", "nA": "#3b82f6" }, l1, { "i": "1" });
+
+            const l2 = [ ...l1, { source: "n", target: "nB", color: "#10b981" } ];
+            addStep(8, "La còpia recursiva del fill mB(C) s'assigna a n->seg[1].", 
+                { "n": "#10b981", "nA": "#3b82f6", "nB": "#3b82f6" }, l2, { "n->seg[1]": "nB" });
+
+            addStep(9, "S'ha acabat el bucle. Tenim el node clonat amb el seu vector de fills, i el retornem.", 
+                { "n": "#22c55e", "nA": "#22c55e", "nB": "#22c55e" }, l2, { "return": "n" });
+
+            return steps;
+        }
+    },
+    arbgen_esborra: {
+        id: "arbgen_esborra",
+        code: `static void esborra_node_arbreGen(node_arbreGen* m) {  
+    if (m != NULL) {
+        int ari = m->seg.size();
+        for (int i = 0; i < ari; ++i) 
+            esborra_node_arbreGen(m->seg[i]);
+        delete m;
+    }
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "m", label: "A", fx: 0, fy: -80, color: "#3b82f6" },
+                { id: "mA", label: "B", fx: -60, fy: 0, color: "#3b82f6" },
+                { id: "mB", label: "C", fx: 60, fy: 0, color: "#3b82f6" }
+            ],
+            links: [
+                { source: "m", target: "mA", color: "#475569" },
+                { source: "m", target: "mB", color: "#475569" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const lBase = [
+                { source: "m", target: "mA", color: "#475569" },
+                { source: "m", target: "mB", color: "#475569" }
+            ];
+
+            addStep(1, "Iniciem l'esborrat de l'arbre començant per l'arrel.", 
+                { "m": "#facc15" }, [...lBase], { "m": "A" });
+
+            addStep(3, "Obtenim la quantitat de fills de l'arrel i iniciem el bucle sobre el vector.", 
+                { "m": "#3b82f6" }, [...lBase], { "ari": "2" });
+
+            addStep(5, "Crida recursiva per esborrar el fill de la posició i=0.", 
+                { "mA": "#facc15", "m": "#3b82f6" }, [...lBase], { "i": "0" });
+
+            const l1 = [ { source: "m", target: "mB", color: "#475569" } ];
+            addStep(6, "B no té fills (ari=0), per tant s'esborra directament amb 'delete'.", 
+                { "m": "#3b82f6", "mA": "rgba(0,0,0,0)" }, l1, { "deleted": "B" });
+
+            addStep(5, "Tornem al pare. Crida recursiva per esborrar el fill de la posició i=1.", 
+                { "mB": "#facc15", "m": "#3b82f6" }, l1, { "i": "1" });
+
+            const l2: any[] = [];
+            addStep(6, "C s'esborra amb 'delete'. El bucle principal ha acabat i tots els subarbres estan esborrats de memòria.", 
+                { "m": "#3b82f6", "mB": "rgba(0,0,0,0)" }, l2, { "deleted": "C" });
+
+            addStep(6, "Ara ja és segur alliberar el node pare amb 'delete m'. Cap memòria ha quedat perduda.", 
+                { "m": "rgba(0,0,0,0)" }, l2, { "deleted": "A" });
+
+            return steps;
+        }
+    },
+    arbgen_plantar: {
+        id: "arbgen_plantar",
+        code: `void plantar(const T &x, vector<ArbreGen> &v) {
+    node_arbreGen* aux = new node_arbreGen;
+    aux->info = x;
+    int ari = v.size();
+    aux->seg = vector<node_arbreGen*>(ari);
+    for (int i = 0; i < ari; ++i) {
+        aux->seg[i] = v[i].primer_node;
+        v[i].primer_node = NULL;
+    }
+    primer_node = aux;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "v0", label: "v[0] (B)", fx: -60, fy: 0, color: "#10b981" },
+                { id: "v1", label: "v[1] (C)", fx: 60, fy: 0, color: "#8b5cf6" },
+                { id: "aux", label: "x (A)", fx: 0, fy: -80, color: "rgba(0,0,0,0)" }
+            ],
+            links: []
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            addStep(1, "Anem a 'plantar' una arrel amb valor x (A) al nostre arbre actual buit, donant-li un vector d'arbres com a fills.", 
+                { "v0": "#10b981", "v1": "#8b5cf6" }, [], { "x": "A", "ari": "2" });
+
+            addStep(2, "Instanciem l'arrel 'aux' i el seu vector de fills de la mateixa mida que el vector d'entrada.", 
+                { "aux": "#facc15", "v0": "#10b981", "v1": "#8b5cf6" }, [], { "aux->info": "A", "aux->seg": "vector(2)" });
+
+            const l1 = [ { source: "aux", target: "v0", color: "#10b981" } ];
+            addStep(7, "Bucle (i=0): Assignem el fill, 'robant' l'arrel de l'arbre v[0], i deixem l'arbre v[0] original buit (NULL) per no duplicar propietats.", 
+                { "aux": "#3b82f6", "v0": "rgba(16,185,129,0.5)", "v1": "#8b5cf6" }, l1, { "i": "0", "v[0]": "NULL" });
+
+            const l2 = [ ...l1, { source: "aux", target: "v1", color: "#8b5cf6" } ];
+            addStep(7, "Bucle (i=1): Assignem i buidem el següent arbre del vector.", 
+                { "aux": "#3b82f6", "v0": "rgba(16,185,129,0.5)", "v1": "rgba(139,92,246,0.5)" }, l2, { "i": "1", "v[1]": "NULL" });
+
+            addStep(10, "Finalment, el nostre arbre es queda com a propietari (primer_node = aux).", 
+                { "aux": "#22c55e", "v0": "rgba(16,185,129,0.3)", "v1": "rgba(139,92,246,0.3)" }, l2, { "primer_node": "aux" });
+
+            return steps;
+        }
+    },
+    arbgen_fills: {
+        id: "arbgen_fills",
+        code: `void fills(vector<ArbreGen> &v) {
+    node_arbreGen* aux = primer_node;
+    int ari = aux->seg.size();
+    v = vector<ArbreGen>(ari);
+    for (int i = 0; i < ari; ++i) {
+        v[i].primer_node = aux->seg[i];
+    }
+    primer_node = NULL;
+    delete aux;
+}`,
+        initialGraph: {
+            nodes: [
+                { id: "m", label: "A", fx: 0, fy: -80, color: "#facc15" },
+                { id: "mA", label: "v[0]", fx: -60, fy: 0, color: "#10b981" },
+                { id: "mB", label: "v[1]", fx: 60, fy: 0, color: "#8b5cf6" }
+            ],
+            links: [
+                { source: "m", target: "mA", color: "#475569" },
+                { source: "m", target: "mB", color: "#475569" }
+            ]
+        },
+        generateSteps: () => {
+            const steps: AlgoStep[] = [];
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+                steps.push({ line, description: desc, highlights, links, variables: vars });
+            };
+
+            const lBase = [
+                { source: "m", target: "mA", color: "#475569" },
+                { source: "m", target: "mB", color: "#475569" }
+            ];
+
+            addStep(1, "Volem extreure els fills cap al vector d'arbres 'v', i destruir l'arrel d'aquest arbre.", 
+                { "m": "#facc15", "mA": "#10b981", "mB": "#8b5cf6" }, [...lBase], { "ari": "2" });
+
+            addStep(4, "Creem el vector de sortida amb capacitat pels 2 fills de l'arrel.", 
+                { "m": "#facc15", "mA": "#10b981", "mB": "#8b5cf6" }, [...lBase], { "v": "vector(2)" });
+
+            const l1 = [ { source: "m", target: "mB", color: "#475569" } ];
+            addStep(6, "Bucle (i=0): Passem la propietat del primer fill a v[0]. Aquest arbre passa a ser independent.", 
+                { "m": "#3b82f6", "mA": "#22c55e", "mB": "#8b5cf6" }, l1, { "i": "0", "v[0]": "fill creat" });
+
+            const l2: any[] = [];
+            addStep(6, "Bucle (i=1): Passem el segon fill cap a v[1].", 
+                { "m": "#3b82f6", "mA": "#22c55e", "mB": "#22c55e" }, l2, { "i": "1", "v[1]": "fill creat" });
+
+            addStep(8, "Buidem l'arbre original desconnectant l'arrel, de manera que ja no tingui fills (que ara pertanyen a v).", 
+                { "m": "#ef4444", "mA": "#22c55e", "mB": "#22c55e" }, l2, { "primer_node": "NULL" });
+
+            addStep(9, "Finalment alliberem exclusivament l'arrel en O(1), ja que els fills s'han salvat i ara resideixen al vector v.", 
+                { "m": "rgba(0,0,0,0)", "mA": "#22c55e", "mB": "#22c55e" }, l2, { "deleted": "aux" });
 
             return steps;
         }
     },
 };
+
