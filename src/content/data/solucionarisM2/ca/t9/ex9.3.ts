@@ -44,16 +44,37 @@ $$H(x,y) = \\begin{pmatrix} 6x & -9 \\\\ -9 & 6y \\end{pmatrix}, \\quad \\Delta 
 ---
 
 ### Apartat b) $f(x, y) = (x^2 - 2x + 4y^2 - 8y)^2$
-Podem completar quadrats: $f(x,y) = [(x-1)^2 + 4(y-1)^2 - 5]^2 = g(x,y)^2$.
 
-**1. Punts crítics:** $\\nabla f = 2g \\cdot \\nabla g = 0$.
-Això passa en dos casos:
-*   **Cas 1:** $g(x,y)=0 \\implies (x-1)^2 + 4(y-1)^2 = 5$. Tots els punts d'aquesta el·lipse són crítics. Com que $f(x,y) \\geq 0$ sempre i en aquests punts $f=0$, tots són **Mínims relatius** (i absoluts).
-*   **Cas 2:** $\\nabla g = (2(x-1), 8(y-1)) = (0,0) \\implies \\mathbf{P(1,1)}$.
+**1. Punts crítics:**
+Calculem les derivades parcials de primer ordre usant la regla de la cadena:
+*   $\\frac{\\partial f}{\\partial x} = 2(x^2 - 2x + 4y^2 - 8y) \\cdot (2x - 2)$
+*   $\\frac{\\partial f}{\\partial y} = 2(x^2 - 2x + 4y^2 - 8y) \\cdot (8y - 8)$
+
+Igualem ambdues derivades a zero:
+1.  $2(x^2 - 2x + 4y^2 - 8y)(2x - 2) = 0$
+2.  $2(x^2 - 2x + 4y^2 - 8y)(8y - 8) = 0$
+
+D'aquí obtenim dos casos:
+*   **Cas 1:** $x^2 - 2x + 4y^2 - 8y = 0$. Tots els punts que compleixen aquesta equació (una el·lipse) anul·len el gradient i, per tant, són punts crítics.
+    Per determinar el seu caràcter, fixem-nos en la forma de la funció: $f(x, y) = (x^2 - 2x + 4y^2 - 8y)^2$. Com que és un quadrat, el valor de la funció mai pot ser negatiu ($f(x, y) \\geq 0$ per a tot punt).
+    En els punts d'aquesta el·lipse, tenim que $f(x,y) = 0^2 = 0$. Com que $0$ és el valor més petit que pot prendre la funció, tots els punts de l'el·lipse són **Mínims absoluts** (i, per tant, també relatius).
+*   **Cas 2:** $2x - 2 = 0$ i $8y - 8 = 0$. Això ens dóna el punt $\\mathbf{P(1,1)}$.
 
 **2. Estudi de $P(1,1)$:**
+Calculem les derivades de segon ordre usant la regla del producte:
+*   $\\frac{\\partial^2 f}{\\partial x^2} = 2(2x-2)^2 + 2(x^2 - 2x + 4y^2 - 8y) \\cdot 2$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = 2(8y-8)^2 + 2(x^2 - 2x + 4y^2 - 8y) \\cdot 8$
+*   $\\frac{\\partial^2 f}{\\partial x \\partial y} = 2(8y-8) \\cdot (2x-2) = 32(y-1)(x-1)$
 
-$\\Delta(1,1) = 1600 > 0$ i $\\frac{\\partial^2 f}{\\partial x^2}(1,1) = -20 < 0 \\implies$ **Màxim relatiu**.
+Avaluem aquestes expressions en el punt $P(1,1)$:
+*   $\\frac{\\partial^2 f}{\\partial x^2}(1,1) = 2(0)^2 + 4(1 - 2 + 4 - 8) = 4(-5) = -20$
+*   $\\frac{\\partial^2 f}{\\partial y^2}(1,1) = 2(0)^2 + 16(1 - 2 + 4 - 8) = 16(-5) = -80$
+*   $\\frac{\\partial^2 f}{\\partial x \\partial y}(1,1) = 32(0)(0) = 0$
+
+Determinant de la matriu Hessiana:
+$$\\Delta(1,1) = \\begin{vmatrix} -20 & 0 \\\\ 0 & -80 \\end{vmatrix} = (-20)(-80) - 0 = 1600 > 0$$
+
+Com que $\\Delta > 0$ i $\\frac{\\partial^2 f}{\\partial x^2}(1,1) = -20 < 0$, el punt $P(1,1)$ és un **Màxim relatiu**.
 
 ---
 
@@ -78,25 +99,41 @@ Com que la funció pren valors positius i negatius en qualsevol entorn de $(0,0)
 
 ---
 
-### Apartat d) $f(x, y) = x^2 y^2 (1 - x - y)$
+### Apartat d) $f(x, y) = x^2 y^2 (1 - x - y) = x^2 y^2 - x^3 y^2 - x^2 y^3$
 
 **1. Punts crítics:**
+Derivem parcialment respecte $x$ i $y$:
+*   $\\frac{\\partial f}{\\partial x} = 2xy^2 - 3x^2 y^2 - 2xy^3 = xy^2 (2 - 3x - 2y)$
+*   $\\frac{\\partial f}{\\partial y} = 2x^2 y - 2x^3 y - 3x^2 y^2 = x^2 y (2 - 2x - 3y)$
 
-$\\frac{\\partial f}{\\partial x} = 2xy^2 - 3x^2 y^2 - 2xy^3 = xy^2 (2 - 3x - 2y) = 0$
+Igualem a zero per trobar els punts crítics:
+1.  $xy^2 (2 - 3x - 2y) = 0$
+2.  $x^2 y (2 - 2x - 3y) = 0$
 
-$\\frac{\\partial f}{\\partial y} = 2x^2 y - 2x^3 y - 3x^2 y^2 = x^2 y (2 - 2x - 3y) = 0$
-
-*   **Eixos:** Qualsevol punt amb $x=0$ o $y=0$ és crític. En tots ells $f=0$ i $\\Delta = 0$.
-*   **Punt interior:** Si $x,y \\neq 0$, resolem:
-    $$\\begin{cases} 3x + 2y = 2 \\\\ 2x + 3y = 2 \\end{cases} \\implies x = \\frac{2}{5}, y = \\frac{2}{5} \\implies \\mathbf{P(0.4, 0.4)}$$
+*   **Eixos:** Si $x=0$ o $y=0$, s'anul·len ambdues derivades. Tots els punts dels eixos són crítics ($f=0$).
+*   **Punt interior:** Si $x, y \\neq 0$, ens queda el sistema:
+    $$\\begin{cases} 3x + 2y = 2 \\\\ 2x + 3y = 2 \\end{cases} \\implies 3x + 2y = 2x + 3y \\implies x = y$$
+    . Substituint $x=y$ en qualsevol equació: $5x = 2 \\implies x = 0.4, y = 0.4 \\implies \\mathbf{P(0.4, 0.4)}$.
 
 **2. Estudi de $P(0.4, 0.4)$:**
-Calculant la Hessiana en aquest punt obtenim $\\Delta > 0$ i $\\frac{\\partial^2 f}{\\partial x^2}(0.4, 0.4) < 0 \\implies$ **Màxim relatiu**.
+Calculem les segones derivades:
+*   $\\frac{\\partial^2 f}{\\partial x^2} = 2y^2 - 6xy^2 - 2y^3 = 2y^2 (1 - 3x - y)$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = 2x^2 - 2x^3 - 6x^2 y = 2x^2 (1 - x - 3y)$
+*   $\\frac{\\partial^2 f}{\\partial x \\partial y} = 4xy - 6x^2 y - 6xy^2 = 2xy (2 - 3x - 3y)$
+
+Avaluem al punt $P(0.4, 0.4)$:
+*   $\\frac{\\partial^2 f}{\\partial x^2}(0.4, 0.4) = 2(0.16) (1 - 1.2 - 0.4) = 0.32(-0.6) = -0.192$
+*   $\\frac{\\partial^2 f}{\\partial y^2}(0.4, 0.4) = 2(0.16) (1 - 0.4 - 1.2) = 0.32(-0.6) = -0.192$
+*   $\\frac{\\partial^2 f}{\\partial x \\partial y}(0.4, 0.4) = 2(0.16) (2 - 1.2 - 1.2) = 0.32(-0.4) = -0.128$
+
+Matriu Hessiana:
+$\\Delta = (-0.192)^2 - (-0.128)^2 = 0.036864 - 0.016384 = 0.02048 > 0$.
+Com que $\\Delta > 0$ i $\\frac{\\partial^2 f}{\\partial x^2}(0.4, 0.4) < 0$, és un **Màxim relatiu**.
 
 **3. Estudi dels eixos ($f=0$):**
-Si analitzem $f(x,y) = x^2 y^2 (1-x-y)$ prop de l'eix, el signe depèn de $(1-x-y)$.
+Prop de l'eix, el signe de $f(x,y) = x^2 y^2 (1-x-y)$ depèn només del factor $(1-x-y)$, ja que $x^2 y^2 \\geq 0$.
 *   Si $x+y < 1 \\implies f > 0$.
 *   Si $x+y > 1 \\implies f < 0$.
-Per tant, els punts de l'eix on $x+y=1$ són punts de sella, mentre que en altres trams de l'eix la funció no canvia de signe (mínims no estrictes).`,
+En els trams dels eixos on $1-x-y$ canvia de signe (és a dir, prop de la recta $x+y=1$), els punts són de sella. On no canvia de signe, són extrems no estrictes.`,
   availableLanguages: ['ca']
 };

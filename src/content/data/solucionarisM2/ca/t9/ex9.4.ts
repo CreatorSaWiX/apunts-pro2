@@ -40,12 +40,7 @@ Per ser un mínim, cal que:
 2.  **Element $\\frac{\\partial^2 f}{\\partial x^2} > 0$:** $12a > 0 \\implies a > 0$
 
 Dels dos valors de $a$ que hem trobat ($1$ i $-0.2$), només **$a = 1$** compleix la condició $a > 0.25$.
-
----
-
-### Conclusió
-Els valors cercats són:
-**$$a = 1, \\quad b = 1$$**
+Els valors trobats són: **$$a = 1, \\quad b = 1$$**
 `,
   availableLanguages: ['ca']
 };

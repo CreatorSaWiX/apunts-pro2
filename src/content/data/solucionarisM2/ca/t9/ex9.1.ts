@@ -55,19 +55,19 @@ $$f(0.1, 0.1) \\approx \\frac{2}{10} + \\frac{3}{10} - \\frac{2}{100} - \\frac{6
 
 **2. Acotació de l'error (Residu de Lagrange):**
 
-L'error es calcula mitjançant el residu de tercer ordre. Seguint l'estructura d'una **identitat notable al cub** per a $h=0.1$ i $k=0.1$:
+L'error es calcula mitjançant el residu de tercer ordre. Seguint l'estructura d'una **identitat notable al cub** per a $h=x-a=0.1$ i $k=0.1$:
 
 $$R_2(0.1, 0.1) = \\frac{1}{6} \\left[ (0.1)^3 \\frac{\\partial^3 f}{\\partial x^3}(c,d) + 3(0.1)^3 \\frac{\\partial^3 f}{\\partial y \\partial x^2}(c,d) + 3(0.1)^3 \\frac{\\partial^3 f}{\\partial x \\partial y^2}(c,d) + (0.1)^3 \\frac{\\partial^3 f}{\\partial y^3}(c,d) \\right]$$
-
-Si factoritzem el terme $(0.1)^3$ i el denominador comú de les derivades, obtenim l'expressió de la pissarra:
-
-$$|R_2| = \\left| \\frac{1}{6} \\frac{(0.1)^3}{(1+2c+3d)^3} \\left( 16 + 3 \\cdot 24 + 3 \\cdot 36 + 54 \\right) \\right|$$
 
 On les derivades de tercer ordre al punt intermedi $(c,d)$ són:
 * $\\frac{\\partial^3 f}{\\partial x^3}(c,d) = \\frac{16}{(1+2c+3d)^3}$
 * $\\frac{\\partial^3 f}{\\partial y \\partial x^2}(c,d) = \\frac{24}{(1+2c+3d)^3}$
 * $\\frac{\\partial^3 f}{\\partial x \\partial y^2}(c,d) = \\frac{36}{(1+2c+3d)^3}$
 * $\\frac{\\partial^3 f}{\\partial y^3}(c,d) = \\frac{54}{(1+2c+3d)^3}$
+
+Si factoritzem el terme $(0.1)^3$ i el denominador comú de les derivades, obtenim:
+
+$$|R_2| = \\left| \\frac{1}{6} \\frac{(0.1)^3}{(1+2c+3d)^3} \\left( 16 + 3 \\cdot 24 + 3 \\cdot 36 + 54 \\right) \\right|$$
 
 Com que $0 \\leq c \\leq 0.1$ i $0 \\leq d \\leq 0.1$, el valor màxim s'assoleix quan el denominador és mínim (val 1):
 

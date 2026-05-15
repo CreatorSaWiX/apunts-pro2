@@ -25,10 +25,11 @@ $$f(1, \\pi/2) = 1 \\cdot (\\pi/2)^2 + \\sin(1 \\cdot \\pi/2) = \\frac{\\pi^2}{4
 
 ### 2. Construcció del Polinomi de Taylor de grau 2
 
-Recordem la fórmula del polinomi de Taylor de grau 2:
+Recordem la fórmula del polinomi de Taylor de grau 2, on $h = x-1$ i $k = y-\\pi/2$:
+
 $$P_2(x,y) = f(P) + \\left[ \\frac{\\partial f}{\\partial x}(P)h + \\frac{\\partial f}{\\partial y}(P)k \\right] + \\frac{1}{2} \\left[ \\frac{\\partial^2 f}{\\partial x^2}(P)h^2 + 2\\frac{\\partial^2 f}{\\partial y \\partial x}(P)hk + \\frac{\\partial^2 f}{\\partial y^2}(P)k^2 \\right]$$
 
-On $h = (x-1)$ i $k = (y-\\pi/2)$. Substituint els valors calculats:
+Substituïm els valors calculats:
 
 $$P_2(x,y) = \\left(\\frac{\\pi^2}{4} + 1\\right) + \\frac{\\pi^2}{4}(x-1) + \\pi(y-\\pi/2) + \\frac{1}{2} \\left[ -\\frac{\\pi^2}{4}(x-1)^2 + \\pi(x-1)(y-\\pi/2) + (y-\\pi/2)^2 \\right]$$
 

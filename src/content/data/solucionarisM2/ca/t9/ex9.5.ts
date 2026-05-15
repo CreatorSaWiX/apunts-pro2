@@ -25,92 +25,101 @@ g) $f(x,y,z) = x^{y/z}$
 h) $f(x,y,z) = xyz e^{x+y+z}$`,
   content: `### Apartat a) $f(x,y) = x^4 + y^4 - 4x^2y^2$
 **Derivades de primer ordre:**
-*   $\\frac{\\partial f}{\\partial x} = 4x^3 - 8xy^2$
-*   $\\frac{\\partial f}{\\partial y} = 4y^3 - 8x^2y$
+*   $\\frac{\\partial f}{\\partial x} = \\frac{\\partial}{\\partial x}(x^4 + y^4 - 4x^2y^2) = 4x^3 - 8xy^2$
+*   $\\frac{\\partial f}{\\partial y} = \\frac{\\partial}{\\partial y}(x^4 + y^4 - 4x^2y^2) = 4y^3 - 8x^2y$
 
 **Derivades de segon ordre:**
-*   $\\frac{\\partial^2 f}{\\partial x^2} = 12x^2 - 8y^2$
-*   $\\frac{\\partial^2 f}{\\partial y^2} = 12y^2 - 8x^2$
-*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = -16xy$
+*   $\\frac{\\partial^2 f}{\\partial x^2} = \\frac{\\partial}{\\partial x}(4x^3 - 8xy^2) = 12x^2 - 8y^2$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = \\frac{\\partial}{\\partial y}(4y^3 - 8x^2y) = 12y^2 - 8x^2$
+*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = \\frac{\\partial}{\\partial y}(4x^3 - 8xy^2) = -16xy$
 
 ---
 
 ### Apartat b) $f(x,y) = \\ln(x^2 + y^2)$
 **Derivades de primer ordre:**
-*   $\\frac{\\partial f}{\\partial x} = \\frac{2x}{x^2+y^2}$
-*   $\\frac{\\partial f}{\\partial y} = \\frac{2y}{x^2+y^2}$
+*   $\\frac{\\partial f}{\\partial x} = \\frac{1}{x^2+y^2} \\cdot \\frac{\\partial}{\\partial x}(x^2+y^2) = \\frac{2x}{x^2+y^2}$
+*   $\\frac{\\partial f}{\\partial y} = \\frac{1}{x^2+y^2} \\cdot \\frac{\\partial}{\\partial y}(x^2+y^2) = \\frac{2y}{x^2+y^2}$
 
-**Derivades de segon ordre:**
-*   $\\frac{\\partial^2 f}{\\partial x^2} = \\frac{2(y^2-x^2)}{(x^2+y^2)^2}$
-*   $\\frac{\\partial^2 f}{\\partial y^2} = \\frac{2(x^2-y^2)}{(x^2+y^2)^2}$
-*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = \\frac{-4xy}{(x^2+y^2)^2}$
+**Derivades de segon ordre (regla del quocient):**
+*   $\\frac{\\partial^2 f}{\\partial x^2} = \\frac{2(x^2+y^2) - 2x(2x)}{(x^2+y^2)^2} = \\frac{2x^2 + 2y^2 - 4x^2}{(x^2+y^2)^2} = \\frac{2(y^2-x^2)}{(x^2+y^2)^2}$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = \\frac{2(x^2+y^2) - 2y(2y)}{(x^2+y^2)^2} = \\frac{2x^2 + 2y^2 - 4y^2}{(x^2+y^2)^2} = \\frac{2(x^2-y^2)}{(x^2+y^2)^2}$
+*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = \\frac{\\partial}{\\partial y} \\left( \\frac{2x}{x^2+y^2} \\right) = 2x \\cdot \\frac{-2y}{(x^2+y^2)^2} = \\frac{-4xy}{(x^2+y^2)^2}$
 
 ---
 
 ### Apartat c) $f(x,y) = xy + \\frac{x}{y}$
 **Derivades de primer ordre:**
 *   $\\frac{\\partial f}{\\partial x} = y + \\frac{1}{y}$
-*   $\\frac{\\partial f}{\\partial y} = x - \\frac{x}{y^2}$
+*   $\\frac{\\partial f}{\\partial y} = x + x \\cdot \\left( -\\frac{1}{y^2} \\right) = x - \\frac{x}{y^2}$
 
 **Derivades de segon ordre:**
-*   $\\frac{\\partial^2 f}{\\partial x^2} = 0$
-*   $\\frac{\\partial^2 f}{\\partial y^2} = \\frac{2x}{y^3}$
-*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = 1 - \\frac{1}{y^2}$
+*   $\\frac{\\partial^2 f}{\\partial x^2} = \\frac{\\partial}{\\partial x}(y + y^{-1}) = 0$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = \\frac{\\partial}{\\partial y}(x - xy^{-2}) = -x(-2y^{-3}) = \\frac{2x}{y^3}$
+*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = \\frac{\\partial}{\\partial y}(y + y^{-1}) = 1 - \\frac{1}{y^2}$
 
 ---
 
 ### Apartat d) $f(x,y) = \\arctan \\frac{x}{y}$
 **Derivades de primer ordre:**
-*   $\\frac{\\partial f}{\\partial x} = \\frac{1/y}{1+(x/y)^2} = \\frac{y}{x^2+y^2}$
-*   $\\frac{\\partial f}{\\partial y} = \\frac{-x/y^2}{1+(x/y)^2} = \\frac{-x}{x^2+y^2}$
+*   $\\frac{\\partial f}{\\partial x} = \\frac{1}{1+(x/y)^2} \\cdot \\frac{1}{y} = \\frac{y^2}{y^2+x^2} \\cdot \\frac{1}{y} = \\frac{y}{x^2+y^2}$
+*   $\\frac{\\partial f}{\\partial y} = \\frac{1}{1+(x/y)^2} \\cdot \\left( -\\frac{x}{y^2} \\right) = \\frac{y^2}{y^2+x^2} \\cdot \\left( -\\frac{x}{y^2} \\right) = \\frac{-x}{x^2+y^2}$
 
 **Derivades de segon ordre:**
-*   $\\frac{\\partial^2 f}{\\partial x^2} = \\frac{-2xy}{(x^2+y^2)^2}$
-*   $\\frac{\\partial^2 f}{\\partial y^2} = \\frac{2xy}{(x^2+y^2)^2}$
-*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = \\frac{x^2-y^2}{(x^2+y^2)^2}$
+*   $\\frac{\\partial^2 f}{\\partial x^2} = \\frac{\\partial}{\\partial x} \\left( y(x^2+y^2)^{-1} \\right) = y(-1)(x^2+y^2)^{-2}(2x) = \\frac{-2xy}{(x^2+y^2)^2}$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = \\frac{\\partial}{\\partial y} \\left( -x(x^2+y^2)^{-1} \\right) = -x(-1)(x^2+y^2)^{-2}(2y) = \\frac{2xy}{(x^2+y^2)^2}$
+*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = \\frac{1(x^2+y^2) - y(2y)}{(x^2+y^2)^2} = \\frac{x^2+y^2-2y^2}{(x^2+y^2)^2} = \\frac{x^2-y^2}{(x^2+y^2)^2}$
 
 ---
 
 ### Apartat e) $f(x,y) = x \\sin(x+y)$
 **Derivades de primer ordre:**
-*   $\\frac{\\partial f}{\\partial x} = \\sin(x+y) + x \\cos(x+y)$
+*   $\\frac{\\partial f}{\\partial x} = 1 \\cdot \\sin(x+y) + x \\cos(x+y) = \\sin(x+y) + x \\cos(x+y)$
 *   $\\frac{\\partial f}{\\partial y} = x \\cos(x+y)$
 
 **Derivades de segon ordre:**
-*   $\\frac{\\partial^2 f}{\\partial x^2} = 2\\cos(x+y) - x\\sin(x+y)$
-*   $\\frac{\\partial^2 f}{\\partial y^2} = -x \\sin(x+y)$
-*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = \\cos(x+y) - x \\sin(x+y)$
+*   $\\frac{\\partial^2 f}{\\partial x^2} = \\cos(x+y) + \\cos(x+y) - x \\sin(x+y) = 2\\cos(x+y) - x\\sin(x+y)$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = \\frac{\\partial}{\\partial y} (x \\cos(x+y)) = -x \\sin(x+y)$
+*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = \\frac{\\partial}{\\partial y} (\\sin(x+y) + x \\cos(x+y)) = \\cos(x+y) - x \\sin(x+y)$
 
 ---
 
 ### Apartat f) $f(x,y) = (x^2 + y^2)e^{x+y}$
 **Derivades de primer ordre:**
-*   $\\frac{\\partial f}{\\partial x} = (x^2 + y^2 + 2x)e^{x+y}$
-*   $\\frac{\\partial f}{\\partial y} = (x^2 + y^2 + 2y)e^{x+y}$
+*   $\\frac{\\partial f}{\\partial x} = 2xe^{x+y} + (x^2+y^2)e^{x+y} = (x^2 + y^2 + 2x)e^{x+y}$
+*   $\\frac{\\partial f}{\\partial y} = 2ye^{x+y} + (x^2+y^2)e^{x+y} = (x^2 + y^2 + 2y)e^{x+y}$
 
 **Derivades de segon ordre:**
-*   $\\frac{\\partial^2 f}{\\partial x^2} = (x^2 + y^2 + 4x + 2)e^{x+y}$
-*   $\\frac{\\partial^2 f}{\\partial y^2} = (x^2 + y^2 + 4y + 2)e^{x+y}$
-*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = (x^2 + y^2 + 2x + 2y)e^{x+y}$
+*   $\\frac{\\partial^2 f}{\\partial x^2} = (2x+2)e^{x+y} + (x^2+y^2+2x)e^{x+y} = (x^2 + y^2 + 4x + 2)e^{x+y}$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = (2y+2)e^{x+y} + (x^2+y^2+2y)e^{x+y} = (x^2 + y^2 + 4y + 2)e^{x+y}$
+*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = 2ye^{x+y} + (x^2+y^2+2x)e^{x+y} = (x^2 + y^2 + 2x + 2y)e^{x+y}$
 
 ---
 
 ### Apartat g) $f(x,y,z) = x^{y/z}$
 **Derivades de primer ordre:**
 *   $\\frac{\\partial f}{\\partial x} = \\frac{y}{z} x^{y/z - 1}$
-*   $\\frac{\\partial f}{\\partial y} = \\frac{x^{y/z} \\ln x}{z}$
-*   $\\frac{\\partial f}{\\partial z} = -\\frac{y x^{y/z} \\ln x}{z^2}$
+*   $\\frac{\\partial f}{\\partial y} = \\frac{\\partial}{\\partial y} (e^{\\frac{y}{z} \\ln x}) = e^{\\frac{y}{z} \\ln x} \\cdot \\frac{\\ln x}{z} = \\frac{x^{y/z} \\ln x}{z}$
+*   $\\frac{\\partial f}{\\partial z} = \\frac{\\partial}{\\partial z} (e^{\\frac{y}{z} \\ln x}) = e^{\\frac{y}{z} \\ln x} \\cdot \\left( -\\frac{y \\ln x}{z^2} \\right) = -\\frac{y x^{y/z} \\ln x}{z^2}$
+
+**Derivades de segon ordre (parcials simples):**
+*   $\\frac{\\partial^2 f}{\\partial x^2} = \\frac{y}{z} \\left( \\frac{y}{z} - 1 \\right) x^{\\frac{y}{z} - 2}$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = \\frac{\\ln x}{z} \\cdot \\frac{\\partial f}{\\partial y} = \\frac{x^{y/z} (\\ln x)^2}{z^2}$
+*   $\\frac{\\partial^2 f}{\\partial z^2} = \\frac{\\partial}{\\partial z} (-y \\ln x \\cdot z^{-2} e^{\\frac{y}{z} \\ln x}) = y \\ln x \\left( 2z^{-3} e^{\\dots} - z^{-2} e^{\\dots} \\frac{-y \\ln x}{z^2} \\right) = \\frac{y x^{y/z} \\ln x}{z^3} \\left( 2 + \\frac{y \\ln x}{z} \\right)$
 
 ---
 
 ### Apartat h) $f(x,y,z) = xyz e^{x+y+z}$
 **Derivades de primer ordre:**
-*   $\\frac{\\partial f}{\\partial x} = yz(x + 1)e^{x+y+z}$
-*   $\\frac{\\partial f}{\\partial y} = xz(y + 1)e^{x+y+z}$
-*   $\\frac{\\partial f}{\\partial z} = xy(z + 1)e^{x+y+z}$
+*   $\\frac{\\partial f}{\\partial x} = yz e^{x+y+z} + xyz e^{x+y+z} = yz(x + 1)e^{x+y+z}$
+*   $\\frac{\\partial f}{\\partial y} = xz e^{x+y+z} + xyz e^{x+y+z} = xz(y + 1)e^{x+y+z}$
+*   $\\frac{\\partial f}{\\partial z} = xy e^{x+y+z} + xyz e^{x+y+z} = xy(z + 1)e^{x+y+z}$
 
-**Derivades de segon ordre (parcials):**
-*   $\\frac{\\partial^2 f}{\\partial x^2} = yz(x + 2)e^{x+y+z}$
-*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = z(x + 1)(y + 1)e^{x+y+z}$`,
+**Derivades de segon ordre:**
+*   $\\frac{\\partial^2 f}{\\partial x^2} = yz e^{x+y+z} + yz(x+1)e^{x+y+z} = yz(x + 2)e^{x+y+z}$
+*   $\\frac{\\partial^2 f}{\\partial y^2} = xz(y + 2)e^{x+y+z}$
+*   $\\frac{\\partial^2 f}{\\partial z^2} = xy(z + 2)e^{x+y+z}$
+*   $\\frac{\\partial^2 f}{\\partial y \\partial x} = \\frac{\\partial}{\\partial y} (yz(x+1)e^{x+y+z}) = z(x+1)e^{x+y+z} + yz(x+1)e^{x+y+z} = z(x+1)(y+1)e^{x+y+z}$
+*   $\\frac{\\partial^2 f}{\\partial z \\partial x} = y(x+1)(z+1)e^{x+y+z}$
+*   $\\frac{\\partial^2 f}{\\partial z \\partial y} = x(y+1)(z+1)e^{x+y+z}$`,
   availableLanguages: ['ca']
 };

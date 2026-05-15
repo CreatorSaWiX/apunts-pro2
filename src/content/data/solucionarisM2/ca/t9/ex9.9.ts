@@ -9,6 +9,7 @@ export const ex9_9: Solution = {
   statement: `Comproveu que $(0,0)$ és un punt de sella de la funció $f(x,y) = (x^2 + (y-1)^2 - 1) (x^2 - 2y)$.`,
   content: `### 1. Comprovació de punt crític
 Primer, simplifiquem lleugerament l'expressió de la funció:
+
 $$f(x,y) = (x^2 + y^2 - 2y + 1 - 1)(x^2 - 2y) = (x^2 + y^2 - 2y)(x^2 - 2y)$$
 
 Calculem les derivades parcials de primer ordre:
@@ -18,6 +19,7 @@ Calculem les derivades parcials de primer ordre:
 Avaluem en $(0,0)$:
 *   $\\frac{\\partial f}{\\partial x}(0,0) = 2(0)(0) = 0$
 *   $\\frac{\\partial f}{\\partial y}(0,0) = (-2)(0) + (0)(-2) = 0$
+
 Per tant, **$(0,0)$ és un punt crític**.
 
 ---
@@ -30,6 +32,7 @@ Calculem les segones derivades en $(0,0)$:
 
 La matriu Hessiana en $(0,0)$ és:
 $$H(0,0) = \\begin{pmatrix} 0 & 0 \\\\ 0 & 8 \\end{pmatrix}$$
+
 El determinant és **$\\Delta = 0$**, per tant el criteri de la Hessiana **no és concloent**. Cal estudiar el signe de la funció prop de l'origen.
 
 ---
