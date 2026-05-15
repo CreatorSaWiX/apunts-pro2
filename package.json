@@ -20,6 +20,7 @@
     "@codemirror/view": "^6.40.0",
     "@content-collections/core": "^0.13.1",
     "@content-collections/vite": "^0.2.8",
+    "@google/generative-ai": "^0.24.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@tailwindcss/vite": "^4.1.18",

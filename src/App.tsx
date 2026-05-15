@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Background from './components/Background';
+import { ChatBot } from './components/ChatBot';
 // import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
 // import FeedbackModal from './components/FeedbackModal';
 
@@ -56,6 +57,7 @@ function App() {
           </Suspense>
           <Analytics />
           {/* <SpeedInsights /> */}
+          <ChatBot />
         </div>
       </AuthProvider>
     </SubjectProvider>

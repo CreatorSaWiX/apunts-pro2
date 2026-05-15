@@ -101,6 +101,115 @@ export default defineConfig(({ mode }) => {
               res.end(JSON.stringify({ error: String(e.message || e) }));
             }
           });
+
+          // Middleware per provar l'API de Gemini en local
+          server.middlewares.use('/api/chat', async (req, res) => {
+            if (req.method === 'POST') {
+              let body = '';
+              req.on('data', chunk => {
+                body += chunk.toString();
+              });
+              req.on('end', async () => {
+                try {
+                  const { message, history, currentPath = '/', pageText = '', image } = JSON.parse(body);
+                  const { GoogleGenerativeAI } = await import('@google/generative-ai');
+
+                  // Per evitar el bucle infinit de recàrrega de Vite, llegim el fitxer manualment 
+                  // en lloc d'utilitzar import() que Vite rastreja com a dependència.
+                  const fs = await import('node:fs');
+                  const path = await import('node:path');
+                  let allPersonalNotes = [];
+                  try {
+                    const filePath = path.resolve('./.content-collections/generated/allPersonalNotes.js');
+                    if (fs.existsSync(filePath)) {
+                      const fileContent = fs.readFileSync(filePath, 'utf-8');
+                      const jsonStr = fileContent.replace('export default', '').trim().replace(/;$/, '');
+                      // Usem eval de forma segura per carregar el JS array que genera Content Collections
+                      allPersonalNotes = eval(`(${jsonStr})`);
+                    }
+                  } catch (e) {
+                    console.error("Error llegint els apunts locals:", e);
+                  }
+
+                  const apiKey = env.GEMINI_API_KEY;
+                  if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
+                    res.statusCode = 500;
+                    res.end(JSON.stringify({ error: 'Clau de Gemini no configurada al servidor (.env.local)' }));
+                    return;
+                  }
+
+                  const notesContext = allPersonalNotes
+                    .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
+                    .join('\n\n---\n\n');
+
+                  const genAI = new GoogleGenerativeAI(apiKey);
+
+                  const MODELS = [
+                    'gemini-3.1-flash-lite',     // lite de gemini 3
+                    'gemini-2.5-flash',          // provat i fiable → primer
+                    'gemini-2.5-flash-lite',     // lite de 2.5
+                    'gemini-2.0-flash-lite',     // de rescat
+                  ];
+
+                  const systemInstruction = `Ets un company de classe o tutor que ajuda amb l'assignatura PRO2 a la FIB (UPC).
+                    RESPON DE FORMA MOLT NATURAL, BREU I HUMANA. NO siguis robòtic ni donis explicacions llargues del teu "context" o de "la ruta".
+                    Si no saps una cosa o no la veus, digues simplement "Ostres, no veig el codi/solucionari que dius" o "Això no ho tinc als meus apunts".
+                    L'alumne està actualment a la pàgina: ${currentPath}
+
+                    Aquest és el text visible a la seva pantalla ara mateix (útil si està mirant un solucionari penjat per algú):
+                    """
+                    ${pageText}
+                    """
+
+                    I aquest és el coneixement base oficial de l'assignatura:
+                    ${notesContext}`;
+
+                  const formattedHistory = (history || []).map((msg: any) => ({
+                    role: msg.role === 'user' ? 'user' : 'model',
+                    parts: [{ text: msg.content }]
+                  }));
+
+                  const msgParts: any[] = [{ text: message }];
+                  if (image && image.data && image.mimeType) {
+                    msgParts.push({ inlineData: { data: image.data, mimeType: image.mimeType } });
+                  }
+
+                  let lastError: any;
+                  let replied = false;
+
+                  for (const modelName of MODELS) {
+                    try {
+                      const model = genAI.getGenerativeModel({ model: modelName, systemInstruction });
+                      const chat = model.startChat({ history: formattedHistory });
+                      const result = await chat.sendMessage(msgParts);
+                      console.log(`✅ [Gemini] Model usat: ${modelName}`);
+                      res.setHeader('Content-Type', 'application/json');
+                      res.end(JSON.stringify({ reply: result.response.text() }));
+                      replied = true;
+                      break;
+                    } catch (e: any) {
+                      const is429 = e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate');
+                      if (is429) {
+                        console.warn(`⚠️ [Gemini] ${modelName} rate limit, provant el seguent model...`);
+                        lastError = e;
+                        continue;
+                      }
+                      throw e; // error que no és rate-limit → propagar
+                    }
+                  }
+
+                  if (!replied) throw lastError ?? new Error('Tots els models han fallat');
+                } catch (e: any) {
+                  console.error("[DevServer Gemini Error]:", e);
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ error: String(e.message || e) }));
+                }
+              });
+            } else {
+              res.statusCode = 405;
+              res.end('Method Not Allowed');
+            }
+          });
         }
       }
     ],

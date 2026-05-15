@@ -15,6 +15,11 @@ service cloud.firestore {
       allow update: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId
                     && (request.resource.data.role == 'invitat' || request.resource.data.role == 'moderador');
+
+      // Historial de xat de l'assistent IA: cada usuari accedeix NOMÉS al seu propi
+      match /chats/{chatId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
 
     match /invites/{code} {
