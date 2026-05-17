@@ -17,7 +17,7 @@ $A = \\begin{pmatrix} a & -1 & 0 \\\\ 1 & 1 & 1 \\\\ 0 & 0 & 2 \\end{pmatrix}$
 
 ---
 
-#### 1) Dimensió de la imatge
+### 1) Dimensió de la imatge
 La dimensió de la imatge és el rang de la matriu $A$. Calculem el determinant per veure quan és màxim:
 $\\det(A) = 2 \\cdot \\det \\begin{pmatrix} a & -1 \\\\ 1 & 1 \\end{pmatrix} = 2(a + 1)$
 
@@ -26,7 +26,7 @@ $\\det(A) = 2 \\cdot \\det \\begin{pmatrix} a & -1 \\\\ 1 & 1 \\end{pmatrix} = 2
 
 ---
 
-#### 2) Diagonalitzabilitat per a $a = 3$
+### 2) Diagonalitzabilitat per a $a = 3$
 Substituïm $a=3$: $A = \\begin{pmatrix} 3 & -1 & 0 \\\\ 1 & 1 & 1 \\\\ 0 & 0 & 2 \\end{pmatrix}$.
 Calculem el polinomi característic:
 $p(\\lambda) = \\det(A - \\lambda I) = (2-\\lambda) \\cdot [(3-\\lambda)(1-\\lambda) + 1] = (2-\\lambda)(\\lambda^2 - 4\\lambda + 4) = (2-\\lambda)(\\lambda - 2)^2 = -(\\lambda - 2)^3$
@@ -40,7 +40,7 @@ Com que **$m_g(2) = 1 \\neq m_a(2) = 3$**, l'endomorfisme **no és diagonalitzab
 
 ---
 
-#### 3) Condicions per a valors propis reals
+### 3) Condicions per a valors propis reals
 El polinomi característic general és:
 $p(\\lambda) = (2-\\lambda) \\cdot [\\lambda^2 - (a+1)\\lambda + (a+1)]$
 Els valors propis seran reals si les arrels del factor de segon grau són reals. El discriminant ha de ser no negatiu:

@@ -27,10 +27,10 @@ Com que $\\dim(\\mathbb{R}^3) = 3 > 2 = \\dim(\\mathbb{R}^2)$, l'aplicació **no
 Estudiem l'exhaustivitat a través de la matriu del producte $A = A_2 \\cdot A_1$:
 
 $$A_1 = \\begin{pmatrix} 0 & 0 & 1 \\\\ 1 & 1 & 0 \\\\ 1 & -1 & 2 \\end{pmatrix}, \\quad A_2 = \\begin{pmatrix} 2 & 0 & -3 \\\\ 0 & 1 & 4 \\end{pmatrix}$$
+
 $$A = \\begin{pmatrix} 2 & 0 & -3 \\\\ 0 & 1 & 4 \\end{pmatrix} \\begin{pmatrix} 0 & 0 & 1 \\\\ 1 & 1 & 0 \\\\ 1 & -1 & 2 \\end{pmatrix} = \\begin{pmatrix} -3 & 3 & -4 \\\\ 4 & -3 & 8 \\end{pmatrix}$$
 
 Les dues files no són proporcionals, per tant el rang és 2. Com que el rang coincideix amb la dimensió de l'espai d'arribada, l'aplicació és **exhaustiva**.
-- **Conclusió:** Exhaustiva, però no injectiva ni bijectiva.
 
 ---
 
@@ -42,7 +42,6 @@ Estudiem la matriu de $f_1$ i $f_2$ en bases canòniques:
 - $A_2 = \\begin{pmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{pmatrix}$. El seu determinant és $2 \\neq 0$, per tant és bijectiva.
 
 Com que $f_1$ és exhaustiva i $f_2$ és un isomorfisme, la composició és **exhaustiva**.
-- **Conclusió:** Exhaustiva, però no injectiva ni bijectiva.
 
 ---
 

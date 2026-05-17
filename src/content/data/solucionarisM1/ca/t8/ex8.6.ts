@@ -18,7 +18,7 @@ Partim de la definició de vector propi: si $u$ és un vector propi de $f$ assoc
 
 ---
 
-#### 1) Demostració per a $-u$
+### 1) Demostració per a $-u$
 Volem veure si $f(-u) = \\lambda (-u)$ i si $-u \\neq \\vec{0}$.
 
 - Com que $f$ és un endomorfisme (aplicació lineal), es compleix que $f(\\alpha u) = \\alpha f(u)$ per a tot escalar $\\alpha$. Triant $\\alpha = -1$:
@@ -31,7 +31,7 @@ Per tant, **$-u$ és un vector propi de $f$ amb valor propi $\\lambda$**.
 
 ---
 
-#### 2) Demostració per a $f^2$ i $\\lambda^2$
+### 2) Demostració per a $f^2$ i $\\lambda^2$
 Volem veure si $f^2(u) = \\lambda^2 u$.
 
 - Per definició de composició d'aplicacions:

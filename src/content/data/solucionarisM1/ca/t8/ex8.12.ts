@@ -22,7 +22,7 @@ Primer calculem els valors i vectors propis de $A$:
 
 ---
 
-#### 1) Posició al cap de 10 dies
+### 1) Posició al cap de 10 dies
 La posició al cap de $k$ dies és $v_k = A^k v_0$.
 $v_{10} = P \\cdot D^{10} \\cdot P^{-1} \\cdot \\begin{pmatrix} 0 \\\\ 0 \\\\ 1 \\end{pmatrix}$
 
@@ -35,7 +35,7 @@ $v_{10} = \\begin{pmatrix} -2 & 0 & 1 \\\\ 1 & 1 & 0 \\\\ 1 & 0 & -1 \\end{pmatr
 
 ---
 
-#### 2) Arribada a la Terra
+### 2) Arribada a la Terra
 Busquem si existeix un $k$ tal que $v_k = \\begin{pmatrix} -4098 \\\\ 2049 \\\\ 4149 \\end{pmatrix}$.
 La posició general és:
 $v_k = \\begin{pmatrix} -2 & 0 & 1 \\\\ 1 & 1 & 0 \\\\ 1 & 0 & -1 \\end{pmatrix} \\begin{pmatrix} -1 \\\\ 2^k \\\\ -2^{k+1} \\end{pmatrix} = \\begin{pmatrix} 2 - 2^{k+1} \\\\ -1 + 2^k \\\\ -1 + 2^{k+1} \\end{pmatrix}$

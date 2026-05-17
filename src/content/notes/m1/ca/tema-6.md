@@ -12,7 +12,9 @@ isUpdated: 1
 
 Tot i que sovint pensem en vectors com a "fletxes" a l'espai, per a un matemàtic, un vector és qualsevol cosa que es pugui sumar amb una altra de la seva espècie i es pugui estirar/multiplicar per un número. Per exemple, $\mathbb{R}^2$ o $\mathbb{R}^3$, molts altres objectes (com matrius o polinomis) es comporten com a vectors si tenen una **suma** i un **producte per escalar** definits. L'exemple més intuïtiu d'espai vectorial és $\mathbb{R}^n$:
 
-$$\mathbb{R}^n = \left\{ \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix} : x_i \in \mathbb{R}, \, 1 \leq i \leq n \right\}$$
+$$
+\mathbb{R}^n = \left\{ \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix} : x_i \in \mathbb{R}, \, 1 \leq i \leq n \right\}
+$$
 
 ::three{type="vis_rn_dimensionality"}
 
