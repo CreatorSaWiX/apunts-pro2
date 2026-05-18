@@ -14,7 +14,9 @@ La matriu de l'endomorfisme en la base canònica és:
 $A = \\begin{pmatrix} 2 & 0 & 4 \\\\ 3 & -4 & 12 \\\\ 1 & -2 & 5 \\end{pmatrix}$
 
 **Polinomi característic:**
+
 $p(\\lambda) = \\det(A - \\lambda I) = \\begin{vmatrix} 2-\\lambda & 0 & 4 \\\\ 3 & -4-\\lambda & 12 \\\\ 1 & -2 & 5-\\lambda \\end{vmatrix} = (2-\\lambda)((-4-\\lambda)(5-\\lambda) + 24) + 4(-6 - (-4-\\lambda))$
+
 $p(\\lambda) = (2-\\lambda)(\\lambda^2 - \\lambda + 4) + 4(\\lambda - 2) = (2-\\lambda)(\\lambda^2 - \\lambda + 4 - 4) = (2-\\lambda)(\\lambda^2 - \\lambda) = -\\lambda(\\lambda-1)(\\lambda-2)$
 
 **Valors propis:** $\\lambda_1 = 0, \\lambda_2 = 1, \\lambda_3 = 2$ (tots amb $m_a=1$).
@@ -34,17 +36,22 @@ Com que hi ha 3 valors propis distints per a un espai de dimensió 3, l'endomorf
 ### 2) $f: P_2(\\mathbb{R}) \\to P_2(\\mathbb{R})$, on $f(a + bx + cx^2) = (5a + 6b + 2c) - (b + 8c)x + (a - 2c)x^2$
 
 Considerem la base canònica $\\mathcal{C} = \\{1, x, x^2\\}$. La matriu associada és:
+
 $A = \\begin{pmatrix} 5 & 6 & 2 \\\\ 0 & -1 & -8 \\\\ 1 & 0 & -2 \\end{pmatrix}$
 
 **Polinomi característic:**
+
 $p(\\lambda) = \\det(A - \\lambda I) = \\begin{vmatrix} 5-\\lambda & 6 & 2 \\\\ 0 & -1-\\lambda & -8 \\\\ 1 & 0 & -2-\\lambda \\end{vmatrix} = (5-\\lambda)((-1-\\lambda)(-2-\\lambda)) + 1(-48 - 2(-1-\\lambda))$
+
 $p(\\lambda) = -\\lambda^3 + 2\\lambda^2 + 15\\lambda - 36 = -(\\lambda - 3)^2(\\lambda + 4)$
 
 **Valors propis:** $\\lambda_1 = 3$ ($m_a=2$), $\\lambda_2 = -4$ ($m_a=1$).
 
 **Subespais propis:**
 - **Per $\\lambda = 3$:** $\\ker(A - 3I) \\implies \\begin{pmatrix} 2 & 6 & 2 \\\\ 0 & -4 & -8 \\\\ 1 & 0 & -5 \\end{pmatrix} \\begin{pmatrix} a \\\\ b \\\\ c \\end{pmatrix} = 0 \\implies a=5c, b=-2c$.
-  $E_3 = \\langle (5, -2, 1) \\rangle \\implies m_g(3) = 1$.
+  
+$E_3 = \\langle (5, -2, 1) \\rangle \\implies m_g(3) = 1$.
+
 Com que $m_g(3) = 1 < m_a(3) = 2$, l'endomorfisme **no és diagonalitzable**.
 
 ---

@@ -10,6 +10,7 @@ export const ex8_4: Solution = {
   content: `
 ### 1) Matriu associada
 Considerem la base canònica de $\\mathcal{M}_2(\\mathbb{R})$:
+
 $\\mathcal{C} = \\left\\{ E_{11}=\\begin{pmatrix} 1 & 0 \\\\ 0 & 0 \\end{pmatrix}, E_{12}=\\begin{pmatrix} 0 & 1 \\\\ 0 & 0 \\end{pmatrix}, E_{21}=\\begin{pmatrix} 0 & 0 \\\\ 1 & 0 \\end{pmatrix}, E_{22}=\\begin{pmatrix} 0 & 0 \\\\ 0 & 1 \\end{pmatrix} \\right\\}$
 
 Calculem les imatges:
@@ -23,10 +24,13 @@ $A = \\begin{pmatrix} 0 & 0 & 2 & 0 \\\\ 1 & 0 & 1 & 0 \\\\ 0 & 1 & -2 & 0 \\\\ 
 
 ### 2) Polinomi característic i valors propis
 El determinant és fàcil de calcular per l'última fila/columna:
+
 $p(\\lambda) = (1-\\lambda) \\begin{vmatrix} -\\lambda & 0 & 2 \\\\ 1 & -\\lambda & 1 \\\\ 0 & 1 & -2-\\lambda \\end{vmatrix} = (1-\\lambda) [ -\\lambda(\\lambda^2 + 2\\lambda - 1) + 2 ]$
+
 $p(\\lambda) = (1-\\lambda) [ -\\lambda^3 - 2\\lambda^2 + \\lambda + 2 ]$
 
 Busquem les arrels del polinomi de grau 3. Provant $\\lambda=1$: $-1-2+1+2=0$.
+
 Dividint per $(\\lambda-1)$: $-(\\lambda-1)(\\lambda^2 + 3\\lambda + 2) = -(\\lambda-1)(\\lambda+1)(\\lambda+2)$.
 
 Així doncs:

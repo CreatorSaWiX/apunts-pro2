@@ -24,7 +24,7 @@ Per trobar els valors propis d'una matriu $A$, busquem les arrels del seu **poli
 $$
 p(\lambda) = \det(A - \lambda I)
 $$
-Els valors de $\lambda$ que fan que $p(\lambda) = 0$ són els valors propis.
+Els valors de $\lambda$ que fan que $p(\lambda) = 0$ són els valors propis, $-\lambda I$ vol dir restar $\lambda$ a la diagonal principal.
 
 ### Subespais propis ($E_\lambda$)
 Per a cada valor propi $\lambda$, el conjunt de tots els seus vectors propis (més el vector zero) forma un subespai vectorial anomenat **subespai propi**:
