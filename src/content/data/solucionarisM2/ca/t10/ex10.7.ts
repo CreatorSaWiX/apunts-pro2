@@ -9,9 +9,12 @@ export const ex10_7: Solution = {
   statement: `Sigui $f: \\mathbb{R}^2 \\to \\mathbb{R}$ la funció definida per $f(x,y) = x^2 + y^2$.
 
 a) Calculeu i classifiqueu els extrems relatius de $f$ en el seu domini.
+
 b) Justifiqueu l'existència d'extrems absoluts de $f$ en el conjunt 
 $$K = \\{(x,y) \\in \\mathbb{R}^2 : y \\leq 1 - x^2, \\, y \\geq x - 1\\}$$
+
 c) Determineu tots els candidats a màxim i a mínim absoluts de $f$ en el recinte $K$.
+
 d) Trieu els punts on $f$ pren els valors màxim i mínim absoluts en $K$ i digueu quins són els valors màxim i mínim de $f$ en $K$.`,
   content: `### Apartat a) Extrems relatius
 Calculem el gradient de $f(x,y) = x^2 + y^2$:

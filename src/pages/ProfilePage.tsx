@@ -11,6 +11,7 @@ import { motion, AnimatePresence, useMotionTemplate, useMotionValue } from 'fram
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
+import SSLParticles from '../components/SSLParticles';
 
 // --- Spotlight Card (Re-used from TopicCarousel to ensure identical UI consistency) ---
 function SpotlightCard({
@@ -203,6 +204,7 @@ const ProfilePage = () => {
 
     const [extendedUser, setExtendedUser] = useState<any>(null);
     const [isFetchingUser, setIsFetchingUser] = useState(true);
+    const [isHoveringSSL, setIsHoveringSSL] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -420,13 +422,18 @@ const ProfilePage = () => {
                                                 <li className="flex justify-between items-center"><span className="text-blue-500">Diamond</span> <span className="text-slate-500">20+</span></li>
                                                 <li className="flex justify-between items-center"><span className="text-purple-500">Champion</span> <span className="text-slate-500">25+</span></li>
                                                 <li className="flex justify-between items-center"><span className="text-red-500">Grand Champion</span> <span className="text-slate-500">35+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-pink-500">SSL</span> <span className="text-pink-400/50">50+</span></li>
+                                                <li className="flex justify-between items-center"><span className="ssl-platinum-rank text-transparent bg-clip-text font-black">SSL</span> <span className="text-slate-400">50+</span></li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="mt-8 relative z-20">
-                                    <div className={`flex items-baseline gap-2 mb-4 ${rank.color}`}>
+                                    <div 
+                                        className={`flex items-baseline gap-2 mb-4 relative ${rank.color}`}
+                                        onMouseEnter={rank.name === 'SSL' ? () => setIsHoveringSSL(true) : undefined}
+                                        onMouseLeave={rank.name === 'SSL' ? () => setIsHoveringSSL(false) : undefined}
+                                    >
+                                        {rank.name === 'SSL' && <SSLParticles isHovered={isHoveringSSL} />}
                                         <span className={`text-3xl md:text-4xl font-bold leading-tight tracking-tight truncate ${rank.color.includes('bg-clip-text') ? rank.color : ''}`}>
                                             {rank.name}
                                         </span>

@@ -14,7 +14,7 @@ const ranks: Omit<Rank, 'division'>[] = [
     { name: 'Diamond', color: 'text-blue-500', minSolutions: 20 },
     { name: 'Champion', color: 'text-purple-500', minSolutions: 25 },
     { name: 'Grand Champion', color: 'text-red-500', minSolutions: 35 },
-    { name: 'SSL', color: 'text-pink-500 bg-clip-text bg-gradient-to-r from-pink-500 to-white', minSolutions: 50 },
+    { name: 'SSL', color: 'ssl-platinum-rank text-transparent bg-clip-text', minSolutions: 50 },
 ];
 
 export const getRank = (solutionsCount: number): Rank => {

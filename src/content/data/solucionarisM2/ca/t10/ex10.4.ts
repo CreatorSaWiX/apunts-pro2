@@ -37,9 +37,13 @@ La seva derivada és $2x + 1 = 0 \\implies x = -1/2$.
 
 **C) Segment L3 ($x+y=-3 \\implies y = -3-x$ per a $x \\in [-3, 0]$):**
 Substituïm $y$ a la funció:
+
 $$f(x, -3-x) = x^2 + (-3-x)^2 - x(-3-x) + x + (-3-x)$$
+
 $$= x^2 + (9 + 6x + x^2) + (3x + x^2) + x - 3 - x = 3x^2 + 9x + 6$$
+
 Derivem: $6x + 9 = 0 \\implies x = -3/2$. Llavors $y = -3 - (-3/2) = -3/2$.
+
 - Candidat: $(-3/2, -3/2)$ amb $f(-3/2, -3/2) = 3(-3/2)^2 + 9(-3/2) + 6 = 27/4 - 27/2 + 6 = \\mathbf{-3/4}$.
 - Extrems (vèrtexs): Ja calculats ($f=6$).
 

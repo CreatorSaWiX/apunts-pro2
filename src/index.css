@@ -226,3 +226,76 @@ canvas {
   outline: none !important;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Custom SSL Platinum Rank Styling & Animations */
+.ssl-platinum-rank {
+  background: linear-gradient(
+    90deg,
+    #94a3b8 0%,
+    #cbd5e1 25%,
+    #f8fafc 50%,
+    #cbd5e1 75%,
+    #94a3b8 100%
+  );
+  background-size: 200% auto;
+  color: transparent !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  animation: ssl-shine 28s linear infinite, ssl-pulse-glow 18s ease-in-out infinite;
+  display: inline-block;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.ssl-platinum-rank:hover {
+  animation: ssl-shine 14s linear infinite, ssl-pulse-glow 12s ease-in-out infinite;
+}
+
+@keyframes ssl-shine {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes ssl-pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.15)) drop-shadow(0 0 4px rgba(203, 213, 225, 0.1));
+  }
+  50% {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 8px rgba(203, 213, 225, 0.2));
+  }
+}
+
+@keyframes ssl-float {
+  0% {
+    transform: translateY(2px) scale(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  75% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-55px) scale(1) translateX(var(--drift));
+    opacity: 0;
+  }
+}
+
+.animate-spin-slow {
+  animation: ssl-spin 24s linear infinite;
+}
+
+@keyframes ssl-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
