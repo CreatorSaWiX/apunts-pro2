@@ -12,12 +12,12 @@ export const ex10_4: Solution = {
 ### 1. Punts crítics a l'interior
 Calculem les derivades parcials i les igualem a zero:
 1. $\\frac{\\partial f}{\\partial x} = 2x - y + 1 = 0 \\implies y = 2x + 1$
-2. $\\frac{\\partial f}{\\partial y} = 2y - x + 1 = 0$
+2. $\\frac{\\partial f}{\\partial y} = 2y - x + 1 = 0 \\implies 2(2x + 1) - x + 1 = 0 \\implies 4x + 2 - x + 1 = 0 \\implies 3x = -3 \\implies \\mathbf{x = -1}$
 
-Substituïm la primera a la segona:
-$$2(2x + 1) - x + 1 = 0 \\implies 4x + 2 - x + 1 = 0 \\implies 3x = -3 \\implies \\mathbf{x = -1}$$
-D'on obtenim $y = 2(-1) + 1 = \\mathbf{-1}$.
+$y = 2(-1) + 1 = \\mathbf{-1}$.
+
 El punt **$(-1, -1)$** pertany a l'interior de $D$ ja que compleix totes les inequacions: $-1 \\leq 0$, $-1 \\leq 0$ i $-1-1 = -2 \\geq -3$. ✓
+
 Valor: $f(-1, -1) = (-1)^2 + (-1)^2 - (-1)(-1) + (-1) + (-1) = 1 + 1 - 1 - 1 - 1 = \\mathbf{-1}$.
 
 ### 2. Estudi de la frontera

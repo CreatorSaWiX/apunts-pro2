@@ -11,13 +11,20 @@ export const ex10_5: Solution = {
 
 ### 1. Simplificació de la funció
 Observem que la funció de temperatura es pot expressar com un quadrat perfecte:
-$$T(x,y) = 25 + 4x^2 - 4xy + y^2 = 25 + (2x - y)^2$$
+
+$$
+T(x,y) = 25 + 4x^2 - 4xy + y^2 = 25 + (2x - y)^2
+$$
+
 Aquesta forma ens indica que el valor mínim de la funció serà **25 °C**, que s'assolirà en els punts on $2x - y = 0$, sempre que aquests punts estiguin sobre la circumferència.
 
 ### 2. Mètode de Lagrange
 Definim $f(x,y) = 25 + (2x - y)^2$ i la restricció $g(x,y) = x^2 + y^2 - 25 = 0$.
 Construïm la funció de Lagrange $L(x,y,\\lambda) = f - \\lambda g$:
-$$L(x,y,\\lambda) = 25 + (2x - y)^2 - \\lambda(x^2 + y^2 - 25)$$
+
+$$
+L(x,y,\\lambda) = 25 + (2x - y)^2 - \\lambda(x^2 + y^2 - 25)
+$$
 
 Busquem els punts on el gradient és zero:
 1.  $\\frac{\\partial L}{\\partial x} = 2(2x - y) \\cdot 2 - 2\\lambda x = 0 \\implies 4x - 2y = \\lambda x$
@@ -25,10 +32,18 @@ Busquem els punts on el gradient és zero:
 3.  $x^2 + y^2 = 25$
 
 De l'equació (2) aïllem $y$: $y(1 - \\lambda) = 2x \\implies y = \\frac{2x}{1 - \\lambda}$ (si $\\lambda \\neq 1$).
+
 Substituïm a l'equació (1):
-$$4x - 2\\left(\\frac{2x}{1 - \\lambda}\\right) = \\lambda x \\implies 4 - \\frac{4}{1 - \\lambda} = \\lambda \\quad (\\text{dividint per } x \\neq 0)$$
+
+$$
+4x - 2\\left(\\frac{2x}{1 - \\lambda}\\right) = \\lambda x \\implies 4 - \\frac{4}{1 - \\lambda} = \\lambda \\quad (\\text{dividint per } x \\neq 0)
+$$
+
 Multiplicant per $(1 - \\lambda)$:
-$$4(1 - \\lambda) - 4 = \\lambda(1 - \\lambda) \\implies 4 - 4\\lambda - 4 = \\lambda - \\lambda^2 \\implies \\mathbf{\\lambda^2 - 5\\lambda = 0}$$
+$$
+4(1 - \\lambda) - 4 = \\lambda(1 - \\lambda) \\implies 4 - 4\\lambda - 4 = \\lambda - \\lambda^2 \\implies \\mathbf{\\lambda^2 - 5\\lambda = 0}
+$$
+
 D'on obtenim **$\\lambda = 0$** o **$\\lambda = 5$**.
 
 **Anàlisi dels casos:**

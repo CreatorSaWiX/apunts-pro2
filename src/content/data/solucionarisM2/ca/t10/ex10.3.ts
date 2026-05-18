@@ -39,21 +39,78 @@ $$
 f(x,y) = (x^2 + y^2) - 12x - 8y + 50 = (4x + 2y + 20) - 12x - 8y + 50 = \\mathbf{-8x - 6y + 70}
 $$
 
-Ara hem de minimitzar/maximitzar $h(x,y) = -8x - 6y + 70$ subjecte a $g(x,y) = (x-2)^2 + (y-1)^2 - 25 = 0$ (completant quadrats a l'equació de la frontera).
+Per utilitzar el mètode de Lagrange, primer hem d'expressar la restricció de la frontera de la forma $g(x,y) = 0$. Partim de l'equació de la frontera:
+$$x^2 + y^2 - 4x - 2y = 20 \\implies x^2 + y^2 - 4x - 2y - 20 = 0$$
+
+Completem els quadrats per a cadascuna de les variables:
+- **Termes en $x$:** $x^2 - 4x = (x-2)^2 - 4$
+- **Termes en $y$:** $y^2 - 2y = (y-1)^2 - 1$
+
+Substituint aquests valors a l'equació:
+$$((x-2)^2 - 4) + ((y-1)^2 - 1) - 20 = 0 \\implies (x-2)^2 + (y-1)^2 - 25 = 0$$
+
+Així doncs, definim la lligadura com a $g(x,y) = (x-2)^2 + (y-1)^2 - 25 = 0$ (la circumferència de centre $(2,1)$ i radi $5$). Ara hem de minimitzar/maximitzar $h(x,y) = -8x - 6y + 70$ subjecte a $g(x,y) = 0$.
 
 **Mètode de Lagrange:**
 
-Definim $L(x,y,\\lambda) = (-8x - 6y + 70) - \\lambda((x-2)^2 + (y-1)^2 - 25)$.
-1.  $\\frac{\\partial L}{\\partial x} = -8 - 2\\lambda(x-2) = 0 \\implies \\mathbf{x-2 = -4/\\lambda}$
-2.  $\\frac{\\partial L}{\\partial y} = -6 - 2\\lambda(y-1) = 0 \\implies \\mathbf{y-1 = -3/\\lambda}$
-3.  $(x-2)^2 + (y-1)^2 = 25$
+Definim el Lagrangià de la següent manera:
+$$L(x,y,\\lambda) = (-8x - 6y + 70) - \\lambda((x-2)^2 + (y-1)^2 - 25)$$
 
-Substituïm (1) i (2) a (3):
+Busquem els punts on les derivades parcials de $L$ respecte $x$, $y$ i $\\lambda$ s'anul·len (sistema d'equacions de Lagrange):
 
-$$\\left(\\frac{-4}{\\lambda}\\right)^2 + \\left(\\frac{-3}{\\lambda}\\right)^2 = 25 \\implies \\frac{16}{\\lambda^2} + \\frac{9}{\\lambda^2} = 25 \\implies \\frac{25}{\\lambda^2} = 25 \\implies \\mathbf{\\lambda = \\pm 1}$$
+$$\\frac{\\partial L}{\\partial x} = -8 - 2\\lambda(x-2) = 0$$
 
-- **Si $\\lambda = 1$**: $x-2 = -4 \\implies x = -2$ i $y-1 = -3 \\implies y = -2$. Punt **$(-2, -2)$**.
-- **Si $\\lambda = -1$**: $x-2 = 4 \\implies x = 6$ i $y-1 = 3 \\implies y = 4$. Punt **$(6, 4)$**.
+Aïllem el terme $(x-2)$ suposant $\\lambda \\neq 0$ (si $\\lambda = 0$, tindríem $-8 = 0$, la qual cosa és impossible):
+
+$$-2\\lambda(x-2) = 8 \\implies \\lambda(x-2) = -4 \\implies \\mathbf{x-2 = \\frac{-4}{\\lambda}} \\quad \\text{(Eq. 1)}$$
+
+$$\\frac{\\partial L}{\\partial y} = -6 - 2\\lambda(y-1) = 0$$
+
+Aïllem el terme $(y-1)$ de manera similar:
+
+$$-2\\lambda(y-1) = 6 \\implies \\lambda(y-1) = -3 \\implies \\mathbf{y-1 = \\frac{-3}{\\lambda}} \\quad \\text{(Eq. 2)}$$
+
+$$\\frac{\\partial L}{\\partial \\lambda} = -((x-2)^2 + (y-1)^2 - 25) = 0 \\implies \\mathbf{(x-2)^2 + (y-1)^2 = 25} \\quad \\text{(Eq. 3)}$$
+
+Ara, substituïm les expressions de $(x-2)$ de l'Eq. 1 i de $(y-1)$ de l'Eq. 2 a l'Eq. 3:
+
+$$\\left(\\frac{-4}{\\lambda}\\right)^2 + \\left(\\frac{-3}{\\lambda}\\right)^2 = 25$$
+
+Resolem aquesta equació per trobar $\\lambda$:
+
+$$\\frac{16}{\\lambda^2} + \\frac{9}{\\lambda^2} = 25 \\implies \\frac{25}{\\lambda^2} = 25 \\implies \\lambda^2 = 1 \\implies \\mathbf{\\lambda = \\pm 1}$$
+
+Avaluem els dos possibles valors de $\\lambda$ per trobar els punts candidats $(x,y)$:
+
+### Si $\\lambda = 1$**
+
+Substituïm $\\lambda = 1$ a les equacions Eq. 1 i Eq. 2:
+
+$$
+
+x-2 = \\frac{-4}{1} = -4 \\implies x = -4 + 2 \\implies \\mathbf{x = -2}
+$$
+
+$$
+
+y-1 = \\frac{-3}{1} = -3 \\implies y = -3 + 1 \\implies \\mathbf{y = -2}
+$$
+
+**Això ens dóna el punt candidat:** **$(-2, -2)$**
+
+### Si $\\lambda = -1$**
+
+Substituïm $\\lambda = -1$ a les equacions Eq. 1 i Eq. 2:
+
+$$
+x-2 = \\frac{-4}{-1} = 4 \\implies x = 4 + 2 \\implies \\mathbf{x = 6}
+$$
+
+$$
+y-1 = \\frac{-3}{-1} = 3 \\implies y = 3 + 1 \\implies \\mathbf{y = 4}
+$$
+
+**Això ens dóna el punt candidat:** **$(6, 4)$**
 
 ### 3. Conclusió
 Avaluem la funció $f$ en els dos candidats trobats:
