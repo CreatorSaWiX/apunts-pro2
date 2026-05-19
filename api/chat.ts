@@ -41,6 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const genAI = new GoogleGenerativeAI(apiKey);
 
         const MODELS = [
+            'gemini-3.5-flash',          // nou model de referència 3.5
             'gemini-3.1-flash-lite',     // 500 RPD → primer sempre
             'gemini-2.5-flash',          // 20 RPD, millor qualitat
             'gemini-2.5-flash-lite',     // 20 RPD, lite

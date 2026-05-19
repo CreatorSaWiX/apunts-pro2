@@ -7,6 +7,5 @@ draft: false
 isNew: true
 ---
 
-## En construcció 🏗️
+## Arbres
 
-Aquest resum està sent preparat. Vés mirant els exercicis resolts d'altres temes, que ja estan disponibles!
