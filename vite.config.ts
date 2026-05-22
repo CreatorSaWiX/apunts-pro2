@@ -146,8 +146,8 @@ export default defineConfig(({ mode }) => {
 
                   const MODELS = [
                     'gemini-3.5-flash',          // nou model de referència 3.5
-                    'gemini-2.5-flash',          // provat i fiable
                     'gemini-3.1-flash-lite',     // lite de gemini 3
+                    'gemini-2.5-flash',          // provat i fiable
                     'gemini-2.5-flash-lite',     // lite de 2.5
                     'gemini-2.0-flash-lite',     // de rescat
                   ];

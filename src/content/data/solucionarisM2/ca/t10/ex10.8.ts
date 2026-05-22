@@ -9,8 +9,10 @@ export const ex10_8: Solution = {
   statement: `Sigui $f: \\mathbb{R}^2 \\to \\mathbb{R}$ la funció definida per $f(x,y) = x^4 + y^2$.
 
 a) Calculeu i classifiqueu els extrems relatius de $f$ en el seu domini.
+
 b) Justifiqueu l'existència d'extrems absoluts de $f$ en el recinte 
 $$K = \\{(x,y) \\in \\mathbb{R}^2 : x^2 + y^2 \\leq 1, \\, y \\geq 1/2\\}$$
+
 c) Determineu el màxim absolut i el mínim absolut de $f$ en el recinte $K$.`,
   content: `### Apartat a) Extrems relatius
 Calculem el gradient de $f(x,y) = x^4 + y^2$:
