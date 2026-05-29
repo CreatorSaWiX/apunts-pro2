@@ -4,8 +4,16 @@ description: "Resum del projecte i solucionaris dels problemes"
 readTime: "15 min"
 order: 14
 draft: false
-isUpdated: 3
+isUpdated: 5
 ---
+
+<div class="flex items-center gap-4 mb-8 mt-4">
+  <span class="text-slate-300 text-[15px] font-bold">Projecte Mario complet amb la Part 1 i Part 2:</span>
+  <a href="/mario-pro2%203.zip" download class="flex items-center justify-center gap-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-widest rounded-xl border transition-all select-none bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 hover:text-blue-300 shadow-md shadow-blue-950/10 group no-underline w-fit">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform duration-300"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+    <span>ZIP</span>
+  </a>
+</div>
 
 ## Resum d'arquitectura 
 
@@ -520,6 +528,8 @@ La solució és el **frustum culling**: pintar *només* els objectes visibles a 
 
 :::youtubeviz{src="https://youtu.be/f3GnLRIwCuo" caption="Vídeo demostració del funcionament del frustum culling al projecte."}
 :::
+
+> A video tutorial, havía deixat 3 includes en el finder: `#include <map>`, `#include <set>`, i  `#include "geometry.hh"`.
 
 :::accordion{title="**1. Disseny i Implementació**: `Finder<T>` en O(log n)"}
 La classe `Finder<T>` és un **contenidor espacial genèric** que indexa objectes per la seva posició al pla. Si el dissenyem malament (ex. reconstruint estructures lineals O(N) a cada inserció), el joc es quedarà congelat en iniciar quan hagi de carregar 1.000.000 d'objectes (O(N²)).
