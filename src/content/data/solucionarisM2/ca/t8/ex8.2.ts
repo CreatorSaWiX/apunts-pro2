@@ -17,9 +17,7 @@ $\\frac{\\partial f}{\\partial y} = 2y \\implies \\frac{\\partial f}{\\partial y
 
 $$\\nabla f(2,3) = (4, 6)$$
 
-$$\\frac{\\partial f}{\\partial \\vec{v}}(P) = \\nabla f(P) \\cdot \\vec{v} = (4, 6) \\cdot \\left(\\frac{3}{5}, \\frac{4}{5}\\right)$$
-
-$$\\frac{\\partial f}{\\partial \\vec{v}}(2,3) = \\frac{12}{5} + \\frac{24}{5} = \\frac{36}{5} = 7.2$$
+$$\\frac{\\partial f}{\\partial \\vec{v}}(P) = \\nabla f(P) \\cdot \\vec{v} = (4, 6) \\cdot \\left(\\frac{3}{5}, \\frac{4}{5}\\right) = \\frac{12}{5} + \\frac{24}{5} = \\frac{36}{5} = 7.2$$
 `,
   availableLanguages: ['ca']
 };
