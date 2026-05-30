@@ -3,7 +3,7 @@ title: "Final Àlgebra lineal"
 description: "Resum de Àlgebra lineal (WIP)"
 readTime: "20 Min"
 order: 99
-isUpdated: 3
+isUpdated: 4
 ---
 
 Aquí tens el resum de Àlgebra lineal (WIP). Pots visualitzar-lo directament o descarregar-lo.
