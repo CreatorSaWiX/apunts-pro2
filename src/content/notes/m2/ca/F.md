@@ -3,7 +3,7 @@ title: "Final M2"
 description: "Resum de M2 (WIP)"
 readTime: "20 Min"
 order: 99
-isUpdated: 4
+isNew: true
 ---
 
 Aquí tens el resum de M2. Pots visualitzar-lo directament o descarregar-lo.
