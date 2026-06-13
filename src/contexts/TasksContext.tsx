@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import type { Task } from '../types/tasks';
 
@@ -8,7 +8,8 @@ interface TasksContextType {
     error: string | null;
     addTask: (task: Omit<Task, 'id' | 'userId' | 'createdAt'>) => Promise<void>;
     updateTask: (taskId: string, updates: Partial<Task>) => Promise<void>;
-    deleteTask: (taskId: string) => Promise<void>;
+    deleteTask: (taskId: string, task?: Task) => Promise<void>;
+    undoDelete: () => Promise<void>;
     addBatchTasks: (tasks: Omit<Task, 'id' | 'userId' | 'createdAt'>[]) => Promise<void>;
 }
 
@@ -19,6 +20,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const deletedTasksRef = useRef<Task[]>([]);
 
     useEffect(() => {
         if (!user) {
@@ -142,12 +144,16 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
     }, []);
 
-    const deleteTask = useCallback(async (taskId: string) => {
+    const deleteTask = useCallback(async (taskId: string, task?: Task) => {
         try {
             const { db } = await import('../lib/firebase');
             const { doc, deleteDoc } = await import('firebase/firestore');
             
-            setTasks(prev => prev.filter(t => t.id !== taskId));
+            setTasks(prev => {
+                const found = task || prev.find(t => t.id === taskId);
+                if (found) deletedTasksRef.current.push(found);
+                return prev.filter(t => t.id !== taskId);
+            });
             
             await deleteDoc(doc(db, 'tasks', taskId));
         } catch (err) {
@@ -156,8 +162,47 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
     }, []);
 
+    const undoDelete = useCallback(async () => {
+        const lastDeleted = deletedTasksRef.current.pop();
+        if (!lastDeleted) return;
+
+        try {
+            const { db } = await import('../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            
+            await setDoc(doc(db, 'tasks', lastDeleted.id), {
+                userId: lastDeleted.userId,
+                title: lastDeleted.title,
+                description: lastDeleted.description,
+                status: lastDeleted.status,
+                priority: lastDeleted.priority,
+                dueDate: lastDeleted.dueDate,
+                startDate: lastDeleted.startDate,
+                estimatedMinutes: lastDeleted.estimatedMinutes,
+                source: lastDeleted.source,
+                createdAt: lastDeleted.createdAt
+            });
+        } catch (err) {
+            console.error("Error undoing delete:", err);
+            deletedTasksRef.current.push(lastDeleted); // put it back on failure
+        }
+    }, []);
+
+    useEffect(() => {
+        const handleGlobalKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+                // Preveiem que desfaci accions dins d'un input si està escrivint
+                if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
+                e.preventDefault();
+                undoDelete();
+            }
+        };
+        window.addEventListener('keydown', handleGlobalKeyDown);
+        return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+    }, [undoDelete]);
+
     return (
-        <TasksContext.Provider value={{ tasks, isLoading, error, addTask, updateTask, deleteTask, addBatchTasks }}>
+        <TasksContext.Provider value={{ tasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks }}>
             {children}
         </TasksContext.Provider>
     );

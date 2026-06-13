@@ -57,15 +57,17 @@ const CalendarView: React.FC = () => {
     };
 
     const onDragStart = (event: DragStartEvent) => {
-        const task = tasks.find(t => t.id === event.active.id);
+        const task = event.active.data.current?.task as Task | undefined;
         if (task) setActiveTask(task);
     };
 
     const onDragEnd = (event: DragEndEvent) => {
         const { over, active } = event;
+        const task = active.data.current?.task as Task | undefined;
         
-        if (activeTask && over) {
+        if (task && over) {
             const targetDateStr = String(over.id);
+            const pieceOffsetMinutes = active.data.current?.pieceOffsetMinutes || 0;
             
             if (targetDateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
                 const newDate = new Date(targetDateStr);
@@ -79,15 +81,16 @@ const CalendarView: React.FC = () => {
                         let totalMinutes = Math.round(relativeY);
                         totalMinutes = Math.max(0, Math.round(totalMinutes / 5) * 5); // Snap 5 mins
                         
-                        const hours = Math.floor(totalMinutes / 60);
-                        const mins = totalMinutes % 60;
-                        newDate.setHours(Math.min(23, Math.max(0, hours)), mins, 0, 0);
+                        totalMinutes -= pieceOffsetMinutes;
+                        
+                        // setHours(0) handles negative minutes perfectly (e.g. going back to previous day)
+                        newDate.setHours(0, totalMinutes, 0, 0);
                     } else {
-                        newDate.setHours(activeTask.startDate ? new Date(activeTask.startDate).getHours() : 12, activeTask.startDate ? new Date(activeTask.startDate).getMinutes() : 0, 0, 0);
+                        newDate.setHours(task.startDate ? new Date(task.startDate).getHours() : 12, task.startDate ? new Date(task.startDate).getMinutes() : 0, 0, 0);
                     }
                 } else {
-                    if (activeTask.startDate) {
-                        const originalDate = new Date(activeTask.startDate);
+                    if (task.startDate) {
+                        const originalDate = new Date(task.startDate);
                         newDate.setHours(originalDate.getHours(), originalDate.getMinutes(), 0, 0);
                     } else {
                         newDate.setHours(12, 0, 0, 0);
@@ -96,17 +99,17 @@ const CalendarView: React.FC = () => {
 
                 if (isAltPressed) {
                     addTask({
-                        title: `${activeTask.title} (Còpia)`,
-                        description: activeTask.description,
-                        status: activeTask.status,
-                        priority: activeTask.priority,
-                        dueDate: activeTask.dueDate,
+                        title: `${task.title} (Còpia)`,
+                        description: task.description,
+                        status: task.status,
+                        priority: task.priority,
+                        dueDate: task.dueDate,
                         startDate: newDate.toISOString(),
-                        estimatedMinutes: activeTask.estimatedMinutes,
-                        source: activeTask.source
+                        estimatedMinutes: task.estimatedMinutes,
+                        source: task.source
                     });
                 } else {
-                    updateTask(activeTask.id, { startDate: newDate.toISOString() });
+                    updateTask(task.id, { startDate: newDate.toISOString() });
                 }
             }
         }
@@ -203,17 +206,9 @@ const CalendarView: React.FC = () => {
                 </div>
 
                 {createPortal(
-                    <DragOverlay zIndex={1000}>
-                        {activeTask ? (
-                            mode === 'week' && activeTask.startDate ? (
-                                <div className="w-[140px] h-full">
-                                    <div className="rounded-xl border border-white/[0.05] overflow-hidden backdrop-blur-2xl bg-slate-900/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2 pointer-events-none">
-                                        <div className="text-[11px] font-bold text-slate-200 line-clamp-2">{activeTask.title}</div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <TaskCard task={activeTask} />
-                            )
+                    <DragOverlay zIndex={1000} dropAnimation={null}>
+                        {activeTask && mode !== 'week' ? (
+                            <TaskCard task={activeTask} />
                         ) : null}
                     </DragOverlay>,
                     document.body

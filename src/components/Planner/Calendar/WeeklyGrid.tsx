@@ -10,17 +10,31 @@ interface WeeklyGridProps {
     tasks: Task[];
 }
 
-const ResizableTask: React.FC<{ task: Task; updateTask: (id: string, updates: Partial<Task>) => void }> = ({ task, updateTask }) => {
-    const { removeTask } = useTasks();
-    const startDate = new Date(task.startDate!);
-    const hour = startDate.getHours();
-    const min = startDate.getMinutes();
-    const top = (hour * 60) + min;
-    const baseHeight = Math.max(task.estimatedMinutes || 60, 15);
+const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, updates: Partial<Task>) => void }> = ({ task, day, updateTask }) => {
+    const { deleteTask } = useTasks();
+    
+    const taskStart = new Date(task.startDate!);
+    const taskEnd = new Date(taskStart.getTime() + (task.estimatedMinutes || 60) * 60000);
 
-    const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-        id: task.id,
-        data: { type: 'Task', task }
+    const dayStart = new Date(day);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(day);
+    dayEnd.setHours(24, 0, 0, 0);
+
+    const isContinuingFromPrev = taskStart < dayStart;
+    const isContinuingToNext = taskEnd > dayEnd;
+
+    const renderStart = isContinuingFromPrev ? dayStart : taskStart;
+    const renderEnd = isContinuingToNext ? dayEnd : taskEnd;
+
+    const top = (renderStart.getHours() * 60) + renderStart.getMinutes();
+    const baseHeight = Math.max(15, (renderEnd.getTime() - renderStart.getTime()) / 60000);
+
+    const pieceOffsetMinutes = isContinuingFromPrev ? (dayStart.getTime() - taskStart.getTime()) / 60000 : 0;
+
+    const { attributes, listeners, setNodeRef, isDragging, transform } = useDraggable({
+        id: `${task.id}::${format(day, 'yyyy-MM-dd')}`,
+        data: { type: 'Task', task, pieceOffsetMinutes }
     });
 
     const [isResizing, setIsResizing] = React.useState<'top' | 'bottom' | null>(null);
@@ -29,20 +43,50 @@ const ResizableTask: React.FC<{ task: Task; updateTask: (id: string, updates: Pa
     
     const [isEditing, setIsEditing] = React.useState(false);
     const [editTitle, setEditTitle] = React.useState(task.title);
+    const [isSelected, setIsSelected] = React.useState(false);
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const taskRef = React.useRef<HTMLDivElement>(null);
 
     const dragStart = React.useRef({ y: 0, height: 0, top: 0 });
 
     React.useEffect(() => {
         if (!isResizing) {
-            setCurrentHeight(Math.max(task.estimatedMinutes || 60, 15));
-            setCurrentTop((new Date(task.startDate!).getHours() * 60) + new Date(task.startDate!).getMinutes());
+            setCurrentHeight(baseHeight);
+            setCurrentTop(top);
         }
-    }, [task.estimatedMinutes, task.startDate, isResizing]);
+    }, [task.estimatedMinutes, task.startDate, isResizing, day]);
+
+    React.useEffect(() => {
+        const handleGlobalClick = () => setIsSelected(false);
+        const handleGlobalKeyDown = (e: KeyboardEvent) => {
+            if (isSelected && !isEditing && (e.key === 'Backspace' || e.key === 'Delete')) {
+                deleteTask(task.id);
+            }
+        };
+        const handleTaskSelected = (e: Event) => {
+            const customEvent = e as CustomEvent;
+            if (customEvent.detail !== task.id) {
+                setIsSelected(false);
+            }
+        };
+
+        if (isSelected) {
+            window.addEventListener('click', handleGlobalClick);
+            window.addEventListener('keydown', handleGlobalKeyDown);
+            window.addEventListener('task-selected', handleTaskSelected);
+        }
+
+        return () => {
+            window.removeEventListener('click', handleGlobalClick);
+            window.removeEventListener('keydown', handleGlobalKeyDown);
+            window.removeEventListener('task-selected', handleTaskSelected);
+        };
+    }, [isSelected, isEditing, task.id, deleteTask]);
 
     const handlePointerDown = (type: 'top' | 'bottom') => (e: React.PointerEvent) => {
         if (isEditing) return;
         e.stopPropagation();
+        setIsSelected(true);
         setIsResizing(type);
         dragStart.current = { y: e.clientY, height: currentHeight, top: currentTop };
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -78,14 +122,17 @@ const ResizableTask: React.FC<{ task: Task; updateTask: (id: string, updates: Pa
         const updates: Partial<Task> = {};
         
         if (action === 'top') {
-            const newStartDate = new Date(startDate);
+            const newStartDate = new Date(dayStart);
             newStartDate.setHours(Math.floor(snappedTop / 60));
             newStartDate.setMinutes(snappedTop % 60);
             updates.startDate = newStartDate.toISOString();
+            
+            const timeDiff = newStartDate.getTime() - taskStart.getTime();
+            updates.estimatedMinutes = Math.max(15, (task.estimatedMinutes || 60) - (timeDiff / 60000));
         }
         
-        if (action === 'bottom' || action === 'top') {
-            updates.estimatedMinutes = snappedMinutes;
+        if (action === 'bottom') {
+            updates.estimatedMinutes = pieceOffsetMinutes + snappedMinutes;
         }
 
         if (Object.keys(updates).length > 0) {
@@ -96,7 +143,7 @@ const ResizableTask: React.FC<{ task: Task; updateTask: (id: string, updates: Pa
         setCurrentHeight(snappedMinutes);
     };
 
-    const handleDoubleClick = (e: React.MouseEvent) => {
+    const handleTaskDoubleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         setIsEditing(true);
         setTimeout(() => inputRef.current?.focus(), 0);
@@ -111,23 +158,27 @@ const ResizableTask: React.FC<{ task: Task; updateTask: (id: string, updates: Pa
         }
     };
 
-    const handleDelete = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (window.confirm('Vols esborrar aquesta tasca?')) {
-            removeTask(task.id);
-        }
-    };
-
     const height = isResizing ? currentHeight : baseHeight;
-    const renderTop = isResizing ? currentTop : top;
+    const layoutTop = isResizing ? currentTop : top;
     
-    const endMinutes = renderTop + height;
+    const snappedY = transform ? Math.round(transform.y / 5) * 5 : 0;
+    const colWidth = taskRef.current?.parentElement?.offsetWidth || 0;
+    const snappedX = transform && colWidth ? Math.round(transform.x / colWidth) * colWidth : 0;
+
+    const visualTop = isResizing ? currentTop : isDragging ? top + snappedY : top;
+    
+    const endMinutes = visualTop + height;
     const endH = Math.floor(endMinutes / 60);
     const endM = endMinutes % 60;
     const endTimeStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-    const startH = Math.floor(renderTop / 60);
-    const startM = renderTop % 60;
+    const startH = Math.floor(visualTop / 60);
+    const startM = visualTop % 60;
     const startTimeStr = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
+
+    const radiusClass = isContinuingFromPrev && isContinuingToNext ? 'rounded-none border-y-0' 
+        : isContinuingFromPrev ? 'rounded-b-xl rounded-t-none border-t-0' 
+        : isContinuingToNext ? 'rounded-t-xl rounded-b-none border-b-0' 
+        : 'rounded-xl';
 
     const priorityColors = {
         HIGH: 'bg-red-500',
@@ -138,18 +189,36 @@ const ResizableTask: React.FC<{ task: Task; updateTask: (id: string, updates: Pa
 
     return (
         <div 
-            ref={setNodeRef}
-            {...listeners}
+            ref={(node) => {
+                setNodeRef(node);
+                if (node) taskRef.current = node;
+            }}
             {...attributes}
-            className={`absolute left-1 right-1 rounded-xl border border-white/[0.03] overflow-hidden backdrop-blur-2xl transition-all flex flex-col group
+            {...listeners}
+            onPointerDown={(e) => {
+                listeners?.onPointerDown?.(e);
+            }}
+            onClick={(e) => {
+                e.stopPropagation();
+                setIsSelected(prev => {
+                    const next = !prev;
+                    if (next) window.dispatchEvent(new CustomEvent('task-selected', { detail: task.id }));
+                    return next;
+                });
+            }}
+            onDoubleClick={handleTaskDoubleClick}
+            className={`absolute left-1 right-1 border overflow-hidden backdrop-blur-2xl transition-[box-shadow,opacity] flex flex-col group
                 bg-slate-900/40 hover:bg-slate-900/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing
+                ${isSelected ? 'border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.1)]' : 'border-white/[0.03]'}
                 ${isResizing ? 'z-30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-95 scale-[1.02]' : 'hover:z-20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]'}
-                ${isDragging ? 'opacity-20 pointer-events-none' : ''}
+                ${isDragging ? 'shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 opacity-90 scale-[1.02] cursor-grabbing pointer-events-none' : ''}
+                ${radiusClass}
             `}
             style={{
-                top: `${renderTop}px`,
+                top: `${layoutTop}px`,
                 height: `${height}px`,
-                zIndex: isResizing || isDragging ? 30 : 10
+                zIndex: isResizing || isDragging || isSelected ? 30 : 10,
+                ...(transform ? { transform: `translate3d(${snappedX}px, ${snappedY}px, 0)` } : {})
             }}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -159,23 +228,14 @@ const ResizableTask: React.FC<{ task: Task; updateTask: (id: string, updates: Pa
             <div className={`absolute top-0 bottom-0 left-0 w-1 ${accentColor} shadow-[0_0_15px_currentColor] opacity-80`} />
 
             {/* Top Resize Handle */}
-            <div 
-                className="absolute top-0 left-0 right-0 h-3 cursor-ns-resize z-20 flex justify-center pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                onPointerDown={handlePointerDown('top')}
-            >
-                <div className="w-8 h-1 rounded-full bg-white/20" />
-            </div>
-
-            {/* Delete Button */}
-            <button 
-                className="absolute top-1.5 right-1.5 w-5 h-5 rounded-md bg-red-500/20 text-red-300 hover:bg-red-500 hover:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all z-20 cursor-pointer pointer-events-auto"
-                onClick={handleDelete}
-                onPointerDown={e => e.stopPropagation()}
-            >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                </svg>
-            </button>
+            {!isContinuingFromPrev && (
+                <div 
+                    className="absolute top-0 left-0 right-0 h-3 cursor-ns-resize z-20 flex justify-center pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onPointerDown={handlePointerDown('top')}
+                >
+                    <div className="w-8 h-1 rounded-full bg-white/20" />
+                </div>
+            )}
 
             <div className="px-3 py-2 flex flex-col h-full pointer-events-none select-none">
                 <div className="flex items-center gap-1.5 opacity-60 mb-0.5 pr-4">
@@ -192,11 +252,12 @@ const ResizableTask: React.FC<{ task: Task; updateTask: (id: string, updates: Pa
                         onBlur={handleTitleSubmit}
                         onKeyDown={e => e.key === 'Enter' && handleTitleSubmit()}
                         onPointerDown={e => e.stopPropagation()}
+                        onClick={e => e.stopPropagation()}
+                        onDoubleClick={e => e.stopPropagation()}
                     />
                 ) : (
                     <div 
                         className="text-[12px] font-bold leading-tight text-slate-200 line-clamp-3 pointer-events-auto cursor-text"
-                        onDoubleClick={handleDoubleClick}
                     >
                         {task.title}
                     </div>
@@ -204,12 +265,14 @@ const ResizableTask: React.FC<{ task: Task; updateTask: (id: string, updates: Pa
             </div>
 
             {/* Bottom Resize Handle */}
-            <div 
-                className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize z-20 flex justify-center pb-0.5 items-end opacity-0 group-hover:opacity-100 transition-opacity"
-                onPointerDown={handlePointerDown('bottom')}
-            >
-                <div className="w-8 h-1 rounded-full bg-white/20" />
-            </div>
+            {!isContinuingToNext && (
+                <div 
+                    className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize z-20 flex justify-center pb-0.5 items-end opacity-0 group-hover:opacity-100 transition-opacity"
+                    onPointerDown={handlePointerDown('bottom')}
+                >
+                    <div className="w-8 h-1 rounded-full bg-white/20" />
+                </div>
+            )}
         </div>
     );
 };
@@ -275,7 +338,7 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
             `}
         >
             {tasks.map(task => (
-                <ResizableTask key={task.id} task={task} updateTask={updateTask} />
+                <ResizableTask key={`${task.id}-${dateStr}`} task={task} day={day} updateTask={updateTask} />
             ))}
         </div>
     );
@@ -339,7 +402,18 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
                     {/* Columnes dels Dies */}
                     <div className="flex flex-1 relative">
                         {days.map(day => {
-                            const dayTasks = tasks.filter(t => t.startDate && t.startDate.startsWith(format(day, 'yyyy-MM-dd')));
+                            const dayStart = new Date(day);
+                            dayStart.setHours(0, 0, 0, 0);
+                            const dayEnd = new Date(day);
+                            dayEnd.setHours(24, 0, 0, 0);
+
+                            const dayTasks = tasks.filter(t => {
+                                if (!t.startDate) return false;
+                                const start = new Date(t.startDate);
+                                const end = new Date(start.getTime() + (t.estimatedMinutes || 60) * 60000);
+                                return start < dayEnd && end > dayStart;
+                            });
+
                             return (
                                 <TimeDayColumn 
                                     key={day.toISOString()} 
