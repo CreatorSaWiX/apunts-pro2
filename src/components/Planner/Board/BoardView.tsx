@@ -130,7 +130,7 @@ const BoardView: React.FC = () => {
     };
 
     return (
-        <div className="h-full flex overflow-x-auto gap-5 px-1 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10 w-full">
+        <div className="h-full flex overflow-x-auto gap-5 px-1 pt-4 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10 w-full">
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCorners}

@@ -97,7 +97,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask }) =
     return (
         <div
             ref={setNodeRef}
-            className={`relative overflow-hidden flex flex-col flex-shrink-0 w-[350px] h-full max-h-full transition-all duration-500 ease-out group/col ${isOver ? 'bg-slate-800/60 border-primary/30 scale-[1.01] shadow-[0_0_40px_rgba(var(--primary-rgb),0.2)]' : 'bg-slate-900/50 hover:bg-slate-900/70 border-white/[0.08]'} border rounded-[32px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_10px_40px_rgba(0,0,0,0.4)]`}
+            className={`relative overflow-hidden flex flex-col flex-shrink-0 w-[350px] h-full max-h-full transition-all duration-500 ease-out group/col ${isOver ? 'bg-slate-800/60 border-primary/50 shadow-[0_0_40px_rgba(var(--primary-rgb),0.3)]' : 'bg-slate-900/50 hover:bg-slate-900/70 border-white/[0.08]'} border rounded-[32px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_10px_40px_rgba(0,0,0,0.4)]`}
             onDoubleClick={handleDoubleClick}
             onMouseMove={handleMouseMove}
         >
@@ -123,7 +123,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask }) =
 
             {/* Contingut de la columna */}
             <div
-                className="flex-1 overflow-y-auto overflow-x-visible flex flex-col gap-4 min-h-[150px] px-5 pb-8 pt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [mask-image:linear-gradient(to_bottom,transparent,black_15px,black_calc(100%-30px),transparent)]"
+                className="flex-1 overflow-y-auto overflow-x-visible flex flex-col gap-4 min-h-[150px] px-5 pb-8 pt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                 onDoubleClick={handleDoubleClick}
             >
                 <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>

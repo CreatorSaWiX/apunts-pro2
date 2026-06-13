@@ -30,7 +30,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     const backgroundStyle = useMotionTemplate`
         radial-gradient(
           400px circle at ${mouseX}px ${mouseY}px,
-          rgba(var(--primary-rgb), 0.15),
+          rgba(255, 255, 255, 0.06),
           transparent 80%
         )
     `;
@@ -167,7 +167,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             <div
                 ref={setNodeRef}
                 style={style}
-                className={`bg-slate-900/40 rounded-[20px] border border-white/5 opacity-40 h-[90px] shadow-sm ${isAltPressed ? 'cursor-copy' : 'cursor-grabbing'}`}
+                className={`bg-white/[0.02] border-2 border-dashed border-white/10 rounded-[24px] h-[100px] shadow-inner ${isAltPressed ? 'cursor-copy' : 'cursor-grabbing'}`}
             />
         );
     }
@@ -178,13 +178,16 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             style={style}
             {...attributes}
             {...listeners}
-            onDoubleClick={(e) => {
-                e.stopPropagation();
-                setIsEditing(true);
-            }}
-            onMouseMove={handleMouseMove}
-            className={`group bg-slate-900/60 border-[0.5px] border-white/10 hover:border-primary/30 rounded-[24px] p-4 shadow-md hover:shadow-[0_8px_30px_rgba(var(--primary-rgb),0.2)] backdrop-blur-[40px] transition-all duration-300 flex flex-col gap-2.5 relative hover:-translate-y-1 overflow-hidden ${isDragging ? 'shadow-[0_30px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(var(--primary-rgb),0.3)] border-primary/50 opacity-95' : ''} mx-1 ${isAltPressed ? 'cursor-copy' : 'cursor-grab active:cursor-grabbing'}`}
+            className={`mx-1 relative outline-none z-10 ${isAltPressed ? 'cursor-copy' : 'cursor-grab active:cursor-grabbing'} ${isDragging ? 'z-50' : ''}`}
         >
+            <div 
+                onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    setIsEditing(true);
+                }}
+                onMouseMove={handleMouseMove}
+                className={`group bg-slate-900/60 border-[0.5px] border-white/10 hover:border-primary/30 rounded-[24px] p-4 shadow-md hover:shadow-[0_8px_30px_rgba(var(--primary-rgb),0.2)] backdrop-blur-[40px] transition-all duration-300 flex flex-col gap-2.5 relative hover:-translate-y-1 overflow-hidden transform-gpu ${isDragging ? 'shadow-[0_30px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(var(--primary-rgb),0.3)] border-primary/50 opacity-100 scale-[1.02]' : ''}`}
+            >
             <motion.div
                 className="pointer-events-none absolute -inset-px rounded-[20px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
                 style={{ background: backgroundStyle }}
@@ -302,6 +305,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                     </div>
                 </>
             )}
+            </div>
         </div>
     );
 };
