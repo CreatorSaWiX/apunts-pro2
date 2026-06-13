@@ -34,30 +34,35 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
         <div 
             ref={setNodeRef}
             onDoubleClick={handleDoubleClick}
-            className={`min-h-[120px] p-2 border-r border-b border-slate-700/30 transition-colors cursor-pointer hover:bg-slate-800/30
-                ${!isCurrentMonth ? 'bg-slate-900/50 text-slate-600' : 'bg-transparent'}
-                ${isOver ? 'bg-primary/20 ring-2 ring-primary inset-0 z-10' : ''}
+            className={`relative flex flex-col min-h-[140px] p-1.5 transition-colors border-r border-b border-white/5 
+                ${!isCurrentMonth ? 'bg-slate-900/60 text-slate-600' : 'bg-transparent hover:bg-slate-800/40 cursor-pointer'}
+                ${isOver ? 'bg-primary/20 border-primary/50 shadow-[inset_0_0_20px_rgba(var(--primary-rgb),0.3)] z-20' : ''}
             `}
         >
-            <div className="flex justify-between items-start mb-2">
-                <span className={`text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full ${isToday(day) ? 'bg-primary text-white' : ''}`}>
+            <div className="flex justify-end items-start mb-1">
+                <span className={`text-[12px] font-bold w-6 h-6 flex items-center justify-center rounded-full transition-all duration-300 ${isToday(day) ? 'bg-primary text-white shadow-[0_0_10px_rgba(var(--primary-rgb),0.8)]' : 'text-slate-400 hover:bg-white/10'}`}>
                     {format(day, 'd')}
                 </span>
             </div>
             
-            <div className="flex flex-col gap-1 overflow-y-auto max-h-[80px]">
-                {tasks.map(task => (
-                    <div 
-                        key={task.id} 
-                        className={`text-xs px-2 py-1 rounded border overflow-hidden text-ellipsis whitespace-nowrap
-                            ${task.priority === 'HIGH' ? 'bg-red-500/20 border-red-500/30 text-red-300' : 
-                              task.priority === 'MEDIUM' ? 'bg-amber-500/20 border-amber-500/30 text-amber-300' : 
-                              'bg-slate-700 border-slate-600 text-slate-300'}
-                        `}
-                    >
-                        {task.title}
-                    </div>
-                ))}
+            <div className="flex flex-col gap-[2px] overflow-y-auto flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                {tasks.map(task => {
+                    const startDate = task.startDate ? new Date(task.startDate) : new Date();
+                    return (
+                        <div 
+                            key={task.id} 
+                            className={`flex items-center gap-1.5 px-1.5 py-0.5 rounded transition-colors hover:bg-white/10 cursor-default group
+                                ${task.priority === 'HIGH' ? 'text-red-300' : 
+                                  task.priority === 'MEDIUM' ? 'text-amber-300' : 
+                                  'text-slate-300'}
+                            `}
+                        >
+                            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70 group-hover:opacity-100 transition-opacity"></span>
+                            <span className="text-[10px] font-bold opacity-60 tracking-wider">{format(startDate, 'HH:mm')}</span>
+                            <span className="text-[11px] font-semibold truncate flex-1 leading-tight">{task.title}</span>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
@@ -73,16 +78,16 @@ const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks }) => {
     const weekDays = ['Dll', 'Dmt', 'Dmc', 'Djj', 'Dvv', 'Dss', 'Dmg'];
 
     return (
-        <div className="flex flex-col h-full bg-slate-900 rounded-lg border border-slate-700/50 overflow-hidden">
-            <div className="grid grid-cols-7 border-b border-slate-700/50 bg-slate-800/50">
+        <div className="flex flex-col h-full bg-slate-900/40 backdrop-blur-2xl rounded-[32px] border border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.4)] overflow-hidden">
+            <div className="grid grid-cols-7 border-b border-white/5 bg-slate-900/60 shadow-sm">
                 {weekDays.map(day => (
-                    <div key={day} className="py-2 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider border-r border-slate-700/30 last:border-0">
+                    <div key={day} className="py-3 text-center text-[11px] font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 uppercase tracking-[0.2em] border-r border-white/5 last:border-0">
                         {day}
                     </div>
                 ))}
             </div>
             
-            <div className="grid grid-cols-7 flex-1">
+            <div className="grid grid-cols-7 flex-1 bg-white/[0.02]">
                 {days.map(day => {
                     const dayTasks = tasks.filter(t => t.startDate && t.startDate.startsWith(format(day, 'yyyy-MM-dd')));
                     return (

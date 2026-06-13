@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { 
     DndContext, 
     DragOverlay, 
@@ -26,7 +27,7 @@ type CalendarMode = 'month' | 'week' | 'year';
 const CalendarView: React.FC = () => {
     const { tasks, updateTask, addTask } = useTasks();
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [mode, setMode] = useState<CalendarMode>('month');
+    const [mode, setMode] = useState<CalendarMode>('week');
     const [activeTask, setActiveTask] = useState<Task | null>(null);
     const isAltPressed = useAltKey();
 
@@ -61,14 +62,37 @@ const CalendarView: React.FC = () => {
     };
 
     const onDragEnd = (event: DragEndEvent) => {
-        const { over } = event;
+        const { over, active } = event;
         
         if (activeTask && over) {
             const targetDateStr = String(over.id);
             
             if (targetDateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
                 const newDate = new Date(targetDateStr);
-                newDate.setHours(12, 0, 0, 0);
+
+                if (mode === 'week') {
+                    const translatedRect = active.rect.current.translated;
+                    const overRect = over.rect;
+                    
+                    if (translatedRect && overRect) {
+                        const relativeY = translatedRect.top - overRect.top;
+                        let totalMinutes = Math.round(relativeY);
+                        totalMinutes = Math.max(0, Math.round(totalMinutes / 5) * 5); // Snap 5 mins
+                        
+                        const hours = Math.floor(totalMinutes / 60);
+                        const mins = totalMinutes % 60;
+                        newDate.setHours(Math.min(23, Math.max(0, hours)), mins, 0, 0);
+                    } else {
+                        newDate.setHours(activeTask.startDate ? new Date(activeTask.startDate).getHours() : 12, activeTask.startDate ? new Date(activeTask.startDate).getMinutes() : 0, 0, 0);
+                    }
+                } else {
+                    if (activeTask.startDate) {
+                        const originalDate = new Date(activeTask.startDate);
+                        newDate.setHours(originalDate.getHours(), originalDate.getMinutes(), 0, 0);
+                    } else {
+                        newDate.setHours(12, 0, 0, 0);
+                    }
+                }
 
                 if (isAltPressed) {
                     addTask({
@@ -89,35 +113,29 @@ const CalendarView: React.FC = () => {
         setActiveTask(null);
     };
 
+    const isSwiping = useRef(false);
+
+    const handleWheel = (e: React.WheelEvent) => {
+        // Ignore primarily vertical scrolling
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) return;
+        
+        if (isSwiping.current) return;
+        
+        if (Math.abs(e.deltaX) > 30) {
+            isSwiping.current = true;
+            if (e.deltaX > 0) {
+                handleNext();
+            } else {
+                handlePrevious();
+            }
+            setTimeout(() => {
+                isSwiping.current = false;
+            }, 600); // 600ms debounce
+        }
+    };
+
     return (
-        <div className="flex flex-col h-full bg-slate-900 rounded-xl overflow-hidden">
-            {/* Header del Calendari */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-700/50">
-                <div className="flex items-center gap-4">
-                    <button 
-                        onClick={() => setCurrentDate(new Date())}
-                        className="text-sm font-medium bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-colors border border-slate-600"
-                    >
-                        Avui
-                    </button>
-                    <div className="flex items-center gap-1">
-                        <button onClick={handlePrevious} className="p-1 hover:bg-slate-800 rounded-md transition-colors"><ChevronLeft size={20} /></button>
-                        <button onClick={handleNext} className="p-1 hover:bg-slate-800 rounded-md transition-colors"><ChevronRight size={20} /></button>
-                    </div>
-                    <h2 className="text-xl font-bold capitalize w-48">
-                        {mode === 'month' && format(currentDate, 'MMMM yyyy', { locale: ca })}
-                        {mode === 'year' && format(currentDate, 'yyyy', { locale: ca })}
-                        {mode === 'week' && `Setmana ${format(currentDate, 'I', { locale: ca })}`}
-                    </h2>
-                </div>
-
-                <div className="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
-                    <button onClick={() => setMode('week')} className={`px-3 py-1 text-sm rounded-md transition-colors ${mode === 'week' ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white'}`}>Setmana</button>
-                    <button onClick={() => setMode('month')} className={`px-3 py-1 text-sm rounded-md transition-colors ${mode === 'month' ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white'}`}>Mes</button>
-                    <button onClick={() => setMode('year')} className={`px-3 py-1 text-sm rounded-md transition-colors ${mode === 'year' ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white'}`}>Any</button>
-                </div>
-            </div>
-
+        <div className="flex flex-col h-full relative w-full gap-4" onWheel={handleWheel}>
             {/* Grid Principal i Sidebar */}
             <DndContext
                 sensors={sensors}
@@ -125,26 +143,78 @@ const CalendarView: React.FC = () => {
                 onDragStart={onDragStart}
                 onDragEnd={onDragEnd}
             >
-                <div className="flex flex-1 overflow-hidden">
+                <div className="flex flex-1 overflow-hidden gap-4">
                     {/* Contingut Principal */}
-                    <div className="flex-1 overflow-y-auto p-4">
+                    <div className="flex-1 overflow-hidden rounded-[32px] bg-slate-900/20 backdrop-blur-3xl border border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.4)]">
+                        {/* Month/Year subtle header overlay */}
+                        <div className="absolute top-4 left-6 z-10 pointer-events-none opacity-50">
+                            <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 tracking-tight drop-shadow-lg capitalize">
+                                {mode === 'month' && format(currentDate, 'MMMM yyyy', { locale: ca })}
+                                {mode === 'year' && format(currentDate, 'yyyy', { locale: ca })}
+                                {mode === 'week' && `${format(currentDate, 'MMMM yyyy', { locale: ca })}`}
+                            </h2>
+                        </div>
                         {mode === 'month' && <MonthlyGrid currentDate={currentDate} tasks={tasks} />}
                         {mode === 'week' && <WeeklyGrid currentDate={currentDate} tasks={tasks} />}
                         {mode === 'year' && <YearlyGrid currentDate={currentDate} tasks={tasks} onSelectMonth={handleSelectMonth} />}
                     </div>
 
                     {/* Sidebar per tasques no planificades */}
-                    <div className="w-72 bg-slate-800/30 border-l border-slate-700/50 p-4 overflow-y-auto flex flex-col gap-3">
-                        <h3 className="font-semibold text-sm text-slate-400 uppercase tracking-wider mb-2">No Planificades</h3>
-                        {tasks.filter(t => !t.startDate).map(task => (
-                            <TaskCard key={task.id} task={task} />
-                        ))}
+                    <div className="w-[260px] flex-shrink-0 flex flex-col gap-4">
+                        {/* Dynamic Island Mode Toggle */}
+                        <div className="bg-slate-900/40 backdrop-blur-[40px] p-1.5 rounded-[24px] border border-white/[0.08] flex shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_8px_32px_rgba(0,0,0,0.4)] relative">
+                            {(['week', 'month', 'year'] as CalendarMode[]).map((m) => (
+                                <button
+                                    key={m}
+                                    onClick={() => setMode(m)}
+                                    className={`relative flex-1 py-2 text-[12px] font-bold tracking-widest uppercase transition-all duration-500 rounded-[20px] outline-none hover:scale-[1.02] active:scale-[0.98] ${
+                                        mode === m ? 'text-white' : 'text-slate-500 hover:text-slate-300'
+                                    }`}
+                                >
+                                    {mode === m && (
+                                        <motion.div
+                                            layoutId="calendarMode"
+                                            className="absolute inset-0 bg-white/10 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] rounded-[20px] z-0"
+                                            transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
+                                        >
+                                            <div className="absolute -bottom-px left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-70" />
+                                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-primary/20 blur-md rounded-full" />
+                                        </motion.div>
+                                    )}
+                                    <span className="relative z-10">{m === 'week' ? 'Setm' : m === 'month' ? 'Mes' : 'Any'}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="flex-1 bg-slate-900/50 backdrop-blur-2xl border border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.4)] rounded-[32px] p-4 flex flex-col gap-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                            <h3 className="font-extrabold text-[12px] tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 uppercase px-1">No Planificades</h3>
+                            <div className="flex flex-col gap-3 flex-1">
+                                {tasks.filter(t => !t.startDate).map(task => (
+                                    <TaskCard key={task.id} task={task} />
+                                ))}
+                                {tasks.filter(t => !t.startDate).length === 0 && (
+                                    <div className="flex items-center justify-center flex-1">
+                                        <p className="text-center text-slate-500 text-sm font-semibold tracking-wide">Totes les tasques estan planificades!</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 {createPortal(
-                    <DragOverlay>
-                        {activeTask ? <TaskCard task={activeTask} /> : null}
+                    <DragOverlay zIndex={1000}>
+                        {activeTask ? (
+                            mode === 'week' && activeTask.startDate ? (
+                                <div className="w-[140px] h-full">
+                                    <div className="rounded-xl border border-white/[0.05] overflow-hidden backdrop-blur-2xl bg-slate-900/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2 pointer-events-none">
+                                        <div className="text-[11px] font-bold text-slate-200 line-clamp-2">{activeTask.title}</div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <TaskCard task={activeTask} />
+                            )
+                        ) : null}
                     </DragOverlay>,
                     document.body
                 )}

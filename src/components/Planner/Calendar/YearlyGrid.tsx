@@ -21,16 +21,17 @@ const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: () => void 
     return (
         <div 
             onClick={onClick}
-            className="flex flex-col p-4 bg-slate-800/30 border border-slate-700/30 rounded-xl cursor-pointer hover:border-primary/50 hover:bg-slate-800/50 transition-all group"
+            className="flex flex-col p-5 bg-slate-900/40 backdrop-blur-xl border-[0.5px] border-white/5 rounded-[24px] cursor-pointer hover:border-primary/30 hover:bg-slate-900/60 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(var(--primary-rgb),0.15)] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-all duration-300 group overflow-hidden relative"
         >
-            <h3 className="text-sm font-bold text-slate-300 capitalize mb-3 group-hover:text-primary transition-colors">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+            <h3 className="text-[15px] font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 capitalize mb-4 group-hover:from-primary group-hover:to-primary/60 transition-all tracking-wide drop-shadow-sm">
                 {format(monthDate, 'MMMM', { locale: ca })}
             </h3>
             
-            <div className="grid grid-cols-7 gap-1">
+            <div className="grid grid-cols-7 gap-1.5 relative z-10">
                 {/* Weekday headers */}
-                {['dl', 'dt', 'dc', 'dj', 'dv', 'ds', 'dg'].map(day => (
-                    <div key={day} className="text-[10px] text-center text-slate-500">{day}</div>
+                {['Dl', 'Dt', 'Dc', 'Dj', 'Dv', 'Ds', 'Dg'].map(day => (
+                    <div key={day} className="text-[9px] font-bold text-center text-slate-500 uppercase tracking-wider">{day}</div>
                 ))}
                 
                 {/* Blanks */}
@@ -44,10 +45,10 @@ const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: () => void 
                     const hasTasks = tasks.some(t => t.startDate && t.startDate.startsWith(dateStr));
                     
                     return (
-                        <div key={day} className="aspect-square flex items-center justify-center relative">
-                            <span className="text-[10px] text-slate-400">{day}</span>
+                        <div key={day} className={`aspect-square flex items-center justify-center relative rounded-full transition-colors ${hasTasks ? 'bg-primary/10 text-primary font-bold' : 'text-slate-400'}`}>
+                            <span className="text-[11px] z-10">{day}</span>
                             {hasTasks && (
-                                <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></span>
+                                <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.8)] rounded-full"></span>
                             )}
                         </div>
                     );
