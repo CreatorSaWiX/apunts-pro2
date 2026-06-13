@@ -277,7 +277,7 @@ export const ChatBot: React.FC = () => {
   return (
     <>
       <AnimatePresence>
-        {!isOpen && !isHomePage && (
+        {!isOpen && !isHomePage && location.pathname !== '/planner' && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}

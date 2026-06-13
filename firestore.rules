@@ -22,6 +22,12 @@ service cloud.firestore {
       }
     }
 
+    // Tasques del Planificador
+    match /tasks/{taskId} {
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+
     match /invites/{code} {
       allow read, write: if false;
     }

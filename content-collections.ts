@@ -16,7 +16,7 @@ const personalNotes = defineCollection({
         content: z.string()
     }),
     transform: (document) => {
-        // Mètode a prova de bales per Windows/Mac: analitzem l'string sencer de la ruta
+        // Path per windows i mac
         const dPath = (document._meta.directory || "").toLowerCase();
         
         let subject = 'pro2';
@@ -33,7 +33,7 @@ const personalNotes = defineCollection({
             ...document,
             subject: subject,
             lang: lang,
-            // El slug es queda igual ("m1-tema-1") per no trencar les URLs
+            // El slug es queda igual ("m1-tema-1")
             slug: `${subject}-${document._meta.fileName.replace(/\.md$/, '')}`
         };
     }
