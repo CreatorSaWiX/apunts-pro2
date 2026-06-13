@@ -65,9 +65,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     });
 
     const style = {
-        transition: transition || 'transform 200ms cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+        transition: transition || 'transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1)',
         transform: isDragging && transform
-            ? `${CSS.Translate.toString(transform)} rotate(3deg) scale(1.02)`
+            ? `${CSS.Translate.toString(transform)} rotate(4deg) scale(1.05)`
             : CSS.Transform.toString(transform),
         zIndex: isDragging ? 100 : 'auto',
     };
@@ -152,7 +152,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                         {deadlineText}
                     </span>
                 </div>
-                <div className="h-[2px] w-full bg-white/5 rounded-full overflow-hidden">
+                <div className="h-[1.5px] w-full bg-white/5 rounded-full overflow-hidden">
                     <div
                         className={`h-full ${color} transition-all duration-1000 ease-out`}
                         style={{ width: `${percentage}%` }}
@@ -183,7 +183,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                 setIsEditing(true);
             }}
             onMouseMove={handleMouseMove}
-            className={`group bg-slate-900/60 border-[0.5px] border-white/5 hover:border-primary/20 rounded-[20px] p-3.5 shadow-sm hover:shadow-[0_4px_20px_rgba(var(--primary-rgb),0.15)] backdrop-blur-3xl transition-all duration-300 flex flex-col gap-1.5 relative hover:-translate-y-0.5 overflow-hidden ${isDragging ? 'shadow-[0_20px_50px_rgba(var(--primary-rgb),0.2)] border-primary/40' : ''} mx-1 ${isAltPressed ? 'cursor-copy' : 'cursor-grab active:cursor-grabbing'}`}
+            className={`group bg-slate-900/60 border-[0.5px] border-white/10 hover:border-primary/30 rounded-[24px] p-4 shadow-md hover:shadow-[0_8px_30px_rgba(var(--primary-rgb),0.2)] backdrop-blur-[40px] transition-all duration-300 flex flex-col gap-2.5 relative hover:-translate-y-1 overflow-hidden ${isDragging ? 'shadow-[0_30px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(var(--primary-rgb),0.3)] border-primary/50 opacity-95' : ''} mx-1 ${isAltPressed ? 'cursor-copy' : 'cursor-grab active:cursor-grabbing'}`}
         >
             <motion.div
                 className="pointer-events-none absolute -inset-px rounded-[20px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
@@ -259,7 +259,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             ) : (
                 <>
                     <div className="flex justify-between items-start gap-2 pointer-events-none relative z-10">
-                        <h4 className="text-[13px] font-semibold text-white flex-1 leading-snug tracking-tight">
+                        <h4 className="text-[14px] font-bold text-white flex-1 leading-snug tracking-tight drop-shadow-sm">
                             {task.title}
                         </h4>
 

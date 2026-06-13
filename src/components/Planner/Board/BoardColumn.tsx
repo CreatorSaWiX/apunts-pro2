@@ -97,7 +97,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask }) =
     return (
         <div
             ref={setNodeRef}
-            className={`relative overflow-hidden flex flex-col flex-shrink-0 w-[350px] h-full max-h-full transition-all duration-500 ease-out group/col ${isOver ? 'bg-slate-800/60 border-primary/30 scale-[1.01] shadow-[0_0_40px_rgba(var(--primary-rgb),0.15)]' : 'bg-slate-900/40 border-white/5 hover:bg-slate-900/60'} border rounded-[32px] backdrop-blur-xl shadow-xl`}
+            className={`relative overflow-hidden flex flex-col flex-shrink-0 w-[350px] h-full max-h-full transition-all duration-500 ease-out group/col ${isOver ? 'bg-slate-800/60 border-primary/30 scale-[1.01] shadow-[0_0_40px_rgba(var(--primary-rgb),0.2)]' : 'bg-slate-900/50 hover:bg-slate-900/70 border-white/[0.08]'} border rounded-[32px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_10px_40px_rgba(0,0,0,0.4)]`}
             onDoubleClick={handleDoubleClick}
             onMouseMove={handleMouseMove}
         >
@@ -106,11 +106,12 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask }) =
                 style={{ background: backgroundStyle }}
             />
             {/* Consistent Header */}
-            <div className="flex items-center justify-between px-6 py-5 pointer-events-none sticky top-0 z-10 rounded-t-[32px] border-b border-transparent transition-colors">
-                <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${getColumnAccent(column.id)} shadow-[0_0_12px_currentColor] ring-4 ring-black/20`}></div>
-                    <h3 className="font-extrabold text-[13px] tracking-[0.15em] text-white/90 uppercase">{column.title}</h3>
-                    <span className="text-[11px] font-bold text-slate-400 bg-white/5 px-2 py-0.5 rounded-full ml-1">{tasks.length}</span>
+            <div className="flex items-center justify-between px-6 py-5 pointer-events-none sticky top-0 z-10 rounded-t-[32px] border-b border-transparent transition-colors relative">
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 to-transparent opacity-0 group-hover/col:opacity-100 transition-opacity duration-500" />
+                <div className="flex items-center gap-3 relative z-10">
+                    <div className={`w-2.5 h-2.5 rounded-full ${getColumnAccent(column.id)} shadow-[0_0_12px_currentColor,inset_0_2px_4px_rgba(255,255,255,0.5)] ring-4 ring-black/20`}></div>
+                    <h3 className="font-extrabold text-[13px] tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 uppercase drop-shadow-[0_2px_10px_rgba(255,255,255,0.1)]">{column.title}</h3>
+                    <span className="text-[11px] font-bold text-slate-300 bg-white/10 px-2 py-0.5 rounded-full ml-1 shadow-inner border border-white/5">{tasks.length}</span>
                 </div>
                 <button
                     onClick={(e) => { e.stopPropagation(); startDrafting(); }}
@@ -122,7 +123,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask }) =
 
             {/* Contingut de la columna */}
             <div
-                className="flex-1 overflow-y-auto overflow-x-visible flex flex-col gap-4 min-h-[150px] px-5 pb-6 pt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [mask-image:linear-gradient(to_bottom,transparent,black_10px,black_calc(100%-20px),transparent)]"
+                className="flex-1 overflow-y-auto overflow-x-visible flex flex-col gap-4 min-h-[150px] px-5 pb-8 pt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [mask-image:linear-gradient(to_bottom,transparent,black_15px,black_calc(100%-30px),transparent)]"
                 onDoubleClick={handleDoubleClick}
             >
                 <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
