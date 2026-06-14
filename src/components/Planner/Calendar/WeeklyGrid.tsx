@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useDroppable, useDraggable } from '@dnd-kit/core';
-import { startOfWeek, endOfWeek, eachDayOfInterval, format, isToday } from 'date-fns';
+import { startOfWeek, endOfWeek, eachDayOfInterval, format, isToday, addDays, subDays } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
@@ -14,7 +15,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     const { deleteTask } = useTasks();
     
     const taskStart = new Date(task.startDate!);
-    const taskEnd = new Date(taskStart.getTime() + (task.estimatedMinutes || 60) * 60000);
+    const taskEnd = task.dueDate ? new Date(task.dueDate) : new Date(taskStart.getTime() + (task.estimatedMinutes || 60) * 60000);
 
     const dayStart = new Date(day);
     dayStart.setHours(0, 0, 0, 0);
@@ -129,10 +130,16 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
             
             const timeDiff = newStartDate.getTime() - taskStart.getTime();
             updates.estimatedMinutes = Math.max(15, (task.estimatedMinutes || 60) - (timeDiff / 60000));
+            if (task.dueDate) {
+                updates.dueDate = new Date(newStartDate.getTime() + updates.estimatedMinutes * 60000).toISOString();
+            }
         }
         
         if (action === 'bottom') {
             updates.estimatedMinutes = pieceOffsetMinutes + snappedMinutes;
+            if (task.dueDate) {
+                updates.dueDate = new Date(taskStart.getTime() + updates.estimatedMinutes * 60000).toISOString();
+            }
         }
 
         if (Object.keys(updates).length > 0) {
@@ -237,11 +244,12 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 </div>
             )}
 
-            <div className="px-3 py-2 flex flex-col h-full pointer-events-none select-none">
-                <div className="flex items-center gap-1.5 opacity-60 mb-0.5 pr-4">
-                    <span className="text-[9px] font-bold tracking-[0.1em] text-slate-300">{startTimeStr} - {endTimeStr}</span>
-                    {isResizing && <span className="text-[9px] font-bold ml-auto text-primary">{Math.round(currentHeight)}m</span>}
-                </div>
+            <div className={`px-2 flex flex-col h-full pointer-events-none select-none overflow-hidden ${height < 40 ? 'py-0.5' : 'py-2'}`}>
+                {height >= 40 && (
+                    <div className="flex items-center gap-1.5 opacity-60 mb-0.5 pr-4 shrink-0">
+                        <span className="text-[9px] font-bold tracking-[0.1em] text-slate-300">{startTimeStr} - {endTimeStr}</span>
+                    </div>
+                )}
                 
                 {isEditing ? (
                     <input
@@ -257,7 +265,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                     />
                 ) : (
                     <div 
-                        className="text-[12px] font-bold leading-tight text-slate-200 line-clamp-3 pointer-events-auto cursor-text"
+                        className={`font-bold leading-tight text-slate-200 pointer-events-auto cursor-text shrink-0 ${height < 30 ? 'text-[9px] truncate' : 'text-[12px] line-clamp-3'}`}
                     >
                         {task.title}
                     </div>
@@ -345,83 +353,145 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
 };
 
 const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
-    const startDate = startOfWeek(currentDate, { weekStartsOn: 1 });
-    const endDate = endOfWeek(currentDate, { weekStartsOn: 1 });
+    const [baseDate, setBaseDate] = useState(() => startOfWeek(currentDate, { weekStartsOn: 1 }));
+    const [columnWidth, setColumnWidth] = useState(140);
+
+    const startDate = subDays(baseDate, 28); // 4 weeks before
+    const endDate = addDays(endOfWeek(baseDate, { weekStartsOn: 1 }), 28); // 4 weeks after (total 9 weeks = 63 days)
     const days = eachDayOfInterval({ start: startDate, end: endDate });
     
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-    // Auto-scroll to 8 AM on load
+    // Track dynamic column width based on viewport
     useEffect(() => {
+        const updateWidth = () => {
+            if (scrollContainerRef.current) {
+                const width = Math.max(140, (scrollContainerRef.current.clientWidth - 56) / 7);
+                setColumnWidth(width);
+            }
+        };
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+        return () => window.removeEventListener('resize', updateWidth);
+    }, []);
+
+    // Auto-scroll to 8 AM and current week on load or when external currentDate changes
+    useEffect(() => {
+        setBaseDate(startOfWeek(currentDate, { weekStartsOn: 1 }));
         if (scrollContainerRef.current) {
             scrollContainerRef.current.scrollTop = 8 * 60 - 20;
+            // Use the freshly calculated width for exact positioning
+            const width = Math.max(140, (scrollContainerRef.current.clientWidth - 56) / 7);
+            scrollContainerRef.current.scrollLeft = 28 * width;
         }
     }, [currentDate]);
 
+    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        const target = e.currentTarget;
+
+        // If scrolled to within 14 columns of the left edge (2 full weeks buffer)
+        if (target.scrollLeft < 14 * columnWidth) {
+            flushSync(() => {
+                setBaseDate(prev => subDays(prev, 7));
+            });
+            target.scrollLeft += 7 * columnWidth;
+        } 
+        // If scrolled to within 14 columns of the right edge (total width is 63 cols, max scrollLeft is 56. 56 - 14 = 42)
+        else if (target.scrollLeft > 42 * columnWidth) {
+            flushSync(() => {
+                setBaseDate(prev => addDays(prev, 7));
+            });
+            target.scrollLeft -= 7 * columnWidth;
+        }
+    };
+
     return (
-        <div className="flex flex-col h-full bg-slate-900/40 backdrop-blur-2xl rounded-[32px] border border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.4)] overflow-hidden">
-            {/* Header Dies */}
-            <div className="flex border-b border-white/5 bg-slate-900/60 z-20 shadow-sm">
-                <div className="w-14 flex-shrink-0 border-r border-white/5"></div>
-                <div className="flex flex-1">
-                    {days.map(day => (
-                        <div key={day.toISOString()} className={`flex-1 text-center py-3 border-r border-white/5 last:border-0 ${isToday(day) ? 'bg-primary/5' : ''}`}>
-                            <div className={`text-[10px] font-bold uppercase tracking-widest ${isToday(day) ? 'text-primary' : 'text-slate-500'}`}>
-                                {format(day, 'EEE', { locale: ca })}
-                            </div>
-                            <div className={`text-xl font-black mt-0.5 ${isToday(day) ? 'text-primary drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]' : 'text-slate-300'}`}>
-                                {format(day, 'd')}
-                            </div>
-                        </div>
-                    ))}
-                </div>
+        <div className="flex flex-col h-full overflow-hidden relative">
+            
+            {/* Title Header */}
+            <div className="flex items-center px-6 py-3 shrink-0 z-50">
+                <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/80 capitalize tracking-tight drop-shadow-sm">
+                    {format(baseDate, 'MMMM yyyy', { locale: ca })}
+                </h1>
             </div>
 
-            {/* Time Grid Scrollable */}
-            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                <div className="flex relative min-h-[1440px]"> {/* 24 hores * 60px */}
+            {/* 2D Scrollable Area */}
+            <div 
+                ref={scrollContainerRef} 
+                onScroll={handleScroll}
+                className="flex-1 overflow-auto relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            >
+                <div className="flex flex-col min-w-max">
                     
-                    {/* Columna Hores */}
-                    <div className="w-14 flex-shrink-0 border-r border-white/[0.03] relative bg-slate-900/10 z-10 backdrop-blur-sm">
-                        {Array.from({ length: 24 }).map((_, i) => (
-                            <div key={i} className="absolute w-full text-right pr-3 text-[10px] font-semibold text-slate-500/80 -translate-y-2" style={{ top: `${i * 60}px` }}>
-                                {i === 0 ? '' : `${i.toString().padStart(2, '0')}:00`}
+                    {/* Header Dies (Sticky Top) */}
+                    <div className="flex border-b border-white/5 bg-slate-900/90 backdrop-blur-xl z-40 shadow-sm sticky top-0">
+                        {/* Top-Left Corner (Sticky Top + Left) */}
+                        <div className="w-14 flex-shrink-0 border-r border-white/5 sticky left-0 z-50 bg-slate-900/90 backdrop-blur-xl"></div>
+                        
+                        <div className="flex">
+                            {days.map(day => (
+                                <div key={day.toISOString()} style={{ width: columnWidth, minWidth: columnWidth }} className={`flex-shrink-0 text-center py-2.5 border-r border-white/5 last:border-0 ${isToday(day) ? 'bg-primary/5' : ''}`}>
+                                    <div className="flex items-center justify-center gap-1.5">
+                                        <span className={`text-[13px] font-medium capitalize ${isToday(day) ? 'text-primary font-semibold' : 'text-slate-400'}`}>
+                                            {format(day, 'EEE', { locale: ca })}
+                                        </span>
+                                        <span className={`text-[18px] flex items-center justify-center w-8 h-8 rounded-full ${isToday(day) ? 'bg-primary text-white font-bold shadow-[0_0_12px_rgba(var(--primary-rgb),0.6)]' : 'text-slate-200 font-normal'}`}>
+                                            {format(day, 'd')}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Time Grid Scrollable */}
+                    <div className="flex relative min-h-[1440px]">
+                        
+                        {/* Columna Hores (Sticky Left) */}
+                        <div className="w-14 flex-shrink-0 border-r border-white/[0.03] relative bg-slate-900/90 z-30 backdrop-blur-md sticky left-0">
+                            {Array.from({ length: 24 }).map((_, i) => (
+                                <div key={i} className="absolute w-full text-right pr-3 text-[10px] font-semibold text-slate-500/80 -translate-y-2" style={{ top: `${i * 60}px` }}>
+                                    {i === 0 ? '' : `${i.toString().padStart(2, '0')}:00`}
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Columnes dels Dies */}
+                        <div className="flex flex-1 relative min-w-max bg-slate-900/10">
+                            {/* Línies Horitzontals de Fons */}
+                            <div className="absolute inset-0 pointer-events-none z-0">
+                                {Array.from({ length: 24 }).map((_, i) => (
+                                    <div key={i} className="absolute w-full border-b border-white/[0.03]" style={{ top: `${i * 60}px` }}></div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
 
-                    {/* Línies Horitzontals de Fons */}
-                    <div className="absolute inset-0 left-14 pointer-events-none">
-                        {Array.from({ length: 24 }).map((_, i) => (
-                            <div key={i} className="absolute w-full border-b border-white/[0.03]" style={{ top: `${i * 60}px` }}></div>
-                        ))}
-                    </div>
+                            <div className="absolute inset-0 z-20 pointer-events-none">
+                                <CurrentTimeLine />
+                            </div>
 
-                    <CurrentTimeLine />
+                            {days.map(day => {
+                                const dayStart = new Date(day);
+                                dayStart.setHours(0, 0, 0, 0);
+                                const dayEnd = new Date(day);
+                                dayEnd.setHours(24, 0, 0, 0);
 
-                    {/* Columnes dels Dies */}
-                    <div className="flex flex-1 relative">
-                        {days.map(day => {
-                            const dayStart = new Date(day);
-                            dayStart.setHours(0, 0, 0, 0);
-                            const dayEnd = new Date(day);
-                            dayEnd.setHours(24, 0, 0, 0);
+                                const dayTasks = tasks.filter(t => {
+                                    if (!t.startDate) return false;
+                                    const start = new Date(t.startDate);
+                                    const end = t.dueDate ? new Date(t.dueDate) : new Date(start.getTime() + (t.estimatedMinutes || 60) * 60000);
+                                    return start < dayEnd && end > dayStart;
+                                });
 
-                            const dayTasks = tasks.filter(t => {
-                                if (!t.startDate) return false;
-                                const start = new Date(t.startDate);
-                                const end = new Date(start.getTime() + (t.estimatedMinutes || 60) * 60000);
-                                return start < dayEnd && end > dayStart;
-                            });
-
-                            return (
-                                <TimeDayColumn 
-                                    key={day.toISOString()} 
-                                    day={day} 
-                                    tasks={dayTasks}
-                                />
-                            );
-                        })}
+                                return (
+                                    <div key={day.toISOString()} style={{ width: columnWidth, minWidth: columnWidth }} className="flex-shrink-0 flex flex-col relative z-10">
+                                        <TimeDayColumn 
+                                            day={day} 
+                                            tasks={dayTasks}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>

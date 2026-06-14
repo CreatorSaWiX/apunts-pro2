@@ -3,14 +3,12 @@ import {
     DndContext, 
     DragOverlay, 
     closestCorners, 
-    KeyboardSensor, 
-    PointerSensor, 
+    KeyboardSensor,
+    PointerSensor,
     useSensor, 
-    useSensors, 
+    useSensors,
     type DragStartEvent, 
-    type DragOverEvent, 
-    type DragEndEvent,
-    defaultDropAnimationSideEffects
+    type DragOverEvent
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { useTasks } from '../../../contexts/TasksContext';
@@ -105,7 +103,7 @@ const BoardView: React.FC = () => {
         }
     };
 
-    const onDragEnd = (event: DragEndEvent) => {
+    const onDragEnd = () => {
         if (activeTask && dragOverColumn) {
             if (isAltPressed) {
                 addTask({
@@ -191,7 +189,7 @@ const BoardView: React.FC = () => {
                 </div>
 
                 {createPortal(
-                    <DragOverlay dropAnimation={defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.4' } } })}>
+                    <DragOverlay dropAnimation={null}>
                         {activeTask ? <TaskCard task={activeTask} /> : null}
                     </DragOverlay>,
                     document.body

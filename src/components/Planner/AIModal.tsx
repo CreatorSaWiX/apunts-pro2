@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Bot, Sparkles, Loader2 } from 'lucide-react';
+import { X, Sparkles, Loader2 } from 'lucide-react';
 import { useTasks } from '../../contexts/TasksContext';
 import type { Task } from '../../types/tasks';
 

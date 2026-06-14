@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import { useDroppable } from '@dnd-kit/core';
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, format, isSameMonth, isToday } from 'date-fns';
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, format, isSameMonth, isToday, addMonths, subMonths } from 'date-fns';
+import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
 
@@ -68,26 +70,19 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
     );
 };
 
-const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks }) => {
-    const monthStart = startOfMonth(currentDate);
+const MonthBlock: React.FC<{ monthDate: Date; tasks: Task[] }> = ({ monthDate, tasks }) => {
+    const monthStart = startOfMonth(monthDate);
     const monthEnd = endOfMonth(monthStart);
-    const startDate = startOfWeek(monthStart, { weekStartsOn: 1 }); // Comença dilluns
+    const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
     const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 });
-
     const days = eachDayOfInterval({ start: startDate, end: endDate });
-    const weekDays = ['Dll', 'Dmt', 'Dmc', 'Djj', 'Dvv', 'Dss', 'Dmg'];
 
     return (
-        <div className="flex flex-col h-full bg-slate-900/40 backdrop-blur-2xl rounded-[32px] border border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.4)] overflow-hidden">
-            <div className="grid grid-cols-7 border-b border-white/5 bg-slate-900/60 shadow-sm">
-                {weekDays.map(day => (
-                    <div key={day} className="py-3 text-center text-[11px] font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 uppercase tracking-[0.2em] border-r border-white/5 last:border-0">
-                        {day}
-                    </div>
-                ))}
-            </div>
-            
-            <div className="grid grid-cols-7 flex-1 bg-white/[0.02]">
+        <div className="flex flex-col mb-12">
+            <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 tracking-tight drop-shadow-lg capitalize mb-4 px-2">
+                {format(monthDate, 'MMMM yyyy', { locale: ca })}
+            </h3>
+            <div className="grid grid-cols-7 flex-1 bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden shadow-sm">
                 {days.map(day => {
                     const dayTasks = tasks.filter(t => t.startDate && t.startDate.startsWith(format(day, 'yyyy-MM-dd')));
                     return (
@@ -99,6 +94,92 @@ const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks }) => {
                         />
                     );
                 })}
+            </div>
+        </div>
+    );
+};
+
+const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks }) => {
+    const weekDays = ['Dll', 'Dmt', 'Dmc', 'Djj', 'Dvv', 'Dss', 'Dmg'];
+    
+    const [baseDate, setBaseDate] = useState(() => startOfMonth(currentDate));
+    
+    // Render 21 months (-10 to +10) for a massive scroll buffer
+    const monthsToRender = Array.from({ length: 21 }).map((_, i) => addMonths(baseDate, i - 10));
+    
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    // Initial scroll to center on load or when currentDate prop changes significantly
+    useEffect(() => {
+        setBaseDate(startOfMonth(currentDate));
+        
+        // Use a short timeout to ensure DOM has painted the 21 months
+        setTimeout(() => {
+            if (scrollContainerRef.current) {
+                const centerMonthId = `month-${format(startOfMonth(currentDate), 'yyyy-MM')}`;
+                const centerMonthEl = document.getElementById(centerMonthId);
+                if (centerMonthEl) {
+                    scrollContainerRef.current.scrollTop = centerMonthEl.offsetTop - 60; // leave some space at top
+                }
+            }
+        }, 0);
+    }, [currentDate]);
+
+    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        const target = e.currentTarget;
+
+        // If scrolling near top (within ~3 months)
+        if (target.scrollTop < 2500) {
+            const pivotId = `month-${format(monthsToRender[10], 'yyyy-MM')}`; // center month
+            const pivotEl = document.getElementById(pivotId);
+            const oldOffset = pivotEl ? pivotEl.offsetTop : 0;
+            
+            flushSync(() => {
+                setBaseDate(prev => subMonths(prev, 3));
+            });
+            
+            const newPivotEl = document.getElementById(pivotId);
+            if (newPivotEl) {
+                target.scrollTop += (newPivotEl.offsetTop - oldOffset);
+            }
+        }
+        // If scrolling near bottom
+        else if (target.scrollTop > target.scrollHeight - target.clientHeight - 2500) {
+            const pivotId = `month-${format(monthsToRender[10], 'yyyy-MM')}`; // center month
+            const pivotEl = document.getElementById(pivotId);
+            const oldOffset = pivotEl ? pivotEl.offsetTop : 0;
+            
+            flushSync(() => {
+                setBaseDate(prev => addMonths(prev, 3));
+            });
+            
+            const newPivotEl = document.getElementById(pivotId);
+            if (newPivotEl) {
+                target.scrollTop += (newPivotEl.offsetTop - oldOffset);
+            }
+        }
+    };
+
+    return (
+        <div className="flex flex-col h-full overflow-hidden relative">
+            <div className="grid grid-cols-7 border-b border-white/5 bg-slate-900/90 backdrop-blur-xl z-20 shadow-sm sticky top-0">
+                {weekDays.map(day => (
+                    <div key={day} className="py-3 text-center text-[11px] font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 uppercase tracking-[0.2em] border-r border-white/5 last:border-0">
+                        {day}
+                    </div>
+                ))}
+            </div>
+            
+            <div 
+                ref={scrollContainerRef} 
+                onScroll={handleScroll}
+                className="flex-1 overflow-y-auto p-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            >
+                {monthsToRender.map((monthDate) => (
+                    <div key={monthDate.toISOString()} id={`month-${format(monthDate, 'yyyy-MM')}`}>
+                        <MonthBlock monthDate={monthDate} tasks={tasks} />
+                    </div>
+                ))}
             </div>
         </div>
     );

@@ -74,12 +74,22 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
 
     const handleSave = () => {
         setIsEditing(false);
-        updateTask(task.id, {
+        const updates: Partial<Task> = {
             title: editTitle.trim() || 'Nova Tasca',
             priority: editPriority,
             dueDate: editDueDate ? new Date(editDueDate).toISOString() : null,
             startDate: editStartDate ? new Date(editStartDate).toISOString() : null
-        });
+        };
+
+        if (updates.startDate && updates.dueDate) {
+            const start = new Date(updates.startDate).getTime();
+            const end = new Date(updates.dueDate).getTime();
+            if (end > start) {
+                updates.estimatedMinutes = Math.round((end - start) / 60000);
+            }
+        }
+
+        updateTask(task.id, updates);
     };
 
     const togglePriority = (e: React.MouseEvent) => {

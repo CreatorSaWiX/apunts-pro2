@@ -64,15 +64,19 @@ const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMon
     const months = eachMonthOfInterval({ start, end });
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-2">
-            {months.map(monthDate => (
-                <MiniMonth 
-                    key={monthDate.toISOString()} 
-                    monthDate={monthDate} 
-                    tasks={tasks} 
-                    onClick={() => onSelectMonth(monthDate)} 
-                />
-            ))}
+        <div className="flex flex-col h-full overflow-hidden relative">
+            <div className="flex-1 overflow-y-auto p-4 md:p-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {months.map(monthDate => (
+                        <MiniMonth 
+                            key={monthDate.toISOString()} 
+                            monthDate={monthDate} 
+                            tasks={tasks} 
+                            onClick={() => onSelectMonth(monthDate)} 
+                        />
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };

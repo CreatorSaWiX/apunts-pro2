@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTasks } from '../../contexts/TasksContext';
-import { Calendar, LayoutDashboard, GanttChartSquare, Bot, Sparkles } from 'lucide-react';
+import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BoardView from './Board/BoardView';
 import CalendarView from './Calendar/CalendarView';
@@ -79,7 +79,7 @@ const PlannerLayout: React.FC = () => {
                         <div className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(217,70,239,0.8)_360deg)] animate-[spin_3s_linear_infinite] opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="absolute inset-[1px] bg-slate-900/90 backdrop-blur-3xl rounded-full" />
                     </div>
-                    
+
                     <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.3),transparent_70%)] pointer-events-none" />
 
                     <Sparkles size={16} strokeWidth={2.5} className="relative z-10 text-fuchsia-400 group-hover:text-fuchsia-300 transition-colors duration-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]" />
@@ -88,21 +88,21 @@ const PlannerLayout: React.FC = () => {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 relative flex flex-col w-full h-full pt-20 px-2 pb-4">
+            <div className="flex-1 relative flex flex-col w-full h-full">
 
                 <AnimatePresence mode="wait">
                     {view === 'board' && (
-                        <motion.div key="board" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute inset-0 z-10">
+                        <motion.div key="board" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute inset-x-0 bottom-0 top-25 z-10">
                             <BoardView />
                         </motion.div>
                     )}
                     {view === 'calendar' && (
-                        <motion.div key="calendar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute inset-0 z-10">
+                        <motion.div key="calendar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute inset-x-0 bottom-0 top-25 z-10">
                             <CalendarView />
                         </motion.div>
                     )}
                     {view === 'gantt' && (
-                        <motion.div key="gantt" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute inset-0 z-10">
+                        <motion.div key="gantt" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute inset-x-0 bottom-0 top-25 z-10">
                             <GanttView />
                         </motion.div>
                     )}
