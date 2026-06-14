@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
-import { Calendar, Flag, Trash2, Copy, Play } from 'lucide-react';
+import { Calendar, Flag, Copy, Play } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAltKey } from '../../../hooks/useAltKey';
 import { DateTimePicker } from './DateTimePicker';
@@ -22,7 +22,7 @@ const toLocalDatetime = (isoString?: string | null) => {
 };
 
 const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
-    const { updateTask, deleteTask } = useTasks();
+    const { updateTask } = useTasks();
 
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -191,6 +191,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             className={`mx-1 relative outline-none z-10 ${isAltPressed ? 'cursor-copy' : 'cursor-grab active:cursor-grabbing'} ${isDragging ? 'z-50' : ''}`}
         >
             <div 
+                onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
+                }}
                 onDoubleClick={(e) => {
                     e.stopPropagation();
                     setIsEditing(true);
@@ -275,18 +280,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                         <h4 className="text-[14px] font-bold text-white flex-1 leading-snug tracking-tight drop-shadow-sm">
                             {task.title}
                         </h4>
-
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                deleteTask(task.id);
-                            }}
-                            className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors p-2 rounded-xl -mr-1 -mt-1 z-10 pointer-events-auto"
-                            title="Delete task"
-                            onPointerDown={(e) => e.stopPropagation()}
-                        >
-                            <Trash2 size={14} />
-                        </button>
                     </div>
 
                     {renderProgressBar()}

@@ -53,6 +53,11 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
                     return (
                         <div 
                             key={task.id} 
+                            onContextMenu={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
+                            }}
                             className={`flex items-center gap-1.5 px-1.5 py-0.5 rounded transition-colors hover:bg-white/10 cursor-default group
                                 ${task.priority === 'HIGH' ? 'text-red-300' : 
                                   task.priority === 'MEDIUM' ? 'text-amber-300' : 

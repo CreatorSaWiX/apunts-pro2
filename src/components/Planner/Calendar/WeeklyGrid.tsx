@@ -213,6 +213,11 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                     return next;
                 });
             }}
+            onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
+            }}
             onDoubleClick={handleTaskDoubleClick}
             className={`absolute left-1 right-1 border overflow-hidden backdrop-blur-2xl transition-[box-shadow,opacity] flex flex-col group
                 bg-slate-900/40 hover:bg-slate-900/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing

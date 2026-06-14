@@ -323,6 +323,11 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
 
     return (
         <div
+            onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
+            }}
             className={`absolute h-8 rounded-md border bg-gradient-to-r flex items-center px-2 group overflow-hidden transition-all duration-200 ${getPriorityColor(task.priority)} ${dragState ? 'z-40 shadow-2xl brightness-110' : 'hover:brightness-110 hover:z-30 cursor-pointer'}`}
             style={{
                 left: displayLeft,

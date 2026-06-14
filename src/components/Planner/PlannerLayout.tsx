@@ -6,6 +6,7 @@ import BoardView from './Board/BoardView';
 import CalendarView from './Calendar/CalendarView';
 import GanttView from './Gantt/GanttView';
 import AIModal from './AIModal';
+import GlobalTaskContextMenu from './GlobalTaskContextMenu';
 
 type ViewMode = 'board' | 'calendar' | 'gantt';
 
@@ -32,6 +33,7 @@ const PlannerLayout: React.FC = () => {
 
     return (
         <div className="flex flex-col flex-1 h-full relative w-full">
+            <GlobalTaskContextMenu />
             {/* Let the global Background.tsx handle the background! */}
 
             {/* Dynamic Island Navigator (Fixed Top Right) */}
