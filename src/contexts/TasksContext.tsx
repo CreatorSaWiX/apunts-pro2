@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
-import type { Task } from '../types/tasks';
+import type { Task, Subject } from '../types/tasks';
+import subjectsData from '../data/subjects.json';
 
 interface TasksContextType {
     tasks: Task[];
@@ -11,6 +12,9 @@ interface TasksContextType {
     deleteTask: (taskId: string, task?: Task) => Promise<void>;
     undoDelete: () => Promise<void>;
     addBatchTasks: (tasks: Omit<Task, 'id' | 'userId' | 'createdAt'>[]) => Promise<void>;
+    subjects: Subject[];
+    activeSubjectId: string | null;
+    setActiveSubjectId: (id: string | null) => void;
 }
 
 const TasksContext = createContext<TasksContextType | undefined>(undefined);
@@ -21,6 +25,10 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const deletedTasksRef = useRef<Task[]>([]);
+    
+    // Using subjects from the data file
+    const [activeSubjectId, setActiveSubjectId] = useState<string | null>(null);
+    const subjects: Subject[] = subjectsData;
 
     useEffect(() => {
         if (!user) {
@@ -54,7 +62,8 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                             startDate: data.startDate,
                             estimatedMinutes: data.estimatedMinutes,
                             source: data.source,
-                            createdAt: data.createdAt
+                            createdAt: data.createdAt,
+                            subjectId: data.subjectId
                         });
                     });
                     setTasks(loadedTasks);
@@ -204,7 +213,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, [undoDelete]);
 
     return (
-        <TasksContext.Provider value={{ tasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks }}>
+        <TasksContext.Provider value={{ tasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks, subjects, activeSubjectId, setActiveSubjectId }}>
             {children}
         </TasksContext.Provider>
     );

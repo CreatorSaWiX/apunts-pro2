@@ -2,6 +2,12 @@ export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'COMPLETE' | string;
 export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 export type TaskSource = 'MANUAL' | 'AI';
 
+export interface Subject {
+    id: string;
+    name: string;
+    colorToken: string;
+}
+
 export interface Task {
     id: string;
     userId: string;
@@ -19,4 +25,6 @@ export interface Task {
     
     source: TaskSource;
     createdAt: string;
+    
+    subjectId?: string;
 }

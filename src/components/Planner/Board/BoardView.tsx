@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
     DndContext, 
     DragOverlay, 
@@ -20,18 +20,25 @@ import { createPortal } from 'react-dom';
 import { Plus, X } from 'lucide-react';
 
 const defaultColumns = [
-    { id: 'TODO', title: 'TO DO' },
-    { id: 'IN_PROGRESS', title: 'IN PROGRESS' },
-    { id: 'COMPLETE', title: 'COMPLETE' }
+    { id: 'TODO', title: 'TO DO', color: 'indigo-400' },
+    { id: 'IN_PROGRESS', title: 'IN PROGRESS', color: 'fuchsia-400' },
+    { id: 'COMPLETE', title: 'COMPLETE', color: 'emerald-400' }
 ];
 
+const PRESET_COLORS = ['indigo-400', 'fuchsia-400', 'emerald-400', 'amber-400', 'rose-400', 'cyan-400'];
+
+
 const BoardView: React.FC = () => {
-    const { tasks, updateTask, addTask } = useTasks();
+    const { tasks: allTasks, updateTask, addTask, activeSubjectId } = useTasks();
+    const tasks = useMemo(() => {
+        if (!activeSubjectId) return allTasks;
+        return allTasks.filter(t => t.subjectId === activeSubjectId);
+    }, [allTasks, activeSubjectId]);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
     const isAltPressed = useAltKey();
     const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
-    const [columns, setColumns] = useState<{id: string, title: string}[]>(() => {
+    const [columns, setColumns] = useState<{id: string, title: string, color?: string}[]>(() => {
         const saved = localStorage.getItem('planner_columns');
         if (saved) {
             try { return JSON.parse(saved); } catch (e) { return defaultColumns; }
@@ -41,6 +48,7 @@ const BoardView: React.FC = () => {
 
     const [isAddingColumn, setIsAddingColumn] = useState(false);
     const [newColumnName, setNewColumnName] = useState('');
+    const [newColumnColor, setNewColumnColor] = useState(PRESET_COLORS[0]);
 
     useEffect(() => {
         localStorage.setItem('planner_columns', JSON.stringify(columns));
@@ -50,11 +58,16 @@ const BoardView: React.FC = () => {
         if (newColumnName.trim()) {
             const id = newColumnName.trim().toUpperCase().replace(/\s+/g, '_');
             if (!columns.find(c => c.id === id)) {
-                setColumns([...columns, { id, title: newColumnName.trim() }]);
+                setColumns([...columns, { id, title: newColumnName.trim(), color: newColumnColor }]);
             }
             setNewColumnName('');
+            setNewColumnColor(PRESET_COLORS[0]);
             setIsAddingColumn(false);
         }
+    };
+
+    const updateColumn = (id: string, updates: Partial<{ title: string; color: string }>) => {
+        setColumns(cols => cols.map(c => c.id === id ? { ...c, ...updates } : c));
     };
 
     const sensors = useSensors(
@@ -128,7 +141,7 @@ const BoardView: React.FC = () => {
     };
 
     return (
-        <div className="h-full flex overflow-x-auto gap-5 px-1 pt-4 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10 w-full">
+        <div className="h-full flex overflow-x-auto overflow-y-hidden gap-8 px-8 pt-4 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10 w-full">
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCorners}
@@ -168,22 +181,34 @@ const BoardView: React.FC = () => {
                             <span className="text-sm font-semibold tracking-wide transition-colors group-hover:text-white/80">Afegeix llista</span>
                         </button>
                     ) : (
-                        <div className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 p-5 rounded-[32px] flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
-                            <input
-                                autoFocus
-                                value={newColumnName}
-                                onChange={(e) => setNewColumnName(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') handleAddColumn();
-                                    if (e.key === 'Escape') setIsAddingColumn(false);
-                                }}
-                                placeholder="Nom de la llista..."
-                                className="bg-white/5 text-white text-sm font-medium px-4 py-3 rounded-2xl border border-white/10 focus:outline-none focus:border-indigo-500/50 focus:bg-white/10 w-full transition-colors placeholder:text-slate-500"
-                            />
-                            <div className="flex items-center gap-2">
-                                <button onClick={handleAddColumn} className="bg-white text-black hover:bg-slate-200 text-sm font-bold px-4 py-2.5 rounded-xl flex-1 transition-colors">Afegir</button>
-                                <button onClick={() => setIsAddingColumn(false)} className="bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white p-2.5 rounded-xl transition-colors"><X size={18} strokeWidth={2.5} /></button>
+                        <div className="bg-[#111115]/90 backdrop-blur-[40px] border border-white/[0.04] p-4 rounded-[24px] flex flex-col gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.02)]">
+                            <div className="flex items-center gap-3">
+                                <div className={`w-3 h-3 rounded-full bg-${newColumnColor} shadow-[0_0_12px_currentColor] text-${newColumnColor} shrink-0`} />
+                                <input
+                                    autoFocus
+                                    value={newColumnName}
+                                    onChange={(e) => setNewColumnName(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') handleAddColumn();
+                                        if (e.key === 'Escape') setIsAddingColumn(false);
+                                    }}
+                                    placeholder="Nom de la llista..."
+                                    className="bg-transparent text-slate-200 text-sm font-semibold flex-1 focus:outline-none placeholder:text-slate-600 tracking-wide"
+                                />
+                                <button onClick={() => setIsAddingColumn(false)} className="text-slate-500 hover:text-white transition-colors p-1"><X size={16} strokeWidth={2.5}/></button>
                             </div>
+                            
+                            <div className="flex gap-3 items-center justify-center py-1">
+                                {PRESET_COLORS.map(color => (
+                                    <button
+                                        key={color}
+                                        onClick={() => setNewColumnColor(color)}
+                                        className={`w-4 h-4 rounded-full transition-all duration-300 bg-${color} ${newColumnColor === color ? `scale-125 shadow-[0_0_12px_currentColor] text-${color} ring-1 ring-${color} ring-offset-2 ring-offset-[#111115]` : 'opacity-40 hover:opacity-100 hover:scale-110'}`}
+                                    />
+                                ))}
+                            </div>
+
+                            <button onClick={handleAddColumn} className="mt-2 bg-white/5 hover:bg-white/10 text-white text-[11px] font-bold uppercase tracking-wider py-2.5 rounded-[16px] transition-colors border border-white/5 hover:border-white/10 w-full">Crear Llista</button>
                         </div>
                     )}
                 </div>

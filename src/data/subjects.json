@@ -1,0 +1,26 @@
+[
+    {
+        "id": "S1",
+        "name": "PRO 2",
+        "colorToken": "emerald-400",
+        "description": "Programació 2"
+    },
+    {
+        "id": "S2",
+        "name": "EC",
+        "colorToken": "fuchsia-400",
+        "description": "Estructura de Computadors"
+    },
+    {
+        "id": "S3",
+        "name": "M1",
+        "colorToken": "amber-400",
+        "description": "Matemàtiques 1"
+    },
+    {
+        "id": "S4",
+        "name": "M2",
+        "colorToken": "cyan-400",
+        "description": "Matemàtiques 2"
+    }
+]

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Task, TaskPriority } from '../../../types/tasks';
@@ -22,7 +22,19 @@ const toLocalDatetime = (isoString?: string | null) => {
 };
 
 const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
-    const { updateTask } = useTasks();
+    const { updateTask, subjects } = useTasks();
+    const subject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
+
+    const getSubjectClasses = (token: string) => {
+        switch (token) {
+            case 'emerald-500': return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.15)]';
+            case 'fuchsia-500': return 'text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20 shadow-[0_0_10px_rgba(217,70,239,0.15)]';
+            case 'amber-500': return 'text-amber-400 bg-amber-500/10 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.15)]';
+            case 'cyan-500': return 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20 shadow-[0_0_10px_rgba(6,182,212,0.15)]';
+            case 'indigo-500': return 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20 shadow-[0_0_10px_rgba(99,102,241,0.15)]';
+            default: return 'text-slate-400 bg-slate-500/10 border-slate-500/20 shadow-[0_0_10px_rgba(100,116,139,0.15)]';
+        }
+    };
 
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -46,6 +58,24 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     const [editPriority, setEditPriority] = useState<TaskPriority>(task.priority);
     const [editDueDate, setEditDueDate] = useState<string>(toLocalDatetime(task.dueDate));
     const [editStartDate, setEditStartDate] = useState<string>(toLocalDatetime(task.startDate));
+    const [editSubjectId, setEditSubjectId] = useState<string | null>(task.subjectId || null);
+    
+    const [showSubjectPicker, setShowSubjectPicker] = useState(false);
+    const [subjectSearchQuery, setSubjectSearchQuery] = useState('');
+    
+    const filteredSubjects = useMemo(() => {
+        if (!subjects) return [];
+        return [...subjects]
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .filter(s => s.name.toLowerCase().includes(subjectSearchQuery.toLowerCase()));
+    }, [subjects, subjectSearchQuery]);
+
+    const toggleSubjectPicker = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setShowSubjectPicker(!showSubjectPicker);
+        setSubjectSearchQuery('');
+    };
 
     const isAltPressed = useAltKey();
 
@@ -69,7 +99,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         transform: isDragging && transform
             ? `${CSS.Translate.toString(transform)} rotate(4deg) scale(1.05)`
             : CSS.Transform.toString(transform),
-        zIndex: isDragging ? 100 : 'auto',
+        zIndex: isDragging ? 10000 : (isEditing || showSubjectPicker ? 50 : 'auto'),
     };
 
     const handleSave = () => {
@@ -78,7 +108,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             title: editTitle.trim() || 'Nova Tasca',
             priority: editPriority,
             dueDate: editDueDate ? new Date(editDueDate).toISOString() : null,
-            startDate: editStartDate ? new Date(editStartDate).toISOString() : null
+            startDate: editStartDate ? new Date(editStartDate).toISOString() : null,
+            subjectId: editSubjectId || null
         };
 
         if (updates.startDate && updates.dueDate) {
@@ -102,9 +133,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
 
     const getPriorityStyle = (priority: TaskPriority) => {
         switch (priority) {
-            case 'HIGH': return 'text-red-400 bg-red-500/10 border-red-500/20 hover:bg-red-500/20';
-            case 'MEDIUM': return 'text-amber-400 bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/20';
-            case 'LOW': return 'text-slate-400 bg-slate-500/10 border-slate-500/20 hover:bg-slate-500/20';
+            case 'HIGH': return 'text-[#FF453A] bg-[#FF453A]/10 border-[#FF453A]/20 hover:bg-[#FF453A]/20';
+            case 'MEDIUM': return 'text-[#FF9F0A] bg-[#FF9F0A]/10 border-[#FF9F0A]/20 hover:bg-[#FF9F0A]/20';
+            case 'LOW': return 'text-slate-400 bg-white/5 border-white/5 hover:bg-white/10';
         }
     };
 
@@ -125,16 +156,15 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             percentage = 100;
         }
 
-        let color = 'bg-indigo-400';
-        if (percentage > 50) color = 'bg-yellow-400';
-        if (percentage > 80) color = 'bg-orange-500';
-        if (percentage > 95) color = 'bg-red-500';
+        let color = 'bg-[#5E5CE6] shadow-[0_0_10px_rgba(94,92,230,0.8)]';
+        if (percentage > 50) color = 'bg-[#FF9F0A] shadow-[0_0_10px_rgba(255,159,10,0.8)]';
+        if (percentage > 80) color = 'bg-[#FF453A] shadow-[0_0_10px_rgba(255,69,58,0.8)]';
 
         const timeLeft = end - now;
         let timeText = '';
         if (timeLeft < 0) {
             timeText = 'Caducat';
-            color = 'bg-red-600';
+            color = 'bg-[#FF453A] shadow-[0_0_12px_rgba(255,69,58,1)]';
             percentage = 100;
         } else {
             const totalMins = Math.floor(timeLeft / (1000 * 60));
@@ -153,18 +183,18 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         const deadlineText = format(new Date(task.dueDate), "d MMM yyyy, HH:mm");
 
         return (
-            <div className="w-full pointer-events-none flex flex-col gap-1.5 group/progress">
-                <div className="flex justify-between items-center opacity-70 group-hover/progress:opacity-100 transition-opacity">
-                    <span className="text-[10px] font-medium text-slate-400 tracking-wider uppercase">
+            <div className="w-full pointer-events-none flex flex-col gap-1.5 mt-1 group/progress">
+                <div className="flex justify-between items-center opacity-60 group-hover/progress:opacity-100 transition-opacity">
+                    <span className="text-[9px] font-semibold text-slate-400 tracking-widest uppercase">
                         {timeText}
                     </span>
-                    <span className="text-[10px] font-bold text-slate-300 tracking-wider">
+                    <span className="text-[9px] font-semibold text-slate-500 tracking-widest">
                         {deadlineText}
                     </span>
                 </div>
-                <div className="h-[1.5px] w-full bg-white/5 rounded-full overflow-hidden">
+                <div className="relative h-[2px] w-full bg-white/[0.04] rounded-full">
                     <div
-                        className={`h-full ${color} transition-all duration-1000 ease-out`}
+                        className={`absolute top-0 left-0 h-full rounded-full ${color} transition-all duration-1000 ease-out`}
                         style={{ width: `${percentage}%` }}
                     />
                 </div>
@@ -188,7 +218,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             style={style}
             {...attributes}
             {...listeners}
-            className={`mx-1 relative outline-none z-10 ${isAltPressed ? 'cursor-copy' : 'cursor-grab active:cursor-grabbing'} ${isDragging ? 'z-50' : ''}`}
+            className={`mx-1 relative outline-none ${isAltPressed ? 'cursor-copy' : 'cursor-grab active:cursor-grabbing'}`}
         >
             <div 
                 onContextMenu={(e) => {
@@ -201,10 +231,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                     setIsEditing(true);
                 }}
                 onMouseMove={handleMouseMove}
-                className={`group bg-slate-900/60 border-[0.5px] border-white/10 hover:border-primary/30 rounded-[24px] p-4 shadow-md hover:shadow-[0_8px_30px_rgba(var(--primary-rgb),0.2)] backdrop-blur-[40px] transition-all duration-300 flex flex-col gap-2.5 relative hover:-translate-y-1 overflow-hidden transform-gpu ${isDragging ? 'shadow-[0_30px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(var(--primary-rgb),0.3)] border-primary/50 opacity-100 scale-[1.02]' : ''}`}
+                className={`group bg-[#111115] border border-white/[0.04] rounded-[16px] p-3.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.02),0_4px_16px_rgba(0,0,0,0.5)] hover:border-white/[0.08] hover:shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-[20px] transition-all duration-300 flex flex-col gap-2 relative transform-gpu ${isDragging ? 'shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-white/[0.15] opacity-100 scale-105 rotate-2' : ''}`}
             >
             <motion.div
-                className="pointer-events-none absolute -inset-px rounded-[20px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
+                className="pointer-events-none absolute -inset-px rounded-[16px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
                 style={{ background: backgroundStyle }}
             />
 
@@ -228,6 +258,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                                     setEditPriority(task.priority);
                                     setEditDueDate(toLocalDatetime(task.dueDate));
                                     setEditStartDate(toLocalDatetime(task.startDate));
+                                    setEditSubjectId(task.subjectId || null);
                                     setIsEditing(false);
                                 }
                                 e.stopPropagation();
@@ -259,6 +290,58 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                             <span className="hidden sm:inline font-medium">Priority</span>
                         </button>
 
+                        <div className="relative">
+                            {subjects && subjects.length > 0 && (
+                                <button
+                                    onClick={toggleSubjectPicker}
+                                    className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${
+                                        editSubjectId 
+                                            ? (() => {
+                                                const s = subjects.find(sub => sub.id === editSubjectId);
+                                                return s ? `text-${s.colorToken.replace('500', '400')} bg-${s.colorToken}/10 border-${s.colorToken}/20` : 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+                                            })()
+                                            : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
+                                    }`}
+                                >
+                                    <span className="font-semibold text-[10px] tracking-wider uppercase">
+                                        {editSubjectId ? subjects.find(sub => sub.id === editSubjectId)?.name : 'Assignatura'}
+                                    </span>
+                                </button>
+                            )}
+
+                            {showSubjectPicker && (
+                                <div className="absolute top-full left-0 mt-2 w-48 bg-[#13131A] border border-white/[0.08] p-2 rounded-xl flex flex-col gap-2 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
+                                    <input
+                                        autoFocus
+                                        value={subjectSearchQuery}
+                                        onChange={(e) => setSubjectSearchQuery(e.target.value)}
+                                        placeholder="Cerca..."
+                                        className="bg-white/5 border border-white/10 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500"
+                                        onClick={(e) => e.stopPropagation()}
+                                        onKeyDown={(e) => e.stopPropagation()}
+                                    />
+                                    <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                                        <button 
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(null); setShowSubjectPicker(false); }}
+                                            className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                        >
+                                            Sense assignatura
+                                        </button>
+                                        {filteredSubjects.map(s => (
+                                            <button
+                                                key={s.id}
+                                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(s.id); setShowSubjectPicker(false); }}
+                                                className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                            >
+                                                <span className={`w-1.5 h-1.5 rounded-full bg-${s.colorToken}`}></span>
+                                                {s.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
                         <DateTimePicker
                             value={editStartDate}
                             onChange={setEditStartDate}
@@ -277,7 +360,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             ) : (
                 <>
                     <div className="flex justify-between items-start gap-2 pointer-events-none relative z-10">
-                        <h4 className="text-[14px] font-bold text-white flex-1 leading-snug tracking-tight drop-shadow-sm">
+                        <h4 className="text-[13px] font-semibold text-white/90 flex-1 leading-snug tracking-wide">
                             {task.title}
                         </h4>
                     </div>
@@ -288,21 +371,26 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                         {/* Priority Toggle Pill */}
                         <button
                             onClick={togglePriority}
-                            className={`flex items-center justify-center w-6 h-6 rounded-full border transition-colors ${getPriorityStyle(task.priority)}`}
+                            className={`flex items-center justify-center w-5 h-5 rounded-md border transition-colors ${getPriorityStyle(task.priority)}`}
                             title={`Priority: ${task.priority}`}
                         >
                             <Flag size={10} className={task.priority === 'HIGH' ? 'fill-current' : ''} />
                         </button>
 
                         {/* Date Display Pill */}
-                        <button className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-bold tracking-widest uppercase border transition-colors ${task.dueDate ? 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20 hover:bg-indigo-500/20' : 'bg-white/5 text-slate-400 border-white/5 hover:bg-white/10 hover:text-slate-300'}`}>
-                            <Calendar size={9} />
+                        <button className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-semibold tracking-widest uppercase border transition-colors ${task.dueDate ? 'bg-white/[0.03] text-slate-300 border-white/[0.05] hover:bg-white/[0.08]' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/5'}`}>
+                            <Calendar size={10} />
                             {task.dueDate ? format(new Date(task.dueDate), 'MMM d') : 'No date'}
                         </button>
 
-                        <div className="ml-auto flex items-center gap-1 text-slate-500">
+                        <div className="ml-auto flex items-center gap-1.5">
+                            {subject && (
+                                <span className={`text-[9px] tracking-[0.1em] font-bold uppercase border px-2 py-0.5 rounded-md ${getSubjectClasses(subject.colorToken)}`}>
+                                    {subject.name}
+                                </span>
+                            )}
                             {task.source === 'AI' && (
-                                <span className="text-[9px] tracking-[0.2em] uppercase font-black text-fuchsia-400 bg-fuchsia-500/10 border border-fuchsia-500/20 px-2 py-0.5 rounded-full shadow-[0_0_10px_rgba(217,70,239,0.1)]">AI Spark</span>
+                                <span className="text-[8px] tracking-[0.2em] uppercase font-bold text-[#FF453A] bg-[#FF453A]/10 border border-[#FF453A]/20 px-1.5 py-0.5 rounded-sm">AI Spark</span>
                             )}
                         </div>
                     </div>
