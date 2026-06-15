@@ -10,12 +10,11 @@ import {
     type DragStartEvent, 
     type DragOverEvent
 } from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { useTasks } from '../../../contexts/TasksContext';
 import BoardColumn from './BoardColumn';
 import TaskCard from './TaskCard';
 import type { Task, TaskStatus } from '../../../types/tasks';
-import { useAltKey } from '../../../hooks/useAltKey';
 import { createPortal } from 'react-dom';
 import { Plus, X } from 'lucide-react';
 
@@ -34,9 +33,14 @@ const BoardView: React.FC = () => {
         if (!activeSubjectId) return allTasks;
         return allTasks.filter(t => t.subjectId === activeSubjectId);
     }, [allTasks, activeSubjectId]);
+    const [localTasks, setLocalTasks] = useState(tasks);
+
+    useEffect(() => {
+        setLocalTasks(tasks);
+    }, [tasks]);
+
     const [activeTask, setActiveTask] = useState<Task | null>(null);
-    const isAltPressed = useAltKey();
-    const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+    const [activeColumn, setActiveColumn] = useState<{id: string, title: string, color?: string} | null>(null);
 
     const [columns, setColumns] = useState<{id: string, title: string, color?: string}[]>(() => {
         const saved = localStorage.getItem('planner_columns');
@@ -70,6 +74,10 @@ const BoardView: React.FC = () => {
         setColumns(cols => cols.map(c => c.id === id ? { ...c, ...updates } : c));
     };
 
+    const deleteColumn = (id: string) => {
+        setColumns(cols => cols.filter(c => c.id !== id));
+    };
+
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -83,15 +91,23 @@ const BoardView: React.FC = () => {
 
     const onDragStart = (event: DragStartEvent) => {
         const { active } = event;
-        const task = tasks.find(t => t.id === active.id);
+        
+        if (active.data.current?.type === 'Column') {
+            setActiveColumn(active.data.current.column);
+            return;
+        }
+
+        const task = localTasks.find(t => t.id === active.id);
         if (task) {
             setActiveTask(task);
-            setDragOverColumn(task.status);
         }
     };
 
     const onDragOver = (event: DragOverEvent) => {
         const { active, over } = event;
+        
+        if (active.data.current?.type === 'Column') return;
+
         if (!over) return;
 
         const activeId = active.id;
@@ -102,42 +118,69 @@ const BoardView: React.FC = () => {
         const isOverTask = over.data.current?.type === 'Task';
         const isOverColumn = over.data.current?.type === 'Column';
 
-        let newStatus = dragOverColumn;
+        setLocalTasks(prev => {
+            const activeIndex = prev.findIndex(t => t.id === activeId);
+            if (activeIndex === -1) return prev;
+            
+            const activeTask = prev[activeIndex];
+            let newStatus = activeTask.status;
 
-        if (isOverTask) {
-            const overTaskObj = tasks.find(t => t.id === overId);
-            if (overTaskObj) newStatus = overTaskObj.status;
-        } else if (isOverColumn) {
-            newStatus = overId as string;
-        }
+            if (isOverTask) {
+                const overTask = prev.find(t => t.id === overId);
+                if (overTask) newStatus = overTask.status;
+            } else if (isOverColumn) {
+                newStatus = overId as TaskStatus;
+            }
 
-        if (newStatus && newStatus !== dragOverColumn) {
-            setDragOverColumn(newStatus);
-        }
+            if (activeTask.status !== newStatus) {
+                const newTasks = [...prev];
+                newTasks[activeIndex] = { ...activeTask, status: newStatus as TaskStatus };
+                
+                if (isOverTask) {
+                    const overIndex = newTasks.findIndex(t => t.id === overId);
+                    return arrayMove(newTasks, activeIndex, overIndex);
+                }
+                return newTasks;
+            }
+            
+            // Reorder within the same column during drag
+            if (isOverTask && activeTask.status === newStatus) {
+                const overIndex = prev.findIndex(t => t.id === overId);
+                if (activeIndex !== overIndex) {
+                    return arrayMove(prev, activeIndex, overIndex);
+                }
+            }
+
+            return prev;
+        });
     };
 
-    const onDragEnd = () => {
-        if (activeTask && dragOverColumn) {
-            if (isAltPressed) {
-                addTask({
-                    title: `${activeTask.title} (Còpia)`,
-                    description: activeTask.description,
-                    status: dragOverColumn as TaskStatus,
-                    priority: activeTask.priority,
-                    dueDate: activeTask.dueDate,
-                    startDate: activeTask.startDate,
-                    estimatedMinutes: activeTask.estimatedMinutes,
-                    source: activeTask.source
+    const onDragEnd = (event: any) => {
+        const { active, over } = event;
+        
+        if (active.data.current?.type === 'Column') {
+            setActiveColumn(null);
+            if (!over) return;
+            const activeId = active.id as string;
+            const overId = over.id as string;
+            if (activeId !== overId) {
+                setColumns(cols => {
+                    const oldIndex = cols.findIndex(c => c.id === activeId);
+                    const newIndex = cols.findIndex(c => c.id === overId);
+                    return arrayMove(cols, oldIndex, newIndex);
                 });
-            } else {
-                if (activeTask.status !== dragOverColumn) {
-                    updateTask(activeTask.id, { status: dragOverColumn as TaskStatus });
-                }
+            }
+            return;
+        }
+
+        if (activeTask) {
+            const finalTask = localTasks.find(t => t.id === activeTask.id);
+            if (finalTask && finalTask.status !== activeTask.status) {
+                updateTask(activeTask.id, { status: finalTask.status });
             }
         }
         
         setActiveTask(null);
-        setDragOverColumn(null);
     };
 
     return (
@@ -149,24 +192,28 @@ const BoardView: React.FC = () => {
                 onDragOver={onDragOver}
                 onDragEnd={onDragEnd}
             >
-                {columns.map(col => (
-                    <BoardColumn 
-                        key={col.id} 
-                        column={col} 
-                        tasks={tasks.filter(t => t.status === col.id)} 
-                        onAddTask={(taskData: Partial<Task> = {}) => {
-                            addTask({
-                                title: taskData.title || '',
-                                status: col.id,
-                                priority: taskData.priority || 'LOW',
-                                dueDate: taskData.dueDate || null,
-                                startDate: taskData.startDate || null,
-                                estimatedMinutes: 60,
-                                source: 'MANUAL'
-                            });
-                        }}
-                    />
-                ))}
+                <SortableContext items={columns.map(c => c.id)} strategy={horizontalListSortingStrategy}>
+                    {columns.map(col => (
+                        <BoardColumn 
+                            key={col.id} 
+                            column={col} 
+                            tasks={localTasks.filter(t => t.status === col.id)} 
+                            onAddTask={(taskData: Partial<Task> = {}) => {
+                                addTask({
+                                    title: taskData.title || '',
+                                    status: col.id,
+                                    priority: taskData.priority || 'LOW',
+                                    dueDate: taskData.dueDate || null,
+                                    startDate: taskData.startDate || null,
+                                    estimatedMinutes: 60,
+                                    source: 'MANUAL'
+                                });
+                            }}
+                            onUpdateColumn={(updates) => updateColumn(col.id, updates)}
+                            onDeleteColumn={() => deleteColumn(col.id)}
+                        />
+                    ))}
+                </SortableContext>
 
                 {/* Add Column UI */}
                 <div className="flex-shrink-0 w-[350px] h-full">
@@ -215,7 +262,12 @@ const BoardView: React.FC = () => {
 
                 {createPortal(
                     <DragOverlay dropAnimation={null}>
-                        {activeTask ? <TaskCard task={activeTask} /> : null}
+                        {activeTask ? <TaskCard task={activeTask} isOverlay={true} /> : null}
+                        {activeColumn ? (
+                            <div className="w-[350px] h-full bg-[#111115]/50 backdrop-blur border border-white/10 rounded-2xl ring-2 ring-primary/30 flex items-start justify-center pt-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                                <span className="font-bold text-sm tracking-widest uppercase text-white/50">{activeColumn.title}</span>
+                            </div>
+                        ) : null}
                     </DragOverlay>,
                     document.body
                 )}

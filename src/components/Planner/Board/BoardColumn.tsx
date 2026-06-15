@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useDroppable } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import TaskCard from './TaskCard';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
-import { Plus, Calendar, Flag, Play } from 'lucide-react';
+import { Plus, Calendar, Flag, Play, Trash2 } from 'lucide-react';
 import { DateTimePicker } from './DateTimePicker';
 
 interface BoardColumnProps {
@@ -13,6 +13,7 @@ interface BoardColumnProps {
     tasks: Task[];
     onAddTask: (taskData?: Partial<Task>) => void;
     onUpdateColumn?: (updates: Partial<{ title: string; color: string }>) => void;
+    onDeleteColumn?: () => void;
 }
 
 const toLocalDatetime = (d: Date) => {
@@ -20,7 +21,7 @@ const toLocalDatetime = (d: Date) => {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onUpdateColumn }) => {
+const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onUpdateColumn, onDeleteColumn }) => {
     const { subjects, activeSubjectId } = useTasks();
     const taskIds = useMemo(() => tasks.map(t => t.id), [tasks]);
     const [isDrafting, setIsDrafting] = useState(false);
@@ -32,13 +33,20 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
     const [draftDueDate, setDraftDueDate] = useState<string>('');
     const [draftStartDate, setDraftStartDate] = useState<string>('');
 
-    const { setNodeRef, isOver } = useDroppable({
+    const { setNodeRef, isOver, transform, transition, attributes, listeners, isDragging } = useSortable({
         id: column.id,
         data: {
             type: 'Column',
             column
         }
     });
+
+    const style = {
+        transition,
+        transform: CSS.Translate.toString(transform),
+        opacity: isDragging ? 0.5 : 1,
+        zIndex: isDragging ? 100 : 'auto',
+    };
 
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -137,11 +145,16 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
     return (
         <div
             ref={setNodeRef}
-            className={`relative flex flex-col flex-shrink-0 w-[350px] h-full max-h-full transition-all duration-300 ease-out group/col rounded-2xl ${isOver ? 'bg-white/[0.02] ring-1 ring-primary/30' : 'bg-transparent'}`}
+            style={style}
+            className={`relative flex flex-col flex-shrink-0 w-[350px] h-full max-h-full transition-colors duration-300 ease-out group/col rounded-2xl ${isOver ? 'bg-white/[0.02] ring-1 ring-primary/30' : 'bg-transparent'}`}
             onDoubleClick={handleDoubleClick}
         >
             {/* Minimalist Header */}
-            <div className="flex items-center justify-between px-3 py-4 sticky top-0 z-10 group/header">
+            <div 
+                {...attributes}
+                {...listeners}
+                className="flex items-center justify-between px-3 py-4 sticky top-0 z-10 group/header cursor-grab active:cursor-grabbing"
+            >
                 <div className="flex items-center gap-2.5 relative z-10 flex-1" onDoubleClick={() => setIsEditingHeader(true)}>
                     <div 
                         onClick={toggleColorPicker}
@@ -149,7 +162,9 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                         title="Fes clic per canviar el color"
                     ></div>
                     {showColorPicker && (
-                        <div className="absolute top-8 left-0 bg-[#13131A] border border-white/[0.08] p-3 rounded-2xl flex gap-3 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
+                        <>
+                            <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowColorPicker(false); }} />
+                            <div className="absolute top-8 left-0 bg-[#13131A] border border-white/[0.08] p-3 rounded-2xl flex gap-3 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 cursor-default">
                             {COLUMN_COLORS.map(c => {
                                 const t = getColumnTheme({ id: column.id, color: c });
                                 return (
@@ -164,7 +179,8 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                     />
                                 );
                             })}
-                        </div>
+                            </div>
+                        </>
                     )}
                     {isEditingHeader ? (
                         <input
@@ -198,12 +214,22 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                     )}
                     <span className="text-[11px] font-medium text-slate-500 bg-white/[0.03] px-2 py-0.5 rounded-md ml-1">{tasks.length}</span>
                 </div>
-                <button
-                    onClick={(e) => { e.stopPropagation(); startDrafting(); }}
-                    className="text-slate-500 hover:text-white transition-all duration-200 pointer-events-auto p-1 opacity-0 group-hover/col:opacity-100"
-                >
-                    <Plus size={16} strokeWidth={2.5} />
-                </button>
+                <div className="flex items-center gap-1 opacity-0 group-hover/col:opacity-100 transition-opacity">
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onDeleteColumn?.(); }}
+                        className="text-slate-500 hover:text-red-400 transition-all duration-200 pointer-events-auto p-1"
+                        title="Eliminar llista"
+                    >
+                        <Trash2 size={14} />
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); startDrafting(); }}
+                        className="text-slate-500 hover:text-white transition-all duration-200 pointer-events-auto p-1"
+                        title="Afegir tasca"
+                    >
+                        <Plus size={16} strokeWidth={2.5} />
+                    </button>
+                </div>
             </div>
 
             <div

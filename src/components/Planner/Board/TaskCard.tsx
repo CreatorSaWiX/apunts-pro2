@@ -4,9 +4,8 @@ import { CSS } from '@dnd-kit/utilities';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
-import { Calendar, Flag, Copy, Play } from 'lucide-react';
+import { Calendar, Flag, Play } from 'lucide-react';
 import { format } from 'date-fns';
-import { useAltKey } from '../../../hooks/useAltKey';
 import { DateTimePicker } from './DateTimePicker';
 
 interface TaskCardProps {
@@ -20,18 +19,22 @@ const toLocalDatetime = (isoString?: string | null) => {
     const pad = (n: number) => n.toString().padStart(2, '0');
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
+interface TaskCardProps {
+    task: Task;
+    isOverlay?: boolean;
+}
 
-const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
     const { updateTask, subjects } = useTasks();
     const subject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
 
     const getSubjectClasses = (token: string) => {
         switch (token) {
-            case 'emerald-500': return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.15)]';
-            case 'fuchsia-500': return 'text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20 shadow-[0_0_10px_rgba(217,70,239,0.15)]';
-            case 'amber-500': return 'text-amber-400 bg-amber-500/10 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.15)]';
-            case 'cyan-500': return 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20 shadow-[0_0_10px_rgba(6,182,212,0.15)]';
-            case 'indigo-500': return 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20 shadow-[0_0_10px_rgba(99,102,241,0.15)]';
+            case 'emerald-400': return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20 shadow-[0_0_10px_rgba(52,211,153,0.15)]';
+            case 'fuchsia-400': return 'text-fuchsia-400 bg-fuchsia-400/10 border-fuchsia-400/20 shadow-[0_0_10px_rgba(232,121,249,0.15)]';
+            case 'amber-400': return 'text-amber-400 bg-amber-400/10 border-amber-400/20 shadow-[0_0_10px_rgba(251,191,36,0.15)]';
+            case 'cyan-400': return 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20 shadow-[0_0_10px_rgba(34,211,238,0.15)]';
+            case 'indigo-400': return 'text-indigo-400 bg-indigo-400/10 border-indigo-400/20 shadow-[0_0_10px_rgba(129,140,248,0.15)]';
             default: return 'text-slate-400 bg-slate-500/10 border-slate-500/20 shadow-[0_0_10px_rgba(100,116,139,0.15)]';
         }
     };
@@ -59,10 +62,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     const [editDueDate, setEditDueDate] = useState<string>(toLocalDatetime(task.dueDate));
     const [editStartDate, setEditStartDate] = useState<string>(toLocalDatetime(task.startDate));
     const [editSubjectId, setEditSubjectId] = useState<string | null>(task.subjectId || null);
-    
+
     const [showSubjectPicker, setShowSubjectPicker] = useState(false);
     const [subjectSearchQuery, setSubjectSearchQuery] = useState('');
-    
+
     const filteredSubjects = useMemo(() => {
         if (!subjects) return [];
         return [...subjects]
@@ -76,8 +79,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         setShowSubjectPicker(!showSubjectPicker);
         setSubjectSearchQuery('');
     };
-
-    const isAltPressed = useAltKey();
 
     const {
         setNodeRef,
@@ -96,10 +97,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
 
     const style = {
         transition: transition || 'transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1)',
-        transform: isDragging && transform
-            ? `${CSS.Translate.toString(transform)} rotate(4deg) scale(1.05)`
-            : CSS.Transform.toString(transform),
-        zIndex: isDragging ? 10000 : (isEditing || showSubjectPicker ? 50 : 'auto'),
+        transform: isOverlay 
+            ? 'rotate(3deg) scale(1.05)' 
+            : isDragging 
+                ? `${CSS.Transform.toString(transform)} rotate(2deg) scale(1.02)`
+                : CSS.Transform.toString(transform),
+        zIndex: isDragging || isOverlay ? 10000 : (isEditing || showSubjectPicker ? 50 : 'auto'),
     };
 
     const handleSave = () => {
@@ -202,12 +205,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         );
     };
 
-    if (isDragging) {
+    if (isDragging && !isOverlay) {
         return (
             <div
                 ref={setNodeRef}
                 style={style}
-                className={`bg-white/[0.02] border-2 border-dashed border-white/10 rounded-[24px] h-[100px] shadow-inner ${isAltPressed ? 'cursor-copy' : 'cursor-grabbing'}`}
+                className="bg-white/[0.02] border-2 border-dashed border-white/10 rounded-[24px] h-[100px] shadow-inner cursor-grabbing"
             />
         );
     }
@@ -218,9 +221,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             style={style}
             {...attributes}
             {...listeners}
-            className={`mx-1 relative outline-none ${isAltPressed ? 'cursor-copy' : 'cursor-grab active:cursor-grabbing'}`}
+            className={`mx-1 relative outline-none ${isOverlay ? 'cursor-grabbing shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-white/[0.15]' : 'cursor-grab active:cursor-grabbing'}`}
         >
-            <div 
+            <div
                 onContextMenu={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -233,169 +236,165 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                 onMouseMove={handleMouseMove}
                 className={`group bg-[#111115] border border-white/[0.04] rounded-[16px] p-3.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.02),0_4px_16px_rgba(0,0,0,0.5)] hover:border-white/[0.08] hover:shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-[20px] transition-all duration-300 flex flex-col gap-2 relative transform-gpu ${isDragging ? 'shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-white/[0.15] opacity-100 scale-105 rotate-2' : ''}`}
             >
-            <motion.div
-                className="pointer-events-none absolute -inset-px rounded-[16px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
-                style={{ background: backgroundStyle }}
-            />
+                <motion.div
+                    className="pointer-events-none absolute -inset-px rounded-[16px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
+                    style={{ background: backgroundStyle }}
+                />
 
-            {isAltPressed && (
-                <div className="absolute -top-3 -right-3 bg-primary text-white p-2 rounded-full shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)] z-10 pointer-events-none ring-4 ring-slate-900">
-                    <Copy size={14} />
-                </div>
-            )}
+                {isEditing ? (
+                    <div className="flex flex-col gap-3 w-full" onPointerDown={(e) => e.stopPropagation()} onDoubleClick={(e) => e.stopPropagation()}>
+                        <div className="flex gap-2 w-full">
+                            <input
+                                autoFocus
+                                value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleSave();
+                                    if (e.key === 'Escape') {
+                                        setEditTitle(task.title);
+                                        setEditPriority(task.priority);
+                                        setEditDueDate(toLocalDatetime(task.dueDate));
+                                        setEditStartDate(toLocalDatetime(task.startDate));
+                                        setEditSubjectId(task.subjectId || null);
+                                        setIsEditing(false);
+                                    }
+                                    e.stopPropagation();
+                                }}
+                                className="bg-transparent text-sm font-medium text-white p-1 focus:outline-none flex-1 border-b border-indigo-500/50"
+                            />
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleSave(); }}
+                                className="bg-white/10 hover:bg-indigo-500 text-[11px] font-bold tracking-wide uppercase px-2 py-1 rounded text-slate-300 hover:text-white transition-colors"
+                            >
+                                Save ⏎
+                            </button>
+                        </div>
 
-            {isEditing ? (
-                <div className="flex flex-col gap-3 w-full" onPointerDown={(e) => e.stopPropagation()} onDoubleClick={(e) => e.stopPropagation()}>
-                    <div className="flex gap-2 w-full">
-                        <input
-                            autoFocus
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') handleSave();
-                                if (e.key === 'Escape') {
-                                    setEditTitle(task.title);
-                                    setEditPriority(task.priority);
-                                    setEditDueDate(toLocalDatetime(task.dueDate));
-                                    setEditStartDate(toLocalDatetime(task.startDate));
-                                    setEditSubjectId(task.subjectId || null);
-                                    setIsEditing(false);
-                                }
-                                e.stopPropagation();
-                            }}
-                            className="bg-transparent text-sm font-medium text-white p-1 focus:outline-none flex-1 border-b border-indigo-500/50"
-                        />
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleSave(); }}
-                            className="bg-white/10 hover:bg-indigo-500 text-[11px] font-bold tracking-wide uppercase px-2 py-1 rounded text-slate-300 hover:text-white transition-colors"
-                        >
-                            Save ⏎
-                        </button>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-2 text-xs">
-                        <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                const priorities: TaskPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
-                                setEditPriority(priorities[(priorities.indexOf(editPriority) + 1) % priorities.length]);
-                            }}
-                            className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${editPriority === 'HIGH' ? 'text-red-400 bg-red-500/10 border-red-500/20' :
-                                editPriority === 'MEDIUM' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' :
-                                    'text-slate-400 bg-slate-500/10 border-slate-500/20'
-                                }`}
-                        >
-                            <Flag size={12} className={editPriority === 'HIGH' ? 'fill-current' : ''} />
-                            <span className="hidden sm:inline font-medium">Priority</span>
-                        </button>
-
-                        <div className="relative">
-                            {subjects && subjects.length > 0 && (
-                                <button
-                                    onClick={toggleSubjectPicker}
-                                    className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${
-                                        editSubjectId 
-                                            ? (() => {
-                                                const s = subjects.find(sub => sub.id === editSubjectId);
-                                                return s ? `text-${s.colorToken.replace('500', '400')} bg-${s.colorToken}/10 border-${s.colorToken}/20` : 'text-slate-400 bg-slate-500/10 border-slate-500/20';
-                                            })()
-                                            : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    const priorities: TaskPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
+                                    setEditPriority(priorities[(priorities.indexOf(editPriority) + 1) % priorities.length]);
+                                }}
+                                className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${editPriority === 'HIGH' ? 'text-red-400 bg-red-500/10 border-red-500/20' :
+                                    editPriority === 'MEDIUM' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' :
+                                        'text-slate-400 bg-slate-500/10 border-slate-500/20'
                                     }`}
-                                >
-                                    <span className="font-semibold text-[10px] tracking-wider uppercase">
-                                        {editSubjectId ? subjects.find(sub => sub.id === editSubjectId)?.name : 'Assignatura'}
-                                    </span>
-                                </button>
-                            )}
+                            >
+                                <Flag size={12} className={editPriority === 'HIGH' ? 'fill-current' : ''} />
+                                <span className="hidden sm:inline font-medium">Priority</span>
+                            </button>
 
-                            {showSubjectPicker && (
-                                <div className="absolute top-full left-0 mt-2 w-48 bg-[#13131A] border border-white/[0.08] p-2 rounded-xl flex flex-col gap-2 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
-                                    <input
-                                        autoFocus
-                                        value={subjectSearchQuery}
-                                        onChange={(e) => setSubjectSearchQuery(e.target.value)}
-                                        placeholder="Cerca..."
-                                        className="bg-white/5 border border-white/10 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500"
-                                        onClick={(e) => e.stopPropagation()}
-                                        onKeyDown={(e) => e.stopPropagation()}
-                                    />
-                                    <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                                        <button 
-                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(null); setShowSubjectPicker(false); }}
-                                            className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
-                                        >
-                                            Sense assignatura
-                                        </button>
-                                        {filteredSubjects.map(s => (
+                            <div className="relative">
+                                {subjects && subjects.length > 0 && (
+                                    <button
+                                        onClick={toggleSubjectPicker}
+                                        className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${editSubjectId
+                                                ? (() => {
+                                                    const s = subjects.find(sub => sub.id === editSubjectId);
+                                                    return s ? `text-${s.colorToken.replace('500', '400')} bg-${s.colorToken}/10 border-${s.colorToken}/20` : 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+                                                })()
+                                                : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
+                                            }`}
+                                    >
+                                        <span className="font-semibold text-[10px] tracking-wider uppercase">
+                                            {editSubjectId ? subjects.find(sub => sub.id === editSubjectId)?.name : 'Assignatura'}
+                                        </span>
+                                    </button>
+                                )}
+
+                                {showSubjectPicker && (
+                                    <>
+                                        <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowSubjectPicker(false); }} />
+                                        <div className="absolute top-full left-0 mt-2 w-48 bg-[#13131A] border border-white/[0.08] p-2 rounded-xl flex flex-col gap-2 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 cursor-default">
+                                        <input
+                                            autoFocus
+                                            value={subjectSearchQuery}
+                                            onChange={(e) => setSubjectSearchQuery(e.target.value)}
+                                            placeholder="Cerca..."
+                                            className="bg-white/5 border border-white/10 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500"
+                                            onClick={(e) => e.stopPropagation()}
+                                            onKeyDown={(e) => e.stopPropagation()}
+                                        />
+                                        <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
                                             <button
-                                                key={s.id}
-                                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(s.id); setShowSubjectPicker(false); }}
-                                                className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(null); setShowSubjectPicker(false); }}
+                                                className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                             >
-                                                <span className={`w-1.5 h-1.5 rounded-full bg-${s.colorToken}`}></span>
-                                                {s.name}
+                                                Sense assignatura
                                             </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                                            {filteredSubjects.map(s => (
+                                                <button
+                                                    key={s.id}
+                                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(s.id); setShowSubjectPicker(false); }}
+                                                    className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                >
+                                                    <span className={`w-1.5 h-1.5 rounded-full bg-${s.colorToken}`}></span>
+                                                    {s.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
 
-                        <DateTimePicker
-                            value={editStartDate}
-                            onChange={setEditStartDate}
-                            placeholder="Data inici"
-                            icon={<Play size={12} className="text-emerald-400" />}
-                        />
+                            <DateTimePicker
+                                value={editStartDate}
+                                onChange={setEditStartDate}
+                                placeholder="Data inici"
+                                icon={<Play size={12} className="text-emerald-400" />}
+                            />
 
-                        <DateTimePicker
-                            value={editDueDate}
-                            onChange={setEditDueDate}
-                            placeholder="Data límit"
-                            icon={<Calendar size={12} className="text-indigo-400" />}
-                        />
-                    </div>
-                </div>
-            ) : (
-                <>
-                    <div className="flex justify-between items-start gap-2 pointer-events-none relative z-10">
-                        <h4 className="text-[13px] font-semibold text-white/90 flex-1 leading-snug tracking-wide">
-                            {task.title}
-                        </h4>
-                    </div>
-
-                    {renderProgressBar()}
-
-                    <div className="flex items-center gap-1.5 mt-1 pointer-events-auto relative z-10" onPointerDown={(e) => e.stopPropagation()}>
-                        {/* Priority Toggle Pill */}
-                        <button
-                            onClick={togglePriority}
-                            className={`flex items-center justify-center w-5 h-5 rounded-md border transition-colors ${getPriorityStyle(task.priority)}`}
-                            title={`Priority: ${task.priority}`}
-                        >
-                            <Flag size={10} className={task.priority === 'HIGH' ? 'fill-current' : ''} />
-                        </button>
-
-                        {/* Date Display Pill */}
-                        <button className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-semibold tracking-widest uppercase border transition-colors ${task.dueDate ? 'bg-white/[0.03] text-slate-300 border-white/[0.05] hover:bg-white/[0.08]' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/5'}`}>
-                            <Calendar size={10} />
-                            {task.dueDate ? format(new Date(task.dueDate), 'MMM d') : 'No date'}
-                        </button>
-
-                        <div className="ml-auto flex items-center gap-1.5">
-                            {subject && (
-                                <span className={`text-[9px] tracking-[0.1em] font-bold uppercase border px-2 py-0.5 rounded-md ${getSubjectClasses(subject.colorToken)}`}>
-                                    {subject.name}
-                                </span>
-                            )}
-                            {task.source === 'AI' && (
-                                <span className="text-[8px] tracking-[0.2em] uppercase font-bold text-[#FF453A] bg-[#FF453A]/10 border border-[#FF453A]/20 px-1.5 py-0.5 rounded-sm">AI Spark</span>
-                            )}
+                            <DateTimePicker
+                                value={editDueDate}
+                                onChange={setEditDueDate}
+                                placeholder="Data límit"
+                                icon={<Calendar size={12} className="text-indigo-400" />}
+                            />
                         </div>
                     </div>
-                </>
-            )}
+                ) : (
+                    <>
+                        <div className="flex justify-between items-start gap-2 pointer-events-none relative z-10">
+                            <h4 className="text-[13px] font-semibold text-white/90 flex-1 leading-snug tracking-wide">
+                                {task.title}
+                            </h4>
+                        </div>
+
+                        {renderProgressBar()}
+
+                        <div className="flex items-center gap-1.5 mt-1 pointer-events-auto relative z-10" onPointerDown={(e) => e.stopPropagation()}>
+                            {/* Priority Toggle Pill */}
+                            <button
+                                onClick={togglePriority}
+                                className={`flex items-center justify-center w-5 h-5 rounded-md border transition-colors ${getPriorityStyle(task.priority)}`}
+                                title={`Priority: ${task.priority}`}
+                            >
+                                <Flag size={10} className={task.priority === 'HIGH' ? 'fill-current' : ''} />
+                            </button>
+
+                            {/* Date Display Pill */}
+                            <button className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-semibold tracking-widest uppercase border transition-colors ${task.dueDate ? 'bg-white/[0.03] text-slate-300 border-white/[0.05] hover:bg-white/[0.08]' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/5'}`}>
+                                <Calendar size={10} />
+                                {task.dueDate ? format(new Date(task.dueDate), 'MMM d') : 'No date'}
+                            </button>
+
+                            <div className="ml-auto flex items-center gap-1.5">
+                                {subject && (
+                                    <span className={`text-[9px] tracking-[0.1em] font-bold uppercase border px-2 py-0.5 rounded-md ${getSubjectClasses(subject.colorToken)}`}>
+                                        {subject.name}
+                                    </span>
+                                )}
+                                {task.source === 'AI' && (
+                                    <span className="text-[8px] tracking-[0.2em] uppercase font-bold text-[#FF453A] bg-[#FF453A]/10 border border-[#FF453A]/20 px-1.5 py-0.5 rounded-sm">AI Spark</span>
+                                )}
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
