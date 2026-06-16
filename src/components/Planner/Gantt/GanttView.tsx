@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { flushSync } from 'react-dom';
-import { format, addDays, subDays, differenceInMinutes, addMinutes } from 'date-fns';
+import { format, addDays, subDays, addMinutes } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import { useTasks } from '../../../contexts/TasksContext';
 import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';
@@ -11,7 +11,7 @@ import UnscheduledDrawer from '../UnscheduledDrawer';
 import TaskCard from '../Board/TaskCard';
 
 const GanttView: React.FC = () => {
-    const { tasks, updateTask } = useTasks();
+    const { filteredTasks: tasks, updateTask, subjects } = useTasks();
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
 
@@ -46,9 +46,15 @@ const GanttView: React.FC = () => {
         return d;
     });
 
-    const timelineStart = useMemo(() => subDays(baseDate, 14), [baseDate]);
-    const totalMinutes = 28 * 24 * 60;
+    const clientWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    const viewportMinutes = clientWidth / zoomLevel;
+    const minMinutes = 28 * 24 * 60; // minimum 28 days
+    const totalMinutes = Math.max(minMinutes, viewportMinutes * 4);
     const totalWidthPixels = totalMinutes * zoomLevel;
+
+    const timelineStart = useMemo(() => {
+        return new Date(baseDate.getTime() - (totalMinutes / 2) * 60000);
+    }, [baseDate, totalMinutes]);
 
     // Track current time
     const [now, setNow] = useState(new Date());
@@ -60,7 +66,7 @@ const GanttView: React.FC = () => {
     // Initial centering
     useEffect(() => {
         if (scrollContainerRef.current) {
-            const nowMinutes = differenceInMinutes(now, timelineStart);
+            const nowMinutes = (now.getTime() - timelineStart.getTime()) / 60000;
             const nowPixels = nowMinutes * zoomLevel;
             scrollContainerRef.current.scrollLeft = nowPixels - scrollContainerRef.current.clientWidth / 2;
         }
@@ -70,18 +76,22 @@ const GanttView: React.FC = () => {
     // Infinite scroll handling
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
-        const widthPer7Days = 7 * 24 * 60 * zoomLevel;
+        const threshold = target.clientWidth;
+        
+        // Shift per 1/4 of totalMinutes to stay centered
+        const shiftMinutes = totalMinutes / 4;
+        const shiftPixels = shiftMinutes * zoomLevel;
 
-        if (target.scrollLeft < widthPer7Days) {
+        if (target.scrollLeft < threshold) {
             flushSync(() => {
-                setBaseDate(prev => subDays(prev, 7));
+                setBaseDate(prev => new Date(prev.getTime() - shiftMinutes * 60000));
             });
-            target.scrollLeft += widthPer7Days;
-        } else if (target.scrollLeft > 3 * widthPer7Days) { // total is 4 * 7 days
+            target.scrollLeft += shiftPixels;
+        } else if (target.scrollLeft > target.scrollWidth - target.clientWidth - threshold) {
             flushSync(() => {
-                setBaseDate(prev => addDays(prev, 7));
+                setBaseDate(prev => new Date(prev.getTime() + shiftMinutes * 60000));
             });
-            target.scrollLeft -= widthPer7Days;
+            target.scrollLeft -= shiftPixels;
         }
     };
 
@@ -89,21 +99,35 @@ const GanttView: React.FC = () => {
     const handleZoomChange = (newZoom: number) => {
         if (!scrollContainerRef.current) return;
         const target = scrollContainerRef.current;
-        const centerMinutes = (target.scrollLeft + target.clientWidth / 2) / zoomLevel;
+        
+        // Calculate absolute time of the center pixel BEFORE zoom
+        const centerMinutesFromStart = (target.scrollLeft + target.clientWidth / 2) / zoomLevel;
+        const centerTimeMs = timelineStart.getTime() + centerMinutesFromStart * 60000;
+        
+        // Pre-calculate new timeline window to know the new start
+        const newViewportMinutes = target.clientWidth / newZoom;
+        const newTotalMinutes = Math.max(minMinutes, newViewportMinutes * 4);
+        const newTimelineStartMs = baseDate.getTime() - (newTotalMinutes / 2) * 60000;
         
         flushSync(() => {
             setZoomLevel(newZoom);
         });
         
-        target.scrollLeft = (centerMinutes * newZoom) - target.clientWidth / 2;
+        // Find where that exact time falls in the new timeline
+        const newCenterMinutesFromStart = (centerTimeMs - newTimelineStartMs) / 60000;
+        target.scrollLeft = (newCenterMinutesFromStart * newZoom) - target.clientWidth / 2;
     };
 
     // Ruler configuration based on zoom
     const getRulerConfig = () => {
-        if (zoomLevel >= 10) return { intervalMins: 15, label: 'HH:mm' };
-        if (zoomLevel >= 2) return { intervalMins: 60, label: 'HH:mm' };
-        if (zoomLevel >= 0.5) return { intervalMins: 60 * 6, label: 'dd MMM HH:mm' };
-        if (zoomLevel >= 0.1) return { intervalMins: 60 * 24, label: 'dd MMM' };
+        if (zoomLevel >= 15) return { intervalMins: 5, label: 'HH:mm' };
+        if (zoomLevel >= 8) return { intervalMins: 10, label: 'HH:mm' };
+        if (zoomLevel >= 4) return { intervalMins: 15, label: 'HH:mm' };
+        if (zoomLevel >= 2) return { intervalMins: 30, label: 'HH:mm' };
+        if (zoomLevel >= 1) return { intervalMins: 60, label: 'HH:mm' };
+        if (zoomLevel >= 0.5) return { intervalMins: 60 * 3, label: 'dd MMM HH:mm' };
+        if (zoomLevel >= 0.2) return { intervalMins: 60 * 6, label: 'dd MMM HH:mm' };
+        if (zoomLevel >= 0.05) return { intervalMins: 60 * 24, label: 'dd MMM' };
         return { intervalMins: 60 * 24 * 7, label: 'dd MMM' };
     };
     
@@ -131,18 +155,14 @@ const GanttView: React.FC = () => {
         return sorted.map((task, index) => {
             const start = task.startDate ? new Date(task.startDate) : new Date();
             const end = task.dueDate ? new Date(task.dueDate) : addDays(start, task.estimatedMinutes ? task.estimatedMinutes / 1440 : 1);
-            const durationMins = Math.max(5, differenceInMinutes(end, start));
+            const durationMins = Math.max(5, (end.getTime() - start.getTime()) / 60000);
 
-            const leftMins = differenceInMinutes(start, timelineStart);
+            const leftMins = (start.getTime() - timelineStart.getTime()) / 60000;
             return { ...task, start, end, durationMins, trackIndex: index, leftMins };
         });
     }, [scheduledTasks, timelineStart]);
 
-    const getPriorityColor = (priority: string) => {
-        if (priority === 'HIGH') return 'from-red-500/80 to-red-600/80 border-red-400/50 shadow-[0_0_15px_rgba(239,68,68,0.3)]';
-        if (priority === 'MEDIUM') return 'from-amber-500/80 to-amber-600/80 border-amber-400/50 shadow-[0_0_15px_rgba(245,158,11,0.3)]';
-        return 'from-primary/80 to-indigo-600/80 border-primary/50 shadow-[0_0_15px_rgba(99,102,241,0.3)]';
-    };
+
 
     const unplannedTasks = tasks.filter(t => !t.startDate);
 
@@ -203,7 +223,7 @@ const GanttView: React.FC = () => {
                     {/* Playhead (Now) */}
                     <div 
                         className="absolute top-8 bottom-0 w-px bg-red-500 z-10 shadow-[0_0_10px_rgba(239,68,68,1)] pointer-events-none"
-                        style={{ left: differenceInMinutes(now, timelineStart) * zoomLevel }}
+                        style={{ left: ((now.getTime() - timelineStart.getTime()) / 60000) * zoomLevel }}
                     >
                         <div className="absolute top-0 -translate-x-1/2 -mt-1 w-2.5 h-2.5 rounded-full bg-red-500 border-2 border-[#0B0F19]" />
                     </div>
@@ -211,7 +231,6 @@ const GanttView: React.FC = () => {
                     {/* Tracks Area */}
                     <div className="relative pt-6 pb-24" style={{ minHeight: `${tasksWithLayout.reduce((max, t) => Math.max(max, t.trackIndex), 0) * 50 + 100}px` }}>
                         
-                        {/* Task Bars */}
                         {tasksWithLayout.map(task => (
                             <TaskBar 
                                 key={task.id} 
@@ -219,7 +238,7 @@ const GanttView: React.FC = () => {
                                 zoomLevel={zoomLevel} 
                                 timelineStart={timelineStart} 
                                 updateTask={updateTask} 
-                                getPriorityColor={getPriorityColor} 
+                                subject={subjects?.find(s => s.id === task.subjectId)}
                             />
                         ))}
                     </div>
@@ -231,7 +250,7 @@ const GanttView: React.FC = () => {
                 <button 
                     onClick={() => {
                         if (scrollContainerRef.current) {
-                            const nowMins = differenceInMinutes(now, timelineStart);
+                            const nowMins = (now.getTime() - timelineStart.getTime()) / 60000;
                             scrollContainerRef.current.scrollTo({ left: nowMins * zoomLevel - scrollContainerRef.current.clientWidth / 2, behavior: 'smooth' });
                         }
                     }}
@@ -267,8 +286,8 @@ const GanttView: React.FC = () => {
     );
 };
 
-const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, updateTask: any, getPriorityColor: any }> = ({ task, zoomLevel, timelineStart, updateTask, getPriorityColor }) => {
-    const [dragState, setDragState] = useState<{ type: 'left'|'right', initialX: number, initialLeft: number, initialWidth: number } | null>(null);
+const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, updateTask: any, subject: any }> = ({ task, zoomLevel, timelineStart, updateTask, subject }) => {
+    const [dragState, setDragState] = useState<{ type: 'left'|'right'|'move', initialX: number, initialLeft: number, initialWidth: number } | null>(null);
     const [optimistic, setOptimistic] = useState<{left: number, width: number} | null>(null);
 
     useEffect(() => {
@@ -283,10 +302,12 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
 
             if (dragState.type === 'right') {
                 setOptimistic({ left: dragState.initialLeft, width: Math.max(4, dragState.initialWidth + snappedDx) });
-            } else {
+            } else if (dragState.type === 'left') {
                 const newWidth = Math.max(4, dragState.initialWidth - snappedDx);
                 const newLeft = dragState.initialLeft + (dragState.initialWidth - newWidth);
                 setOptimistic({ left: newLeft, width: newWidth });
+            } else if (dragState.type === 'move') {
+                setOptimistic({ left: dragState.initialLeft + snappedDx, width: dragState.initialWidth });
             }
         };
 
@@ -321,6 +342,9 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
     const displayLeft = optimistic ? optimistic.left : task.leftMins * zoomLevel;
     const displayWidth = optimistic ? optimistic.width : Math.max(4, task.durationMins * zoomLevel);
 
+    const baseColorClass = subject?.colorToken ? `bg-${subject.colorToken}` : 
+        (task.priority === 'HIGH' ? 'bg-red-500' : task.priority === 'MEDIUM' ? 'bg-amber-500' : 'bg-indigo-500');
+
     return (
         <div
             onContextMenu={(e) => {
@@ -328,7 +352,12 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
                 e.stopPropagation();
                 window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
             }}
-            className={`absolute h-8 rounded-md border bg-gradient-to-r flex items-center px-2 group overflow-hidden transition-all duration-200 ${getPriorityColor(task.priority)} ${dragState ? 'z-40 shadow-2xl brightness-110' : 'hover:brightness-110 hover:z-30 cursor-pointer'}`}
+            onMouseDown={(e) => {
+                if (e.button === 0) { // left click only
+                    setDragState({ type: 'move', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth });
+                }
+            }}
+            className={`absolute h-8 rounded-md flex items-center px-2 group overflow-hidden transition duration-200 ${baseColorClass} border border-white/20 shadow-lg ${dragState ? 'z-40 brightness-110' : 'hover:brightness-110 hover:z-30 cursor-pointer'}`}
             style={{
                 left: displayLeft,
                 width: displayWidth,
@@ -336,6 +365,10 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
             }}
             title={`${task.title} \n${format(task.start, 'HH:mm')} - ${format(task.end, 'HH:mm')}`}
         >
+            {/* Capa de degradat fosc/clar per donar profunditat al color base */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-black/40 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20 pointer-events-none mix-blend-overlay" />
+
             {/* Left handle */}
             {displayWidth >= 12 && (
                 <div 
@@ -345,7 +378,7 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
             )}
             
             {displayWidth > 50 && (
-                <div className="truncate text-xs font-bold text-white drop-shadow-md z-10 px-2 pointer-events-none select-none">{task.title}</div>
+                <div className="truncate text-[11px] font-bold text-white drop-shadow-md z-10 px-2 pointer-events-none select-none tracking-wide">{task.title}</div>
             )}
             
             {/* Right handle */}
@@ -355,8 +388,6 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
                     onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'right', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth }); }}
                 />
             )}
-
-            <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-50 pointer-events-none" />
         </div>
     );
 };

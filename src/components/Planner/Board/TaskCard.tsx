@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
-import { Calendar, Flag, Play } from 'lucide-react';
+import { Calendar, Flag, Play, X, Check } from 'lucide-react';
 import { format } from 'date-fns';
 import { DateTimePicker } from './DateTimePicker';
 
@@ -29,14 +29,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
     const subject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
 
     const getSubjectClasses = (token: string) => {
-        switch (token) {
-            case 'emerald-400': return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20 shadow-[0_0_10px_rgba(52,211,153,0.15)]';
-            case 'fuchsia-400': return 'text-fuchsia-400 bg-fuchsia-400/10 border-fuchsia-400/20 shadow-[0_0_10px_rgba(232,121,249,0.15)]';
-            case 'amber-400': return 'text-amber-400 bg-amber-400/10 border-amber-400/20 shadow-[0_0_10px_rgba(251,191,36,0.15)]';
-            case 'cyan-400': return 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20 shadow-[0_0_10px_rgba(34,211,238,0.15)]';
-            case 'indigo-400': return 'text-indigo-400 bg-indigo-400/10 border-indigo-400/20 shadow-[0_0_10px_rgba(129,140,248,0.15)]';
-            default: return 'text-slate-400 bg-slate-500/10 border-slate-500/20 shadow-[0_0_10px_rgba(100,116,139,0.15)]';
-        }
+        return `text-${token} bg-${token}/10 border-${token}/20`;
     };
 
     const mouseX = useMotionValue(0);
@@ -234,7 +227,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                     setIsEditing(true);
                 }}
                 onMouseMove={handleMouseMove}
-                className={`group bg-[#111115] border border-white/[0.04] rounded-[16px] p-3.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.02),0_4px_16px_rgba(0,0,0,0.5)] hover:border-white/[0.08] hover:shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-[20px] transition-all duration-300 flex flex-col gap-2 relative transform-gpu ${isDragging ? 'shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-white/[0.15] opacity-100 scale-105 rotate-2' : ''}`}
+                className={`group bg-[#111115]/80 border border-white/[0.04] rounded-[16px] p-3.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_4px_16px_rgba(0,0,0,0.5)] hover:border-white/[0.1] hover:bg-[#111115]/90 hover:shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-[20px] transition-all duration-300 flex flex-col gap-2 relative transform-gpu ${isDragging ? 'shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-white/[0.15] opacity-100 scale-105 rotate-2' : ''}`}
             >
                 <motion.div
                     className="pointer-events-none absolute -inset-px rounded-[16px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
@@ -263,10 +256,26 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                 className="bg-transparent text-sm font-medium text-white p-1 focus:outline-none flex-1 border-b border-indigo-500/50"
                             />
                             <button
-                                onClick={(e) => { e.stopPropagation(); handleSave(); }}
-                                className="bg-white/10 hover:bg-indigo-500 text-[11px] font-bold tracking-wide uppercase px-2 py-1 rounded text-slate-300 hover:text-white transition-colors"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setEditTitle(task.title);
+                                    setEditPriority(task.priority);
+                                    setEditDueDate(toLocalDatetime(task.dueDate));
+                                    setEditStartDate(toLocalDatetime(task.startDate));
+                                    setEditSubjectId(task.subjectId || null);
+                                    setIsEditing(false);
+                                }}
+                                className="flex items-center justify-center p-1.5 rounded-md text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
+                                title="Cancel·lar"
                             >
-                                Save ⏎
+                                <X size={16} strokeWidth={2.5} />
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleSave(); }}
+                                className="flex items-center justify-center p-1.5 rounded-md text-emerald-400 hover:text-white hover:bg-emerald-500 transition-colors"
+                                title="Guardar"
+                            >
+                                <Check size={16} strokeWidth={2.5} />
                             </button>
                         </div>
 
@@ -308,20 +317,20 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                 {showSubjectPicker && (
                                     <>
                                         <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowSubjectPicker(false); }} />
-                                        <div className="absolute top-full left-0 mt-2 w-48 bg-[#13131A] border border-white/[0.08] p-2 rounded-xl flex flex-col gap-2 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 cursor-default">
+                                        <div className="absolute top-full left-0 mt-2 w-48 bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] p-2 rounded-[20px] flex flex-col gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] z-50 cursor-default">
                                         <input
                                             autoFocus
                                             value={subjectSearchQuery}
                                             onChange={(e) => setSubjectSearchQuery(e.target.value)}
                                             placeholder="Cerca..."
-                                            className="bg-white/5 border border-white/10 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500"
+                                            className="bg-white/5 border border-white/10 text-slate-200 text-[12px] font-medium px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500 transition-colors"
                                             onClick={(e) => e.stopPropagation()}
                                             onKeyDown={(e) => e.stopPropagation()}
                                         />
                                         <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
                                             <button
                                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(null); setShowSubjectPicker(false); }}
-                                                className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                             >
                                                 Sense assignatura
                                             </button>
@@ -329,9 +338,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                                 <button
                                                     key={s.id}
                                                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(s.id); setShowSubjectPicker(false); }}
-                                                    className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                    className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                                 >
-                                                    <span className={`w-1.5 h-1.5 rounded-full bg-${s.colorToken}`}></span>
+                                                    <span className={`w-2 h-2 rounded-full bg-${s.colorToken}`}></span>
                                                     {s.name}
                                                 </button>
                                             ))}
@@ -387,9 +396,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                     <span className={`text-[9px] tracking-[0.1em] font-bold uppercase border px-2 py-0.5 rounded-md ${getSubjectClasses(subject.colorToken)}`}>
                                         {subject.name}
                                     </span>
-                                )}
-                                {task.source === 'AI' && (
-                                    <span className="text-[8px] tracking-[0.2em] uppercase font-bold text-[#FF453A] bg-[#FF453A]/10 border border-[#FF453A]/20 px-1.5 py-0.5 rounded-sm">AI Spark</span>
                                 )}
                             </div>
                         </div>

@@ -1,26 +1,608 @@
 [
     {
         "id": "S1",
-        "name": "PRO 2",
-        "colorToken": "emerald-400",
-        "description": "Programació 2"
+        "name": "F",
+        "colorToken": "blue-400",
+        "description": "Física"
     },
     {
         "id": "S2",
+        "name": "FM",
+        "colorToken": "rose-400",
+        "description": "Fonaments Matemàtics"
+    },
+    {
+        "id": "S3",
+        "name": "IC",
+        "colorToken": "amber-400",
+        "description": "Introducció als Computadors"
+    },
+    {
+        "id": "S4",
+        "name": "PRO1",
+        "colorToken": "emerald-400",
+        "description": "Programació I"
+    },
+    {
+        "id": "S5",
         "name": "EC",
         "colorToken": "fuchsia-400",
         "description": "Estructura de Computadors"
     },
     {
-        "id": "S3",
+        "id": "S6",
         "name": "M1",
-        "colorToken": "amber-400",
-        "description": "Matemàtiques 1"
+        "colorToken": "violet-400",
+        "description": "Matemàtiques I"
     },
     {
-        "id": "S4",
+        "id": "S7",
         "name": "M2",
         "colorToken": "cyan-400",
-        "description": "Matemàtiques 2"
+        "description": "Matemàtiques II"
+    },
+    {
+        "id": "S8",
+        "name": "PRO2",
+        "colorToken": "lime-400",
+        "description": "Programació II"
+    },
+    {
+        "id": "S9",
+        "name": "BD",
+        "colorToken": "sky-400",
+        "description": "Bases de Dades"
+    },
+    {
+        "id": "S10",
+        "name": "CI",
+        "colorToken": "orange-400",
+        "description": "Interfícies de Computadors"
+    },
+    {
+        "id": "S11",
+        "name": "EDA",
+        "colorToken": "red-400",
+        "description": "Estructures de Dades i Algorismes"
+    },
+    {
+        "id": "S12",
+        "name": "PE",
+        "colorToken": "purple-400",
+        "description": "Probabilitat i Estadística"
+    },
+    {
+        "id": "S13",
+        "name": "SO",
+        "colorToken": "teal-400",
+        "description": "Sistemes Operatius"
+    },
+    {
+        "id": "S14",
+        "name": "AC",
+        "colorToken": "yellow-400",
+        "description": "Arquitectura de Computadors"
+    },
+    {
+        "id": "S15",
+        "name": "EEE",
+        "colorToken": "pink-400",
+        "description": "Empresa i Entorn Econòmic"
+    },
+    {
+        "id": "S16",
+        "name": "IDI",
+        "colorToken": "indigo-400",
+        "description": "Interacció i Disseny d'Interfícies"
+    },
+    {
+        "id": "S17",
+        "name": "IES",
+        "colorToken": "green-400",
+        "description": "Introducció a l'Enginyeria del Software"
+    },
+    {
+        "id": "S18",
+        "name": "XC",
+        "colorToken": "rose-400",
+        "description": "Xarxes de Computadors"
+    },
+    {
+        "id": "S19",
+        "name": "PAR",
+        "colorToken": "amber-400",
+        "description": "Paral·lelisme"
+    },
+    {
+        "id": "S20",
+        "name": "PROP",
+        "colorToken": "cyan-400",
+        "description": "Projectes de Programació"
+    },
+    {
+        "id": "S21",
+        "name": "A",
+        "colorToken": "emerald-400",
+        "description": "Algorísmia"
+    },
+    {
+        "id": "S22",
+        "name": "G",
+        "colorToken": "pink-400",
+        "description": "Gràfics"
+    },
+    {
+        "id": "S23",
+        "name": "IA",
+        "colorToken": "indigo-400",
+        "description": "Intel·ligència Artificial"
+    },
+    {
+        "id": "S24",
+        "name": "LI",
+        "colorToken": "slate-400",
+        "description": "Lògica a la Informàtica"
+    },
+    {
+        "id": "S25",
+        "name": "LP",
+        "colorToken": "blue-400",
+        "description": "Llenguatges de Programació"
+    },
+    {
+        "id": "S26",
+        "name": "TC",
+        "colorToken": "violet-400",
+        "description": "Teoria de la Computació"
+    },
+    {
+        "id": "S27",
+        "name": "AA",
+        "colorToken": "teal-400",
+        "description": "Ampliació d'Algorísmia"
+    },
+    {
+        "id": "S28",
+        "name": "APA",
+        "colorToken": "purple-400",
+        "description": "Aprenentatge Automàtic"
+    },
+    {
+        "id": "S29",
+        "name": "CAIM",
+        "colorToken": "amber-400",
+        "description": "Cerca i Anàlisi d'Informació Massiva"
+    },
+    {
+        "id": "S30",
+        "name": "CL",
+        "colorToken": "rose-400",
+        "description": "Compiladors"
+    },
+    {
+        "id": "S31",
+        "name": "CN",
+        "colorToken": "cyan-400",
+        "description": "Computació Numèrica"
+    },
+    {
+        "id": "S32",
+        "name": "IO",
+        "colorToken": "orange-400",
+        "description": "Investigació Operativa"
+    },
+    {
+        "id": "S33",
+        "name": "SID",
+        "colorToken": "fuchsia-400",
+        "description": "Sistemes Intel·ligents Distribuïts"
+    },
+    {
+        "id": "S34",
+        "name": "AC2",
+        "colorToken": "red-400",
+        "description": "Arquitectura de Computadors II"
+    },
+    {
+        "id": "S35",
+        "name": "DSBM",
+        "colorToken": "lime-400",
+        "description": "Disseny de Sistemes Basats en Microcomputadors"
+    },
+    {
+        "id": "S36",
+        "name": "MP",
+        "colorToken": "sky-400",
+        "description": "Multiprocessadors"
+    },
+    {
+        "id": "S37",
+        "name": "PEC",
+        "colorToken": "yellow-400",
+        "description": "Projecte d'Enginyeria de Computadors"
+    },
+    {
+        "id": "S38",
+        "name": "SO2",
+        "colorToken": "green-400",
+        "description": "Sistemes Operatius II"
+    },
+    {
+        "id": "S39",
+        "name": "XC2",
+        "colorToken": "pink-400",
+        "description": "Xarxes de Computadors II"
+    },
+    {
+        "id": "S40",
+        "name": "CASO",
+        "colorToken": "emerald-400",
+        "description": "Conceptes Avançats de Sistemes Operatius"
+    },
+    {
+        "id": "S41",
+        "name": "CPD",
+        "colorToken": "blue-400",
+        "description": "Centres de Processament de Dades"
+    },
+    {
+        "id": "S42",
+        "name": "PAP",
+        "colorToken": "amber-400",
+        "description": "Programació i Arquitectures Paral·leles"
+    },
+    {
+        "id": "S43",
+        "name": "PCA",
+        "colorToken": "orange-400",
+        "description": "Programació Conscient de l'Arquitectura"
+    },
+    {
+        "id": "S44",
+        "name": "PDS",
+        "colorToken": "violet-400",
+        "description": "Processament Digital del Senyal"
+    },
+    {
+        "id": "S45",
+        "name": "STR",
+        "colorToken": "fuchsia-400",
+        "description": "Sistemes de Temps Real"
+    },
+    {
+        "id": "S46",
+        "name": "VLSI",
+        "colorToken": "cyan-400",
+        "description": "VLSI"
+    },
+    {
+        "id": "S47",
+        "name": "AS",
+        "colorToken": "indigo-400",
+        "description": "Arquitectura del Software"
+    },
+    {
+        "id": "S48",
+        "name": "ASW",
+        "colorToken": "sky-400",
+        "description": "Aplicacions i Serveis Web"
+    },
+    {
+        "id": "S49",
+        "name": "DBD",
+        "colorToken": "teal-400",
+        "description": "Disseny de Bases de Dades"
+    },
+    {
+        "id": "S50",
+        "name": "ER",
+        "colorToken": "rose-400",
+        "description": "Enginyeria de Requisits"
+    },
+    {
+        "id": "S51",
+        "name": "GPS",
+        "colorToken": "amber-400",
+        "description": "Gestió de Projectes de Software"
+    },
+    {
+        "id": "S52",
+        "name": "PES",
+        "colorToken": "emerald-400",
+        "description": "Projecte d'Enginyeria del Software"
+    },
+    {
+        "id": "S53",
+        "name": "CAP",
+        "colorToken": "blue-400",
+        "description": "Conceptes Avançats de Programació"
+    },
+    {
+        "id": "S54",
+        "name": "CBDE",
+        "colorToken": "cyan-400",
+        "description": "Conceptes per a Bases de Dades Especialitzades"
+    },
+    {
+        "id": "S55",
+        "name": "CSI",
+        "colorToken": "violet-400",
+        "description": "Conceptes de Sistemes d'Informació"
+    },
+    {
+        "id": "S56",
+        "name": "ECSDI",
+        "colorToken": "fuchsia-400",
+        "description": "Enginyeria del Coneixement i Sistemes Distribuïts Intel·ligents"
+    },
+    {
+        "id": "S57",
+        "name": "SIM",
+        "colorToken": "orange-400",
+        "description": "Simulació"
+    },
+    {
+        "id": "S58",
+        "name": "SOAD",
+        "colorToken": "pink-400",
+        "description": "Sistemes Operatius per a Aplicacions Distribuïdes"
+    },
+    {
+        "id": "S59",
+        "name": "ADEI",
+        "colorToken": "purple-400",
+        "description": "Anàlisi de Dades i Explotació de la Informació"
+    },
+    {
+        "id": "S60",
+        "name": "DSI",
+        "colorToken": "blue-400",
+        "description": "Disseny de Sistemes d'Informació"
+    },
+    {
+        "id": "S61",
+        "name": "NE",
+        "colorToken": "emerald-400",
+        "description": "Negoci Electrònic"
+    },
+    {
+        "id": "S62",
+        "name": "PSI",
+        "colorToken": "amber-400",
+        "description": "Projecte de Sistemes d'Informació"
+    },
+    {
+        "id": "S63",
+        "name": "SIO",
+        "colorToken": "rose-400",
+        "description": "Sistemes d'Informació per a Les Organitzacions"
+    },
+    {
+        "id": "S64",
+        "name": "ABD",
+        "colorToken": "cyan-400",
+        "description": "Administració de Bases de Dades"
+    },
+    {
+        "id": "S65",
+        "name": "EDO",
+        "colorToken": "orange-400",
+        "description": "Estratègia Digital a Les Organitzacions"
+    },
+    {
+        "id": "S66",
+        "name": "MI",
+        "colorToken": "pink-400",
+        "description": "Màrqueting a Internet"
+    },
+    {
+        "id": "S67",
+        "name": "VPE",
+        "colorToken": "lime-400",
+        "description": "Viabilitat de Projectes Empresarials"
+    },
+    {
+        "id": "S68",
+        "name": "APC",
+        "colorToken": "blue-400",
+        "description": "Arquitectura del PC"
+    },
+    {
+        "id": "S69",
+        "name": "APSS",
+        "colorToken": "emerald-400",
+        "description": "Habilitats Acadèmiques i Professionals d'Expressió Oral en Anglès"
+    },
+    {
+        "id": "S70",
+        "name": "ASDP",
+        "colorToken": "amber-400",
+        "description": "Habilitats Acadèmiques Pel Desenvolupament de Projectes en Anglès"
+    },
+    {
+        "id": "S71",
+        "name": "ASMI",
+        "colorToken": "fuchsia-400",
+        "description": "Aspectes Socials i Mediambientals de la Informàtica"
+    },
+    {
+        "id": "S72",
+        "name": "C",
+        "colorToken": "indigo-400",
+        "description": "Criptografia"
+    },
+    {
+        "id": "S73",
+        "name": "CCQ",
+        "colorToken": "sky-400",
+        "description": "Computació i Criptografia Quàntiques"
+    },
+    {
+        "id": "S74",
+        "name": "CDI",
+        "colorToken": "violet-400",
+        "description": "Compressió de Dades i Imatges"
+    },
+    {
+        "id": "S75",
+        "name": "DCS",
+        "colorToken": "pink-400",
+        "description": "Disseny de Corbes i Superfícies"
+    },
+    {
+        "id": "S76",
+        "name": "EET",
+        "colorToken": "lime-400",
+        "description": "Educació, Enginyeria i Tecnologia"
+    },
+    {
+        "id": "S77",
+        "name": "FDM",
+        "colorToken": "cyan-400",
+        "description": "Física dels Dispositius de Memòria"
+    },
+    {
+        "id": "S78",
+        "name": "FOMAR",
+        "colorToken": "rose-400",
+        "description": "Física Orientada a la Modelització i l'Animació Realista"
+    },
+    {
+        "id": "S79",
+        "name": "GCS",
+        "colorToken": "teal-400",
+        "description": "Gestió de la Ciberseguretat"
+    },
+    {
+        "id": "S80",
+        "name": "GEOC",
+        "colorToken": "orange-400",
+        "description": "Geometria Computacional"
+    },
+    {
+        "id": "S81",
+        "name": "I2R3",
+        "colorToken": "purple-400",
+        "description": "Introducció a la Recerca (3)"
+    },
+    {
+        "id": "S82",
+        "name": "I2R6",
+        "colorToken": "red-400",
+        "description": "Introducció a la Recerca (6)"
+    },
+    {
+        "id": "S83",
+        "name": "LDPE",
+        "colorToken": "amber-400",
+        "description": "Lideratge i Desenvolupament Professional a l'Enginyeria"
+    },
+    {
+        "id": "S84",
+        "name": "MD",
+        "colorToken": "emerald-400",
+        "description": "Mineria de Dades"
+    },
+    {
+        "id": "S85",
+        "name": "PAE",
+        "colorToken": "blue-400",
+        "description": "Projecte Aplicat d'Enginyeria"
+    },
+    {
+        "id": "S86",
+        "name": "ROB",
+        "colorToken": "slate-400",
+        "description": "Robòtica"
+    },
+    {
+        "id": "S87",
+        "name": "SLDS",
+        "colorToken": "lime-400",
+        "description": "Software Lliure i Desenvolupament Social"
+    },
+    {
+        "id": "S88",
+        "name": "TGA",
+        "colorToken": "pink-400",
+        "description": "Targetes Gràfiques i Acceleradors"
+    },
+    {
+        "id": "S89",
+        "name": "VC",
+        "colorToken": "cyan-400",
+        "description": "Visió per Computador"
+    },
+    {
+        "id": "S90",
+        "name": "VJ",
+        "colorToken": "fuchsia-400",
+        "description": "Videojocs"
+    },
+    {
+        "id": "S91",
+        "name": "WSE",
+        "colorToken": "violet-400",
+        "description": "Habilitats d'Expressió Escrita en Anglès per a l'Enginyeria"
+    },
+    {
+        "id": "S92",
+        "name": "ASO",
+        "colorToken": "teal-400",
+        "description": "Administració de Sistemes Operatius"
+    },
+    {
+        "id": "S93",
+        "name": "PI",
+        "colorToken": "sky-400",
+        "description": "Protocols d'Internet"
+    },
+    {
+        "id": "S94",
+        "name": "PTI",
+        "colorToken": "rose-400",
+        "description": "Projecte de Tecnologies de la Informació"
+    },
+    {
+        "id": "S95",
+        "name": "SI",
+        "colorToken": "indigo-400",
+        "description": "Seguretat Informàtica"
+    },
+    {
+        "id": "S96",
+        "name": "SOA",
+        "colorToken": "emerald-400",
+        "description": "Sistemes Operatius Avançats"
+    },
+    {
+        "id": "S97",
+        "name": "TXC",
+        "colorToken": "amber-400",
+        "description": "Tecnologies de Xarxes de Computadors"
+    },
+    {
+        "id": "S98",
+        "name": "AD",
+        "colorToken": "pink-400",
+        "description": "Aplicacions Distribuïdes"
+    },
+    {
+        "id": "S99",
+        "name": "IM",
+        "colorToken": "orange-400",
+        "description": "Internet Mòbil"
+    },
+    {
+        "id": "S100",
+        "name": "SDX",
+        "colorToken": "fuchsia-400",
+        "description": "Sistemes Distribuïts en Xarxa"
+    },
+    {
+        "id": "S101",
+        "name": "TCI",
+        "colorToken": "lime-400",
+        "description": "Transmissió i Codificació de la Informació"
     }
 ]

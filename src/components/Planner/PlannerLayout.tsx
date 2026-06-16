@@ -1,12 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTasks } from '../../contexts/TasksContext';
 import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BoardView from './Board/BoardView';
 import CalendarView from './Calendar/CalendarView';
 import GanttView from './Gantt/GanttView';
-import AIModal from './AIModal';
+import AIPromptBar from './AIPromptBar';
 import GlobalTaskContextMenu from './GlobalTaskContextMenu';
+import GlobalFiltersBar from './GlobalFiltersBar';
+import TaskPopover from './TaskPopover';
+import type { DateRangeFilter } from '../../../contexts/TasksContext';
 
 type ViewMode = 'board' | 'calendar' | 'gantt';
 
@@ -43,13 +46,26 @@ const AIParticles = () => {
 };
 
 const PlannerLayout: React.FC = () => {
-    const { isLoading, error, subjects, activeSubjectId, setActiveSubjectId, tasks } = useTasks();
+    const { isLoading, error, subjects, filters, setFilters, clearFilters, tasks } = useTasks();
     const [view, setView] = useState<ViewMode>('board');
     const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+    const [screenGlow, setScreenGlow] = useState(false);
+
+    useEffect(() => {
+        const handleMagic = () => {
+            setScreenGlow(true);
+            setTimeout(() => setScreenGlow(false), 2000); // fade out after 2s
+        };
+        window.addEventListener('ai-magic-done', handleMagic);
+        return () => window.removeEventListener('ai-magic-done', handleMagic);
+    }, []);
+    const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
 
     const usedSubjects = useMemo(() => {
         return subjects.filter(subject => tasks.some(t => t.subjectId === subject.id));
     }, [subjects, tasks]);
+
+    const activeFilterCount = filters.subjects.length + filters.priorities.length + (filters.dateRange !== 'ALL' ? 1 : 0);
 
     if (isLoading) {
         return (
@@ -92,11 +108,11 @@ const PlannerLayout: React.FC = () => {
                                 {isActive && (
                                     <motion.div
                                         layoutId="planner-active-tab"
-                                        className="absolute inset-0 bg-white/[0.08] border border-white/[0.12] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_0_20px_rgba(255,255,255,0.05)]"
+                                        className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
                                         initial={false}
-                                        transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                     >
-                                        <div className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-white/40 to-transparent blur-[1px]" />
+                                        <div className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
                                     </motion.div>
                                 )}
                                 <Icon size={16} strokeWidth={isActive ? 2.5 : 2} className={`transition-colors ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} />
@@ -126,74 +142,68 @@ const PlannerLayout: React.FC = () => {
                 </div>
             </div>
 
-            {/* Subject Filters (Floating Below Navigation) */}
-            {view === 'board' && usedSubjects.length > 0 && (
-                <div className="absolute top-20 md:top-24 left-6 right-6 z-40 flex items-center justify-center gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    <button
-                        onClick={() => setActiveSubjectId(null)}
-                        className={`shrink-0 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${!activeSubjectId ? 'bg-white/10 text-white border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.15)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-white/10 hover:text-slate-300'}`}
-                    >
-                        Totes
-                    </button>
-                    {usedSubjects.length > 1 && usedSubjects.map(subject => {
-                        const isActive = activeSubjectId === subject.id;
-                        const getClasses = (token: string) => {
-                            switch (token) {
-                                case 'emerald-400': return isActive ? 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30 shadow-[0_0_20px_rgba(52,211,153,0.2)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-emerald-400/30 hover:text-emerald-300';
-                                case 'fuchsia-400': return isActive ? 'bg-fuchsia-400/10 text-fuchsia-300 border-fuchsia-400/30 shadow-[0_0_20px_rgba(232,121,249,0.2)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-fuchsia-400/30 hover:text-fuchsia-300';
-                                case 'amber-400': return isActive ? 'bg-amber-400/10 text-amber-300 border-amber-400/30 shadow-[0_0_20px_rgba(251,191,36,0.2)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-amber-400/30 hover:text-amber-300';
-                                case 'cyan-400': return isActive ? 'bg-cyan-400/10 text-cyan-300 border-cyan-400/30 shadow-[0_0_20px_rgba(34,211,238,0.2)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-cyan-400/30 hover:text-cyan-300';
-                                case 'indigo-400': return isActive ? 'bg-indigo-400/10 text-indigo-300 border-indigo-400/30 shadow-[0_0_20px_rgba(129,140,248,0.2)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-indigo-400/30 hover:text-indigo-300';
-                                default: return isActive ? 'bg-slate-500/10 text-slate-300 border-slate-500/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-slate-500/30 hover:text-slate-400';
-                            }
-                        };
-                        const getDotColor = (token: string) => {
-                        switch (token) {
-                            case 'emerald-400': return isActive ? 'bg-emerald-300 shadow-[0_0_8px_currentColor] text-emerald-400' : 'bg-emerald-400/50';
-                            case 'fuchsia-400': return isActive ? 'bg-fuchsia-300 shadow-[0_0_8px_currentColor] text-fuchsia-400' : 'bg-fuchsia-400/50';
-                            case 'amber-400': return isActive ? 'bg-amber-300 shadow-[0_0_8px_currentColor] text-amber-400' : 'bg-amber-400/50';
-                            case 'cyan-400': return isActive ? 'bg-cyan-300 shadow-[0_0_8px_currentColor] text-cyan-400' : 'bg-cyan-400/50';
-                            case 'indigo-400': return isActive ? 'bg-indigo-300 shadow-[0_0_8px_currentColor] text-indigo-400' : 'bg-indigo-400/50';
-                            default: return isActive ? 'bg-slate-300 shadow-[0_0_8px_currentColor] text-slate-400' : 'bg-slate-500/50';
-                        }
-                    };
-                    return (
-                        <button
-                            key={subject.id}
-                            onClick={() => setActiveSubjectId(isActive ? null : subject.id)}
-                            className={`shrink-0 flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${getClasses(subject.colorToken)}`}
-                        >
-                            <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${getDotColor(subject.colorToken)}`} />
-                            {subject.name}
-                        </button>
-                    );
-                })}
-            </div>
-            )}
+            {/* Global Filters Bar */}
+            {(view === 'board' || view === 'gantt') && <GlobalFiltersBar />}
 
             {/* Main Content Area */}
             <div className="flex-1 relative flex flex-col w-full h-full">
 
-                <AnimatePresence mode="wait">
+                <AnimatePresence>
                     {view === 'board' && (
-                        <motion.div key="board" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className={`absolute inset-x-0 bottom-0 ${usedSubjects.length > 0 ? 'top-[140px]' : 'top-[88px]'} z-10`}>
+                        <motion.div 
+                            key="board" 
+                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }} 
+                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }} 
+                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }} 
+                            transition={{ duration: 0.4, ease: 'easeInOut' }} 
+                            className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
+                        >
                             <BoardView />
                         </motion.div>
                     )}
                     {view === 'calendar' && (
-                        <motion.div key="calendar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute inset-x-0 bottom-0 top-[88px] z-10">
+                        <motion.div 
+                            key="calendar" 
+                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }} 
+                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }} 
+                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }} 
+                            transition={{ duration: 0.4, ease: 'easeInOut' }} 
+                            className="absolute inset-x-0 bottom-0 top-[88px] z-10"
+                        >
                             <CalendarView />
                         </motion.div>
                     )}
                     {view === 'gantt' && (
-                        <motion.div key="gantt" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute inset-x-0 bottom-0 top-[88px] z-10">
+                        <motion.div 
+                            key="gantt" 
+                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }} 
+                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }} 
+                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }} 
+                            transition={{ duration: 0.4, ease: 'easeInOut' }} 
+                            className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
+                        >
                             <GanttView />
                         </motion.div>
                     )}
                 </AnimatePresence>
             </div>
 
-            <AIModal isOpen={isAIModalOpen} onClose={() => setIsAIModalOpen(false)} />
+            {/* AI Screen Glow Effect */}
+            <AnimatePresence>
+                {screenGlow && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 1.5 } }}
+                        className="fixed inset-0 pointer-events-none z-[150]"
+                    >
+                        <div className="absolute inset-0 shadow-[inset_0_0_150px_rgba(217,70,239,0.15)] border border-fuchsia-500/20 mix-blend-screen" />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <AIPromptBar isOpen={isAIModalOpen} onClose={() => setIsAIModalOpen(false)} />
+            <TaskPopover />
         </div>
     );
 };

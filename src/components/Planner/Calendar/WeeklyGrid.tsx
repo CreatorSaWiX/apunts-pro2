@@ -70,22 +70,32 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 setIsSelected(false);
             }
         };
+        
+        const handleEditInline = (e: Event) => {
+            const customEvent = e as CustomEvent;
+            if (customEvent.detail === task.id) {
+                setIsEditing(true);
+                setTimeout(() => inputRef.current?.focus(), 0);
+            }
+        };
 
         if (isSelected) {
             window.addEventListener('click', handleGlobalClick);
             window.addEventListener('keydown', handleGlobalKeyDown);
             window.addEventListener('task-selected', handleTaskSelected);
         }
+        window.addEventListener('task-edit-inline', handleEditInline);
 
         return () => {
             window.removeEventListener('click', handleGlobalClick);
             window.removeEventListener('keydown', handleGlobalKeyDown);
             window.removeEventListener('task-selected', handleTaskSelected);
+            window.removeEventListener('task-edit-inline', handleEditInline);
         };
     }, [isSelected, isEditing, task.id, deleteTask]);
 
     const handlePointerDown = (type: 'top' | 'bottom') => (e: React.PointerEvent) => {
-        if (isEditing) return;
+        e.preventDefault(); // Això evita que l'input perdi el focus (onBlur)
         e.stopPropagation();
         setIsSelected(true);
         setIsResizing(type);
@@ -150,11 +160,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
         setCurrentHeight(snappedMinutes);
     };
 
-    const handleTaskDoubleClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setIsEditing(true);
-        setTimeout(() => inputRef.current?.focus(), 0);
-    };
+    // L'edició en línia ara s'activa a través de l'event 'task-edit-inline' quan es crea la tasca
 
     const handleTitleSubmit = () => {
         setIsEditing(false);
@@ -192,7 +198,12 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
         MEDIUM: 'bg-amber-500',
         LOW: 'bg-primary'
     };
-    const accentColor = priorityColors[task.priority as keyof typeof priorityColors] || priorityColors.LOW;
+    
+    const { subjects } = useTasks();
+    const taskSubject = subjects.find(s => s.id === task.subjectId);
+    
+    // Si té assignatura utilitzem el seu color (ex: bg-fuchsia-400), sinó el de prioritat
+    const accentColor = taskSubject ? `bg-${taskSubject.colorToken}` : (priorityColors[task.priority as keyof typeof priorityColors] || priorityColors.LOW);
 
     return (
         <div 
@@ -218,7 +229,10 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 e.stopPropagation();
                 window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
             }}
-            onDoubleClick={handleTaskDoubleClick}
+            onDoubleClick={(e) => {
+                e.stopPropagation();
+                window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+            }}
             className={`absolute left-1 right-1 border overflow-hidden backdrop-blur-2xl transition-[box-shadow,opacity] flex flex-col group
                 bg-slate-900/40 hover:bg-slate-900/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing
                 ${isSelected ? 'border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.1)]' : 'border-white/[0.03]'}
@@ -320,7 +334,7 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
         data: { type: 'DateCell', date: dateStr }
     });
 
-    const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleDoubleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
         // Obtenim posició del clic
         const bounds = e.currentTarget.getBoundingClientRect();
         const y = e.clientY - bounds.top;
@@ -329,16 +343,19 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
 
         const newTaskDate = new Date(day);
         newTaskDate.setHours(hour, minute, 0, 0);
+        const estimatedMinutes = 60;
+        const dueDate = new Date(newTaskDate.getTime() + estimatedMinutes * 60000);
 
-        addTask({
-            title: 'Nova Tasca',
+        const id = await addTask({
+            title: '',
             status: 'TODO',
             priority: 'LOW',
-            dueDate: null,
+            dueDate: dueDate.toISOString(),
             startDate: newTaskDate.toISOString(),
-            estimatedMinutes: 60,
+            estimatedMinutes,
             source: 'MANUAL'
         });
+        window.dispatchEvent(new CustomEvent('task-edit-inline', { detail: id }));
     };
 
     return (

@@ -156,12 +156,12 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                 <AnimatePresence>
                     <motion.div
                         ref={popoverRef}
-                        initial={{ opacity: 0, y: -5, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -5, scale: 0.98 }}
-                        transition={{ duration: 0.15, ease: "easeOut" }}
+                        initial={{ opacity: 0, y: -15, scale: 0.9, filter: 'blur(8px)' }}
+                        animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95, filter: 'blur(4px)' }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
                         style={{ top: coords.top, left: coords.left }}
-                        className="fixed z-[9999] w-[280px] bg-slate-900/95 backdrop-blur-xl border border-primary/20 rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.5)] p-5 flex flex-col gap-4"
+                        className="fixed z-[9999] w-[280px] bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] p-5 flex flex-col gap-4"
                         onClick={(e) => e.stopPropagation()}
                         onDoubleClick={(e) => e.stopPropagation()}
                         onPointerDown={(e) => e.stopPropagation()}

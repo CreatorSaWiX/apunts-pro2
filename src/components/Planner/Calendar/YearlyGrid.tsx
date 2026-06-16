@@ -1,5 +1,5 @@
 import React from 'react';
-import { format, eachMonthOfInterval, startOfYear, endOfYear, getDay, getDaysInMonth } from 'date-fns';
+import { format, eachMonthOfInterval, startOfYear, endOfYear, getDay, getDaysInMonth, isSameDay } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
 
@@ -41,8 +41,8 @@ const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: () => void 
                 
                 {/* Days */}
                 {daysArray.map(day => {
-                    const dateStr = format(new Date(monthDate.getFullYear(), monthDate.getMonth(), day), 'yyyy-MM-dd');
-                    const hasTasks = tasks.some(t => t.startDate && t.startDate.startsWith(dateStr));
+                    const currentDayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
+                    const hasTasks = tasks.some(t => t.startDate && isSameDay(new Date(t.startDate), currentDayDate));
                     
                     return (
                         <div key={day} className={`aspect-square flex items-center justify-center relative rounded-full transition-colors ${hasTasks ? 'bg-primary/10 text-primary font-bold' : 'text-slate-400'}`}>

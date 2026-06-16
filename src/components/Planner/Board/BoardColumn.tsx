@@ -4,8 +4,8 @@ import { CSS } from '@dnd-kit/utilities';
 import TaskCard from './TaskCard';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
-import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
-import { Plus, Calendar, Flag, Play, Trash2 } from 'lucide-react';
+import { motion, useMotionTemplate, useMotionValue, AnimatePresence } from 'framer-motion';
+import { Plus, Calendar, Flag, Play, Trash2, X, Check } from 'lucide-react';
 import { DateTimePicker } from './DateTimePicker';
 
 interface BoardColumnProps {
@@ -161,10 +161,23 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                         className={`w-2.5 h-2.5 rounded-full ${theme.bg} ${theme.text} shadow-[0_0_8px_currentColor] cursor-pointer hover:scale-150 hover:shadow-[0_0_12px_currentColor] transition-all`}
                         title="Fes clic per canviar el color"
                     ></div>
+                    <AnimatePresence>
                     {showColorPicker && (
                         <>
-                            <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowColorPicker(false); }} />
-                            <div className="absolute top-8 left-0 bg-[#13131A] border border-white/[0.08] p-3 rounded-2xl flex gap-3 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 cursor-default">
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 z-40" 
+                                onClick={(e) => { e.stopPropagation(); setShowColorPicker(false); }} 
+                            />
+                            <motion.div 
+                                initial={{ opacity: 0, y: -10, scale: 0.9, filter: 'blur(8px)' }}
+                                animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                                exit={{ opacity: 0, y: -5, scale: 0.95, filter: 'blur(4px)' }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
+                                className="absolute top-8 left-0 bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] p-3 rounded-[20px] flex gap-3 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] z-50 cursor-default origin-top-left"
+                            >
                             {COLUMN_COLORS.map(c => {
                                 const t = getColumnTheme({ id: column.id, color: c });
                                 return (
@@ -179,9 +192,10 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                     />
                                 );
                             })}
-                            </div>
+                            </motion.div>
                         </>
                     )}
+                    </AnimatePresence>
                     {isEditingHeader ? (
                         <input
                             autoFocus
@@ -251,8 +265,15 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                     )}
                 </SortableContext>
 
+                <AnimatePresence>
                 {isDrafting && (
-                    <div className="bg-[#13131A] border border-white/[0.05] rounded-xl p-3 shadow-lg flex flex-col gap-3 relative z-20 mx-1">
+                    <motion.div 
+                        initial={{ opacity: 0, y: -10, scale: 0.95, filter: 'blur(8px)' }}
+                        animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                        exit={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
+                        className="bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] rounded-[20px] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col gap-3 relative z-20 mx-1 origin-top"
+                    >
                         <div className="flex gap-2">
                             <input
                                 autoFocus
@@ -269,10 +290,18 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                 className="bg-transparent text-[13px] font-medium text-slate-200 p-1 focus:outline-none flex-1 placeholder:text-slate-600"
                             />
                             <button
-                                onClick={submitDraft}
-                                className="bg-white/10 hover:bg-white/20 text-[10px] font-bold tracking-wide uppercase px-2.5 py-1 rounded-md text-slate-300 hover:text-white transition-colors"
+                                onClick={() => { setDraftTitle(''); setIsDrafting(false); }}
+                                className="flex items-center justify-center p-1.5 rounded-md text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
+                                title="Cancel·lar"
                             >
-                                Crear
+                                <X size={16} strokeWidth={2.5} />
+                            </button>
+                            <button
+                                onClick={submitDraft}
+                                className="flex items-center justify-center p-1.5 rounded-md text-emerald-400 hover:text-white hover:bg-emerald-500 transition-colors"
+                                title="Crear"
+                            >
+                                <Check size={16} strokeWidth={2.5} />
                             </button>
                         </div>
 
@@ -307,20 +336,27 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                     </button>
                                 )}
 
+                                <AnimatePresence>
                                 {showSubjectPicker && (
-                                    <div className="absolute top-full left-0 mt-2 w-48 bg-[#13131A] border border-white/[0.08] p-2 rounded-xl flex flex-col gap-2 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: -10, scale: 0.9, filter: 'blur(8px)' }}
+                                        animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                                        exit={{ opacity: 0, y: -5, scale: 0.95, filter: 'blur(4px)' }}
+                                        transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
+                                        className="absolute top-full left-0 mt-2 w-48 bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] p-2 rounded-[20px] flex flex-col gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] z-50 origin-top-left"
+                                    >
                                         <input
                                             autoFocus
                                             value={subjectSearchQuery}
                                             onChange={(e) => setSubjectSearchQuery(e.target.value)}
                                             placeholder="Cerca..."
-                                            className="bg-white/5 border border-white/10 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500"
+                                            className="bg-white/5 border border-white/10 text-slate-200 text-[12px] font-medium px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500 transition-colors"
                                             onClick={(e) => e.stopPropagation()}
                                         />
                                         <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
                                             <button 
                                                 onClick={(e) => { e.preventDefault(); setDraftSubjectId(null); setShowSubjectPicker(false); }}
-                                                className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors ${!draftSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors ${!draftSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                             >
                                                 Sense assignatura
                                             </button>
@@ -328,15 +364,16 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                                 <button
                                                     key={s.id}
                                                     onClick={(e) => { e.preventDefault(); setDraftSubjectId(s.id); setShowSubjectPicker(false); }}
-                                                    className={`text-left px-2 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-colors flex items-center gap-2 ${draftSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                    className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${draftSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                                 >
-                                                    <span className={`w-1.5 h-1.5 rounded-full bg-${s.colorToken}`}></span>
+                                                    <span className={`w-2 h-2 rounded-full bg-${s.colorToken}`}></span>
                                                     {s.name}
                                                 </button>
                                             ))}
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 )}
+                                </AnimatePresence>
                             </div>
 
                             <DateTimePicker
@@ -353,8 +390,9 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                 icon={<Calendar size={12} className="text-indigo-400" />}
                             />
                         </div>
-                    </div>
+                    </motion.div>
                 )}
+                </AnimatePresence>
 
                 {/* Àrea invisible per agafar el doble clic a baix */}
                 {tasks.length > 0 && !isDrafting && (

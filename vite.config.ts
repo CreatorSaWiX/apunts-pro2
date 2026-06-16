@@ -211,6 +211,97 @@ export default defineConfig(({ mode }) => {
               res.end('Method Not Allowed');
             }
           });
+
+          // Middleware per l'AI Planner
+          server.middlewares.use('/api/planner-ai', async (req, res) => {
+            if (req.method === 'POST') {
+              let body = '';
+              req.on('data', chunk => {
+                body += chunk.toString();
+              });
+              req.on('end', async () => {
+                try {
+                  const { prompt, currentTasks, subjects, currentDate } = JSON.parse(body);
+                  const { GoogleGenerativeAI } = await import('@google/generative-ai');
+                  const apiKey = env.GEMINI_API_KEY;
+                  
+                  if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
+                    res.statusCode = 500;
+                    res.end(JSON.stringify({ error: 'Clau de Gemini no configurada al servidor' }));
+                    return;
+                  }
+
+                  const genAI = new GoogleGenerativeAI(apiKey);
+                  const systemInstruction = `Ets un asistent intel·ligent per a una aplicació de planificació d'estudiants universitaris. La teva feina és analitzar el missatge de l'usuari i determinar quines accions s'han de prendre sobre les tasques.
+
+IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SENSE TEXT AL VOLTANT. Només JSON.
+
+# CONTEXT ACTUAL:
+- Data i hora actuals de l'usuari: ${currentDate}
+- Assignatures vàlides (selecciona l'id apropiat, o null):
+  ${JSON.stringify(subjects || [])}
+- Tasques actuals de l'usuari (fes-ho servir per trobar els 'taskId' quan hagis de modificar o esborrar tasques existents):
+  ${JSON.stringify(currentTasks?.map((t:any) => ({id: t.id, title: t.title, subjectId: t.subjectId, status: t.status})) || [])}
+
+# INSTRUCCIONS:
+Pots executar una llista d'accions. Les accions possibles són:
+1. "CREATE": Per crear noves tasques. Reparteix-les lògicament usant startDate i dueDate. Usa l'hora actual com a base si no s'especifica res.
+2. "UPDATE": Per modificar tasques existents (posposar, canviar de color/assignatura, completar). Pots actualitzar el \`status\` a "TODO", "IN_PROGRESS", "IN_REVIEW", o "DONE".
+3. "DELETE": Per esborrar tasques.
+
+L'estructura exacta ha de ser:
+{
+  "actions": [
+    {
+      "type": "CREATE",
+      "task": {
+        "title": "Nom de la tasca",
+        "description": "Explicació (opcional)",
+        "priority": "HIGH" | "MEDIUM" | "LOW",
+        "status": "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE",
+        "estimatedMinutes": 60,
+        "subjectId": "ID_DE_L_ASSIGNATURA" | null,
+        "startDate": "2026-06-16T10:00:00.000Z" | null,
+        "dueDate": "2026-06-16T12:00:00.000Z" | null
+      }
+    },
+    {
+      "type": "DELETE",
+      "taskId": "id_de_la_tasca_a_esborrar"
+    },
+    {
+      "type": "UPDATE",
+      "taskId": "id_de_la_tasca_a_actualitzar",
+      "updates": {
+        "status": "IN_PROGRESS",
+        "startDate": "2026-06-17T10:00:00.000Z"
+      }
+    }
+  ]
+}`;
+
+                  const model = genAI.getGenerativeModel({ 
+                    model: 'gemini-2.5-flash', 
+                    systemInstruction,
+                    generationConfig: { responseMimeType: "application/json" }
+                  });
+                  
+                  const result = await model.generateContent(prompt);
+                  const responseText = result.response.text();
+                  
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(responseText);
+                } catch (e: any) {
+                  console.error("[DevServer Planner AI Error]:", e);
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ error: String(e.message || e) }));
+                }
+              });
+            } else {
+              res.statusCode = 405;
+              res.end('Method Not Allowed');
+            }
+          });
         }
       }
     ],

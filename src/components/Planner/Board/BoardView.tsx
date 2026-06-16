@@ -28,11 +28,7 @@ const PRESET_COLORS = ['indigo-400', 'fuchsia-400', 'emerald-400', 'amber-400', 
 
 
 const BoardView: React.FC = () => {
-    const { tasks: allTasks, updateTask, addTask, activeSubjectId } = useTasks();
-    const tasks = useMemo(() => {
-        if (!activeSubjectId) return allTasks;
-        return allTasks.filter(t => t.subjectId === activeSubjectId);
-    }, [allTasks, activeSubjectId]);
+    const { filteredTasks: tasks, tasks: allTasks, updateTask, addTask, deleteTask } = useTasks();
     const [localTasks, setLocalTasks] = useState(tasks);
 
     useEffect(() => {
@@ -76,6 +72,8 @@ const BoardView: React.FC = () => {
 
     const deleteColumn = (id: string) => {
         setColumns(cols => cols.filter(c => c.id !== id));
+        const tasksToDelete = allTasks.filter(t => t.status === id);
+        tasksToDelete.forEach(t => deleteTask(t.id));
     };
 
     const sensors = useSensors(
@@ -228,8 +226,8 @@ const BoardView: React.FC = () => {
                             <span className="text-sm font-semibold tracking-wide transition-colors group-hover:text-white/80">Afegeix llista</span>
                         </button>
                     ) : (
-                        <div className="bg-[#111115]/90 backdrop-blur-[40px] border border-white/[0.04] p-4 rounded-[24px] flex flex-col gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.02)]">
-                            <div className="flex items-center gap-3">
+                        <div className="bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] p-4 rounded-[20px] flex flex-col gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)]">
+                            <div className="flex items-center gap-3 bg-white/[0.03] p-2 rounded-xl border border-white/[0.04]">
                                 <div className={`w-3 h-3 rounded-full bg-${newColumnColor} shadow-[0_0_12px_currentColor] text-${newColumnColor} shrink-0`} />
                                 <input
                                     autoFocus
@@ -240,22 +238,22 @@ const BoardView: React.FC = () => {
                                         if (e.key === 'Escape') setIsAddingColumn(false);
                                     }}
                                     placeholder="Nom de la llista..."
-                                    className="bg-transparent text-slate-200 text-sm font-semibold flex-1 focus:outline-none placeholder:text-slate-600 tracking-wide"
+                                    className="bg-transparent text-slate-200 text-[13px] font-medium flex-1 focus:outline-none placeholder:text-slate-500 tracking-wide"
                                 />
                                 <button onClick={() => setIsAddingColumn(false)} className="text-slate-500 hover:text-white transition-colors p-1"><X size={16} strokeWidth={2.5}/></button>
                             </div>
                             
-                            <div className="flex gap-3 items-center justify-center py-1">
+                            <div className="flex gap-3 items-center justify-center py-2 bg-white/[0.02] rounded-xl border border-white/[0.02]">
                                 {PRESET_COLORS.map(color => (
                                     <button
                                         key={color}
                                         onClick={() => setNewColumnColor(color)}
-                                        className={`w-4 h-4 rounded-full transition-all duration-300 bg-${color} ${newColumnColor === color ? `scale-125 shadow-[0_0_12px_currentColor] text-${color} ring-1 ring-${color} ring-offset-2 ring-offset-[#111115]` : 'opacity-40 hover:opacity-100 hover:scale-110'}`}
+                                        className={`w-4 h-4 rounded-full transition-all duration-300 bg-${color} ${newColumnColor === color ? `scale-125 shadow-[0_0_12px_currentColor] text-${color} ring-2 ring-${color} ring-offset-2 ring-offset-[#13131A]` : 'opacity-50 hover:opacity-100 hover:scale-110'}`}
                                     />
                                 ))}
                             </div>
 
-                            <button onClick={handleAddColumn} className="mt-2 bg-white/5 hover:bg-white/10 text-white text-[11px] font-bold uppercase tracking-wider py-2.5 rounded-[16px] transition-colors border border-white/5 hover:border-white/10 w-full">Crear Llista</button>
+                            <button onClick={handleAddColumn} className="mt-1 bg-white/5 hover:bg-white/10 text-white text-[12px] font-semibold tracking-wide py-2.5 rounded-xl transition-colors border border-white/5 hover:border-white/10 w-full shadow-sm">CREAR LLISTA</button>
                         </div>
                     )}
                 </div>

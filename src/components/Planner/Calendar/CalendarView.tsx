@@ -43,11 +43,13 @@ const CalendarView: React.FC = () => {
     };
 
     const onDragStart = (event: DragStartEvent) => {
+        document.body.style.userSelect = 'none';
         const task = event.active.data.current?.task as Task | undefined;
         if (task) setActiveTask(task);
     };
 
     const onDragEnd = (event: DragEndEvent) => {
+        document.body.style.userSelect = '';
         const { over, active } = event;
         const task = active.data.current?.task as Task | undefined;
         
@@ -125,15 +127,15 @@ const CalendarView: React.FC = () => {
                                 <button
                                     key={m}
                                     onClick={() => setMode(m)}
-                                    className={`relative px-5 py-1.5 text-[10px] font-extrabold tracking-widest uppercase transition-colors rounded-full outline-none ${
+                                    className={`relative px-5 py-1.5 text-[10px] font-extrabold tracking-widest uppercase transition-all duration-300 rounded-full outline-none hover:scale-105 active:scale-95 ${
                                         mode === m ? 'text-white' : 'text-slate-400 hover:text-slate-200'
                                     }`}
                                 >
                                     {mode === m && (
                                         <motion.div
                                             layoutId="calendarMode"
-                                            className="absolute inset-0 bg-white/10 border border-white/10 rounded-full z-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
-                                            transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
+                                            className="absolute inset-0 bg-white/10 border border-white/10 rounded-full z-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_0_12px_rgba(255,255,255,0.05)]"
+                                            transition={{ type: "spring", stiffness: 450, damping: 30 }}
                                         />
                                     )}
                                     <span className="relative z-10">{m === 'week' ? 'Setm' : m === 'month' ? 'Mes' : 'Any'}</span>

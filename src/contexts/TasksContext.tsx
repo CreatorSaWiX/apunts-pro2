@@ -1,20 +1,30 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useAuth } from './AuthContext';
-import type { Task, Subject } from '../types/tasks';
+import type { Task, Subject, TaskPriority } from '../types/tasks';
 import subjectsData from '../data/subjects.json';
+
+export type DateRangeFilter = 'ALL' | 'TODAY' | 'THIS_WEEK' | 'THIS_MONTH' | 'THIS_TERM';
+
+export interface TaskFilters {
+    subjects: string[];
+    priorities: TaskPriority[];
+    dateRange: DateRangeFilter;
+}
 
 interface TasksContextType {
     tasks: Task[];
+    filteredTasks: Task[];
     isLoading: boolean;
     error: string | null;
-    addTask: (task: Omit<Task, 'id' | 'userId' | 'createdAt'>) => Promise<void>;
+    addTask: (task: Omit<Task, 'id' | 'userId' | 'createdAt'>) => Promise<string>;
     updateTask: (taskId: string, updates: Partial<Task>) => Promise<void>;
     deleteTask: (taskId: string, task?: Task) => Promise<void>;
     undoDelete: () => Promise<void>;
     addBatchTasks: (tasks: Omit<Task, 'id' | 'userId' | 'createdAt'>[]) => Promise<void>;
     subjects: Subject[];
-    activeSubjectId: string | null;
-    setActiveSubjectId: (id: string | null) => void;
+    filters: TaskFilters;
+    setFilters: React.Dispatch<React.SetStateAction<TaskFilters>>;
+    clearFilters: () => void;
 }
 
 const TasksContext = createContext<TasksContextType | undefined>(undefined);
@@ -27,8 +37,65 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const deletedTasksRef = useRef<Task[]>([]);
     
     // Using subjects from the data file
-    const [activeSubjectId, setActiveSubjectId] = useState<string | null>(null);
     const subjects: Subject[] = subjectsData;
+    
+    const [filters, setFilters] = useState<TaskFilters>({
+        subjects: [],
+        priorities: [],
+        dateRange: 'ALL'
+    });
+
+    const clearFilters = useCallback(() => {
+        setFilters({ subjects: [], priorities: [], dateRange: 'ALL' });
+    }, []);
+
+    const filteredTasks = useMemo(() => {
+        return tasks.filter(task => {
+            // Subject Filter
+            if (filters.subjects.length > 0 && (!task.subjectId || !filters.subjects.includes(task.subjectId))) {
+                return false;
+            }
+
+            // Priority Filter
+            if (filters.priorities.length > 0 && !filters.priorities.includes(task.priority)) {
+                return false;
+            }
+
+            // Date Range Filter
+            if (filters.dateRange !== 'ALL') {
+                if (!task.dueDate) return false; // Hide tasks without due dates when a specific date range is selected
+                
+                const due = new Date(task.dueDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const dueTime = due.getTime();
+                const todayTime = today.getTime();
+                
+                if (filters.dateRange === 'TODAY') {
+                    // Today or overdue
+                    const endOfToday = new Date(today);
+                    endOfToday.setHours(23, 59, 59, 999);
+                    if (dueTime > endOfToday.getTime()) return false;
+                } else if (filters.dateRange === 'THIS_WEEK') {
+                    const nextWeek = new Date(today);
+                    nextWeek.setDate(today.getDate() + 7);
+                    nextWeek.setHours(23, 59, 59, 999);
+                    if (dueTime > nextWeek.getTime()) return false;
+                } else if (filters.dateRange === 'THIS_MONTH') {
+                    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+                    if (dueTime > endOfMonth.getTime() || dueTime < new Date(today.getFullYear(), today.getMonth(), 1).getTime()) return false;
+                } else if (filters.dateRange === 'THIS_TERM') {
+                    // Example logic for "This Term": Next 4 months
+                    const endOfTerm = new Date(today);
+                    endOfTerm.setMonth(today.getMonth() + 4);
+                    if (dueTime > endOfTerm.getTime()) return false;
+                }
+            }
+
+            return true;
+        });
+    }, [tasks, filters]);
 
     useEffect(() => {
         if (!user) {
@@ -88,7 +155,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         };
     }, [user]);
 
-    const addTask = useCallback(async (taskData: Omit<Task, 'id' | 'userId' | 'createdAt'>) => {
+    const addTask = useCallback(async (taskData: Omit<Task, 'id' | 'userId' | 'createdAt'>): Promise<string> => {
         if (!user) throw new Error("No user logged in");
         
         try {
@@ -102,7 +169,8 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 createdAt: new Date().toISOString()
             };
 
-            await addDoc(collection(db, 'tasks'), newTask);
+            const docRef = await addDoc(collection(db, 'tasks'), newTask);
+            return docRef.id;
         } catch (err) {
             console.error("Error adding task:", err);
             throw err;
@@ -213,7 +281,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, [undoDelete]);
 
     return (
-        <TasksContext.Provider value={{ tasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks, subjects, activeSubjectId, setActiveSubjectId }}>
+        <TasksContext.Provider value={{ tasks, filteredTasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks, subjects, filters, setFilters, clearFilters }}>
             {children}
         </TasksContext.Provider>
     );

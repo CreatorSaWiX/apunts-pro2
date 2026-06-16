@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { useDroppable } from '@dnd-kit/core';
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, format, isSameMonth, isToday, addMonths, subMonths } from 'date-fns';
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, format, isSameMonth, isToday, isSameDay, addMonths, subMonths } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
@@ -12,7 +12,7 @@ interface MonthlyGridProps {
 }
 
 const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> = ({ day, isCurrentMonth, tasks }) => {
-    const { addTask } = useTasks();
+    const { addTask, subjects } = useTasks();
     const dateStr = format(day, 'yyyy-MM-dd');
     
     const { setNodeRef, isOver } = useDroppable({
@@ -20,16 +20,21 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
         data: { type: 'DateCell', date: dateStr }
     });
 
-    const handleDoubleClick = () => {
-        addTask({
-            title: 'Nova Tasca',
+    const handleDoubleClick = async (e: React.MouseEvent) => {
+        const startDate = new Date(day.setHours(12, 0, 0, 0));
+        const estimatedMinutes = 60;
+        const dueDate = new Date(startDate.getTime() + estimatedMinutes * 60000);
+
+        const id = await addTask({
+            title: '',
             status: 'TODO',
             priority: 'LOW',
-            dueDate: null,
-            startDate: new Date(day.setHours(12, 0, 0, 0)).toISOString(),
-            estimatedMinutes: 60,
+            dueDate: dueDate.toISOString(),
+            startDate: startDate.toISOString(),
+            estimatedMinutes,
             source: 'MANUAL'
         });
+        window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: id } }));
     };
 
     return (
@@ -50,6 +55,17 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
             <div className="flex flex-col gap-[2px] overflow-y-auto flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {tasks.map(task => {
                     const startDate = task.startDate ? new Date(task.startDate) : new Date();
+                    const taskSubject = subjects.find(s => s.id === task.subjectId);
+                    
+                    let textColorClass = 'text-slate-300';
+                    if (taskSubject) {
+                        textColorClass = `text-${taskSubject.colorToken}`;
+                    } else if (task.priority === 'HIGH') {
+                        textColorClass = 'text-red-300';
+                    } else if (task.priority === 'MEDIUM') {
+                        textColorClass = 'text-amber-300';
+                    }
+
                     return (
                         <div 
                             key={task.id} 
@@ -58,11 +74,11 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
                                 e.stopPropagation();
                                 window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
                             }}
-                            className={`flex items-center gap-1.5 px-1.5 py-0.5 rounded transition-colors hover:bg-white/10 cursor-default group
-                                ${task.priority === 'HIGH' ? 'text-red-300' : 
-                                  task.priority === 'MEDIUM' ? 'text-amber-300' : 
-                                  'text-slate-300'}
-                            `}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+                            }}
+                            className={`flex items-center gap-1.5 px-1.5 py-0.5 rounded transition-colors hover:bg-white/10 cursor-default group ${textColorClass}`}
                         >
                             <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70 group-hover:opacity-100 transition-opacity"></span>
                             <span className="text-[10px] font-bold opacity-60 tracking-wider">{format(startDate, 'HH:mm')}</span>
@@ -89,7 +105,7 @@ const MonthBlock: React.FC<{ monthDate: Date; tasks: Task[] }> = ({ monthDate, t
             </h3>
             <div className="grid grid-cols-7 flex-1 bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden shadow-sm">
                 {days.map(day => {
-                    const dayTasks = tasks.filter(t => t.startDate && t.startDate.startsWith(format(day, 'yyyy-MM-dd')));
+                    const dayTasks = tasks.filter(t => t.startDate && isSameDay(new Date(t.startDate), day));
                     return (
                         <DayCell 
                             key={day.toISOString()} 

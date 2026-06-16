@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
 import { Copy, Trash2, Flag } from 'lucide-react';
 import type { Task, TaskPriority } from '../../types/tasks';
@@ -91,10 +92,9 @@ const GlobalTaskContextMenu: React.FC = () => {
         };
     }, [deleteTask, addTask, isOpen, task]);
 
-    if (!isOpen || !task) return null;
-
     const handleDuplicate = (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (!task) return;
         addTask({
             title: `${task.title} (Còpia)`,
             ...(task.description ? { description: task.description } : {}),
@@ -110,6 +110,7 @@ const GlobalTaskContextMenu: React.FC = () => {
 
     const handleCyclePriority = (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (!task) return;
         const priorities: TaskPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
         const next = priorities[(priorities.indexOf(task.priority) + 1) % priorities.length];
         updateTask(task.id, { priority: next });
@@ -118,57 +119,58 @@ const GlobalTaskContextMenu: React.FC = () => {
 
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
-        deleteTask(task.id);
+        if (task) deleteTask(task.id);
         setIsOpen(false);
     };
 
     return (
-        <div 
-            ref={menuRef}
-            className="fixed z-[9999] bg-slate-900/95 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-xl py-1.5 min-w-[180px] flex flex-col gap-0.5"
-            style={{ 
-                left: position.x, 
-                top: position.y,
-                boxShadow: '0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)'
-            }}
-            onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); }}
-        >
-            <div className="px-3 py-2 border-b border-white/5 mb-1 pointer-events-none select-none">
-                <p className="text-[10px] font-bold tracking-widest uppercase text-slate-400 truncate">{task.title}</p>
-            </div>
+        <AnimatePresence>
+            {isOpen && task && (
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)', y: -10 }}
+                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, filter: 'blur(5px)', y: -5 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
+                    ref={menuRef}
+                    className="fixed z-[9999] bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] rounded-[20px] p-2 min-w-[200px] flex flex-col gap-1 origin-top-left"
+                    style={{ 
+                        left: position.x, 
+                        top: position.y,
+                    }}
+                    onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                >
+                    <div className="px-3 py-2 border-b border-white/5 mb-1 pointer-events-none select-none">
+                        <p className="text-[10px] font-bold tracking-widest uppercase text-slate-400 truncate">{task.title}</p>
+                    </div>
 
-            <button 
-                onClick={handleCyclePriority}
-                className="flex items-center gap-3 px-3 py-2 w-full text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
-            >
-                <Flag size={14} className={task.priority === 'HIGH' ? 'text-red-400' : task.priority === 'MEDIUM' ? 'text-amber-400' : 'text-slate-400'} />
-                <span>Canviar Prioritat</span>
-            </button>
-            
-            <button 
-                onClick={handleDuplicate}
-                className="flex items-center justify-between px-3 py-2 w-full text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors group"
-            >
-                <div className="flex items-center gap-3">
-                    <Copy size={14} className="text-slate-400 group-hover:text-white transition-colors" />
-                    <span>Duplicar</span>
-                </div>
-                <span className="text-[9px] text-slate-500 font-mono bg-white/5 px-1.5 py-0.5 rounded">Alt/Opt</span>
-            </button>
-            
-            <div className="h-px bg-white/5 my-1" />
-            
-            <button 
-                onClick={handleDelete}
-                className="flex items-center justify-between px-3 py-2 w-full text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors group"
-            >
-                <div className="flex items-center gap-3">
-                    <Trash2 size={14} />
-                    <span>Eliminar</span>
-                </div>
-                <span className="text-[9px] text-red-400/60 font-mono bg-red-500/10 px-1.5 py-0.5 rounded group-hover:text-red-300">⌫ / Supr</span>
-            </button>
-        </div>
+                    <button 
+                        onClick={handleCyclePriority}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
+                    >
+                        <Flag size={14} className={task.priority === 'HIGH' ? 'text-red-400' : task.priority === 'MEDIUM' ? 'text-amber-400' : 'text-slate-400'} />
+                        <span>Canviar Prioritat</span>
+                    </button>
+                    
+                    <button 
+                        onClick={handleDuplicate}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-slate-300 hover:bg-white/5 hover:text-white transition-colors group"
+                    >
+                        <Copy size={14} className="text-slate-400 group-hover:text-white transition-colors" />
+                        <span>Duplicar</span>
+                    </button>
+                    
+                    <div className="h-px bg-white/5 my-1 mx-1" />
+                    
+                    <button 
+                        onClick={handleDelete}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors group"
+                    >
+                        <Trash2 size={14} />
+                        <span>Eliminar</span>
+                    </button>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 };
 
