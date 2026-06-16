@@ -15,9 +15,12 @@ const TaskPopover: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [taskId, setTaskId] = useState<string | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [subjectSearchQuery, setSubjectSearchQuery] = useState('');
+    const [showSubjectPicker, setShowSubjectPicker] = useState(false);
     const popoverRef = useRef<HTMLDivElement>(null);
 
     const task = tasks.find(t => t.id === taskId);
+    const filteredSubjects = subjects.filter(s => s.name.toLowerCase().includes(subjectSearchQuery.toLowerCase()));
 
     useEffect(() => {
         const handleOpen = (e: Event) => {
@@ -53,16 +56,23 @@ const TaskPopover: React.FC = () => {
             if (e.key === 'Escape' && isOpen) handleClose();
         };
 
+        const handleScroll = (e: Event) => {
+            if (isOpen && popoverRef.current && popoverRef.current.contains(e.target as Node)) {
+                return;
+            }
+            handleClose();
+        };
+
         window.addEventListener('open-task-popover', handleOpen);
         window.addEventListener('pointerdown', handlePointerDownOutside, true);
         window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('scroll', handleClose, true);
+        window.addEventListener('scroll', handleScroll, true);
 
         return () => {
             window.removeEventListener('open-task-popover', handleOpen);
             window.removeEventListener('pointerdown', handlePointerDownOutside, true);
             window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('scroll', handleClose, true);
+            window.removeEventListener('scroll', handleScroll, true);
         };
     }, [isOpen]);
 
@@ -97,36 +107,64 @@ const TaskPopover: React.FC = () => {
                             <Bookmark size={10} />
                             <span>Assignatura</span>
                         </div>
-                        <div className="flex flex-wrap gap-1 px-1 mb-2">
+                        <div className="px-1 mb-2 relative">
                             <button
-                                onClick={() => updateTask(task.id, { subjectId: undefined })}
-                                className={`px-2 py-1 rounded text-[10px] font-medium transition-colors border ${
-                                    !task.subjectId 
-                                        ? 'bg-white/10 text-white border-white/20' 
-                                        : 'bg-transparent text-slate-500 border-white/[0.05] hover:bg-white/5 hover:text-slate-300'
-                                }`}
+                                onClick={() => setShowSubjectPicker(!showSubjectPicker)}
+                                className={`w-full flex items-center justify-between gap-1.5 px-2 py-1.5 rounded-md transition-colors border ${task.subjectId
+                                        ? (() => {
+                                            const s = subjects.find(sub => sub.id === task.subjectId);
+                                            return s ? `text-${s.colorToken.replace('500', '400')} bg-${s.colorToken}/10 border-${s.colorToken}/20` : 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+                                        })()
+                                        : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
+                                    }`}
                             >
-                                Cap
+                                <span className="font-semibold text-[10px] tracking-wider uppercase">
+                                    {task.subjectId ? subjects.find(sub => sub.id === task.subjectId)?.name : 'Sense Assignatura'}
+                                </span>
                             </button>
-                            {subjects.map(subject => {
-                                const isSelected = task.subjectId === subject.id;
-                                return (
-                                    <button
-                                        key={subject.id}
-                                        onClick={() => updateTask(task.id, { subjectId: subject.id })}
-                                        className={`flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-medium transition-all border ${
-                                            isSelected
-                                                ? `bg-white/10 text-white border-white/20 shadow-sm`
-                                                : 'bg-transparent text-slate-400 border-white/[0.05] hover:bg-white/[0.08] hover:text-slate-200'
-                                        }`}
-                                    >
-                                        <div 
-                                            className={`w-1.5 h-1.5 rounded-full bg-${subject.colorToken} ${isSelected ? 'shadow-[0_0_4px_currentColor]' : ''}`} 
-                                        />
-                                        <span>{subject.name}</span>
-                                    </button>
-                                );
-                            })}
+
+                            {showSubjectPicker && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-[#13131A]/95 backdrop-blur-[40px] border border-white/[0.08] p-1.5 rounded-[12px] flex flex-col gap-1 shadow-[0_20px_50px_rgba(0,0,0,0.6)] z-50">
+                                    <input 
+                                        autoFocus
+                                        value={subjectSearchQuery}
+                                        onChange={(e) => setSubjectSearchQuery(e.target.value)}
+                                        placeholder="Cerca assignatura..."
+                                        className="bg-white/5 border border-white/10 text-slate-200 text-[10px] px-2 py-1.5 rounded focus:outline-none focus:border-white/20 placeholder:text-slate-500 mb-1"
+                                    />
+                                    <div className="flex flex-col gap-1 max-h-[120px] overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full">
+                                        <button
+                                            onClick={() => { updateTask(task.id, { subjectId: undefined }); setShowSubjectPicker(false); }}
+                                            className={`text-left px-2 py-1.5 rounded text-[10px] font-medium transition-colors ${
+                                                !task.subjectId 
+                                                    ? 'bg-white/10 text-white' 
+                                                    : 'text-slate-400 hover:bg-white/5'
+                                            }`}
+                                        >
+                                            Cap assignatura
+                                        </button>
+                                        {filteredSubjects.map(subject => {
+                                            const isSelected = task.subjectId === subject.id;
+                                            return (
+                                                <button
+                                                    key={subject.id}
+                                                    onClick={() => { updateTask(task.id, { subjectId: subject.id }); setShowSubjectPicker(false); }}
+                                                    className={`text-left flex items-center gap-2 px-2 py-1.5 rounded text-[10px] font-medium transition-all ${
+                                                        isSelected
+                                                            ? `bg-${subject.colorToken}/20 text-${subject.colorToken.replace('500', '400')}`
+                                                            : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                                                    }`}
+                                                >
+                                                    <div 
+                                                        className={`w-1.5 h-1.5 rounded-full bg-${subject.colorToken} ${isSelected ? 'shadow-[0_0_4px_currentColor]' : ''}`} 
+                                                    />
+                                                    <span>{subject.name}</span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Prioritat */}

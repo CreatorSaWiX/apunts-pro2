@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useTasks } from '../../contexts/TasksContext';
-import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles } from 'lucide-react';
+import NavigationPill from '../ui/NavigationPill';
+import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles, Route } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BoardView from './Board/BoardView';
 import CalendarView from './Calendar/CalendarView';
@@ -11,7 +12,7 @@ import GlobalFiltersBar from './GlobalFiltersBar';
 import TaskPopover from './TaskPopover';
 import type { DateRangeFilter } from '../../../contexts/TasksContext';
 
-type ViewMode = 'board' | 'calendar' | 'gantt';
+type ViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
 
 const AIParticles = () => {
     const particles = useMemo(() => {
@@ -90,11 +91,12 @@ const PlannerLayout: React.FC = () => {
 
             {/* Dynamic Island Navigator (Fixed Top Right) */}
             <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-50">
-                <div className="bg-slate-900/80 backdrop-blur-[40px] p-1.5 rounded-full border border-white/[0.12] flex items-center shrink-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_40px_rgba(0,0,0,0.5)] relative overflow-hidden transition-all hover:bg-slate-900/90 hover:border-white/20">
+                <NavigationPill>
                     {[
                         { id: 'board', label: 'Board', icon: LayoutDashboard },
                         { id: 'calendar', label: 'Calendar', icon: Calendar },
-                        { id: 'gantt', label: 'Timeline', icon: GanttChartSquare }
+                        { id: 'gantt', label: 'Timeline', icon: GanttChartSquare },
+                        { id: 'roadmap', label: 'Roadmap', icon: Route }
                     ].map((tab) => {
                         const Icon = tab.icon;
                         const isActive = view === tab.id;
@@ -102,7 +104,7 @@ const PlannerLayout: React.FC = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setView(tab.id as ViewMode)}
-                                className={`relative flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'
+                                className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'
                                     }`}
                             >
                                 {isActive && (
@@ -125,7 +127,7 @@ const PlannerLayout: React.FC = () => {
 
                     <button
                         onClick={() => setIsAIModalOpen(true)}
-                        className="group relative flex items-center justify-center p-2.5 sm:p-3 rounded-full transition-all duration-500 shrink-0 hover:scale-[1.05] active:scale-[0.95] overflow-hidden"
+                        className="group relative flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full transition-all duration-500 shrink-0 hover:scale-[1.05] active:scale-[0.95] overflow-hidden"
                         title="IA Planner"
                     >
                         <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
@@ -139,7 +141,7 @@ const PlannerLayout: React.FC = () => {
 
                         <Sparkles size={18} strokeWidth={2.5} className="relative z-10 text-fuchsia-400 group-hover:text-fuchsia-300 transition-all duration-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.6)]" />
                     </button>
-                </div>
+                </NavigationPill>
             </div>
 
             {/* Global Filters Bar */}
@@ -183,6 +185,24 @@ const PlannerLayout: React.FC = () => {
                             className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
                         >
                             <GanttView />
+                        </motion.div>
+                    )}
+                    {view === 'roadmap' && (
+                        <motion.div 
+                            key="roadmap" 
+                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }} 
+                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }} 
+                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }} 
+                            transition={{ duration: 0.4, ease: 'easeInOut' }} 
+                            className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10 flex items-center justify-center`}
+                        >
+                            <div className="text-center p-8 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl">
+                                <Route size={48} className="mx-auto text-primary mb-4 opacity-80" />
+                                <h3 className="text-xl font-bold text-white mb-2">Roadmap d'Estudi</h3>
+                                <p className="text-slate-400 max-w-sm mx-auto">
+                                    Aquí podràs veure l'arbre de dependències i la ruta òptima d'estudi. Pròximament!
+                                </p>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

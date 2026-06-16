@@ -357,6 +357,11 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
                     setDragState({ type: 'move', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth });
                 }
             }}
+            onDoubleClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+            }}
             className={`absolute h-8 rounded-md flex items-center px-2 group overflow-hidden transition duration-200 ${baseColorClass} border border-white/20 shadow-lg ${dragState ? 'z-40 brightness-110' : 'hover:brightness-110 hover:z-30 cursor-pointer'}`}
             style={{
                 left: displayLeft,
