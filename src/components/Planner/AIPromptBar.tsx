@@ -136,7 +136,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                     )}
 
                     {/* Main Container */}
-                    <div className="relative bg-[#0A0A0A]/70 backdrop-blur-3xl border border-white/10 rounded-[24px] shadow-[0_20px_40px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.05)] overflow-hidden flex flex-col p-2">
+                    <div className="relative bg-slate-800/40 backdrop-blur-xl border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden flex flex-col p-2">
                         
                         {/* Error Message */}
                         {error && (

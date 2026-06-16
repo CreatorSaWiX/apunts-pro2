@@ -20,12 +20,14 @@ service cloud.firestore {
       match /chats/{chatId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
-    }
 
-    // Tasques del Planificador
-    match /tasks/{taskId} {
-      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      // Tasques i Roadmaps: cada usuari accedeix NOMÉS al seu propi
+      match /tasks/{taskId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      match /roadmaps/{roadmapId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
 
     match /invites/{code} {

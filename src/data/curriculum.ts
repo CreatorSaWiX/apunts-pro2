@@ -30,7 +30,6 @@ export const geiBaseEdges = [
     { source: 'PRO2', target: 'PROP' },
     { source: 'PRO2', target: 'PAR' },
     { source: 'PRO2', target: 'IES' },
-    { source: 'EDA', target: 'BD' },
     { source: 'EDA', target: 'IES' },
     { source: 'BD', target: 'IES' }
 ];
@@ -52,7 +51,61 @@ export const getSemesterForSubject = (acronym: string): number => {
         'EDA': 3, 'PE': 3, 'SO': 3, 'CI': 3, 'BD': 3,
         'EEE': 4, 'IDI': 4, 'IES': 4, 'AC': 4, 'XC': 4,
         'PROP': 5, 'PAR': 5,
-        'A': 6, 'G': 6, 'IA': 6, 'LI': 6, 'LP': 6, 'TC': 6, // Ex. Computació
+        // Computació
+        'A': 5, 'G': 5, 'IA': 5,
+        'LI': 6, 'LP': 6, 'TC': 6,
+        // Enginyeria del Software
+        'AS': 5, 'ASW': 5, 'DBD': 5,
+        'ER': 6, 'GPS': 6, 'PES': 6,
+        // Enginyeria de Computadors
+        'AC2': 5, 'DSBM': 5, 'MP': 5,
+        'PEC': 6, 'SO2': 6, 'XC2': 6,
+        // Sistemes d'Informació
+        'ADEI': 5, 'DSI': 5, 'NE': 5,
+        'PSI': 6, 'SIO': 6, 'ABD': 6, // Nota: poden variar, poso Q5 i Q6 per quadrar la graella
+        // Tecnologies de la Informació (assignació suggerida per la graella visual)
+        'ASO': 5, 'PI': 5, 'PTI': 5,
+        'SI': 6, 'SOA': 6, 'TXC': 6,
     };
-    return semesters[acronym] || 8; // Default to column 8 if not defined
+    return semesters[acronym] || 8; // Default to row 8 if not defined
 };
+
+export interface SpecializationData {
+    id: string;
+    name: string;
+    mandatory: string[];
+    complementary: string[];
+}
+
+export const specializations: SpecializationData[] = [
+    {
+        id: 'C',
+        name: 'Computació',
+        mandatory: ['A', 'G', 'IA', 'LI', 'LP', 'TC'],
+        complementary: ['AA', 'APA', 'CAIM', 'CL', 'CN', 'IO', 'SID']
+    },
+    {
+        id: 'EC',
+        name: 'Enginyeria de Computadors',
+        mandatory: ['AC2', 'DSBM', 'MP', 'PEC', 'SO2', 'XC2'],
+        complementary: ['CASO', 'CPD', 'PAP', 'PCA', 'PDS', 'STR', 'VLSI']
+    },
+    {
+        id: 'ES',
+        name: 'Enginyeria del Software',
+        mandatory: ['AS', 'ASW', 'DBD', 'ER', 'GPS', 'PES'],
+        complementary: ['CAP', 'CBDE', 'CSI', 'ECSDI', 'SIM', 'SOAD']
+    },
+    {
+        id: 'SI',
+        name: 'Sistemes d\'Informació',
+        mandatory: ['ADEI', 'DSI', 'NE', 'PSI', 'SIO', 'ABD'],
+        complementary: ['EDO', 'MI', 'VPE']
+    },
+    {
+        id: 'TI',
+        name: 'Tecnologies de la Informació',
+        mandatory: ['ASO', 'PI', 'PTI', 'SI', 'SOA', 'TXC'],
+        complementary: ['AD', 'CASO', 'CPD', 'IM', 'SDX', 'TCI']
+    }
+];

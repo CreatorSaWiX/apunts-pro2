@@ -1,8 +1,8 @@
 import type { Node, Edge } from '@xyflow/react';
 import { getSemesterForSubject } from '../data/curriculum';
 
-const COLUMN_WIDTH = 300;
-const ROW_HEIGHT = 120;
+const NODE_WIDTH = 280;
+const ROW_HEIGHT = 150;
 const START_X = 50;
 const START_Y = 50;
 
@@ -27,8 +27,9 @@ export const getGridLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 
         // Center vertically based on max items? No, just top aligned or centered.
         // Let's just top align for a clean grid.
-        const x = START_X + (semester - 1) * COLUMN_WIDTH;
-        const y = START_Y + indexInSemester * ROW_HEIGHT;
+        // Transposed: Semesters are now ROWS, Subjects are COLUMNS
+        const x = START_X + indexInSemester * NODE_WIDTH;
+        const y = START_Y + (semester - 1) * ROW_HEIGHT;
 
         return {
             ...node,

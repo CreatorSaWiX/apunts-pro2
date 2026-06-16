@@ -112,7 +112,8 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 const { db } = await import('../lib/firebase');
                 const { collection, query, where, onSnapshot } = await import('firebase/firestore');
 
-                const q = query(collection(db, 'tasks'), where('userId', '==', user.id));
+                // Ens assegurem de consultar la subcol·lecció correcta
+                const q = query(collection(db, 'users', user.id, 'tasks'));
                 
                 unsubscribe = onSnapshot(q, (snapshot) => {
                     const loadedTasks: Task[] = [];
@@ -169,7 +170,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 createdAt: new Date().toISOString()
             };
 
-            const docRef = await addDoc(collection(db, 'tasks'), newTask);
+            const docRef = await addDoc(collection(db, 'users', user.id, 'tasks'), newTask);
             return docRef.id;
         } catch (err) {
             console.error("Error adding task:", err);
@@ -185,7 +186,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             const { collection, writeBatch, doc } = await import('firebase/firestore');
             
             const batch = writeBatch(db);
-            const tasksRef = collection(db, 'tasks');
+            const tasksRef = collection(db, 'users', user.id, 'tasks');
 
             tasksData.forEach(taskData => {
                 const newDocRef = doc(tasksRef);
@@ -214,14 +215,14 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             const { db } = await import('../lib/firebase');
             const { doc, updateDoc } = await import('firebase/firestore');
             
-            const taskRef = doc(db, 'tasks', taskId);
+            const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
             await updateDoc(taskRef, updates);
         } catch (err) {
             console.error("Error updating task:", err);
             // Revert would go here in a robust implementation
             throw err;
         }
-    }, []);
+    }, [user]);
 
     const deleteTask = useCallback(async (taskId: string, task?: Task) => {
         try {
@@ -234,12 +235,12 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 return prev.filter(t => t.id !== taskId);
             });
             
-            await deleteDoc(doc(db, 'tasks', taskId));
+            await deleteDoc(doc(db, 'users', user.id, 'tasks', taskId));
         } catch (err) {
             console.error("Error deleting task:", err);
             throw err;
         }
-    }, []);
+    }, [user]);
 
     const undoDelete = useCallback(async () => {
         const lastDeleted = deletedTasksRef.current.pop();
@@ -249,7 +250,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             const { db } = await import('../lib/firebase');
             const { doc, setDoc } = await import('firebase/firestore');
             
-            await setDoc(doc(db, 'tasks', lastDeleted.id), {
+            await setDoc(doc(db, 'users', user.id, 'tasks', lastDeleted.id), {
                 userId: lastDeleted.userId,
                 title: lastDeleted.title,
                 description: lastDeleted.description,
@@ -265,7 +266,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             console.error("Error undoing delete:", err);
             deletedTasksRef.current.push(lastDeleted); // put it back on failure
         }
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         const handleGlobalKeyDown = (e: KeyboardEvent) => {

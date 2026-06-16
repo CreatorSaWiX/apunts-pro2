@@ -6,7 +6,7 @@ import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from './AuthContext';
 import subjectsData from '../data/subjects.json';
-import { geiBaseNodes, geiBaseEdges, getCreditsForSubject, getSemesterForSubject } from '../data/curriculum';
+import { geiBaseNodes, geiBaseEdges, getCreditsForSubject, getSemesterForSubject, specializations } from '../data/curriculum';
 import { getGridLayoutedElements } from '../lib/gridLayout';
 
 export type SubjectStatus = 'locked' | 'available' | 'in_progress' | 'passed' | 'failed' | 'retaking';
@@ -33,6 +33,7 @@ interface RoadmapContextType {
     updateNodeStatus: (nodeId: string, status: SubjectStatus) => void;
     saveRoadmap: () => Promise<void>;
     addSubjectNode: (acronym: string, type: SubjectNodeData['type']) => void;
+    setSpecialization: (specializationId: string) => void;
     isLoading: boolean;
     totalPassedECTS: number;
     canStartMaster: boolean;
@@ -85,7 +86,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 return;
             }
             try {
-                const docRef = doc(db, 'roadmaps', user.id);
+                const docRef = doc(db, 'users', user.id, 'roadmaps', 'main');
                 const snap = await getDoc(docRef);
                 if (snap.exists() && isMounted) {
                     const data = snap.data();
@@ -223,6 +224,42 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         });
     }, [edges]);
 
+    const setSpecialization = useCallback((specializationId: string) => {
+        const spec = specializations.find(s => s.id === specializationId);
+        if (!spec) return;
+
+        setNodes(prev => {
+            // Remove existing specialization nodes
+            let newNodes = prev.filter(n => n.data.type !== 'specialization');
+            
+            // Add new nodes
+            spec.mandatory.forEach(acronym => {
+                // Check if already exists to avoid duplicates
+                if (!newNodes.find(n => n.id === acronym)) {
+                    const subject = subjectsData.find((s: any) => s.name === acronym);
+                    const semester = getSemesterForSubject(acronym);
+                    newNodes.push({
+                        id: acronym,
+                        position: { x: 0, y: 0 },
+                        data: {
+                            label: subject?.description || acronym,
+                            credits: getCreditsForSubject(acronym),
+                            status: 'locked', // Will be recalculated by checkPrerequisites
+                            type: 'specialization',
+                            attempts: 0,
+                            description: subject?.description || acronym,
+                            semester
+                        }
+                    });
+                }
+            });
+
+            // Re-apply layout
+            const { nodes: layouted } = getGridLayoutedElements(newNodes, edges);
+            return checkPrerequisites(layouted as Node<SubjectNodeData>[], edges);
+        });
+    }, [edges, checkPrerequisites]);
+
     // Recalculate layout when edges change (only on connection)
     const onConnect = useCallback(
         (params: Connection) => {
@@ -241,13 +278,35 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
     const saveRoadmap = useCallback(async () => {
         if (!user) return;
         try {
-            const docRef = doc(db, 'roadmaps', user.id);
-            await setDoc(docRef, {
-                nodes,
-                edges,
+            // Clean nodes and edges to avoid Firebase errors from undefined or non-serializable fields added by ReactFlow
+            const cleanNodes = nodes.map(n => ({
+                id: n.id,
+                position: n.position,
+                data: {
+                    label: n.data.label,
+                    credits: n.data.credits,
+                    status: n.data.status,
+                    type: n.data.type,
+                    attempts: n.data.attempts,
+                    description: n.data.description,
+                    semester: n.data.semester
+                },
+                type: n.type || 'subjectNode',
+            }));
+            const cleanEdges = edges.map(e => ({
+                id: e.id,
+                source: e.source,
+                target: e.target,
+                animated: !!e.animated
+            }));
+
+            const docRef = doc(db, 'users', user.id, 'roadmaps', 'main');
+            await setDoc(docRef, JSON.parse(JSON.stringify({
+                nodes: cleanNodes,
+                edges: cleanEdges,
                 itinerary,
                 updatedAt: new Date().toISOString()
-            });
+            })));
         } catch (err) {
             console.error("Error saving roadmap:", err);
             throw err;
@@ -259,6 +318,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             nodes, edges, itinerary, setItinerary, 
             onNodesChange, onEdgesChange, onConnect, 
             updateNodeStatus, saveRoadmap, addSubjectNode, 
+            setSpecialization,
             isLoading, totalPassedECTS, canStartMaster 
         }}>
             {children}

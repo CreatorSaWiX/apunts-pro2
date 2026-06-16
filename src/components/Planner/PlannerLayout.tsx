@@ -199,7 +199,7 @@ const PlannerLayout: React.FC = () => {
                             className="fixed inset-0 z-0"
                         >
                             <RoadmapProvider>
-                                <RoadmapView />
+                                <RoadmapView isOpenAI={isAIModalOpen} onCloseAI={() => setIsAIModalOpen(false)} />
                             </RoadmapProvider>
                         </motion.div>
                     )}
@@ -220,7 +220,7 @@ const PlannerLayout: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            <AIPromptBar isOpen={isAIModalOpen} onClose={() => setIsAIModalOpen(false)} />
+            {view !== 'roadmap' && <AIPromptBar isOpen={isAIModalOpen} onClose={() => setIsAIModalOpen(false)} />}
             <TaskPopover />
         </div>
     );

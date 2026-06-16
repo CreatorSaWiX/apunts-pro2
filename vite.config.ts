@@ -302,6 +302,109 @@ L'estructura exacta ha de ser:
               res.end('Method Not Allowed');
             }
           });
+
+          // Middleware per l'AI Roadmap
+          server.middlewares.use('/api/roadmap-ai', async (req, res) => {
+            if (req.method === 'POST') {
+              let body = '';
+              req.on('data', chunk => {
+                body += chunk.toString();
+              });
+              req.on('end', async () => {
+                try {
+                  const { prompt, currentNodes } = JSON.parse(body);
+                  const { GoogleGenerativeAI } = await import('@google/generative-ai');
+                  const apiKey = env.GEMINI_API_KEY;
+                  
+                  if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
+                    res.statusCode = 500;
+                    res.end(JSON.stringify({ error: 'Clau de Gemini no configurada al servidor' }));
+                    return;
+                  }
+
+                  const genAI = new GoogleGenerativeAI(apiKey);
+                  const systemInstruction = `Ets un asistent acadèmic (copilot) que ajuda als estudiants del Grau en Enginyeria Informàtica (FIB-UPC) a planificar les seves assignatures.
+                  
+IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SENSE TEXT AL VOLTANT.
+
+# CONTEXT ACTUAL:
+- Sigles d'assignatures actualment a la graella de l'usuari: ${JSON.stringify(currentNodes)}
+- Assignatures oficials optatives GEI FIB per especialitat:
+  Computació (C): A, G, IA, LI, LP, TC i recomanades AA, APA, CAIM, CL, CN, IO, SID.
+  Software (ES): AS, ASW, DBD, ER, GPS, PES i recomanades CAP, CBDE, CSI, ECSDI, SIM, SOAD.
+  Sistemes (SI): ADEI, DSI, NE, PSI, SIO, ABD i recomanades EDO, MI, VPE.
+  Xarxes/IT (TI): ASO, PI, PTI, SI, SOA, TXC i recomanades AD, CASO, CPD, IM, SDX, TCI.
+  Computadors (EC): AC2, DSBM, MP, PEC, SO2, XC2 i recomanades CASO, CPD, PAP, PCA, PDS, STR, VLSI.
+
+# INSTRUCCIONS:
+Respon a l'usuari amb un to informal i amigable explicant què faràs o recomanant-li. Si l'usuari vol alguna cosa (com Erasmus, Intel·ligència Artificial, Videojocs), proposa-li "add" d'assignatures apropiades (fes servir només les sigles correctes existents). 
+Si simplement et demana si veus el seu roadmap, digues que sí, llegeix-li algunes de les assignatures de ${JSON.stringify(currentNodes)} i pregunta-li com vol continuar.
+
+L'estructura exacta ha de ser:
+{
+  "reply": "Genial! He afegit dues optatives que t'aniran de perles: APA i CAIM. Com ho veus?",
+  "actions": [
+    {
+      "type": "add",
+      "subject": "APA"
+    },
+    {
+      "type": "remove",
+      "subject": "ASO"
+    }
+  ]
+}`;
+
+                  const MODELS = [
+                    'gemini-3.5-flash',
+                    'gemini-3.1-flash-lite',
+                    'gemini-2.5-flash',
+                    'gemini-2.5-flash-lite',
+                    'gemini-2.0-flash-lite',
+                  ];
+
+                  let lastError: any;
+                  let replied = false;
+
+                  for (const modelName of MODELS) {
+                    try {
+                      const model = genAI.getGenerativeModel({ 
+                        model: modelName, 
+                        systemInstruction,
+                        generationConfig: { responseMimeType: "application/json" }
+                      });
+                      
+                      const result = await model.generateContent(prompt);
+                      const responseText = result.response.text();
+                      
+                      res.setHeader('Content-Type', 'application/json');
+                      res.end(responseText);
+                      replied = true;
+                      break;
+                    } catch (e: any) {
+                      const is429 = e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate');
+                      if (is429) {
+                        console.warn(`⚠️ [DevServer Roadmap AI] ${modelName} rate limit/503, provant el seguent model...`);
+                        lastError = e;
+                        continue;
+                      }
+                      throw e;
+                    }
+                  }
+
+                  if (!replied) throw lastError ?? new Error('Tots els models han fallat');
+
+                } catch (e: any) {
+                  console.error("[DevServer Roadmap AI Error]:", e);
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ error: String(e.message || e) }));
+                }
+              });
+            } else {
+              res.statusCode = 405;
+              res.end('Method Not Allowed');
+            }
+          });
         }
       }
     ],
