@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import BoardView from './Board/BoardView';
 import CalendarView from './Calendar/CalendarView';
 import GanttView from './Gantt/GanttView';
+import RoadmapView from './Roadmap/RoadmapView';
+import { RoadmapProvider } from '../../contexts/RoadmapContext';
 import AIPromptBar from './AIPromptBar';
 import GlobalTaskContextMenu from './GlobalTaskContextMenu';
 import GlobalFiltersBar from './GlobalFiltersBar';
@@ -194,15 +196,11 @@ const PlannerLayout: React.FC = () => {
                             animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }} 
                             exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }} 
                             transition={{ duration: 0.4, ease: 'easeInOut' }} 
-                            className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10 flex items-center justify-center`}
+                            className="fixed inset-0 z-0"
                         >
-                            <div className="text-center p-8 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl">
-                                <Route size={48} className="mx-auto text-primary mb-4 opacity-80" />
-                                <h3 className="text-xl font-bold text-white mb-2">Roadmap d'Estudi</h3>
-                                <p className="text-slate-400 max-w-sm mx-auto">
-                                    Aquí podràs veure l'arbre de dependències i la ruta òptima d'estudi. Pròximament!
-                                </p>
-                            </div>
+                            <RoadmapProvider>
+                                <RoadmapView />
+                            </RoadmapProvider>
                         </motion.div>
                     )}
                 </AnimatePresence>

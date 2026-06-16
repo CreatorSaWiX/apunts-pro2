@@ -105,7 +105,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
             priority: editPriority,
             dueDate: editDueDate ? new Date(editDueDate).toISOString() : null,
             startDate: editStartDate ? new Date(editStartDate).toISOString() : null,
-            subjectId: editSubjectId || null
+            subjectId: editSubjectId || undefined
         };
 
         if (updates.startDate && updates.dueDate) {

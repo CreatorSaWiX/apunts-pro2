@@ -22,12 +22,12 @@ const toLocalDatetime = (d: Date) => {
 };
 
 const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onUpdateColumn, onDeleteColumn }) => {
-    const { subjects, activeSubjectId } = useTasks();
+    const { subjects } = useTasks();
     const taskIds = useMemo(() => tasks.map(t => t.id), [tasks]);
     const [isDrafting, setIsDrafting] = useState(false);
     const [draftTitle, setDraftTitle] = useState('');
     const [draftPriority, setDraftPriority] = useState<TaskPriority>('MEDIUM');
-    const [draftSubjectId, setDraftSubjectId] = useState<string | null>(activeSubjectId);
+    const [draftSubjectId, setDraftSubjectId] = useState<string | null>(null);
     const [isEditingHeader, setIsEditingHeader] = useState(false);
     const [headerTitle, setHeaderTitle] = useState(column.title);
     const [draftDueDate, setDraftDueDate] = useState<string>('');
@@ -51,19 +51,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const backgroundStyle = useMotionTemplate`
-        radial-gradient(
-          600px circle at ${mouseX}px ${mouseY}px,
-          rgba(var(--primary-rgb), 0.08),
-          transparent 80%
-        )
-    `;
 
-    function handleMouseMove(e: React.MouseEvent) {
-        const { left, top } = e.currentTarget.getBoundingClientRect();
-        mouseX.set(e.clientX - left);
-        mouseY.set(e.clientY - top);
-    }
 
     const getColumnTheme = (col: {id: string, color?: string}) => {
         if (col.color) {
@@ -113,7 +101,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
             startDate: draftStartDate || null,
             estimatedMinutes: 60,
             status: column.id,
-            subjectId: draftSubjectId || null
+            subjectId: draftSubjectId || undefined
         });
 
         setIsDrafting(false);
