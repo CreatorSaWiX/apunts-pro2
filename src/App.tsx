@@ -19,18 +19,21 @@ const NewSolutionPage = lazy(() => import('./pages/NewSolutionPage'));
 const QuizPage = lazy(() => import('./pages/QuizPage'));
 const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 const PlannerPage = lazy(() => import('./pages/PlannerPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 import { AuthProvider } from './contexts/AuthContext';
 import { SubjectProvider } from './contexts/SubjectContext';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 import { Analytics } from "@vercel/analytics/react";
 // import { SpeedInsights } from "@vercel/speed-insights/react"
 
 function App() {
   return (
     <LanguageProvider>
-      <SubjectProvider>
       <AuthProvider>
-        <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
+        <SettingsProvider>
+          <SubjectProvider>
+            <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
 
           <Background />
           {/* <PerformanceMonitor /> */}
@@ -55,14 +58,16 @@ function App() {
               <Route path="/comunitat" element={<CommunityPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/planner" element={<PlannerPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Suspense>
           <Analytics />
           {/* <SpeedInsights /> */}
-          <ChatBot />
-        </div>
+            <ChatBot />
+          </div>
+          </SubjectProvider>
+        </SettingsProvider>
       </AuthProvider>
-    </SubjectProvider>
     </LanguageProvider>
   );
 }

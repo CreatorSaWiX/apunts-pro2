@@ -1,13 +1,77 @@
 import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import { Link, useLocation } from 'react-router-dom';
-import { Users, ArrowLeft, LogIn, CalendarDays, Settings } from 'lucide-react';
+import { Users, Home, LogIn, CalendarDays, Settings } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import NavigationPill from './ui/NavigationPill';
 
 const LazyNavigationMenu = lazy(() => import('./NavigationMenu'));
+
+// --- Helper Components for Awwwards-grade Navigation ---
+
+const TooltipItem = ({ children, text, disabled = false, tooltipPosition = "bottom" }: { children: React.ReactNode, text?: string, disabled?: boolean, tooltipPosition?: "top" | "bottom" }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    
+    const tooltipYOffset = tooltipPosition === "bottom" ? 10 : -10;
+    const tooltipPositionClass = tooltipPosition === "bottom" 
+        ? "top-[calc(100%+8px)]" 
+        : "bottom-[calc(100%+8px)]";
+
+    return (
+        <div
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="relative flex items-center justify-center z-10"
+        >
+            {children}
+            {text && !disabled && (
+                <AnimatePresence>
+                    {isHovered && (
+                        <motion.div
+                            initial={{ opacity: 0, y: tooltipYOffset, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: tooltipYOffset, scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                            className={`absolute ${tooltipPositionClass} left-1/2 -translate-x-1/2 px-2.5 py-1.5 bg-[#0F172A]/90 backdrop-blur-md text-slate-200 text-xs font-semibold rounded-lg whitespace-nowrap shadow-[0_10px_30px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/10 z-[100] pointer-events-none`}
+                        >
+                            {text}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            )}
+        </div>
+    );
+};
+
+const NavLinkItem = ({ to, icon: Icon, label, isActive }: { to: string, icon: any, label: string, isActive: boolean }) => {
+    return (
+        <TooltipItem text={label}>
+            <Link
+                to={to}
+                className={`group relative w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+            >
+                {isActive && (
+                    <motion.div
+                        layoutId="main-nav-active"
+                        className="absolute inset-0 bg-white/10 rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"
+                        initial={false}
+                        transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    >
+                        <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                    </motion.div>
+                )}
+                <motion.div 
+                    whileHover={{ scale: 1.15, rotate: Icon === Settings ? 45 : 0 }} 
+                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                >
+                    <Icon size={20} />
+                </motion.div>
+            </Link>
+        </TooltipItem>
+    );
+};
 
 const Navigation: React.FC = () => {
     const { subject, theme } = useSubject();
@@ -50,144 +114,94 @@ const Navigation: React.FC = () => {
     }, [user]);
 
     // Mobile Navbar states
-    const [isScrolled, setIsScrolled] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [isPillExpanded, setIsPillExpanded] = useState(false);
     const navRef = useRef<HTMLDivElement>(null);
 
-    // Track scroll and window size for mobile navbar behaviour
+    // Track window size for mobile navbar behaviour
     useEffect(() => {
-        const handleScroll = () => {
-            const scrolled = window.scrollY > 40;
-            setIsScrolled(scrolled);
-            if (!scrolled) setIsPillExpanded(false);
-        };
         const handleResize = () => setIsMobile(window.innerWidth < 768);
-
-        handleScroll();
         handleResize();
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
         window.addEventListener('resize', handleResize, { passive: true });
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleResize);
-        };
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
-
-    // Handle click outside to close expanded pill on mobile
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-            if (navRef.current && !navRef.current.contains(event.target as Node)) {
-                setIsPillExpanded(false);
-            }
-        };
-        if (isPillExpanded && isMobile) {
-            document.addEventListener('mousedown', handleClickOutside);
-            document.addEventListener('touchstart', handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-            document.removeEventListener('touchstart', handleClickOutside);
-        };
-    }, [isPillExpanded, isMobile]);
-
-    // Close on navigation
-    useEffect(() => {
-        setIsPillExpanded(false);
-    }, [location.pathname]);
-
-    const showCompact = isMobile && isScrolled && !isPillExpanded;
 
     return (
         <>
-            {/* Top-Left Floating Navigation Pill */}
-            <div ref={navRef} className={`nav-pill-container fixed top-5 md:top-6 z-50 transition-all duration-300 ease-out ${showCompact ? 'left-0' : 'left-4 sm:left-6'}`}>
-                {showCompact ? (
-                    <button
-                        onClick={() => setIsPillExpanded(true)}
-                        className={`flex flex-col gap-1 items-center justify-center p-2.5 py-3 border border-white/10 border-l-0 rounded-r-xl shadow-[5px_5px_15px_rgba(0,0,0,0.5)] transition-all group ${isMobile ? 'bg-slate-900 pb-safe' : 'bg-slate-900/90 backdrop-blur-xl hover:bg-slate-800'}`}
-                        title="Expandir Navegació"
-                    >
-                        <div className="w-1 h-1 rounded-full bg-slate-400 group-hover:bg-emerald-400 transition-colors"></div>
-                        <div className="w-1 h-1 rounded-full bg-slate-400 group-hover:bg-emerald-400 transition-colors"></div>
-                        <div className="w-1 h-1 rounded-full bg-slate-400 group-hover:bg-emerald-400 transition-colors"></div>
-                    </button>
-                ) : (
-                    <NavigationPill className={`!p-1.5 ${isMobile ? 'bg-slate-900 shadow-xl' : ''}`}>
+            {/* Main Floating Navigation Pill (Bottom on Mobile, Top-Left on Desktop) */}
+            <div ref={navRef} className={`nav-pill-container fixed z-50 transition-all duration-300 ease-out bottom-6 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[max-content]`}>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                >
+                    <NavigationPill className={`!p-1.5 ${isMobile ? 'bg-[#0F172A]/90 shadow-[0_10px_40px_rgba(0,0,0,0.8)]' : ''}`}>
 
-                        {location.pathname !== '/' && (
-                            <>
-                                <Link
-                                    to="/"
-                                    className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
-                                    title="Tornar a l'Inici"
-                                >
-                                    <ArrowLeft size={20} />
-                                </Link>
-                                <div className="w-px h-5 bg-white/10 mx-1" />
-                            </>
-                        )}
+                            <NavLinkItem 
+                                to="/" 
+                                icon={Home} 
+                                label="Inici" 
+                                isActive={location.pathname === '/'} 
+                            />
+                            <NavLinkItem 
+                                to="/comunitat" 
+                                icon={Users} 
+                                label="Comunitat" 
+                                isActive={location.pathname === '/comunitat'} 
+                            />
+                            <NavLinkItem 
+                                to="/planner" 
+                                icon={CalendarDays} 
+                                label="Planificador" 
+                                isActive={location.pathname === '/planner'} 
+                            />
+                            <NavLinkItem 
+                                to="/settings" 
+                                icon={Settings} 
+                                label="Configuració" 
+                                isActive={location.pathname === '/settings'} 
+                            />
 
-                        {/* <button
-                            onClick={() => setIsMenuOpen(true)}
-                            className="p-2.5 rounded-full text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
-                            title="Obrir Menú"
-                        >
-                            <Menu size={20} />
-                        </button> */}
+                            <div className="w-px h-5 bg-white/10 mx-1" />
 
-                        <Link
-                            to="/comunitat"
-                            className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors ${location.pathname === '/comunitat' ? 'text-primary bg-primary/10' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-                            title="Comunitat"
-                        >
-                            <Users size={20} />
-                        </Link>
-
-                        <Link
-                            to="/planner"
-                            className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors ${location.pathname === '/planner' ? 'text-primary bg-primary/10' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-                            title="Planificador"
-                        >
-                            <CalendarDays size={20} />
-                        </Link>
-
-                        <Link
-                            to="/settings"
-                            className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors ${location.pathname === '/settings' ? 'text-primary bg-primary/10' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-                            title="Configuració"
-                        >
-                            <Settings size={20} />
-                        </Link>
-
-                        <div className="w-px h-5 bg-white/10 mx-1" />
-
-                        {user ? (
-                            <Link
-                                to="/profile"
-                                className="h-9 md:h-10 pl-1.5 pr-3 md:pl-2 md:pr-4 rounded-full flex items-center gap-2 hover:bg-white/5 transition-colors relative"
-                                title="El meu perfil"
-                            >
-                                <div className="relative">
-                                    <img src={user.avatar} alt={user.username} className="w-7 h-7 rounded-full bg-slate-800 border border-white/10" />
-                                    {unreadCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-900 shadow-sm" />
-                                    )}
-                                </div>
-                                <span className="text-sm font-medium text-slate-300 hidden sm:inline">{user.username}</span>
-                            </Link>
-                        ) : (
-                            <Link
-                                to="/login"
-                                className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-sky-400 hover:bg-white/5 transition-colors"
-                                title="Iniciar Sessió"
-                            >
-                                <LogIn size={20} />
-                            </Link>
-                        )}
-                    </NavigationPill>
-                )}
+                            {user ? (
+                                <TooltipItem text="El meu perfil">
+                                    <Link
+                                        to="/profile"
+                                        className={`group relative h-9 md:h-10 pl-1.5 pr-3 md:pl-2 md:pr-4 rounded-full flex items-center gap-2 transition-colors duration-300 ${location.pathname === '/profile' ? 'text-white' : 'text-slate-300 hover:text-white'}`}
+                                    >
+                                        {location.pathname === '/profile' && (
+                                            <motion.div
+                                                layoutId="main-nav-active"
+                                                className="absolute inset-0 bg-white/10 rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"
+                                                initial={false}
+                                                transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                                            >
+                                                <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/40 to-transparent blur-[1px]" />
+                                            </motion.div>
+                                        )}
+                                        <motion.div whileHover={{ scale: 1.05 }} className="relative">
+                                            <img src={user.avatar} alt={user.username} className="w-7 h-7 rounded-full bg-slate-800 border border-white/20 shadow-sm" />
+                                            {unreadCount > 0 && (
+                                                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-900 shadow-sm" />
+                                            )}
+                                        </motion.div>
+                                        <span className="text-sm font-medium hidden sm:inline">{user.username}</span>
+                                    </Link>
+                                </TooltipItem>
+                            ) : (
+                                <TooltipItem text="Iniciar Sessió">
+                                    <Link
+                                        to="/login"
+                                        className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-sky-400 hover:bg-white/5 transition-colors"
+                                    >
+                                        <motion.div whileHover={{ scale: 1.15 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                                            <LogIn size={20} />
+                                        </motion.div>
+                                    </Link>
+                                </TooltipItem>
+                            )}
+                        </NavigationPill>
+                    </motion.div>
             </div>
 
             {/* Menu Drawer - Slides from LEFT */}
@@ -203,48 +217,6 @@ const Navigation: React.FC = () => {
                     </Suspense>
                 )}
             </AnimatePresence>
-
-            {/* Bottom-Left Floating Language Selector - Grayscale High Contrast */}
-            {location.pathname === '/' && (
-                <div className={`hidden md:block nav-pill-container fixed bottom-5 md:bottom-6 z-50 transition-all duration-300 ease-out left-4 sm:left-6 ${showCompact ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
-                    <NavigationPill className={`!p-1 ${isMobile ? 'bg-slate-900' : ''}`}>
-                        <button
-                            onClick={() => setPreferredLang('ca')}
-                            className={`relative w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-xs font-black transition-colors duration-300 z-10 ${preferredLang === 'ca' ? 'text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}
-                            title="Català"
-                        >
-                            {preferredLang === 'ca' && (
-                                <motion.div
-                                    layoutId="lang-active-tab"
-                                    className="absolute inset-0 bg-linear-to-br from-white to-slate-400 border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),0_0_10px_rgba(255,255,255,0.2)]"
-                                    initial={false}
-                                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                                >
-                                    <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/80 to-transparent blur-[1px]" />
-                                </motion.div>
-                            )}
-                            CA
-                        </button>
-                        <button
-                            onClick={() => setPreferredLang('es')}
-                            className={`relative w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-xs font-black transition-colors duration-300 z-10 ${preferredLang === 'es' ? 'text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}
-                            title="Castellano"
-                        >
-                            {preferredLang === 'es' && (
-                                <motion.div
-                                    layoutId="lang-active-tab"
-                                    className="absolute inset-0 bg-linear-to-br from-white to-slate-400 border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),0_0_10px_rgba(255,255,255,0.2)]"
-                                    initial={false}
-                                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                                >
-                                    <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/80 to-transparent blur-[1px]" />
-                                </motion.div>
-                            )}
-                            ES
-                        </button>
-                    </NavigationPill>
-                </div>
-            )}
         </>
     );
 };

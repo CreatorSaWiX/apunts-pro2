@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useTasks } from '../../contexts/TasksContext';
+import { useSettings } from '../../contexts/SettingsContext';
 import NavigationPill from '../ui/NavigationPill';
 import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles, Route } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -50,7 +51,8 @@ const AIParticles = () => {
 
 const PlannerLayout: React.FC = () => {
     const { isLoading, error, subjects, filters, setFilters, clearFilters, tasks } = useTasks();
-    const [view, setView] = useState<ViewMode>('board');
+    const { defaultPlannerView } = useSettings();
+    const [view, setView] = useState<ViewMode>(defaultPlannerView || 'board');
     const [isAIModalOpen, setIsAIModalOpen] = useState(false);
     const [screenGlow, setScreenGlow] = useState(false);
 
