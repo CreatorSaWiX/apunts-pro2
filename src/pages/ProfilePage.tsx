@@ -4,7 +4,7 @@ import { User, LogOut, Upload, Globe, Loader, Edit2, X, Save, Mail, Send, Bell, 
 import { useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { updateProfile } from 'firebase/auth';
 import { motion, AnimatePresence, useMotionTemplate, useMotionValue } from 'framer-motion';
@@ -231,31 +231,32 @@ const ProfilePage = () => {
 
     // Fetch unread counts
     useEffect(() => {
-        const fetchUnread = async () => {
-            if (isOwnProfile && authUser) {
-                // Messages
-                const qMsg = query(
-                    collection(db, 'messages'),
-                    where('receiverId', '==', authUser.id),
-                    where('read', '==', false)
-                );
-                const snapMsg = await getDocs(qMsg);
-                setUnreadCount(snapMsg.size);
+        if (!isOwnProfile || !authUser) return;
 
-                // Notifications
-                const qNotif = query(
-                    collection(db, 'notifications'),
-                    where('userId', '==', authUser.id),
-                    where('read', '==', false)
-                );
-                const snapNotif = await getDocs(qNotif);
-                setUnreadNotificationsCount(snapNotif.size);
-            }
+        // Messages
+        const qMsg = query(
+            collection(db, 'messages'),
+            where('receiverId', '==', authUser.id),
+            where('read', '==', false)
+        );
+        const unsubscribeMsg = onSnapshot(qMsg, (snapshot) => {
+            setUnreadCount(snapshot.size);
+        });
+
+        // Notifications
+        const qNotif = query(
+            collection(db, 'notifications'),
+            where('userId', '==', authUser.id),
+            where('read', '==', false)
+        );
+        const unsubscribeNotif = onSnapshot(qNotif, (snapshot) => {
+            setUnreadNotificationsCount(snapshot.size);
+        });
+
+        return () => {
+            unsubscribeMsg();
+            unsubscribeNotif();
         };
-        fetchUnread();
-
-        const interval = setInterval(fetchUnread, 30000);
-        return () => clearInterval(interval);
     }, [isOwnProfile, authUser]);
 
     const handleUpdateProfile = async (data: any) => {

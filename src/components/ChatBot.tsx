@@ -30,6 +30,53 @@ const MARKDOWN_CLS = `text-sm md:text-[15px]
   [&_strong]:text-slate-200 [&_strong]:font-semibold
   [&_blockquote]:border-l-2 [&_blockquote]:border-slate-600 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-400`;
 
+const SendButton = ({ 
+    onClick, 
+    disabled, 
+    hasInput, 
+    lastSentTime, 
+    cooldownMs 
+}: { 
+    onClick: () => void; 
+    disabled: boolean; 
+    hasInput: boolean; 
+    lastSentTime: number; 
+    cooldownMs: number 
+}) => {
+    const [cooldown, setCooldown] = useState(0);
+
+    useEffect(() => {
+        const check = () => {
+             const elapsed = Date.now() - lastSentTime;
+             const remaining = Math.ceil((cooldownMs - elapsed) / 1000);
+             if (remaining > 0) setCooldown(remaining);
+             else setCooldown(0);
+        };
+        check();
+        if (Date.now() - lastSentTime < cooldownMs) {
+            const timer = setInterval(check, 1000);
+            return () => clearInterval(timer);
+        }
+    }, [lastSentTime, cooldownMs]);
+
+    return (
+        <button
+            onClick={onClick}
+            disabled={disabled || cooldown > 0}
+            title={cooldown > 0 ? `Espera ${cooldown}s` : 'Enviar'}
+            className={`shrink-0 rounded-full transition-all mb-0.5 mr-1 flex items-center justify-center
+                ${cooldown > 0
+                ? 'w-9 h-9 bg-white/10 text-slate-500 cursor-not-allowed text-xs font-mono font-semibold'
+                : hasInput
+                    ? 'p-2 bg-white text-black hover:bg-slate-200 shadow-md'
+                    : 'p-2 bg-white/10 text-slate-500'
+                }`}
+        >
+            {cooldown > 0 ? cooldown : <ArrowUp size={18} strokeWidth={3} />}
+        </button>
+    );
+};
+
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
   const location = useLocation();
@@ -47,7 +94,7 @@ export const ChatBot: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [attachedFile, setAttachedFile] = useState<{ data: string; mimeType: string; name: string } | null>(null);
-  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const [lastSentTime, setLastSentTime] = useState(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -228,15 +275,9 @@ export const ChatBot: React.FC = () => {
     if (elapsed < COOLDOWN_MS) return;
     if ((!input.trim() && !attachedFile) || isLoading) return;
 
-    // Marca el temps i inicia el compte enrere visual
+    // Marca el temps per iniciar el compte enrere visual al component fill
     lastSentAt.current = Date.now();
-    let remaining = Math.ceil(COOLDOWN_MS / 1000);
-    setCooldownRemaining(remaining);
-    const timer = setInterval(() => {
-      remaining -= 1;
-      setCooldownRemaining(remaining);
-      if (remaining <= 0) clearInterval(timer);
-    }, 1000);
+    setLastSentTime(Date.now());
     const userMsg = input.trim() || `[Fitxer: ${attachedFile?.name}]`;
     setInput('');
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
@@ -505,20 +546,13 @@ export const ChatBot: React.FC = () => {
                     className="flex-1 bg-transparent px-1 py-2.5 text-[15px] text-slate-200 placeholder-slate-400 focus:outline-none resize-none min-h-[44px] max-h-[250px] custom-scrollbar"
                     rows={1}
                   />
-                  <button
+                  <SendButton
                     onClick={handleSend}
-                    disabled={(!input.trim() && !attachedFile) || isLoading || cooldownRemaining > 0}
-                    title={cooldownRemaining > 0 ? `Espera ${cooldownRemaining}s` : 'Enviar'}
-                    className={`shrink-0 rounded-full transition-all mb-0.5 mr-1 flex items-center justify-center
-                      ${cooldownRemaining > 0
-                        ? 'w-9 h-9 bg-white/10 text-slate-500 cursor-not-allowed text-xs font-mono font-semibold'
-                        : (input.trim() || attachedFile)
-                          ? 'p-2 bg-white text-black hover:bg-slate-200 shadow-md'
-                          : 'p-2 bg-white/10 text-slate-500'
-                      }`}
-                  >
-                    {cooldownRemaining > 0 ? cooldownRemaining : <ArrowUp size={18} strokeWidth={3} />}
-                  </button>
+                    disabled={(!input.trim() && !attachedFile) || isLoading}
+                    hasInput={!!(input.trim() || attachedFile)}
+                    lastSentTime={lastSentTime}
+                    cooldownMs={COOLDOWN_MS}
+                  />
                 </div>
               </div>
             </div>

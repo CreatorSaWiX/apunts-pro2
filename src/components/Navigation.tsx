@@ -45,12 +45,12 @@ const TooltipItem = ({ children, text, disabled = false, tooltipPosition = "bott
     );
 };
 
-const NavLinkItem = ({ to, icon: Icon, label, isActive }: { to: string, icon: any, label: string, isActive: boolean }) => {
+const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, className }: { to: string, icon?: any, children?: React.ReactNode, label: string, isActive: boolean, text?: string, className?: string }) => {
     return (
         <TooltipItem text={label}>
             <Link
                 to={to}
-                className={`group relative w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                className={`group relative flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'} ${className || 'w-9 h-9 md:w-10 md:h-10'}`}
             >
                 {isActive && (
                     <motion.div
@@ -66,8 +66,9 @@ const NavLinkItem = ({ to, icon: Icon, label, isActive }: { to: string, icon: an
                     whileHover={{ scale: 1.15, rotate: Icon === Settings ? 45 : 0 }} 
                     transition={{ type: "spring", stiffness: 400, damping: 15 }}
                 >
-                    <Icon size={20} />
+                    {Icon ? <Icon size={20} /> : children}
                 </motion.div>
+                {text && <span className="text-sm font-medium hidden sm:inline">{text}</span>}
             </Link>
         </TooltipItem>
     );
@@ -164,41 +165,27 @@ const Navigation: React.FC = () => {
                             <div className="w-px h-5 bg-white/10 mx-1" />
 
                             {user ? (
-                                <TooltipItem text="El meu perfil">
-                                    <Link
-                                        to="/profile"
-                                        className={`group relative h-9 md:h-10 pl-1.5 pr-3 md:pl-2 md:pr-4 rounded-full flex items-center gap-2 transition-colors duration-300 ${location.pathname === '/profile' ? 'text-white' : 'text-slate-300 hover:text-white'}`}
-                                    >
-                                        {location.pathname === '/profile' && (
-                                            <motion.div
-                                                layoutId="main-nav-active"
-                                                className="absolute inset-0 bg-white/10 rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"
-                                                initial={false}
-                                                transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                                            >
-                                                <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/40 to-transparent blur-[1px]" />
-                                            </motion.div>
+                                <NavLinkItem
+                                    to="/profile"
+                                    label="El meu perfil"
+                                    isActive={location.pathname === '/profile'}
+                                    text={user.username}
+                                    className="h-9 md:h-10 pl-1.5 pr-3 md:pl-2 md:pr-4 gap-2"
+                                >
+                                    <div className="relative flex items-center justify-center">
+                                        <img src={user.avatar} alt={user.username} className="w-7 h-7 rounded-full bg-slate-800 border border-white/20 shadow-sm object-cover" />
+                                        {unreadCount > 0 && (
+                                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-900 shadow-sm" />
                                         )}
-                                        <motion.div whileHover={{ scale: 1.05 }} className="relative">
-                                            <img src={user.avatar} alt={user.username} className="w-7 h-7 rounded-full bg-slate-800 border border-white/20 shadow-sm" />
-                                            {unreadCount > 0 && (
-                                                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-900 shadow-sm" />
-                                            )}
-                                        </motion.div>
-                                        <span className="text-sm font-medium hidden sm:inline">{user.username}</span>
-                                    </Link>
-                                </TooltipItem>
+                                    </div>
+                                </NavLinkItem>
                             ) : (
-                                <TooltipItem text="Iniciar Sessió">
-                                    <Link
-                                        to="/login"
-                                        className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-sky-400 hover:bg-white/5 transition-colors"
-                                    >
-                                        <motion.div whileHover={{ scale: 1.15 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
-                                            <LogIn size={20} />
-                                        </motion.div>
-                                    </Link>
-                                </TooltipItem>
+                                <NavLinkItem
+                                    to="/login"
+                                    icon={LogIn}
+                                    label="Iniciar Sessió"
+                                    isActive={location.pathname === '/login'}
+                                />
                             )}
                         </NavigationPill>
                     </motion.div>

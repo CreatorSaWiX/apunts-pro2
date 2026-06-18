@@ -15,7 +15,7 @@ const renderInlineCode = (text: string) => {
     return parts.map((part, i) => {
         if (i % 2 === 1) {
             return (
-                <code key={i} className="font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20 shadow-[0_0_10px_rgba(14,165,233,0.15)] mx-0.5 leading-none px-2 text-[0.85em]">
+                <code key={i} className="font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20 shadow-[0_0_10px_rgba(14,165,233,0.15)] mx-0.5 leading-none text-[0.85em]">
                     {part}
                 </code>
             );
@@ -23,6 +23,53 @@ const renderInlineCode = (text: string) => {
         return <span key={i}>{part}</span>;
     });
 };
+
+const QuizTimer = React.memo(({ 
+    initialTime, 
+    isFinished, 
+    onTimeUp, 
+    onTick 
+}: { 
+    initialTime: number; 
+    isFinished: boolean; 
+    onTimeUp: () => void; 
+    onTick: (time: number) => void;
+}) => {
+    const [timeLeft, setTimeLeft] = useState(initialTime);
+
+    useEffect(() => {
+        if (isFinished) return;
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    onTimeUp();
+                    clearInterval(timer);
+                    return 0;
+                }
+                const newTime = prev - 1;
+                onTick(newTime);
+                return newTime;
+            });
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [isFinished, onTimeUp, onTick]);
+
+    const formatTime = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
+    return (
+        <div className={`flex items-center gap-3 px-5 py-2 rounded-2xl font-mono text-sm font-bold border transition-all duration-500 ${timeLeft < 60
+            ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.2)] scale-105'
+            : 'bg-slate-800/50 backdrop-blur-md text-slate-300 border-white/10'
+            }`}>
+            <Clock size={16} className={timeLeft < 60 ? 'animate-pulse' : ''} />
+            <span className="tabular-nums">{formatTime(timeLeft)}</span>
+        </div>
+    );
+});
 
 const QuizPage: React.FC = () => {
     const { id: topicId } = useParams();
@@ -45,7 +92,8 @@ const QuizPage: React.FC = () => {
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
     const [isFinished, setIsFinished] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(quiz ? quiz.timeLimitSeconds : 0);
+    const timeLeftRef = React.useRef(quiz ? quiz.timeLimitSeconds : 0);
+    const [initialTimeLeft, setInitialTimeLeft] = useState(quiz ? quiz.timeLimitSeconds : 0);
 
     // 2. Persist progress in session storage (Senior: UX protection)
     useEffect(() => {
@@ -55,40 +103,31 @@ const QuizPage: React.FC = () => {
                 const { currentIdx, answers, time } = JSON.parse(saved);
                 setCurrentQuestionIdx(currentIdx);
                 setSelectedAnswers(answers);
-                setTimeLeft(time);
+                timeLeftRef.current = time;
+                setInitialTimeLeft(time);
             } catch (e) { console.error("Error restoring quiz session", e); }
         }
     }, [topicId]);
 
 
 
-    useEffect(() => {
+    const saveSession = useCallback((time: number) => {
         if (!isFinished) {
             sessionStorage.setItem(`quiz_${topicId}`, JSON.stringify({
                 currentIdx: currentQuestionIdx,
                 answers: selectedAnswers,
-                time: timeLeft
+                time: time
             }));
         } else {
             sessionStorage.removeItem(`quiz_${topicId}`);
         }
-    }, [currentQuestionIdx, selectedAnswers, timeLeft, isFinished, topicId]);
+    }, [currentQuestionIdx, selectedAnswers, isFinished, topicId]);
 
-    // Timer Logic with visual warnings
     useEffect(() => {
-        if (!quiz || isFinished) return;
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => {
-                if (prev <= 1) {
-                    setIsFinished(true);
-                    clearInterval(timer);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-        return () => clearInterval(timer);
-    }, [quiz, isFinished]);
+        saveSession(timeLeftRef.current);
+    }, [currentQuestionIdx, selectedAnswers, isFinished, saveSession]);
+
+    // Timer visual warnings handled by QuizTimer component
 
     // 4. Keyboard Navigation (Senior: Accessibility & Pro-feel)
     const handleSelectOption = useCallback((optionId: string) => {
@@ -170,12 +209,6 @@ const QuizPage: React.FC = () => {
 
     const score = quiz.questions.reduce((acc, q) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
 
-    const formatTime = (seconds: number) => {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${m}:${s.toString().padStart(2, '0')}`;
-    };
-
     return (
         <div className="h-screen pt-8 md:pt-10 pb-6 px-4 max-w-4xl mx-auto flex flex-col relative z-10 overflow-hidden overflow-x-hidden">
             {/* Elegant Header */}
@@ -188,13 +221,15 @@ const QuizPage: React.FC = () => {
                 </Link>
 
                 {!isFinished && (
-                    <div className={`flex items-center gap-3 px-5 py-2 rounded-2xl font-mono text-sm font-bold border transition-all duration-500 ${timeLeft < 60
-                        ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.2)] scale-105'
-                        : 'bg-slate-800/50 backdrop-blur-md text-slate-300 border-white/10'
-                        }`}>
-                        <Clock size={16} className={timeLeft < 60 ? 'animate-pulse' : ''} />
-                        <span className="tabular-nums">{formatTime(timeLeft)}</span>
-                    </div>
+                    <QuizTimer 
+                        initialTime={initialTimeLeft} 
+                        isFinished={isFinished} 
+                        onTimeUp={() => setIsFinished(true)} 
+                        onTick={(t) => {
+                            timeLeftRef.current = t;
+                            if (t % 5 === 0) saveSession(t); // Save every 5 seconds to not spam storage
+                        }} 
+                    />
                 )}
             </div>
 
