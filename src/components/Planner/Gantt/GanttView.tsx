@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { flushSync } from 'react-dom';
-import { format, addDays, subDays, addMinutes } from 'date-fns';
+import { format, addDays, addMinutes } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import { useTasks } from '../../../contexts/TasksContext';
 import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';

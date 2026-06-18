@@ -66,7 +66,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const isMobile = useIsMobile();
     const navigate = useNavigate();
     const { subject: contextSubject } = useSubject();
-    const subject = subjectOverride || contextSubject;
+    const subject = (subjectOverride || contextSubject || '').toLowerCase();
     const { preferredLang } = useLanguage();
     const [activeIndex, setActiveIndex] = useState(0);
     const scrollRef = useRef<HTMLDivElement>(null);

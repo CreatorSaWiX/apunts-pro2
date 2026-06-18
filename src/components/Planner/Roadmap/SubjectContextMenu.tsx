@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, Clock, XCircle, RefreshCw, X, BookOpen, GraduationCap } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, RefreshCw, X } from 'lucide-react';
 import type { SubjectNodeData, SubjectStatus } from '../../../contexts/RoadmapContext';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 

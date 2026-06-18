@@ -90,9 +90,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
 
     const style = {
         transition: transition || 'transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1)',
-        transform: isOverlay 
-            ? 'rotate(3deg) scale(1.05)' 
-            : isDragging 
+        transform: isOverlay
+            ? 'rotate(3deg) scale(1.05)'
+            : isDragging
                 ? `${CSS.Transform.toString(transform)} rotate(2deg) scale(1.02)`
                 : CSS.Transform.toString(transform),
         zIndex: isDragging || isOverlay ? 10000 : (isEditing || showSubjectPicker ? 50 : 'auto'),
@@ -301,11 +301,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                     <button
                                         onClick={toggleSubjectPicker}
                                         className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${editSubjectId
-                                                ? (() => {
-                                                    const s = subjects.find(sub => sub.id === editSubjectId);
-                                                    return s ? `text-${s.colorToken.replace('500', '400')} bg-${s.colorToken}/10 border-${s.colorToken}/20` : 'text-slate-400 bg-slate-500/10 border-slate-500/20';
-                                                })()
-                                                : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
+                                            ? (() => {
+                                                const s = subjects.find(sub => sub.id === editSubjectId);
+                                                return s ? `text-${s.colorToken.replace('500', '400')} bg-${s.colorToken}/10 border-${s.colorToken}/20` : 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+                                            })()
+                                            : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
                                             }`}
                                     >
                                         <span className="font-semibold text-[10px] tracking-wider uppercase">
@@ -318,33 +318,33 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                     <>
                                         <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowSubjectPicker(false); }} />
                                         <div className="absolute top-full left-0 mt-2 w-48 bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] p-2 rounded-[20px] flex flex-col gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] z-50 cursor-default">
-                                        <input
-                                            autoFocus
-                                            value={subjectSearchQuery}
-                                            onChange={(e) => setSubjectSearchQuery(e.target.value)}
-                                            placeholder="Cerca..."
-                                            className="bg-white/5 border border-white/10 text-slate-200 text-[12px] font-medium px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500 transition-colors"
-                                            onClick={(e) => e.stopPropagation()}
-                                            onKeyDown={(e) => e.stopPropagation()}
-                                        />
-                                        <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                                            <button
-                                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(null); setShowSubjectPicker(false); }}
-                                                className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
-                                            >
-                                                Sense assignatura
-                                            </button>
-                                            {filteredSubjects.map(s => (
+                                            <input
+                                                autoFocus
+                                                value={subjectSearchQuery}
+                                                onChange={(e) => setSubjectSearchQuery(e.target.value)}
+                                                placeholder="Cerca..."
+                                                className="bg-white/5 border border-white/10 text-slate-200 text-[12px] font-medium px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500 transition-colors"
+                                                onClick={(e) => e.stopPropagation()}
+                                                onKeyDown={(e) => e.stopPropagation()}
+                                            />
+                                            <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
                                                 <button
-                                                    key={s.id}
-                                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(s.id); setShowSubjectPicker(false); }}
-                                                    className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(null); setShowSubjectPicker(false); }}
+                                                    className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                                 >
-                                                    <span className={`w-2 h-2 rounded-full bg-${s.colorToken}`}></span>
-                                                    {s.name}
+                                                    Sense assignatura
                                                 </button>
-                                            ))}
-                                        </div>
+                                                {filteredSubjects.map(s => (
+                                                    <button
+                                                        key={s.id}
+                                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(s.id); setShowSubjectPicker(false); }}
+                                                        className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                    >
+                                                        <span className={`w-2 h-2 rounded-full bg-${s.colorToken}`}></span>
+                                                        {s.name}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
                                     </>
                                 )}

@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Users, Home, LogIn, CalendarDays, Settings } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
+// import { useLanguage } from '../contexts/LanguageContext';
 import NavigationPill from './ui/NavigationPill';
 
 const LazyNavigationMenu = lazy(() => import('./NavigationMenu'));
@@ -79,7 +79,7 @@ const Navigation: React.FC = () => {
     const [unreadCount, setUnreadCount] = useState(0);
     const location = useLocation();
     const { user } = useAuth();
-    const { preferredLang, setPreferredLang } = useLanguage();
+    // const { preferredLang, setPreferredLang } = useLanguage();
 
     useEffect(() => {
         if (!user) {

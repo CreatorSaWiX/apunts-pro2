@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, Loader2, StopCircle } from 'lucide-react';
+import { ArrowUp, Sparkles, StopCircle } from 'lucide-react';
 import { useTasks } from '../../contexts/TasksContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Task } from '../../types/tasks';
+// import type { Task } from '../../types/tasks';
 
 interface AIPromptBarProps {
     isOpen: boolean;
@@ -113,84 +113,84 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                 <>
                     {/* Invisible click-catcher to close when clicking outside */}
                     <div className="fixed inset-0 z-[90]" onClick={onClose} />
-                    
-                    <motion.div 
-                        initial={{ y: 100, opacity: 0, scale: 0.95 }}
-                    animate={{ y: 0, opacity: 1, scale: 1 }}
-                    exit={{ y: 50, opacity: 0, scale: 0.95 }}
-                    transition={{ type: "spring", bounce: 0.25, duration: 0.6 }}
-                    className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] w-[90vw] max-w-2xl"
-                >
-                    {/* Glowing Aura (Apple Intelligence Style) */}
-                    <div 
-                        className={`absolute -inset-[1px] rounded-[32px] blur-md transition-all duration-700 pointer-events-none
-                            ${isGenerating 
-                                ? 'bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 opacity-50 animate-[pulse_1s_ease-in-out_infinite]' 
-                                : 'bg-gradient-to-r from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 opacity-20'}
-                        `} 
-                    />
-                    
-                    {/* Pulsing glow when generating */}
-                    {isGenerating && (
-                        <div className="absolute -inset-4 bg-fuchsia-500/20 blur-3xl rounded-[100%] animate-[pulse_2s_ease-in-out_infinite] pointer-events-none" />
-                    )}
 
-                    {/* Main Container */}
-                    <div className="relative bg-slate-800/40 backdrop-blur-xl border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden flex flex-col p-2">
-                        
-                        {/* Error Message */}
-                        {error && (
-                            <motion.div 
-                                initial={{ opacity: 0, height: 0 }} 
-                                animate={{ opacity: 1, height: 'auto' }} 
-                                className="px-4 pt-2 pb-1"
-                            >
-                                <div className="text-red-400 text-xs font-medium bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg">
-                                    {error}
-                                </div>
-                            </motion.div>
+                    <motion.div
+                        initial={{ y: 100, opacity: 0, scale: 0.95 }}
+                        animate={{ y: 0, opacity: 1, scale: 1 }}
+                        exit={{ y: 50, opacity: 0, scale: 0.95 }}
+                        transition={{ type: "spring", bounce: 0.25, duration: 0.6 }}
+                        className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] w-[90vw] max-w-2xl"
+                    >
+                        {/* Glowing Aura (Apple Intelligence Style) */}
+                        <div
+                            className={`absolute -inset-[1px] rounded-[32px] blur-md transition-all duration-700 pointer-events-none
+                            ${isGenerating
+                                    ? 'bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 opacity-50 animate-[pulse_1s_ease-in-out_infinite]'
+                                    : 'bg-gradient-to-r from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 opacity-20'}
+                        `}
+                        />
+
+                        {/* Pulsing glow when generating */}
+                        {isGenerating && (
+                            <div className="absolute -inset-4 bg-fuchsia-500/20 blur-3xl rounded-[100%] animate-[pulse_2s_ease-in-out_infinite] pointer-events-none" />
                         )}
 
-                        <div className="relative flex items-end gap-2">
-                            {/* Icon / Sparkles */}
-                            <div className="pl-4 pb-[14px] shrink-0 pointer-events-none">
-                                <Sparkles size={20} className={`transition-all duration-700 ${isGenerating ? 'text-fuchsia-400 animate-pulse' : 'text-slate-400'}`} />
-                            </div>
+                        {/* Main Container */}
+                        <div className="relative bg-slate-800/40 backdrop-blur-xl border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden flex flex-col p-2">
 
-                            {/* Auto-growing Textarea */}
-                            <textarea
-                                ref={textareaRef}
-                                value={prompt}
-                                onChange={(e) => setPrompt(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                disabled={isGenerating}
-                                placeholder="Escriu què necessites planificar..."
-                                className="flex-1 max-h-[200px] min-h-[44px] py-[12px] bg-transparent text-[15px] leading-relaxed text-white placeholder:text-slate-500 focus:outline-none resize-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-                                rows={1}
-                            />
-
-                            {/* Submit Button */}
-                            <div className="pr-2 pb-2 shrink-0">
-                                <button
-                                    onClick={handleGenerate}
-                                    disabled={!prompt.trim() && !isGenerating}
-                                    className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 
-                                        ${(!prompt.trim() && !isGenerating) 
-                                            ? 'bg-white/5 text-white/30 cursor-not-allowed' 
-                                            : isGenerating 
-                                                ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50' 
-                                                : 'bg-white text-black hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]'
-                                        }`}
+                            {/* Error Message */}
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    className="px-4 pt-2 pb-1"
                                 >
-                                    {isGenerating ? (
-                                        <StopCircle size={16} strokeWidth={2.5} className="animate-pulse" />
-                                    ) : (
-                                        <ArrowUp size={16} strokeWidth={3} />
-                                    )}
-                                </button>
+                                    <div className="text-red-400 text-xs font-medium bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg">
+                                        {error}
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            <div className="relative flex items-end gap-2">
+                                {/* Icon / Sparkles */}
+                                <div className="pl-4 pb-[14px] shrink-0 pointer-events-none">
+                                    <Sparkles size={20} className={`transition-all duration-700 ${isGenerating ? 'text-fuchsia-400 animate-pulse' : 'text-slate-400'}`} />
+                                </div>
+
+                                {/* Auto-growing Textarea */}
+                                <textarea
+                                    ref={textareaRef}
+                                    value={prompt}
+                                    onChange={(e) => setPrompt(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    disabled={isGenerating}
+                                    placeholder="Escriu què necessites planificar..."
+                                    className="flex-1 max-h-[200px] min-h-[44px] py-[12px] bg-transparent text-[15px] leading-relaxed text-white placeholder:text-slate-500 focus:outline-none resize-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                                    rows={1}
+                                />
+
+                                {/* Submit Button */}
+                                <div className="pr-2 pb-2 shrink-0">
+                                    <button
+                                        onClick={handleGenerate}
+                                        disabled={!prompt.trim() && !isGenerating}
+                                        className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 
+                                        ${(!prompt.trim() && !isGenerating)
+                                                ? 'bg-white/5 text-white/30 cursor-not-allowed'
+                                                : isGenerating
+                                                    ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50'
+                                                    : 'bg-white text-black hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]'
+                                            }`}
+                                    >
+                                        {isGenerating ? (
+                                            <StopCircle size={16} strokeWidth={2.5} className="animate-pulse" />
+                                        ) : (
+                                            <ArrowUp size={16} strokeWidth={3} />
+                                        )}
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </motion.div>
                 </>
             )}

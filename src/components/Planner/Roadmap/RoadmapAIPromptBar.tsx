@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, StopCircle, Bot, User, CheckCircle2, X } from 'lucide-react';
+import { ArrowUp, Sparkles, StopCircle, CheckCircle2 } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { motion, AnimatePresence } from 'framer-motion';
 

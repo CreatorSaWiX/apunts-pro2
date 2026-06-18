@@ -3,7 +3,7 @@ export type Rank = {
     division?: 'I' | 'II' | 'III';
     color: string;
     minSolutions: number;
-    icon?: string; // We can add specific icons later
+    icon?: string;
 };
 
 const ranks: Omit<Rank, 'division'>[] = [

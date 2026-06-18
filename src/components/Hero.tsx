@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
-import { RefreshCw, GitCommitVertical, Github, Heart, X, ChevronRight } from 'lucide-react';
+import { RefreshCw, GitCommitVertical } from 'lucide-react';
 import { useSubject } from '../contexts/SubjectContext';
-import { useLanguage } from '../contexts/LanguageContext';
+// import { useLanguage } from '../contexts/LanguageContext';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 const APP_DATA: Record<string, { version: string; updated: string }> = {
@@ -43,7 +43,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride }) => {
     const { subject: contextSubject, theme } = useSubject();
     const subject = subjectOverride || contextSubject;
     const isMobile = useIsMobile();
-    const { preferredLang } = useLanguage();
+    // const { preferredLang } = useLanguage();
 
 
 
@@ -59,7 +59,8 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride }) => {
         }
     });
 
-    const currentData = APP_DATA[subject];
+    const safeSubject = (subject || '').toLowerCase();
+    const currentData = APP_DATA[safeSubject] || { version: 'v1.0.0', updated: 'N/A' };
     return (
         <div className="relative flex flex-col items-center justify-center pt-8 pb-3 md:pt-12 md:pb-4 z-10 text-center px-4">
 

@@ -13,7 +13,7 @@ import AIPromptBar from './AIPromptBar';
 import GlobalTaskContextMenu from './GlobalTaskContextMenu';
 import GlobalFiltersBar from './GlobalFiltersBar';
 import TaskPopover from './TaskPopover';
-import type { DateRangeFilter } from '../../../contexts/TasksContext';
+
 
 type ViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
 
@@ -42,7 +42,7 @@ const AIParticles = () => {
                         ease: 'linear'
                     }}
                     className="absolute top-1/2 left-1/2 rounded-full bg-fuchsia-400 shadow-[0_0_8px_rgba(232,121,249,0.8)]"
-                    style={{ width: p.size, height: p.size, marginLeft: -p.size/2, marginTop: -p.size/2 }}
+                    style={{ width: p.size, height: p.size, marginLeft: -p.size / 2, marginTop: -p.size / 2 }}
                 />
             ))}
         </div>
@@ -50,7 +50,7 @@ const AIParticles = () => {
 };
 
 const PlannerLayout: React.FC = () => {
-    const { isLoading, error, subjects, filters, setFilters, clearFilters, tasks } = useTasks();
+    const { isLoading, error, subjects, filters, tasks } = useTasks();
     const { defaultPlannerView } = useSettings();
     const [view, setView] = useState<ViewMode>(defaultPlannerView || 'board');
     const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -64,7 +64,7 @@ const PlannerLayout: React.FC = () => {
         window.addEventListener('ai-magic-done', handleMagic);
         return () => window.removeEventListener('ai-magic-done', handleMagic);
     }, []);
-    const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+    // const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
 
     const usedSubjects = useMemo(() => {
         return subjects.filter(subject => tasks.some(t => t.subjectId === subject.id));
@@ -140,7 +140,7 @@ const PlannerLayout: React.FC = () => {
                         </div>
 
                         <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.2),transparent_70%)] pointer-events-none" />
-                        
+
                         <AIParticles />
 
                         <Sparkles size={18} strokeWidth={2.5} className="relative z-10 text-fuchsia-400 group-hover:text-fuchsia-300 transition-all duration-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.6)]" />
@@ -156,48 +156,48 @@ const PlannerLayout: React.FC = () => {
 
                 <AnimatePresence>
                     {view === 'board' && (
-                        <motion.div 
-                            key="board" 
-                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }} 
-                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }} 
-                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }} 
-                            transition={{ duration: 0.4, ease: 'easeInOut' }} 
+                        <motion.div
+                            key="board"
+                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }}
+                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }}
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
                             className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
                         >
                             <BoardView />
                         </motion.div>
                     )}
                     {view === 'calendar' && (
-                        <motion.div 
-                            key="calendar" 
-                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }} 
-                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }} 
-                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }} 
-                            transition={{ duration: 0.4, ease: 'easeInOut' }} 
+                        <motion.div
+                            key="calendar"
+                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }}
+                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }}
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
                             className="absolute inset-x-0 bottom-0 top-[88px] z-10"
                         >
                             <CalendarView />
                         </motion.div>
                     )}
                     {view === 'gantt' && (
-                        <motion.div 
-                            key="gantt" 
-                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }} 
-                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }} 
-                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }} 
-                            transition={{ duration: 0.4, ease: 'easeInOut' }} 
+                        <motion.div
+                            key="gantt"
+                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }}
+                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }}
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
                             className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
                         >
                             <GanttView />
                         </motion.div>
                     )}
                     {view === 'roadmap' && (
-                        <motion.div 
-                            key="roadmap" 
-                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }} 
-                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }} 
-                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }} 
-                            transition={{ duration: 0.4, ease: 'easeInOut' }} 
+                        <motion.div
+                            key="roadmap"
+                            initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }}
+                            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                            exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }}
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
                             className="fixed inset-0 z-0"
                         >
                             <RoadmapProvider>

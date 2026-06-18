@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Check, Folder, Flag, Calendar, X } from 'lucide-react';
+import { ChevronDown, Check, Folder, Flag, Calendar } from 'lucide-react';
 import { useTasks, type DateRangeFilter } from '../../contexts/TasksContext';
 import type { TaskPriority } from '../../types/tasks';
 

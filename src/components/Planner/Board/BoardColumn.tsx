@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import TaskCard from './TaskCard';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
-import { motion, useMotionTemplate, useMotionValue, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Calendar, Flag, Play, Trash2, X, Check } from 'lucide-react';
 import { DateTimePicker } from './DateTimePicker';
 
@@ -48,8 +48,8 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
         zIndex: isDragging ? 100 : 'auto',
     };
 
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
+    // const mouseX = useMotionValue(0);
+    // const mouseY = useMotionValue(0);
 
 
 

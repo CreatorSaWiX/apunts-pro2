@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import type { PlannerViewMode } from '../contexts/SettingsContext';
-import { useRoadmap, RoadmapProvider } from '../contexts/RoadmapContext';
-import { tailwindColors } from '../contexts/SubjectContext';
+import { RoadmapProvider } from '../contexts/RoadmapContext';
+
 import subjectsData from '../data/subjects.json';
-import { Globe, LayoutGrid, Calendar, CalendarDays, Route, Github, RefreshCw, X, Settings2, Sparkles, Command, Search, ChevronRight, Heart } from 'lucide-react';
+import { Globe, LayoutGrid, Calendar, CalendarDays, Route, Github, X, Settings2, Sparkles, Command, Search, ChevronRight, Heart } from 'lucide-react';
 import NavigationPill from '../components/ui/NavigationPill';
 import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -117,7 +117,7 @@ const PlannerSection = () => {
 
 const SubjectsSection = () => {
     const { homeSubjects, setHomeSubjects } = useSettings();
-    const { nodes } = useRoadmap();
+    // const { nodes } = useRoadmap();
     const [searchQuery, setSearchQuery] = useState('');
     const [isCommandOpen, setIsCommandOpen] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
@@ -145,10 +145,10 @@ const SubjectsSection = () => {
         }
     };
 
-    const getSubjectStatus = (subjectId: string) => {
-        const node = nodes.find(n => n.id === subjectId);
-        return node?.data.status;
-    };
+    // const getSubjectStatus = (subjectId: string) => {
+    //     const node = nodes.find(n => n.id === subjectId);
+    //     return node?.data.status;
+    // };
 
     return (
         <motion.div 
@@ -231,7 +231,7 @@ const SubjectsSection = () => {
                         const subject = subjectsData.find(s => s.name === subjectId);
                         if (!subject) return null;
                         
-                        const status = getSubjectStatus(subject.name);
+                        // const status = getSubjectStatus(subject.name);
                         
                         return (
                             <motion.div

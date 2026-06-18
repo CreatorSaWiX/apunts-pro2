@@ -15,6 +15,8 @@ interface NavigationMenuProps {
 const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOpen, subject, theme }) => {
     const { preferredLang } = useLanguage();
     
+    const safeSubject = (subject || '').toLowerCase();
+    
     if (!isMenuOpen) return null;
 
     return (
@@ -50,7 +52,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                     <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2">Temari del Curs</div>
                     {[...allPersonalNotes]
                         .filter(note => {
-                            if ((note as any).subject !== subject || note.slug.includes('-lab-')) return false;
+                            if ((note as any).subject !== safeSubject || note.slug.includes('-lab-')) return false;
                             if ((note as any).draft) return false;
                             
                             const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
@@ -84,12 +86,12 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                             </Link>
                         ))}
 
-                    {[...allPersonalNotes].some(n => (n as any).subject === subject && n.slug.includes('-lab-')) && (
+                    {[...allPersonalNotes].some(n => (n as any).subject === safeSubject && n.slug.includes('-lab-')) && (
                         <>
                             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2 mt-8">Laboratoris</div>
                             {[...allPersonalNotes]
                                 .filter(note => {
-                                    if ((note as any).subject !== subject || !note.slug.includes('-lab-')) return false;
+                                    if ((note as any).subject !== safeSubject || !note.slug.includes('-lab-')) return false;
                                     if ((note as any).draft) return false;
                                     
                                     const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);

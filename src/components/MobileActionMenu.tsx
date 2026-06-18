@@ -21,6 +21,7 @@ export const MobileActionMenu: React.FC<{
     const { subject, setSubject } = useSubject();
     const { preferredLang, setPreferredLang } = useLanguage();
     const [, startTransition] = useTransition();
+    const safeSubject = (subject || '').toLowerCase();
 
     // Contributors state
     const [contributors, setContributors] = useState<Contributor[]>([]);
@@ -108,12 +109,12 @@ export const MobileActionMenu: React.FC<{
                                                 <button
                                                     key={sub}
                                                     onClick={() => startTransition(() => setSubject(sub))}
-                                                    className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${subject === sub
+                                                    className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${safeSubject === sub
                                                         ? 'text-white'
                                                         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
                                                         }`}
                                                 >
-                                                    {subject === sub && (
+                                                    {safeSubject === sub && (
                                                         <motion.div
                                                             layoutId="active-subject-menu"
                                                             className={`absolute inset-0 rounded-xl z-[-1] bg-linear-to-r ${sub === 'pro2' ? 'from-sky-400 to-blue-500 shadow-[0_0_15px_rgba(56,189,248,0.4)]' :

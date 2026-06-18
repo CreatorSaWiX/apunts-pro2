@@ -70,7 +70,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 today.setHours(0, 0, 0, 0);
                 
                 const dueTime = due.getTime();
-                const todayTime = today.getTime();
+                // const todayTime = today.getTime();
                 
                 if (filters.dateRange === 'TODAY') {
                     // Today or overdue
@@ -110,7 +110,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             try {
                 setIsLoading(true);
                 const { db } = await import('../lib/firebase');
-                const { collection, query, where, onSnapshot } = await import('firebase/firestore');
+                const { collection, query, onSnapshot } = await import('firebase/firestore');
 
                 // Ens assegurem de consultar la subcol·lecció correcta
                 const q = query(collection(db, 'users', user.id, 'tasks'));
@@ -210,12 +210,12 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         
         // Optimistic update locally (SYNCHRONOUS to avoid flickering)
         setTasks(prev => prev.map(t => t.id === taskId ? { ...t, ...updates } : t));
-        
-        try {
-            const { db } = await import('../lib/firebase');
-            const { doc, updateDoc } = await import('firebase/firestore');
-            
-            const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
+                try {
+                if (!user) throw new Error("No user logged in");
+                const { db } = await import('../lib/firebase');
+                const { doc, updateDoc } = await import('firebase/firestore');
+                
+                const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
             await updateDoc(taskRef, updates);
         } catch (err) {
             console.error("Error updating task:", err);
@@ -226,6 +226,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const deleteTask = useCallback(async (taskId: string, task?: Task) => {
         try {
+            if (!user) throw new Error("No user logged in");
             const { db } = await import('../lib/firebase');
             const { doc, deleteDoc } = await import('firebase/firestore');
             
@@ -247,6 +248,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         if (!lastDeleted) return;
 
         try {
+            if (!user) throw new Error("No user logged in");
             const { db } = await import('../lib/firebase');
             const { doc, setDoc } = await import('firebase/firestore');
             

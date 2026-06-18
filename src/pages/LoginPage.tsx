@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, ArrowRight, Loader, Mail } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AuthCanvasBackground } from '../components/ui/AuthCanvasBackground';
+import { PremiumInput } from '../components/ui/PremiumInput';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -32,82 +34,149 @@ const LoginPage = () => {
         }
     };
 
+    // Animation variants
+    const customEasing = [0.16, 1, 0.3, 1]; // Premium smooth ease
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.1
+            }
+        }
+    };
+
+    const fadeInUp = {
+        hidden: { opacity: 0, y: 30 },
+        show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: customEasing } }
+    };
+
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 relative z-10">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="w-full max-w-md bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl"
-            >
-                <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-gradient-to-tr from-sky-500 to-indigo-500 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-sky-500/20">
-                        <Lock className="text-white" size={32} />
-                    </div>
-                    <h1 className="text-2xl font-bold text-white mb-2">Benvingut de nou</h1>
-                    <p className="text-slate-400 text-sm">Introdueix les teves credencials per accedir</p>
-                </div>
+        <div className="min-h-screen flex w-full bg-[#020617] text-slate-200 font-sans selection:bg-sky-500/30 overflow-hidden relative">
+            <AuthCanvasBackground variant="login" />
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Correu Electrònic</label>
-                        <div className="relative">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all"
-                                placeholder="exemple@correu.com"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Contrasenya</label>
-                        <div className="relative">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all"
-                                placeholder="••••••••"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    {error && (
-                        <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
-                            {error}
-                        </div>
-                    )}
-
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-sky-500/20 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
+            {/* Form Panel */}
+            <div className="w-full h-screen flex items-center justify-center lg:justify-end lg:pr-[10%] xl:pr-[15%] p-6 sm:p-12 relative z-10 pointer-events-none">
+                <div className="w-full max-w-md relative pointer-events-auto">
+                    <motion.div
+                        variants={staggerContainer}
+                        initial="hidden"
+                        animate="show"
+                        className="bg-[#020617]/40 backdrop-blur-md border border-white/5 border-t-white/10 border-l-white/10 sm:p-10 p-8 rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] relative"
                     >
-                        {isLoading ? (
-                            <Loader className="animate-spin" size={20} />
-                        ) : (
-                            <>
-                                Iniciar Sessió
-                                <ArrowRight size={18} />
-                            </>
-                        )}
-                    </button>
-                </form>
+                        {/* Contenidor intern per retallar efectes sense trencar el blur a Chrome */}
+                        <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden pointer-events-none">
+                            {/* Noise texture overlay for premium feel */}
+                            <div className="absolute inset-0 opacity-[0.01] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
-                <div className="mt-8 text-center text-sm text-slate-500">
-                    No tens compte?{' '}
-                    <Link to="/register" className="text-sky-400 hover:text-sky-300 cursor-pointer transition-colors font-medium">
-                        Registra't
-                    </Link>
+                            {/* Shimmer light effect over the panel */}
+                            <div className="absolute top-0 left-[-100%] w-[200%] h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-30deg] animate-pulse opacity-100" />
+                        </div>
+
+                        <motion.div variants={fadeInUp} className="text-center mb-10">
+                            <h2 className="text-3xl font-bold text-white mb-3">Iniciar Sessió</h2>
+                            <p className="text-slate-400 text-sm font-light">L'univers del coneixement t'espera</p>
+                        </motion.div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                            <motion.div variants={fadeInUp}>
+                                <PremiumInput
+                                    id="email"
+                                    type="email"
+                                    label="Correu Electrònic"
+                                    icon={Mail}
+                                    theme="sky"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </motion.div>
+
+                            <motion.div variants={fadeInUp} className="space-y-2">
+                                <PremiumInput
+                                    id="password"
+                                    type="password"
+                                    label="Contrasenya"
+                                    icon={Lock}
+                                    theme="sky"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                <div className="flex justify-end pr-2">
+                                    <a href="#" className="text-[11px] font-semibold text-sky-400 hover:text-sky-300 transition-colors">Has oblidat la contrasenya?</a>
+                                </div>
+                            </motion.div>
+
+                            <AnimatePresence>
+                                {error && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0, y: -10 }}
+                                        animate={{ opacity: 1, height: 'auto', y: 0 }}
+                                        exit={{ opacity: 0, height: 0, y: -10 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="p-3 mt-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium">
+                                            {error}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
+                            <motion.div variants={fadeInUp} className="pt-4">
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="relative w-full group overflow-hidden rounded-xl bg-sky-500/90 text-white font-bold py-4 transition-all duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.6)]"
+                                >
+                                    {/* Shimmer Effect */}
+                                    <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-30deg] translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000" />
+
+                                    <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-sky-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                                    <div className="relative flex items-center justify-center gap-2 h-6 overflow-hidden">
+                                        <AnimatePresence mode="wait">
+                                            {isLoading ? (
+                                                <motion.div
+                                                    key="loading"
+                                                    initial={{ y: 20, opacity: 0 }}
+                                                    animate={{ y: 0, opacity: 1 }}
+                                                    exit={{ y: -20, opacity: 0 }}
+                                                    transition={{ duration: 0.3 }}
+                                                >
+                                                    <Loader className="animate-spin" size={20} />
+                                                </motion.div>
+                                            ) : (
+                                                <motion.div
+                                                    key="text"
+                                                    initial={{ y: 20, opacity: 0 }}
+                                                    animate={{ y: 0, opacity: 1 }}
+                                                    exit={{ y: -20, opacity: 0 }}
+                                                    transition={{ duration: 0.3 }}
+                                                    className="flex items-center gap-2"
+                                                >
+                                                    <span>Accedir al compte</span>
+                                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-500" />
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                </button>
+                            </motion.div>
+                        </form>
+
+                        <motion.div variants={fadeInUp} className="mt-8 text-center text-sm font-medium text-slate-500">
+                            No tens un compte encara?{' '}
+                            <Link to="/register" className="text-white hover:text-sky-400 transition-colors inline-flex items-center gap-1 group relative">
+                                Registra't ara
+                                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-sky-400 transition-all group-hover:w-full"></span>
+                            </Link>
+                        </motion.div>
+                    </motion.div>
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 };

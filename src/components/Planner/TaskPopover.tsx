@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
-import { Flag, Bookmark, Clock } from 'lucide-react';
-import type { Task, TaskPriority } from '../../types/tasks';
+import { Flag, Bookmark } from 'lucide-react';
+import type { TaskPriority } from '../../types/tasks';
 
 export interface TaskPopoverEventDetail {
     x: number;
