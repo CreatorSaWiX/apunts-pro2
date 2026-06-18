@@ -1,246 +1,27 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
-import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
-import { motion, useMotionTemplate, useMotionValue, MotionConfig, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
+import { ArrowRight, Book, Terminal, Calculator, RefreshCw, Sparkles } from 'lucide-react';
+import { motion, MotionConfig, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
 
-const SpotlightCard = React.memo(({
-    children,
-    className = "",
-    isActive = false,
-    isMenuOpen = false,
-    ...props
-}: {
-    children: React.ReactNode;
-    className?: string;
-    isActive?: boolean;
-    isMenuOpen?: boolean;
-    [key: string]: any;
-}) => {
-    const isMobile = useIsMobile();
-    const shouldDisable = isMobile && isMenuOpen;
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-
-    const backgroundStyle = useMotionTemplate`
-        radial-gradient(
-          650px circle at ${mouseX}px ${mouseY}px,
-          rgba(var(--primary-rgb), 0.15),
-          transparent 80%
-        )
-    `;
-
-    function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
-        if (shouldDisable) return;
-        const { left, top } = currentTarget.getBoundingClientRect();
-        mouseX.set(clientX - left);
-        mouseY.set(clientY - top);
-    }
-
-    return (
-        <div
-            className={`group/card relative overflow-hidden ${className}`}
-            onMouseMove={handleMouseMove}
-            {...props}
-        >
-            {!shouldDisable && (
-                <motion.div
-                    className="pointer-events-none absolute -inset-px rounded-[inherit] opacity-0 transition duration-300 group-hover/card:opacity-100 z-50"
-                    style={{ background: backgroundStyle }}
-                />
-            )}
-            <div className="relative z-10 h-full flex flex-col">
-                {children}
-            </div>
-        </div>
-    );
-});
-
-const CarouselCard = React.memo(({
-    topic, index, activeIndex, itemWidth, scrollX,
-    subject, preferredLang, navigate, markAsSeen, isInteractive, isMenuOpen, seenNewTopics, seenVersions, onCardClick
-}: any) => {
-    const input = [
-        (index - 2) * itemWidth,
-        (index - 1) * itemWidth,
-        index * itemWidth,
-        (index + 1) * itemWidth,
-        (index + 2) * itemWidth
-    ];
-    
-    // Transform values mapped natively to scroll position
-    const scale = useTransform(scrollX, input, [0.75, 0.85, 1, 0.85, 0.75]);
-    const opacity = useTransform(scrollX, input, [0, 0.35, 1, 0.35, 0]);
-    const rotateY = useTransform(scrollX, input, [25, 15, 0, -15, -25]);
-    const xShift = useTransform(scrollX, input, [itemWidth * 0.7, itemWidth * 0.35, 0, -itemWidth * 0.35, -itemWidth * 0.7]);
-    
-    const zIndex = useTransform(scrollX, (v: number) => {
-        return 50 - Math.round(Math.abs(v - index * itemWidth) / 20);
-    });
-
-    const isActive = activeIndex === index;
-    const versions = allPersonalNotes.filter((n: any) => n.slug === topic.slug);
-    const hasNewTag = versions.some((n: any) => n.isNew);
-    const newestUpdate = Math.max(0, ...versions.map((n: any) => n.isUpdated || 0));
-
-    const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
-    const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
-
-    return (
-        <div style={{ width: `${itemWidth}px` }} className="shrink-0 snap-center h-full relative perspective-1000">
-            <motion.div 
-                style={{ scale, opacity, rotateY, x: xShift, zIndex, WebkitFontSmoothing: "antialiased", backfaceVisibility: "hidden" }} 
-                className="absolute inset-0 flex items-center justify-center transform-gpu will-change-transform"
-                onClick={(e) => {
-                    if (!isActive) {
-                        e.preventDefault();
-                        onCardClick(index);
-                    } else if (isInteractive) {
-                        markAsSeen(topic.slug, newestUpdate);
-                        navigate(`/tema/${topic.slug}`);
-                    }
-                }}
-            >
-                <div className="w-[86vw] max-w-[360px] md:max-w-none md:w-[400px] h-full">
-                    <SpotlightCard
-                        isActive={isActive}
-                        isMenuOpen={isMenuOpen}
-                        className={`
-                            w-full h-full rounded-[32px] md:rounded-[40px] border flex flex-col justify-between transition-colors duration-500
-                            ${isActive
-                                ? 'bg-slate-900/80 border-primary/20 shadow-[0_20px_50px_rgba(14,165,233,0.15)] ring-1 ring-primary/20 backdrop-blur-xl'
-                                : 'bg-slate-900/40 border-white/5 shadow-none backdrop-blur-md'
-                            }
-                        `}
-                    >
-                        {/* Glow Orb - follows the card dynamically */}
-                        <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${isActive ? 'bg-primary/20 opacity-100 scale-100' : 'bg-transparent opacity-0 scale-50'}`} />
-
-                        {/* Badges */}
-                        {(isTopicNew || isTopicUpdated) && (
-                            <div className={`absolute top-5 right-5 md:top-8 md:right-8 z-30 transition-all duration-500 ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-lg backdrop-blur-md ${isTopicNew ? 'bg-linear-to-r from-rose-500/90 to-pink-500/90 border-rose-300/30 shadow-rose-500/40' : 'bg-linear-to-r from-emerald-500/90 to-teal-500/90 border-emerald-300/30 shadow-emerald-500/40'}`}>
-                                    <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_5px_white]" />
-                                    <span className="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider drop-shadow-sm">
-                                        {isTopicNew 
-                                            ? (preferredLang === 'es' ? 'Nuevo' : 'Nou') 
-                                            : (preferredLang === 'es' ? 'Actualizado' : 'Actualitzat')}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Card Header */}
-                        <div className="p-6 md:p-10 pb-2 relative z-20">
-                            <div className="flex justify-between items-start mb-5 md:mb-6">
-                                <div className={`
-                                    p-3 md:p-4 rounded-2xl border backdrop-blur-md transition-all duration-500
-                                    ${isActive
-                                        ? 'bg-primary/10 border-primary/20 text-accent shadow-[0_0_20px_rgba(56,189,248,0.15)]'
-                                        : 'bg-white/5 border-white/5 text-slate-500'
-                                    }
-                                `}>
-                                    <Book size={24} strokeWidth={1.5} className="md:w-7 md:h-7" />
-                                </div>
-                                <span className={`
-                                    font-mono text-5xl md:text-7xl font-bold transition-all duration-500 mt-2
-                                    ${isActive ? 'text-white/10' : 'text-white/5'}
-                                `}>
-                                    {(() => {
-                                        const match = topic.title.match(/^Tema (\d+)/);
-                                        if (match) return match[1].padStart(2, '0');
-                                        if (topic.title.toLowerCase().includes('parcial')) return 'P1';
-                                        if (topic.title.toLowerCase().includes('final')) return 'EF';
-                                        return String(index + 1).padStart(2, '0');
-                                    })()}
-                                </span>
-                            </div>
-
-                            <h3 className={`
-                                text-2xl md:text-4xl font-bold leading-tight tracking-tight mb-4 md:mb-5 transition-colors duration-500
-                                ${isActive ? 'text-white' : 'text-slate-400'}
-                            `}>
-                                {topic.title}
-                            </h3>
-
-                            <div className="flex items-center gap-3">
-                                <div className={`h-px transition-all duration-500 ${isActive ? 'w-12 bg-primary' : 'w-6 bg-slate-700'}`} />
-                                <span className="text-[11px] md:text-xs font-mono text-slate-400 uppercase tracking-widest font-semibold">
-                                    {topic.readTime || '10 Min'}
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className="px-6 md:px-10 mt-3 md:mt-2 relative z-20 overflow-hidden">
-                            <p className="text-slate-400 text-[13px] md:text-base leading-relaxed line-clamp-2 md:line-clamp-3 font-light">
-                                {topic.description}
-                            </p>
-                        </div>
-
-                        {/* Actions Footer */}
-                        <div className={`
-                            p-6 md:p-10 pt-4 mt-auto relative z-20 transition-all duration-500 transform-gpu
-                            ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}
-                        `}>
-                            <div className="flex flex-col gap-3 md:gap-4">
-                                <Link
-                                    to={`/tema/${topic.slug}`}
-                                    onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                    className="group/btn relative overflow-hidden flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-4 py-3 md:px-5 md:py-3.5 rounded-2xl shadow-[0_10px_20px_rgba(14,165,233,0.3)] transition-all duration-300 transform active:scale-95 text-[14px] md:text-[15px]"
-                                >
-                                    <span className="relative z-10">Explorar tema</span>
-                                    <ArrowRight size={18} className="relative z-10 group-hover/btn:translate-x-1.5 transition-transform duration-300" />
-                                </Link>
-
-                                <div className="flex items-center gap-4 mt-1">
-                                    <Link
-                                        to={`/tema/${topic.slug}/test`}
-                                        onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                        className="flex-1 text-slate-400 hover:text-amber-400 text-[13px] md:text-sm font-medium flex items-center gap-2.5 transition-colors group/test py-1"
-                                    >
-                                        <div className="p-1.5 rounded-lg bg-white/5 group-hover/test:bg-amber-500/10 border border-transparent group-hover/test:border-amber-500/20 transition-all">
-                                            <RefreshCw size={14} className="group-hover/test:rotate-180 transition-transform duration-500" />
-                                        </div>
-                                        <span>Test</span>
-                                    </Link>
-
-                                    <Link
-                                        to={subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : subject === 'pro2' && topic.slug === 'pro2-tema-9' ? '/tema/pro2-lab-7' : `/tema/${topic.slug}/solucionaris`}
-                                        onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                        className="flex-1 text-slate-400 hover:text-emerald-400 text-[13px] md:text-sm font-medium flex items-center gap-2.5 transition-colors group/sol py-1"
-                                    >
-                                        <div className="p-1.5 rounded-lg bg-white/5 group-hover/sol:bg-emerald-500/10 border border-transparent group-hover/sol:border-emerald-500/20 transition-all">
-                                            {subject === 'pro2' ? <Terminal size={14} /> : <Calculator size={14} />}
-                                        </div>
-                                        <span className="truncate">Solucionaris</span>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    </SpotlightCard>
-                </div>
-            </motion.div>
-        </div>
-    );
-});
-
-const TopicScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard }: any) => {
+const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, scrollX, itemWidth }: any) => {
     const trackRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [pointerDownX, setPointerDownX] = useState<number | null>(null);
     const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
     const handlePointerDown = (e: React.PointerEvent) => {
         setIsDragging(true);
+        setPointerDownX(e.clientX);
         (e.target as HTMLElement).setPointerCapture(e.pointerId);
-        handlePointerMove(e);
+        handlePointerMove(e, true);
         if (navigator.vibrate) navigator.vibrate(10);
     };
 
-    const handlePointerMove = (e: React.PointerEvent) => {
+    const handlePointerMove = (e: React.PointerEvent, forceScroll = false) => {
         if (!trackRef.current) return;
         const rect = trackRef.current.getBoundingClientRect();
         let x = e.clientX - rect.left;
@@ -252,79 +33,224 @@ const TopicScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard }: a
         
         setHoverIndex(newIndex);
         
-        if (isDragging) {
+        let isRealDrag = false;
+        if (pointerDownX !== null && Math.abs(e.clientX - pointerDownX) > 5) {
+             isRealDrag = true;
+        }
+        
+        if (isDragging || forceScroll) {
             if (newIndex !== activeIndex) {
-                 scrollToCard(newIndex);
-                 if (navigator.vibrate) navigator.vibrate(15);
+                 scrollToCard(newIndex, isRealDrag);
+                 if (navigator.vibrate && isRealDrag) navigator.vibrate(15);
             }
         }
     };
 
     const handlePointerUp = (e: React.PointerEvent) => {
         setIsDragging(false);
+        setPointerDownX(null);
         setHoverIndex(null);
         (e.target as HTMLElement).releasePointerCapture(e.pointerId);
     };
 
     if (sortedTopics.length <= 1) return null;
 
-    const displayIndex = hoverIndex !== null ? hoverIndex : activeIndex;
-    const tooltipX = `${(displayIndex / (sortedTopics.length - 1)) * 100}%`;
+    // The text in the floating tooltip uses hoverIndex during drag, or activeIndex
+    const displayIndex = isDragging && hoverIndex !== null ? hoverIndex : activeIndex;
+    const safeDisplayIndex = Math.min(displayIndex, Math.max(0, sortedTopics.length - 1));
+    const tooltipTextX = `${(safeDisplayIndex / Math.max(1, sortedTopics.length - 1)) * 100}%`;
+
+    // The PHYSICAL position of the thumb is strictly bound to the real carousel scroll
+    const scrollPercentage = useTransform(scrollX, [0, Math.max(1, sortedTopics.length - 1) * itemWidth], [0, 100]);
+    const scrollTooltipX = useTransform(scrollPercentage, p => `${Math.max(0, Math.min(p, 100))}%`);
 
     return (
-        <div className="mt-6 md:mt-8 w-full flex justify-center z-50 touch-none pointer-events-auto">
+        <div className="w-full flex justify-center mt-4 mb-2 px-6 z-40 touch-none pointer-events-auto">
             <div 
                 ref={trackRef}
-                className="relative w-[80%] max-w-md h-12 flex items-center cursor-grab active:cursor-grabbing group"
+                className="relative w-full max-w-[280px] h-10 flex items-center cursor-grab active:cursor-grabbing group"
                 onPointerDown={handlePointerDown}
                 onPointerMove={isDragging ? handlePointerMove : undefined}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerUp}
             >
-                {/* Visual Track */}
-                <div className="absolute left-0 right-0 h-2 bg-slate-800/80 rounded-full overflow-hidden backdrop-blur-md border border-white/5">
+                {/* Ultra-sleek Track */}
+                <div className="absolute left-0 right-0 h-1.5 bg-slate-800/80 rounded-full overflow-hidden backdrop-blur-md border border-white/5">
                      <motion.div 
-                        className="absolute top-0 bottom-0 left-0 bg-linear-to-r from-primary to-accent rounded-full"
-                        animate={{ width: tooltipX }}
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        className="absolute top-0 bottom-0 left-0 bg-linear-to-r from-primary to-accent rounded-full will-change-transform"
+                        style={{ width: scrollTooltipX }}
                      />
                 </div>
 
-                {/* Ticks for topics */}
-                <div className="absolute left-0 right-0 h-2 flex justify-between px-[2px] pointer-events-none">
+                {/* Elegant Ticks */}
+                <div className="absolute left-0 right-0 h-1.5 flex justify-between px-[2px] pointer-events-none">
                     {sortedTopics.map((_, i) => (
-                         <div key={i} className={`w-1 h-full rounded-full transition-colors duration-300 ${activeIndex === i ? 'bg-white' : 'bg-white/20'}`} />
+                         <div key={i} className={`w-0.5 h-full rounded-full transition-colors duration-300 ${safeDisplayIndex === i ? 'bg-white' : 'bg-white/20'}`} />
                     ))}
                 </div>
 
-                {/* Handle/Thumb */}
+                {/* Invisible, larger hit area for thumb */}
                 <motion.div 
-                    className="absolute top-1/2 -mt-3 -ml-3 w-6 h-6 bg-white rounded-full shadow-[0_0_20px_rgba(56,189,248,0.8)] border-2 border-primary z-20 flex items-center justify-center pointer-events-none"
-                    animate={{ left: tooltipX, scale: isDragging ? 1.3 : 1 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    className="absolute top-1/2 -mt-4 -ml-4 w-8 h-8 z-20 flex items-center justify-center pointer-events-none will-change-transform"
+                    style={{ left: scrollTooltipX }}
                 >
-                    <div className="w-2 h-2 bg-primary rounded-full opacity-60" />
+                    {/* Minimalist dot indicator instead of the bulky handle */}
+                    <motion.div 
+                        className="w-3 h-3 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.8)] border border-primary/50"
+                        animate={{ scale: isDragging ? 1.5 : 1 }}
+                    />
                 </motion.div>
 
-                {/* Floating Tooltip */}
+                {/* Floating Tooltip - Redesigned for Awwwards */}
                 <AnimatePresence>
-                    {(isDragging) && (
+                    {isDragging && (
                         <motion.div 
-                            initial={{ opacity: 0, y: 15, scale: 0.8 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 15, scale: 0.8 }}
+                            initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                            animate={{ opacity: 1, y: -28, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.8 }}
                             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                            className="absolute -top-16 -ml-[60px] w-[120px] flex flex-col items-center pointer-events-none"
-                            style={{ left: tooltipX }}
+                            className="absolute top-0 -ml-[40px] w-[80px] flex flex-col items-center pointer-events-none"
+                            style={{ left: tooltipTextX }}
                         >
-                            <div className="bg-slate-900/95 backdrop-blur-xl border border-white/10 text-white text-[11px] font-bold px-3 py-2 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] text-center line-clamp-2 w-full border-b-2 border-b-primary">
-                                {sortedTopics[displayIndex]?.title || 'Tema'}
+                            <div className="bg-slate-900/95 backdrop-blur-xl border border-white/20 text-white text-[10px] uppercase font-bold px-3 py-1.5 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.8)] whitespace-nowrap">
+                                Tema {safeDisplayIndex + 1}
                             </div>
-                            <div className="w-2 h-2 bg-slate-900/95 border-b border-r border-white/10 rotate-45 -mt-1 z-[-1]" />
+                            <div className="w-1.5 h-1.5 bg-slate-900/95 border-b border-r border-white/20 rotate-45 -mt-[1px] z-[-1]" />
                         </motion.div>
                     )}
                 </AnimatePresence>
             </div>
+        </div>
+    );
+});
+
+const CarouselCard = React.memo(({
+    topic, index, activeIndex, itemWidth, scrollX,
+    subject, preferredLang, navigate, markAsSeen, isInteractive, seenNewTopics, seenVersions, onCardClick
+}: any) => {
+    
+    // Smooth Scale & Opacity Transforms optimized for Horizontal Snap (App Store Style)
+    const input = [
+        (index - 1) * itemWidth,
+        index * itemWidth,
+        (index + 1) * itemWidth
+    ];
+    
+    // Minimal, solid physical transform - NO ROTATION
+    const scale = useTransform(scrollX, input, [0.92, 1, 0.92]);
+    const opacity = useTransform(scrollX, input, [0.5, 1, 0.5]);
+    
+    const isActive = activeIndex === index;
+
+    const versions = allPersonalNotes.filter((n: any) => n.slug === topic.slug);
+    const hasNewTag = versions.some((n: any) => n.isNew);
+    const newestUpdate = Math.max(0, ...versions.map((n: any) => n.isUpdated || 0));
+
+    const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
+    const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
+
+    return (
+        <div style={{ width: `${itemWidth}px` }} className="shrink-0 snap-center flex items-center justify-center h-full px-2 py-4">
+            <motion.div 
+                style={{ scale, opacity, WebkitFontSmoothing: "antialiased" }} 
+                className="w-full h-full max-h-[500px] min-h-[420px] relative rounded-[32px] transform-gpu will-change-transform flex flex-col"
+                onClick={(e) => {
+                    if (!isActive) {
+                        e.preventDefault();
+                        onCardClick(index);
+                    } else if (isInteractive) {
+                        markAsSeen(topic.slug, newestUpdate);
+                        navigate(`/tema/${topic.slug}`);
+                    }
+                }}
+            >
+                {/* Premium Glassmorphism Background */}
+                <div className={`absolute inset-0 rounded-[32px] overflow-hidden border transition-all duration-700 ${isActive ? 'bg-slate-900/80 border-primary/30 shadow-[0_20px_50px_rgba(var(--primary-rgb),0.2)] ring-1 ring-primary/20 backdrop-blur-xl' : 'bg-slate-900/40 border-white/5 shadow-none backdrop-blur-md cursor-pointer'}`}>
+                    
+                    {/* Glowing Accent Orb */}
+                    <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full blur-3xl pointer-events-none transition-all duration-700 delay-100 ${isActive ? 'bg-primary/20 opacity-100 scale-100' : 'bg-transparent opacity-0 scale-50'}`} />
+                    
+                    <div className="relative z-10 h-full flex flex-col p-6 min-[390px]:p-8 pointer-events-none">
+                        
+                        {/* Header Area */}
+                        <div className="flex justify-between items-start mb-4">
+                            <div className={`p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-500 shadow-md ${isActive ? 'bg-primary/10 border-primary/20 text-accent shadow-[0_0_20px_rgba(56,189,248,0.2)]' : 'bg-white/5 border-white/5 text-slate-500'}`}>
+                                <Book size={24} strokeWidth={1.5} />
+                            </div>
+                            <span className={`font-mono text-6xl font-black transition-all duration-500 tracking-tighter ${isActive ? 'text-white/10' : 'text-white/5'}`}>
+                                {(() => {
+                                    const match = topic.title.match(/^Tema (\d+)/);
+                                    if (match) return match[1].padStart(2, '0');
+                                    if (topic.title.toLowerCase().includes('parcial')) return 'P1';
+                                    if (topic.title.toLowerCase().includes('final')) return 'EF';
+                                    return String(index + 1).padStart(2, '0');
+                                })()}
+                            </span>
+                        </div>
+
+                        {/* Status Badges */}
+                        {(isTopicNew || isTopicUpdated) && (
+                            <div className={`absolute top-6 right-6 z-30 transition-all duration-500 ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+                                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-lg backdrop-blur-md ${isTopicNew ? 'bg-linear-to-r from-rose-500/90 to-pink-500/90 border-rose-300/30 shadow-rose-500/40' : 'bg-linear-to-r from-emerald-500/90 to-teal-500/90 border-emerald-300/30 shadow-emerald-500/40'}`}>
+                                    <Sparkles size={10} className="text-white animate-pulse" />
+                                    <span className="text-[9px] font-extrabold text-white uppercase tracking-wider drop-shadow-sm">
+                                        {isTopicNew ? (preferredLang === 'es' ? 'Nuevo' : 'Nou') : (preferredLang === 'es' ? 'Actualizado' : 'Actualitzat')}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+
+                        <h3 className={`text-2xl min-[390px]:text-[28px] font-bold leading-[1.35] tracking-tight mb-3 pb-1 transition-colors duration-500 line-clamp-2 ${isActive ? 'text-white' : 'text-slate-400'}`}>
+                            {topic.title}
+                        </h3>
+
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className={`h-[2px] rounded-full transition-all duration-500 ${isActive ? 'w-10 bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.8)]' : 'w-6 bg-slate-700'}`} />
+                            <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest font-bold">
+                                {topic.readTime || '10 Min'}
+                            </span>
+                        </div>
+
+                        <p className="text-slate-400 text-sm leading-relaxed line-clamp-2 font-medium mb-auto opacity-90">
+                            {topic.description}
+                        </p>
+
+                        {/* Interactive Buttons Footer */}
+                        <div className={`pt-5 mt-auto transition-all duration-500 transform-gpu ${isActive ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
+                            <div className="flex flex-col gap-3">
+                                <Link
+                                    to={`/tema/${topic.slug}`}
+                                    onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
+                                    className="group/btn relative overflow-hidden flex items-center justify-between text-white font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-5 py-4 rounded-xl shadow-[0_12px_24px_rgba(var(--primary-rgb),0.25)] transition-all duration-300 active:scale-95"
+                                >
+                                    <span className="relative z-10 text-[15px] tracking-wide">Explorar tema</span>
+                                    <div className="relative z-10 bg-white/20 p-1.5 rounded-lg group-hover/btn:bg-white/30 transition-colors">
+                                        <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
+                                    </div>
+                                </Link>
+
+                                <div className="flex items-center gap-2.5">
+                                    <Link
+                                        to={`/tema/${topic.slug}/test`}
+                                        onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
+                                        className="flex-1 text-slate-300 hover:text-amber-400 text-xs font-semibold flex items-center justify-center gap-2 transition-all bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-amber-500/10 hover:border-amber-500/20 shadow-inner"
+                                    >
+                                        <RefreshCw size={14} /> Test
+                                    </Link>
+
+                                    <Link
+                                        to={subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : subject === 'pro2' && topic.slug === 'pro2-tema-9' ? '/tema/pro2-lab-7' : `/tema/${topic.slug}/solucionaris`}
+                                        onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
+                                        className="flex-1 text-slate-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-all bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner"
+                                    >
+                                        {subject === 'pro2' ? <Terminal size={14} /> : <Calculator size={14} />} Solucionaris
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
         </div>
     );
 });
@@ -334,7 +260,7 @@ interface TopicCarouselProps {
     subjectOverride?: string;
 }
 
-const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = false, subjectOverride }) => {
+const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = false, subjectOverride }) => {
     const isMobile = useIsMobile();
     const navigate = useNavigate();
     const { subject: contextSubject } = useSubject();
@@ -364,41 +290,76 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const carouselRef = useRef<HTMLDivElement>(null);
     const { scrollX } = useScroll({ container: carouselRef });
     
-    const calculateItemWidth = () => typeof window !== 'undefined' ? Math.min(window.innerWidth * 0.75, 400) : 300;
-    const [itemWidth, setItemWidth] = useState(calculateItemWidth());
-    const paddingLeft = typeof window !== 'undefined' ? (window.innerWidth - itemWidth) / 2 : 50;
+    const [itemWidth, setItemWidth] = useState(0);
+    const [paddingOffset, setPaddingOffset] = useState(0);
 
     useEffect(() => {
-        const handleResize = () => setItemWidth(calculateItemWidth());
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        const updateMeasurements = () => {
+            if (typeof window !== 'undefined') {
+                // Perfect Apple App Store proportions: 82vw
+                const idealWidth = Math.min(window.innerWidth * 0.82, 380);
+                setItemWidth(idealWidth);
+                setPaddingOffset((window.innerWidth - idealWidth) / 2);
+            }
+        };
+        updateMeasurements();
+        window.addEventListener('resize', updateMeasurements);
+        return () => window.removeEventListener('resize', updateMeasurements);
     }, []);
 
     useMotionValueEvent(scrollX, "change", (latest) => {
-        if (!isInteractive) return;
+        if (!isInteractive || itemWidth === 0) return;
         const newIndex = Math.round(latest / itemWidth);
         if (newIndex !== activeIndex && newIndex >= 0 && newIndex < sortedTopics.length) {
             setActiveIndex(newIndex);
+            if (navigator.vibrate) navigator.vibrate(8);
         }
     });
 
-    const hasRestoredScroll = useRef(false);
+    const scrollToCard = useCallback((index: number, instant = false) => {
+        if (!isInteractive || !carouselRef.current) return;
+        if (index >= 0 && index < sortedTopics.length) {
+            if (instant) {
+                carouselRef.current.style.scrollBehavior = 'auto';
+                carouselRef.current.scrollTo({ left: index * itemWidth, behavior: 'auto' });
+                // Reset back to smooth for normal interactions
+                setTimeout(() => {
+                    if (carouselRef.current) carouselRef.current.style.scrollBehavior = 'smooth';
+                }, 10);
+            } else {
+                carouselRef.current.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
+            }
+        }
+    }, [isInteractive, sortedTopics.length, itemWidth]);
+
+
+
+    const lastRestoredSubject = useRef('');
     useEffect(() => {
-        if (!hasRestoredScroll.current && carouselRef.current) {
-            const saved = sessionStorage.getItem(`topic-carousel-${subject}`);
+        if (lastRestoredSubject.current !== subject && carouselRef.current && itemWidth > 0) {
+            const saved = sessionStorage.getItem(`topic-carousel-h-${subject}`);
+            let newIndex = 0;
             if (saved) {
                 const index = parseInt(saved, 10);
                 if (!isNaN(index) && index >= 0 && index < sortedTopics.length) {
-                    carouselRef.current.scrollLeft = index * itemWidth;
-                    setActiveIndex(index);
+                    newIndex = index;
                 }
+            } else {
+                newIndex = Math.min(activeIndex, Math.max(0, sortedTopics.length - 1));
             }
-            hasRestoredScroll.current = true;
+            
+            // Disable scroll animation for instant subject switch snap
+            carouselRef.current.style.scrollBehavior = 'auto';
+            carouselRef.current.scrollLeft = newIndex * itemWidth;
+            carouselRef.current.style.scrollBehavior = 'smooth';
+            
+            setActiveIndex(newIndex);
+            lastRestoredSubject.current = subject;
         }
-    }, [subject, itemWidth, sortedTopics.length]);
+    }, [subject, itemWidth, sortedTopics.length, activeIndex]);
 
     useEffect(() => {
-        sessionStorage.setItem(`topic-carousel-${subject}`, activeIndex.toString());
+        sessionStorage.setItem(`topic-carousel-h-${subject}`, activeIndex.toString());
     }, [activeIndex, subject]);
 
     useEffect(() => {
@@ -410,7 +371,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         } catch (e) { }
     }, []);
 
-    const markAsSeen = (slug: string, version?: number) => {
+    const markAsSeen = useCallback((slug: string, version?: number) => {
         try {
             const savedNew = localStorage.getItem('seen-new-topics');
             const prevNew = savedNew ? JSON.parse(savedNew) : [];
@@ -428,63 +389,27 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 }
             }
         } catch (e) { }
-    };
-
-    const scrollToCard = (index: number) => {
-        if (!isInteractive || !carouselRef.current) return;
-        if (index >= 0 && index < sortedTopics.length) {
-            carouselRef.current.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
-        }
-    };
+    }, []);
 
     return (
         <MotionConfig reducedMotion={!isInteractive ? "always" : "never"}>
-            <div className="w-full flex-1 flex flex-col justify-center relative group/carousel">
-                {/* Navigation Arrows */}
-                <AnimatePresence>
-                    {activeIndex > 0 && isInteractive && (
-                        <motion.button
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -10 }}
-                            onClick={() => scrollToCard(activeIndex - 1)}
-                            className="hidden md:flex absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 z-50 p-4 rounded-full bg-slate-900/60 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-colors backdrop-blur-xl shadow-2xl"
-                            aria-label="Previous topic"
-                        >
-                            <ChevronLeft size={28} />
-                        </motion.button>
-                    )}
-                </AnimatePresence>
-
-                <AnimatePresence>
-                    {activeIndex < sortedTopics.length - 1 && isInteractive && (
-                        <motion.button
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 10 }}
-                            onClick={() => scrollToCard(activeIndex + 1)}
-                            className="hidden md:flex absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 z-50 p-4 rounded-full bg-slate-900/60 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-colors backdrop-blur-xl shadow-2xl"
-                            aria-label="Next topic"
-                        >
-                            <ChevronRight size={28} />
-                        </motion.button>
-                    )}
-                </AnimatePresence>
-
-                {/* 3D Coverflow Container with NATIVE SCROLL for 120Hz ProMotion on iOS */}
+            <div className="w-full flex-1 relative group/carousel flex flex-col justify-center pb-2">
+                
+                {/* Horizontal Cinematic Snap Container (App Store Style) */}
                 <div 
                     ref={carouselRef}
-                    className="relative w-full h-[420px] md:h-[520px] flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                    className="relative w-full h-[60dvh] min-h-[420px] flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                     style={{ 
                         scrollBehavior: 'smooth', 
                         WebkitOverflowScrolling: 'touch',
-                        scrollbarWidth: 'none',
-                        msOverflowStyle: 'none',
-                        paddingLeft: `${paddingLeft}px`,
-                        paddingRight: `${paddingLeft}px`
+                        paddingLeft: `${paddingOffset}px`,
+                        paddingRight: `${paddingOffset}px`
                     }}
                 >
-                    {sortedTopics.map((topic, index) => (
+                    {/* Placeholder to prevent layout shift while calculating measurements */}
+                    {itemWidth === 0 && <div className="h-full w-full shrink-0" />}
+
+                    {itemWidth > 0 && sortedTopics.map((topic, index) => (
                         <CarouselCard
                             key={topic.slug}
                             topic={topic}
@@ -497,7 +422,6 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                             navigate={navigate}
                             markAsSeen={markAsSeen}
                             isInteractive={isInteractive}
-                            isMenuOpen={isMenuOpen}
                             seenNewTopics={seenNewTopics}
                             seenVersions={seenVersions}
                             onCardClick={scrollToCard}
@@ -505,15 +429,17 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                     ))}
                 </div>
 
-                {/* Awwwards-grade Interactive Scrubber */}
-                <TopicScrubber 
+                {/* Awwwards-grade Interactive Scrubber for 1-Click Fast Navigation */}
+                <PremiumScrubber 
                     sortedTopics={sortedTopics} 
                     activeIndex={activeIndex} 
-                    scrollToCard={scrollToCard} 
+                    scrollToCard={scrollToCard}
+                    scrollX={scrollX}
+                    itemWidth={itemWidth}
                 />
             </div>
         </MotionConfig>
     );
 });
 
-export default TopicCarousel;
+export default TopicCarouselMobile;

@@ -50,28 +50,42 @@ const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, classNam
         <TooltipItem text={label}>
             <Link
                 to={to}
-                className={`group relative flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'} ${className || 'w-11 h-11 md:w-10 md:h-10'}`}
+                className={`group relative flex items-center justify-center rounded-full transition-all duration-500 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'} ${className || 'h-11 md:w-10 md:h-10'} ${!className ? (isActive ? 'w-auto px-4 md:px-0 md:w-10' : 'w-11 md:w-10') : ''}`}
             >
                 {isActive && (
                     <motion.div
                         layoutId="main-nav-active"
-                        className="absolute inset-0 bg-linear-to-b from-white/10 to-white/5 rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_0_20px_rgba(255,255,255,0.1)] border border-white/10"
+                        className="absolute inset-0 bg-linear-to-b from-white/15 to-white/5 md:from-white/10 md:to-white/5 rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_10px_20px_rgba(0,0,0,0.4)] md:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_0_20px_rgba(255,255,255,0.1)] border border-white/10"
                         initial={false}
                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     >
-                        <div className="absolute inset-x-2 -bottom-px h-[2px] bg-linear-to-r from-transparent via-primary to-transparent blur-[1px]" />
-                        <div className="absolute inset-x-3 -bottom-px h-px bg-white/80" />
+                        <div className="absolute inset-x-2 -bottom-px h-[2px] bg-linear-to-r from-transparent via-primary to-transparent blur-[1px] hidden md:block" />
+                        <div className="absolute inset-x-3 -bottom-px h-px bg-white/80 hidden md:block" />
                     </motion.div>
                 )}
                 <motion.div 
                     whileHover={{ scale: 1.15, rotate: Icon === Settings ? 45 : 0 }} 
                     whileTap={{ scale: 0.9 }}
                     transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                    className="flex items-center justify-center"
+                    className="flex items-center justify-center gap-2"
                 >
-                    {Icon ? <Icon size={22} className="md:w-5 md:h-5" /> : children}
+                    {Icon ? <Icon size={isActive ? 20 : 22} className={`transition-all duration-500 md:w-5 md:h-5 ${isActive ? 'text-primary drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] md:text-white md:drop-shadow-none' : ''}`} /> : children}
+                    
+                    <AnimatePresence mode="popLayout">
+                        {isActive && !text && Icon && (
+                            <motion.span 
+                                initial={{ opacity: 0, maxWidth: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, maxWidth: 100, scale: 1 }}
+                                exit={{ opacity: 0, maxWidth: 0, scale: 0.8 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                className="text-[13px] font-bold tracking-wide whitespace-nowrap overflow-hidden md:hidden shrink-0 block"
+                            >
+                                {label}
+                            </motion.span>
+                        )}
+                    </AnimatePresence>
                 </motion.div>
-                {text && <span className="text-sm font-medium hidden sm:inline">{text}</span>}
+                {text && <span className="text-sm font-medium hidden md:inline ml-2">{text}</span>}
             </Link>
         </TooltipItem>
     );
@@ -139,7 +153,7 @@ const Navigation: React.FC = () => {
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     className="w-full"
                 >
-                    <NavigationPill className={`!p-2 md:!p-1.5 ${isMobile ? 'bg-[#0F172A]/95 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] w-full justify-around' : 'w-[max-content] justify-start'}`}>
+                    <NavigationPill className={`!p-2 md:!p-1.5 ${isMobile ? '!bg-[#0B1120]/85 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.2)] w-full justify-between px-3 md:px-2' : 'w-[max-content] justify-start'}`}>
 
                             <NavLinkItem 
                                 to="/" 
@@ -174,14 +188,27 @@ const Navigation: React.FC = () => {
                                     label="El meu perfil"
                                     isActive={location.pathname === '/profile'}
                                     text={user.username}
-                                    className="h-11 md:h-10 md:pl-1.5 md:pr-3 md:pl-2 md:pr-4 gap-2"
+                                    className={`h-11 md:h-10 md:pl-1.5 md:pr-3 md:pl-2 md:pr-4 gap-2 transition-all duration-500 ${location.pathname === '/profile' ? 'w-auto px-2 md:px-0' : 'w-11 md:w-auto'}`}
                                 >
-                                    <div className="relative flex items-center justify-center">
-                                        <img src={user.avatar} alt={user.username} className="w-8 h-8 md:w-7 md:h-7 rounded-full bg-slate-800 border border-white/20 shadow-sm object-cover" />
+                                    <div className="relative flex items-center justify-center shrink-0">
+                                        <img src={user.avatar} alt={user.username} className={`rounded-full bg-slate-800 border-2 shadow-sm object-cover transition-all duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary shadow-[0_0_10px_rgba(56,189,248,0.5)] md:w-7 md:h-7 md:border-white/20' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`} />
                                         {unreadCount > 0 && (
                                             <span className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-3 md:h-3 bg-rose-500 rounded-full border-2 border-[#0F172A] shadow-sm animate-pulse" />
                                         )}
                                     </div>
+                                    <AnimatePresence mode="popLayout">
+                                        {location.pathname === '/profile' && (
+                                            <motion.span 
+                                                initial={{ opacity: 0, width: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, width: "auto", scale: 1 }}
+                                                exit={{ opacity: 0, width: 0, scale: 0.8 }}
+                                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                                className="text-[13px] font-bold tracking-wide whitespace-nowrap overflow-hidden md:hidden ml-1"
+                                            >
+                                                {user.username}
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
                                 </NavLinkItem>
                             ) : (
                                 <NavLinkItem
