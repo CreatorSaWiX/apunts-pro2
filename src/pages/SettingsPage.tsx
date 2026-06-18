@@ -38,7 +38,7 @@ const GeneralSection = () => {
             initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }} 
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} 
             exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center justify-center gap-12 w-full"
         >
             <div className="flex gap-6 sm:gap-12">
@@ -86,7 +86,7 @@ const PlannerSection = () => {
             initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }} 
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} 
             exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center justify-center gap-12 w-full"
         >
             <div className="flex gap-4 sm:gap-8">
@@ -155,7 +155,7 @@ const SubjectsSection = () => {
             initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }} 
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} 
             exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center justify-center gap-8 w-full max-w-lg mx-auto"
         >
             {/* Minimalist Command Palette */}
@@ -307,7 +307,7 @@ const AboutSection = () => {
             initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }} 
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} 
             exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center justify-center gap-8 w-full"
         >
             <div className="flex flex-col items-center gap-10">

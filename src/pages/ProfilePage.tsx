@@ -4,7 +4,7 @@ import { User, LogOut, Upload, Globe, Loader, Edit2, X, Save, Mail, Send, Bell, 
 import { useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
-import { doc, getDoc, setDoc, collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { updateProfile } from 'firebase/auth';
 import { motion, AnimatePresence, useMotionTemplate, useMotionValue } from 'framer-motion';

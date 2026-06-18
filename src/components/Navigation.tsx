@@ -50,23 +50,26 @@ const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, classNam
         <TooltipItem text={label}>
             <Link
                 to={to}
-                className={`group relative flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'} ${className || 'w-9 h-9 md:w-10 md:h-10'}`}
+                className={`group relative flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'} ${className || 'w-11 h-11 md:w-10 md:h-10'}`}
             >
                 {isActive && (
                     <motion.div
                         layoutId="main-nav-active"
-                        className="absolute inset-0 bg-white/10 rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"
+                        className="absolute inset-0 bg-linear-to-b from-white/10 to-white/5 rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_0_20px_rgba(255,255,255,0.1)] border border-white/10"
                         initial={false}
-                        transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     >
-                        <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                        <div className="absolute inset-x-2 -bottom-px h-[2px] bg-linear-to-r from-transparent via-primary to-transparent blur-[1px]" />
+                        <div className="absolute inset-x-3 -bottom-px h-px bg-white/80" />
                     </motion.div>
                 )}
                 <motion.div 
                     whileHover={{ scale: 1.15, rotate: Icon === Settings ? 45 : 0 }} 
+                    whileTap={{ scale: 0.9 }}
                     transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                    className="flex items-center justify-center"
                 >
-                    {Icon ? <Icon size={20} /> : children}
+                    {Icon ? <Icon size={22} className="md:w-5 md:h-5" /> : children}
                 </motion.div>
                 {text && <span className="text-sm font-medium hidden sm:inline">{text}</span>}
             </Link>
@@ -129,13 +132,14 @@ const Navigation: React.FC = () => {
     return (
         <>
             {/* Main Floating Navigation Pill (Bottom on Mobile, Top-Left on Desktop) */}
-            <div ref={navRef} className={`nav-pill-container fixed z-50 transition-all duration-300 ease-out bottom-6 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[max-content]`}>
+            <div ref={navRef} className={`nav-pill-container fixed z-50 transition-all duration-300 ease-out bottom-4 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[calc(100%-2rem)] max-w-[400px] md:w-[max-content] md:max-w-none`}>
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    className="w-full"
                 >
-                    <NavigationPill className={`!p-1.5 ${isMobile ? 'bg-[#0F172A]/90 shadow-[0_10px_40px_rgba(0,0,0,0.8)]' : ''}`}>
+                    <NavigationPill className={`!p-2 md:!p-1.5 ${isMobile ? 'bg-[#0F172A]/95 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] w-full justify-around' : 'w-[max-content] justify-start'}`}>
 
                             <NavLinkItem 
                                 to="/" 
@@ -162,7 +166,7 @@ const Navigation: React.FC = () => {
                                 isActive={location.pathname === '/settings'} 
                             />
 
-                            <div className="w-px h-5 bg-white/10 mx-1" />
+                            <div className="hidden md:block w-px h-5 bg-white/10 mx-1" />
 
                             {user ? (
                                 <NavLinkItem
@@ -170,12 +174,12 @@ const Navigation: React.FC = () => {
                                     label="El meu perfil"
                                     isActive={location.pathname === '/profile'}
                                     text={user.username}
-                                    className="h-9 md:h-10 pl-1.5 pr-3 md:pl-2 md:pr-4 gap-2"
+                                    className="h-11 md:h-10 md:pl-1.5 md:pr-3 md:pl-2 md:pr-4 gap-2"
                                 >
                                     <div className="relative flex items-center justify-center">
-                                        <img src={user.avatar} alt={user.username} className="w-7 h-7 rounded-full bg-slate-800 border border-white/20 shadow-sm object-cover" />
+                                        <img src={user.avatar} alt={user.username} className="w-8 h-8 md:w-7 md:h-7 rounded-full bg-slate-800 border border-white/20 shadow-sm object-cover" />
                                         {unreadCount > 0 && (
-                                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-900 shadow-sm" />
+                                            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-3 md:h-3 bg-rose-500 rounded-full border-2 border-[#0F172A] shadow-sm animate-pulse" />
                                         )}
                                     </div>
                                 </NavLinkItem>

@@ -41,6 +41,13 @@ const TaskPopover: React.FC = () => {
             setIsOpen(true);
         };
 
+        window.addEventListener('open-task-popover', handleOpen);
+        return () => window.removeEventListener('open-task-popover', handleOpen);
+    }, []);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
         const handleClose = () => setIsOpen(false);
 
         const handlePointerDownOutside = (e: PointerEvent) => {
@@ -63,13 +70,11 @@ const TaskPopover: React.FC = () => {
             handleClose();
         };
 
-        window.addEventListener('open-task-popover', handleOpen);
         window.addEventListener('pointerdown', handlePointerDownOutside, true);
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('scroll', handleScroll, true);
 
         return () => {
-            window.removeEventListener('open-task-popover', handleOpen);
             window.removeEventListener('pointerdown', handlePointerDownOutside, true);
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('scroll', handleScroll, true);

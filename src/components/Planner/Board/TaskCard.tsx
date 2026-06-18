@@ -43,11 +43,28 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
         )
     `;
 
+    const rafRef = React.useRef<number | null>(null);
+
     function handleMouseMove(e: React.MouseEvent) {
-        const { left, top } = e.currentTarget.getBoundingClientRect();
-        mouseX.set(e.clientX - left);
-        mouseY.set(e.clientY - top);
+        if (rafRef.current) return;
+        
+        const clientX = e.clientX;
+        const clientY = e.clientY;
+        const currentTarget = e.currentTarget as HTMLElement;
+
+        rafRef.current = requestAnimationFrame(() => {
+            const { left, top } = currentTarget.getBoundingClientRect();
+            mouseX.set(clientX - left);
+            mouseY.set(clientY - top);
+            rafRef.current = null;
+        });
     }
+
+    React.useEffect(() => {
+        return () => {
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        };
+    }, []);
 
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(task.title);

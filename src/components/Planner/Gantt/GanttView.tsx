@@ -48,8 +48,7 @@ const GanttView: React.FC = () => {
 
     const clientWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
     const viewportMinutes = clientWidth / zoomLevel;
-    const minMinutes = 28 * 24 * 60; // minimum 28 days
-    const totalMinutes = Math.max(minMinutes, viewportMinutes * 4);
+    const totalMinutes = viewportMinutes * 6;
     const totalWidthPixels = totalMinutes * zoomLevel;
 
     const timelineStart = useMemo(() => {
@@ -99,23 +98,29 @@ const GanttView: React.FC = () => {
     const handleZoomChange = (newZoom: number) => {
         if (!scrollContainerRef.current) return;
         const target = scrollContainerRef.current;
+        if (target.clientWidth === 0) return;
         
-        // Calculate absolute time of the center pixel BEFORE zoom
-        const centerMinutesFromStart = (target.scrollLeft + target.clientWidth / 2) / zoomLevel;
-        const centerTimeMs = timelineStart.getTime() + centerMinutesFromStart * 60000;
+        // The current screen offset of the red line
+        const nowMinutes = (now.getTime() - timelineStart.getTime()) / 60000;
+        const nowPixels = nowMinutes * zoomLevel;
+        const currentScreenOffset = nowPixels - target.scrollLeft;
         
-        // Pre-calculate new timeline window to know the new start
-        const newViewportMinutes = target.clientWidth / newZoom;
-        const newTotalMinutes = Math.max(minMinutes, newViewportMinutes * 4);
-        const newTimelineStartMs = baseDate.getTime() - (newTotalMinutes / 2) * 60000;
+        // Gravitational pull: smoothly move the red line towards the center of the screen 
+        // on every zoom tick, replicating the "zoom to playhead" centering behavior.
+        const centerPx = target.clientWidth / 2;
+        const pullFactor = 0.15; // 15% pull towards center per slider event
         
+        const newScreenOffset = currentScreenOffset + (centerPx - currentScreenOffset) * pullFactor;
+        
+        // By setting baseDate EXACTLY to 'now', the red line is placed perfectly 
+        // at the center of the 6-screen container (which is 3 * clientWidth pixels from the left).
         flushSync(() => {
+            setBaseDate(new Date(now.getTime()));
             setZoomLevel(newZoom);
         });
         
-        // Find where that exact time falls in the new timeline
-        const newCenterMinutesFromStart = (centerTimeMs - newTimelineStartMs) / 60000;
-        target.scrollLeft = (newCenterMinutesFromStart * newZoom) - target.clientWidth / 2;
+        // We set the scroll position so that the 3 * clientWidth point sits exactly at our newScreenOffset
+        target.scrollLeft = (3 * clientWidth) - newScreenOffset;
     };
 
     // Ruler configuration based on zoom
@@ -144,8 +149,8 @@ const GanttView: React.FC = () => {
     }, [totalMinutes, rulerConfig.intervalMins, timelineStart]);
 
     // Smart Stacking Algorithm
-    const scheduledTasks = tasks.filter(t => t.startDate || t.dueDate);
     const tasksWithLayout = useMemo(() => {
+        const scheduledTasks = tasks.filter(t => t.startDate || t.dueDate);
         const sorted = [...scheduledTasks].sort((a, b) => {
             const aStart = a.startDate ? new Date(a.startDate).getTime() : new Date().getTime();
             const bStart = b.startDate ? new Date(b.startDate).getTime() : new Date().getTime();
@@ -160,11 +165,11 @@ const GanttView: React.FC = () => {
             const leftMins = (start.getTime() - timelineStart.getTime()) / 60000;
             return { ...task, start, end, durationMins, trackIndex: index, leftMins };
         });
-    }, [scheduledTasks, timelineStart]);
+    }, [tasks, timelineStart]);
 
 
 
-    const unplannedTasks = tasks.filter(t => !t.startDate);
+    const unplannedTasks = useMemo(() => tasks.filter(t => !t.startDate), [tasks]);
 
     const onDragEnd = (event: DragEndEvent) => {
         const { over, active } = event;
@@ -249,9 +254,11 @@ const GanttView: React.FC = () => {
             <div className="absolute bottom-6 right-6 z-40 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl flex items-center gap-4">
                 <button 
                     onClick={() => {
+                        flushSync(() => {
+                            setBaseDate(new Date(now.getTime()));
+                        });
                         if (scrollContainerRef.current) {
-                            const nowMins = (now.getTime() - timelineStart.getTime()) / 60000;
-                            scrollContainerRef.current.scrollTo({ left: nowMins * zoomLevel - scrollContainerRef.current.clientWidth / 2, behavior: 'smooth' });
+                            scrollContainerRef.current.scrollLeft = 3 * clientWidth - scrollContainerRef.current.clientWidth / 2;
                         }
                     }}
                     className="p-1.5 rounded-full bg-primary/20 hover:bg-primary/30 text-primary transition-colors cursor-pointer mr-2"

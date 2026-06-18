@@ -42,6 +42,13 @@ const GlobalTaskContextMenu: React.FC = () => {
             setIsOpen(true);
         };
 
+        window.addEventListener('open-task-context-menu', handleOpenMenu);
+        return () => window.removeEventListener('open-task-context-menu', handleOpenMenu);
+    }, []);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
         const handleCloseMenu = () => {
             setIsOpen(false);
             setTask(null);
@@ -79,13 +86,11 @@ const GlobalTaskContextMenu: React.FC = () => {
             }
         };
 
-        window.addEventListener('open-task-context-menu', handleOpenMenu);
         window.addEventListener('pointerdown', handlePointerDownOutside, true);
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('scroll', handleCloseMenu, true); // Close on any scroll
 
         return () => {
-            window.removeEventListener('open-task-context-menu', handleOpenMenu);
             window.removeEventListener('pointerdown', handlePointerDownOutside, true);
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('scroll', handleCloseMenu, true);

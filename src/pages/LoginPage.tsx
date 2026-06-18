@@ -35,7 +35,7 @@ const LoginPage = () => {
     };
 
     // Animation variants
-    const customEasing = [0.16, 1, 0.3, 1]; // Premium smooth ease
+    const customEasing: any = [0.16, 1, 0.3, 1]; // Premium smooth ease
 
     const staggerContainer = {
         hidden: { opacity: 0 },
