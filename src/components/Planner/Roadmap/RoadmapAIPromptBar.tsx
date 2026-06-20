@@ -62,9 +62,15 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
             .map(n => n.id);
 
         try {
+            const { auth } = await import('../../../lib/firebase');
+            const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+
             const response = await fetch('/api/roadmap-ai', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
                 body: JSON.stringify({
                     prompt: userMsg,
                     currentNodes: activeNodes

@@ -87,10 +87,7 @@ export default defineConfig(({ mode }) => {
               // Import dinàmic per evitar problemes d'esbuild en arrencada
               const { getProblemInfo } = await import('./src/lib/jutgeScraper.js');
 
-              const result = await getProblemInfo(id, reqLang, {
-                JUTGE_EMAIL: env.JUTGE_EMAIL,
-                JUTGE_PASSWORD: env.JUTGE_PASSWORD
-              });
+              const result = await getProblemInfo(id, reqLang);
 
               res.setHeader('Content-Type', 'application/json');
               res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');

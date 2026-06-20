@@ -84,7 +84,7 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
 
                 {/* Elegant Ticks */}
                 <div className="absolute left-0 right-0 h-1.5 flex justify-between px-[2px] pointer-events-none">
-                    {sortedTopics.map((_, i) => (
+                    {sortedTopics.map((_: any, i: number) => (
                          <div key={i} className={`w-0.5 h-full rounded-full transition-colors duration-300 ${safeDisplayIndex === i ? 'bg-white' : 'bg-white/20'}`} />
                     ))}
                 </div>

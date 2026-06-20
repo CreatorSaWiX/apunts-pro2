@@ -1,12 +1,6 @@
 import * as cheerio from 'cheerio';
 
-interface JutgeEnv {
-    JUTGE_EMAIL?: string;
-    JUTGE_PASSWORD?: string;
-    JUTGE_COOKIE?: string; // For testing in some environments
-}
-
-export async function getProblemInfo(id: string, reqLang: string | null, _env?: JutgeEnv) {
+export async function getProblemInfo(id: string, reqLang: string | null) {
     let cleanId = id.replace(/[^a-zA-Z0-9_]/g, '');
     let statementHtml = '';
     let title = cleanId;

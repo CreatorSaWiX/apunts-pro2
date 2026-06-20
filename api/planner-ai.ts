@@ -18,6 +18,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     try {
+        const idToken = req.headers.authorization?.split('Bearer ')[1];
+        if (!idToken) {
+            return res.status(401).json({ error: 'No autoritzat. Cal iniciar sessió.' });
+        }
+
+        const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
+        if (!firebaseApiKey) {
+            return res.status(500).json({ error: 'Configuració de Firebase incompleta al servidor.' });
+        }
+
+        const verifyRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken })
+        });
+
+        if (!verifyRes.ok) {
+            return res.status(401).json({ error: 'Token invàlid o caducat.' });
+        }
+
         const { prompt, currentTasks = [] } = req.body;
 
         if (!prompt) {
@@ -26,7 +46,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
-            return res.status(500).json({ error: 'Clau de Gemini no configurada' });
+            return res.status(500).json({ error: 'Error intern del servidor (C)' });
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
@@ -92,6 +112,6 @@ IMPORTANT:
         throw lastError ?? new Error('Tots els models de Gemini han fallat');
     } catch (error: any) {
         console.error('[Gemini Planner API Error]', error);
-        res.status(500).json({ error: error.message || 'Error processant la petició d\'IA' });
+        res.status(500).json({ error: 'Error processant la petició d\'IA' });
     }
 }

@@ -21,6 +21,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     try {
+        const idToken = req.headers.authorization?.split('Bearer ')[1];
+        if (!idToken) {
+            return res.status(401).json({ error: 'No autoritzat. Cal iniciar sessió.' });
+        }
+
+        const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
+        if (!firebaseApiKey) {
+            return res.status(500).json({ error: 'Configuració de Firebase incompleta al servidor.' });
+        }
+
+        const verifyRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken })
+        });
+
+        if (!verifyRes.ok) {
+            return res.status(401).json({ error: 'Token invàlid o caducat.' });
+        }
+
         const { message, history = [], currentPath = '/', pageText = '', image } = req.body;
 
         if (!message) {
@@ -29,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
-            return res.status(500).json({ error: 'Clau de Gemini no configurada al servidor (.env.local)' });
+            return res.status(500).json({ error: 'Error intern del servidor (C)' });
         }
 
         // 1. Preparem el context: Unim tots els apunts (aprox 500KB)
@@ -95,6 +115,6 @@ ${notesContext}`;
         throw lastError ?? new Error('Tots els models de Gemini han fallat');
     } catch (error: any) {
         console.error('[Gemini API Error]', error);
-        res.status(500).json({ error: error.message || 'Error intern del servidor' });
+        res.status(500).json({ error: 'Error intern del servidor' });
     }
 }

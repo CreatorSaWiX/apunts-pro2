@@ -24,16 +24,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(400).json({ error: 'Missing Problem ID' });
         }
 
-        const result = await getProblemInfo(id, lang, {
-            JUTGE_EMAIL: process.env.JUTGE_EMAIL,
-            JUTGE_PASSWORD: process.env.JUTGE_PASSWORD
-        });
+        const result = await getProblemInfo(id, lang);
 
         // Set caching headers for the edge CDN
         res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=43200');
         res.status(200).json(result);
     } catch (e: any) {
         console.error("[Vercel API] Proxy Error:", e);
-        res.status(500).json({ error: String(e.message || e) });
+        res.status(500).json({ error: 'Error intern del servidor' });
     }
 }

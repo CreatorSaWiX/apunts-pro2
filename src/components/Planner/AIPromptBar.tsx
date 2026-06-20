@@ -41,9 +41,15 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
         setError(null);
 
         try {
+            const { auth } = await import('../../lib/firebase');
+            const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+
             const response = await fetch('/api/planner-ai', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
                 body: JSON.stringify({
                     prompt,
                     currentTasks: tasks,

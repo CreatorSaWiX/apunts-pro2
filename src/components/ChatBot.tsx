@@ -296,8 +296,16 @@ export const ChatBot: React.FC = () => {
     try {
       let pageText = '';
       try { pageText = (document.querySelector('main') || document.body).innerText.slice(0, 4000); } catch (_) { }
+
+      const { auth } = await import('../lib/firebase');
+      const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+
       const res = await fetch('/api/chat', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST', 
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
         body: JSON.stringify({ message: userMsg, history: messages.slice(-10), currentPath: window.location.pathname, pageText, image: fileToSend ? { data: fileToSend.data, mimeType: fileToSend.mimeType } : undefined }),
       });
       const data = await res.json();

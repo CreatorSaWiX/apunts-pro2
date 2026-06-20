@@ -31,4 +31,5 @@ export interface CommunityPost {
     rank: PostRank;
     isPinned: boolean;
     reports?: number;
+    attachments?: { url: string; name: string; type: string; size: number }[];
 }

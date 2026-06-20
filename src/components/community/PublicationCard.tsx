@@ -1,298 +1,113 @@
-import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import type { CommunityPost, PostRank } from '../../types/community';
-import { SUBJECTS } from '../../config/subjects';
-import { 
-    MessageSquare, Heart, Share2, MoreHorizontal, 
-    Zap, Award, Flame, Pin, Trash2, AlertCircle 
-} from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { ca } from 'date-fns/locale';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { motion, AnimatePresence } from 'framer-motion';
+import type { CommunityPost } from '../../types/community';
+import { Heart, Eye, ArrowUpRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { db } from '../../lib/firebase';
-import { doc, updateDoc, deleteDoc, deleteField, collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import ReplySection from './ReplySection';
+import { doc, updateDoc, deleteField } from 'firebase/firestore';
 
 interface PublicationCardProps {
     post: CommunityPost;
 }
 
-const rankStyles: Record<PostRank, { 
-    container: string, 
-    badge: string, 
-    label: string, 
-    icon: any,
-    glow: string 
-}> = {
-    0: { 
-        container: 'border-white/5 bg-slate-900/50', 
-        badge: 'bg-slate-800 text-slate-400', 
-        label: 'Normal', 
-        icon: MessageSquare,
-        glow: 'opacity-0'
-    },
-    1: { 
-        container: 'border-sky-500/30 bg-sky-950/20 shadow-[0_0_20px_rgba(14,165,233,0.15)]', 
-        badge: 'bg-sky-500 text-white shadow-lg shadow-sky-500/40', 
-        label: 'Featured', 
-        icon: Zap,
-        glow: 'bg-sky-500/10 opacity-100'
-    },
-    2: { 
-        container: 'border-rose-500/40 bg-rose-950/20 shadow-[0_0_30px_rgba(244,63,94,0.2)] animate-pulse', 
-        badge: 'bg-rose-500 text-white shadow-lg shadow-rose-500/40', 
-        label: 'Epic', 
-        icon: Flame,
-        glow: 'bg-rose-500/15 opacity-100'
-    },
-    3: { 
-        container: 'border-amber-500/50 bg-amber-950/20 ring-1 ring-amber-500/30', 
-        badge: 'bg-linear-to-r from-amber-400 to-orange-500 text-white shadow-lg shadow-amber-500/40', 
-        label: 'Legendary', 
-        icon: Award,
-        glow: 'bg-amber-500/20 opacity-100'
-    },
-    4: { 
-        container: 'border-transparent bg-slate-900/80 relative before:absolute before:-inset-[2px] before:bg-linear-to-r before:from-indigo-500 before:via-purple-500 before:to-pink-500 before:rounded-[34px] before:-z-10 before:animate-gradient-x', 
-        badge: 'bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 text-white italic font-black tracking-tighter', 
-        label: 'Mythic', 
-        icon: Zap,
-        glow: 'bg-purple-500/30 opacity-100 blur-[50px]'
-    }
-};
-
 const PublicationCard = ({ post }: PublicationCardProps) => {
     const { user } = useAuth();
-    const [showReplies, setShowReplies] = useState(false);
-    const [showModMenu, setShowModMenu] = useState(false);
-    const subject = SUBJECTS.find(s => s.id === post.subject);
-    const isMod = user?.role === 'moderador';
-    const isOwner = user?.id === post.userId;
     
-    const style = rankStyles[post.rank];
-    const RankIcon = style.icon;
+    const imageAttachment = post.attachments?.find(a => a.type.startsWith('image/'));
+    // If no image, we still want to render something, maybe a text fallback, but now we force images in Create.
+    // For old posts without images, use a placeholder gradient
+    const fallbackImage = `https://picsum.photos/seed/${post.id}/800/600`;
+    const coverUrl = imageAttachment ? imageAttachment.url : fallbackImage;
 
-    const handleReaction = async (emoji: string) => {
+    const likeCount = Object.values(post.reactions || {}).filter(r => r.emoji === '❤️').length;
+    const hasLiked = user && post.reactions?.[user.id]?.emoji === '❤️';
+
+    const handleLike = async (e: React.MouseEvent) => {
+        e.stopPropagation();
         if (!user) return;
         const postRef = doc(db, 'community_posts', post.id);
-        const hasReacted = post.reactions?.[user.id]?.emoji === emoji;
-
         try {
-            if (hasReacted) {
-                await updateDoc(postRef, {
-                    [`reactions.${user.id}`]: deleteField()
-                });
+            if (hasLiked) {
+                await updateDoc(postRef, { [`reactions.${user.id}`]: deleteField() });
             } else {
                 await updateDoc(postRef, {
-                    [`reactions.${user.id}`]: {
-                        emoji,
-                        username: user.username,
-                        userId: user.id
-                    }
+                    [`reactions.${user.id}`]: { emoji: '❤️', username: user.username, userId: user.id }
                 });
-
-                // Trigger Notification
-                if (post.userId !== user.id) {
-                    await addDoc(collection(db, 'notifications'), {
-                        userId: post.userId,
-                        type: 'reaction',
-                        content: emoji,
-                        fromUserId: user.id,
-                        fromUserName: user.username,
-                        fromUserAvatar: user.avatar || '',
-                        resourceId: post.id,
-                        resourceTitle: post.content.substring(0, 30) + '...',
-                        commentId: 'community_post', // To distinguish from solution comments
-                        read: false,
-                        createdAt: serverTimestamp()
-                    });
-                }
             }
-        } catch (e) { console.error(e); }
-    };
-
-    const updateRank = async (rank: PostRank) => {
-        if (!isMod) return;
-        await updateDoc(doc(db, 'community_posts', post.id), { rank });
-        setShowModMenu(false);
-    };
-
-    const togglePin = async () => {
-        if (!isMod) return;
-        await updateDoc(doc(db, 'community_posts', post.id), { isPinned: !post.isPinned });
-        setShowModMenu(false);
-    };
-
-    const deletePost = async () => {
-        if (!isMod && !isOwner) return;
-        if (confirm("Segur que vols eliminar aquesta publicació?")) {
-            await deleteDoc(doc(db, 'community_posts', post.id));
-        }
+        } catch (err) { console.error(err); }
     };
 
     return (
         <motion.div 
-            layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`
-                relative rounded-[32px] p-1 transition-all duration-500
-                ${post.rank === 4 ? 'z-10' : 'z-0'}
-            `}
+            whileHover={{ y: -8 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            className="flex flex-col gap-3 group"
         >
-            {/* Background Glow */}
-            <div className={`absolute inset-0 rounded-[32px] blur-3xl pointer-events-none transition-all duration-700 -z-20 ${style.glow}`} />
+            {/* The Image Card */}
+            <div className="w-full aspect-[4/3] rounded-[2rem] overflow-hidden relative bg-[#0a0a0a] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] border border-white/5">
+                <img 
+                    src={coverUrl} 
+                    alt={post.content.substring(0, 20)} 
+                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                />
 
-            <div className={`
-                h-full w-full rounded-[30px] border backdrop-blur-2xl p-6 md:p-8 flex flex-col gap-6
-                ${style.container}
-            `}>
-                {/* Header */}
-                <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="relative">
-                            <img 
-                                src={post.userAvatar} 
-                                alt={post.username} 
-                                className="w-12 h-12 rounded-2xl object-cover ring-2 ring-white/10"
-                            />
-                            {post.isPinned && (
-                                <div className="absolute -top-2 -left-2 p-1.5 bg-amber-500 text-white rounded-full shadow-lg border-2 border-slate-900">
-                                    <Pin size={10} fill="currentColor" />
-                                </div>
-                            )}
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <h4 className="font-bold text-white text-lg">{post.username}</h4>
-                                {post.rank > 0 && (
-                                    <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter ${style.badge}`}>
-                                        <RankIcon size={10} strokeWidth={3} />
-                                        <span>{style.label}</span>
-                                    </div>
-                                )}
-                            </div>
-                            <div className="flex items-center gap-2 text-xs text-slate-500">
-                                <span>{post.createdAt?.toDate ? formatDistanceToNow(post.createdAt.toDate(), { locale: ca, addSuffix: true }) : 'Ara'}</span>
-                                <span>•</span>
-                                <span className={`font-bold text-${subject?.color || 'slate'}-400 uppercase tracking-widest text-[10px]`}>
-                                    {subject?.label || 'General'}
-                                </span>
-                            </div>
+                {/* Glassmorphism Hover Overlay */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-between p-6">
+                    {/* Top Right Actions */}
+                    <div className="flex justify-end transform -translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                        <button 
+                            onClick={handleLike}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 transition-colors ${hasLiked ? 'bg-rose-500/20 text-rose-500 border-rose-500/50' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                        >
+                            <Heart size={18} fill={hasLiked ? 'currentColor' : 'none'} />
+                        </button>
+                    </div>
+
+                    {/* Bottom Info */}
+                    <div className="transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-75">
+                        <h3 className="text-white font-bold text-lg line-clamp-2 leading-tight drop-shadow-md mb-3">
+                            {post.content ? post.content.replace(/!\[.*?\]\(.*?\)/g, '') : 'Project Showcase'}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold uppercase tracking-widest text-white/70 backdrop-blur-sm bg-black/30 px-3 py-1 rounded-full border border-white/10">
+                                Veure Detalls
+                            </span>
+                            <ArrowUpRight size={16} className="text-white/70" />
                         </div>
                     </div>
-
-                    <div className="relative">
-                        <button 
-                            onClick={() => setShowModMenu(!showModMenu)}
-                            className="p-2 text-slate-500 hover:text-white hover:bg-white/5 rounded-xl transition-all"
-                        >
-                            <MoreHorizontal size={20} />
-                        </button>
-                        
-                        <AnimatePresence>
-                            {showModMenu && (
-                                <motion.div 
-                                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                                    className="absolute right-0 top-full mt-2 w-56 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl z-50 p-2"
-                                >
-                                    {isMod && (
-                                        <>
-                                            <div className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Moderar</div>
-                                            <button onClick={() => updateRank(1)} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-sky-400 hover:bg-white/5 rounded-xl transition-all">
-                                                <Zap size={14} /> Mark as Featured
-                                            </button>
-                                            <button onClick={() => updateRank(2)} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-rose-400 hover:bg-white/5 rounded-xl transition-all">
-                                                <Flame size={14} /> Mark as Epic
-                                            </button>
-                                            <button onClick={() => updateRank(3)} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-amber-400 hover:bg-white/5 rounded-xl transition-all">
-                                                <Award size={14} /> Mark as Legendary
-                                            </button>
-                                            <button onClick={() => updateRank(4)} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-purple-400 hover:bg-white/5 rounded-xl transition-all">
-                                                <Zap size={14} className="animate-pulse" /> Mark as Mythic
-                                            </button>
-                                            <div className="h-px bg-white/5 my-1" />
-                                            <button onClick={togglePin} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-slate-200 hover:bg-white/5 rounded-xl transition-all">
-                                                <Pin size={14} /> {post.isPinned ? 'Desancorar' : 'Ancorar'}
-                                            </button>
-                                        </>
-                                    )}
-                                    {(isMod || isOwner) && (
-                                        <button onClick={deletePost} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 rounded-xl transition-all">
-                                            <Trash2 size={14} /> Eliminar
-                                        </button>
-                                    )}
-                                    {!isMod && !isOwner && (
-                                        <button 
-                                            onClick={async () => {
-                                                await updateDoc(doc(db, 'community_posts', post.id), { reports: (post.reports || 0) + 1 });
-                                                setShowModMenu(false);
-                                                alert("Gràcies! Hem rebut la teva denúncia.");
-                                            }}
-                                            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-slate-400 hover:bg-white/5 rounded-xl transition-all"
-                                        >
-                                            <AlertCircle size={14} /> Denunciar contingut
-                                        </button>
-                                    )}
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
                 </div>
 
-                {/* Content */}
-                <div className="prose prose-invert max-w-none prose-p:text-slate-300 prose-p:leading-relaxed prose-a:text-primary hover:prose-a:text-accent">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {post.content}
-                    </ReactMarkdown>
-                </div>
-
-                {/* Footer / Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                    <div className="flex items-center gap-2">
-                        <button 
-                            onClick={() => handleReaction('❤️')}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${post.reactions?.[user?.id || '']?.emoji === '❤️' ? 'bg-rose-500/20 text-rose-500' : 'text-slate-500 hover:bg-white/5 hover:text-white'}`}
-                        >
-                            <Heart size={18} fill={post.reactions?.[user?.id || '']?.emoji === '❤️' ? 'currentColor' : 'none'} />
-                            <span className="text-sm font-bold">{Object.values(post.reactions || {}).filter(r => r.emoji === '❤️').length}</span>
-                        </button>
-
-                        <button 
-                            onClick={() => setShowReplies(!showReplies)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${showReplies ? 'bg-primary/20 text-accent' : 'text-slate-500 hover:bg-white/5 hover:text-white'}`}
-                        >
-                            <MessageSquare size={18} />
-                            <span className="text-sm font-bold">Respon</span>
-                        </button>
-                    </div>
-
-                    <button className="p-2 text-slate-500 hover:text-white transition-all">
-                        <Share2 size={18} />
-                    </button>
-                </div>
-
-                {/* Replies Section */}
-                <AnimatePresence>
-                    {showReplies && (
-                        <motion.div 
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="bg-white/5 -mx-6 -mb-6 mt-2 p-6 overflow-hidden rounded-b-[30px]"
-                        >
-                            <ReplySection 
-                                postId={post.id} 
-                                postAuthorId={post.userId}
-                                postContent={post.content}
-                            />
-                        </motion.div>
+                {/* Badges (Always visible) */}
+                <div className="absolute top-4 left-4 flex gap-2">
+                    {post.isPinned && (
+                        <div className="bg-white text-black text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
+                            Featured
+                        </div>
                     )}
-                </AnimatePresence>
+                </div>
+            </div>
+
+            {/* Author Info (Outside the card, extremely clean) */}
+            <div className="flex items-center justify-between px-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                    <img src={post.userAvatar} alt={post.username} className="w-7 h-7 rounded-full object-cover bg-slate-800 shrink-0" />
+                    <span className="text-sm font-bold text-slate-300 truncate hover:text-white transition-colors cursor-pointer">
+                        {post.username}
+                    </span>
+                    {post.rank > 0 && (
+                        <span className="text-[9px] bg-white/10 text-white px-1.5 py-0.5 rounded font-bold uppercase tracking-widest">PRO</span>
+                    )}
+                </div>
+                
+                <div className="flex items-center gap-3 shrink-0 text-slate-500 text-xs font-bold">
+                    <div className="flex items-center gap-1.5">
+                        <Heart size={14} className={hasLiked ? 'text-rose-500 fill-rose-500' : ''} />
+                        <span className={hasLiked ? 'text-rose-500' : ''}>{likeCount > 0 ? likeCount : ''}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <Eye size={14} />
+                        <span>{(Math.random() * 5000 + 1000).toFixed(0)}</span>
+                    </div>
+                </div>
             </div>
         </motion.div>
     );

@@ -1,4 +1,6 @@
-export type SubjectType = 'pro2' | 'm1' | 'm2' | 'comunitari';
+import subjectsData from '../data/subjects.json';
+
+export type SubjectType = string;
 
 export interface SubjectConfig {
     id: SubjectType;
@@ -7,31 +9,11 @@ export interface SubjectConfig {
     description: string;
 }
 
-export const SUBJECTS: SubjectConfig[] = [
-    {
-        id: 'pro2',
-        label: 'PRO2',
-        color: 'sky',
-        description: 'Programació 2'
-    },
-    {
-        id: 'm1',
-        label: 'M1',
-        color: 'violet',
-        description: 'Matemàtiques 1 (Àlgebra)'
-    },
-    {
-        id: 'm2',
-        label: 'M2',
-        color: 'emerald',
-        description: 'Matemàtiques 2 (Càlcul)'
-    },
-    {
-        id: 'comunitari',
-        label: 'General',
-        color: 'slate',
-        description: 'Publicacions generals de la comunitat'
-    }
-];
+export const SUBJECTS: SubjectConfig[] = subjectsData.map(s => ({
+    id: s.id,
+    label: s.name,
+    color: s.colorToken.split('-')[0] || 'slate',
+    description: s.description
+}));
 
 export const getSubjectById = (id: string) => SUBJECTS.find(s => s.id === id);
