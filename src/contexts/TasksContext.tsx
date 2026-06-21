@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { useAuth } from './AuthContext';
 import type { Task, Subject, TaskPriority } from '../types/tasks';
 import subjectsData from '../data/subjects.json';
+import { useSettings } from './SettingsContext';
 
 export type DateRangeFilter = 'ALL' | 'TODAY' | 'THIS_WEEK' | 'THIS_MONTH' | 'THIS_TERM';
 
@@ -31,13 +32,21 @@ const TasksContext = createContext<TasksContextType | undefined>(undefined);
 
 export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { user } = useAuth();
+    const { customSubjectColors } = useSettings();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const deletedTasksRef = useRef<Task[]>([]);
     
-    // Using subjects from the data file
-    const subjects: Subject[] = subjectsData;
+    // Merge subjects with custom colors from Firebase/Settings
+    const subjects: Subject[] = useMemo(() => {
+        return subjectsData.map((sub: any) => {
+            if (customSubjectColors && customSubjectColors[sub.name]) {
+                return { ...sub, colorToken: `${customSubjectColors[sub.name]}-500` };
+            }
+            return sub;
+        });
+    }, [customSubjectColors]);
     
     const [filters, setFilters] = useState<TaskFilters>({
         subjects: [],

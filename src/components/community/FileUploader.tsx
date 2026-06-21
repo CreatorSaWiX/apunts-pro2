@@ -142,12 +142,13 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3 }: FileUploaderProps) => 
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
             'application/pdf': ['.pdf'],
             'application/zip': ['.zip', '.rar'],
+            'video/*': ['.mp4', '.webm', '.ogg', '.mov'],
             'text/javascript': ['.js', '.jsx'],
             'text/typescript': ['.ts', '.tsx'],
             'text/plain': ['.txt', '.cc', '.cpp', '.c', '.h', '.hpp'],
             'model/gltf-binary': ['.glb'],
             'model/gltf+json': ['.gltf']
-        }
+        }   
     });
 
     return (
@@ -161,7 +162,7 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3 }: FileUploaderProps) => 
                     <input {...getInputProps()} />
                     <UploadCloud className="mx-auto mb-2 text-slate-400" size={24} />
                     <p className="text-sm font-bold text-slate-300">Arrossega arxius per adjuntar</p>
-                    <p className="text-xs text-slate-500 mt-1">Codi, PDFs, 3D, Imatges, ZIP (Màxim {MAX_FILE_SIZE_MB}MB per arxiu)</p>
+                    <p className="text-xs text-slate-500 mt-1">Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {MAX_FILE_SIZE_MB}MB per arxiu)</p>
                 </div>
             )}
 

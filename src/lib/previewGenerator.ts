@@ -118,7 +118,7 @@ const generatePdfThumbnail = async (file: File): Promise<string> => {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    const renderContext = {
+    const renderContext: any = {
         canvasContext: ctx,
         viewport: viewport
     };

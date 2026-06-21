@@ -10,7 +10,7 @@ import FileUploader, { type Attachment } from './FileUploader';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
-const CUSTOM_EMOTES = Object.values(emojiModules);
+const CUSTOM_EMOTES = Object.values(emojiModules) as string[];
 
 const PostComposer = () => {
     const { user } = useAuth();

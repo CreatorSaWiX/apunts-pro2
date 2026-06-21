@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { SUBJECTS, type SubjectType } from '../../config/subjects';
-import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, Loader2, X, Eye, FileText } from 'lucide-react';
+import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, Loader2, X, FileText } from 'lucide-react';
 import GifPicker from '../ui/GifPicker';
 import SubjectSelectorModal from './SubjectSelectorModal';
 import FileUploader, { type Attachment } from './FileUploader';
@@ -13,7 +13,7 @@ import type { CommunityPost } from '../../types/community';
 import RichTextEditor from '../ui/RichTextEditor';
 
 const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
-const CUSTOM_EMOTES = Object.values(emojiModules);
+const CUSTOM_EMOTES = Object.values(emojiModules) as string[];
 
 interface CreatePostModalProps {
     isOpen: boolean;

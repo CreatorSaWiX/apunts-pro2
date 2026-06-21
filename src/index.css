@@ -336,3 +336,4 @@ canvas {
   transform: translateZ(0); /* Hardware acceleration */
 }
 
+@plugin "@tailwindcss/typography";

@@ -1,17 +1,64 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, query, orderBy, onSnapshot, where, limit, startAfter, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, where, limit, startAfter, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, FileText as FileTextIcon, BookOpen, Sparkles, X } from 'lucide-react';
+import CommunityHero3D from '../components/community/CommunityHero3D';
 import SubjectSelectorModal from '../components/community/SubjectSelectorModal';
-import { SUBJECTS } from '../config/subjects';
 import CreatePostModal from '../components/community/CreatePostModal';
 import PostDetailModal from '../components/community/PostDetailModal';
-import NavigationPill from '../components/ui/NavigationPill';
+
+const mockEpicPost: CommunityPost = {
+    id: 'mock-epic',
+    userId: 'system',
+    username: 'AlexDev',
+    userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
+    content: 'Guia completa d\'Estructures de Dades. Arbres AVL i Grafs amb exemples en C++.',
+    subject: 'pro2',
+    type: 'resource',
+    createdAt: Timestamp.now(),
+    reactions: {'user1': {userId: 'user1', username: 'Bob', emoji: '❤️'}, 'user2': {userId: 'user2', username: 'Alice', emoji: '❤️'}},
+    rank: 2,
+    isPinned: false,
+    views: 1240,
+    attachments: [{ url: '', name: 'apunts_pro2_complets.pdf', type: 'application/pdf', size: 1024 }]
+};
+
+const mockLegendaryPost: CommunityPost = {
+    id: 'mock-legendary',
+    userId: 'system',
+    username: 'Maria_UI',
+    userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria',
+    content: 'Resum interactiu de Fonaments d\'Ordinadors amb esquemes de circuits.',
+    subject: 'm1',
+    type: 'resource',
+    createdAt: Timestamp.now(),
+    reactions: {'u1': {userId:'1',username:'',emoji:'❤️'},'u2':{userId:'2',username:'',emoji:'❤️'},'u3':{userId:'3',username:'',emoji:'❤️'},'u4':{userId:'4',username:'',emoji:'❤️'},'u5':{userId:'5',username:'',emoji:'❤️'}},
+    rank: 3,
+    isPinned: true,
+    views: 3500,
+    attachments: [{ url: '', name: 'esquemes_m1.png', type: 'image/png', size: 1024, thumbnailUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800' }]
+};
+
+const mockMythicPost: CommunityPost = {
+    id: 'mock-mythic',
+    userId: 'system',
+    username: 'CreatorSaWiX',
+    userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sawix',
+    content: 'Projecte Final: Simulador de Processadors. Codi font sencer i documentació.',
+    subject: 'm2',
+    type: 'resource',
+    createdAt: Timestamp.now(),
+    reactions: {'1':{userId:'1',username:'',emoji:'❤️'},'2':{userId:'2',username:'',emoji:'❤️'},'3':{userId:'3',username:'',emoji:'❤️'},'4':{userId:'4',username:'',emoji:'❤️'},'5':{userId:'5',username:'',emoji:'❤️'},'6':{userId:'6',username:'',emoji:'❤️'},'7':{userId:'7',username:'',emoji:'❤️'},'8':{userId:'8',username:'',emoji:'❤️'}},
+    rank: 4,
+    isPinned: true,
+    views: 12500,
+    attachments: [{ url: '', name: 'simulador_cpu.zip', type: 'application/zip', size: 1024 }]
+};
 
 const CommunityPage = () => {
     const { user } = useAuth();
@@ -22,11 +69,35 @@ const CommunityPage = () => {
     const [lastVisible, setLastVisible] = useState<any>(null);
     const [hasMore, setHasMore] = useState(true);
     
-    const [activeSubject, setActiveSubject] = useState('all');
+    const [activeSubject, setActiveSubject] = useState<string>('all');
     const [showSubjectFilter, setShowSubjectFilter] = useState(false);
-    
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
+
+    // New Filter States
+    const [showRarityFilter, setShowRarityFilter] = useState(false);
+    const [activeRank, setActiveRank] = useState<number | null>(null);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    
+    // Hero 3D Showcase State
+    const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    const heroWords = ["el curs.", "el semestre.", "la carrera."];
+    const [heroWordIndex, setHeroWordIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setHeroWordIndex((prev) => (prev + 1) % heroWords.length);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleUploadClick = () => {
         if (!user) {
@@ -44,52 +115,87 @@ const CommunityPage = () => {
         setHasMore(true);
         setPosts([]);
         
+        const currentLimit = debouncedSearch ? 100 : POSTS_PER_PAGE;
+        
         let q = query(
             collection(db, 'community_posts'),
             orderBy('isPinned', 'desc'),
             orderBy('createdAt', 'desc'),
-            limit(POSTS_PER_PAGE)
+            limit(currentLimit)
         );
 
         if (activeSubject !== 'all') {
             q = query(q, where('subject', '==', activeSubject));
         }
 
+        if (activeRank !== null) {
+            q = query(q, where('rank', '==', activeRank));
+        }
+
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const rawPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
+            let rawPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
+            
+            if (debouncedSearch.trim()) {
+                const lowerQ = debouncedSearch.toLowerCase();
+                rawPosts = rawPosts.filter(p => 
+                    p.content.toLowerCase().includes(lowerQ) || 
+                    (p.username && p.username.toLowerCase().includes(lowerQ)) ||
+                    (p.attachments && p.attachments.some(a => a.name.toLowerCase().includes(lowerQ)))
+                );
+            }
+
             setPosts(rawPosts);
             setLastVisible(snapshot.docs[snapshot.docs.length - 1] || null);
-            setHasMore(snapshot.docs.length === POSTS_PER_PAGE);
+            setHasMore(snapshot.docs.length === currentLimit);
             setLoading(false);
         });
 
         return () => unsubscribe();
-    }, [activeSubject]);
+    }, [activeSubject, activeRank, debouncedSearch]);
 
     const loadMore = useCallback(async () => {
         if (loadingMore || !hasMore || !lastVisible) return;
         setLoadingMore(true);
+
+        const currentLimit = debouncedSearch ? 100 : POSTS_PER_PAGE;
 
         let q = query(
             collection(db, 'community_posts'),
             orderBy('isPinned', 'desc'),
             orderBy('createdAt', 'desc'),
             startAfter(lastVisible),
-            limit(POSTS_PER_PAGE)
+            limit(currentLimit)
         );
 
         if (activeSubject !== 'all') {
             q = query(q, where('subject', '==', activeSubject));
         }
 
-        const snapshot = await getDocs(q);
-        const newPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
+        if (activeRank !== null) {
+            q = query(q, where('rank', '==', activeRank));
+        }
 
-        setPosts(prev => [...prev, ...newPosts]);
+        const snapshot = await getDocs(q);
+        let newPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
+
+        if (debouncedSearch.trim()) {
+            const lowerQ = debouncedSearch.toLowerCase();
+            newPosts = newPosts.filter(p => 
+                p.content.toLowerCase().includes(lowerQ) || 
+                (p.username && p.username.toLowerCase().includes(lowerQ)) ||
+                (p.attachments && p.attachments.some(a => a.name.toLowerCase().includes(lowerQ)))
+            );
+        }
+
+        setPosts(prev => {
+            const existingIds = new Set(prev.map(p => p.id));
+            const uniqueNewPosts = newPosts.filter(p => !existingIds.has(p.id));
+            return [...prev, ...uniqueNewPosts];
+        });
         setLastVisible(snapshot.docs[snapshot.docs.length - 1] || null);
-        setHasMore(snapshot.docs.length === POSTS_PER_PAGE);
+        setHasMore(snapshot.docs.length === currentLimit);
         setLoadingMore(false);
-    }, [loadingMore, hasMore, lastVisible, activeSubject]);
+    }, [loadingMore, hasMore, lastVisible, activeSubject, activeRank, debouncedSearch]);
 
     const lastPostRef = useCallback((node: HTMLDivElement | null) => {
         if (loading || loadingMore) return;
@@ -103,65 +209,249 @@ const CommunityPage = () => {
     }, [loading, loadingMore, hasMore, loadMore]);
 
     return (
-        <div className="w-full min-h-screen pt-12 pb-32 flex justify-center bg-[#050505] text-white overflow-x-hidden selection:bg-white selection:text-black">
-            {/* Very subtle noise bg for texture, no heavy 3D */}
-            <div className="fixed inset-0 pointer-events-none z-0 opacity-20 noise-bg" />
+        <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
 
-            <main className="w-full max-w-[1600px] px-6 sm:px-12 relative z-10">
+            {/* Awwwards Hero Section */}
+            <section className="relative w-full min-h-[55vh] flex items-center justify-center z-10 overflow-hidden pt-28 pb-8">
+                <CommunityHero3D />
                 
-                {/* Feed Section */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
-                >
-
-
-                {/* High-Performance Sticky Header */}
-                <div className="sticky top-6 sm:top-20 z-40 flex items-center justify-between gap-4 mb-8 py-3 px-2 sm:px-4 rounded-2xl bg-[#0a0a0a]/60 backdrop-blur-2xl border border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
-                    {/* Left: Filter Pills */}
-                    <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar pb-1">
-                        <button 
-                            onClick={() => setActiveSubject('all')}
-                            className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeSubject === 'all' ? 'bg-white text-black shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-                        >
-                            Descobrir
-                        </button>
-                        
-                        {SUBJECTS.slice(0, 4).map(subj => (
-                            <button
-                                key={subj.id}
-                                onClick={() => setActiveSubject(subj.id)}
-                                className={`shrink-0 hidden sm:block px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeSubject === subj.id ? 'bg-white text-black shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                <div className="w-full max-w-[1600px] px-4 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-6 items-center relative z-20">
+                    {/* Left Text */}
+                    <div className="flex flex-col items-start text-left mt-4 lg:mt-0">
+                        <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] font-black mb-6 tracking-tighter flex flex-col items-start leading-[0.95] md:leading-[0.9]">
+                            <motion.span 
+                                initial={{ opacity: 0, x: -50 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                                className="text-white drop-shadow-2xl"
+                            >Superem</motion.span>
+                            <motion.span 
+                                initial={{ opacity: 0, x: -50 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                                className="text-slate-300 drop-shadow-xl"
+                            >junts</motion.span>
+                            
+                            {/* Dynamic Word container */}
+                            <motion.div 
+                                initial={{ opacity: 0, x: -50 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+                                className="h-[1.2em] relative w-full flex items-center justify-start overflow-visible mt-1"
                             >
-                                {subj.label}
-                            </button>
-                        ))}
-                        
-                        <button 
-                            onClick={() => setShowSubjectFilter(true)}
-                            className="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition-all"
+                                <AnimatePresence mode="popLayout">
+                                    <motion.span
+                                        key={heroWordIndex}
+                                        initial={{ y: 30, opacity: 0, filter: 'blur(8px)' }}
+                                        animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+                                        exit={{ y: -30, opacity: 0, filter: 'blur(8px)' }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                        className="text-transparent bg-clip-text bg-linear-to-r from-primary via-accent to-primary bg-[length:200%_auto] animate-[gradient_3s_linear_infinite] absolute left-0 py-2 drop-shadow-lg whitespace-nowrap"
+                                    >
+                                        {heroWords[heroWordIndex]}
+                                    </motion.span>
+                                </AnimatePresence>
+                            </motion.div>
+                        </h1>
+                        <motion.p 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+                            className="text-slate-400 text-base md:text-lg font-medium max-w-xl mb-8 leading-relaxed"
                         >
-                            Filtres
-                            <span className="text-[10px] bg-white/10 px-1.5 rounded text-white">{SUBJECTS.length}</span>
-                        </button>
+                            Comparteix els teus recursos, troba els millors apunts i ajuda als teus companys. Perquè aquí l'èxit és col·lectiu i <span className="text-white font-bold">no deixem a ningú enrere</span>.
+                        </motion.p>
+                        
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
+                        >
+                            <button
+                                onClick={handleUploadClick}
+                                className="group relative px-8 py-4 bg-white/5 backdrop-blur-xl border border-white/10 text-white font-bold text-lg rounded-full flex items-center gap-3 transition-all duration-500 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.05)] hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] overflow-hidden"
+                            >
+                                <div className="absolute inset-0 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out opacity-0 group-hover:opacity-100" />
+                                <Plus size={20} className="transition-transform group-hover:rotate-90 duration-300 relative z-10" />
+                                <span className="relative z-10">Pujar Recurs</span>
+                            </button>
+                        </motion.div>
                     </div>
 
-                    {/* Right: Actions */}
-                    <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                        <button className="w-9 h-9 rounded-full hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
-                            <Search size={16} />
-                        </button>
-                        <button
-                            onClick={handleUploadClick}
-                            className="px-5 py-2 bg-white text-black hover:bg-slate-200 text-sm font-bold rounded-full flex items-center gap-2 transition-all hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-                        >
-                            <Plus size={16} />
-                            <span className="hidden sm:inline">Pujar Recurs</span>
-                        </button>
+                    {/* Right Visuals (Floating Cards Showcase - Awwwards Style) */}
+                    <div 
+                        className="hidden lg:flex relative h-[450px] w-full items-center justify-center pointer-events-auto perspective-[1200px]"
+                        onMouseLeave={() => setHoveredCard(null)}
+                    >
+                        <div className="relative w-full h-full max-w-[550px]">
+                            {/* Decorational backglow */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)] rounded-full pointer-events-none" />
+                            
+                            {/* Orchestrated Animations Setup */}
+                            {[
+                                { id: 0, align: 'left', post: mockEpicPost, glow: 'bg-purple-500/20' },
+                                { id: 1, align: 'right', post: mockLegendaryPost, glow: 'bg-amber-500/20' },
+                                { id: 2, align: 'center', post: mockMythicPost, glow: 'bg-linear-to-r from-rose-500/30 via-purple-500/30 to-cyan-500/30' }
+                            ].map((card) => {
+                                const isHovered = hoveredCard === card.id;
+                                const isOtherHovered = hoveredCard !== null && hoveredCard !== card.id;
+                                
+                                // Simpler algorithmic calculation instead of hardcoded objects
+                                const animateState = {
+                                    x: isHovered 
+                                        ? (card.align === 'left' ? -140 : card.align === 'right' ? 140 : 0)
+                                        : isOtherHovered 
+                                            ? (card.align === 'left' ? -50 : card.align === 'right' ? 50 : 0)
+                                            : (card.align === 'left' ? -90 : card.align === 'right' ? 90 : 0),
+                                    y: isHovered
+                                        ? (card.align === 'center' ? -10 : card.align === 'left' ? -40 : -50)
+                                        : isOtherHovered
+                                            ? (card.align === 'center' ? 35 : card.align === 'left' ? -10 : -20)
+                                            : (card.align === 'center' ? 15 : card.align === 'left' ? -20 : -30),
+                                    rotateZ: isHovered
+                                        ? (card.align === 'left' ? -2 : card.align === 'right' ? 2 : 0)
+                                        : isOtherHovered
+                                            ? (card.align === 'left' ? -12 : card.align === 'right' ? 12 : 0)
+                                            : (card.align === 'left' ? -8 : card.align === 'right' ? 8 : 0),
+                                    rotateY: isHovered ? 0 : (card.align === 'left' ? 15 : card.align === 'right' ? -15 : 0),
+                                    scale: isHovered
+                                        ? (card.align === 'center' ? 1.15 : 1.05)
+                                        : isOtherHovered
+                                            ? (card.align === 'center' ? 0.85 : 0.75)
+                                            : (card.align === 'center' ? 1 : 0.85),
+                                    zIndex: isHovered ? 50 : (card.align === 'center' ? 20 : 10),
+                                    opacity: isHovered ? 1 : isOtherHovered ? (card.align === 'center' ? 0.6 : 0.4) : (card.align === 'center' ? 1 : 0.9),
+                                    filter: isHovered ? 'blur(0px)' : isOtherHovered ? (card.align === 'center' ? 'blur(2px)' : 'blur(4px)') : 'blur(0px)',
+                                };
+
+                                return (
+                                    <motion.div 
+                                        key={card.id}
+                                        animate={animateState}
+                                        transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.8 }}
+                                        onMouseEnter={() => setHoveredCard(card.id)}
+                                        className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer origin-center ${card.align === 'center' ? 'w-[300px]' : card.align === 'right' ? 'w-[260px]' : 'w-[240px]'}`}
+                                    >
+                                        <motion.div
+                                            animate={{ y: hoveredCard === null ? [0, card.align === 'center' ? -12 : -8, 0] : 0 }}
+                                            transition={{ duration: card.align === 'center' ? 5 : 4, repeat: Infinity, ease: "easeInOut", delay: card.id * 0.5 }}
+                                        >
+                                            <div className={`absolute ${card.align === 'center' ? '-inset-10 blur-[50px]' : '-inset-8 blur-[40px]'} rounded-full pointer-events-none transition-opacity duration-700 ${card.glow} ${isHovered ? 'opacity-100' : (hoveredCard === null && card.align === 'center' ? 'opacity-50' : 'opacity-0')}`} />
+                                            <div className="relative pointer-events-none group-hover:pointer-events-auto"><PublicationCard post={card.post} isHeroMode={true} /></div>
+                                        </motion.div>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
 
-                {/* Feed (Masonry Style Grid) */}
-                <div className="w-full mt-16 md:mt-24">
+            </section>
+
+            <main className="w-full max-w-[1600px] px-4 sm:px-8 lg:px-12 relative z-10">
+                
+                {/* Floating Glassmorphic Pill Filter (Awwwards Style) */}
+                <motion.div 
+                    initial={{ y: 100, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 20 }}
+                    className="fixed bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2 rounded-[2rem] bg-[#0F172A]/80 backdrop-blur-2xl border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8),0_0_20px_rgba(255,255,255,0.05)]"
+                >
+                    <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar pl-2">
+                        {/* Assignatures */}
+                        <button 
+                            onClick={() => setShowSubjectFilter(true)}
+                            className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${activeSubject !== 'all' ? 'bg-white text-black shadow-lg scale-105' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                        >
+                            <BookOpen size={16} />
+                            <span className="hidden sm:inline">Assignatures</span>
+                            <span className="sm:hidden">Assig.</span>
+                            {activeSubject !== 'all' && <span className="ml-1 text-[10px] bg-black/20 text-current px-1.5 py-0.5 rounded-md uppercase">{activeSubject}</span>}
+                        </button>
+                        
+                        <div className="w-px h-6 bg-white/10 mx-1" />
+
+                        {/* Raresa */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowRarityFilter(!showRarityFilter)}
+                                className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${activeRank !== null ? 'bg-primary/20 text-primary shadow-lg scale-105' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                            >
+                                <Sparkles size={16} />
+                                <span className="hidden sm:inline">Raresa</span>
+                                <span className="sm:hidden">Rar.</span>
+                                {activeRank !== null && <span className="ml-1 text-[10px] bg-primary/20 text-current px-1.5 py-0.5 rounded-md uppercase">Lv.{activeRank}</span>}
+                            </button>
+
+                            {/* Raresa Dropdown */}
+                            <AnimatePresence>
+                                {showRarityFilter && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                                        className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 p-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl flex flex-col gap-1 w-44 origin-bottom z-50"
+                                    >
+                                        <button 
+                                            onClick={() => { setActiveRank(null); setShowRarityFilter(false); }}
+                                            className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors ${activeRank === null ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                                        >
+                                            Qualsevol raresa
+                                        </button>
+                                        {[0, 1, 2, 3, 4].map(rank => (
+                                            <button
+                                                key={rank}
+                                                onClick={() => { setActiveRank(rank); setShowRarityFilter(false); }}
+                                                className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors flex items-center justify-between group ${activeRank === rank ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                                            >
+                                                <span>{['Normal', 'Featured', 'Epic', 'Legendary', 'Mythic'][rank]}</span>
+                                                <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${activeRank === rank ? 'bg-primary/30 text-primary' : 'bg-white/10 text-slate-400 group-hover:text-white'}`}>Lv.{rank}</span>
+                                            </button>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        <div className="w-px h-6 bg-white/10 mx-1" />
+
+                        {/* Buscar */}
+                        <div className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-[180px] sm:w-[280px] ml-1' : 'w-10 ml-0'}`}>
+                            <button 
+                                onClick={() => {
+                                    if (isSearchOpen && !searchQuery) setIsSearchOpen(false);
+                                    else setIsSearchOpen(true);
+                                }}
+                                className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isSearchOpen || searchQuery ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                                title="Buscar"
+                            >
+                                <Search size={18} />
+                            </button>
+                            
+                            <div className="flex-1 relative h-10 flex items-center">
+                                <input 
+                                    autoFocus={isSearchOpen}
+                                    type="text"
+                                    placeholder="Cerca apunts..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none px-2 placeholder:text-slate-600"
+                                />
+                                {(searchQuery || isSearchOpen) && (
+                                    <button 
+                                        onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
+                                        className="absolute right-2 p-1 text-slate-500 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors z-10"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Feed Section */}
+                <div className="w-full">
                     <AnimatePresence mode='wait'>
                         {loading ? (
                             <motion.div 
@@ -207,17 +497,27 @@ const CommunityPage = () => {
                                         onClick: () => setSelectedPost(post),
                                         className: "w-full cursor-pointer",
                                     };
+                                    
+                                    const cardContent = (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.5, delay: (index % 10) * 0.05 }}
+                                        >
+                                            <PublicationCard post={post} />
+                                        </motion.div>
+                                    );
 
                                     if (posts.length === index + 1) {
                                         return (
                                             <div ref={lastPostRef} {...cardProps}>
-                                                <PublicationCard post={post} />
+                                                {cardContent}
                                             </div>
                                         );
                                     }
                                     return (
                                         <div {...cardProps}>
-                                            <PublicationCard post={post} />
+                                            {cardContent}
                                         </div>
                                     );
                                 })}
@@ -231,7 +531,6 @@ const CommunityPage = () => {
                         </div>
                     )}
                 </div>
-                </motion.div>
             </main>
 
             {/* Modals */}

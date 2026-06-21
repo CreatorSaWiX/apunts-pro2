@@ -5,6 +5,7 @@ import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
 import SubjectNode from './SubjectNode';
 import SubjectContextMenu from './SubjectContextMenu';
 import SubjectSearchModal from './SubjectSearchModal';
+import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import { Save, Loader2, Plus, GraduationCap, ChevronUp, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
@@ -47,6 +48,7 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
     const [menuPosition, setMenuPosition] = useState<{x: number, y: number} | null>(null);
     const [isSpecMenuOpen, setIsSpecMenuOpen] = useState(false);
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     // Set the node type for all nodes
     const typedNodes = useMemo(() => {
@@ -265,11 +267,18 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                 nodeId={selectedNodeId} 
                 nodeData={selectedNodeData}
                 position={menuPosition}
+                onOpenDetails={() => setIsDetailsOpen(true)}
             />
 
             <SubjectSearchModal 
                 isOpen={isSearchModalOpen} 
                 onClose={() => setIsSearchModalOpen(false)} 
+            />
+
+            <SubjectDetailsModal
+                isOpen={isDetailsOpen}
+                onClose={() => setIsDetailsOpen(false)}
+                subjectId={selectedNodeId}
             />
 
             <RoadmapAIPromptBar 

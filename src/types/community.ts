@@ -32,5 +32,6 @@ export interface CommunityPost {
     isPinned: boolean;
     isNote?: boolean;
     reports?: number;
-    attachments?: { url: string; name: string; type: string; size: number }[];
+    views?: number;
+    attachments?: { url: string; name: string; type: string; size: number; thumbnailUrl?: string }[];
 }

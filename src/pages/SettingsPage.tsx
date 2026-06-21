@@ -196,7 +196,8 @@ const SubjectsSection = () => {
                                 {filteredSubjects.length > 0 ? (
                                     <div className="flex flex-col gap-1">
                                         {filteredSubjects.map(subject => {
-                                            const colorFamily = subject.colorToken ? subject.colorToken.split('-')[0] : 'sky';
+                                            const defaultColor = subject.colorToken ? subject.colorToken.split('-')[0] : 'sky';
+                                            const colorFamily = customSubjectColors[subject.name] || defaultColor;
                                             return (
                                                 <button 
                                                     key={subject.id}

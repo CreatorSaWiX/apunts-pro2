@@ -1,13 +1,14 @@
+import { useEffect } from 'react';
 import type { CommunityPost } from '../../types/community';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, Share2, Download, File, MessageSquare, Trash2 } from 'lucide-react';
+import { X, Heart, Share2, MessageSquare, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import ReplySection from './ReplySection';
 import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
-import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment } from 'firebase/firestore';
 
 interface PostDetailModalProps {
     post: CommunityPost | null;
@@ -21,6 +22,39 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
 
     const hasLiked = user && post.reactions?.[user.id]?.emoji === '❤️';
     const likeCount = Object.values(post.reactions || {}).filter(r => r.emoji === '❤️').length;
+
+    useEffect(() => {
+        if (!post || !isOpen) return;
+
+        const recordView = async () => {
+            const viewedPostsStr = localStorage.getItem('viewed_posts') || '{}';
+            let viewedPosts: Record<string, boolean> = {};
+            try {
+                const parsed = JSON.parse(viewedPostsStr);
+                if (Array.isArray(parsed)) {
+                    parsed.forEach(id => viewedPosts[id] = true);
+                } else {
+                    viewedPosts = parsed;
+                }
+            } catch (e) {}
+
+            if (!viewedPosts[post.id]) {
+                viewedPosts[post.id] = true;
+                localStorage.setItem('viewed_posts', JSON.stringify(viewedPosts));
+                
+                const postRef = doc(db, 'community_posts', post.id);
+                try {
+                    await updateDoc(postRef, {
+                        views: increment(1)
+                    });
+                } catch (err) {
+                    console.error('Error recording view:', err);
+                }
+            }
+        };
+
+        recordView();
+    }, [post, isOpen]);
 
     const handleLike = async () => {
         if (!user) return;
@@ -72,9 +106,10 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                     />
                     
                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        initial={{ opacity: 0, y: "100%", scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: "100%", scale: 0.9 }}
+                        transition={{ type: "spring", damping: 25, stiffness: 200 }}
                         className="relative w-full max-w-5xl bg-[#0a0a0a] border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col h-full max-h-full"
                     >
                         {/* Header Navbar */}
@@ -114,14 +149,24 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                         <div className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth">
                             {/* Visual/Cover Section (If there are images) */}
                             {post.attachments && post.attachments.filter(a => a.type.startsWith('image/')).length > 0 && (
-                                <div className="w-full bg-[#050505] flex flex-col items-center justify-center border-b border-white/5 py-8 px-4">
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.2, duration: 0.5 }}
+                                    className="w-full bg-[#050505] flex flex-col items-center justify-center border-b border-white/5 py-8 px-4"
+                                >
                                     {post.attachments.filter(a => a.type.startsWith('image/')).map((img, i) => (
                                         <img key={i} src={img.url} alt="Cover" className="max-w-full max-h-[70vh] rounded-xl object-contain mb-6 last:mb-0 shadow-2xl" />
                                     ))}
-                                </div>
+                                </motion.div>
                             )}
 
-                            <div className="max-w-3xl mx-auto px-6 py-12">
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3, duration: 0.5 }}
+                                className="max-w-3xl mx-auto px-6 py-12"
+                            >
                                 {/* Text Content */}
                                 {post.isNote ? (
                                     <div className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium"
@@ -165,7 +210,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                     </div>
                                     <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
                                 </div>
-                            </div>
+                            </motion.div>
                         </div>
                     </motion.div>
                 </div>

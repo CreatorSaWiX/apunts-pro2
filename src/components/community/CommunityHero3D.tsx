@@ -3,7 +3,10 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
+import { useSubject } from '../../contexts/SubjectContext';
+
 const ParticleNetwork = () => {
+    const { theme } = useSubject();
     const ref = useRef<THREE.Points>(null);
     
     const positions = useMemo(() => {
@@ -33,7 +36,7 @@ const ParticleNetwork = () => {
             <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
                 <PointMaterial
                     transparent
-                    color="#38bdf8"
+                    color={theme.accent}
                     size={0.015}
                     sizeAttenuation={true}
                     depthWrite={false}
@@ -47,9 +50,10 @@ const ParticleNetwork = () => {
 
 const CommunityHero3D = () => {
     return (
-        <div className="absolute inset-0 top-0 left-0 w-full h-[600px] overflow-hidden pointer-events-none -z-10 mix-blend-screen">
-            <div className="absolute inset-0 bg-linear-to-b from-[#050505]/40 via-[#050505]/80 to-[#050505] z-10" />
-            <div className="absolute inset-0 opacity-40 mix-blend-overlay noise-bg z-20" />
+        <div 
+            className="absolute inset-0 top-0 left-0 w-full h-[600px] overflow-hidden pointer-events-none -z-10 mix-blend-screen"
+            style={{ maskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)' }}
+        >
             <Canvas camera={{ position: [0, 0, 3], fov: 60 }} dpr={[1, 2]}>
                 <ParticleNetwork />
             </Canvas>

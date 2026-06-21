@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, Clock, XCircle, RefreshCw, X } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, RefreshCw, X, BookOpen } from 'lucide-react';
 import type { SubjectNodeData, SubjectStatus } from '../../../contexts/RoadmapContext';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 
@@ -10,9 +10,10 @@ interface SubjectContextMenuProps {
     nodeId: string | null;
     nodeData: SubjectNodeData | null;
     position: { x: number; y: number } | null;
+    onOpenDetails?: () => void;
 }
 
-const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose, nodeId, nodeData, position }) => {
+const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose, nodeId, nodeData, position, onOpenDetails }) => {
     const { updateNodeStatus } = useRoadmap();
 
     if (!isOpen || !nodeId || !nodeData || !position) return null;
@@ -58,6 +59,19 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                         </div>
 
                         <div className="space-y-1 relative z-10 px-1 pb-1">
+                            <button 
+                                onClick={() => {
+                                    if (onOpenDetails) onOpenDetails();
+                                    onClose();
+                                }}
+                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative hover:bg-white/5 text-slate-300 hover:text-white border border-transparent`}
+                            >
+                                <div className="p-1 rounded-full bg-white/5 group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
+                                    <BookOpen size={14} />
+                                </div>
+                                <span className="relative z-10">Informació</span>
+                            </button>
+
                             <button 
                                 disabled={nodeData.status === 'locked'}
                                 onClick={() => handleStatusChange('in_progress')}

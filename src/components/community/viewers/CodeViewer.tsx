@@ -7,7 +7,7 @@ import { css } from '@codemirror/lang-css';
 import { html } from '@codemirror/lang-html';
 import { json } from '@codemirror/lang-json';
 import { Loader2, Copy, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
+
 
 interface CodeViewerProps {
     url: string;
