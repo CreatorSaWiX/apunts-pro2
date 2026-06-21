@@ -20,10 +20,10 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
         const segments = 60;
         const geo = new THREE.PlaneGeometry(size, size, segments, segments);
         geo.rotateX(-Math.PI / 2);
-        
+
         const count = geo.attributes.position.count;
         geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
-        
+
         return geo;
     }, []);
 
@@ -32,11 +32,11 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
         const position = geometry.attributes.position;
         const colorAttr = geometry.attributes.color;
         const color = new THREE.Color();
-        
+
         for (let i = 0; i < position.count; i++) {
             const x = position.getX(i);
             const z = position.getZ(i);
-            
+
             let y = 0;
             if (variant === 'login') {
                 // Inverted paraboloid amb ondulació
@@ -51,7 +51,7 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
                 // Gradient HSL diferent (Tons càlids i maragda)
                 color.setHSL(0.4 - Math.min(Math.max((y + 2) / 8, -0.2), 0.4), 0.8, 0.5);
             }
-            
+
             position.setY(i, y);
             colorAttr.setXYZ(i, color.r, color.g, color.b);
         }
@@ -64,21 +64,21 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
         <group>
             {/* Wireframe layer */}
             <mesh geometry={geometry}>
-                <meshBasicMaterial 
-                    color="#ffffff" 
-                    wireframe={true} 
-                    transparent 
-                    opacity={0.15} 
-                    side={THREE.DoubleSide} 
+                <meshBasicMaterial
+                    color="#ffffff"
+                    wireframe={true}
+                    transparent
+                    opacity={0.15}
+                    side={THREE.DoubleSide}
                 />
             </mesh>
             {/* Solid colored layer */}
             <mesh geometry={geometry} position={[0, -0.05, 0]}>
-                <meshPhongMaterial 
+                <meshPhongMaterial
                     vertexColors={true}
-                    transparent 
-                    opacity={0.8} 
-                    side={THREE.DoubleSide} 
+                    transparent
+                    opacity={0.8}
+                    side={THREE.DoubleSide}
                     shininess={50}
                 />
             </mesh>
@@ -119,12 +119,12 @@ const NetworkBackground = ({ variant }: { variant: 'login' | 'register' }) => {
             };
         });
         const links = [];
-        
+
         // Generate an organic scale-free-like structure
         for (let i = 1; i < N; i++) {
             links.push({ source: String(i), target: String(Math.floor(Math.pow(Math.random(), 2) * i)) });
         }
-        
+
         // Add random cross connections
         for (let i = 0; i < N * 0.5; i++) {
             const src = Math.floor(Math.random() * N);
@@ -139,11 +139,11 @@ const NetworkBackground = ({ variant }: { variant: 'login' | 'register' }) => {
     return (
         <div className="absolute inset-0 w-full h-full bg-[#020617] pointer-events-auto">
             {/* Utilitzem el component GraphVisualizer del projecte, que ja té configurat el drag, zoom automàtic i detecció de col·lisions de ratolí */}
-            <GraphVisualizer 
-                initialData={graphData} 
-                transparentBg={true} 
-                showControls={false} 
-                autoCenter={true} 
+            <GraphVisualizer
+                initialData={graphData}
+                transparentBg={true}
+                showControls={false}
+                autoCenter={true}
             />
         </div>
     );
@@ -177,65 +177,65 @@ const MathBackground = ({ variant }: { variant: 'login' | 'register' }) => {
     // Centrat perfecte usant les dimensions de la finestra
     return (
         <div className="absolute inset-0 w-full h-full bg-[#020617] flex items-center justify-center opacity-80 pointer-events-none">
-            <Mafs 
-                viewBox={{ x: [-10, 10], y: [-5, 5] }} 
-                pan={false} 
-                zoom={false} 
+            <Mafs
+                viewBox={{ x: [-10, 10], y: [-5, 5] }}
+                pan={false}
+                zoom={false}
                 width={dimensions.width}
                 height={dimensions.height}
             >
                 <Coordinates.Cartesian subdivisions={5} />
-                    
-                    {variant === 'login' ? (
-                        <>
-                            {/* Integració Animada */}
-                            <Plot.OfX y={(x) => Math.sin(x - time) * 3} color="#8b5cf6" weight={3} />
-                            <Plot.Inequality 
-                                y={{ '<=': (x) => Math.max(0, Math.sin(x - time) * 3), '>=': () => 0 }} 
-                                color="#10b981" 
-                            />
-                            <Plot.Inequality 
-                                y={{ '>=': (x) => Math.min(0, Math.sin(x - time) * 3), '<=': () => 0 }} 
-                                color="#f43f5e" 
-                            />
-                            {/* Ona d'interferència */}
-                            <Plot.OfX y={(x) => Math.cos(x * 1.5 + time * 1.2) * 2} color="#0ea5e9" weight={2} opacity={0.7} />
-                        </>
-                    ) : (
-                        <>
-                            {/* Sèrie de Taylor Animada */}
-                            <Plot.OfX y={(x) => Math.sin(x) * 3} color="#475569" weight={4} opacity={0.5} />
-                            
-                            <Plot.OfX 
-                                y={(x) => {
-                                    const t1 = x;
-                                    const t3 = -(x*x*x) / 6;
-                                    const t5 = (x*x*x*x*x) / 120;
-                                    const t7 = -(x*x*x*x*x*x*x) / 5040;
-                                    
-                                    const w3 = Math.max(0, Math.min(1, taylorT));
-                                    const w5 = Math.max(0, Math.min(1, taylorT - 1));
-                                    const w7 = Math.max(0, Math.min(1, taylorT - 2));
-                                    
-                                    return (t1 + t3 * w3 + t5 * w5 + t7 * w7) * 3;
-                                }} 
-                                color="#fbbf24" 
-                                weight={3} 
-                            />
 
-                            {/* Paramètrica de Lissajous */}
-                            <Plot.Parametric 
-                                t={[0, Math.PI * 2]} 
-                                xy={(t_param) => [
-                                    (5 + Math.sin(time)) * Math.cos(3 * t_param + time), 
-                                    (5 + Math.cos(time)) * Math.sin(4 * t_param)
-                                ]} 
-                                color="#38bdf8" 
-                                weight={2}
-                                opacity={0.6}
-                            />
-                        </>
-                    )}
+                {variant === 'login' ? (
+                    <>
+                        {/* Integració Animada */}
+                        <Plot.OfX y={(x) => Math.sin(x - time) * 3} color="#8b5cf6" weight={3} />
+                        <Plot.Inequality
+                            y={{ '<=': (x) => Math.max(0, Math.sin(x - time) * 3), '>=': () => 0 }}
+                            color="#10b981"
+                        />
+                        <Plot.Inequality
+                            y={{ '>=': (x) => Math.min(0, Math.sin(x - time) * 3), '<=': () => 0 }}
+                            color="#f43f5e"
+                        />
+                        {/* Ona d'interferència */}
+                        <Plot.OfX y={(x) => Math.cos(x * 1.5 + time * 1.2) * 2} color="#0ea5e9" weight={2} opacity={0.7} />
+                    </>
+                ) : (
+                    <>
+                        {/* Sèrie de Taylor Animada */}
+                        <Plot.OfX y={(x) => Math.sin(x) * 3} color="#475569" weight={4} opacity={0.5} />
+
+                        <Plot.OfX
+                            y={(x) => {
+                                const t1 = x;
+                                const t3 = -(x * x * x) / 6;
+                                const t5 = (x * x * x * x * x) / 120;
+                                const t7 = -(x * x * x * x * x * x * x) / 5040;
+
+                                const w3 = Math.max(0, Math.min(1, taylorT));
+                                const w5 = Math.max(0, Math.min(1, taylorT - 1));
+                                const w7 = Math.max(0, Math.min(1, taylorT - 2));
+
+                                return (t1 + t3 * w3 + t5 * w5 + t7 * w7) * 3;
+                            }}
+                            color="#fbbf24"
+                            weight={3}
+                        />
+
+                        {/* Paramètrica de Lissajous */}
+                        <Plot.Parametric
+                            t={[0, Math.PI * 2]}
+                            xy={(t_param) => [
+                                (5 + Math.sin(time)) * Math.cos(3 * t_param + time),
+                                (5 + Math.cos(time)) * Math.sin(4 * t_param)
+                            ]}
+                            color="#38bdf8"
+                            weight={2}
+                            opacity={0.6}
+                        />
+                    </>
+                )}
             </Mafs>
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#020617_75%)] pointer-events-none z-10" />
         </div>
@@ -251,7 +251,7 @@ export const AuthCanvasBackground = ({ variant = 'login' }: AuthCanvasBackground
     useEffect(() => {
         const phases: ('space' | 'network' | 'math')[] = ['space', 'network', 'math'];
         let currentIndex = 0;
-        
+
         const interval = setInterval(() => {
             currentIndex = (currentIndex + 1) % phases.length;
             setPhase(phases[currentIndex]);
@@ -303,12 +303,12 @@ export const AuthCanvasBackground = ({ variant = 'login' }: AuthCanvasBackground
 
             {/* Overlays for depth and readability */}
             <div className="absolute inset-0 bg-[#020617]/30 pointer-events-none z-10" />
-            
+
             {/* Dark gradient on the right so the form is readable */}
-            <div className="absolute inset-0 bg-gradient-to-l from-[#020617] via-[#020617]/50 to-transparent pointer-events-none z-10" />
+            <div className="absolute inset-0 bg-gradient-to-l from-[#020617] via-[#020617]/40 to-transparent pointer-events-none z-10" />
             {/* Dark gradient on the bottom for the story text */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent opacity-80 pointer-events-none z-10" />
-            
+            <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent opacity-60 pointer-events-none z-10" />
+
             {/* Storytelling Text based on Phase */}
             <div className="absolute bottom-12 left-12 max-w-sm z-20 hidden lg:block pointer-events-none">
                 <AnimatePresence mode="wait">
@@ -322,9 +322,11 @@ export const AuthCanvasBackground = ({ variant = 'login' }: AuthCanvasBackground
                         >
                             <h3 className="text-emerald-400 font-bold uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                I. L'Origen
+                                I. Renderització i Shaders
                             </h3>
-                            <p className="text-slate-400 text-sm leading-relaxed font-light">Milions d'idees flotant a l'espera de ser descobertes. L'univers del coneixement en estat pur.</p>
+                            <p className="text-slate-400 text-sm leading-relaxed font-light">
+                                Darrere d'un wireframe 3D s'amaguen grafs de vèrtexs. Apliquem corbes de Bézier per a animacions, shaders GLSL i Raytracing. Les matemàtiques fan possible el món virtual.
+                            </p>
                         </motion.div>
                     )}
                     {phase === 'network' && (
@@ -337,9 +339,11 @@ export const AuthCanvasBackground = ({ variant = 'login' }: AuthCanvasBackground
                         >
                             <h3 className="text-sky-400 font-bold uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
-                                II. La Connexió
+                                II. Teoria de Grafs i Xarxes
                             </h3>
-                            <p className="text-slate-400 text-sm leading-relaxed font-light">Conceptes que s'entrellacen per formar una xarxa inexpugnable. Aprendre és connectar.</p>
+                            <p className="text-slate-400 text-sm leading-relaxed font-light">
+                                Els grafs mouen el món. Defineixen algorismes en xarxes de servidors, estructuren xarxes neuronals de la IA i organitzen la lògica amb nodes a Unity o TSL a Three.js.
+                            </p>
                         </motion.div>
                     )}
                     {phase === 'math' && (
@@ -352,9 +356,11 @@ export const AuthCanvasBackground = ({ variant = 'login' }: AuthCanvasBackground
                         >
                             <h3 className="text-violet-400 font-bold uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></span>
-                                III. L'Estructura
+                                III. Àlgebra i GPGPU
                             </h3>
-                            <p className="text-slate-400 text-sm leading-relaxed font-light">La bellesa oculta de l'univers revelada a través del llenguatge perfecte: les matemàtiques.</p>
+                            <p className="text-slate-400 text-sm leading-relaxed font-light">
+                                Les funcions i l'àlgebra lineal processen matrius de transformació 3D i aprofiten el poder massiu del GPGPU. Tot allò que s'estudia té una aplicació real i fascinant.
+                            </p>
                         </motion.div>
                     )}
                 </AnimatePresence>

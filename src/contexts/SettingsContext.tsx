@@ -10,6 +10,8 @@ interface SettingsContextType {
     setHomeSubjects: React.Dispatch<React.SetStateAction<string[]>>;
     defaultPlannerView: PlannerViewMode;
     setDefaultPlannerView: React.Dispatch<React.SetStateAction<PlannerViewMode>>;
+    customSubjectColors: Record<string, string>;
+    setCustomSubjectColors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
     isSettingsLoaded: boolean;
 }
 
@@ -36,6 +38,18 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return (saved as PlannerViewMode) || 'board';
     });
 
+    const [customSubjectColors, setCustomSubjectColors] = useState<Record<string, string>>(() => {
+        const saved = localStorage.getItem('app-settings-subject-colors');
+        if (saved) {
+            try {
+                return JSON.parse(saved);
+            } catch (e) {
+                return {};
+            }
+        }
+        return {};
+    });
+
     // Load from Firebase on mount if user is logged in
     useEffect(() => {
         let isMounted = true;
@@ -51,6 +65,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                     const data = snap.data();
                     if (data.homeSubjects) setHomeSubjects(data.homeSubjects);
                     if (data.defaultPlannerView) setDefaultPlannerView(data.defaultPlannerView);
+                    if (data.customSubjectColors) setCustomSubjectColors(data.customSubjectColors);
                 }
             } catch (err) {
                 console.error('Failed to load settings from Firebase:', err);
@@ -67,6 +82,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     useEffect(() => {
         localStorage.setItem('app-settings-home-subjects', JSON.stringify(homeSubjects));
         localStorage.setItem('app-settings-planner-view', defaultPlannerView);
+        localStorage.setItem('app-settings-subject-colors', JSON.stringify(customSubjectColors));
 
         if (isSettingsLoaded && user) {
             const saveToFirebase = async () => {
@@ -74,7 +90,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                     const docRef = doc(db, 'users', user.id);
                     await setDoc(docRef, {
                         homeSubjects,
-                        defaultPlannerView
+                        defaultPlannerView,
+                        customSubjectColors
                     }, { merge: true });
                 } catch (err) {
                     console.error('Failed to save settings to Firebase:', err);
@@ -82,7 +99,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             };
             saveToFirebase();
         }
-    }, [homeSubjects, defaultPlannerView, isSettingsLoaded, user]);
+    }, [homeSubjects, defaultPlannerView, customSubjectColors, isSettingsLoaded, user]);
 
     return (
         <SettingsContext.Provider value={{
@@ -90,6 +107,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             setHomeSubjects,
             defaultPlannerView,
             setDefaultPlannerView,
+            customSubjectColors,
+            setCustomSubjectColors,
             isSettingsLoaded
         }}>
             {children}

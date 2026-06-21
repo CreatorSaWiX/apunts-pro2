@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import subjectsData from '../data/subjects.json';
+import { useSettings } from './SettingsContext';
 
 interface Theme {
     primary: string;
@@ -41,6 +42,8 @@ interface SubjectContextType {
 const SubjectContext = createContext<SubjectContextType | undefined>(undefined);
 
 export function SubjectProvider({ children }: { children: React.ReactNode }) {
+    const { customSubjectColors } = useSettings();
+
     const [subject, setSubject] = useState<string>(() => {
         return localStorage.getItem('app-subject') || 'PRO2';
     });
@@ -53,7 +56,9 @@ export function SubjectProvider({ children }: { children: React.ReactNode }) {
         const subjectInfo = subjectsData.find((s: any) => s.name.toUpperCase() === subject.toUpperCase());
         
         let colorFamily = 'sky'; // default
-        if (subjectInfo?.colorToken) {
+        if (customSubjectColors && customSubjectColors[subject.toUpperCase()]) {
+            colorFamily = customSubjectColors[subject.toUpperCase()];
+        } else if (subjectInfo?.colorToken) {
             colorFamily = subjectInfo.colorToken.split('-')[0];
         }
 
@@ -64,7 +69,7 @@ export function SubjectProvider({ children }: { children: React.ReactNode }) {
             background: '#0f172a', // slate-900
             label: subjectInfo?.name || subject.toUpperCase()
         };
-    }, [subject]);
+    }, [subject, customSubjectColors]);
 
     // Apply theme colors to CSS variables for global transition
     useEffect(() => {

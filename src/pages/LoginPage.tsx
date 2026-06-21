@@ -64,7 +64,7 @@ const LoginPage = () => {
                         variants={staggerContainer}
                         initial="hidden"
                         animate="show"
-                        className="bg-[#020617]/20 backdrop-blur-sm border border-white/5 border-t-white/10 border-l-white/10 sm:p-10 p-8 rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] relative"
+                        className="bg-[#020617]/10 backdrop-blur-[2px] border border-white/5 border-t-white/10 border-l-white/10 sm:p-10 p-8 rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] relative"
                     >
                         {/* Contenidor intern per retallar efectes sense trencar el blur a Chrome */}
                         <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden pointer-events-none">
@@ -77,7 +77,7 @@ const LoginPage = () => {
 
                         <motion.div variants={fadeInUp} className="text-center mb-10">
                             <h2 className="text-3xl font-bold text-white mb-3">Iniciar Sessió</h2>
-                            <p className="text-slate-400 text-sm font-light">L'univers del coneixement t'espera</p>
+                            <p className="text-slate-400 text-sm font-light">Entén les bases tecnològiques del món digital.</p>
                         </motion.div>
 
                         <form onSubmit={handleSubmit} className="space-y-6 relative z-10">

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import type { PlannerViewMode } from '../contexts/SettingsContext';
+import { tailwindColors } from '../contexts/SubjectContext';
 import { RoadmapProvider } from '../contexts/RoadmapContext';
 
 import subjectsData from '../data/subjects.json';
@@ -116,11 +117,12 @@ const PlannerSection = () => {
 };
 
 const SubjectsSection = () => {
-    const { homeSubjects, setHomeSubjects } = useSettings();
+    const { homeSubjects, setHomeSubjects, customSubjectColors, setCustomSubjectColors } = useSettings();
     // const { nodes } = useRoadmap();
     const [searchQuery, setSearchQuery] = useState('');
     const [isCommandOpen, setIsCommandOpen] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const [editingSubjectColor, setEditingSubjectColor] = useState<string | null>(null);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -243,7 +245,19 @@ const SubjectsSection = () => {
                                 key={subject.id}
                             >
                                 <div className="group flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10 transition-all duration-300">
-                                    <span className="font-black tracking-widest text-sm text-white">{subject.name}</span>
+                                    <button 
+                                        onClick={() => setEditingSubjectColor(subject.name)} 
+                                        className="flex items-center gap-2 outline-none group/btn"
+                                    >
+                                        <div 
+                                            className="w-3 h-3 rounded-full transition-transform duration-300 group-hover/btn:scale-125" 
+                                            style={{ 
+                                                backgroundColor: tailwindColors[customSubjectColors[subject.name] || (subject.colorToken ? subject.colorToken.split('-')[0] : 'sky')]?.primary || '#0ea5e9',
+                                                boxShadow: `0 0 10px rgba(${tailwindColors[customSubjectColors[subject.name] || (subject.colorToken ? subject.colorToken.split('-')[0] : 'sky')]?.primary_rgb || '14, 165, 233'}, 0.5)`
+                                            }} 
+                                        />
+                                        <span className="font-black tracking-widest text-sm text-white transition-colors duration-300 group-hover/btn:text-slate-200">{subject.name}</span>
+                                    </button>
                                     <div className="w-px h-4 bg-white/20 mx-1" />
                                     <button 
                                         onClick={() => toggleSubject(subject.name)}
@@ -265,6 +279,75 @@ const SubjectsSection = () => {
                     )}
                 </AnimatePresence>
             </div>
+
+            {/* Color Picker Modal */}
+            <AnimatePresence>
+                {editingSubjectColor && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-[#0a0d16]/80 backdrop-blur-md"
+                        onClick={() => setEditingSubjectColor(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                            animate={{ scale: 1, y: 0, opacity: 1 }}
+                            exit={{ scale: 0.9, y: 20, opacity: 0 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            className="relative w-full max-w-sm p-6 overflow-hidden rounded-[32px] bg-[#0f172a] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-xl font-black text-white">Color de {editingSubjectColor}</h3>
+                                <button onClick={() => setEditingSubjectColor(null)} className="text-slate-500 hover:text-white transition-colors outline-none">
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            
+                            <div className="grid grid-cols-5 gap-4">
+                                {Object.keys(tailwindColors).map(colorKey => {
+                                    const isSelected = (customSubjectColors[editingSubjectColor] || subjectsData.find(s => s.name === editingSubjectColor)?.colorToken?.split('-')[0] || 'sky') === colorKey;
+                                    return (
+                                        <button
+                                            key={colorKey}
+                                            onClick={() => {
+                                                setCustomSubjectColors(prev => ({ ...prev, [editingSubjectColor]: colorKey }));
+                                                setEditingSubjectColor(null);
+                                            }}
+                                            className="group relative flex items-center justify-center w-full aspect-square rounded-full outline-none"
+                                        >
+                                            <div 
+                                                className={`w-8 h-8 rounded-full transition-all duration-300 ${isSelected ? 'scale-110' : 'scale-100 group-hover:scale-110'}`}
+                                                style={{ 
+                                                    backgroundColor: tailwindColors[colorKey].primary,
+                                                    boxShadow: isSelected ? `0 0 20px rgba(${tailwindColors[colorKey].primary_rgb}, 0.6)` : 'none'
+                                                }}
+                                            />
+                                            {isSelected && (
+                                                <motion.div layoutId="color-selected-ring" className="absolute inset-0 rounded-full border-2 border-white/50 pointer-events-none" />
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            <div className="mt-6 pt-4 border-t border-white/10 flex justify-end">
+                                <button 
+                                    onClick={() => {
+                                        const newColors = { ...customSubjectColors };
+                                        delete newColors[editingSubjectColor];
+                                        setCustomSubjectColors(newColors);
+                                        setEditingSubjectColor(null);
+                                    }}
+                                    className="text-xs font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wider outline-none"
+                                >
+                                    Restablir per defecte
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.div>
     );
 };
