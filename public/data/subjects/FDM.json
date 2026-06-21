@@ -7,15 +7,275 @@
   "department": "FIS",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Jordi Martí Rabassa",
+      "email": "jordi.marti@upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Gemma Sese Castel",
+      "email": "gemma.sese@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 1.9
+    },
+    {
+      "type": "Problemes",
+      "value": 1.8
+    },
+    {
+      "type": "Laboratori",
+      "value": 0.3
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.4
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "1. Camp Magnètic",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 1 de l'assignatura: Analitzar les característiques i els efectes dels camps magnètics. Càlcul de camps i forces magnètiques.",
+      "objectives": [
+        "8",
+        "9",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4.5
+        },
+        {
+          "type": "Problemes",
+          "value": 4
+        },
+        {
+          "type": "Laboratori",
+          "value": 2.5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "2. Inducció magnètica",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 2 de l'assignatura: Descripció del fenomen de la inducció, els corrents de Foucault i les seves principals aplicacions a l'emmagatzemament de dades: memòries magnètiques",
+      "objectives": [
+        "9",
+        "1",
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Problemes",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "3. Ones electromagnètiques",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 3 de l'assignatura: Descripció de les característiques de les ones electromagnètiques en connexió amb l'assignatura \"Física\". Anàlisi dels fenòmens d'interferència i difracció, els cristalls líquids i les seves principals aplicacions a l'emmagatzemament de dades: memòries òptiques, magneto-òptiques i hologràfiques",
+      "objectives": [
+        "8",
+        "1",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4.5
+        },
+        {
+          "type": "Problemes",
+          "value": 4
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "4. Física Quàntica",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 4 de l'assignatura: Introducció als principals fenòmens i equacions quàntiques: dualitat, incertesa, equació de Schrödinger, spin. Aplicació a la magnetoresistència.",
+      "objectives": [
+        "9",
+        "1",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 5.5
+        },
+        {
+          "type": "Problemes",
+          "value": 6.5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "5. Làser",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 5 de l'assignatura: Descripció de la teoria de la radiació d'Einstein, el làser i les seves propietats i aplicacions.",
+      "objectives": [
+        "8",
+        "1",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "6. Dispositius electrònics i optoelectrònics",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 6 de l'assignatura: Repàs i ampliació de la teoria de la conducció en semiconductors i els transistors MOSFET. Aplicacions a les memòries flash, els sensors, les cèl·lules solars.",
+      "objectives": [
+        "9",
+        "1",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 5
+        },
+        {
+          "type": "Problemes",
+          "value": 4.5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Examen parcial",
+      "isEvaluative": true,
+      "description": "Prova escrita després de la impartició dels 3 primers temes.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "week": 8,
+      "hours": []
+    },
+    {
+      "title": "Examen final/segon parcial",
+      "isEvaluative": true,
+      "description": "Prova avaluatòria del continguts de l'assignatura. Els estudiants que hagin superat la primera prova parcial podran fer un examen sobre els 3 darrers temes.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "week": 15,
+      "hours": []
+    },
+    {
+      "title": "Pràctica de simulació",
+      "isEvaluative": true,
+      "description": "Presentació oral d'una pràctica de simulació numèrica",
+      "objectives": [
+        "9",
+        "4",
+        "5"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Revisió d'acte avaluatiu amb feedback",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [
+        "9",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 3
+        }
+      ]
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Jordi Martí Rabassa\n                                (jordi.marti@upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Gemma Sese Castel\n                            (gemma.sese@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1.9\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1.8\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.3\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT1\">\n                  <b>\n                    CT1 \n                                      </b>\n                  - Demostrar coneixement i comprensió de fets essencials, conceptes, principis i teories relatives a la informàtica i a les seves disciplines de referència.\n                                      <ul>\n                                              <li id=\"CT1_1A\">\n                          <b>\n                            CT1.1A\n                          </b>\n                          - Demostrar coneixement i comprensió dels conceptes fonamentals de la programació i de l'estructura bàsica d'un computador. CEFB4. Coneixement dels fonaments de l'ús i de la programació dels computadors, dels sistemes operatius, de les bases de dades i, en general, dels programes informàtics amb aplicació a l'enginyeria. \n                        </li>\n                                              <li id=\"CT1_1B\">\n                          <b>\n                            CT1.1B\n                          </b>\n                          - Demostrar coneixement i comprensió dels conceptes fonamentals de la programació i de l'estructura bàsica d'un computador. CEFB5. Coneixement de l'estructura, funcionament i interconnexió dels sistemes informàtics, i dels fonaments de la seva programació. \n                        </li>\n                                              <li id=\"CT1_2A\">\n                          <b>\n                            CT1.2A\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB1: capacitat per a resoldre els problemes matemàtics que es plantegin en la enginyeria. Aptitud per a aplicar els coneixements sobre: àlgebra, càlcul diferencial i integral i mètodes numèrics; estadística i optimització.\n                        </li>\n                                              <li id=\"CT1_2B\">\n                          <b>\n                            CT1.2B\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB2. Capacitat per a comprendre i dominar els fonaments físics i tecnològics de la informàtica: electromagnetisme, ones, teoria de circuits, electrònica i fotònica i la seva aplicació per a la resolució de problemes propis de l'enginyeria.\n                        </li>\n                                              <li id=\"CT1_2C\">\n                          <b>\n                            CT1.2C\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB3. Capacitat per a comprendre i dominar els conceptes bàsics de matemàtica discreta, lògica, algorísmica i complexitat computacional, i la seva aplicació per al tractament automàtic de la informació mitjançant sistemes computacionals i la seva aplicació per a la resolució de problemes propis de l'enginyeria.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT8\">\n                  <b>\n                    CT8 \n                                      </b>\n                  - Planificar, concebre, desplegar i dirigir projectes, serveis i sistemes informàtics en tots els àmbits, liderar-ne la posada en marxa, la millora contínua i valorar-ne l'impacte econòmic i social. \n                                      <ul>\n                                              <li id=\"CT8_1\">\n                          <b>\n                            CT8.1\n                          </b>\n                          - Identificar tecnologies actuals i emergents i avaluar si són aplicables, i en quina mesura, per a satisfer les necessitats dels usuaris. \n                        </li>\n                                              <li id=\"CT8_4\">\n                          <b>\n                            CT8.4\n                          </b>\n                          - Elaborar el plec de condicions tècniques d'una instal·lació informàtica que compleixi els estàndards i la normativa vigent.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Raonament</h4>\n                              <li id=\"G9\">\n                  <b>\n                    G9 \n                                          [Avaluable]\n                                      </b>\n                  - Capacitat de raonament crític, lògic i matemàtic. Capacitat de resoldre problemes en la seva àrea d'estudi. Capacitat d'abstracció: capacitat de crear i utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills, i analitzar-ne i interpretar-ne els resultats. Capacitat d'anàlisi, de síntesi i d'avaluació.\n                                      <ul>\n                                              <li id=\"G9_2\">\n                          <b>\n                            G9.2\n                          </b>\n                          - Capacitat d'anàlisi i de síntesi, capacitat de resoldre problemes en la seva àrea d'estudi, i d'interpretar-ne els resultats de manera crítica. Capacitat d'abstracció: capacitat de crear i d'utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills i analitzar-ne i interpretar-ne els resultats de manera crítica.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +287,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-5161\">\n          1. CAMP MAGNÈTIC\n          <br>\n          1.1. El magnetisme en la natura. Experiment d'Oersted.<br>\n1.2. Forces magnètiques sobre càrregues i corrents: força de Lorentz. <br>\n1.3. Efecte Hall. Sensors d'efecte Hall.<br>\n1.4. Línies de camp. <br>\n1.5. Generació de camps magnètics. Llei de Biot-Savart.\n        </li>\n              <li id=\"cont-5162\">\n          2. INDUCCIÓ MAGNÈTICA\n          <br>\n          2.1. Fenòmens d'inducció.<br>\n2.2. Llei de la inducció magnètica. <br>\n2.3. Corrents de Foucault. <br>\n2.4. Energia Magnètica. <br>\n2.5. Materials diamagnètics, paramagnètics i ferromagnètics. <br>\n2.6. Memòries magnètiques. Memòries ferroelèctriques. Motors dels discos durs. \n        </li>\n              <li id=\"cont-5163\">\n          3. ONES ELECTROMAGNÈTIQUES\n          <br>\n          3.1. Espectre electromagnètic. <br>\n3.2. Propagació. Lleis de la reflexió i la refracció. Fibres òptiques. <br>\n3.3. Polarització (per absorció, reflexió, i dispersió). Birrefringència. Instruments òptics. <br>\n3.4. Interferència. Difracció. Xarxes de difracció. <br>\n3.5. Memòries òptiques i magnetoòptiques. Memòries hologràfiques. \n        </li>\n              <li id=\"cont-5164\">\n          4. FÍSICA QUÀNTICA\n          <br>\n          4.1. Introducció: efecte fotoelèctric i efecte Compton, idees sobre relativitat especial, espectres atòmics, model de Bohr<br>\n4.2 Propietats ondulatòries de les partícules<br>\n4.3 Principi d'incertesa de Heisenberg<br>\n4.4 Equació de Schrödinger<br>\n4.5 Efecte túnel: Scanning Tunneling Microscope, díode d'efecte túnel<br>\n4.6 Teoria quàntica atòmica: àtom d'hidrogen, spin de l'electró, taula periòdica dels elements<br>\n4.7 Aplicacions: magnetoresistència gegant, Ressonància Magnètica Nuclear\n        </li>\n              <li id=\"cont-5165\">\n          5. LÀSER\n          <br>\n          5.1. Incandescència i luminescència<br>\n5.2. Teoria quàntica de la radiació d'Einstein <br>\n5.3. Elements essencials d'un làser <br>\n5.4. Característiques de la llum làser<br>\n5.5. Classificació dels làsers <br>\n5.6. Aplicacions generals dels làsers\n        </li>\n              <li id=\"cont-5166\">\n          6. DISPOSITIUS ELECTRÒNICS I OPTOELECTRÒNICS\n          <br>\n          6.1. Teoria de la conductivitat: semiconductors. <br>\n6.2. Transistors MOSFET. <br>\n6.3. Memòries flash. Circuits de memòria. Teoria de l'escalat. Fabricació de circuits integrats.<br>\n6.4. Semiconductors de gap directe i indirecte. LED. Díode làser<br>\n6.5. Fotoconductivitat. Fotodíodes. Cèl·lules solars. Sensors CCD i sensors MOS<br>\n6.6. Cel·les DRAM. Miniaturització\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-13284\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>1. Camp Magnètic</h3>\n              Desenvolupament del tema 1 de l'assignatura: Analitzar les característiques i els efectes dels camps magnètics. Càlcul de camps i forces magnètiques.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6001\">8</a>\n                                  <a href=\"#obj-6002\">9</a>\n                                  <a href=\"#obj-6004\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-5161\">1 .\n                      1. CAMP MAGNÈTIC</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-13285\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>2. Inducció magnètica</h3>\n              Desenvolupament del tema 2 de l'assignatura: Descripció del fenomen de la inducció, els corrents de Foucault i les seves principals aplicacions a l'emmagatzemament de dades: memòries magnètiques\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6002\">9</a>\n                                  <a href=\"#obj-6003\">1</a>\n                                  <a href=\"#obj-6005\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-5162\">2 .\n                      2. INDUCCIÓ MAGNÈTICA</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-13287\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>3. Ones electromagnètiques</h3>\n              Desenvolupament del tema 3 de l'assignatura: Descripció de les característiques de les ones electromagnètiques en connexió amb l'assignatura \"Física\". Anàlisi dels fenòmens d'interferència i difracció, els cristalls líquids i les seves principals aplicacions a l'emmagatzemament de dades: memòries òptiques, magneto-òptiques i hologràfiques\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6001\">8</a>\n                                  <a href=\"#obj-6003\">1</a>\n                                  <a href=\"#obj-6006\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-5163\">3 .\n                      3. ONES ELECTROMAGNÈTIQUES</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-13288\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>4. Física Quàntica</h3>\n              Desenvolupament del tema 4 de l'assignatura: Introducció als principals fenòmens i equacions quàntiques: dualitat, incertesa, equació de Schrödinger, spin. Aplicació a la magnetoresistència.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6002\">9</a>\n                                  <a href=\"#obj-6003\">1</a>\n                                  <a href=\"#obj-6007\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-5164\">4 .\n                      4. FÍSICA QUÀNTICA</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-13289\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>5. Làser</h3>\n              Desenvolupament del tema 5 de l'assignatura: Descripció de la teoria de la radiació d'Einstein, el làser i les seves propietats i aplicacions.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6001\">8</a>\n                                  <a href=\"#obj-6003\">1</a>\n                                  <a href=\"#obj-6008\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-5165\">5 .\n                      5. LÀSER</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-13290\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>6. Dispositius electrònics i optoelectrònics</h3>\n              Desenvolupament del tema 6 de l'assignatura: Repàs i ampliació de la teoria de la conducció en semiconductors i els transistors MOSFET. Aplicacions a les memòries flash, els sensors, les cèl·lules solars. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6002\">9</a>\n                                  <a href=\"#obj-6003\">1</a>\n                                  <a href=\"#obj-6009\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-5166\">6 .\n                      6. DISPOSITIUS ELECTRÒNICS I OPTOELECTRÒNICS</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-5001\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen parcial</h3>\n              Prova escrita després de la impartició dels 3 primers temes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6003\">1</a>\n                                  <a href=\"#obj-6004\">2</a>\n                                  <a href=\"#obj-6005\">3</a>\n                                  <a href=\"#obj-6006\">4</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  8\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-5002\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final/segon parcial</h3>\n              Prova avaluatòria del continguts de l'assignatura. Els estudiants que hagin superat la primera prova parcial podran fer un examen sobre els 3 darrers temes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6003\">1</a>\n                                  <a href=\"#obj-6004\">2</a>\n                                  <a href=\"#obj-6005\">3</a>\n                                  <a href=\"#obj-6006\">4</a>\n                                  <a href=\"#obj-6007\">5</a>\n                                  <a href=\"#obj-6008\">6</a>\n                                  <a href=\"#obj-6009\">7</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-5003\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Pràctica de simulació</h3>\n              Presentació oral d'una pràctica de simulació numèrica\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6002\">9</a>\n                                  <a href=\"#obj-6006\">4</a>\n                                  <a href=\"#obj-6007\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-21304\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Revisió d'acte avaluatiu amb feedback</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-6002\">9</a>\n                                  <a href=\"#obj-6006\">4</a>\n                                  <a href=\"#obj-6007\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-5163\">3 .\n                      3. ONES ELECTROMAGNÈTIQUES</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-5164\">4 .\n                      4. FÍSICA QUÀNTICA</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

@@ -7,15 +7,287 @@
   "department": "CS",
   "web": "https://sites.google.com/upc.edu/intelligencia-artificial",
   "summary": "",
+  "professors": [
+    {
+      "name": "Javier Vazquez Salceda",
+      "email": "jvazquez@cs.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Ander Barrio Campos",
+      "email": "ander.barrio@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Carlos Fenollosa Bielsa",
+      "email": "carles.fenollosa@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Javier Béjar Alonso",
+      "email": "bejar@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Ramon Sangüesa Sole",
+      "email": "ramon.sanguesa.i@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Sara Montese",
+      "email": "sara.montese@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Sergio Álvarez Napagao",
+      "email": "salvarez@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Víctor Giménez Ábalos",
+      "email": "victor.gimenez.abalos@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 3
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 1
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.4
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Introducció a la Intel&#8729;ligència Artificial",
+      "isEvaluative": false,
+      "description": "L'alumne coneixerà els orígens i les bases de la Intel·ligència Artificial així com algunes de les arees d'aplicació. Per reforçar l'aprenentatge l'alumne haurà de llegir el capítol 1 del llibre de Russel i Norvig, disponible on-line.",
+      "objectives": [
+        "2",
+        "1",
+        "14"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Resolució de Problemes mitjançant Cerca",
+      "isEvaluative": false,
+      "description": "L'alumne no només haurà d'atendre a les exposicions del professor, sino també fer exercicis pràctics sobre l'ús dels algorismes de Cerca, i participar a les discussions amb el professor i els seus companys sobre quan és millor utilitzar cadascun dels algorismes. Al laboratori l'alumne haurà d'aplicar el que ha aprés a un problema de dificultat mitjana.",
+      "objectives": [
+        "3",
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 16
+        },
+        {
+          "type": "Laboratori",
+          "value": 5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 31
+        }
+      ]
+    },
+    {
+      "title": "Entrega pràctica Cerca.",
+      "isEvaluative": true,
+      "description": "Entrega de l'informe sobre la pràctica d'algorismes de Cerca que els alumnes han realitzat a les sessions de laboratori.",
+      "objectives": [
+        "3",
+        "5"
+      ],
+      "week": 6,
+      "hours": []
+    },
+    {
+      "title": "Parcial d'IA",
+      "isEvaluative": true,
+      "description": "Parcial sobre resolució de problemes",
+      "objectives": [
+        "3",
+        "5",
+        "6"
+      ],
+      "week": 7,
+      "hours": []
+    },
+    {
+      "title": "Representació del coneixement i raonament",
+      "isEvaluative": false,
+      "description": "L'alumne no només haurà d'atendre a les exposicions del professor, sinó també fer exercicis pràctics sobre l'ús de les tècniques de Representació del Coneixement, i participar a les discussions amb el professor i els seus companys sobre quan és millor utilitzar cadascuna de les tècniques. Al laboratori l'alumne haurà d'aplicar el que ha aprés a un problema de dificultat mitjana.",
+      "objectives": [
+        "4",
+        "6",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 15
+        },
+        {
+          "type": "Laboratori",
+          "value": 7
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 25.5
+        }
+      ]
+    },
+    {
+      "title": "Resolució de Problemes mitjançant Planificació",
+      "isEvaluative": false,
+      "description": "L'alumne no només haurà d'atendre a les exposicions del professor, sinó també fer exercicis pràctics sobre l'ús dels algorismes de Planificació, i participar a les discussions amb el professor i els seus companys sobre quan és millor utilitzar cadascun dels algorismes. Al laboratori l'alumne haurà d'aplicar el que ha aprés a un problema de dificultat baixa.",
+      "objectives": [
+        "6",
+        "9",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Laboratori",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 9
+        }
+      ]
+    },
+    {
+      "title": "Entrega pràctica Representació del Coneixement.",
+      "isEvaluative": true,
+      "description": "Entrega de l'informe de la pràctica sobre Representació del Coneixement que els alumnes han desenvolupat al laboratori.",
+      "objectives": [
+        "4",
+        "6",
+        "7",
+        "8"
+      ],
+      "week": 12,
+      "hours": []
+    },
+    {
+      "title": "Aprenentatge Automàtic",
+      "isEvaluative": false,
+      "description": "L'alumne no només haurà d'atendre a les exposicions del professor, sinó també fer exercicis pràctics sobre l'ús dels algorismes bàsics d'Aprenentatge Automàtic, i participar a les discussions amb el professor i els seus companys sobre quan és millor utilitzar aquests algorismes.",
+      "objectives": [
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 9
+        }
+      ]
+    },
+    {
+      "title": "Entrega del treball d'innovació.",
+      "isEvaluative": true,
+      "description": "Entrega de l'informe sobre exemples d'innovació empresarial relacionada amb l'ús de tècniques d'Intel·ligència Artificial.",
+      "objectives": [
+        "2",
+        "14"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Altres tècniques, àrees i aplicacions de la Intel·ligència Artificial",
+      "isEvaluative": false,
+      "description": "L'alumne no només haurà d'atendre a les exposicions dels seus companys, sinó també participar a les discussions amb el professor i els seus companys sobre l'impacte potencial que han tingut les tècniques d'Intel·ligència Artificial sobre les empreses analitzades en els treballs d'innovació que els alumnes han fet durant el curs.",
+      "objectives": [
+        "14"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 7.5
+        }
+      ]
+    },
+    {
+      "title": "Examen final d'IA",
+      "isEvaluative": true,
+      "description": "Examen final dels continguts del curs.",
+      "objectives": [
+        "5",
+        "6",
+        "7",
+        "8",
+        "10",
+        "13"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Javier Vazquez Salceda\n                                (jvazquez@cs.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Ander Barrio Campos\n                            (ander.barrio@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Carlos Fenollosa Bielsa\n                            (carles.fenollosa@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Javier Béjar Alonso\n                            (bejar@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Ramon Sangüesa Sole\n                            (ramon.sanguesa.i@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Sara Montese\n                            (sara.montese@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Sergio Álvarez Napagao\n                            (salvarez@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Víctor Giménez Ábalos\n                            (victor.gimenez.abalos@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            3\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Treball en equip</h4>\n                              <li id=\"G5\">\n                  <b>\n                    G5 \n                                          [Avaluable]\n                                      </b>\n                  - Ser capaç de treballar com a membre d'un equip, ja sigui com a un membre més, ja sigui realitzant tasques de direcció, amb la finalitat de contribuir a desenvolupar projectes d'una manera pragmàtica i amb sentit de la responsabilitat; assumir compromisos tenint en compte els recursos disponibles.\n                                      <ul>\n                                              <li id=\"G5_3\">\n                          <b>\n                            G5.3\n                          </b>\n                          - Identificar els rols, les habilitats i les carències dels diferents membres del grup. Proposar millores en l'estructura del grup. Interactuar amb eficàcia i professionalitat. Negociar i gestionar conflictes en el grup. Reconèixer i donar suport o assumir el paper de líder en el grup de treball. Avaluar i presentar els resultats del treball de grup. Representar el grup en negociacions amb terceres persones. Capacitat de col·laborar en un entorn multidisciplinar. Conèixer i saber aplicar les tècniques per a promoure la creativitat. \n                        </li>\n                                          </ul>\n                                  </li>\n                                        <h4>Emprenedoria i innovació</h4>\n                              <li id=\"G1\">\n                  <b>\n                    G1 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer i comprendre l'organització d'una empresa i les ciències que regeixen la seva activitat; capacitat de comprendre les regles laborals i les relacions entre la planificació, les estratègies industrials i comercials, la qualitat i el benefici. Desenvolupar la creativitat, l'esperit emprenedor i la tendència a la innovació. \n                                      <ul>\n                                              <li id=\"G1_3\">\n                          <b>\n                            G1.3\n                          </b>\n                          - Ser resolutiu. Utilitzar coneixements i habilitats estratègiques per a la creació i la gestió de projectes, aplicar solucions sistèmiques a problemes complexos, i dissenyar i gestionar la innovació en la organització. Demostrar flexibilitat i professionalitat en el desenvolupament de la seva feina.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat computació</h4>\n                              <li id=\"CCO2\">\n                  <b>\n                    CCO2 \n                                      </b>\n                  - Desenvolupar de forma efectiva i eficient els algorismes i el software apropiats per a resoldre problemes complexos de computació. \n                                      <ul>\n                                              <li id=\"CCO2_1\">\n                          <b>\n                            CCO2.1\n                          </b>\n                          - Demostrar coneixement dels fonaments, dels paradigmes i de les tècniques pròpies dels sistemes intel·ligents, i analitzar, dissenyar i construir sistemes, serveis i aplicacions informàtiques que utilitzin aquestes tècniques en qualsevol àmbit d'aplicació. \n                        </li>\n                                              <li id=\"CCO2_2\">\n                          <b>\n                            CCO2.2\n                          </b>\n                          - Capacitat per a adquirir, obtenir, formalitzar i representar el coneixement humà d'una forma computable per a la resolució de problemes mitjançant un sistema informàtic en qualsevol àmbit d'aplicació, particularment en els que estan relacionats amb aspectes de computació, percepció i actuació en ambients o entorns intel·ligents.\n                        </li>\n                                              <li id=\"CCO2_4\">\n                          <b>\n                            CCO2.4\n                          </b>\n                          - Demostrar coneixement i desenvolupar tècniques d'aprenentatge   computacional; dissenyar i implementar aplicacions i sistemes que les utilitzin, incloent les que es dediquen a l'extracció automàtica d'informació i coneixement a partir de grans volums de dades.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +299,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-7901\">\n          Introducció a la Intel·ligència Artificial\n          <br>\n          <br>\n<br>\n  Què és la Intel·ligència Artificial? Orígens i bases de la intel·ligència artificial. Àrees d'aplicació.\n        </li>\n              <li id=\"cont-1562\">\n          Resolució de Problemes mitjançant Cerca\n          <br>\n          Introducció a les metodologies de resolució automática de problemes: Representació com espai d'estats, algorismes de búsqueda informada i local, algorismes genètics, jocs i problemes de satisfacció de restriccions.\n        </li>\n              <li id=\"cont-1563\">\n          Representació del coneixement i raonament\n          <br>\n          Introducció a les tècniques de representació al coneixement. Motivació. Representacions procedimentals i sistemes de producció. Representacions estructurades (ontologies).  Incertesa en el coneixement.\n        </li>\n              <li id=\"cont-1564\">\n          Planificació\n          <br>\n          Introducció a la resolució de problemes mitjançant planificació. Planificació lineal i jeràrquica. Planificació en entorns deterministes i estocàstics.\n        </li>\n              <li id=\"cont-1565\">\n          Aprenentatge Automàtic\n          <br>\n          L'aprenentatge automàtic i el seu rol en sistemes que s'adaptin a l'usuari o a l'entorn. Tipus d'aprenentatge. Aprenentatge d'arbres de decisió. Xarxes Neurals Artificials.\n        </li>\n              <li id=\"cont-1566\">\n          Altres tècniques, àrees i aplicacions de la Intel&amp;#8729;ligència Artificial\n          <br>\n          Mineria de Dades, Raonament Basat en Casos, Raonament Qualitatiu, Sistemes Multiagents, Tractament Automatic de Textos i de la Parla, Percepció i Visió Automàtica, Sistemes Recomanadors, Sistemes Tutors Intel·ligents, Intel·ligència Artificial en entorns de Web Services, Grid Computing i Cloud Computing. \n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3624\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció a la Intel&amp;#8729;ligència Artificial</h3>\n              L'alumne coneixerà els orígens i les bases de la Intel·ligència Artificial així com algunes de les arees d'aplicació. Per reforçar l'aprenentatge l'alumne haurà de llegir el capítol 1 del llibre de Russel i Norvig, disponible on-line.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2604\">2</a>\n                                  <a href=\"#obj-2605\">1</a>\n                                  <a href=\"#obj-2606\">14</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-7901\">1 .\n                      Introducció a la Intel·ligència Artificial</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4508\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Resolució de Problemes mitjançant Cerca </h3>\n              L'alumne no només haurà d'atendre a les exposicions del professor, sino també fer exercicis pràctics sobre l'ús dels algorismes de Cerca, i participar a les discussions amb el professor i els seus companys sobre quan és millor utilitzar cadascun dels algorismes. Al laboratori l'alumne haurà d'aplicar el que ha aprés a un problema de dificultat mitjana. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2607\">3</a>\n                                  <a href=\"#obj-2608\">5</a>\n                                  <a href=\"#obj-2610\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1562\">2 .\n                      Resolució de Problemes mitjançant Cerca</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      16h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      31h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-2221\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Entrega pràctica Cerca.</h3>\n              Entrega de l'informe sobre la pràctica d'algorismes de Cerca que els alumnes han realitzat a les sessions de laboratori. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2607\">3</a>\n                                  <a href=\"#obj-2608\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  6\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1961\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Parcial d'IA</h3>\n              Parcial sobre resolució de problemes\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2607\">3</a>\n                                  <a href=\"#obj-2608\">5</a>\n                                  <a href=\"#obj-2610\">6</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  7\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4509\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Representació del coneixement i raonament  </h3>\n              L'alumne no només haurà d'atendre a les exposicions del professor, sinó també fer exercicis pràctics sobre l'ús de les tècniques de Representació del Coneixement, i participar a les discussions amb el professor i els seus companys sobre quan és millor utilitzar cadascuna de les tècniques. Al laboratori l'alumne haurà d'aplicar el que ha aprés a un problema de dificultat mitjana. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2609\">4</a>\n                                  <a href=\"#obj-2610\">6</a>\n                                  <a href=\"#obj-2611\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1563\">3 .\n                      Representació del coneixement i raonament</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      7h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      25.5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4510\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Resolució de Problemes mitjançant Planificació</h3>\n              L'alumne no només haurà d'atendre a les exposicions del professor, sinó també fer exercicis pràctics sobre l'ús dels algorismes de Planificació, i participar a les discussions amb el professor i els seus companys sobre quan és millor utilitzar cadascun dels algorismes. Al laboratori l'alumne haurà d'aplicar el que ha aprés a un problema de dificultat baixa.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2610\">6</a>\n                                  <a href=\"#obj-2613\">9</a>\n                                  <a href=\"#obj-2614\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1564\">4 .\n                      Planificació</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-2222\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Entrega pràctica Representació del Coneixement. </h3>\n              Entrega de l'informe de la pràctica sobre Representació del Coneixement que els alumnes han desenvolupat al laboratori.  \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2609\">4</a>\n                                  <a href=\"#obj-2610\">6</a>\n                                  <a href=\"#obj-2611\">7</a>\n                                  <a href=\"#obj-2612\">8</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  12\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4511\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Aprenentatge Automàtic</h3>\n              L'alumne no només haurà d'atendre a les exposicions del professor, sinó també fer exercicis pràctics sobre l'ús dels algorismes bàsics d'Aprenentatge Automàtic, i participar a les discussions amb el professor i els seus companys sobre quan és millor utilitzar aquests algorismes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2615\">11</a>\n                                  <a href=\"#obj-2616\">12</a>\n                                  <a href=\"#obj-2617\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1565\">5 .\n                      Aprenentatge Automàtic</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-2223\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Entrega del treball d'innovació.</h3>\n              Entrega de l'informe sobre exemples d'innovació empresarial relacionada amb l'ús de tècniques d'Intel·ligència Artificial. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2604\">2</a>\n                                  <a href=\"#obj-2606\">14</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4512\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Altres tècniques, àrees i aplicacions de la Intel·ligència Artificial </h3>\n              L'alumne no només haurà d'atendre a les exposicions dels seus companys, sinó també participar a les discussions amb el professor i els seus companys sobre l'impacte potencial que han tingut les tècniques d'Intel·ligència Artificial sobre les empreses analitzades en els treballs d'innovació que els alumnes han fet durant el curs.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2606\">14</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1566\">6 .\n                      Altres tècniques, àrees i aplicacions de la Intel&amp;#8729;ligència Artificial</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      7.5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1962\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final d'IA</h3>\n              Examen final dels continguts del curs.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2608\">5</a>\n                                  <a href=\"#obj-2610\">6</a>\n                                  <a href=\"#obj-2611\">7</a>\n                                  <a href=\"#obj-2612\">8</a>\n                                  <a href=\"#obj-2614\">10</a>\n                                  <a href=\"#obj-2617\">13</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

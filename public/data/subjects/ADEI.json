@@ -7,15 +7,451 @@
   "department": "EIO",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Xavier Angerri Torredeflot",
+      "email": "xavier.angerri@upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Bhumika Ashvinbhai Patel",
+      "email": "bhumika.patel@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Josep Franquet Fàbregas",
+      "email": "josep.franquet@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Quiz bloc 2 i 3",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "1",
+        "15",
+        "2",
+        "4",
+        "5",
+        "6"
+      ],
+      "week": 8,
+      "hours": []
+    },
+    {
+      "title": "Presentació del Cas d'Estudi",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "1",
+        "15",
+        "2",
+        "14",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": 15,
+      "hours": []
+    },
+    {
+      "title": "Quiz blocs 4 and 5",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "1",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Bloc 1. Nivells de decisió en una empresa",
+      "isEvaluative": false,
+      "description": "Es tracta de presentar el tres nivells de presa de decisions a les empreses. Quins són els processos de negoci principals i com s'emmagatzemen les dades que es generen.",
+      "objectives": [
+        "1"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "title": "Bloc 2. Descripció i qualitat de les dades",
+      "isEvaluative": false,
+      "description": "Problemes en la qualitat de les dades: Es tracta de veure en el Cas d'Estudi els problemes que presenten o poden presentar les dades: Inconsistencies, redundància. Dades mancants. Outliers. Com es fa un Informe de qualitat de les dades. En que consisteix l'estandardització de les dades.",
+      "objectives": [
+        "15"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Bloc 2. Visualització de les dades",
+      "isEvaluative": false,
+      "description": "Tipologia de la Recollida de dades i aplicabilitat al control operacional. Indicadors habituals en control de processos continus",
+      "objectives": [
+        "15",
+        "2",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Bloc 3. Modelització Estadística",
+      "isEvaluative": false,
+      "description": "Perspectiva del modelatge per tècniques de regressió lineal : components estadístiques implicades. Rols: variables de resposta/explicatives",
+      "objectives": [
+        "4",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Bloc 3. Estimació dels paràmetres",
+      "isEvaluative": false,
+      "description": "Estimació per mínims quadrats",
+      "objectives": [
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Bloc 3. Validació de la modelització estadística",
+      "isEvaluative": false,
+      "description": "Elements que intervenen en la validació del modelatge per regressió. Valors influents i/o atípics",
+      "objectives": [
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Bloc 3. Modelització estadística de indicadors discrets",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Bloc 4. Anàlisi Multivariant de Dades",
+      "isEvaluative": false,
+      "description": "Problemes multivariants en l'empresa",
+      "objectives": [
+        "9",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Bloc 4. L'Anàlisi de Components Principals",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [
+        "9",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "title": "Bloc 4. Mesura d'intangibles",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [
+        "9",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Bloc 4. Pràctica de l'Anàlisi de Components Principals",
+      "isEvaluative": false,
+      "description": "Pràctica de l'Anàlisi de Components Principals, interpretació de les representacions obtingudes. Posicionament de la informació suplementaria.",
+      "objectives": [
+        "9",
+        "10",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Bloc 5. Definició de tipologies",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Bloc 4. Pràctica de la definició de tipologies",
+      "isEvaluative": false,
+      "description": "Presentació dels mètodes k-means i jeràrquic.",
+      "objectives": [
+        "11",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Bloc 5. Caracterització estadística de Bases de Dades",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [
+        "8",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Xavier Angerri Torredeflot\n                                (xavier.angerri@upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Bhumika Ashvinbhai Patel\n                            (bhumika.patel@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Josep Franquet Fàbregas\n                            (josep.franquet@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat sistemes d'informació</h4>\n                              <li id=\"CSI2\">\n                  <b>\n                    CSI2 \n                                      </b>\n                  - Integrar solucions de Tecnologies de la Informació i les Comunicacions, i processos empresarials per a satisfer les necessitats d'informació de les organitzacions, permetent que assoleixin els seus objectius de forma efectiva. \n                                      <ul>\n                                              <li id=\"CSI2_1\">\n                          <b>\n                            CSI2.1\n                          </b>\n                          - Demostrar comprensió i aplicar els principis i les tècniques de gestió de qualitat i d'innovació tecnològica a les organitzacions.\n                        </li>\n                                              <li id=\"CSI2_3\">\n                          <b>\n                            CSI2.3\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació dels sistemes d'extracció i de gestió del coneixement.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Raonament</h4>\n                              <li id=\"G9\">\n                  <b>\n                    G9 \n                                          [Avaluable]\n                                      </b>\n                  - Capacitat de raonament crític, lògic i matemàtic. Capacitat de resoldre problemes en la seva àrea d'estudi. Capacitat d'abstracció: capacitat de crear i utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills, i analitzar-ne i interpretar-ne els resultats. Capacitat d'anàlisi, de síntesi i d'avaluació.\n                                      <ul>\n                                              <li id=\"G9_3\">\n                          <b>\n                            G9.3\n                          </b>\n                          - Capacitat crítica, capacitat d'avaluació.\n                        </li>\n                                          </ul>\n                                  </li>\n                                        <h4>Tercera llengua</h4>\n                              <li id=\"G3\">\n                  <b>\n                    G3 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer l'idioma anglès amb un nivell adequat de forma oral i escrita, i en consonància amb les necessitats que tindran els graduats i les graduades en Enginyeria Informàtica. Capacitat de treballar en un grup multidisciplinar i en un entorn multilingüe i de comunicar, tant per escrit com de forma oral, coneixements, procediments, resultats i idees relacionats amb la professió d'enginyer tècnic en informàtica.\n                                      <ul>\n                                              <li id=\"G3_2\">\n                          <b>\n                            G3.2\n                          </b>\n                          - Estudiar amb materials escrits en anglès. Redactar un informe o un treball de tipus tècnic en anglès. Participar en una reunió tècnica en anglès. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +463,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1741\">\n          Bloc1: Nivells de decisió en una empresa\n          <br>\n          \n        </li>\n              <li id=\"cont-1742\">\n          Bloc 2: Descripcio i qualitat de les dades\n          <br>\n          \n        </li>\n              <li id=\"cont-1743\">\n          Bloc 3: Modelització Estadística\n          <br>\n          \n        </li>\n              <li id=\"cont-1744\">\n          Bloc 4: Anàlisis Multivariant de Dades i mesura d'intangibles\n          <br>\n          \n        </li>\n              <li id=\"cont-1745\">\n          Bloc 5: Definició de tipologies i perfils\n          <br>\n          \n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-1741\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Quiz bloc 2 i 3</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2441\">1</a>\n                                  <a href=\"#obj-2442\">15</a>\n                                  <a href=\"#obj-2461\">2</a>\n                                  <a href=\"#obj-2464\">4</a>\n                                  <a href=\"#obj-2465\">5</a>\n                                  <a href=\"#obj-2466\">6</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  8\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1763\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació del Cas d'Estudi</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2441\">1</a>\n                                  <a href=\"#obj-2442\">15</a>\n                                  <a href=\"#obj-2461\">2</a>\n                                  <a href=\"#obj-2462\">14</a>\n                                  <a href=\"#obj-2463\">3</a>\n                                  <a href=\"#obj-2464\">4</a>\n                                  <a href=\"#obj-2465\">5</a>\n                                  <a href=\"#obj-2466\">6</a>\n                                  <a href=\"#obj-2467\">7</a>\n                                  <a href=\"#obj-2468\">8</a>\n                                  <a href=\"#obj-2469\">9</a>\n                                  <a href=\"#obj-2470\">10</a>\n                                  <a href=\"#obj-2471\">11</a>\n                                  <a href=\"#obj-2472\">12</a>\n                                  <a href=\"#obj-2473\">13</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-1742\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Quiz blocs 4 and 5</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2441\">1</a>\n                                  <a href=\"#obj-2468\">8</a>\n                                  <a href=\"#obj-2469\">9</a>\n                                  <a href=\"#obj-2470\">10</a>\n                                  <a href=\"#obj-2471\">11</a>\n                                  <a href=\"#obj-2472\">12</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4044\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 1. Nivells de decisió en una empresa</h3>\n              Es tracta de presentar el tres nivells de presa de decisions a les empreses. Quins són els processos de negoci principals i com s'emmagatzemen les dades que es generen.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2441\">1</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1741\">1 .\n                      Bloc1: Nivells de decisió en una empresa</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4104\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 2. Descripció i qualitat de les dades</h3>\n              Problemes en la qualitat de les dades: Es tracta de veure en el Cas d'Estudi els problemes que presenten o poden presentar les dades: Inconsistencies, redundància. Dades mancants. Outliers. Com es fa un Informe de qualitat de les dades. En que consisteix l'estandardització de les dades.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2442\">15</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1742\">2 .\n                      Bloc 2: Descripcio i qualitat de les dades</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4106\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 2. Visualització de les dades</h3>\n              Tipologia de la Recollida de dades i aplicabilitat al control operacional. Indicadors habituals en control de processos continus\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2442\">15</a>\n                                  <a href=\"#obj-2461\">2</a>\n                                  <a href=\"#obj-2473\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1742\">2 .\n                      Bloc 2: Descripcio i qualitat de les dades</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4107\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 3. Modelització Estadística</h3>\n              Perspectiva del modelatge  per tècniques de regressió lineal : components estadístiques implicades. Rols: variables de resposta/explicatives\n\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2464\">4</a>\n                                  <a href=\"#obj-2473\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1743\">3 .\n                      Bloc 3: Modelització Estadística</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4110\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 3. Estimació dels paràmetres</h3>\n              Estimació per mínims quadrats\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2464\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1743\">3 .\n                      Bloc 3: Modelització Estadística</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4111\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 3. Validació de la modelització estadística</h3>\n              Elements que intervenen en la validació del modelatge per regressió. Valors influents i/o atípics\n\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2465\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1743\">3 .\n                      Bloc 3: Modelització Estadística</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4112\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 3. Modelització estadística de indicadors discrets </h3>\n              \n\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2465\">5</a>\n                                  <a href=\"#obj-2466\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1743\">3 .\n                      Bloc 3: Modelització Estadística</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4113\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 4. Anàlisi Multivariant de Dades</h3>\n              Problemes multivariants en l'empresa \n\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2469\">9</a>\n                                  <a href=\"#obj-2470\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1744\">4 .\n                      Bloc 4: Anàlisis Multivariant de Dades i mesura d'intangibles</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4114\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 4. L'Anàlisi de Components Principals</h3>\n              \n\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2469\">9</a>\n                                  <a href=\"#obj-2470\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1744\">4 .\n                      Bloc 4: Anàlisis Multivariant de Dades i mesura d'intangibles</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4115\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 4. Mesura d'intangibles</h3>\n              \n\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2469\">9</a>\n                                  <a href=\"#obj-2470\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1744\">4 .\n                      Bloc 4: Anàlisis Multivariant de Dades i mesura d'intangibles</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4116\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 4. Pràctica de l'Anàlisi de Components Principals</h3>\n              Pràctica de l'Anàlisi de Components Principals, interpretació de les representacions obtingudes. Posicionament de la informació suplementaria.\n\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2469\">9</a>\n                                  <a href=\"#obj-2470\">10</a>\n                                  <a href=\"#obj-2473\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1744\">4 .\n                      Bloc 4: Anàlisis Multivariant de Dades i mesura d'intangibles</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4117\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 5. Definició de tipologies</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2471\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1745\">5 .\n                      Bloc 5: Definició de tipologies i perfils</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4118\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 4. Pràctica de la definició de tipologies\n</h3>\n              Presentació dels mètodes k-means i jeràrquic.\n\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2471\">11</a>\n                                  <a href=\"#obj-2473\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1744\">4 .\n                      Bloc 4: Anàlisis Multivariant de Dades i mesura d'intangibles</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4127\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bloc 5. Caracterització estadística de Bases de Dades </h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2468\">8</a>\n                                  <a href=\"#obj-2473\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1745\">5 .\n                      Bloc 5: Definició de tipologies i perfils</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

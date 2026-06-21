@@ -7,15 +7,356 @@
   "department": "AC",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Davide Careglio",
+      "email": "careglio@ac.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Hamid Latif Martinez",
+      "email": "hamid.latif@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Marc Ruiz Ramírez",
+      "email": "mruiz@ac.upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 1
+    },
+    {
+      "type": "Laboratori",
+      "value": 1
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Presentació de l'assignatura i repàs dels conceptes previs",
+      "isEvaluative": false,
+      "description": "L'alumne ha de conèixer els conceptes bàsics de les comunicacions entre terminals connectats a una xarxa i de la pila de protocols TCP/IP i l'arquitectura de Xarxes d'Àrea Local (LAN) i Xarxes d'Àrea Estesa (WAN). Teoria: Presentació de l'assignatura i repàs dels conceptes previs Problemes: Problemes de repàs dels conceptes previs Laboratori: Explicació del funcionament de les pràctiques de laboratori, introducció als materials i dispositiu que s'usaran, introducció als mètodes d'avaluació. Aprenentatge autònom: Repàs dels conceptes bàsics de les comunicacions entre terminals connectats a una xarxa i de la pila de protocols TCP/IP.",
+      "objectives": [
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Introducció a administració i manteniment d'ISPs",
+      "isEvaluative": false,
+      "description": "L'alumne es familiaritzarà amb la terminologia específica i les recomanacions de caràcter internacional més importants de l'àmbit d'Internet. L'alumne ha de conèixer la jerarquia d'Internet i com funciona la comunicació entre els diferents nivells. Teoria: Introducció als temes d'aquesta primera part.",
+      "objectives": [
+        "2",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Direccionament IPv6",
+      "isEvaluative": false,
+      "description": "L'alumne coneixerà la situació de l'adreçament IPv4 i el seu esgotament i sabrà com informar-se per mantenir-se al dia. Coneixerà l'adreçament IPv6, com s'assignen les adreces IPv6 i com s'aconsegueix la compatibilitat entre IPv4 i IPv6 a Internet actual.",
+      "objectives": [
+        "2",
+        "3",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Encaminament dinàmic intradomini: el protocol OSPF",
+      "isEvaluative": false,
+      "description": "L'alumne es familiaritzarà amb el protocol OSPF a través d'exemples teòrics a classe, problemes pràctics i de configuració en les classes de problemes i de laboratori. Teoria: Explicació de l'encaminament dinàmic basat en OSPF Problemes: Es proposaran i resoldran problemes relacionats amb configuració d'OSPF, amb l'estudi dels temps de convergència d'OSPF en cas de canvis o fallades i de rendiment del sistema. Laboratori: Configuració d'OSPF en router CISCO Aprenentatge autònom: Repàs del material exposat en les classes teòriques i de problemes. Resolució d'exercicis.",
+      "objectives": [
+        "2",
+        "3",
+        "4",
+        "6",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3.5
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Protocol MPLS",
+      "isEvaluative": false,
+      "description": "L'alumne es familiaritzarà amb els conceptes avançats de xarxes actualment en ús. L'alumne coneixerà, compararà i distingir les diferents solucions. Teoria: Es presentaran les diferents arquitectures d'interconnexió des de la xarxa completament connectada fins a xarxes multietapa. S'avaluaran i compararan els seus rendiments i s'estudiaran els seus àmbits d'aplicació. Problemes: Es resoldran a classe problemes relacionats amb l'arquitectura de xarxes d'interconnexió i l'avaluació de rendiment d'aquestes arquitectures. Laboratori: Configuració de MPLS i MPLS-TE en routers Aprenentatge autònom: Repàs del material exposat en les classes teòriques i de problemes. Resolució d'exercicis.",
+      "objectives": [
+        "1",
+        "3",
+        "4",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Control a meitats del quadrimestre",
+      "isEvaluative": true,
+      "description": "Control de seguiment sobre la matèria exposada a les classes de teoria.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "7"
+      ],
+      "week": 9,
+      "hours": []
+    },
+    {
+      "title": "Encaminament interdomini: el protocol BGP",
+      "isEvaluative": false,
+      "description": "L'alumne es familiaritzarà amb el protocol BGP a través d'exemples teòrics a classe, problemes pràctics i de configuració en les classes de problemes i de laboratori. Teoria: Explicació de l'encaminament dinàmic basat en BGP. Introducció al concepte de polítiques d'encaminament. Problemes: Es proposaran i resoldran problemes relacionats amb configuració de BGP i amb l'estudi dels temps de convergència de BGP en cas de canvis o fallades i de rendiment del sistema. Laboratori: Lab1. Configuració de BGP. Lab2. Política d'encaminament amb atributs Lab3. Política d'encaminament amb comunitats Lab4. Route reflection i confederació de sub-AS Aprenentatge autònom: Repàs del material exposat en les classes teòriques i de problemes. Resolució d'exercis",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "6",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 7
+        },
+        {
+          "type": "Problemes",
+          "value": 6
+        },
+        {
+          "type": "Laboratori",
+          "value": 8
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 16
+        }
+      ]
+    },
+    {
+      "title": "IP multicast",
+      "isEvaluative": false,
+      "description": "L'alumne aprendrà alguns conceptes avançats de xarxes com són la transmissió multicast, el funcionament i els protocols principals.",
+      "objectives": [
+        "2",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Presentació de temes de recerca",
+      "isEvaluative": false,
+      "description": "L'alumne es familiaritzarà amb la recerca i les recomanacions de caràcter internacional més importants de l'àmbit de xarxes. Teoria: Introducció als temes que es veuran en aquesta part: Arquitectures de xarxes d'interconnexió. Protocols. Exemples. Algunes línies d'investigació per a futures xarxes d'interconnexió.",
+      "objectives": [
+        "1",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupament d'una presentació sobre un tema relacionat amb la recerca en Internet.",
+      "isEvaluative": false,
+      "description": "Cada grup haurà de seleccionar un tema i presentar al cap de 3 setmanes una presentació descrivint el problema, analitzant les solucions disponibles i, si és el cas, proposant noves solucions. Teoria: Introducció a la investigació en l'àmbit de les xarxes d'interconnexió. Presentació d'un conjunt de temes. Problemes: Anàlisi de les problemàtiques de les xarxes d'interconnexió i referències a possibles solucions i introducció a una primera comparació qualitativa. Aprenentatge dirigit: Es farà un seguiment de l'informe al llarg de les 3 setmanes de preparació. Aprenentatge autònom: Desenvolupament en grups reduïts (2 / 3 persones) d'un informe relacionat amb protocols i xarxes d'interconnexió per als futurs sistemes d'altes prestacions.",
+      "objectives": [
+        "1",
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 14
+        }
+      ]
+    },
+    {
+      "title": "Examen final de laboratori",
+      "isEvaluative": false,
+      "description": "Preparar l'examen de laboratori estudiant els apunts i les practiques anteriors Laboratori: Examen final de laboratori sobre les 7 sessions anteriors",
+      "objectives": [
+        "3",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Control final del quadrimestre",
+      "isEvaluative": true,
+      "description": "Control de seguiment sobre la matèria exposada a les classes de teoria",
+      "objectives": [
+        "1",
+        "4",
+        "5",
+        "6"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Examen final",
+      "isEvaluative": true,
+      "description": "Examen final sobre la matèria exposada a les classes de teoria",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Davide Careglio\n                                (careglio@ac.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Hamid Latif Martinez\n                            (hamid.latif@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Marc Ruiz Ramírez\n                            (mruiz@ac.upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT6\">\n                  <b>\n                    CT6 \n                                      </b>\n                  - Demostrar coneixement i comprensió del funcionament intern d'un computador i del funcionament de les comunicacions entre ordinadors. \n                                      <ul>\n                                              <li id=\"CT6_1\">\n                          <b>\n                            CT6.1\n                          </b>\n                          - Demostrar coneixement i tenir capacitat per a administrar i mantenir sistemes, serveis i aplicacions informàtiques.\n                        </li>\n                                              <li id=\"CT6_4\">\n                          <b>\n                            CT6.4\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació de les característiques, de les funcionalitats i de l'estructura dels Sistemes Distribuïts i de les Xarxes de Computadors i d'Internet que en garanteixi l'ús i l'administració, així com el disseny i la implementació d'aplicacions basades en elles. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT7\">\n                  <b>\n                    CT7 \n                                      </b>\n                  - Avaluar i seleccionar plataformes de producció hardware i software per a l'execució d'aplicacions i de serveis informàtics. \n                                      <ul>\n                                              <li id=\"CT7_3\">\n                          <b>\n                            CT7.3\n                          </b>\n                          - Determinar els factors que incideixen negativament en la seguretat i la fiabilitat d'un sistema hardware/software, i minimitzar-ne els efectes. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Sostenibilitat i compromís social</h4>\n                              <li id=\"G2\">\n                  <b>\n                    G2 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer i comprendre la complexitat dels fenòmens econòmics i socials típics de la societat del benestar. Ser capaç d'analitzar i valorar l'impacte social i mediambiental.\n                                      <ul>\n                                              <li id=\"G2_3\">\n                          <b>\n                            G2.3\n                          </b>\n                          - Tenir en compte les dimensions social, econòmica i ambiental, i el dret a la privacitat a aplicar solucions i dur a terme projectes coherents amb el desenvolupament humà i la sostenibilitat.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat enginyeria de computadors</h4>\n                              <li id=\"CEC2\">\n                  <b>\n                    CEC2 \n                                      </b>\n                  - Analitzar i avaluar arquitectures de computadors incloent plataformes paral·leles i distribuïdes, i desenvolupar i optimitzar software per a aquestes plataformes.\n                                      <ul>\n                                              <li id=\"CEC2_2\">\n                          <b>\n                            CEC2.2\n                          </b>\n                          - Programar considerant l'arquitectura hardware, tant en assemblador com en alt nivell. \n                        </li>\n                                              <li id=\"CEC2_3\">\n                          <b>\n                            CEC2.3\n                          </b>\n                          - Desenvolupar i analitzar software per a sistemes basats en microprocessadors i les seves interfícies amb usuaris i altres dispositius.\n                        </li>\n                                              <li id=\"CEC2_4\">\n                          <b>\n                            CEC2.4\n                          </b>\n                          - Dissenyar i implementar software de sistema i de comunicacions.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CEC4\">\n                  <b>\n                    CEC4 \n                                      </b>\n                  - Dissenyar, desplegar, administrar i gestionar xarxes de computadors, i gestionar la garantia i la seguretat dels sistemes informàtics.\n                                      <ul>\n                                              <li id=\"CEC4_1\">\n                          <b>\n                            CEC4.1\n                          </b>\n                          - Dissenyar, desplegar, administrar i gestionar xarxes de computadors.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +368,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1961\">\n          Presentació de l'assignatura i repàs dels conceptes previs\n          <br>\n          Repàs dels conceptes bàsics de les comunicacions entre terminals connectats a una xarxa i de la pila de protocols TCP/IP i l'arquitectura de Xarxes d'Àrea Local (LAN) i Xarxes d'Àrea Estesa (WAN).\n        </li>\n              <li id=\"cont-2021\">\n          Arquitectura i adreçament a Internet\n          <br>\n          Introducció als diferents temes d'aquesta primera part del temari. Es repassa la jerarquia d'Internet i les definicions de sistemes autònoms (AS) i d'Internet Service Provider (ISP). S'identifiquen els actors i les organitzacions principals d'Internet.\n        </li>\n              <li id=\"cont-4522\">\n          Esgotament IPv4 i introducció a IPv6\n          <br>\n          S'analitza el problema de l'esgotament d'adreces IPv4. S'introdueix el protocol IPv6 com a substitut de IPv4 i s'explica el seu funcionament.\n        </li>\n              <li id=\"cont-2022\">\n          Encaminament intra-domini\n          <br>\n          S'introduirà el protocol OSPF d'encaminament dinàmic per a xarxes intradomini i es veuran exemples de funcionament, tant teòrics com pràctics en laboratori. \n        </li>\n              <li id=\"cont-8421\">\n          Protocol MPLS\n          <br>\n          Presentació del MultiProtocol Label Switching. Objectius d'aquest protocol. Funcionament. Protocol d'intercanvi d'etiquetes. Format de les etiquetes. Bases de dades. Extensions de Traffic Engineering (TE): OSPF-TE, MPLS-TE i RSVP-TE.\n        </li>\n              <li id=\"cont-8422\">\n          Protocol d'encaminamient entre dominis: BGP\n          <br>\n          Explicació de l'encaminament dinàmic interdomini basat en BGP. Exemples de funcionament. Bases de dades. Atributs i polítiques d'encaminament. Escenaris més comuns. Millores del BGP: comunitats, route reflection, sub-AS confederation i route flap damping.\n        </li>\n              <li id=\"cont-4521\">\n          IP multicast\n          <br>\n          Aquesta part se centra en alguns conceptes avançats de xarxes. S'introdueix la transmissió multicast, el seu funcionament i s'expliquen alguns protocols com ara DVMRP, MOSPF, M-BGP, PIM i BIER. \n        </li>\n              <li id=\"cont-4523\">\n          Activitats de recerca en curs\n          <br>\n          Es veuran alguns temes de recerca relacionats amb les futures xarxes Internet i es proposaran activitats complementàries.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                                                            \n                          <div id=\"act-4904\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació de l'assignatura i repàs dels conceptes previs</h3>\n              L'alumne ha de conèixer els conceptes bàsics de les comunicacions entre terminals connectats a una xarxa i de la pila de protocols TCP/IP i l'arquitectura de Xarxes d'Àrea Local (LAN) i Xarxes d'Àrea Estesa (WAN).\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Presentació de l'assignatura i repàs dels conceptes previs\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Problemes de repàs dels conceptes previs\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Explicació del funcionament de les pràctiques de laboratori, introducció als materials i dispositiu que s'usaran, introducció als mètodes d'avaluació.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repàs dels conceptes bàsics de les comunicacions entre terminals connectats a una xarxa i de la pila de protocols TCP/IP.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2862\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1961\">1 .\n                      Presentació de l'assignatura i repàs dels conceptes previs</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-4906\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció a administració i manteniment d'ISPs</h3>\n              L'alumne es familiaritzarà amb la terminologia específica i les recomanacions de caràcter internacional més importants de l'àmbit d'Internet. \nL'alumne ha de conèixer la jerarquia d'Internet i com funciona la comunicació entre els diferents nivells.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Introducció als temes d'aquesta primera part.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2862\">2</a>\n                                  <a href=\"#obj-2941\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2021\">2 .\n                      Arquitectura i adreçament a Internet</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-4522\">3 .\n                      Esgotament IPv4 i introducció a IPv6</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-20349\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Direccionament IPv6</h3>\n              L'alumne coneixerà la situació de l'adreçament IPv4 i el seu esgotament i sabrà com informar-se per mantenir-se al dia. Coneixerà l'adreçament IPv6, com s'assignen les adreces IPv6 i com s'aconsegueix la compatibilitat entre IPv4 i IPv6 a Internet actual.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2862\">2</a>\n                                  <a href=\"#obj-2863\">3</a>\n                                  <a href=\"#obj-2941\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2021\">2 .\n                      Arquitectura i adreçament a Internet</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-4522\">3 .\n                      Esgotament IPv4 i introducció a IPv6</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                                                            \n                          <div id=\"act-6064\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Encaminament dinàmic intradomini: el protocol OSPF</h3>\n              L'alumne es familiaritzarà amb el protocol OSPF a través d'exemples teòrics a classe, problemes pràctics i de configuració en les classes de problemes i de laboratori.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Explicació de l'encaminament dinàmic basat en OSPF\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Es proposaran i resoldran problemes relacionats amb configuració d'OSPF, amb l'estudi dels temps de convergència d'OSPF en cas de canvis o fallades i de rendiment del sistema.\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Configuració d'OSPF en router CISCO\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repàs del material exposat en les classes teòriques i de problemes. Resolució d'exercicis.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2862\">2</a>\n                                  <a href=\"#obj-2863\">3</a>\n                                  <a href=\"#obj-2864\">4</a>\n                                  <a href=\"#obj-2866\">6</a>\n                                  <a href=\"#obj-2941\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2022\">4 .\n                      Encaminament intra-domini</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                                                            \n                          <div id=\"act-6070\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Protocol MPLS</h3>\n              L'alumne es familiaritzarà amb els conceptes avançats de xarxes actualment en ús. L'alumne coneixerà, compararà i distingir les diferents solucions.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Es presentaran les diferents arquitectures d'interconnexió des de la xarxa completament connectada fins a xarxes multietapa. S'avaluaran i compararan els seus rendiments i s'estudiaran els seus àmbits d'aplicació.\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Es resoldran a classe problemes relacionats amb l'arquitectura de xarxes d'interconnexió i l'avaluació de rendiment d'aquestes arquitectures.\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Configuració de MPLS i MPLS-TE en routers\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repàs del material exposat en les classes teòriques i de problemes. Resolució d'exercicis.\n\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2861\">1</a>\n                                  <a href=\"#obj-2863\">3</a>\n                                  <a href=\"#obj-2864\">4</a>\n                                  <a href=\"#obj-2866\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-8421\">5 .\n                      Protocol MPLS</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-2101\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Control a meitats del quadrimestre</h3>\n              Control de seguiment  sobre la matèria exposada a les classes de teoria.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2861\">1</a>\n                                  <a href=\"#obj-2862\">2</a>\n                                  <a href=\"#obj-2863\">3</a>\n                                  <a href=\"#obj-2941\">7</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  9\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                                                            \n                          <div id=\"act-6065\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Encaminament interdomini: el protocol BGP</h3>\n              L'alumne es familiaritzarà amb el protocol BGP a través d'exemples teòrics a classe, problemes pràctics i de configuració en les classes de problemes i de laboratori.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Explicació de l'encaminament dinàmic basat en BGP. Introducció al concepte de polítiques d'encaminament.\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Es proposaran i resoldran problemes relacionats amb configuració de BGP i amb l'estudi dels temps de convergència de BGP en cas de canvis o fallades i de rendiment del sistema.\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Lab1. Configuració de BGP.\nLab2. Política d'encaminament amb atributs\nLab3. Política d'encaminament amb comunitats\nLab4. Route reflection i confederació de sub-AS\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repàs del material exposat en les classes teòriques i de problemes. Resolució d'exercis\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2861\">1</a>\n                                  <a href=\"#obj-2862\">2</a>\n                                  <a href=\"#obj-2863\">3</a>\n                                  <a href=\"#obj-2866\">6</a>\n                                  <a href=\"#obj-2941\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2021\">2 .\n                      Arquitectura i adreçament a Internet</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-8422\">6 .\n                      Protocol d'encaminamient entre dominis: BGP</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      7h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      16h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-20350\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>IP multicast</h3>\n              L'alumne aprendrà alguns conceptes avançats de xarxes com són la transmissió multicast, el funcionament i els protocols principals.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2862\">2</a>\n                                  <a href=\"#obj-2941\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-4521\">7 .\n                      IP multicast</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-6068\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació de temes de recerca</h3>\n              L'alumne es familiaritzarà amb la recerca i les recomanacions de caràcter internacional més importants de l'àmbit de xarxes. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Introducció als temes que es veuran en aquesta part: Arquitectures de xarxes d'interconnexió. Protocols. Exemples. Algunes línies d'investigació per a futures xarxes d'interconnexió.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2861\">1</a>\n                                  <a href=\"#obj-2865\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2022\">4 .\n                      Encaminament intra-domini</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                                                        \n                          <div id=\"act-6069\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament d'una presentació sobre un tema relacionat amb la recerca en Internet.</h3>\n              Cada grup haurà de seleccionar un tema i presentar al cap de 3 setmanes una presentació descrivint el problema, analitzant les solucions disponibles i, si és el cas, proposant noves solucions.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Introducció a la investigació en l'àmbit de les xarxes d'interconnexió. Presentació d'un conjunt de temes.\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Anàlisi de les problemàtiques de les xarxes d'interconnexió i referències a possibles solucions i introducció a una primera comparació qualitativa.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Es farà un seguiment de l'informe al llarg de les 3 setmanes de preparació.\n\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Desenvolupament en grups reduïts (2 / 3 persones) d'un informe relacionat amb protocols i xarxes d'interconnexió per als futurs sistemes d'altes prestacions.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2861\">1</a>\n                                  <a href=\"#obj-2865\">5</a>\n                                  <a href=\"#obj-2866\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2022\">4 .\n                      Encaminament intra-domini</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-4521\">7 .\n                      IP multicast</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      14h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-11349\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final de laboratori</h3>\n              Preparar l'examen de laboratori estudiant els apunts i les practiques anteriors\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Examen final de laboratori sobre les 7 sessions anteriors\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2863\">3</a>\n                                  <a href=\"#obj-2864\">4</a>\n                                  <a href=\"#obj-2865\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2021\">2 .\n                      Arquitectura i adreçament a Internet</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2022\">4 .\n                      Encaminament intra-domini</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-4521\">7 .\n                      IP multicast</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-4523\">8 .\n                      Activitats de recerca en curs</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-2361\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Control final del quadrimestre</h3>\n              Control de seguiment sobre la matèria exposada a les classes de teoria\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2861\">1</a>\n                                  <a href=\"#obj-2864\">4</a>\n                                  <a href=\"#obj-2865\">5</a>\n                                  <a href=\"#obj-2866\">6</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-2381\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final </h3>\n              Examen final sobre la matèria exposada a les classes de teoria\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2861\">1</a>\n                                  <a href=\"#obj-2862\">2</a>\n                                  <a href=\"#obj-2863\">3</a>\n                                  <a href=\"#obj-2864\">4</a>\n                                  <a href=\"#obj-2865\">5</a>\n                                  <a href=\"#obj-2866\">6</a>\n                                  <a href=\"#obj-2941\">7</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

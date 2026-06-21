@@ -7,15 +7,584 @@
   "department": "AC",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Daniel Naro",
+      "email": "daniel.naro@upc.edu",
+      "role": "Responsable"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 4
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "treball de curs",
+      "isEvaluative": false,
+      "description": "Elaboració treball de curs",
+      "objectives": [
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge autònom",
+          "value": 42.4
+        }
+      ]
+    },
+    {
+      "title": "Presentació treball del curs",
+      "isEvaluative": false,
+      "description": "Realitzar presentació",
+      "objectives": [
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Presentació assignatura",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Baixar-se el material de la pàgina web",
+      "objectives": [
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Microprocesadors",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "1",
+        "2",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Memòries",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "2",
+        "3",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 1.5
+        }
+      ]
+    },
+    {
+      "title": "Xerrades presentacions i treballs",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Xerrada sostenibilitat i compromís social",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Plaques base i busos d'expansió",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "2",
+        "4",
+        "6",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 1.5
+        }
+      ]
+    },
+    {
+      "title": "Primera sesió de presentacions",
+      "isEvaluative": false,
+      "description": "L'estudiant realitza una presentació pública del treball desenvolupat Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Entrada/sortida i enmagatzemament",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "2",
+        "6",
+        "8",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Segunda sesión de presentaciones",
+      "isEvaluative": false,
+      "description": "L'estudiant realitza una presentació pública del treball desenvolupat Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Targetes gràfiques",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "2",
+        "6",
+        "7",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Busos multimèdia",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "2",
+        "6",
+        "8",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Tercera sesió de presentaciones",
+      "isEvaluative": false,
+      "description": "L'estudiant realitza una presentació pública del treball desenvolupat Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Bios, chipsets i formfactors",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "2",
+        "4",
+        "5",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Quarta sesió de presentacions",
+      "isEvaluative": false,
+      "description": "L'estudiant realitza una presentació pública del treball desenvolupat Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Overclocking, termal throttle i refrigeració",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "2",
+        "9",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Cinquena sesión de presentacions",
+      "isEvaluative": false,
+      "description": "L'estudiant realitza una presentació pública del treball desenvolupat Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Recapitulació final curs",
+      "isEvaluative": false,
+      "description": "Assistència i participació en classe Aprenentatge autònom: Repassar el material treballat en classe",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2.2
+        }
+      ]
+    },
+    {
+      "title": "Examen no presencial",
+      "isEvaluative": true,
+      "description": "L'alumne resol a casa un examen de 16 preguntes. Cada pregunta disposa d'un espai limitat per a la seva resposta. La resposta ha de ser concisa, completa i correcta,",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": 13,
+      "hours": []
+    },
+    {
+      "title": "Práctica 1 en las Jornadas Reutilitza",
+      "isEvaluative": true,
+      "description": "L'estudiant munta un ordinador",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "12",
+        "13"
+      ],
+      "week": 10,
+      "hours": []
+    },
+    {
+      "title": "Pràctica 2 en Jornadas Reutilitza",
+      "isEvaluative": true,
+      "description": "L'estudiant repara els ordinadors assignats",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "12",
+        "13"
+      ],
+      "week": 10,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Daniel Naro\n                                (daniel.naro@upc.edu)\n                          </b>\n          </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT3\">\n                  <b>\n                    CT3 \n                                      </b>\n                  - Demostrar coneixement i comprensió del context organitzatiu, econòmic i legal en el qual es desenvolupa la seva feina (coneixement adequat del concepte d'empresa, del marc institucional i jurídic de l'empresa, d'organització i gestió de les empreses). \n                                      <ul>\n                                              <li id=\"CT3_6\">\n                          <b>\n                            CT3.6\n                          </b>\n                          - Demostrar coneixement de la dimensió ètica a l'empresa: la responsabilitat social i corporativa en general i, en particular, les responsabilitats civils i professionals de l'enginyer en informàtica.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT6\">\n                  <b>\n                    CT6 \n                                      </b>\n                  - Demostrar coneixement i comprensió del funcionament intern d'un computador i del funcionament de les comunicacions entre ordinadors. \n                                      <ul>\n                                              <li id=\"CT6_2\">\n                          <b>\n                            CT6.2\n                          </b>\n                          - Demostrar coneixement, comprensió i capacitat d'avaluar l'estructura i l'arquitectura dels computadors, i els components bàsics que els componen.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT8\">\n                  <b>\n                    CT8 \n                                      </b>\n                  - Planificar, concebre, desplegar i dirigir projectes, serveis i sistemes informàtics en tots els àmbits, liderar-ne la posada en marxa, la millora contínua i valorar-ne l'impacte econòmic i social. \n                                      <ul>\n                                              <li id=\"CT8_1\">\n                          <b>\n                            CT8.1\n                          </b>\n                          - Identificar tecnologies actuals i emergents i avaluar si són aplicables, i en quina mesura, per a satisfer les necessitats dels usuaris. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Sostenibilitat i compromís social</h4>\n                              <li id=\"G2\">\n                  <b>\n                    G2 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer i comprendre la complexitat dels fenòmens econòmics i socials típics de la societat del benestar. Ser capaç d'analitzar i valorar l'impacte social i mediambiental.\n                                      <ul>\n                                              <li id=\"G2_3\">\n                          <b>\n                            G2.3\n                          </b>\n                          - Tenir en compte les dimensions social, econòmica i ambiental, i el dret a la privacitat a aplicar solucions i dur a terme projectes coherents amb el desenvolupament humà i la sostenibilitat.\n                        </li>\n                                          </ul>\n                                  </li>\n                                        <h4>Comunicació eficaç oral i escrita</h4>\n                              <li id=\"G4\">\n                  <b>\n                    G4 \n                                          [Avaluable]\n                                      </b>\n                  - Comunicar de forma oral i escrita amb altres persones coneixements, procediments, resultats i idees. Participar en debats sobre temes propis de l'activitat de l'enginyer tècnic en informàtica. \n                                      <ul>\n                                              <li id=\"G4_3\">\n                          <b>\n                            G4.3\n                          </b>\n                          - Comunicar-se de manera clara i eficient en presentacions orals i escrites sobre temes complexos, adaptant-se a la situació, al tipus de públic i als objectius de la comunicació, utilitzant les estratègies i els mitjans adequats. Analitzar, valorar i respondre adequadament a les preguntes de l'auditori. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +596,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-2936\">\n          Breu història dels microprocessadors\n          <br>\n          \n        </li>\n              <li id=\"cont-2937\">\n          Microprocesadors per a PCs\n          <br>\n          \n        </li>\n              <li id=\"cont-2938\">\n          Memòries dels PCs\n          <br>\n          \n        </li>\n              <li id=\"cont-2939\">\n          Plaques base, BIOS, chipsets i busos\n          <br>\n          \n        </li>\n              <li id=\"cont-2940\">\n          Targetes gràfiques\n          <br>\n          \n        </li>\n              <li id=\"cont-2941\">\n          Dispositius d'emmagatzematge: Discos durs, CD, DVD, altres\n          <br>\n          \n        </li>\n              <li id=\"cont-2942\">\n          Dispositius d'entrada/sortida\n          <br>\n          \n        </li>\n              <li id=\"cont-2943\">\n          Software d'avaluació de prestacions\n          <br>\n          \n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8424\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>treball de curs</h3>\n              Elaboració treball de curs\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3691\">11</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2936\">1 .\n                      Breu història dels microprocessadors</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2937\">2 .\n                      Microprocesadors per a PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2938\">3 .\n                      Memòries dels PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2940\">5 .\n                      Targetes gràfiques</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2941\">6 .\n                      Dispositius d'emmagatzematge: Discos durs, CD, DVD, altres</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2942\">7 .\n                      Dispositius d'entrada/sortida</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2943\">8 .\n                      Software d'avaluació de prestacions</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      42.4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8425\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació treball del curs</h3>\n              Realitzar presentació\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3691\">11</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2936\">1 .\n                      Breu història dels microprocessadors</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2937\">2 .\n                      Microprocesadors per a PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2938\">3 .\n                      Memòries dels PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2940\">5 .\n                      Targetes gràfiques</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2941\">6 .\n                      Dispositius d'emmagatzematge: Discos durs, CD, DVD, altres</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2942\">7 .\n                      Dispositius d'entrada/sortida</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2943\">8 .\n                      Software d'avaluació de prestacions</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8429\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació assignatura</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Baixar-se el material de la pàgina web\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8430\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Microprocesadors</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2936\">1 .\n                      Breu història dels microprocessadors</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2937\">2 .\n                      Microprocesadors per a PCs</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8431\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Memòries</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2938\">3 .\n                      Memòries dels PCs</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1.5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8432\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Xerrades presentacions i treballs</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3691\">11</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8433\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Xerrada sostenibilitat i compromís social</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8434\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Plaques base i busos d'expansió</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1.5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8435\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Primera sesió de presentacions</h3>\n              \nL'estudiant realitza una presentació pública del treball desenvolupat\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3691\">11</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2936\">1 .\n                      Breu història dels microprocessadors</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2937\">2 .\n                      Microprocesadors per a PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2938\">3 .\n                      Memòries dels PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2940\">5 .\n                      Targetes gràfiques</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2941\">6 .\n                      Dispositius d'emmagatzematge: Discos durs, CD, DVD, altres</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2942\">7 .\n                      Dispositius d'entrada/sortida</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2943\">8 .\n                      Software d'avaluació de prestacions</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8436\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Entrada/sortida i enmagatzemament</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2941\">6 .\n                      Dispositius d'emmagatzematge: Discos durs, CD, DVD, altres</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2942\">7 .\n                      Dispositius d'entrada/sortida</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8438\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Segunda sesión de presentaciones</h3>\n              \nL'estudiant realitza una presentació pública del treball desenvolupat\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3691\">11</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8439\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Targetes gràfiques</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2940\">5 .\n                      Targetes gràfiques</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8440\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Busos multimèdia</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8441\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tercera sesió de presentaciones</h3>\n              \nL'estudiant realitza una presentació pública del treball desenvolupat\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3691\">11</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2936\">1 .\n                      Breu història dels microprocessadors</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2937\">2 .\n                      Microprocesadors per a PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2938\">3 .\n                      Memòries dels PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2940\">5 .\n                      Targetes gràfiques</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2941\">6 .\n                      Dispositius d'emmagatzematge: Discos durs, CD, DVD, altres</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2942\">7 .\n                      Dispositius d'entrada/sortida</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2943\">8 .\n                      Software d'avaluació de prestacions</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8443\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Bios, chipsets i formfactors</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8444\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Quarta sesió de presentacions</h3>\n              \n\nL'estudiant realitza una presentació pública del treball desenvolupat\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3691\">11</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2936\">1 .\n                      Breu història dels microprocessadors</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2937\">2 .\n                      Microprocesadors per a PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2938\">3 .\n                      Memòries dels PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2940\">5 .\n                      Targetes gràfiques</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2941\">6 .\n                      Dispositius d'emmagatzematge: Discos durs, CD, DVD, altres</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2942\">7 .\n                      Dispositius d'entrada/sortida</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2943\">8 .\n                      Software d'avaluació de prestacions</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8445\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Overclocking, termal throttle i refrigeració</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2943\">8 .\n                      Software d'avaluació de prestacions</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8446\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Cinquena sesión de presentacions</h3>\n              L'estudiant realitza una presentació pública del treball desenvolupat\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3691\">11</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2936\">1 .\n                      Breu història dels microprocessadors</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2937\">2 .\n                      Microprocesadors per a PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2938\">3 .\n                      Memòries dels PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2940\">5 .\n                      Targetes gràfiques</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2941\">6 .\n                      Dispositius d'emmagatzematge: Discos durs, CD, DVD, altres</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2942\">7 .\n                      Dispositius d'entrada/sortida</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2943\">8 .\n                      Software d'avaluació de prestacions</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8448\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Recapitulació final curs</h3>\n              Assistència i participació en classe\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repassar el material treballat en classe\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3691\">11</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2936\">1 .\n                      Breu història dels microprocessadors</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2937\">2 .\n                      Microprocesadors per a PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2938\">3 .\n                      Memòries dels PCs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2939\">4 .\n                      Plaques base, BIOS, chipsets i busos</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2940\">5 .\n                      Targetes gràfiques</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2941\">6 .\n                      Dispositius d'emmagatzematge: Discos durs, CD, DVD, altres</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2942\">7 .\n                      Dispositius d'entrada/sortida</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2943\">8 .\n                      Software d'avaluació de prestacions</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2.2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3201\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen no presencial</h3>\n              L'alumne resol a casa un examen de 16 preguntes. Cada pregunta disposa d'un espai limitat per a la seva resposta. La resposta ha de ser concisa, completa i correcta,\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3690\">10</a>\n                                  <a href=\"#obj-3691\">11</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  13\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3202\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Práctica 1 en las Jornadas Reutilitza</h3>\n              L'estudiant munta un ordinador\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  10\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3561\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Pràctica 2 en Jornadas Reutilitza</h3>\n              L'estudiant repara els ordinadors assignats\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3661\">1</a>\n                                  <a href=\"#obj-3662\">2</a>\n                                  <a href=\"#obj-3663\">3</a>\n                                  <a href=\"#obj-3684\">4</a>\n                                  <a href=\"#obj-3685\">5</a>\n                                  <a href=\"#obj-3686\">6</a>\n                                  <a href=\"#obj-3687\">7</a>\n                                  <a href=\"#obj-3688\">8</a>\n                                  <a href=\"#obj-3689\">9</a>\n                                  <a href=\"#obj-3692\">12</a>\n                                  <a href=\"#obj-3693\">13</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  10\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

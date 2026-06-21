@@ -7,15 +7,315 @@
   "department": "AC",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Daniel Jimenez Gonzalez",
+      "email": "djimenez@ac.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Eduard Ayguadé Parra",
+      "email": "eduard@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Gladys Miriam Utrera Iglesias",
+      "email": "gutrera@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jesus Jose Labarta Mancho",
+      "email": "jesus.labarta@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Josep Ramon Herrero Zaragoza",
+      "email": "josepr@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Mario Cesar Acosta Cobos",
+      "email": "mario.cesar.acosta@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Pablo Vizcaino Serrano",
+      "email": "pablo.vizcaino@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Pau Ferrer Cid",
+      "email": "pau.ferrer.cid@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Rosa Maria Badia Sala",
+      "email": "rosab@ac.upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.4
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Assimilació del conceptes fonamentals i eines per modelar i analitzar el comportament d'aplicacions paral.leles",
+      "isEvaluative": false,
+      "description": "Participar activament en les sessions de teoria/problemes. Estudiar els continguts del temes 1 i 2 i realitzar els exercicis proposats. Resolució de les pràctiques proposades en les sessions de laboratori i extracció de conclusions dels resultats obtinguts.",
+      "objectives": [
+        "1",
+        "3",
+        "2",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Ús d'OpenMP per l'expressio de paral.lelisme en memòria compartida",
+      "isEvaluative": false,
+      "description": "Participar activament en les sessions de laboratori. Fer els treballs/lectures prèvies proposades, resoldre els exercicis durant les sessions de laboratori, analitzar resultats, extreure conclusions dels experiments i elaboració dels lliuraments corresponents.",
+      "objectives": [
+        "4",
+        "7",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Assimilació dels aspectes fonamentals en les arquitectures paral.leles",
+      "isEvaluative": false,
+      "description": "Participar activament en les sessions de teoria/problemes. Estudiar els continguts del tema 5 i realitzar els exercicis proposats.",
+      "objectives": [
+        "8",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Assimilació dels principis de descomposicio en tasques",
+      "isEvaluative": false,
+      "description": "Participar activament en les sessions de teoria/problemes. Estudiar els continguts del tema 4 i realitzar els exercicis proposats. Aplicar els nous coneixements per la resolució de les pràctiques de laboratori associades.",
+      "objectives": [
+        "5",
+        "6",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Laboratori",
+          "value": 10
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 20
+        }
+      ]
+    },
+    {
+      "title": "Sessió extra de dubtes per l'examen parcial",
+      "isEvaluative": false,
+      "description": "L'estudiant podrà fer la petició dels problemes que vulgui repassar per avançat, però també podrà realitzar peticions durant la sessió.",
+      "objectives": [
+        "8",
+        "9",
+        "1",
+        "3",
+        "2",
+        "4",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Examen parcial",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "9",
+        "1",
+        "5",
+        "6",
+        "7",
+        "10"
+      ],
+      "week": 7,
+      "hours": []
+    },
+    {
+      "title": "Sessió formativa: repàs de les solucions dels problemes de l'examen parcial i retroacció general dels errors trobats.",
+      "isEvaluative": false,
+      "description": "Amb aquesta sessió formativa l'estudiantat podrà acabar d'assimilar conceptes de la primera meitat del quadrimestre. Aprenentatge dirigit: Realització d'una sessió de repàs amb les solucions de les preguntes del control parcial. Aquesta sessió extra de resolució de problemes ha d'ajudar a donar una retroacció general del control parcial a tots els alumnes que vulguin venir a la sessió.",
+      "objectives": [
+        "8",
+        "9",
+        "1",
+        "3",
+        "2",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Assimilació dels principis de descomposió de dades",
+      "isEvaluative": false,
+      "description": "Participar activament en les sessions de teoria/problemes. Estudiar els continguts del tema 6 i realitzar els exercicis proposats. Aplicar els nous coneixements per la resolució de les pràctiques de laboratori associades.",
+      "objectives": [
+        "5",
+        "6",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Laboratori",
+          "value": 10
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 14
+        }
+      ]
+    },
+    {
+      "title": "Sessió extra de dubtes per l'examen final",
+      "isEvaluative": false,
+      "description": "L'estudiant podrà fer la petició dels problemes que vulgui repassar per avançat, però també podrà realitzar peticions durant la sessió.",
+      "objectives": [
+        "8",
+        "9",
+        "1",
+        "3",
+        "2",
+        "4",
+        "5",
+        "6",
+        "7",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Examen final (Teoria i Laboratori)",
+      "isEvaluative": true,
+      "description": "La part de laboratori estarà diferenciada de la part de teoria i serà una prova escrita sobre paper, relacionada amb el que l'estudiantat ha treballat durant el curs.",
+      "objectives": [
+        "8",
+        "9",
+        "1",
+        "3",
+        "2",
+        "4",
+        "5",
+        "6",
+        "7",
+        "10"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Daniel Jimenez Gonzalez\n                                (djimenez@ac.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Eduard Ayguadé Parra\n                            (eduard@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Gladys Miriam Utrera Iglesias\n                            (gutrera@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jesus Jose Labarta Mancho\n                            (jesus.labarta@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Josep Ramon Herrero Zaragoza\n                            (josepr@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Mario Cesar Acosta Cobos\n                            (mario.cesar.acosta@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Pablo Vizcaino Serrano\n                            (pablo.vizcaino@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Pau Ferrer Cid\n                            (pau.ferrer.cid@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Rosa Maria Badia Sala\n                            (rosab@ac.upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT1\">\n                  <b>\n                    CT1 \n                                      </b>\n                  - Demostrar coneixement i comprensió de fets essencials, conceptes, principis i teories relatives a la informàtica i a les seves disciplines de referència.\n                                      <ul>\n                                              <li id=\"CT1_1B\">\n                          <b>\n                            CT1.1B\n                          </b>\n                          - Demostrar coneixement i comprensió dels conceptes fonamentals de la programació i de l'estructura bàsica d'un computador. CEFB5. Coneixement de l'estructura, funcionament i interconnexió dels sistemes informàtics, i dels fonaments de la seva programació. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT5\">\n                  <b>\n                    CT5 \n                                      </b>\n                  - Analitzar, dissenyar, construir i mantenir aplicacions de forma robusta, segura i eficient, triant el paradigma i els llenguatges de programació més adequats.\n                                      <ul>\n                                              <li id=\"CT5_1\">\n                          <b>\n                            CT5.1\n                          </b>\n                          - Triar, combinar i explotar diferents paradigmes de programació, en el moment de construir software, tenint en compte criteris com la facilitat de desenvolupament, l'eficiència, la portabilitat i la mantenibilitat.\n                        </li>\n                                              <li id=\"CT5_3\">\n                          <b>\n                            CT5.3\n                          </b>\n                          - Dissenyar, escriure, provar, depurar, documentar i mantenir codi en un llenguatge d'alt nivell per a resoldre problemes de programació aplicant esquemes algorísmics i utilitzant estructures de dades. \n                        </li>\n                                              <li id=\"CT5_6\">\n                          <b>\n                            CT5.6\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació dels principis fonamentals i de les tècniques bàsiques de la programació paral·lela, concurrent, distribuïda i en temps real.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT6\">\n                  <b>\n                    CT6 \n                                      </b>\n                  - Demostrar coneixement i comprensió del funcionament intern d'un computador i del funcionament de les comunicacions entre ordinadors. \n                                      <ul>\n                                              <li id=\"CT6_2\">\n                          <b>\n                            CT6.2\n                          </b>\n                          - Demostrar coneixement, comprensió i capacitat d'avaluar l'estructura i l'arquitectura dels computadors, i els components bàsics que els componen.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT7\">\n                  <b>\n                    CT7 \n                                      </b>\n                  - Avaluar i seleccionar plataformes de producció hardware i software per a l'execució d'aplicacions i de serveis informàtics. \n                                      <ul>\n                                              <li id=\"CT7_2\">\n                          <b>\n                            CT7.2\n                          </b>\n                          - Avaluar sistemes hardware/software en funció d'un criteri de qualitat determinat. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT8\">\n                  <b>\n                    CT8 \n                                      </b>\n                  - Planificar, concebre, desplegar i dirigir projectes, serveis i sistemes informàtics en tots els àmbits, liderar-ne la posada en marxa, la millora contínua i valorar-ne l'impacte econòmic i social. \n                                      <ul>\n                                              <li id=\"CT8_1\">\n                          <b>\n                            CT8.1\n                          </b>\n                          - Identificar tecnologies actuals i emergents i avaluar si són aplicables, i en quina mesura, per a satisfer les necessitats dels usuaris. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Tercera llengua</h4>\n                              <li id=\"G3\">\n                  <b>\n                    G3 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer l'idioma anglès amb un nivell adequat de forma oral i escrita, i en consonància amb les necessitats que tindran els graduats i les graduades en Enginyeria Informàtica. Capacitat de treballar en un grup multidisciplinar i en un entorn multilingüe i de comunicar, tant per escrit com de forma oral, coneixements, procediments, resultats i idees relacionats amb la professió d'enginyer tècnic en informàtica.\n                                      <ul>\n                                              <li id=\"G3_2\">\n                          <b>\n                            G3.2\n                          </b>\n                          - Estudiar amb materials escrits en anglès. Redactar un informe o un treball de tipus tècnic en anglès. Participar en una reunió tècnica en anglès. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +327,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1881\">\n          Introducció i motivació \n          <br>\n          Necessitat del paral.lelisme, paral.lelisme vs. concurrència, possibles problemes en l'us concurrència: deadlock, lifelock, starvation, fairness, data races\n        </li>\n              <li id=\"cont-1882\">\n          Anàlisi d'aplicacions paral.leles \n          <br>\n          Mètriques bàsiques: paral·lelisme, temps d'execució, speedup i escalabilitat. Análisi de l'impacte dels overheads associats a la creació de tasques i la seva sincronització i la compartició de dades. Eines per la predicció i l'anàlisi de paral.lelisme i visualització de comportament: Paraver i Tareador\n        </li>\n              <li id=\"cont-1887\">\n          Programació amb memòria compartida: OpenMP \n          <br>\n          Regions paral.leles, threads i tasques. Mecanismes de sincronització entre tasques i threads. Distribució de feina estàtica/dinàmica, granularitat.\n        </li>\n              <li id=\"cont-1884\">\n          Introducció a les arquitectures paral.leles\n          <br>\n          Paral.lelisme dins d'un processador (ILP, DLP i TLP) i entre els processadors que formen els multiprocessadors de memòria compartida SMP i ccNUMA (coherència de cache, consistència de memòria, sincronització).\n        </li>\n              <li id=\"cont-1885\">\n          Principis de programació paralela: descomposició en tasques\n          <br>\n          Task decomposition vs. data decomposition. Descomposcio en tasques, granularitat i anàlisi de dependències. Identificació de patrons de paral.lelisme: iterative vs. divide and conquer task decompositions. Mecanismes per implementar la descomposició en tasques: creació de regions paral·leles i tasques; mecanismes per garantir task ordering i data sharing. \n        </li>\n              <li id=\"cont-1886\">\n          Principis de programació paralela: descomposició de dades\n          <br>\n          Descomposició de dades (descomposició geomètrica vs. estructures recursives) per arquitectures amb memoria compartida. Localitat en l'accés a les dades en arquitectures paral·leles de memòria compartida. Generació de codi en funció de la descomposició de dades. Breu introducció a les  arquitectures de memòria distribuïda i la seva programació (cas concret: MPI).\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4426\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Assimilació del conceptes fonamentals i eines per modelar i analitzar el comportament d'aplicacions paral.leles</h3>\n              Participar activament en les sessions de teoria/problemes. Estudiar els continguts del temes 1 i 2 i realitzar els exercicis proposats. Resolució de les pràctiques proposades en les sessions de laboratori i extracció de conclusions dels resultats obtinguts.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2543\">1</a>\n                                  <a href=\"#obj-2563\">3</a>\n                                  <a href=\"#obj-2564\">2</a>\n                                  <a href=\"#obj-3481\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1881\">1 .\n                      Introducció i motivació </a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1882\">2 .\n                      Anàlisi d'aplicacions paral.leles </a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4429\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Ús d'OpenMP per l'expressio de paral.lelisme en memòria compartida</h3>\n              Participar activament en les sessions de laboratori. Fer els treballs/lectures prèvies proposades, resoldre els exercicis durant les sessions de laboratori, analitzar resultats, extreure conclusions dels experiments i elaboració dels lliuraments corresponents.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2565\">4</a>\n                                  <a href=\"#obj-2568\">7</a>\n                                  <a href=\"#obj-3481\">10</a>\n                                  <a href=\"#obj-5721\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1887\">3 .\n                      Programació amb memòria compartida: OpenMP </a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4425\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Assimilació dels aspectes fonamentals en les arquitectures paral.leles</h3>\n              Participar activament en les sessions de teoria/problemes. Estudiar els continguts del tema 5 i realitzar els exercicis proposats.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2541\">8</a>\n                                  <a href=\"#obj-3481\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1884\">4 .\n                      Introducció a les arquitectures paral.leles</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4427\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Assimilació dels principis de descomposicio en tasques</h3>\n              Participar activament en les sessions de teoria/problemes. Estudiar els continguts del tema 4 i realitzar els exercicis proposats. Aplicar els nous coneixements per la resolució de les pràctiques de laboratori associades.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2566\">5</a>\n                                  <a href=\"#obj-2567\">6</a>\n                                  <a href=\"#obj-3481\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1885\">5 .\n                      Principis de programació paralela: descomposició en tasques</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      20h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22027\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió extra de dubtes per l'examen parcial</h3>\n              L'estudiant podrà fer la petició dels problemes que vulgui repassar per avançat, però també podrà realitzar peticions durant la sessió. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2541\">8</a>\n                                  <a href=\"#obj-2542\">9</a>\n                                  <a href=\"#obj-2543\">1</a>\n                                  <a href=\"#obj-2563\">3</a>\n                                  <a href=\"#obj-2564\">2</a>\n                                  <a href=\"#obj-2565\">4</a>\n                                  <a href=\"#obj-3481\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1881\">1 .\n                      Introducció i motivació </a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1882\">2 .\n                      Anàlisi d'aplicacions paral.leles </a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1884\">4 .\n                      Introducció a les arquitectures paral.leles</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1887\">3 .\n                      Programació amb memòria compartida: OpenMP </a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1921\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen parcial </h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2542\">9</a>\n                                  <a href=\"#obj-2543\">1</a>\n                                  <a href=\"#obj-2566\">5</a>\n                                  <a href=\"#obj-2567\">6</a>\n                                  <a href=\"#obj-2568\">7</a>\n                                  <a href=\"#obj-3481\">10</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  7\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                    \n                                    <div id=\"act-4526\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió formativa: repàs de les solucions dels problemes de l'examen parcial i retroacció general dels errors trobats.</h3>\n              Amb aquesta sessió formativa l'estudiantat podrà acabar d'assimilar conceptes de la primera meitat del quadrimestre.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Realització d'una sessió de repàs amb les solucions de les preguntes del control parcial. Aquesta sessió extra de resolució de problemes ha d'ajudar a donar una retroacció general del control parcial  a tots els alumnes que vulguin venir a la sessió. \n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2541\">8</a>\n                                  <a href=\"#obj-2542\">9</a>\n                                  <a href=\"#obj-2543\">1</a>\n                                  <a href=\"#obj-2563\">3</a>\n                                  <a href=\"#obj-2564\">2</a>\n                                  <a href=\"#obj-3481\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1881\">1 .\n                      Introducció i motivació </a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1882\">2 .\n                      Anàlisi d'aplicacions paral.leles </a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1884\">4 .\n                      Introducció a les arquitectures paral.leles</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1887\">3 .\n                      Programació amb memòria compartida: OpenMP </a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4428\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Assimilació dels principis de descomposió de dades</h3>\n              Participar activament en les sessions de teoria/problemes. Estudiar els continguts del tema 6 i realitzar els exercicis proposats. Aplicar els nous coneixements per la resolució de les pràctiques de laboratori associades.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2566\">5</a>\n                                  <a href=\"#obj-2567\">6</a>\n                                  <a href=\"#obj-3481\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1886\">6 .\n                      Principis de programació paralela: descomposició de dades</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      14h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22032\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió extra de dubtes per l'examen final</h3>\n              L'estudiant podrà fer la petició dels problemes que vulgui repassar per avançat, però també podrà realitzar peticions durant la sessió. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2541\">8</a>\n                                  <a href=\"#obj-2542\">9</a>\n                                  <a href=\"#obj-2543\">1</a>\n                                  <a href=\"#obj-2563\">3</a>\n                                  <a href=\"#obj-2564\">2</a>\n                                  <a href=\"#obj-2565\">4</a>\n                                  <a href=\"#obj-2566\">5</a>\n                                  <a href=\"#obj-2567\">6</a>\n                                  <a href=\"#obj-2568\">7</a>\n                                  <a href=\"#obj-3481\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1881\">1 .\n                      Introducció i motivació </a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1882\">2 .\n                      Anàlisi d'aplicacions paral.leles </a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1884\">4 .\n                      Introducció a les arquitectures paral.leles</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1885\">5 .\n                      Principis de programació paralela: descomposició en tasques</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1886\">6 .\n                      Principis de programació paralela: descomposició de dades</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1887\">3 .\n                      Programació amb memòria compartida: OpenMP </a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1923\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final (Teoria i Laboratori)</h3>\n              La part de laboratori estarà diferenciada de la part de teoria i serà una prova escrita sobre paper, relacionada amb el que l'estudiantat ha treballat durant el curs. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2541\">8</a>\n                                  <a href=\"#obj-2542\">9</a>\n                                  <a href=\"#obj-2543\">1</a>\n                                  <a href=\"#obj-2563\">3</a>\n                                  <a href=\"#obj-2564\">2</a>\n                                  <a href=\"#obj-2565\">4</a>\n                                  <a href=\"#obj-2566\">5</a>\n                                  <a href=\"#obj-2567\">6</a>\n                                  <a href=\"#obj-2568\">7</a>\n                                  <a href=\"#obj-3481\">10</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

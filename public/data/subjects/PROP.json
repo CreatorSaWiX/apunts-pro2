@@ -7,15 +7,349 @@
   "department": "CS",
   "web": "http://www.cs.upc.edu/~prop",
   "summary": "",
+  "professors": [
+    {
+      "name": "Alicia Ageno Pulido",
+      "email": "ageno@cs.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Sergio Álvarez Napagao",
+      "email": "salvarez@cs.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Alejandro Ivan Paz Ortiz",
+      "email": "ivan.paz@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Anna Ramon Hinojosa",
+      "email": "anna.ramon.hinojosa@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Carles Arnal Castello",
+      "email": "carles.arnal@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Guillermo Godoy Balil",
+      "email": "guillem.godoy@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Ignasi Gómez Sebastià",
+      "email": "ignasi.gomez@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jose Miguel Urquiza Ortiz",
+      "email": "jose.miguel.urquiza@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Salvador Medina Herrera",
+      "email": "salvador.medina.herrera@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.28
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.72
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Repàs cicle de vida del software",
+      "isEvaluative": false,
+      "description": "Repàs de conceptes d'enginyeria del software i UML. Exemple pràctic de (part d') un primer lliurament.",
+      "objectives": [
+        "3",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Descripció del projecte i formació d'equips",
+      "isEvaluative": false,
+      "description": "Descripció de les entregues del projecte. Formació dels equips de pràctiques.",
+      "objectives": [
+        "8",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Introducció a Java i Conceptes bàsics d'OO en Java",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 2 de l'assignatura.",
+      "objectives": [
+        "8",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Disseny i implementació en Java de l'arquitectura en 3 capes",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 3 de l'assignatura.",
+      "objectives": [
+        "8",
+        "3",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Depuració de programes",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 4 de l'assignatura.",
+      "objectives": [
+        "8",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Patrons de disseny en Java",
+      "isEvaluative": false,
+      "description": "S'explicaran (o repassaran si ja es van veure a IES) i implementaran en Java alguns dels patrons de disseny clàssics",
+      "objectives": [
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Java: implementació d'interfícies",
+      "isEvaluative": false,
+      "description": "Desenvolupament del tema 6 de l'assignatura.",
+      "objectives": [
+        "8",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Primera entrega del projecte",
+      "isEvaluative": true,
+      "description": "Disseny i principi de la implementació. S'ha d'implementar completament el model del domini i el nucli bàsic algorítmic del projecte, proporcionant els jocs de proves i tests de la part implementada.",
+      "objectives": [
+        "8",
+        "1",
+        "2",
+        "3",
+        "6",
+        "4",
+        "5"
+      ],
+      "week": 10,
+      "hours": []
+    },
+    {
+      "title": "Segona entrega del projecte",
+      "isEvaluative": true,
+      "description": "Lliurament intermedi. La documentació a presentar ha d'incloure el diagrama de classes complet (UML) del projecte.",
+      "objectives": [
+        "8",
+        "1",
+        "2",
+        "3",
+        "7",
+        "4",
+        "5"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Tercera entrega del projecte",
+      "isEvaluative": true,
+      "description": "Lliurament final. La documentació a presentar ha d'incloure la implementació completa del projecte, així com els jocs de prova i el manual d'usuari. A més del lliurament de la documentació, cada equip haurà de fer una presentació del seu projecte.",
+      "objectives": [
+        "8",
+        "1",
+        "2",
+        "3",
+        "6",
+        "7",
+        "4",
+        "5"
+      ],
+      "week": 15,
+      "hours": []
+    },
+    {
+      "title": "Supervisió primera entrega",
+      "isEvaluative": false,
+      "description": "Classes de laboratori relacionades amb la primera entrega.",
+      "objectives": [
+        "8",
+        "1",
+        "2",
+        "3",
+        "6",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 16
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 29
+        }
+      ]
+    },
+    {
+      "title": "Supervisió segona i tercera entrega",
+      "isEvaluative": false,
+      "description": "Classes de laboratori relacionades amb la segona i tercera entrega.",
+      "objectives": [
+        "8",
+        "1",
+        "2",
+        "3",
+        "6",
+        "7",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 12
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 29.8
+        }
+      ]
+    },
+    {
+      "title": "Presentació tercera entrega",
+      "isEvaluative": false,
+      "description": "Presentació i entrevista presencial de la tercera entrega.",
+      "objectives": [
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 2.2
+        }
+      ]
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Alicia Ageno Pulido\n                                (ageno@cs.upc.edu)\n                          </b>\n          </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Sergio Álvarez Napagao\n                                (salvarez@cs.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Alejandro Ivan Paz Ortiz\n                            (ivan.paz@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Anna Ramon Hinojosa\n                            (anna.ramon.hinojosa@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Carles Arnal Castello\n                            (carles.arnal@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Guillermo Godoy Balil\n                            (guillem.godoy@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Ignasi Gómez Sebastià\n                            (ignasi.gomez@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jose Miguel Urquiza Ortiz\n                            (jose.miguel.urquiza@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Salvador Medina Herrera\n                            (salvador.medina.herrera@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.28\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.72\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Treball en equip</h4>\n                              <li id=\"G5\">\n                  <b>\n                    G5 \n                                          [Avaluable]\n                                      </b>\n                  - Ser capaç de treballar com a membre d'un equip, ja sigui com a un membre més, ja sigui realitzant tasques de direcció, amb la finalitat de contribuir a desenvolupar projectes d'una manera pragmàtica i amb sentit de la responsabilitat; assumir compromisos tenint en compte els recursos disponibles.\n                                      <ul>\n                                              <li id=\"G5_2\">\n                          <b>\n                            G5.2\n                          </b>\n                          - Planificar i acordar els objectius, les regles de funcionament, les responsabilitats, l'agenda i el procediment de revisió de la feina. Identificar conflictes, negociar-los i resoldre-los de forma efectiva. Adaptar-se a diferents tipus de grups (gran/petit, tècnic/mixt, presencial /a distància). Interactuar amb eficàcia i promoure la participació de tots els membres del grup. \n                        </li>\n                                          </ul>\n                                  </li>\n                                        <h4>Emprenedoria i innovació</h4>\n                              <li id=\"G1\">\n                  <b>\n                    G1 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer i comprendre l'organització d'una empresa i les ciències que regeixen la seva activitat; capacitat de comprendre les regles laborals i les relacions entre la planificació, les estratègies industrials i comercials, la qualitat i el benefici. Desenvolupar la creativitat, l'esperit emprenedor i la tendència a la innovació. \n                                      <ul>\n                                              <li id=\"G1_2\">\n                          <b>\n                            G1.2\n                          </b>\n                          - Tenir iniciatives que generin oportunitats, nous objectes o solucions noves, amb una visió d'implementació de procés i de mercat, i que impliqui i faci participar als altres en projectes que s'han de desenvolupar (capacitat d'actuar de manera autònoma).\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT2\">\n                  <b>\n                    CT2 \n                                      </b>\n                  - Utilitzar d'una manera apropiada teories, procediments i eines en el desenvolupament professional de l'enginyeria informàtica en tots els seus àmbits (especificació, disseny, implementació, desplegament -implantació- i avaluació de productes) de manera que es demostri la comprensió dels compromisos adoptats a les decisions de disseny.\n                                      <ul>\n                                              <li id=\"CT2_3\">\n                          <b>\n                            CT2.3\n                          </b>\n                          - Dissenyar, desenvolupar, seleccionar i avaluar aplicacions, sistemes i serveis informàtics i, al mateix temps, assegurar-ne la  fiabilitat, la seguretat i la qualitat en funció de principis ètics i de la legislació i la normativa vigents. \n                        </li>\n                                              <li id=\"CT2_4\">\n                          <b>\n                            CT2.4\n                          </b>\n                          - Demostrar coneixement i capacitat per a aplicar les eines necessàries a l'emmagatzematge, el processament i l'accés als sistemes d'informació, fins i tot els que es basen en la web. \n                        </li>\n                                              <li id=\"CT2_5\">\n                          <b>\n                            CT2.5\n                          </b>\n                          - Dissenyar i avaluar interfícies persona-computador que garanteixin l'accessibilitat i la usabilitat als sistemes, als serveis i a les aplicacions informàtiques.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT3\">\n                  <b>\n                    CT3 \n                                      </b>\n                  - Demostrar coneixement i comprensió del context organitzatiu, econòmic i legal en el qual es desenvolupa la seva feina (coneixement adequat del concepte d'empresa, del marc institucional i jurídic de l'empresa, d'organització i gestió de les empreses). \n                                      <ul>\n                                              <li id=\"CT3_6\">\n                          <b>\n                            CT3.6\n                          </b>\n                          - Demostrar coneixement de la dimensió ètica a l'empresa: la responsabilitat social i corporativa en general i, en particular, les responsabilitats civils i professionals de l'enginyer en informàtica.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT4\">\n                  <b>\n                    CT4 \n                                      </b>\n                  - Demostrar coneixement i capacitat d'aplicació dels procediments algorísmics bàsics de les tecnologies informàtiques per a dissenyar solucions a problemes, analitzant la idoneïtat i la complexitat dels algorismes \n                                      <ul>\n                                              <li id=\"CT4_1\">\n                          <b>\n                            CT4.1\n                          </b>\n                          - Identificar les solucions algorísmiques més adequades per a resoldre problemes de dificultat mitjana.\n                        </li>\n                                              <li id=\"CT4_2\">\n                          <b>\n                            CT4.2\n                          </b>\n                          - Raonar sobre la correcció i l'eficiència d'una solució algorísmica.\n                        </li>\n                                              <li id=\"CT4_3\">\n                          <b>\n                            CT4.3\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació dels principis fonamentals i de les tècniques bàsiques dels sistemes intel·ligents i de la seva aplicació pràctica. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT5\">\n                  <b>\n                    CT5 \n                                      </b>\n                  - Analitzar, dissenyar, construir i mantenir aplicacions de forma robusta, segura i eficient, triant el paradigma i els llenguatges de programació més adequats.\n                                      <ul>\n                                              <li id=\"CT5_1\">\n                          <b>\n                            CT5.1\n                          </b>\n                          - Triar, combinar i explotar diferents paradigmes de programació, en el moment de construir software, tenint en compte criteris com la facilitat de desenvolupament, l'eficiència, la portabilitat i la mantenibilitat.\n                        </li>\n                                              <li id=\"CT5_2\">\n                          <b>\n                            CT5.2\n                          </b>\n                          - Conèixer, dissenyar i utilitzar de forma eficient els tipus i les  estructures de dades més adients per a la resolució d'un problema.\n                        </li>\n                                              <li id=\"CT5_3\">\n                          <b>\n                            CT5.3\n                          </b>\n                          - Dissenyar, escriure, provar, depurar, documentar i mantenir codi en un llenguatge d'alt nivell per a resoldre problemes de programació aplicant esquemes algorísmics i utilitzant estructures de dades. \n                        </li>\n                                              <li id=\"CT5_4\">\n                          <b>\n                            CT5.4\n                          </b>\n                          - Dissenyar l'arquitectura dels programes utilitzant tècniques d'orientació a objectes, de modularització i d'especificació i implementació de tipus abstractes de dades. \n                        </li>\n                                              <li id=\"CT5_5\">\n                          <b>\n                            CT5.5\n                          </b>\n                          - Usar les eines d'un entorn de desenvolupament de software per a  crear i desenvolupar aplicacions.\n                        </li>\n                                              <li id=\"CT5_6\">\n                          <b>\n                            CT5.6\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació dels principis fonamentals i de les tècniques bàsiques de la programació paral·lela, concurrent, distribuïda i en temps real.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT6\">\n                  <b>\n                    CT6 \n                                      </b>\n                  - Demostrar coneixement i comprensió del funcionament intern d'un computador i del funcionament de les comunicacions entre ordinadors. \n                                      <ul>\n                                              <li id=\"CT6_1\">\n                          <b>\n                            CT6.1\n                          </b>\n                          - Demostrar coneixement i tenir capacitat per a administrar i mantenir sistemes, serveis i aplicacions informàtiques.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT8\">\n                  <b>\n                    CT8 \n                                      </b>\n                  - Planificar, concebre, desplegar i dirigir projectes, serveis i sistemes informàtics en tots els àmbits, liderar-ne la posada en marxa, la millora contínua i valorar-ne l'impacte econòmic i social. \n                                      <ul>\n                                              <li id=\"CT8_6\">\n                          <b>\n                            CT8.6\n                          </b>\n                          - Demostrar comprensió de la importància de la negociació, dels hàbits de treball efectius, del lideratge i de les habilitats de comunicació en tots els entorns de desenvolupament de software.\n                        </li>\n                                              <li id=\"CT8_7\">\n                          <b>\n                            CT8.7\n                          </b>\n                          - Controlar versions i configuracions del projecte. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +361,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-864\">\n          Repàs d'IES: Especificació, diagrames de classes i casos d'ús.\n          <br>\n          Cicles de vida.<br>\nDefinició del projecte. Requeriments. Especificació funcional. Modelar primer el domini.<br>\nUML: diagrama de classes (domini). Diagrama de casos d'ús. Explicacions textuals.<br>\nEstudi d'un cas. \n        </li>\n              <li id=\"cont-861\">\n          Introducció a Java i Conceptes d'OO en Java\n          <br>\n          Especificació, disseny i programació orientades a objectes (OO). Classes, objectes, atributs, mètodes i relacions. Encapsulament i ocultació, abstracció i classificació, herència. Polimorfisme, \"binding\" estàtic i dinàmic.  Altres relacions: associació, agregació, dependència. \n        </li>\n              <li id=\"cont-866\">\n          Disseny i implementació en Java de l'arquitectura en 3 capes\n          <br>\n          Descripció del paradigma de disseny d'arquitectura en 3 capes i implementació en Java\n        </li>\n              <li id=\"cont-869\">\n          Prova de programes\n          <br>\n          Program Testing: prova i depuració. <br>\nProva de components.<br>\nEstratègies de prova i integració. Drivers i stubs/mocks.  Planificació de proves. <br>\n\"Bastimentada\" i tests de regressió.<br>\nEines d'ajuda a la prova (JUnit)<br>\nTractament de errors i excepcions.\n        </li>\n              <li id=\"cont-5302\">\n          Patrons de disseny en Java\n          <br>\n          Es descriuran i implementaran alguns dels patrons de disseny clàssics (decorador, estat, singleton. etc)\n        </li>\n              <li id=\"cont-872\">\n          Conceptes bàsics de disseny d'interfícies en Java\n          <br>\n          Com dissenyar una interfície gràfica senzilla utilitzant les llibreríes stàndard de Java i aplicant els principis d'arquitectura en 3 capes\n        </li>\n              <li id=\"cont-5301\">\n          Eines pel desenvolupament del programari\n          <br>\n          Es descriuran per sobre eines per facilitar el desenvolupament del programari: control de versions (Git), integració amb testing (JUnit)\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-17324\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Repàs cicle de vida del software</h3>\n              Repàs de conceptes d'enginyeria del software i UML.\nExemple pràctic de (part d') un primer lliurament.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1364\">3</a>\n                                  <a href=\"#obj-1367\">4</a>\n                                  <a href=\"#obj-1368\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-864\">1 .\n                      Repàs d'IES: Especificació, diagrames de classes i casos d'ús.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1958\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Descripció del projecte i formació d'equips</h3>\n              Descripció de les entregues del projecte. Formació dels equips de pràctiques. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1363\">2</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1924\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció a Java i Conceptes bàsics d'OO en Java</h3>\n              Desenvolupament del tema 2 de l'assignatura.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1367\">4</a>\n                                  <a href=\"#obj-1368\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-861\">2 .\n                      Introducció a Java i Conceptes d'OO en Java</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-5301\">7 .\n                      Eines pel desenvolupament del programari</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1946\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Disseny i implementació en Java de l'arquitectura en 3 capes</h3>\n              Desenvolupament del tema 3 de l'assignatura.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1364\">3</a>\n                                  <a href=\"#obj-1367\">4</a>\n                                  <a href=\"#obj-1368\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-861\">2 .\n                      Introducció a Java i Conceptes d'OO en Java</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-864\">1 .\n                      Repàs d'IES: Especificació, diagrames de classes i casos d'ús.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-866\">3 .\n                      Disseny i implementació en Java de l'arquitectura en 3 capes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1951\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Depuració de programes</h3>\n              Desenvolupament del tema 4 de l'assignatura.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1365\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-861\">2 .\n                      Introducció a Java i Conceptes d'OO en Java</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-869\">4 .\n                      Prova de programes</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-5301\">7 .\n                      Eines pel desenvolupament del programari</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-13566\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Patrons de disseny en Java</h3>\n              S'explicaran (o repassaran si ja es van veure a IES) i implementaran en Java alguns dels patrons de disseny clàssics\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1367\">4</a>\n                                  <a href=\"#obj-1368\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-861\">2 .\n                      Introducció a Java i Conceptes d'OO en Java</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-5302\">5 .\n                      Patrons de disseny en Java</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1949\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Java: implementació d'interfícies</h3>\n              Desenvolupament del tema 6 de l'assignatura.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1366\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-861\">2 .\n                      Introducció a Java i Conceptes d'OO en Java</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-866\">3 .\n                      Disseny i implementació en Java de l'arquitectura en 3 capes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-901\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Primera entrega del projecte</h3>\n              Disseny i principi de la implementació. S'ha d'implementar completament el model del domini i el nucli bàsic algorítmic del projecte, proporcionant els jocs de proves i tests de la part implementada.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1362\">1</a>\n                                  <a href=\"#obj-1363\">2</a>\n                                  <a href=\"#obj-1364\">3</a>\n                                  <a href=\"#obj-1365\">6</a>\n                                  <a href=\"#obj-1367\">4</a>\n                                  <a href=\"#obj-1368\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  10\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-5861\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Segona entrega del projecte</h3>\n              Lliurament intermedi. La documentació a presentar ha d'incloure el diagrama de classes complet (UML) del projecte.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1362\">1</a>\n                                  <a href=\"#obj-1363\">2</a>\n                                  <a href=\"#obj-1364\">3</a>\n                                  <a href=\"#obj-1366\">7</a>\n                                  <a href=\"#obj-1367\">4</a>\n                                  <a href=\"#obj-1368\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-902\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tercera entrega del projecte</h3>\n              Lliurament final. La documentació a presentar ha d'incloure la implementació completa del projecte, així com els jocs de prova i el manual d'usuari. A més del lliurament de la documentació, cada equip haurà de fer una presentació del seu projecte.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1362\">1</a>\n                                  <a href=\"#obj-1363\">2</a>\n                                  <a href=\"#obj-1364\">3</a>\n                                  <a href=\"#obj-1365\">6</a>\n                                  <a href=\"#obj-1366\">7</a>\n                                  <a href=\"#obj-1367\">4</a>\n                                  <a href=\"#obj-1368\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1960\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Supervisió primera entrega</h3>\n              Classes de laboratori relacionades amb la primera entrega.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1362\">1</a>\n                                  <a href=\"#obj-1363\">2</a>\n                                  <a href=\"#obj-1364\">3</a>\n                                  <a href=\"#obj-1365\">6</a>\n                                  <a href=\"#obj-1367\">4</a>\n                                  <a href=\"#obj-1368\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-861\">2 .\n                      Introducció a Java i Conceptes d'OO en Java</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-864\">1 .\n                      Repàs d'IES: Especificació, diagrames de classes i casos d'ús.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-866\">3 .\n                      Disseny i implementació en Java de l'arquitectura en 3 capes</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-869\">4 .\n                      Prova de programes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      16h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      29h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1962\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Supervisió segona i tercera entrega</h3>\n              Classes de laboratori relacionades amb la segona i tercera entrega.  \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                                  <a href=\"#obj-1362\">1</a>\n                                  <a href=\"#obj-1363\">2</a>\n                                  <a href=\"#obj-1364\">3</a>\n                                  <a href=\"#obj-1365\">6</a>\n                                  <a href=\"#obj-1366\">7</a>\n                                  <a href=\"#obj-1367\">4</a>\n                                  <a href=\"#obj-1368\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-861\">2 .\n                      Introducció a Java i Conceptes d'OO en Java</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-864\">1 .\n                      Repàs d'IES: Especificació, diagrames de classes i casos d'ús.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-866\">3 .\n                      Disseny i implementació en Java de l'arquitectura en 3 capes</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-869\">4 .\n                      Prova de programes</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-872\">6 .\n                      Conceptes bàsics de disseny d'interfícies en Java</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      29.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1963\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació tercera entrega</h3>\n              Presentació i entrevista presencial de la tercera entrega.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1361\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-861\">2 .\n                      Introducció a Java i Conceptes d'OO en Java</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-864\">1 .\n                      Repàs d'IES: Especificació, diagrames de classes i casos d'ús.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-866\">3 .\n                      Disseny i implementació en Java de l'arquitectura en 3 capes</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-869\">4 .\n                      Prova de programes</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-872\">6 .\n                      Conceptes bàsics de disseny d'interfícies en Java</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2.2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

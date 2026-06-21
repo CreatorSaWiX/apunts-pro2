@@ -7,15 +7,268 @@
   "department": "MAT",
   "web": "https://mat-web.upc.edu/fib/matematiques1/",
   "summary": "",
+  "professors": [
+    {
+      "name": "Mercè Mora Giné",
+      "email": "merce.mora@upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Annamaria Villanova",
+      "email": null,
+      "role": "Altres"
+    },
+    {
+      "name": "Clément Requilé",
+      "email": "clement.requile@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Eric López Platón",
+      "email": "eric.lopez-platon@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Fabian Maximilian Klute",
+      "email": "fabian.klute@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Fernando Martínez Sáez",
+      "email": "fernando.martinez@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Gemma Alsina Ruiz",
+      "email": "gemma.alsina@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jordi Massó Cuscó",
+      "email": "jordi.masso.cusco@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jose Luis Ruiz Muñoz",
+      "email": "jose.luis.ruiz@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Mariona González Esteve",
+      "email": "mariona.gonzalez.esteve@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Núria Mira Gómez",
+      "email": "nuria.mira@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Oriol Navarro Travesset",
+      "email": "oriol.navarro.travesset@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Rodrigo Ignacio Silveira",
+      "email": "rodrigo.silveira@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 3
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 7.5
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Introducció a la teoria de grafs",
+      "isEvaluative": false,
+      "description": "Desenvolupament teòric i pràctic dels temes 1 i 2 de la part de teoria de grafs: conceptes bàsics, recorreguts, connexió i distància.",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 9
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 21
+        }
+      ]
+    },
+    {
+      "title": "Famílies destacades de grafs.",
+      "isEvaluative": false,
+      "description": "Desenvolupament teòric i pràctic dels temes 3 i 4 de la part de teoria de grafs: grafs eulerians i hamiltonians, i arbres.",
+      "objectives": [
+        "3",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 9
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 21
+        }
+      ]
+    },
+    {
+      "title": "Matrius i sistemes d'equacions lineals",
+      "isEvaluative": false,
+      "description": "Desenvolupament teòric i pràctic del tema 5, de la part d'àlgebra lineal: matrius i sistemes d'equacions lineals.",
+      "objectives": [
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 14
+        }
+      ]
+    },
+    {
+      "title": "Espais vectorials",
+      "isEvaluative": false,
+      "description": "Desenvolupament teòric i pràctic del tema 6, de la part d'àlgebra lineal: espais vectorials.",
+      "objectives": [
+        "7",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 9
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 14
+        }
+      ]
+    },
+    {
+      "title": "Aplicacions lineals i diagonalització",
+      "isEvaluative": false,
+      "description": "Desenvolupament teòric i pràctic dels temes 7 i 8 de la part d'àlgebra lineal: aplicacions lineals i diagonalització.",
+      "objectives": [
+        "9",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 9
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 21
+        }
+      ]
+    },
+    {
+      "title": "Examen parcial de la primera part del curs (teoria i problemes)",
+      "isEvaluative": true,
+      "description": "En aquesta prova s'avaluaran els objectius 1-4 de l'assignatura.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "week": 7,
+      "hours": []
+    },
+    {
+      "title": "Examen final de l'assignatura (teoria i problemes)",
+      "isEvaluative": true,
+      "description": "L'examen tindrà dues parts. A la primera (F1) s'avaluaran els objectius 1-4 de l'assignatura i a la segona (F2), els objectius 5-11.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Mercè Mora Giné\n                                (merce.mora@upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Annamaria Villanova\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Clément Requilé\n                            (clement.requile@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Eric López Platón\n                            (eric.lopez-platon@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Fabian Maximilian Klute\n                            (fabian.klute@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Fernando Martínez Sáez\n                            (fernando.martinez@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Gemma Alsina Ruiz\n                            (gemma.alsina@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jordi Massó Cuscó\n                            (jordi.masso.cusco@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jose Luis Ruiz Muñoz\n                            (jose.luis.ruiz@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Mariona González Esteve\n                            (mariona.gonzalez.esteve@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Núria Mira Gómez\n                            (nuria.mira@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Oriol Navarro Travesset\n                            (oriol.navarro.travesset@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Rodrigo Ignacio Silveira\n                            (rodrigo.silveira@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            3\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            7.5\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT1\">\n                  <b>\n                    CT1 \n                                      </b>\n                  - Demostrar coneixement i comprensió de fets essencials, conceptes, principis i teories relatives a la informàtica i a les seves disciplines de referència.\n                                      <ul>\n                                              <li id=\"CT1_2A\">\n                          <b>\n                            CT1.2A\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB1: capacitat per a resoldre els problemes matemàtics que es plantegin en la enginyeria. Aptitud per a aplicar els coneixements sobre: àlgebra, càlcul diferencial i integral i mètodes numèrics; estadística i optimització.\n                        </li>\n                                              <li id=\"CT1_2C\">\n                          <b>\n                            CT1.2C\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB3. Capacitat per a comprendre i dominar els conceptes bàsics de matemàtica discreta, lògica, algorísmica i complexitat computacional, i la seva aplicació per al tractament automàtic de la informació mitjançant sistemes computacionals i la seva aplicació per a la resolució de problemes propis de l'enginyeria.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Raonament</h4>\n                              <li id=\"G9\">\n                  <b>\n                    G9 \n                                          [Avaluable]\n                                      </b>\n                  - Capacitat de raonament crític, lògic i matemàtic. Capacitat de resoldre problemes en la seva àrea d'estudi. Capacitat d'abstracció: capacitat de crear i utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills, i analitzar-ne i interpretar-ne els resultats. Capacitat d'anàlisi, de síntesi i d'avaluació.\n                                      <ul>\n                                              <li id=\"G9_1\">\n                          <b>\n                            G9.1\n                          </b>\n                          - Capacitat de raonament crític, lògic i matemàtic. Capacitat per comprendre l'abstracció i utilitzar-la adequadament. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +280,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-281\">\n          Conceptes bàsics de grafs\n          <br>\n          Definició de graf; matrius d'adjacència i d'incidència; lema de les encaixades i conseqüències; isomorfisme de grafs; tipus de grafs; subgrafs; operacions en grafs.\n        </li>\n              <li id=\"cont-282\">\n          Recorreguts, connexió i distància\n          <br>\n          Definicions de recorregut, camí, cicle; algunes propietats de<br>\nrecorreguts; definicions de graf connex i components connexos; algorisme DFS;<br>\ndesigualtat m&gt;= n-1; definicions de vèrtexs de tall i arestes pont; caracterització; definicions de distància i diàmetre; algorisme BFS; caracterització de grafs bipartits.\n        </li>\n              <li id=\"cont-283\">\n          Grafs eulerians i hamiltonians\n          <br>\n          Definicions de circuit, senderó i graf eulerià; caracterització de grafs eulerians; definicions de cicle, camí i graf hamiltonià; condicions necessàries per ser hamiltonià; els teoremes d'Ore i de Dirac.\n        </li>\n              <li id=\"cont-284\">\n          Arbres\n          <br>\n          Definicions de bosc, arbre i fulla; caracterització d'abres i<br>\n  corol·laris; definició d'arbre generador; revisió de DFS i BFS; el teorema de Cayley.<br>\n\n        </li>\n              <li id=\"cont-286\">\n          Matrius i sistemes d'equacions lineals\n          <br>\n          Definició de matriu i tipus de matrius; operacions lineals i<br>\npropietats; producte de matrius i matriu inversa; matriu transposada i<br>\nrelació amb les operacions; operacions elementals per files; matrius<br>\nelementals; matriu esglaonada per files; rang<br>\nd'una matriu per files; càlcul de la matriu inversa;<br>\n sistemes<br>\nd'equacions lineals i sistemes equivalents; discussió i resolució mitjançant Gauss-Jordan; definició recursiva de determinant; propietats dels determinants;<br>\nmenors d'una matriu i relació amb el rang.\n        </li>\n              <li id=\"cont-287\">\n          Espais vectorials\n          <br>\n          Definició d'espai vectorial; definició de subespai i caracterització equivalent; subespai generat; combinacions lineals; sistemes de generadors;  independència lineal i propietats; bases i coordenades; dimensió; canvis de base, matriu del canvi de base.\n        </li>\n              <li id=\"cont-288\">\n          Aplicacions lineals\n          <br>\n          Definició d'aplicació lineal i propietats;aplicacion lineal definida per una matriu; matriu d'una aplicació lineal; nucli i imatge, teorema de la dimensió; caracterització d'aplicacions injectives i exhaustives, isomorfisme d'espais vectorials, espais isomorfs;  composició d'aplicacions; canvis de base i aplicacions lineals;  interpretació geomètrica d'aplicacions lineals al pla i a l'espai.\n        </li>\n              <li id=\"cont-289\">\n          Diagonalització\n          <br>\n          Valors i vectors propis; diagonalització d'aplicacions lineals; matrius simètriques.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-764\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció a la teoria de grafs</h3>\n              Desenvolupament teòric i pràctic dels temes 1 i 2 de la part de teoria de grafs: conceptes bàsics, recorreguts, connexió i distància.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-721\">1</a>\n                                  <a href=\"#obj-723\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-281\">1 .\n                      Conceptes bàsics de grafs</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-282\">2 .\n                      Recorreguts, connexió i distància</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      21h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-765\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Famílies destacades de grafs.</h3>\n              Desenvolupament teòric i pràctic dels temes 3 i 4 de la part de teoria de grafs: grafs eulerians i hamiltonians, i arbres.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-724\">3</a>\n                                  <a href=\"#obj-725\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-283\">3 .\n                      Grafs eulerians i hamiltonians</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-284\">4 .\n                      Arbres</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      21h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-766\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Matrius i sistemes d'equacions lineals</h3>\n              Desenvolupament teòric i pràctic del tema 5, de la part d'àlgebra lineal: matrius i sistemes d'equacions lineals.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-728\">5</a>\n                                  <a href=\"#obj-729\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-286\">5 .\n                      Matrius i sistemes d'equacions lineals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      14h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-767\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Espais vectorials</h3>\n              Desenvolupament teòric i pràctic del tema 6, de la part d'àlgebra lineal: espais vectorials.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-730\">7</a>\n                                  <a href=\"#obj-731\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-287\">6 .\n                      Espais vectorials</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      14h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-768\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Aplicacions lineals i diagonalització</h3>\n              Desenvolupament teòric i pràctic dels temes 7 i 8 de la part d'àlgebra lineal: aplicacions lineals i diagonalització.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-732\">9</a>\n                                  <a href=\"#obj-733\">10</a>\n                                  <a href=\"#obj-734\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-288\">7 .\n                      Aplicacions lineals</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-289\">8 .\n                      Diagonalització</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      21h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-481\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen parcial de la primera part del curs (teoria i problemes)</h3>\n              En aquesta prova s'avaluaran els objectius 1-4 de l'assignatura.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-721\">1</a>\n                                  <a href=\"#obj-723\">2</a>\n                                  <a href=\"#obj-724\">3</a>\n                                  <a href=\"#obj-725\">4</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  7\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-482\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final de l'assignatura (teoria i problemes)</h3>\n              L'examen tindrà dues parts. A la primera (F1) s'avaluaran els objectius 1-4 de l'assignatura i a la segona (F2), els objectius 5-11.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-721\">1</a>\n                                  <a href=\"#obj-723\">2</a>\n                                  <a href=\"#obj-724\">3</a>\n                                  <a href=\"#obj-725\">4</a>\n                                  <a href=\"#obj-728\">5</a>\n                                  <a href=\"#obj-729\">6</a>\n                                  <a href=\"#obj-730\">7</a>\n                                  <a href=\"#obj-731\">8</a>\n                                  <a href=\"#obj-732\">9</a>\n                                  <a href=\"#obj-733\">10</a>\n                                  <a href=\"#obj-734\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

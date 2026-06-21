@@ -7,15 +7,83 @@
   "department": "TSC",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Francesc Torres Torres",
+      "email": "francesc.torres@upc.edu",
+      "role": "Responsable"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 3
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Presentació en grup i debat a classe d'un tema (15 min)",
+      "isEvaluative": true,
+      "description": "Els estudiants presentaran en grup, per a la seva discussió a la classe, un dels 10 principis o valors considerats essencials per al desenvolupament personal i professional en l'àmbit de l'enginyeria. El tema i calendari s'assignaran durant els primers dies de classe",
+      "objectives": [
+        "1"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Teoria, estudi de casos i debats de classe",
+      "isEvaluative": false,
+      "description": "En general cada sessió de 2h és autocontinguda, dedicada a una temàtica concreta. Després d'una presentació teòrica, els estudiants faran alguna activitat pràctica en grup, que acabarà amb un debat col·lectiu",
+      "objectives": [
+        "1"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 29
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 43
+        }
+      ]
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Francesc Torres Torres\n                                (francesc.torres@upc.edu)\n                          </b>\n          </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            3\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT3\">\n                  <b>\n                    CT3 \n                                      </b>\n                  - Demostrar coneixement i comprensió del context organitzatiu, econòmic i legal en el qual es desenvolupa la seva feina (coneixement adequat del concepte d'empresa, del marc institucional i jurídic de l'empresa, d'organització i gestió de les empreses). \n                                      <ul>\n                                              <li id=\"CT3_6\">\n                          <b>\n                            CT3.6\n                          </b>\n                          - Demostrar coneixement de la dimensió ètica a l'empresa: la responsabilitat social i corporativa en general i, en particular, les responsabilitats civils i professionals de l'enginyer en informàtica.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Raonament</h4>\n                              <li id=\"G9\">\n                  <b>\n                    G9 \n                                          [Avaluable]\n                                      </b>\n                  - Capacitat de raonament crític, lògic i matemàtic. Capacitat de resoldre problemes en la seva àrea d'estudi. Capacitat d'abstracció: capacitat de crear i utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills, i analitzar-ne i interpretar-ne els resultats. Capacitat d'anàlisi, de síntesi i d'avaluació.\n                                      <ul>\n                                              <li id=\"G9_3\">\n                          <b>\n                            G9.3\n                          </b>\n                          - Capacitat crítica, capacitat d'avaluació.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +95,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-8981\">\n          TEMARI: Lideratge i desenvolupament professional a l'enginyeria\n          <br>\n          1. El concepte de carrera professional en enginyeria<br>\na. Capacitats desenvolupades a l'etapa acadèmica<br>\nb. Transició de l'etapa acadèmica a l'etapa professional<br>\nc. Evolució de l'enginyer: d'executor a gestor i líder<br>\n2. L'enginyer júnior: els primers treballs<br>\na. Iniciativa i lideratge a les primeres etapes<br>\nb. Avaluació de l'exercici professional en enginyeria<br>\nc. Principals consideracions i errors a evitar<br>\nd. Competències transversals: acció orientada a resultats<br>\n3. Tècniques de desenvolupament de la carrera professional<br>\na. La gestió del \"jo\": autoconeixement, autoestima i autogestió<br>\nb. Qualitats personals: valors, responsabilitat i caràcter<br>\nc. Comunicació, percepció i engany<br>\nd. Relacions interpersonals: del jo al nosaltres<br>\ne. Proactivitat, criteri i maduresa (sentit comú)<br>\nf. Presa de decisions en un entorn VUCA (volàtil, incert, ambigu i complex)<br>\ng. Creació i aprofitament d'oportunitats<br>\nh. Creixement personal: 10 característiques fonamentals\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-7681\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació en grup i debat a classe d'un tema (15 min)</h3>\n              Els estudiants presentaran en grup, per a la seva discussió a la classe, un dels 10 principis o valors considerats essencials per al desenvolupament personal i professional en l'àmbit de l'enginyeria. El tema i calendari s'assignaran durant els primers dies de classe\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-8861\">1</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22484\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Teoria, estudi de casos i debats de classe</h3>\n              En general cada sessió de 2h és autocontinguda, dedicada a una temàtica concreta. Després d'una  presentació teòrica, els estudiants faran alguna activitat pràctica en grup, que acabarà amb un debat col·lectiu\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-8861\">1</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      29h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      43h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

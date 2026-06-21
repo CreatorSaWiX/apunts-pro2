@@ -7,15 +7,271 @@
   "department": "AC",
   "web": "https://atenea.upc.edu/",
   "summary": "",
+  "professors": [
+    {
+      "name": "Davide Careglio",
+      "email": "careglio@ac.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Jose Maria Barceló Ordinas",
+      "email": "jose.maria.barcelo@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 3
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 1
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Desenvolupament del tema 1: Introducció",
+      "isEvaluative": false,
+      "description": "Assistència a classe per a la comprensió de les normatives sobre les tecnologies de xarxes de computadors.",
+      "objectives": [
+        "1"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupament del tema 2: Seguretat en xarxes",
+      "isEvaluative": false,
+      "description": "Aprenentatge dels conceptes i objectius associats a aquest tema.",
+      "objectives": [
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 9
+        },
+        {
+          "type": "Laboratori",
+          "value": 5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 13
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupament del tema 3: Xarxes troncals",
+      "isEvaluative": false,
+      "description": "Assistència a classe per a l'adquisició de coneixements sobre tècniques de commutació en xarxes de computadors.",
+      "objectives": [
+        "10",
+        "12",
+        "13",
+        "20",
+        "22"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 9
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Primer Control",
+      "isEvaluative": true,
+      "description": "Prova d'avaluació que inclou la resolució d'exercicis i preguntes",
+      "objectives": [
+        "1",
+        "2",
+        "5",
+        "6",
+        "7",
+        "9",
+        "12",
+        "13",
+        "14",
+        "16",
+        "18",
+        "19",
+        "23",
+        "24"
+      ],
+      "week": 8,
+      "hours": []
+    },
+    {
+      "title": "Desenvolupament del tema 4: QoS a Internet.",
+      "isEvaluative": false,
+      "description": "Assistència a classe per a l'adquisició de coneixements sobre les tecnologies per promocionar QoS a Internet.",
+      "objectives": [
+        "23",
+        "24"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 11
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 14
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupament del tema 5: Xarxes d'accés amb fils a Internet",
+      "isEvaluative": false,
+      "description": "Assistència a classe per l'adquisició de coneixements sobre Tecnologies d'accés a la xarxa de fibra òptica (FTTH, WDM-PON i EP2P). Normes i protocols relacionats.",
+      "objectives": [
+        "8",
+        "12",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "21",
+        "22"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Activitats de recerca actuals a TXC",
+      "isEvaluative": false,
+      "description": "Cada grup haurà de seleccionar un tema i presentar un informe seguint una plantilla descrivint el problema, analitzant les solucions disponibles i, si és el cas, proposant noves solucions. Abans del primer control es realitza l'assignació de grups i comença el desenvolupament del treball en base a articles d'investigació assignats pel professor. Es farà un seguiment com a activitat dirigida. El lliurament és abans del segon control. L'avaluació es fa segons una rúbrica al efecte.",
+      "objectives": [
+        "3",
+        "4",
+        "17",
+        "18",
+        "20",
+        "22",
+        "24"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Presentació recerca actual a TXC",
+      "isEvaluative": true,
+      "description": "Presentació de l'informe sobre un tema d'actualitat sobre recerca relacionat amb TXC seguint una plantilla descrivint el problema, analitzant les solucions disponibles i, si escau, proposant noves solucions",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "7",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "18",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24"
+      ],
+      "week": 11,
+      "hours": []
+    },
+    {
+      "title": "Segon Control",
+      "isEvaluative": true,
+      "description": "Prova d'avaluació que inclou la resolució d'exercicis i preguntes .",
+      "objectives": [
+        "3",
+        "7",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "16",
+        "20",
+        "22"
+      ],
+      "week": 14,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Davide Careglio\n                                (careglio@ac.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jose Maria Barceló Ordinas\n                            (jose.maria.barcelo@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            3\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT6\">\n                  <b>\n                    CT6 \n                                      </b>\n                  - Demostrar coneixement i comprensió del funcionament intern d'un computador i del funcionament de les comunicacions entre ordinadors. \n                                      <ul>\n                                              <li id=\"CT6_1\">\n                          <b>\n                            CT6.1\n                          </b>\n                          - Demostrar coneixement i tenir capacitat per a administrar i mantenir sistemes, serveis i aplicacions informàtiques.\n                        </li>\n                                              <li id=\"CT6_4\">\n                          <b>\n                            CT6.4\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació de les característiques, de les funcionalitats i de l'estructura dels Sistemes Distribuïts i de les Xarxes de Computadors i d'Internet que en garanteixi l'ús i l'administració, així com el disseny i la implementació d'aplicacions basades en elles. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT7\">\n                  <b>\n                    CT7 \n                                      </b>\n                  - Avaluar i seleccionar plataformes de producció hardware i software per a l'execució d'aplicacions i de serveis informàtics. \n                                      <ul>\n                                              <li id=\"CT7_1\">\n                          <b>\n                            CT7.1\n                          </b>\n                          - Demostrar coneixement de les mètriques de qualitat i saber-les utilitzar. \n                        </li>\n                                              <li id=\"CT7_3\">\n                          <b>\n                            CT7.3\n                          </b>\n                          - Determinar els factors que incideixen negativament en la seguretat i la fiabilitat d'un sistema hardware/software, i minimitzar-ne els efectes. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat tecnologies de la informació</h4>\n                              <li id=\"CTI1\">\n                  <b>\n                    CTI1 \n                                      </b>\n                  - Definir, planificar i gestionar la instal·lació de la infraestructura TIC de l'organització.\n                                      <ul>\n                                              <li id=\"CTI1_1\">\n                          <b>\n                            CTI1.1\n                          </b>\n                          - Demostrar comprensió de l'entorn d'una organització i de les seves necessitats en l'àmbit de les tecnologies de la informació i les comunicacions.\n                        </li>\n                                              <li id=\"CTI1_2\">\n                          <b>\n                            CTI1.2\n                          </b>\n                          - Seleccionar, dissenyar, desplegar, integrar gestionar xarxes i infraestructures de comunicacions en una organització.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CTI2\">\n                  <b>\n                    CTI2 \n                                      </b>\n                  - Garantir que els sistemes TIC d'una organització funcionen de manera adequada, són segurs i estan adequadament instal·lats, documentats, personalitzats, mantinguts, actualitzats i substituïts, i que les persones de l'organització reben un suport TIC correcte.\n                                      <ul>\n                                              <li id=\"CTI2_1\">\n                          <b>\n                            CTI2.1\n                          </b>\n                          - Dirigir, planificar i coordinar la gestió de la infraestructura informàtica: hardware, software, xarxes i comunicacions.\n                        </li>\n                                              <li id=\"CTI2_3\">\n                          <b>\n                            CTI2.3\n                          </b>\n                          - Demostrar comprensió, aplicar i gestionar la garantia i la seguretat dels sistemes informàtics (CEIC6).\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CTI3\">\n                  <b>\n                    CTI3 \n                                      </b>\n                  - Dissenyar solucions que integrin tecnologies de hardware, software i comunicacions (i capacitat de desenvolupar solucions específiques de software de sistemes) per a sistemes distribuïts i dispositius de computació ubiqua.\n                                      <ul>\n                                              <li id=\"CTI3_1\">\n                          <b>\n                            CTI3.1\n                          </b>\n                          - Concebre sistemes, aplicacions i serveis basats en tecnologies de xarxa, tenint en compte Internet, web, comerç electrònic, multimèdia, serveis interactius i computació ubiqua.\n                        </li>\n                                              <li id=\"CTI3_3\">\n                          <b>\n                            CTI3.3\n                          </b>\n                          - Dissenyar, implantar i configurar xarxes i serveis. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Raonament</h4>\n                              <li id=\"G9\">\n                  <b>\n                    G9 \n                                          [Avaluable]\n                                      </b>\n                  - Capacitat de raonament crític, lògic i matemàtic. Capacitat de resoldre problemes en la seva àrea d'estudi. Capacitat d'abstracció: capacitat de crear i utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills, i analitzar-ne i interpretar-ne els resultats. Capacitat d'anàlisi, de síntesi i d'avaluació.\n                                      <ul>\n                                              <li id=\"G9_3\">\n                          <b>\n                            G9.3\n                          </b>\n                          - Capacitat crítica, capacitat d'avaluació.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +283,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1341\">\n          Introducció\n          <br>\n          Regulació internacional sobre xarxes de computadors i la seva implicació en les tecnologies. Anàlisi de la importància de les xarxes IP sobre la tecnologia de xarxes i model arquitectònic d'Internet.\n        </li>\n              <li id=\"cont-1345\">\n          Seguretat en xarxes\n          <br>\n          Tallafocs. Protocols segurs de xarxa. Sistemes de detecció d'intrusos. Xarxes privades virtuals. \n        </li>\n              <li id=\"cont-1343\">\n          Xarxes troncals a Internet\n          <br>\n          Tecnologies per a xarxes troncals. Protocols i serveis. Xarxes òptiques. Control i gestió. MPLS. SDN/NFV.\n        </li>\n              <li id=\"cont-1342\">\n          Quality of Service a Internet\n          <br>\n          Definició de QoS. Serveis i tecnologies per a QoS a Internet. Models i protocols IntServ i DiffServ. Tècniques per a traffic shaping i policing. Polítiques de cues.\n        </li>\n              <li id=\"cont-1344\">\n          Xarxes d'accés amb fils a Internet\n          <br>\n          Tecnologies d'accés a xarxes amb fibres òptiques (FTTH, WDM-PON i EP2P)\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2976\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament del tema 1: Introducció</h3>\n              Assistència a classe per a la comprensió de les normatives sobre les tecnologies de xarxes de computadors. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1961\">1</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1341\">1 .\n                      Introducció</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2983\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament del tema 2: Seguretat en xarxes</h3>\n              Aprenentatge dels conceptes i objectius associats a aquest tema.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1963\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1345\">2 .\n                      Seguretat en xarxes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      13h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2980\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament del tema 3: Xarxes troncals</h3>\n              Assistència a classe per a l'adquisició de coneixements sobre tècniques de commutació en xarxes de computadors.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1971\">10</a>\n                                  <a href=\"#obj-1973\">12</a>\n                                  <a href=\"#obj-1974\">13</a>\n                                  <a href=\"#obj-1981\">20</a>\n                                  <a href=\"#obj-1983\">22</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1343\">3 .\n                      Xarxes troncals a Internet</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1283\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Primer Control</h3>\n              Prova d'avaluació que inclou la resolució d'exercicis i preguntes \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1961\">1</a>\n                                  <a href=\"#obj-1962\">2</a>\n                                  <a href=\"#obj-1965\">5</a>\n                                  <a href=\"#obj-1966\">6</a>\n                                  <a href=\"#obj-1967\">7</a>\n                                  <a href=\"#obj-1969\">9</a>\n                                  <a href=\"#obj-1973\">12</a>\n                                  <a href=\"#obj-1974\">13</a>\n                                  <a href=\"#obj-1975\">14</a>\n                                  <a href=\"#obj-1977\">16</a>\n                                  <a href=\"#obj-1979\">18</a>\n                                  <a href=\"#obj-1980\">19</a>\n                                  <a href=\"#obj-1984\">23</a>\n                                  <a href=\"#obj-7941\">24</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  8\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2978\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament del tema 4: QoS a Internet.</h3>\n              Assistència a classe per a l'adquisició de coneixements sobre les tecnologies per promocionar QoS a Internet.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1984\">23</a>\n                                  <a href=\"#obj-7941\">24</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1342\">4 .\n                      Quality of Service a Internet</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      11h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      14h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2982\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament del tema 5: Xarxes d'accés amb fils a Internet</h3>\n              Assistència a classe per l'adquisició de coneixements sobre Tecnologies d'accés a la xarxa de fibra òptica (FTTH, WDM-PON i EP2P). Normes i protocols relacionats.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1968\">8</a>\n                                  <a href=\"#obj-1973\">12</a>\n                                  <a href=\"#obj-1976\">15</a>\n                                  <a href=\"#obj-1977\">16</a>\n                                  <a href=\"#obj-1978\">17</a>\n                                  <a href=\"#obj-1979\">18</a>\n                                  <a href=\"#obj-1980\">19</a>\n                                  <a href=\"#obj-1982\">21</a>\n                                  <a href=\"#obj-1983\">22</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1344\">5 .\n                      Xarxes d'accés amb fils a Internet</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22875\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Activitats de recerca actuals a TXC</h3>\n              Cada grup haurà de seleccionar un tema i presentar un informe seguint una plantilla descrivint el problema, analitzant les solucions disponibles i, si és el cas, proposant noves solucions. Abans del primer control es realitza l'assignació de grups i comença el desenvolupament del treball en base a articles d'investigació assignats pel professor. Es farà un seguiment com a activitat dirigida. El lliurament és abans del segon control. L'avaluació es fa segons una rúbrica al efecte.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1963\">3</a>\n                                  <a href=\"#obj-1964\">4</a>\n                                  <a href=\"#obj-1978\">17</a>\n                                  <a href=\"#obj-1979\">18</a>\n                                  <a href=\"#obj-1981\">20</a>\n                                  <a href=\"#obj-1983\">22</a>\n                                  <a href=\"#obj-7941\">24</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1341\">1 .\n                      Introducció</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1342\">4 .\n                      Quality of Service a Internet</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1343\">3 .\n                      Xarxes troncals a Internet</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1344\">5 .\n                      Xarxes d'accés amb fils a Internet</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1345\">2 .\n                      Seguretat en xarxes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-7884\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació recerca actual a TXC</h3>\n              Presentació de l'informe sobre un tema d'actualitat sobre recerca relacionat amb TXC seguint una plantilla descrivint el problema, analitzant les solucions disponibles i, si escau, proposant noves solucions\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1961\">1</a>\n                                  <a href=\"#obj-1962\">2</a>\n                                  <a href=\"#obj-1963\">3</a>\n                                  <a href=\"#obj-1964\">4</a>\n                                  <a href=\"#obj-1967\">7</a>\n                                  <a href=\"#obj-1972\">11</a>\n                                  <a href=\"#obj-1973\">12</a>\n                                  <a href=\"#obj-1974\">13</a>\n                                  <a href=\"#obj-1975\">14</a>\n                                  <a href=\"#obj-1976\">15</a>\n                                  <a href=\"#obj-1979\">18</a>\n                                  <a href=\"#obj-1981\">20</a>\n                                  <a href=\"#obj-1982\">21</a>\n                                  <a href=\"#obj-1983\">22</a>\n                                  <a href=\"#obj-1984\">23</a>\n                                  <a href=\"#obj-7941\">24</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  11\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1284\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Segon Control</h3>\n              Prova d'avaluació que inclou la resolució d'exercicis i preguntes . \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1963\">3</a>\n                                  <a href=\"#obj-1967\">7</a>\n                                  <a href=\"#obj-1971\">10</a>\n                                  <a href=\"#obj-1972\">11</a>\n                                  <a href=\"#obj-1973\">12</a>\n                                  <a href=\"#obj-1974\">13</a>\n                                  <a href=\"#obj-1975\">14</a>\n                                  <a href=\"#obj-1977\">16</a>\n                                  <a href=\"#obj-1981\">20</a>\n                                  <a href=\"#obj-1983\">22</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

@@ -7,15 +7,644 @@
   "department": "ESSI",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Maria Ribera Sancho Samso",
+      "email": "maria.ribera.sancho@upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Inmaculada Ramirez Perez",
+      "email": "inmaculada.ramirez@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Isaac Álvarez Diz",
+      "email": "isaac.alvarez@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Quim Motger de la Encarnacion",
+      "email": "joaquim.motger@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Sergio Morales Garcia",
+      "email": "sergio.morales@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Introducció",
+      "isEvaluative": false,
+      "description": "(1) Participar activament en una classe de teoria, on s'expliquen els objectius i l'organització de l'assignatura (2 hores). (2) Repassar els exemples de cursos anteriors, i el material docent publicats a l'Atenea (4 hores) (2) Preparar la reunió de constitució dels grups de projecte revisant la missió del projecte (1,5 hores). (3) Participar activament en la reunió constituent del grup de projecte, on es nomenen els càrrecs de coordinador i secretari, es comenta l'objectiu i la planificació de la feina que caldrà fer, i es comencen a explorar els objectius del projecte. També es repassa el document de bones pràctiques en l'organització i realització de reunions, que s'hauran de seguir en les reunions del curs (2 hores). (4) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "1"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Objectius d'un projecte",
+      "isEvaluative": false,
+      "description": "(1) Participar activament en una classe de teoria, on s'expliquen què són i com han de ser els objectius d'un projecte (2 hores). (2) Durant la setmana, realitzar un exercici sobre 'objectius de projectes' i presentar-lo via Atenea (2 hores) (3) Preparar la reunió del grup de projecte, revisant un cop més la missió publicada del projecte, els exemples de cursos anteriors i pensant quins poden ser els objectius del projecte del curs (3,5 hores). (4) Participar activament en la reunió del grup de projecte, que es centra en els objectius del projecte (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana, que tracta de les parts interessades en un projecte. (30 minuts).",
+      "objectives": [
+        "2",
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "E1",
+      "isEvaluative": true,
+      "description": "Exercici sobre objectius de projectes.",
+      "objectives": [
+        "2"
+      ],
+      "week": 2,
+      "hours": []
+    },
+    {
+      "title": "Requisits",
+      "isEvaluative": false,
+      "description": "(1) Participar activament en una classe de teoria, on s'expliquen què són els requisits, de quins tipus n'hi ha, i la seva relació amb els objectius del projecte (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici sobre l'argument de satisfacció i el presenta via Atenea (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà de les parts interessades del projecte del curs i el refinament d'objectius (2,5 hores). (4) Participar activament en la reunió del grup, que es centra en els requisits que es deriven dels objectius del projecte (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "2",
+        "3",
+        "13",
+        "14",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "E2",
+      "isEvaluative": true,
+      "description": "Exercici sobre l'argument de satisfacció",
+      "objectives": [
+        "13",
+        "14"
+      ],
+      "week": 3,
+      "hours": []
+    },
+    {
+      "title": "Introducció a l'enginyeria de requisits",
+      "isEvaluative": false,
+      "description": "1) Participar activament en una classe de teoria, on s'explica què és l'enginyeria de requisits i les activitats que s'hi fan (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici sobre modelització de processos de negoci i el presenta via Atenea (2 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà de delimitar l'àmbit de la feina i els casos d'ús de negoci del projecte (3,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els temes indicats anteriorment (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Lliurament de l'estat de l'art",
+      "isEvaluative": true,
+      "description": "S'avaluarà el document preparat pels estudiants sobre l'estat de l'art en l'àmbit del projecte.",
+      "objectives": [
+        "6",
+        "7"
+      ],
+      "week": 4,
+      "hours": []
+    },
+    {
+      "title": "Sistema, context, casos d'ús",
+      "isEvaluative": false,
+      "description": "1) Participar activament en una classe de teoria, on s'explica què són el sistema, el context i els casos d'ús. S'introdueixen els elements bàsics per a la modelització de processos de negoci en un llenguatge (2 hores). (2) Aquesta setmana no hi ha exercici per tal de poder destinar més temps a l'estat de l'art (3) Realitzar la tasca encomanada pel grup, que tractarà de l'estat de l'art en l'àmbit del projecte (acabament) i de l'aplicació dels conceptes esmentats al projecte (5,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en l'estat de l'art i de l'aplicació dels conceptes esmentats al projecte (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "6",
+        "7",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "E3",
+      "isEvaluative": true,
+      "description": "Modelització de processos de negoci",
+      "objectives": [
+        "5"
+      ],
+      "week": 5,
+      "hours": []
+    },
+    {
+      "title": "Determinació de requisits",
+      "isEvaluative": false,
+      "description": "1) Participar activament en una classe de teoria, on s'explica quins són els mètodes principals per a determinar els requisits i quan es poden aplicar (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici sobre casos d'ús i el presenta via Atenea (2 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà dels requisits funcioanls i dels casos d'ús (3,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els requisits funcionals i casos d'ús (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "9",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "E4",
+      "isEvaluative": true,
+      "description": "Exercici sobre els casos d'ús essencials i reals",
+      "objectives": [
+        "8",
+        "9"
+      ],
+      "week": 6,
+      "hours": []
+    },
+    {
+      "title": "Negociació de requisits",
+      "isEvaluative": false,
+      "description": "(1) Participar activament en una classe de teoria, on s'expliquen la necessitat i els mètodes de negociació de conflictes en l'enginyeria de requisits (2 hores). (2) Realitzar la tasca encomanada pel grup, que tractarà sobre l'acabament del lliurament preliminar de l'especificació de requisits (5,5 hores). (3) Participar activament en la reunió del grup, que tractarà sobre l'acabament del lliurament preliminar de l'especificació de requisits (2 hores). (4) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "12"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "L1",
+      "isEvaluative": true,
+      "description": "Lliurament preliminar de l'especificació de requisits",
+      "objectives": [
+        "2",
+        "3",
+        "8",
+        "9",
+        "15",
+        "10",
+        "4"
+      ],
+      "week": 7,
+      "hours": []
+    },
+    {
+      "title": "Validació de requisits",
+      "isEvaluative": false,
+      "description": "1) Participar activament en una classe de teoria, on s'explica quins són els mètodes principals de validació de requisits (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici sobre validació de requisits (2 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà dels requisits no funcionals del projecte (3,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els requisits no funcionals, i en la planificació de l'activitat de validació dels requisits (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "17",
+        "16"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "E5",
+      "isEvaluative": true,
+      "description": "Exercici sobre validació de requisits",
+      "objectives": [
+        "17",
+        "16"
+      ],
+      "week": 8,
+      "hours": []
+    },
+    {
+      "title": "Recapitulació requisits",
+      "isEvaluative": false,
+      "description": "(1) Participar activament en una classe de teoria, on es fa una recapitulació de tots els conceptes i tècniques vistos al curs fins aquest moment. (2 hores). Aquesta setmana no hi ha exercici per tal de poder destinar més temps al lliurament definitiu dels requisits. (2) Realitzar la tasca encomanada pel grup, que tractarà sobre la validació de l'especificació de requisits (5,5 hores). (3) Participar activament en la reunió del grup, que tractarà sobre la validació de l'especificació i l'acabament del lliurament definitiu de l'especificació de requisits (2 hores). (4) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "2",
+        "3",
+        "8",
+        "9",
+        "13",
+        "14",
+        "15",
+        "17",
+        "21",
+        "22",
+        "10",
+        "16",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Q1",
+      "isEvaluative": true,
+      "description": "Qüestionari sobre els aspectes bàsics de l'enginyeria de requisits. Cada estudiant ha de portar un ordinador portàtil o similar per accedir i respondre al qüestionari.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "6",
+        "7",
+        "8",
+        "9",
+        "13",
+        "14",
+        "15",
+        "17",
+        "10",
+        "11",
+        "16",
+        "4",
+        "5",
+        "12"
+      ],
+      "week": 9,
+      "hours": []
+    },
+    {
+      "title": "L2",
+      "isEvaluative": true,
+      "description": "Lliurament definitiu de l'especificació de requisits",
+      "objectives": [
+        "2",
+        "3",
+        "8",
+        "9",
+        "13",
+        "14",
+        "15",
+        "17",
+        "10",
+        "11",
+        "16",
+        "4"
+      ],
+      "week": 9,
+      "hours": []
+    },
+    {
+      "title": "La modelització conceptual en l'enginyeria de requisits",
+      "isEvaluative": false,
+      "description": "1) Participar activament en una classe de teoria, on s'explica quin és el paper de la modelització conceptual en l'enginyeria de requisits (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici sobre OCL executable (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà d'estudiar l'esquema conceptual de projectes anteriors i determinar què s'ha de fer en aquest cas. (2,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els aspectes indicats anteriorment (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "18",
+        "21",
+        "20"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "E6",
+      "isEvaluative": true,
+      "description": "Exercici sobre l'OCL executable",
+      "objectives": [
+        "20"
+      ],
+      "week": 10,
+      "hours": []
+    },
+    {
+      "title": "L'esquema estructural",
+      "isEvaluative": false,
+      "description": "1) Participar activament en una classe de teoria, on es repassaran (i, si cal, s'aprofundiran) els conceptes d'esquema estructural necessaris per al projecte (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici esquemes estructurals (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà sobre la definició de l'esquema estructural del projecte. (2,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els aspectes indicats anteriorment (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "20",
+        "19"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "E7",
+      "isEvaluative": true,
+      "description": "Exercici realització esquema estructural",
+      "objectives": [
+        "20",
+        "19"
+      ],
+      "week": 11,
+      "hours": []
+    },
+    {
+      "title": "L'esquema del comportament",
+      "isEvaluative": false,
+      "description": "(1) Participar activament en una classe de teoria, on es repassen (i, si cal, s'aprofundeixen) els conceptes necessaris d'esquema del comportament necessaris per al projecte (2 hores). Aquesta setmana ho hi ha exercici per tal de poder destinar més temps al lliurament preliminar de l'esquema conceptual. (2) Realitzar la tasca encomanada pel grup, que consistirà en la contiunació de l'esquema estructural i de comportament del projecte (5,5 hores). (3) Participar activament en la reunió del grup, que consolidarà les feines individuals i prepararà el lliurament preliminar de l'esquema conceptual (2 hores). (4) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "20",
+        "19"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "L3",
+      "isEvaluative": true,
+      "description": "Lliurament preliminar esquema conceptual del projecte",
+      "objectives": [
+        "20",
+        "19"
+      ],
+      "week": 12,
+      "hours": []
+    },
+    {
+      "title": "Validació esquemes conceptuals",
+      "isEvaluative": false,
+      "description": "1) Participar activament en una classe de teoria, on s'estudiarà què és la validació d'esquemes conceptuals i els mètodes que hi ha per a fer-la (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici de validació d'esquemes (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà sobre la definició de l'esquema de comportament del projecte. (2,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els aspectes indicats anteriorment (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).",
+      "objectives": [
+        "21",
+        "20",
+        "22"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "E8",
+      "isEvaluative": true,
+      "description": "Exercici sobre validació d'esquemes",
+      "objectives": [
+        "21",
+        "22"
+      ],
+      "week": 13,
+      "hours": []
+    },
+    {
+      "title": "Recapitulació assignatura",
+      "isEvaluative": false,
+      "description": "1) Participar activament en una classe de teoria, on el coordinador de cada grup explica què han après d'enginyeria de requisits al curs (2 hores). (2) Durant la setmana, prepara un document explicatiu del seu grau d'assoliment dels objectius del curs (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà de la validació de l'esquema conceptual del projecte (3 hores). (4) Participar activament en la reunió del grup, que es centrarà en la validació conjunta de l'esquema conceptual (2 hores).",
+      "objectives": [
+        "18",
+        "21",
+        "20",
+        "22",
+        "19"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Acabament del lliurament definitiu de l'esquema conceptual",
+      "isEvaluative": false,
+      "description": "L'alumne realitza la part encomanada d'acabament i presentació de l'esquema conceptual, tenint en compte el resultat de la validació efectuada en la darrera reunió del grup (10 hores)",
+      "objectives": [
+        "20",
+        "22",
+        "19"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "L4",
+      "isEvaluative": true,
+      "description": "Lliurament definitiu esquema conceptual",
+      "objectives": [
+        "21",
+        "20",
+        "22",
+        "19"
+      ],
+      "week": 15,
+      "hours": []
+    },
+    {
+      "title": "Q2",
+      "isEvaluative": true,
+      "description": "Qüestionari sobre els aspectes bàsics de la modelització conceptual en l'enginyeria de requisits. El qüestionari es respondrà en línia en una hora de classe. Cada estudiant ha de portar un ordinador portàtil o similar per accedir i respondre al qüestionari.",
+      "objectives": [
+        "18",
+        "21",
+        "20",
+        "22",
+        "19"
+      ],
+      "week": 14,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Maria Ribera Sancho Samso\n                                (maria.ribera.sancho@upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Inmaculada Ramirez Perez\n                            (inmaculada.ramirez@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Isaac Álvarez Diz\n                            (isaac.alvarez@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Quim Motger de la Encarnacion\n                            (joaquim.motger@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Sergio Morales Garcia\n                            (sergio.morales@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat sistemes d'informació</h4>\n                              <li id=\"CSI3\">\n                  <b>\n                    CSI3 \n                                      </b>\n                  - Determinar els requisits dels sistemes d'informació i comunicació d'una organització, atenent als aspectes de seguretat, compliment de la normativa i de la legislació vigent.\n                                      <ul>\n                                              <li id=\"CSI3_5\">\n                          <b>\n                            CSI3.5\n                          </b>\n                          - Proposar i coordinar canvis per a millorar l'explotació del sistema i de les aplicacions.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CSI4\">\n                  <b>\n                    CSI4 \n                                      </b>\n                  - Participar activament en l'especificació, el disseny, la implementació i el manteniment dels sistemes d'informació i de comunicació.\n                                      <ul>\n                                              <li id=\"CSI4_1\">\n                          <b>\n                            CSI4.1\n                          </b>\n                          - Participar activament en l'especificació dels sistemes d'informació i de comunicació.\n                        </li>\n                                          </ul>\n                                  </li>\n                                        <h4>Especialitat enginyeria del software</h4>\n                              <li id=\"CES2\">\n                  <b>\n                    CES2 \n                                      </b>\n                  - Valorar les necessitats del client i especificar els requisits software per a satisfer aquestes necessitats, reconciliant objectius en conflicte mitjançant la cerca de compromisos acceptables, dintre de les limitacions derivades del cost, del temps, de l'existència de sistemes ja desenvolupats i de les organitzacions.\n                                      <ul>\n                                              <li id=\"CES2_1\">\n                          <b>\n                            CES2.1\n                          </b>\n                          - Definir i gestionar els requisits d'un sistema software.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Ús solvent dels recursos d'informació</h4>\n                              <li id=\"G6\">\n                  <b>\n                    G6 \n                                          [Avaluable]\n                                      </b>\n                  - Gestionar l'adquisició, l'estructuració, l'anàlisi i la visualització de dades i d'informació de l'àmbit de l'enginyeria informàtica, i valorar de forma crítica els resultats d'aquesta gestió.\n                                      <ul>\n                                              <li id=\"G6_3\">\n                          <b>\n                            G6.3\n                          </b>\n                          - Planificar i utilitzar la informació necessària per a un treball acadèmic (per exemple, per al treball de final de grau) a partir d'una reflexió crítica sobre els recursos d'informació utilitzats. Gestionar la informació de manera competent, independent i autònoma. Avaluar la informació trobada i identificar-ne les llacunes.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +656,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-901\">\n          Visió general de l'enginyeria de requisits\n          <br>\n          \n        </li>\n              <li id=\"cont-921\">\n          Objectius d'un projecte\n          <br>\n          \n        </li>\n              <li id=\"cont-922\">\n          Parts interessades\n          <br>\n          \n        </li>\n              <li id=\"cont-923\">\n          El sistema i el seu context\n          <br>\n          \n        </li>\n              <li id=\"cont-924\">\n          Escenaris i casos d'ús\n          <br>\n          \n        </li>\n              <li id=\"cont-925\">\n          Requisits del software\n          <br>\n          \n        </li>\n              <li id=\"cont-926\">\n          Argument de satisfacció dels objectius\n          <br>\n          \n        </li>\n              <li id=\"cont-927\">\n          Activitats en l'enginyeria de requisits: Determinació dels requisits; documentació; negociació i validació\n          <br>\n          \n        </li>\n              <li id=\"cont-928\">\n          La modelització conceptual en l'enginyeria de requisits\n          <br>\n          \n        </li>\n              <li id=\"cont-929\">\n          Desenvolupament de l'esquema conceptual\n          <br>\n          \n        </li>\n              <li id=\"cont-930\">\n          Traçabilitat dels artefactes de l'enginyeria de requisits\n          <br>\n          \n        </li>\n              <li id=\"cont-931\">\n          Validació d'esquemes conceptuals\n          <br>\n          \n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2064\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció</h3>\n              (1) Participar activament en una classe de teoria, on s'expliquen els objectius i l'organització de l'assignatura (2 hores).\n(2) Repassar els exemples de cursos anteriors, i el material docent publicats a l'Atenea (4 hores)\n(2) Preparar la reunió de constitució dels grups de projecte revisant la missió del projecte (1,5 hores). \n(3) Participar activament en la reunió constituent del grup de projecte, on es nomenen els càrrecs de coordinador i secretari, es comenta l'objectiu i la planificació de la feina que caldrà fer, i es comencen a explorar els objectius del projecte. També es repassa el document de bones pràctiques en l'organització i realització de reunions, que s'hauran de seguir en les reunions del curs (2 hores). \n(4) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1441\">1</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-901\">1 .\n                      Visió general de l'enginyeria de requisits</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2068\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Objectius d'un projecte</h3>\n              (1) Participar activament en una classe de teoria, on s'expliquen què són i com han de ser els objectius d'un projecte (2 hores).  (2) Durant la setmana, realitzar un exercici sobre 'objectius de projectes' i presentar-lo via Atenea (2 hores) (3) Preparar la reunió del grup de projecte, revisant un cop més la missió publicada del projecte, els exemples de cursos anteriors i pensant quins poden ser els objectius del projecte del curs (3,5 hores). (4) Participar activament en la reunió del grup de projecte, que es centra en els objectius del projecte (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana, que tracta de les parts interessades en un projecte. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1442\">2</a>\n                                  <a href=\"#obj-1443\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-921\">2 .\n                      Objectius d'un projecte</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-922\">3 .\n                      Parts interessades</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-963\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>E1</h3>\n              Exercici sobre objectius de projectes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1442\">2</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  2\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2069\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Requisits</h3>\n              (1) Participar activament en una classe de teoria, on s'expliquen què són els requisits, de quins tipus n'hi ha, i la seva relació amb els objectius del projecte (2 hores).  (2) Durant la setmana, l'estudiant realitza un exercici sobre l'argument de satisfacció i el presenta via Atenea (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà de les parts interessades del projecte del curs i el refinament d'objectius (2,5 hores). (4) Participar activament en la reunió del grup, que es centra en els requisits que es deriven dels objectius del projecte (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1442\">2</a>\n                                  <a href=\"#obj-1443\">3</a>\n                                  <a href=\"#obj-1452\">13</a>\n                                  <a href=\"#obj-1453\">14</a>\n                                  <a href=\"#obj-1460\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-921\">2 .\n                      Objectius d'un projecte</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-922\">3 .\n                      Parts interessades</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-925\">6 .\n                      Requisits del software</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-926\">7 .\n                      Argument de satisfacció dels objectius</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-965\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>E2</h3>\n              Exercici sobre l'argument de satisfacció\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1452\">13</a>\n                                  <a href=\"#obj-1453\">14</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  3\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2089\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció a l'enginyeria de requisits</h3>\n              1) Participar activament en una classe de teoria, on s'explica què és l'enginyeria de requisits i les activitats que s'hi fan (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici sobre modelització de processos de negoci i el presenta via Atenea (2 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà de delimitar l'àmbit de la feina i els casos d'ús de negoci del projecte (3,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els temes indicats anteriorment (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1463\">4</a>\n                                  <a href=\"#obj-1464\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-901\">1 .\n                      Visió general de l'enginyeria de requisits</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-927\">8 .\n                      Activitats en l'enginyeria de requisits: Determinació dels requisits; documentació; negociació i validació</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-970\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lliurament de l'estat de l'art</h3>\n              S'avaluarà el document preparat pels estudiants sobre l'estat de l'art en l'àmbit del projecte.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1444\">6</a>\n                                  <a href=\"#obj-1445\">7</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  4\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2091\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sistema, context, casos d'ús</h3>\n              1) Participar activament en una classe de teoria, on s'explica què són el sistema, el context i els casos d'ús. S'introdueixen els elements bàsics per a la modelització de processos de negoci en un llenguatge (2 hores). (2) Aquesta setmana no hi ha exercici per tal de poder destinar més temps a l'estat de l'art (3) Realitzar la tasca encomanada pel grup, que tractarà de l'estat de l'art en l'àmbit del projecte (acabament) i de l'aplicació dels conceptes esmentats al projecte (5,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en l'estat de l'art i de l'aplicació dels conceptes esmentats al projecte (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1444\">6</a>\n                                  <a href=\"#obj-1445\">7</a>\n                                  <a href=\"#obj-1463\">4</a>\n                                  <a href=\"#obj-1464\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-923\">4 .\n                      El sistema i el seu context</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-971\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>E3</h3>\n              Modelització de processos de negoci\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1464\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  5\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2105\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Determinació de requisits</h3>\n              1) Participar activament en una classe de teoria, on s'explica quins són els mètodes principals per a determinar els requisits i quan es poden aplicar (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici sobre casos d'ús i el presenta via Atenea (2 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà dels requisits funcioanls i dels casos d'ús (3,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els requisits funcionals i casos d'ús (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1448\">9</a>\n                                  <a href=\"#obj-1460\">10</a>\n                                  <a href=\"#obj-1461\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-927\">8 .\n                      Activitats en l'enginyeria de requisits: Determinació dels requisits; documentació; negociació i validació</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-974\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>E4</h3>\n              Exercici sobre els casos d'ús essencials i reals\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1447\">8</a>\n                                  <a href=\"#obj-1448\">9</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  6\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2107\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Negociació de requisits</h3>\n              (1) Participar activament en una classe de teoria, on s'expliquen la necessitat i els mètodes de negociació de conflictes en l'enginyeria de requisits (2 hores).  (2) Realitzar la tasca encomanada pel grup, que tractarà sobre l'acabament del lliurament preliminar de l'especificació de requisits (5,5 hores). (3) Participar activament en la reunió del grup, que tractarà sobre l'acabament del lliurament preliminar de l'especificació de requisits (2 hores). (4) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1481\">12</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-927\">8 .\n                      Activitats en l'enginyeria de requisits: Determinació dels requisits; documentació; negociació i validació</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-982\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>L1</h3>\n              Lliurament preliminar de l'especificació de requisits\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1442\">2</a>\n                                  <a href=\"#obj-1443\">3</a>\n                                  <a href=\"#obj-1447\">8</a>\n                                  <a href=\"#obj-1448\">9</a>\n                                  <a href=\"#obj-1454\">15</a>\n                                  <a href=\"#obj-1460\">10</a>\n                                  <a href=\"#obj-1463\">4</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  7\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2125\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Validació de requisits</h3>\n              1) Participar activament en una classe de teoria, on s'explica quins són els mètodes principals de validació de requisits (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici sobre validació de requisits (2 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà dels requisits no funcionals del projecte (3,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els requisits no funcionals, i en la planificació de l'activitat de validació dels requisits (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1455\">17</a>\n                                  <a href=\"#obj-1462\">16</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-927\">8 .\n                      Activitats en l'enginyeria de requisits: Determinació dels requisits; documentació; negociació i validació</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1042\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>E5</h3>\n              Exercici sobre validació de requisits\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1455\">17</a>\n                                  <a href=\"#obj-1462\">16</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  8\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2144\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Recapitulació requisits</h3>\n              (1) Participar activament en una classe de teoria, on es fa una recapitulació de tots els conceptes i tècniques vistos al curs fins aquest moment. (2 hores). Aquesta setmana no hi ha exercici per tal de poder destinar més temps al lliurament definitiu dels requisits. (2) Realitzar la tasca encomanada pel grup, que tractarà sobre la validació de l'especificació de requisits (5,5 hores). (3) Participar activament en la reunió del grup, que tractarà sobre la validació de l'especificació i l'acabament del lliurament definitiu de l'especificació de requisits (2 hores). (4) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1442\">2</a>\n                                  <a href=\"#obj-1443\">3</a>\n                                  <a href=\"#obj-1447\">8</a>\n                                  <a href=\"#obj-1448\">9</a>\n                                  <a href=\"#obj-1452\">13</a>\n                                  <a href=\"#obj-1453\">14</a>\n                                  <a href=\"#obj-1454\">15</a>\n                                  <a href=\"#obj-1455\">17</a>\n                                  <a href=\"#obj-1457\">21</a>\n                                  <a href=\"#obj-1459\">22</a>\n                                  <a href=\"#obj-1460\">10</a>\n                                  <a href=\"#obj-1462\">16</a>\n                                  <a href=\"#obj-1463\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-921\">2 .\n                      Objectius d'un projecte</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-922\">3 .\n                      Parts interessades</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-923\">4 .\n                      El sistema i el seu context</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-924\">5 .\n                      Escenaris i casos d'ús</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-925\">6 .\n                      Requisits del software</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-926\">7 .\n                      Argument de satisfacció dels objectius</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-927\">8 .\n                      Activitats en l'enginyeria de requisits: Determinació dels requisits; documentació; negociació i validació</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-931\">12 .\n                      Validació d'esquemes conceptuals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1044\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Q1</h3>\n              Qüestionari sobre els aspectes bàsics de l'enginyeria de requisits. Cada estudiant ha de portar un ordinador portàtil o similar per accedir i respondre al qüestionari.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1441\">1</a>\n                                  <a href=\"#obj-1442\">2</a>\n                                  <a href=\"#obj-1443\">3</a>\n                                  <a href=\"#obj-1444\">6</a>\n                                  <a href=\"#obj-1445\">7</a>\n                                  <a href=\"#obj-1447\">8</a>\n                                  <a href=\"#obj-1448\">9</a>\n                                  <a href=\"#obj-1452\">13</a>\n                                  <a href=\"#obj-1453\">14</a>\n                                  <a href=\"#obj-1454\">15</a>\n                                  <a href=\"#obj-1455\">17</a>\n                                  <a href=\"#obj-1460\">10</a>\n                                  <a href=\"#obj-1461\">11</a>\n                                  <a href=\"#obj-1462\">16</a>\n                                  <a href=\"#obj-1463\">4</a>\n                                  <a href=\"#obj-1464\">5</a>\n                                  <a href=\"#obj-1481\">12</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  9\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1043\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>L2</h3>\n              Lliurament definitiu de l'especificació de requisits\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1442\">2</a>\n                                  <a href=\"#obj-1443\">3</a>\n                                  <a href=\"#obj-1447\">8</a>\n                                  <a href=\"#obj-1448\">9</a>\n                                  <a href=\"#obj-1452\">13</a>\n                                  <a href=\"#obj-1453\">14</a>\n                                  <a href=\"#obj-1454\">15</a>\n                                  <a href=\"#obj-1455\">17</a>\n                                  <a href=\"#obj-1460\">10</a>\n                                  <a href=\"#obj-1461\">11</a>\n                                  <a href=\"#obj-1462\">16</a>\n                                  <a href=\"#obj-1463\">4</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  9\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2167\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>La modelització conceptual en l'enginyeria de requisits</h3>\n              1) Participar activament en una classe de teoria, on s'explica quin és el paper de la modelització conceptual en l'enginyeria de requisits (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici sobre OCL executable (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà d'estudiar l'esquema conceptual de projectes anteriors i determinar què s'ha de fer en aquest cas. (2,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els aspectes indicats anteriorment (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1456\">18</a>\n                                  <a href=\"#obj-1457\">21</a>\n                                  <a href=\"#obj-1458\">20</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-928\">9 .\n                      La modelització conceptual en l'enginyeria de requisits</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-929\">10 .\n                      Desenvolupament de l'esquema conceptual</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1045\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>E6</h3>\n              Exercici sobre l'OCL executable\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1458\">20</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  10\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2168\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>L'esquema estructural</h3>\n              1) Participar activament en una classe de teoria, on es repassaran (i, si cal, s'aprofundiran) els conceptes d'esquema estructural necessaris per al projecte (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici esquemes estructurals (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà sobre la definició de l'esquema estructural del projecte. (2,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els aspectes indicats anteriorment (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1458\">20</a>\n                                  <a href=\"#obj-1465\">19</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-929\">10 .\n                      Desenvolupament de l'esquema conceptual</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1047\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>E7</h3>\n              Exercici realització esquema estructural\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1458\">20</a>\n                                  <a href=\"#obj-1465\">19</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  11\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2169\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>L'esquema del comportament</h3>\n              (1) Participar activament en una classe de teoria, on es repassen (i, si cal, s'aprofundeixen) els conceptes necessaris d'esquema del comportament necessaris per al projecte (2 hores). Aquesta setmana ho hi ha exercici per tal de poder destinar més temps al lliurament preliminar de l'esquema conceptual. (2) Realitzar la tasca encomanada pel grup, que consistirà en la contiunació de l'esquema estructural i de comportament del projecte (5,5 hores). (3) Participar activament en la reunió del grup, que consolidarà les feines individuals i prepararà el lliurament preliminar de l'esquema conceptual (2 hores). (4) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1458\">20</a>\n                                  <a href=\"#obj-1465\">19</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-928\">9 .\n                      La modelització conceptual en l'enginyeria de requisits</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-929\">10 .\n                      Desenvolupament de l'esquema conceptual</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1049\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>L3</h3>\n              Lliurament preliminar esquema conceptual del projecte\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1458\">20</a>\n                                  <a href=\"#obj-1465\">19</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  12\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2170\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Validació esquemes conceptuals</h3>\n              1) Participar activament en una classe de teoria, on s'estudiarà què és la validació d'esquemes conceptuals i els mètodes que hi ha per a fer-la (2 hores). (2) Durant la setmana, l'estudiant realitza un exercici de validació d'esquemes (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà sobre la definició de l'esquema de comportament del projecte. (2,5 hores). (4) Participar activament en la reunió del grup, que es centrarà en els aspectes indicats anteriorment (2 hores). (5) Respondre (via Atenea) al qüestionari de la setmana. (30 minuts).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1457\">21</a>\n                                  <a href=\"#obj-1458\">20</a>\n                                  <a href=\"#obj-1459\">22</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-929\">10 .\n                      Desenvolupament de l'esquema conceptual</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-930\">11 .\n                      Traçabilitat dels artefactes de l'enginyeria de requisits</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-931\">12 .\n                      Validació d'esquemes conceptuals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1051\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>E8</h3>\n              Exercici sobre validació d'esquemes\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1457\">21</a>\n                                  <a href=\"#obj-1459\">22</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  13\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-2171\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Recapitulació assignatura</h3>\n              1) Participar activament en una classe de teoria, on el coordinador de cada grup explica què han après d'enginyeria de requisits al curs (2 hores). (2) Durant la setmana, prepara un document explicatiu del seu grau d'assoliment dels objectius del curs (3 hores) (3) Realitzar la tasca encomanada pel grup, que tractarà de la validació de l'esquema conceptual del projecte (3 hores). (4) Participar activament en la reunió del grup, que es centrarà en la validació conjunta de l'esquema conceptual (2 hores).\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1456\">18</a>\n                                  <a href=\"#obj-1457\">21</a>\n                                  <a href=\"#obj-1458\">20</a>\n                                  <a href=\"#obj-1459\">22</a>\n                                  <a href=\"#obj-1465\">19</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-930\">11 .\n                      Traçabilitat dels artefactes de l'enginyeria de requisits</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-931\">12 .\n                      Validació d'esquemes conceptuals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4804\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Acabament del lliurament definitiu de l'esquema conceptual</h3>\n              L'alumne realitza la part encomanada d'acabament i presentació de l'esquema conceptual, tenint en compte el resultat de la validació efectuada en la darrera reunió del grup (10 hores)\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1458\">20</a>\n                                  <a href=\"#obj-1459\">22</a>\n                                  <a href=\"#obj-1465\">19</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-929\">10 .\n                      Desenvolupament de l'esquema conceptual</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-931\">12 .\n                      Validació d'esquemes conceptuals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1053\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>L4</h3>\n              Lliurament definitiu esquema conceptual\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1457\">21</a>\n                                  <a href=\"#obj-1458\">20</a>\n                                  <a href=\"#obj-1459\">22</a>\n                                  <a href=\"#obj-1465\">19</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3408\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Q2</h3>\n              Qüestionari sobre els aspectes bàsics de la modelització conceptual en l'enginyeria de requisits. El qüestionari es respondrà en línia en una hora de classe. Cada estudiant ha de portar un ordinador portàtil o similar per accedir i respondre al qüestionari.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1456\">18</a>\n                                  <a href=\"#obj-1457\">21</a>\n                                  <a href=\"#obj-1458\">20</a>\n                                  <a href=\"#obj-1459\">22</a>\n                                  <a href=\"#obj-1465\">19</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

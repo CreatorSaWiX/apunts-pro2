@@ -7,15 +7,363 @@
   "department": "ESAII",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Antoni Grau Saldes",
+      "email": "antoni.grau@upc.edu",
+      "role": "Responsable"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 1.5
+    },
+    {
+      "type": "Problemes",
+      "value": 0.5
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Tema 1. Què es el Processat Digital del Senyal",
+      "isEvaluative": false,
+      "description": "Participar activament en la sessió presencial. Estudi autònom dels materials propossats. Resolució dels problemes proposats. Busqueda d'informció i sistemes en que el PDS és clau. Teoria: - Senyals, sistemes i processat del senyal. - Aplicacions del PDS - Operadors bàsics en el PDS - Arquitectura dels microprocessadors DSP - Estructura dels sistemes PDS Problemes: -- Laboratori: -- Aprenentatge dirigit: -- Aprenentatge autònom: --",
+      "objectives": [
+        "4",
+        "24"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "title": "Tema 2. Discretització de senyals",
+      "isEvaluative": false,
+      "description": "Participar activament en la sessió presencial. Estudi autònom dels materials propossats. Resolució dels problemes proposats. Teoria: Mostreig de senyals. Sinusoide mostrejada. - Teorema del mostreig. - Espectre dels senyals mostrejats. - Relació de freqüències continu-discret. - Conversió analògic a digital. Quantificacions. - Conversió digital a analògic. Reconstrucció",
+      "objectives": [
+        "3",
+        "1",
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 0.5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Tema 3. Analisi freqüèncial del senyal. Transformada de Fourier",
+      "isEvaluative": false,
+      "description": "Participar activament en les sessions presencials. Estudi autònom dels materials proposats. Resolució dels problemes proposats. Recerca d'informació respecte les diferents transformades discretes: concepte, propietats, implementació i aplicació en el PDS. Teoria: - Aplicacions. Equalització, filtrat i compressió d' àudio, imatges i vídeo. -Transformada discreta de Fourier (DFT). - Algorisme ràpid (FFT). - Transformada Inversa de Fourier - Altres transformades discretes (DCT,Wavelet",
+      "objectives": [
+        "4",
+        "7",
+        "8",
+        "9",
+        "20",
+        "21",
+        "22"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Tema 4. Transformada Z. Utilització pel processat del senyal",
+      "isEvaluative": false,
+      "description": "Participar activament en les sessió presencial. Estudi autònom dels materials proposats. Resolució dels problemes proposats",
+      "objectives": [
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Tema 5. Filtres digitals FIR",
+      "isEvaluative": false,
+      "description": "Participar activament en la sessió presencial. Estudi autònom dels materials proposats. Resolució dels problemes proposats Teoria: - Introducció ¿ Filtres promig. - Resposta freqüencial ideal. - Windowing - Disseny de filtres de resposta impulsional finita - Exemples",
+      "objectives": [
+        "12",
+        "25"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Tema 6. Filtres digitals IIR",
+      "isEvaluative": false,
+      "description": "Participar activament en les sessions presencials. Estudi autònom dels materials proposats. Resolució dels problemes proposats Teoria: - Introducció - Disseny de filtres de resposta impulsional infinita ¿ Metode pols i zeros -Exemples",
+      "objectives": [
+        "7",
+        "13",
+        "14",
+        "15"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Tema 7. Processat d'àudio",
+      "isEvaluative": false,
+      "description": "Participar activament en les sessions presencials. Estudi autònom dels materials proposats. Resolució dels problemes proposats Teoria: Equalització Efectes de so Compressió Sintetitzador de so i veu",
+      "objectives": [
+        "4",
+        "24",
+        "2",
+        "16",
+        "17",
+        "18",
+        "20",
+        "21"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3.5
+        },
+        {
+          "type": "Problemes",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 9
+        }
+      ]
+    },
+    {
+      "title": "Pràctica 1. Sistemes i senyals",
+      "isEvaluative": false,
+      "description": "Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat. Realització de les activitats prèvies indicades a l'enunciat. Realització dels exercicis que s'han d'entregar a l'inici de la sessió de laboratori.",
+      "objectives": [
+        "4",
+        "24",
+        "2",
+        "3",
+        "1",
+        "5",
+        "6",
+        "17",
+        "18",
+        "20"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Pràctica 2. Mosterig",
+      "isEvaluative": false,
+      "description": "Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat. Realització de les activitats prèvies indicades a l'enunciat. Realització dels exercicis que s'han d'entregar a l'inici de la sessió de laboratori.",
+      "objectives": [
+        "4",
+        "24",
+        "2",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "25",
+        "20"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Pràctica 3. Processador DSP",
+      "isEvaluative": false,
+      "description": "Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat. Realització de les activitats prèvies indicades a l'enunciat.",
+      "objectives": [
+        "4",
+        "2",
+        "3",
+        "1",
+        "13",
+        "14",
+        "15",
+        "19"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Pràctica 4. Filtres FIR amb DSP",
+      "isEvaluative": false,
+      "description": "Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat. Realització de les activitats prèvies indicades a l'enunciat.",
+      "objectives": [
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "23"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Pràctica 5. Filtres IIR amb DSP",
+      "isEvaluative": false,
+      "description": "Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat. Realització de les activitats prèvies indicades a l'enunciat.",
+      "objectives": [
+        "17",
+        "19",
+        "21",
+        "22",
+        "23"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Antoni Grau Saldes\n                                (antoni.grau@upc.edu)\n                          </b>\n          </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1.5\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.5\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT1\">\n                  <b>\n                    CT1 \n                                      </b>\n                  - Demostrar coneixement i comprensió de fets essencials, conceptes, principis i teories relatives a la informàtica i a les seves disciplines de referència.\n                                      <ul>\n                                              <li id=\"CT1_1B\">\n                          <b>\n                            CT1.1B\n                          </b>\n                          - Demostrar coneixement i comprensió dels conceptes fonamentals de la programació i de l'estructura bàsica d'un computador. CEFB5. Coneixement de l'estructura, funcionament i interconnexió dels sistemes informàtics, i dels fonaments de la seva programació. \n                        </li>\n                                              <li id=\"CT1_2A\">\n                          <b>\n                            CT1.2A\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB1: capacitat per a resoldre els problemes matemàtics que es plantegin en la enginyeria. Aptitud per a aplicar els coneixements sobre: àlgebra, càlcul diferencial i integral i mètodes numèrics; estadística i optimització.\n                        </li>\n                                              <li id=\"CT1_2B\">\n                          <b>\n                            CT1.2B\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB2. Capacitat per a comprendre i dominar els fonaments físics i tecnològics de la informàtica: electromagnetisme, ones, teoria de circuits, electrònica i fotònica i la seva aplicació per a la resolució de problemes propis de l'enginyeria.\n                        </li>\n                                              <li id=\"CT1_2C\">\n                          <b>\n                            CT1.2C\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB3. Capacitat per a comprendre i dominar els conceptes bàsics de matemàtica discreta, lògica, algorísmica i complexitat computacional, i la seva aplicació per al tractament automàtic de la informació mitjançant sistemes computacionals i la seva aplicació per a la resolució de problemes propis de l'enginyeria.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT2\">\n                  <b>\n                    CT2 \n                                      </b>\n                  - Utilitzar d'una manera apropiada teories, procediments i eines en el desenvolupament professional de l'enginyeria informàtica en tots els seus àmbits (especificació, disseny, implementació, desplegament -implantació- i avaluació de productes) de manera que es demostri la comprensió dels compromisos adoptats a les decisions de disseny.\n                                      <ul>\n                                              <li id=\"CT2_3\">\n                          <b>\n                            CT2.3\n                          </b>\n                          - Dissenyar, desenvolupar, seleccionar i avaluar aplicacions, sistemes i serveis informàtics i, al mateix temps, assegurar-ne la  fiabilitat, la seguretat i la qualitat en funció de principis ètics i de la legislació i la normativa vigents. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT5\">\n                  <b>\n                    CT5 \n                                      </b>\n                  - Analitzar, dissenyar, construir i mantenir aplicacions de forma robusta, segura i eficient, triant el paradigma i els llenguatges de programació més adequats.\n                                      <ul>\n                                              <li id=\"CT5_5\">\n                          <b>\n                            CT5.5\n                          </b>\n                          - Usar les eines d'un entorn de desenvolupament de software per a  crear i desenvolupar aplicacions.\n                        </li>\n                                              <li id=\"CT5_6\">\n                          <b>\n                            CT5.6\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació dels principis fonamentals i de les tècniques bàsiques de la programació paral·lela, concurrent, distribuïda i en temps real.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT6\">\n                  <b>\n                    CT6 \n                                      </b>\n                  - Demostrar coneixement i comprensió del funcionament intern d'un computador i del funcionament de les comunicacions entre ordinadors. \n                                      <ul>\n                                              <li id=\"CT6_2\">\n                          <b>\n                            CT6.2\n                          </b>\n                          - Demostrar coneixement, comprensió i capacitat d'avaluar l'estructura i l'arquitectura dels computadors, i els components bàsics que els componen.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT7\">\n                  <b>\n                    CT7 \n                                      </b>\n                  - Avaluar i seleccionar plataformes de producció hardware i software per a l'execució d'aplicacions i de serveis informàtics. \n                                      <ul>\n                                              <li id=\"CT7_2\">\n                          <b>\n                            CT7.2\n                          </b>\n                          - Avaluar sistemes hardware/software en funció d'un criteri de qualitat determinat. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Ús solvent dels recursos d'informació</h4>\n                              <li id=\"G6\">\n                  <b>\n                    G6 \n                                          [Avaluable]\n                                      </b>\n                  - Gestionar l'adquisició, l'estructuració, l'anàlisi i la visualització de dades i d'informació de l'àmbit de l'enginyeria informàtica, i valorar de forma crítica els resultats d'aquesta gestió.\n                                      <ul>\n                                              <li id=\"G6_3\">\n                          <b>\n                            G6.3\n                          </b>\n                          - Planificar i utilitzar la informació necessària per a un treball acadèmic (per exemple, per al treball de final de grau) a partir d'una reflexió crítica sobre els recursos d'informació utilitzats. Gestionar la informació de manera competent, independent i autònoma. Avaluar la informació trobada i identificar-ne les llacunes.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat enginyeria de computadors</h4>\n                              <li id=\"CEC1\">\n                  <b>\n                    CEC1 \n                                      </b>\n                  - Dissenyar i construir sistemes digitals, incloent computadors, sistemes basats en microprocessadors i sistemes de comunicacions.\n                                      <ul>\n                                              <li id=\"CEC1_1\">\n                          <b>\n                            CEC1.1\n                          </b>\n                          - Dissenyar un sistema basat en microprocessador/microcontrolador.\n                        </li>\n                                              <li id=\"CEC1_2\">\n                          <b>\n                            CEC1.2\n                          </b>\n                          - Dissenyar/configurar un circuit integrat utilitzant les eines de software adients.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CEC2\">\n                  <b>\n                    CEC2 \n                                      </b>\n                  - Analitzar i avaluar arquitectures de computadors incloent plataformes paral·leles i distribuïdes, i desenvolupar i optimitzar software per a aquestes plataformes.\n                                      <ul>\n                                              <li id=\"CEC2_3\">\n                          <b>\n                            CEC2.3\n                          </b>\n                          - Desenvolupar i analitzar software per a sistemes basats en microprocessadors i les seves interfícies amb usuaris i altres dispositius.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CEC3\">\n                  <b>\n                    CEC3 \n                                      </b>\n                  - Desenvolupar i analitzar hardware i software per a sistemes encastats i/o de molt baix consum. \n                                      <ul>\n                                              <li id=\"CEC3_1\">\n                          <b>\n                            CEC3.1\n                          </b>\n                          - Analitzar, avaluar i seleccionar les plataformes hardware i software més adients per al suport d'aplicacions encastades i de temps real.\n                        </li>\n                                              <li id=\"CEC3_2\">\n                          <b>\n                            CEC3.2\n                          </b>\n                          - Desenvolupar processadors específics i sistemes encastats; desenvolupar i optimitzar el software d'aquests sistemes.&nbsp;\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +375,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1521\">\n          Introducció.\n\n          <br>\n          - Senyals, sistemes i processat del senyal.<br>\n- Aplicacions del PDS<br>\n- Operadors bàsics en el PDS<br>\n- Arquitectura dels microprocessadors DSP<br>\n- Estructura dels sistemes PDS<br>\n\n        </li>\n              <li id=\"cont-1841\">\n          Discretització de senyals.\n          <br>\n          - Mostreig de senyals. Sinusoide mostrejada. <br>\n- Teorema del mostreig.<br>\n- Espectre dels senyals mostrejats.<br>\n- Relació de freqüències continu-discret.<br>\n- Conversió analògic a digital. Quantificacions.<br>\n- Conversió digital a analògic. Reconstrucció.<br>\n\n        </li>\n              <li id=\"cont-1842\">\n          Analisi freqüèncial del senyal. Transformada de Fourier\n          <br>\n          - Aplicacions. Equalització, filtrat i compressió d' àudio, imatges i vídeo.<br>\n-Transformada discreta de Fourier (DFT).<br>\n- Algorisme ràpid (FFT).<br>\n- Transformada Inversa de Fourier\n        </li>\n              <li id=\"cont-1843\">\n          Transformada Z. Utilització pel processat del senyal\n          <br>\n          - Transformada Z.<br>\n- Transformada Inversa Z.<br>\n- Propietats de la transformada Z.<br>\n- Aplicacions de la transformada Z en el PDS<br>\n\n        </li>\n              <li id=\"cont-1844\">\n          Correlació i convolució\n          <br>\n          <br>\n- Correlació creuada i autocorrelació<br>\n- Fast correlation.<br>\n- Convolució. Circular. Deconvolució. Fast linear convolution.<br>\n- Exemples d'aplicacions.<br>\n\n        </li>\n              <li id=\"cont-1845\">\n          Filtres digitals\n          <br>\n          - Introducció<br>\n- Funció de transferència.<br>\n- Resposta impulsional.<br>\n- Estabilitat.<br>\n- Resposta freqüencial.<br>\n- Estructures.<br>\n- Criteris i procediment pel disseny de filtres digitals<br>\n- Disseny de filtres de resposta impulsional finita<br>\n- Disseny de filtres de resposta impulsional infinita<br>\n- Exemples <br>\n\n        </li>\n              <li id=\"cont-1846\">\n          Processadors pel tractament del senyal\n          <br>\n          <br>\n- Arquitectura i tipus<br>\n- Criteris de selecció.<br>\n- Implementació dels algorismes en PDS de propòsit general.<br>\n- PDS de propòsit específic.<br>\n- Sistemes de desenvolupament pel PDS.<br>\n\n        </li>\n              <li id=\"cont-1847\">\n          Processat d'àudio\n          <br>\n          <br>\nEqualització<br>\nEfectes de so<br>\nCompressió<br>\nSintetitzador de so i veu<br>\n\n        </li>\n              <li id=\"cont-1848\">\n          Processat d'imatges  i vídeo\n          <br>\n          Formats d'imatges. Compressió<br>\nEfectes d'imatge<br>\nEqualització<br>\nCompressió de vídeo <br>\n\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                                      \n                                                        \n                          <div id=\"act-4424\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tema 1. Què es el Processat Digital del Senyal</h3>\n              Participar activament en la sessió presencial. Estudi autònom dels materials propossats. Resolució dels problemes proposats. Busqueda d'informció i sistemes en que el PDS és clau.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      - Senyals, sistemes i processat del senyal. - Aplicacions del PDS - Operadors bàsics en el PDS - Arquitectura dels microprocessadors DSP - Estructura dels sistemes PDS\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      --\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      --\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      --\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      --\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2561\">4</a>\n                                  <a href=\"#obj-2562\">24</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1521\">1 .\n                      Introducció.\n</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-4564\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tema 2. Discretització de senyals</h3>\n              Participar activament en la sessió presencial. Estudi autònom dels materials propossats. Resolució dels problemes proposats.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Mostreig de senyals. Sinusoide mostrejada. - Teorema del mostreig. - Espectre dels senyals mostrejats. - Relació de freqüències continu-discret. - Conversió analògic a digital. Quantificacions. - Conversió digital a analògic. Reconstrucció\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2622\">3</a>\n                                  <a href=\"#obj-2623\">1</a>\n                                  <a href=\"#obj-2624\">5</a>\n                                  <a href=\"#obj-2625\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1841\">2 .\n                      Discretització de senyals.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-4624\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tema 3. Analisi freqüèncial del senyal. Transformada de Fourier</h3>\n              Participar activament en les sessions presencials. Estudi autònom dels materials proposats. Resolució dels problemes proposats. Recerca d'informació respecte les diferents transformades discretes: concepte, propietats, implementació i aplicació en el PDS.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      - Aplicacions. Equalització, filtrat i compressió d' àudio, imatges i vídeo. -Transformada discreta de Fourier (DFT). - Algorisme ràpid (FFT). - Transformada Inversa de Fourier - Altres transformades discretes (DCT,Wavelet\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2561\">4</a>\n                                  <a href=\"#obj-2626\">7</a>\n                                  <a href=\"#obj-2627\">8</a>\n                                  <a href=\"#obj-2628\">9</a>\n                                  <a href=\"#obj-2640\">20</a>\n                                  <a href=\"#obj-2641\">21</a>\n                                  <a href=\"#obj-2642\">22</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1842\">3 .\n                      Analisi freqüèncial del senyal. Transformada de Fourier</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4626\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tema 4. Transformada Z. Utilització pel processat del senyal</h3>\n              Participar activament en les sessió presencial. Estudi autònom dels materials proposats. Resolució dels problemes proposats\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2629\">10</a>\n                                  <a href=\"#obj-2630\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1843\">4 .\n                      Transformada Z. Utilització pel processat del senyal</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-4627\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tema 5. Filtres digitals FIR</h3>\n              Participar activament en la sessió presencial. Estudi autònom dels materials proposats. Resolució dels problemes proposats\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      - Introducció ¿ Filtres promig. - Resposta freqüencial ideal. - Windowing - Disseny de filtres de resposta impulsional finita - Exemples \n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2631\">12</a>\n                                  <a href=\"#obj-2632\">25</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1845\">6 .\n                      Filtres digitals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-4629\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tema 6. Filtres digitals IIR</h3>\n              Participar activament en les sessions presencials. Estudi autònom dels materials proposats. Resolució dels problemes proposats\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      - Introducció - Disseny de filtres de resposta impulsional infinita ¿ Metode pols i zeros -Exemples \n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2626\">7</a>\n                                  <a href=\"#obj-2633\">13</a>\n                                  <a href=\"#obj-2634\">14</a>\n                                  <a href=\"#obj-2635\">15</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1846\">7 .\n                      Processadors pel tractament del senyal</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-4632\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tema 7. Processat d'àudio</h3>\n              Participar activament en les sessions presencials. Estudi autònom dels materials proposats. Resolució dels problemes proposats\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Equalització Efectes de so Compressió Sintetitzador de so i veu \n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2561\">4</a>\n                                  <a href=\"#obj-2562\">24</a>\n                                  <a href=\"#obj-2621\">2</a>\n                                  <a href=\"#obj-2636\">16</a>\n                                  <a href=\"#obj-2637\">17</a>\n                                  <a href=\"#obj-2638\">18</a>\n                                  <a href=\"#obj-2640\">20</a>\n                                  <a href=\"#obj-2641\">21</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1846\">7 .\n                      Processadors pel tractament del senyal</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4649\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Pràctica 1. Sistemes i senyals</h3>\n              Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat.\nRealització de les activitats prèvies indicades a l'enunciat.\nRealització dels  exercicis que s'han d'entregar a l'inici de la sessió de laboratori.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2561\">4</a>\n                                  <a href=\"#obj-2562\">24</a>\n                                  <a href=\"#obj-2621\">2</a>\n                                  <a href=\"#obj-2622\">3</a>\n                                  <a href=\"#obj-2623\">1</a>\n                                  <a href=\"#obj-2624\">5</a>\n                                  <a href=\"#obj-2625\">6</a>\n                                  <a href=\"#obj-2637\">17</a>\n                                  <a href=\"#obj-2638\">18</a>\n                                  <a href=\"#obj-2640\">20</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1521\">1 .\n                      Introducció.\n</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1841\">2 .\n                      Discretització de senyals.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1846\">7 .\n                      Processadors pel tractament del senyal</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1847\">8 .\n                      Processat d'àudio</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4650\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Pràctica 2. Mosterig</h3>\n              Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat.\nRealització de les activitats prèvies indicades a l'enunciat.\nRealització dels  exercicis que s'han d'entregar a l'inici de la sessió de laboratori.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2561\">4</a>\n                                  <a href=\"#obj-2562\">24</a>\n                                  <a href=\"#obj-2621\">2</a>\n                                  <a href=\"#obj-2626\">7</a>\n                                  <a href=\"#obj-2627\">8</a>\n                                  <a href=\"#obj-2628\">9</a>\n                                  <a href=\"#obj-2629\">10</a>\n                                  <a href=\"#obj-2630\">11</a>\n                                  <a href=\"#obj-2631\">12</a>\n                                  <a href=\"#obj-2632\">25</a>\n                                  <a href=\"#obj-2640\">20</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1842\">3 .\n                      Analisi freqüèncial del senyal. Transformada de Fourier</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1843\">4 .\n                      Transformada Z. Utilització pel processat del senyal</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1844\">5 .\n                      Correlació i convolució</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1847\">8 .\n                      Processat d'àudio</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4651\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Pràctica 3. Processador DSP</h3>\n              Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat.\nRealització de les activitats prèvies indicades a l'enunciat.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2561\">4</a>\n                                  <a href=\"#obj-2621\">2</a>\n                                  <a href=\"#obj-2622\">3</a>\n                                  <a href=\"#obj-2623\">1</a>\n                                  <a href=\"#obj-2633\">13</a>\n                                  <a href=\"#obj-2634\">14</a>\n                                  <a href=\"#obj-2635\">15</a>\n                                  <a href=\"#obj-2639\">19</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1521\">1 .\n                      Introducció.\n</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1845\">6 .\n                      Filtres digitals</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1847\">8 .\n                      Processat d'àudio</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4653\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Pràctica 4. Filtres FIR amb DSP</h3>\n              Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat.\nRealització de les activitats prèvies indicades a l'enunciat.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2636\">16</a>\n                                  <a href=\"#obj-2637\">17</a>\n                                  <a href=\"#obj-2638\">18</a>\n                                  <a href=\"#obj-2639\">19</a>\n                                  <a href=\"#obj-2640\">20</a>\n                                  <a href=\"#obj-2643\">23</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1846\">7 .\n                      Processadors pel tractament del senyal</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1847\">8 .\n                      Processat d'àudio</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4654\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Pràctica 5. Filtres IIR amb DSP</h3>\n              Lectura comprensiva de l'enunciat de la pràctica, i de la resta de materials indicats a l'enunciat.\nRealització de les activitats prèvies indicades a l'enunciat.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2637\">17</a>\n                                  <a href=\"#obj-2639\">19</a>\n                                  <a href=\"#obj-2641\">21</a>\n                                  <a href=\"#obj-2642\">22</a>\n                                  <a href=\"#obj-2643\">23</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1848\">9 .\n                      Processat d'imatges  i vídeo</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

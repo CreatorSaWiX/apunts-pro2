@@ -7,15 +7,278 @@
   "department": "THATC",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Antonia Soler Cervera",
+      "email": "antonia.soler@upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Jonathan Green",
+      "email": "jonathan.green@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Maria del Carme Bordera Perez",
+      "email": "carme.bordera@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Marta Aguilar Perez",
+      "email": "marta.aguilar@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 2
+    },
+    {
+      "type": "Laboratori",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.24
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.76
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Utilizar recursos en línia per l'escriptura acadèmica i professional",
+      "isEvaluative": false,
+      "description": "Explorar materials en línia per desenvolupar les habilitats d'escriptura. Seleccionar i utilitzar els materials en funció de les necessitats",
+      "objectives": [
+        "9"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Problemes",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Analitzar els principis de la comunicació tècnica",
+      "isEvaluative": false,
+      "description": "Conèixer la resolució de problemes aplicada a l'escriptura tècnica. Treballar amb diferents gèneres escrits. Analitzar exemples de documents tècnics i l'estratègia comunicativa emprada",
+      "objectives": [
+        "10",
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Problemes",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Escriure un text seguint els diferents estadis del procés d'escriptura. Planificar un text tècnic",
+      "isEvaluative": false,
+      "description": "Analitzar la situació comunicativa. Gestionar i seleccionar la informació tècnica extreta de fonts escrites. Pràctica per evitar el plagi. Explorar i utilitzar patrons d'organització de la informació. Desenvolupar un guió per un assaig acadèmic. Practicar l'escriptura col·laborativa",
+      "objectives": [
+        "2",
+        "3",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 5
+        },
+        {
+          "type": "Problemes",
+          "value": 5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Escriure l'esborrany d'un document tècnic",
+      "isEvaluative": false,
+      "description": "Escriure un paràgraf coherent. Reconèixer l'estructura d'un assag acadèmic. Utilitzar patrons d'organitzacio de la informació. Treballar la coherència i cohesió textuals. Escriure l'esborrany d'un assaig acadèmic",
+      "objectives": [
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 5
+        },
+        {
+          "type": "Problemes",
+          "value": 5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Examen parcial",
+      "isEvaluative": true,
+      "description": "Reconèixer els aspectes fonamentals de l'escriptura tècnica. Planificar un text tècnic, aplicant el procés d'escriptura. Escriure un paràgraf",
+      "objectives": [
+        "10",
+        "1",
+        "2",
+        "3",
+        "5"
+      ],
+      "week": 9,
+      "hours": []
+    },
+    {
+      "title": "Revisar i editar un document tècnic",
+      "isEvaluative": false,
+      "description": "Revisar el contingut i l'estructura del text d'acord amb la situació comunicativa. Revisar el llenguatge per tal d'escriure un text correcte en anglès (gramàtica, sintàxi i vocabulari). Revisar la puntuació i l'ortografia. Practicar l'escriptura col·laborativa. Revisar un assaig acadèmic",
+      "objectives": [
+        "7",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Problemes",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 11
+        }
+      ]
+    },
+    {
+      "title": "Analitzar les característiques de diferents documents tècnics",
+      "isEvaluative": false,
+      "description": "Reconèixer el format de diferents documents: els informes tècnics, el treball final de grau, la carta de presentació, el CV, documentació tècnica. Analitzar l'estratègia comunicativa dels diferents documents segons el propòsit i l'audiència. Planificar un informe tècnic",
+      "objectives": [
+        "1",
+        "2",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 5
+        },
+        {
+          "type": "Problemes",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1.3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 11
+        }
+      ]
+    },
+    {
+      "title": "Sol·licitar una feina o una beca per escrit en anglès",
+      "isEvaluative": false,
+      "description": "Redactar la carta de motivació i preparar el CV per una sol·licitud de feina o de beca d'estudis",
+      "objectives": [
+        "5",
+        "6",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 2.3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Examen parcial",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "2",
+        "5",
+        "6",
+        "7",
+        "8",
+        "10",
+        "1"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Antonia Soler Cervera\n                                (antonia.soler@upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jonathan Green\n                            (jonathan.green@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Maria del Carme Bordera Perez\n                            (carme.bordera@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Marta Aguilar Perez\n                            (marta.aguilar@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.24\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.76\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Tercera llengua</h4>\n                              <li id=\"G3\">\n                  <b>\n                    G3 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer l'idioma anglès amb un nivell adequat de forma oral i escrita, i en consonància amb les necessitats que tindran els graduats i les graduades en Enginyeria Informàtica. Capacitat de treballar en un grup multidisciplinar i en un entorn multilingüe i de comunicar, tant per escrit com de forma oral, coneixements, procediments, resultats i idees relacionats amb la professió d'enginyer tècnic en informàtica.\n                                      <ul>\n                                              <li id=\"G3_3\">\n                          <b>\n                            G3.3\n                          </b>\n                          - Dur a terme una presentació oral en anglès i respondre a les preguntes de l'auditori. Treballar eficaçment en un context internacional, comunicar-se oralment en anglès amb persones de diferents nacionalitats.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +290,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-3269\">\n          Recursos per l'escriptura acadèmica i professional\n          <br>\n          Ús de gramàtiques i diccionaris i altres recursos en línia per millorar les habilitats d'escriptura. Comunicació electrònica en anglès \n        </li>\n              <li id=\"cont-3270\">\n          Aspectes fonamentals de l'escriptura tècnica en entorns acadèmics i professionals\n          <br>\n          Resolució de problemes i concepte de gènere comunicatiu. Audiència, propòsit i estil. L'escriptura com a procés. Tipus de discurs\n        </li>\n              <li id=\"cont-3271\">\n          El procés d'escriptura (I): Planificació d'un document tècnic\n          <br>\n          El full de planificació. Selecció de la informació. Qüestions de plagi. El guió\n        </li>\n              <li id=\"cont-3272\">\n          El procés d'escriptura (II): L'esborrany d'un document tècnic\n          <br>\n          Estructura i coherència del paràgraf. Patrons per l'organització de la informació. Estructura textual i disseny d'un text. Marcadors discursius\n        </li>\n              <li id=\"cont-3273\">\n          El procés d'escriptura (III): Revisió i edició d'un document tècnic\n          <br>\n          Revisió del contingut i l'organització de la informació. Revisió dels usos del llenguatge, atenent a la correcció i a l'adequació. Revisió de l'estil\n        </li>\n              <li id=\"cont-3274\">\n          Tipus de documents per la comunicació acadèmica i professional\n          <br>\n          Escriptura en línia: \"etiqueta\" i ús del correu electrònic. Els informes tècnics, correspondència i currículum per propòsits acadèmics i professionals. Documentació tècnica\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8732\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Utilizar recursos en línia per l'escriptura acadèmica i professional</h3>\n              Explorar materials en línia per desenvolupar les habilitats d'escriptura. Seleccionar i utilitzar els materials en funció de les necessitats\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3948\">9</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3269\">1 .\n                      Recursos per l'escriptura acadèmica i professional</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8733\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Analitzar els principis de la comunicació tècnica</h3>\n              Conèixer la resolució de problemes aplicada a l'escriptura tècnica. Treballar amb diferents gèneres escrits. Analitzar exemples de documents tècnics i l'estratègia comunicativa emprada\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3901\">10</a>\n                                  <a href=\"#obj-3902\">1</a>\n                                  <a href=\"#obj-3941\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3270\">2 .\n                      Aspectes fonamentals de l'escriptura tècnica en entorns acadèmics i professionals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8734\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Escriure un text seguint els diferents estadis del procés d'escriptura. Planificar un text tècnic</h3>\n              Analitzar la situació comunicativa. Gestionar i seleccionar la informació tècnica extreta de fonts escrites. Pràctica per evitar el plagi. Explorar i utilitzar patrons d'organització de la informació. Desenvolupar un guió per un assaig acadèmic. Practicar l'escriptura col·laborativa\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3941\">2</a>\n                                  <a href=\"#obj-3942\">3</a>\n                                  <a href=\"#obj-3943\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3270\">2 .\n                      Aspectes fonamentals de l'escriptura tècnica en entorns acadèmics i professionals</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3271\">3 .\n                      El procés d'escriptura (I): Planificació d'un document tècnic</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8737\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Escriure l'esborrany d'un document tècnic</h3>\n              Escriure un paràgraf coherent. Reconèixer l'estructura d'un assag acadèmic. Utilitzar patrons d'organitzacio de la informació. Treballar la coherència i cohesió textuals. Escriure l'esborrany d'un assaig acadèmic\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3944\">5</a>\n                                  <a href=\"#obj-3945\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3272\">4 .\n                      El procés d'escriptura (II): L'esborrany d'un document tècnic</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3341\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen parcial</h3>\n              Reconèixer els aspectes fonamentals de l'escriptura tècnica. Planificar un text tècnic, aplicant el procés d'escriptura. Escriure un paràgraf\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3901\">10</a>\n                                  <a href=\"#obj-3902\">1</a>\n                                  <a href=\"#obj-3941\">2</a>\n                                  <a href=\"#obj-3942\">3</a>\n                                  <a href=\"#obj-3944\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  9\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8738\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Revisar i editar un document tècnic</h3>\n              Revisar el contingut i l'estructura del text d'acord amb la situació comunicativa. Revisar el llenguatge per tal d'escriure un text correcte en anglès (gramàtica, sintàxi i vocabulari). Revisar la puntuació i l'ortografia. Practicar l'escriptura col·laborativa. Revisar un assaig acadèmic\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3946\">7</a>\n                                  <a href=\"#obj-3947\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3273\">5 .\n                      El procés d'escriptura (III): Revisió i edició d'un document tècnic</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      11h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8739\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Analitzar les característiques de diferents documents tècnics</h3>\n              Reconèixer el format de diferents documents: els informes tècnics, el treball final de grau, la carta de presentació, el CV, documentació tècnica. Analitzar l'estratègia comunicativa dels diferents documents segons el propòsit i l'audiència. Planificar un informe tècnic\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3902\">1</a>\n                                  <a href=\"#obj-3941\">2</a>\n                                  <a href=\"#obj-3945\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3274\">6 .\n                      Tipus de documents per la comunicació acadèmica i professional</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1.3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      11h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8740\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sol·licitar una feina o una beca per escrit en anglès</h3>\n              Redactar la carta de motivació i preparar el CV per una sol·licitud de feina o de beca d'estudis\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3944\">5</a>\n                                  <a href=\"#obj-3945\">6</a>\n                                  <a href=\"#obj-3946\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3274\">6 .\n                      Tipus de documents per la comunicació acadèmica i professional</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2.3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3342\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen parcial </h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3941\">2</a>\n                                  <a href=\"#obj-3944\">5</a>\n                                  <a href=\"#obj-3945\">6</a>\n                                  <a href=\"#obj-3946\">7</a>\n                                  <a href=\"#obj-3947\">8</a>\n                                  <a href=\"#obj-3901\">10</a>\n                                  <a href=\"#obj-3902\">1</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

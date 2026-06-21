@@ -7,15 +7,270 @@
   "department": "EIO",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "José Antonio González Alastrue",
+      "email": "jose.a.gonzalez@upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Bhumika Ashvinbhai Patel",
+      "email": "bhumika.patel@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jan Moreno Monteys",
+      "email": "jan.moreno.monteys@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jordi Cortés Martínez",
+      "email": "jordi.cortes-martinez@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Klaus Gerhard Langohr",
+      "email": "klaus.langohr@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Mario Agustiño Batet",
+      "email": "mario.agustino@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Mercè Vila Albacete",
+      "email": "merce.vila.albacete@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Mireia Besalú Mayol",
+      "email": "mireia.besalu@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Mireia Lopez Beltran",
+      "email": "mireia.lopez.beltran@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Nuria Perez Alvarez",
+      "email": "nuria.perez@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2.4
+    },
+    {
+      "type": "Problemes",
+      "value": 2
+    },
+    {
+      "type": "Laboratori",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Activitats Bloc A. Probabilitat i variables aleatòries",
+      "isEvaluative": false,
+      "description": "Ubicar la probabilitat i l'estadística, especialment en l'àmbit informàtic. Assentar les bases de la probabilitat. Saber calcular i analitzar probabilitats condicionades i conjuntes. Analitzar si hi ha independència o no. Definir variable aleatòria (V.A.), V.A. discreta i V.A. contínua. Definir funció de probabilitat, funció de distribució de probabilitat i funció de probabilitat conjunta. Relacionar indicadors de V.A. amb indicadors mostrals. Teoria: Tests de seguiment del treball de lectura i estudi previ. Exposició dels temes del bloc: bases de la probabilitat i l'estadística; independència i probabilitats condicionades i conjuntes; definició de variable aleatòria i les funcions de probabilitat i de distribució de probabilitat; indicadors de VA, i relació amb indicadors mostrals Problemes: Exemple model dels temes exposats. Exercicis de seguiment. Resolució de problemes proposats. Discussió de resultats Aprenentatge dirigit: Realització d'un problema en examen parcial i/o final Aprenentatge autònom: Lectura i estudi de material previ a les sessions de teoria. Resolució de problemes en e-status.",
+      "objectives": [
+        "16",
+        "1",
+        "2",
+        "3",
+        "4",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Problemes",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Activitats Bloc B. Models probabilistics",
+      "isEvaluative": false,
+      "description": "Definir els models teòrics, discrets i continus, amb més aplicació en l'àmbit informàtic. Definir-ne les característiques, els paràmetres i calcular-ne probabilitats. Teoria: Tests de seguiment del treball de lectura i estudi previ. Exposició dels temes del bloc: definir els models teòrics, discrets i continus, amb més aplicació en l'àmbit informàtic amb les seves característiques i paràmetres; i calcular probabilitats directes i inverses amb els models definits. Problemes: Exemple model dels temes exposats. Exercicis de seguiment. Resolució de problemes proposats. Discussió de resultats Aprenentatge dirigit: Realització d'un problema en examen parcial i/o final Aprenentatge autònom: Lectura i estudi de material previ a les sessions de teoria. Resolució de problemes en e-status.",
+      "objectives": [
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Problemes",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Parcial 1",
+      "isEvaluative": true,
+      "description": "Prova parcial consistent en problemes corresponents als blocs 1, 2 i 3 dels continguts i, per tant, als primers 8 objectius específics",
+      "objectives": [
+        "16",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "week": 7,
+      "hours": []
+    },
+    {
+      "title": "Activitats Bloc C. Bases de l'estadística",
+      "isEvaluative": false,
+      "description": "Assentar els conceptes de població i mostra, paràmetre i estimador. Introduir els estadístics i amb ells definir i relacionar intervals de confiança (IC) i proves d'hipòtesis (PH). Teoria: Tests de seguiment del treball de lectura i estudi previ. Exposició dels temes del bloc: definició de mostra, paràmetre, estimador i estadístic per construir intervals de confiança (IC); i sistematitzar els estadístics que defineixen els IC i PH amb més interès en l'àmbit informàtic. Problemes: Exemple model dels temes exposats. Exercicis de seguiment. Resolució de problemes proposats. Discussió de resultats Aprenentatge dirigit: Realització d'un problema en examen parcial i/o final Aprenentatge autònom: Lectura i estudi de material previ a les sessions de teoria. Resolució de problemes en e-status.",
+      "objectives": [
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Problemes",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Activitats Bloc D. Models estadístics i previsió",
+      "isEvaluative": false,
+      "description": "Definició de models estadístics. Anàlisi de la variabilitat. Disseny aparellat i de mostres independents. Model lineal. Validació de les premisses, possibles transformacions, prediccions. Alguns models per a la ciència de dades. Implicacions de la investigació. Teoria: Tests de seguiment del treball de lectura i estudi previ. Exposició dels temes del bloc: definir el model adequat; i validar-ho, analitzar transformacions, estimar efectes i predir. Problemes: Exemple model dels temes exposats. Exercicis de seguiment. Resolució de problemes proposats. Discussió de resultats Aprenentatge dirigit: Realització d'un problema en examen parcial i/o final Aprenentatge autònom: Lectura i estudi de material previ a les sessions de teoria. Resolució de problemes en e-status.",
+      "objectives": [
+        "12",
+        "13",
+        "14"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Problemes",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Activitats Aplicació",
+      "isEvaluative": false,
+      "description": "Identificar problemes en l'àmbit de la informàtica on fer un estudi de probabilitat i/o estadística. Dissenyar un estudi, recollir dades i analitzar i interpretar resultats. Sintetitzar de manera crítica les conclusions. Teoria: Plantejar i orientar perquè l'estudiant es plantegi un estudi de probabilitat i/o estadística. Seguiment de l'estudi i fomentar-ne una exposició sintètica i crítica. Problemes: Orientació i seguiment per grups dels estudis de probabilitat i/o estadística. Orientació i seguiment per grups de la part pràctica dels estudis de probabilitat i/o estadística. Aprenentatge autònom: Recerca en l'àmbit informàtic de situacions on fer un estudi de probabilitat i/o estadística. Disseny de l'estudi, recollida de dades, anàlisis i interpretació de resultats.",
+      "objectives": [
+        "16",
+        "17",
+        "15"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Problemes",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Parcial 2",
+      "isEvaluative": true,
+      "description": "Prova parcial consistent en problemes corresponents als blocs 4,5 i 6 dels continguts i, per tant, als objectius específics del 9 al 17",
+      "objectives": [
+        "8",
+        "9",
+        "10",
+        "11",
+        "17",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Examen Final",
+      "isEvaluative": true,
+      "description": "Inclou tots els temes",
+      "objectives": [],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              José Antonio González Alastrue\n                                (jose.a.gonzalez@upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Bhumika Ashvinbhai Patel\n                            (bhumika.patel@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jan Moreno Monteys\n                            (jan.moreno.monteys@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jordi Cortés Martínez\n                            (jordi.cortes-martinez@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Klaus Gerhard Langohr\n                            (klaus.langohr@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Mario Agustiño Batet\n                            (mario.agustino@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Mercè Vila Albacete\n                            (merce.vila.albacete@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Mireia Besalú Mayol\n                            (mireia.besalu@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Mireia Lopez Beltran\n                            (mireia.lopez.beltran@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Nuria Perez Alvarez\n                            (nuria.perez@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2.4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT1\">\n                  <b>\n                    CT1 \n                                      </b>\n                  - Demostrar coneixement i comprensió de fets essencials, conceptes, principis i teories relatives a la informàtica i a les seves disciplines de referència.\n                                      <ul>\n                                              <li id=\"CT1_2A\">\n                          <b>\n                            CT1.2A\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB1: capacitat per a resoldre els problemes matemàtics que es plantegin en la enginyeria. Aptitud per a aplicar els coneixements sobre: àlgebra, càlcul diferencial i integral i mètodes numèrics; estadística i optimització.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT8\">\n                  <b>\n                    CT8 \n                                      </b>\n                  - Planificar, concebre, desplegar i dirigir projectes, serveis i sistemes informàtics en tots els àmbits, liderar-ne la posada en marxa, la millora contínua i valorar-ne l'impacte econòmic i social. \n                                      <ul>\n                                              <li id=\"CT8_3\">\n                          <b>\n                            CT8.3\n                          </b>\n                          - Demostrar coneixement i saber aplicar les tècniques apropiades per a modelar i analitzar els diferents tipus de decisions.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Raonament</h4>\n                              <li id=\"G9\">\n                  <b>\n                    G9 \n                                          [Avaluable]\n                                      </b>\n                  - Capacitat de raonament crític, lògic i matemàtic. Capacitat de resoldre problemes en la seva àrea d'estudi. Capacitat d'abstracció: capacitat de crear i utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills, i analitzar-ne i interpretar-ne els resultats. Capacitat d'anàlisi, de síntesi i d'avaluació.\n                                      <ul>\n                                              <li id=\"G9_2\">\n                          <b>\n                            G9.2\n                          </b>\n                          - Capacitat d'anàlisi i de síntesi, capacitat de resoldre problemes en la seva àrea d'estudi, i d'interpretar-ne els resultats de manera crítica. Capacitat d'abstracció: capacitat de crear i d'utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills i analitzar-ne i interpretar-ne els resultats de manera crítica.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +282,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-8281\">\n          Bloc A. Probabilitat i variables aleatòries\n          <br>\n          Experiència aleatòria. Probabilitat, probabilitat condicionada, probabilitat conjunta. Definició de variable aleatòria i tipus. Funció de probabilitat, funció de densitat de probabilitat i funció de distribució. Funció de probabilitat conjunta. Indicadors: esperança, variància, desviació tipus, covariància, correlació. Independència entre dues variables aleatòries.\n        </li>\n              <li id=\"cont-8282\">\n          Bloc B. Models probabilístics\n          <br>\n          Models teòrics parametritzats de variables aleatòries. Càlcul de probabilitats directes i inverses amb R. Introducció a simulació. Distribució de la mitjana mostral. Teorema Central del Límit: aproximacions a la Normal.\n        </li>\n              <li id=\"cont-8301\">\n          Bloc C. Bases de l'estadística\n          <br>\n          Població i mostra. Paràmetre, estadístic i estimador. Biaix d'un estimador. Interval de confiança per a un paràmetre, i per la diferència de dos paràmetres. Prova d'hipòtesis.\n        </li>\n              <li id=\"cont-8302\">\n          Bloc D. Models estadístics i previsió\n          <br>\n          Comparació de dos grups, disseny aparellat, mostres independents. Model lineal. Indicadors de la qualitat de l'ajustament. Validació de les premisses. Introducció a la ciència de dades. Estudis experimentals i observacionals. Ètica de la ciència, research waste.\n        </li>\n              <li id=\"cont-567\">\n          Bloc T. Aplicació.\n          <br>\n          Identificació de fonts de variabilitat en processos informàtics. Disseny d'un estudi amb planificació de l'objectiu, recollida de dades, anàlisis estadístic amb R i interpretació de resultats.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                                                        \n                          <div id=\"act-1025\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Activitats Bloc A. Probabilitat i variables aleatòries</h3>\n              Ubicar la probabilitat i l'estadística, especialment en l'àmbit informàtic. Assentar les bases de la probabilitat. Saber calcular i analitzar probabilitats condicionades i conjuntes. Analitzar si hi ha independència o no. Definir variable aleatòria (V.A.), V.A. discreta i V.A. contínua. Definir funció de probabilitat, funció de distribució de probabilitat i funció de probabilitat conjunta. Relacionar indicadors de V.A. amb indicadors mostrals.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Tests de seguiment del treball de lectura i estudi previ. Exposició dels temes del bloc: bases de la probabilitat i l'estadística; independència i probabilitats condicionades i conjuntes; definició de variable aleatòria i les funcions de probabilitat i de distribució de probabilitat; indicadors de VA, i relació amb indicadors mostrals\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Exemple model dels temes exposats. Exercicis de seguiment. Resolució de problemes proposats. Discussió de resultats\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Realització d'un problema en examen parcial i/o final\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Lectura i estudi de material previ a les sessions de teoria. Resolució de problemes en e-status. \n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-996\">16</a>\n                                  <a href=\"#obj-997\">1</a>\n                                  <a href=\"#obj-998\">2</a>\n                                  <a href=\"#obj-999\">3</a>\n                                  <a href=\"#obj-1000\">4</a>\n                                  <a href=\"#obj-1003\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-8281\">1 .\n                      Bloc A. Probabilitat i variables aleatòries</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                                                        \n                          <div id=\"act-1034\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Activitats Bloc B. Models probabilistics</h3>\n              Definir els models teòrics, discrets i continus, amb més aplicació en l'àmbit informàtic. Definir-ne les característiques, els paràmetres i calcular-ne probabilitats.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Tests de seguiment del treball de lectura i estudi previ. Exposició dels temes del bloc: definir els models teòrics, discrets i continus, amb més aplicació en l'àmbit informàtic amb les seves característiques i paràmetres; i calcular probabilitats directes i inverses amb els models definits.\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Exemple model dels temes exposats. Exercicis de seguiment. Resolució de problemes proposats. Discussió de resultats\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Realització d'un problema en examen parcial i/o final\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Lectura i estudi de material previ a les sessions de teoria. Resolució de problemes en e-status. \n \n\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1001\">5</a>\n                                  <a href=\"#obj-1002\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-8282\">2 .\n                      Bloc B. Models probabilístics</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-521\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Parcial 1</h3>\n              Prova parcial consistent en problemes corresponents als blocs 1, 2 i 3 dels continguts i, per tant, als primers 8 objectius específics\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-996\">16</a>\n                                  <a href=\"#obj-997\">1</a>\n                                  <a href=\"#obj-998\">2</a>\n                                  <a href=\"#obj-999\">3</a>\n                                  <a href=\"#obj-1000\">4</a>\n                                  <a href=\"#obj-1001\">5</a>\n                                  <a href=\"#obj-1002\">6</a>\n                                  <a href=\"#obj-1003\">7</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  7\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                                                        \n                          <div id=\"act-1035\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Activitats Bloc C. Bases de l'estadística</h3>\n              Assentar els conceptes de població i mostra, paràmetre i estimador. Introduir els estadístics i amb ells definir i relacionar intervals de confiança (IC) i proves d'hipòtesis (PH).\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Tests de seguiment del treball de lectura i estudi previ. Exposició dels temes del bloc: definició de mostra, paràmetre, estimador i estadístic per construir intervals de confiança (IC); i sistematitzar els estadístics que defineixen els IC i PH amb més interès en l'àmbit informàtic.\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Exemple model dels temes exposats. Exercicis de seguiment. Resolució de problemes proposats. Discussió de resultats\n \n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Realització d'un problema en examen parcial i/o final\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Lectura i estudi de material previ a les sessions de teoria. Resolució de problemes en e-status. \n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1004\">8</a>\n                                  <a href=\"#obj-1005\">9</a>\n                                  <a href=\"#obj-1006\">10</a>\n                                  <a href=\"#obj-1007\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-567\">5 .\n                      Bloc T. Aplicació.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-8301\">3 .\n                      Bloc C. Bases de l'estadística</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                                                        \n                          <div id=\"act-1037\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Activitats Bloc D. Models estadístics i previsió</h3>\n              Definició de models estadístics. Anàlisi de la variabilitat. Disseny aparellat i de mostres independents. Model lineal. Validació de les premisses, possibles transformacions, prediccions. Alguns models per a la ciència de dades. Implicacions de la investigació.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Tests de seguiment del treball de lectura i estudi previ. Exposició dels temes del bloc: definir el model adequat; i validar-ho, analitzar transformacions, estimar efectes i predir.\n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Exemple model dels temes exposats. Exercicis de seguiment. Resolució de problemes proposats. Discussió de resultats\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Realització d'un problema en examen parcial i/o final\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Lectura i estudi de material previ a les sessions de teoria. Resolució de problemes en e-status. \n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1009\">12</a>\n                                  <a href=\"#obj-1010\">13</a>\n                                  <a href=\"#obj-1011\">14</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-567\">5 .\n                      Bloc T. Aplicació.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-8302\">4 .\n                      Bloc D. Models estadístics i previsió</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                                      \n                          <div id=\"act-1038\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Activitats Aplicació</h3>\n              Identificar problemes en l'àmbit de la informàtica on fer un estudi de probabilitat i/o estadística. Dissenyar un estudi, recollir dades i analitzar i interpretar resultats. Sintetitzar de manera crítica les conclusions.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Plantejar i orientar perquè l'estudiant es plantegi un estudi de probabilitat i/o estadística. Seguiment de l'estudi i fomentar-ne una exposició sintètica i crítica. \n                    </li>\n                                      <li>\n                      <b>Problemes:</b>\n                      Orientació i seguiment per grups dels estudis de probabilitat i/o estadística. Orientació i seguiment per grups de la part pràctica dels estudis de probabilitat i/o estadística.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Recerca en l'àmbit informàtic de situacions on fer un estudi de probabilitat i/o estadística. Disseny de l'estudi, recollida de dades, anàlisis i interpretació de resultats. \n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-996\">16</a>\n                                  <a href=\"#obj-1008\">17</a>\n                                  <a href=\"#obj-1012\">15</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-567\">5 .\n                      Bloc T. Aplicació.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-522\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Parcial 2</h3>\n              Prova parcial consistent en problemes corresponents als blocs 4,5 i 6 dels continguts i, per tant, als objectius específics del 9 al 17\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1004\">8</a>\n                                  <a href=\"#obj-1005\">9</a>\n                                  <a href=\"#obj-1006\">10</a>\n                                  <a href=\"#obj-1007\">11</a>\n                                  <a href=\"#obj-1008\">17</a>\n                                  <a href=\"#obj-1009\">12</a>\n                                  <a href=\"#obj-1010\">13</a>\n                                  <a href=\"#obj-1011\">14</a>\n                                  <a href=\"#obj-1012\">15</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-632\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen Final</h3>\n              Inclou tots els temes\n              <br>\n              \n              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

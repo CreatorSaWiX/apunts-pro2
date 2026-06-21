@@ -7,15 +7,383 @@
   "department": "AC",
   "web": "http://docencia.ac.upc.edu/FIB/grau/ASO",
   "summary": "",
+  "professors": [
+    {
+      "name": "René Serral Gracià",
+      "email": "rserral@ac.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Enric Morancho Llena",
+      "email": "enricm@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Leonidas Kosmidis",
+      "email": "lkosmidi@ac.upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.4
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Presentació de l'assignatura i introducció a l'Administració de Sistemes",
+      "isEvaluative": false,
+      "description": "L'estudiant participa activament durant la sessió, treballant en grup sobre les qüestions plantejades a classe i comentant les solucions a les que cada grup ha arribat a tota la classe. Aprenentatge autònom: Inici de cerca d'informació, recolzada amb l'explicació donada a la classe de teoria",
+      "objectives": [
+        "1",
+        "2",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Instal.lació del sistema operatiu",
+      "isEvaluative": false,
+      "description": "L'estudiant participa activament en la sessió de teoria, treballant en grup en les activitats proposades i comentant les solucions a les que cada grup ha arribat a tota la classe. A la sessió de laboratori, l'estudiant realitza la planificació del sistema que usarà durant la resta del curs i fa la instal.lació bàsica del sistema operatiu, incloent la post-instal.lació. Teoria: Classe d'instal.lació del sistema operatiu Laboratori: Laboratori d'instal.lació del sistema operatiu Aprenentatge autònom: Cerca d'informació sobre els mètodes per a dimensionar la instal·lació del sistema",
+      "objectives": [
+        "2",
+        "3",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Gestió d'usuaris",
+      "isEvaluative": false,
+      "description": "L'estudiant participa activament a la sessió d'explicació teòrica treballant en grup els processos de donar d'alta i donar de baixa un usuari, i l'ús de les proteccions a nivell de fitxer i directori per implementar confidencialitat. Realitzarà un informe sobre les eines habituals per manipular les proteccions sobre els recursos i/o les comandes relacionades amb la gestió d'usuaris. Teoria: Treballs sobre la gestió d'usuaris en el sistema operatiu, i discussions sobre les alternatives per donar d'alta i baixa d'usuaris i els mecanismes de protecció a tenir en compte. Laboratori: Aplicació pràctica dels conceptes teòrics per tal de gestionar efectivament els usuaris presents a una instal·lació Aprenentatge autònom: L'estudiant realitzarà un informe sobre les eines habituals per manipular les proteccions sobre els recursos i/o les comandes relacionades amb la gestió d'usuaris",
+      "objectives": [
+        "1",
+        "4",
+        "5",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Gestió d'aplicacions",
+      "isEvaluative": false,
+      "description": "L'estudiant participa activament a la sessió d'explicació teòrica treballant en grup sobre les diferents tècniques d'instal.lació d'aplicacions en un sistema operatiu. Realitzarà un informe sobre les eines habituals que ens ajuden a compilar, instal.lar i gestionar aplicacions. Teoria: Treballs sobre la instal.lació d'aplicacions, i discussions sobre les diferents maneres de distribuir software. Laboratori: Instal.lar diferents tipus d'aplicacions a partir de codi font i binari. Desenvolupar scripts que donin suport a la gestió de les aplicacions. Aprenentatge dirigit: Suport sobre l'elaboració dels informes de l'assignatura Aprenentatge autònom: Realitzarà un informe sobre les eines habituals que ens ajuden a compilar, instal.lar i gestionar aplicacions",
+      "objectives": [
+        "1",
+        "5",
+        "6",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Monitorització",
+      "isEvaluative": false,
+      "description": "L'estudiant participa activament a la sessió d'explicació teòrica, treballant en grup sobre les diferents tècniques de monitorització sobre els recursos del sistema. Realitzarà un informe sobre el suport de monitorització que ofereixen els sistemes operatius. Teoria: Recursos a monitoritzar i tècniques útils per a la monitorització Laboratori: Usar les eines de monitorització mentre es realitzen diferents tasques d'administració Aprenentatge dirigit: Discussió sobre la resolució del primer control Aprenentatge autònom: Cercar noves aplicacions de monitorització del sistema, instal·lar-les i fer un informe sobre els seus avantatges",
+      "objectives": [
+        "1",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Manteniment del sistema de fitxers",
+      "isEvaluative": false,
+      "description": "L'estudiant participa activament a la sessió d'explicació teòrica treballant en grup sobre els mètodes per a realitzar còpies de seguretat i realitza un informe sobre les eines disponibles. Teoria: Descripció sobre els sistemes de fitxers i discussions sobre les tècniques de còpies de seguretat Laboratori: Tècniques de realització de còpies de seguretat Aprenentatge autònom: Realització d'un informe sobre equips de suport a les còpies de seguretat",
+      "objectives": [
+        "1",
+        "3",
+        "8",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Virtualització i tecnologies al núvol",
+      "isEvaluative": false,
+      "description": "L'estudiant participa activament a la sessió d'explicació teòrica realitzant aportacions sobre el funcionament d'aquestes tecnologies. Teoria: Treball sobre els serveis locals i la virtualització de sistemes Laboratori: Programació de tasques periòdiques Aprenentatge dirigit: Visita a Marenostrum, orientada a instal·lació i administració de la màquina Aprenentatge autònom: Instalació de sistemes operatius virtualitzats",
+      "objectives": [
+        "1",
+        "2",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Primer control",
+      "isEvaluative": true,
+      "description": "En aquesta prova s'avalua el coneixement i la pràctica adquirits en les 9 primeres setmanes de l'assignatura, incloent els temes 1 a 7.",
+      "objectives": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "3",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "week": 10,
+      "hours": []
+    },
+    {
+      "title": "Gestió de serveis en xarxa",
+      "isEvaluative": false,
+      "description": "L'estudiant participa activament a la sessió treballant en grup sobre la configuració adequada dels serveis de xarxa del sistema. Realitzarà un informe sobre els servidors disponibles per una sèrie de serveis proposats i els avantatges que ofereix cadascun. Teoria: Serveis de xarxa Laboratori: Configuració de serveis de xarxa Aprenentatge dirigit: Discussió sobre la resolució del segon control Aprenentatge autònom: Instal·lació de servidors de xarxa i elaboració de l'informe sobre els avantatges de cadascun",
+      "objectives": [
+        "1",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Protecció i seguretat",
+      "isEvaluative": false,
+      "description": "L'estudiant participa activament en les discussions sobre la seguretat dels sistemes i la defensa contra els atacs. Realitzarà un informe sobre eines de monitorització i anàlisi de la xarxa i detecció d'intrussions. Teoria: Protecció i seguretat Aprenentatge dirigit: Discussió sobre la resolució del tercer control Aprenentatge autònom: Instal·lació i avaluació d'eines d'anàlisi del tràfic de la xarxa i detecció d'intrussions",
+      "objectives": [
+        "1",
+        "2",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Segon control",
+      "isEvaluative": true,
+      "description": "En aquesta prova s'avalua el coneixement i la pràctica adquirits durant tot el curs.",
+      "objectives": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "3",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Examen de laboratori",
+      "isEvaluative": true,
+      "description": "En aquesta prova es realitzen exercicis pràctics de forma individual, relacionats amb tots els temes vistos a l'assignatura. Es pot disposar de llibres i apunts.",
+      "objectives": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "3",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Examen final",
+      "isEvaluative": true,
+      "description": "Per aquells estudiants que necessitin superar els mínims de l'assignatura o vulguin pujar nota, aquest examen es realitzarà un cop acabades les classes",
+      "objectives": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "3",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              René Serral Gracià\n                                (rserral@ac.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Enric Morancho Llena\n                            (enricm@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Leonidas Kosmidis\n                            (lkosmidi@ac.upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT2\">\n                  <b>\n                    CT2 \n                                      </b>\n                  - Utilitzar d'una manera apropiada teories, procediments i eines en el desenvolupament professional de l'enginyeria informàtica en tots els seus àmbits (especificació, disseny, implementació, desplegament -implantació- i avaluació de productes) de manera que es demostri la comprensió dels compromisos adoptats a les decisions de disseny.\n                                      <ul>\n                                              <li id=\"CT2_3\">\n                          <b>\n                            CT2.3\n                          </b>\n                          - Dissenyar, desenvolupar, seleccionar i avaluar aplicacions, sistemes i serveis informàtics i, al mateix temps, assegurar-ne la  fiabilitat, la seguretat i la qualitat en funció de principis ètics i de la legislació i la normativa vigents. \n                        </li>\n                                              <li id=\"CT2_5\">\n                          <b>\n                            CT2.5\n                          </b>\n                          - Dissenyar i avaluar interfícies persona-computador que garanteixin l'accessibilitat i la usabilitat als sistemes, als serveis i a les aplicacions informàtiques.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT3\">\n                  <b>\n                    CT3 \n                                      </b>\n                  - Demostrar coneixement i comprensió del context organitzatiu, econòmic i legal en el qual es desenvolupa la seva feina (coneixement adequat del concepte d'empresa, del marc institucional i jurídic de l'empresa, d'organització i gestió de les empreses). \n                                      <ul>\n                                              <li id=\"CT3_6\">\n                          <b>\n                            CT3.6\n                          </b>\n                          - Demostrar coneixement de la dimensió ètica a l'empresa: la responsabilitat social i corporativa en general i, en particular, les responsabilitats civils i professionals de l'enginyer en informàtica.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT6\">\n                  <b>\n                    CT6 \n                                      </b>\n                  - Demostrar coneixement i comprensió del funcionament intern d'un computador i del funcionament de les comunicacions entre ordinadors. \n                                      <ul>\n                                              <li id=\"CT6_1\">\n                          <b>\n                            CT6.1\n                          </b>\n                          - Demostrar coneixement i tenir capacitat per a administrar i mantenir sistemes, serveis i aplicacions informàtiques.\n                        </li>\n                                              <li id=\"CT6_3\">\n                          <b>\n                            CT6.3\n                          </b>\n                          - Demostrar coneixement de les característiques, funcionalitats i estructura dels Sistemes Operatius que en permeti un ús adequat, administració i disseny, així com la implementació d'aplicacions basades en els seus serveis.\n                        </li>\n                                              <li id=\"CT6_4\">\n                          <b>\n                            CT6.4\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació de les característiques, de les funcionalitats i de l'estructura dels Sistemes Distribuïts i de les Xarxes de Computadors i d'Internet que en garanteixi l'ús i l'administració, així com el disseny i la implementació d'aplicacions basades en elles. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT7\">\n                  <b>\n                    CT7 \n                                      </b>\n                  - Avaluar i seleccionar plataformes de producció hardware i software per a l'execució d'aplicacions i de serveis informàtics. \n                                      <ul>\n                                              <li id=\"CT7_2\">\n                          <b>\n                            CT7.2\n                          </b>\n                          - Avaluar sistemes hardware/software en funció d'un criteri de qualitat determinat. \n                        </li>\n                                              <li id=\"CT7_3\">\n                          <b>\n                            CT7.3\n                          </b>\n                          - Determinar els factors que incideixen negativament en la seguretat i la fiabilitat d'un sistema hardware/software, i minimitzar-ne els efectes. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT8\">\n                  <b>\n                    CT8 \n                                      </b>\n                  - Planificar, concebre, desplegar i dirigir projectes, serveis i sistemes informàtics en tots els àmbits, liderar-ne la posada en marxa, la millora contínua i valorar-ne l'impacte econòmic i social. \n                                      <ul>\n                                              <li id=\"CT8_4\">\n                          <b>\n                            CT8.4\n                          </b>\n                          - Elaborar el plec de condicions tècniques d'una instal·lació informàtica que compleixi els estàndards i la normativa vigent.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat tecnologies de la informació</h4>\n                              <li id=\"CTI1\">\n                  <b>\n                    CTI1 \n                                      </b>\n                  - Definir, planificar i gestionar la instal·lació de la infraestructura TIC de l'organització.\n                                      <ul>\n                                              <li id=\"CTI1_1\">\n                          <b>\n                            CTI1.1\n                          </b>\n                          - Demostrar comprensió de l'entorn d'una organització i de les seves necessitats en l'àmbit de les tecnologies de la informació i les comunicacions.\n                        </li>\n                                              <li id=\"CTI1_2\">\n                          <b>\n                            CTI1.2\n                          </b>\n                          - Seleccionar, dissenyar, desplegar, integrar gestionar xarxes i infraestructures de comunicacions en una organització.\n                        </li>\n                                              <li id=\"CTI1_4\">\n                          <b>\n                            CTI1.4\n                          </b>\n                          - Seleccionar, dissenyar, desplegar, integrar, avaluar, construir, gestionar, explotar i mantenir les tecnologies de hardware, software i xarxes, dintre dels paràmetres de cost i qualitat adequats.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CTI2\">\n                  <b>\n                    CTI2 \n                                      </b>\n                  - Garantir que els sistemes TIC d'una organització funcionen de manera adequada, són segurs i estan adequadament instal·lats, documentats, personalitzats, mantinguts, actualitzats i substituïts, i que les persones de l'organització reben un suport TIC correcte.\n                                      <ul>\n                                              <li id=\"CTI2_2\">\n                          <b>\n                            CTI2.2\n                          </b>\n                          - Administrar i mantenir aplicacions, sistemes informàtics i xarxes de computadors (els nivells de coneixement i de comprensió són a les competències tècniques comunes).\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CTI4\">\n                  <b>\n                    CTI4 \n                                      </b>\n                  - Emprar metodologies centrades en l'usuari i l'organització per al desenvolupament, l'avaluació i la gestió d'aplicacions i sistemes basats en tecnologies de la informació que assegurin l'accessibilitat, l'ergonomia i la usabilitat dels sistemes.\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Aprenentatge autònom</h4>\n                              <li id=\"G7\">\n                  <b>\n                    G7 \n                                          [Avaluable]\n                                      </b>\n                  - Detectar carències en el  coneixement propi i superar-les mitjançant la reflexió crítica i l'elecció de la millor actuació per ampliar aquest coneixement. Capacitat per a l'aprenentatge de nous mètodes i tecnologies, i versatilitat per a adaptar-se a noves situacions. \n                                      <ul>\n                                              <li id=\"G7_3\">\n                          <b>\n                            G7.3\n                          </b>\n                          - Aprenentatge autònom: capacitat de planificació i organització del treball personal. Aplicar els coneixements adquirits a la realització d'una tasca en funció de la pertinença i de la importància, decidir la manera de dur-la a terme i el temps que se li ha de dedicar, i seleccionar les fonts d'informació més adients. Identificar la importància d'establir i mantenir contactes amb els companys d'estudis, amb el professorat i amb els professionals (networking). Identificar fòrums d'informació sobre enginyeria TIC, els seus avenços i el seu impacte en la societat (IEEE, associacions, etc.).\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +395,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1201\">\n          Introducció\n          <br>\n          &lt;ul&gt;<br>\n&lt;li&gt;Definició de conceptes&lt;/li&gt;<br>\n&lt;li&gt;Nivells&lt;/li&gt;<br>\n&lt;li&gt;Responsabilitats&lt;/li&gt;<br>\n&lt;li&gt;Legalitat vigent i Codi d'Ètica de l'Administrador&lt;/li&gt;<br>\n&lt;li&gt;Seguretat&lt;/li&gt;<br>\n&lt;/ul&gt;<br>\n\n        </li>\n              <li id=\"cont-1202\">\n          Instal.lació del sistema operatiu\n          <br>\n          &lt;ul&gt;<br>\n&lt;li&gt;Conceptes&lt;/li&gt;<br>\n&lt;li&gt;Preparació&lt;/li&gt;<br>\n&lt;li&gt;Boot del sistema&lt;/li&gt;<br>\n&lt;li&gt;Eines i post-configuració&lt;/li&gt;<br>\n&lt;li&gt;Estructura del sistema de fitxers&lt;/li&gt;<br>\n&lt;/ul&gt;\n        </li>\n              <li id=\"cont-1203\">\n          Gestió d'usuaris\n          <br>\n          &lt;ul&gt;<br>\n&lt;li&gt;Mecanismes d'identificació&lt;/li&gt;<br>\n&lt;li&gt;Bases de dades del sistema&lt;/li&gt;<br>\n&lt;li&gt;Permisos i proteccions&lt;/li&gt;<br>\n&lt;li&gt;Canvi de privilegis&lt;/li&gt;<br>\n&lt;/ul&gt;<br>\n\n        </li>\n              <li id=\"cont-1204\">\n          Gestió d'aplicacions\n          <br>\n          &lt;ul&gt;<br>\n&lt;li&gt;Instal·lació&lt;/li&gt;<br>\n&lt;li&gt;Mecanismes&lt;/li&gt;<br>\n&lt;li&gt;Manteniment&lt;/li&gt;<br>\n&lt;/ul&gt;<br>\n\n        </li>\n              <li id=\"cont-1205\">\n          Monitorització\n\n          <br>\n          &lt;ul&gt;<br>\n&lt;li&gt;Recursos a monitoritzar&lt;/li&gt;<br>\n&lt;li&gt;Mecanismes per la monitorització&lt;/li&gt;<br>\n&lt;li&gt;Signals&lt;/li&gt;<br>\n&lt;li&gt;Eines&lt;/li&gt;<br>\n&lt;/ul&gt;<br>\n\n        </li>\n              <li id=\"cont-1206\">\n          Manteniment del sistema de fitxers\n\n          <br>\n          &lt;ul&gt;<br>\n&lt;li&gt;Tipus de sistemes de fitxers&lt;/li&gt;<br>\n&lt;li&gt;Journalling&lt;/li&gt;<br>\n&lt;li&gt;Integritat de les dades del disc&lt;/li&gt;<br>\n&lt;li&gt;Gestió del sistema de fitxers&lt;/li&gt;<br>\n&lt;li&gt;Volums lògics&lt;/li&gt;<br>\n&lt;li&gt;Backups&lt;/li&gt;<br>\n&lt;/ul&gt;\n        </li>\n              <li id=\"cont-1207\">\n          Gestió de virtualització i del núvol\n          <br>\n          &lt;ul&gt;<br>\n&lt;li&gt;Funcionament de la virtualització&lt;/li&gt;<br>\n&lt;li&gt;Anàlisis de les diferents solucions&lt;/li&gt;<br>\n&lt;li&gt;Funcionament del núvol&lt;/li&gt;<br>\n&lt;li&gt;Serveis rellevants del núvol i el seu impacte&lt;/li&gt;<br>\n&lt;/ul&gt;\n        </li>\n              <li id=\"cont-1761\">\n          Gestió de Serveis en Xarxa\n          <br>\n          &lt;ul&gt;<br>\n&lt;li&gt;Serveis de xarxa local&lt;/li&gt;<br>\n&lt;li&gt;Serveis d'Internet&lt;/li&gt;<br>\n&lt;li&gt;Manteniment i configuració dels serveis de xarxa&lt;/li&gt;<br>\n&lt;/ul&gt;\n        </li>\n              <li id=\"cont-1762\">\n          Protecció i Seguretat\n          <br>\n          &lt;ul&gt;<br>\n&lt;li&gt;Tècniques per a millorar la seguretat del sistema&lt;/li&gt;<br>\n&lt;li&gt;Serveis insegurs&lt;/li&gt;<br>\n&lt;li&gt;Tipus d'atacs habituals&lt;/li&gt;<br>\n&lt;li&gt;Solucions comunes&lt;/li&gt;<br>\n&lt;/ul&gt;\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-3625\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació de l'assignatura i introducció a l'Administració de Sistemes</h3>\n              L'estudiant participa activament durant la sessió, treballant en grup sobre les qüestions plantejades a classe i comentant les solucions a les que cada grup ha arribat a tota la classe.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Inici de cerca d'informació, recolzada amb l'explicació donada a la classe de teoria\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1842\">2</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1201\">1 .\n                      Introducció</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                                      \n                          <div id=\"act-3844\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Instal.lació del sistema operatiu</h3>\n              L'estudiant participa activament en la sessió de teoria, treballant en grup en les activitats proposades i comentant les solucions a les que cada grup ha arribat a tota la classe. A la sessió de laboratori, l'estudiant realitza la planificació del sistema que usarà durant la resta del curs i fa la instal.lació bàsica del sistema operatiu, incloent la post-instal.lació.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Classe d'instal.lació del sistema operatiu\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Laboratori d'instal.lació del sistema operatiu\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Cerca d'informació sobre els mètodes per a dimensionar la instal·lació del sistema\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1842\">2</a>\n                                  <a href=\"#obj-1845\">3</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1202\">2 .\n                      Instal.lació del sistema operatiu</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                                      \n                          <div id=\"act-4004\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Gestió d'usuaris</h3>\n              L'estudiant participa activament a la sessió d'explicació teòrica treballant en grup els processos de donar d'alta i donar de baixa un usuari, i l'ús de les proteccions a nivell de fitxer i directori per implementar confidencialitat. Realitzarà un informe sobre les eines habituals per manipular les proteccions sobre els recursos i/o les comandes relacionades amb la gestió d'usuaris. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Treballs sobre la gestió d'usuaris en el sistema operatiu, i discussions sobre les alternatives per donar d'alta i baixa d'usuaris i els mecanismes de protecció a tenir en compte.\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Aplicació pràctica dels conceptes teòrics per tal de gestionar efectivament els usuaris presents a una instal·lació\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      L'estudiant realitzarà un informe sobre les eines habituals per manipular les proteccions sobre els recursos i/o les comandes relacionades amb la gestió d'usuaris\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1843\">4</a>\n                                  <a href=\"#obj-1844\">5</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1203\">3 .\n                      Gestió d'usuaris</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                                                        \n                          <div id=\"act-4484\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Gestió d'aplicacions</h3>\n              L'estudiant participa activament a la sessió d'explicació teòrica treballant en grup sobre les diferents tècniques d'instal.lació d'aplicacions en un sistema operatiu. Realitzarà un informe sobre les eines habituals que ens ajuden a compilar, instal.lar i gestionar aplicacions.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Treballs sobre la instal.lació d'aplicacions, i discussions sobre les diferents maneres de distribuir software.\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Instal.lar diferents tipus d'aplicacions a partir de codi font i binari. Desenvolupar scripts que donin suport a la gestió de les aplicacions.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Suport sobre l'elaboració dels informes de l'assignatura\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Realitzarà un informe sobre les eines habituals que ens ajuden a compilar, instal.lar i gestionar aplicacions\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1844\">5</a>\n                                  <a href=\"#obj-1846\">6</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1204\">4 .\n                      Gestió d'aplicacions</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                                                        \n                          <div id=\"act-4485\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Monitorització</h3>\n              L'estudiant participa activament a la sessió d'explicació teòrica, treballant en grup sobre les diferents tècniques de monitorització sobre els recursos del sistema. Realitzarà un informe sobre el suport de monitorització que ofereixen els sistemes operatius.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Recursos a monitoritzar i tècniques útils per a la monitorització\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Usar les eines de monitorització mentre es realitzen diferents tasques d'administració\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Discussió sobre la resolució del primer control\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Cercar noves aplicacions de monitorització del sistema, instal·lar-les i fer un informe sobre els seus avantatges\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1847\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1205\">5 .\n                      Monitorització\n</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                                      \n                          <div id=\"act-4486\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Manteniment del sistema de fitxers</h3>\n              L'estudiant participa activament a la sessió d'explicació teòrica treballant en grup sobre els mètodes per a realitzar còpies de seguretat i realitza un informe sobre les eines disponibles.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Descripció sobre els sistemes de fitxers i discussions sobre les tècniques de còpies de seguretat\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Tècniques de realització de còpies de seguretat\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Realització d'un informe sobre equips de suport a les còpies de seguretat\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1845\">3</a>\n                                  <a href=\"#obj-1848\">8</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1206\">6 .\n                      Manteniment del sistema de fitxers\n</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                                                        \n                          <div id=\"act-4487\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Virtualització i tecnologies al núvol</h3>\n              L'estudiant participa activament a la sessió d'explicació teòrica realitzant aportacions sobre el funcionament d'aquestes tecnologies.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Treball sobre els serveis locals i la virtualització de sistemes\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Programació de tasques periòdiques\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Visita a Marenostrum, orientada a instal·lació i administració de la màquina\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Instalació de sistemes operatius virtualitzats\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1842\">2</a>\n                                  <a href=\"#obj-1850\">10</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1207\">7 .\n                      Gestió de virtualització i del núvol</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1681\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Primer control</h3>\n              En aquesta prova s'avalua el coneixement i la pràctica adquirits en les 9 primeres setmanes de l'assignatura, incloent els temes 1 a 7.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1842\">2</a>\n                                  <a href=\"#obj-1843\">4</a>\n                                  <a href=\"#obj-1844\">5</a>\n                                  <a href=\"#obj-1845\">3</a>\n                                  <a href=\"#obj-1846\">6</a>\n                                  <a href=\"#obj-1847\">7</a>\n                                  <a href=\"#obj-1848\">8</a>\n                                  <a href=\"#obj-1849\">9</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  10\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                                                        \n                          <div id=\"act-4488\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Gestió de serveis en xarxa</h3>\n              L'estudiant participa activament a la sessió treballant en grup sobre la configuració adequada dels serveis de xarxa del sistema. Realitzarà un informe sobre els servidors disponibles per una sèrie de serveis proposats i els avantatges que ofereix cadascun.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Serveis de xarxa\n                    </li>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Configuració de serveis de xarxa\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Discussió sobre la resolució del segon control\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Instal·lació de servidors de xarxa i elaboració de l'informe sobre els avantatges de cadascun\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1850\">10</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1761\">8 .\n                      Gestió de Serveis en Xarxa</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1762\">9 .\n                      Protecció i Seguretat</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                                                        \n                          <div id=\"act-4491\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Protecció i seguretat</h3>\n              L'estudiant participa activament en les discussions sobre la seguretat dels sistemes i la defensa contra els atacs. Realitzarà un informe sobre eines de monitorització i anàlisi de la xarxa i detecció d'intrussions.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Protecció i seguretat\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Discussió sobre la resolució del tercer control\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Instal·lació i avaluació d'eines d'anàlisi del tràfic de la xarxa i detecció d'intrussions\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1842\">2</a>\n                                  <a href=\"#obj-1850\">10</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1762\">9 .\n                      Protecció i Seguretat</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1722\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Segon control</h3>\n              En aquesta prova s'avalua el coneixement i la pràctica adquirits durant tot el curs.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1842\">2</a>\n                                  <a href=\"#obj-1843\">4</a>\n                                  <a href=\"#obj-1844\">5</a>\n                                  <a href=\"#obj-1845\">3</a>\n                                  <a href=\"#obj-1846\">6</a>\n                                  <a href=\"#obj-1847\">7</a>\n                                  <a href=\"#obj-1848\">8</a>\n                                  <a href=\"#obj-1849\">9</a>\n                                  <a href=\"#obj-1850\">10</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-1723\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen de laboratori</h3>\n              En aquesta prova es realitzen exercicis pràctics de forma individual, relacionats amb tots els temes vistos a l'assignatura. Es pot disposar de llibres i apunts. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1842\">2</a>\n                                  <a href=\"#obj-1843\">4</a>\n                                  <a href=\"#obj-1844\">5</a>\n                                  <a href=\"#obj-1845\">3</a>\n                                  <a href=\"#obj-1846\">6</a>\n                                  <a href=\"#obj-1847\">7</a>\n                                  <a href=\"#obj-1848\">8</a>\n                                  <a href=\"#obj-1849\">9</a>\n                                  <a href=\"#obj-1850\">10</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1621\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final</h3>\n              Per aquells estudiants que necessitin superar els mínims de l'assignatura o vulguin pujar nota, aquest examen es realitzarà un cop acabades les classes\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1841\">1</a>\n                                  <a href=\"#obj-1842\">2</a>\n                                  <a href=\"#obj-1843\">4</a>\n                                  <a href=\"#obj-1844\">5</a>\n                                  <a href=\"#obj-1845\">3</a>\n                                  <a href=\"#obj-1846\">6</a>\n                                  <a href=\"#obj-1847\">7</a>\n                                  <a href=\"#obj-1848\">8</a>\n                                  <a href=\"#obj-1849\">9</a>\n                                  <a href=\"#obj-1850\">10</a>\n                                  <a href=\"#obj-1851\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

@@ -7,15 +7,429 @@
   "department": "OE",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Susana Gimenez Buendia",
+      "email": "susana.gimenez.buendia@upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Ferran Sabate Garriga",
+      "email": "ferran.sabate@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Kofi Dzifa Senaya",
+      "email": "kofi.senaya@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 1
+    },
+    {
+      "type": "Problemes",
+      "value": 1
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.4
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "B1: Introducció al màrqueting digital i a la utilització de la web com unitat de negoci",
+      "isEvaluative": false,
+      "description": "En la primera classe s'explica el funcionament i estructura de l'assignatura i es formen els grups de treball. S'explica en què consisteix el màrqueting digital, el pla de màrqueting digital i els conceptes de conversió, trànsit web i les seves tipologies, fonts de trànsit, etc. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes formats triaran una empresa fictícia i treballaran definint els apartats de Anàlisi Prèvia i Estratègia del PMD.",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "B1: Entrega Anàlisi Prèvia i Estratègia del PMD",
+      "isEvaluative": true,
+      "description": "Consisteix en el lliurament al campus virtual (racó) del document elaborat amb els apartats d'Anàlisi Prèvia i Estratègia del PMD.",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": 3,
+      "hours": []
+    },
+    {
+      "title": "B1: Feedback Anàlisi Prèvia i Estratègia del PMD",
+      "isEvaluative": false,
+      "description": "Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "title": "B2: Disseny de llocs web usables i persuasius que converteixen",
+      "isEvaluative": false,
+      "description": "En aquest bloc es treballen les tàctiques de conversió per a llocs web. S'aplicarà el procés de disseny d'un lloc web usable i persuasiu, així com els criteris i tècniques de disseny que permeten optimitzar la seva capacitat de convertir visitants en usuaris que realitzen les accions que l'empresa desitja. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes treballaran en les tasques aprofitant el suport del professorat per a dubtes i consultes.",
+      "objectives": [
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 3
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 16
+        }
+      ]
+    },
+    {
+      "title": "B2: Presentacions treballs en grup",
+      "isEvaluative": true,
+      "description": "Els grups de treball lliuraran a través del campus virtual (racó) una presentació exposant el resultat de les tasques del bloc. Els grups requerits presentaran en classe de laboratori el seu treball.",
+      "objectives": [
+        "3"
+      ],
+      "week": 6,
+      "hours": []
+    },
+    {
+      "title": "B2: Feedback treballs en grupo",
+      "isEvaluative": false,
+      "description": "Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.",
+      "objectives": [
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "title": "B3: Analitica digital",
+      "isEvaluative": false,
+      "description": "En aquest bloc es treballen les tècniques d'analítica digital que permeten obtenir les mètriques per a realitzar el control i seguiment dels objectius que es fixin per a cada aspecte del PMD. Principalment, encara que no sols, es veurà el funcionament de Google Analytics i com usar-lo per a obtenir aquestes mètriques per a analitzar la conversió i el trànsit. S'ha de llegir/visionar la documentació que se subministra. Es resoldrà en classe un exercici escrit de cursos anteriors. La resta de blocs inclouen una tasca consistent a definir les mètriques (kpi) per a mesurar i controlar els objectius definits en aquests.",
+      "objectives": [
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "B3: Exercici escrit d'analítica digital",
+      "isEvaluative": true,
+      "description": "Realització d¿un exercici individual amb preguntes relacionades amb la temàtica d¿analítica digital al voltant d¿un cas pràctic.",
+      "objectives": [
+        "4"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "B3: Feedback excercici escrit d'analitica digital",
+      "isEvaluative": false,
+      "description": "Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback general de l'exercici d'analítica digital així com pautes per a la versió final d'un dashboard de mètriques per al control i seguiment dels objectius de les diferents accions del PMD.",
+      "objectives": [
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "title": "B4: Màrqueting en cercadors",
+      "isEvaluative": false,
+      "description": "Aquest bloc és el primer dels tres destinats a tractar l'adquisició de trànsit. Es torna sobre el concepte trànsit i les seves tipologies i es presenten les diferents fonts de trànsit i les seves característiques. Es treballa l'adquisició de trànsit procedent de cercadors, tant gratuït (SEO) com de pagament (SEM). Es veuran i aplicaran els factors que influeixen en el posicionament en cercadors i les tècniques per a crear campanyes d'anuncis mitjançant Google Ads.. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes treballaran en les tasques aprofitant el suport del professorat per a dubtes i consultes.",
+      "objectives": [
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 3
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 16
+        }
+      ]
+    },
+    {
+      "title": "B4: Presentacions treballs en grup",
+      "isEvaluative": true,
+      "description": "Els grups de treball lliuraran a través del campus virtual (racó) una presentació exposant el resultat de les tasques del bloc. Els grups requerits presentaran en classe de laboratori el seu treball.",
+      "objectives": [
+        "5"
+      ],
+      "week": 8,
+      "hours": []
+    },
+    {
+      "title": "B4: Feedback treballs en grupo",
+      "isEvaluative": false,
+      "description": "Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.",
+      "objectives": [
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "title": "B5: e-mail màrqueting",
+      "isEvaluative": false,
+      "description": "En aquest bloc es treballen les tàctiques adquisició de trànsit que empren com a font de trànsit i canal de comunicació el correu electrònic. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes treballaran en les tasques aprofitant el suport del professorat per a dubtes i consultes.",
+      "objectives": [
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "B5: Presentacions treballs en grup",
+      "isEvaluative": true,
+      "description": "Els grups de treball lliuraran a través del campus virtual (racó) una presentació exposant el resultat de les tasques del bloc. Els grups requerits presentaran en classe de laboratori el seu treball.",
+      "objectives": [
+        "6"
+      ],
+      "week": 10,
+      "hours": []
+    },
+    {
+      "title": "B5: Feedback treballs en grupo",
+      "isEvaluative": false,
+      "description": "Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.",
+      "objectives": [
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "title": "B6: Màrqueting en xarxes socials",
+      "isEvaluative": false,
+      "description": "En aquest bloc es treballarà l'ús de les xarxes socials que són un instrument molt versàtil. Es poden utilitzar per a aconseguir trànsit de qualsevol tipologia. També són un bon instrument per a difondre el coneixement de la marca i associar-la amb uns certs valors, per a mantenir el contacte i fidelitzar als clients. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes treballaran en les tasques aprofitant el suport del professorat per a dubtes i consultes.",
+      "objectives": [
+        "7",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "B6: Presentacions treballs en grup",
+      "isEvaluative": true,
+      "description": "Els grups de treball lliuraran a través del campus virtual (racó) una presentació exposant el resultat de les tasques del bloc. Els grups requerits presentaran en classe de laboratori el seu treball.",
+      "objectives": [
+        "7",
+        "8"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "B6: Feedback treballs en grupo",
+      "isEvaluative": false,
+      "description": "Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.",
+      "objectives": [
+        "7",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "title": "Pla de màrquetin digital (PMD)",
+      "isEvaluative": false,
+      "description": "Després del treball realitzat en els blocs B1 a B6, en els quals s'han anat construint l'estratègia i la tàctica (conversió i trànsit) de màrqueting digital per a l'empresa triada a principi del curs, s'elaborarà el document final de síntesi que reflecteix el Pla de Màrqueting Digital construït, donant coherència i integrant les diferents parts realitzades en blocs anteriors i integrant les modificacions i millores identificades prèviament.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Problemes",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Entrega PMD",
+      "isEvaluative": true,
+      "description": "Consisteix en el lliurament al campus virtual (racó) del document elaborat amb el PMD.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Susana Gimenez Buendia\n                                (susana.gimenez.buendia@upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Ferran Sabate Garriga\n                            (ferran.sabate@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Kofi Dzifa Senaya\n                            (kofi.senaya@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat sistemes d'informació</h4>\n                              <li id=\"CSI2\">\n                  <b>\n                    CSI2 \n                                      </b>\n                  - Integrar solucions de Tecnologies de la Informació i les Comunicacions, i processos empresarials per a satisfer les necessitats d'informació de les organitzacions, permetent que assoleixin els seus objectius de forma efectiva. \n                                      <ul>\n                                              <li id=\"CSI2_4\">\n                          <b>\n                            CSI2.4\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació dels sistemes basats en Internet (e-commerce, e-learning, etc.).\n                        </li>\n                                              <li id=\"CSI2_7\">\n                          <b>\n                            CSI2.7\n                          </b>\n                          - Gestionar la presència de l'organització a Internet.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CSI1\">\n                  <b>\n                    CSI1 \n                                      </b>\n                  - Demostrar comprensió i aplicar els principis i les pràctiques de les organitzacions, de manera que puguin exercir d'enllaç entre les comunitats tècnica i de gestió d'una organització, i participar activament en la formació dels usuaris.\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Raonament</h4>\n                              <li id=\"G9\">\n                  <b>\n                    G9 \n                                          [Avaluable]\n                                      </b>\n                  - Capacitat de raonament crític, lògic i matemàtic. Capacitat de resoldre problemes en la seva àrea d'estudi. Capacitat d'abstracció: capacitat de crear i utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills, i analitzar-ne i interpretar-ne els resultats. Capacitat d'anàlisi, de síntesi i d'avaluació.\n                                      <ul>\n                                              <li id=\"G9_3\">\n                          <b>\n                            G9.3\n                          </b>\n                          - Capacitat crítica, capacitat d'avaluació.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +441,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-2381\">\n          Introducció al màrqueting a Internet i a la utilització de la web com unitat de negoci.\n          <br>\n          Es revisa el concepte de màrqueting tradicional (segmentació, posicionament, màrqueting-mix, ...) i com es veu afectats per Internet. S'identifiquen les claus y aspectes a considerar per a convertir la web en una unitat de negoci. El pla de màrqueting digital.\n        </li>\n              <li id=\"cont-2382\">\n          Disseny de pàgines d'aterratge usables i optimitzades per a conversió de visites.\n          <br>\n          Exposició del concepte de pàgina d'aterratge i de conversió de les visites de usuaris. Tipologies de pàgines de conversió i la seva integració en l'arquitectura d'informació d'un lloc web. Criteris per la redacció de continguts. Criteris d'usabilitat i accessibilitat web i eines per a la seva avaluació. Tests i eines per a millorar la conversió.\n        </li>\n              <li id=\"cont-2383\">\n          Analítica web.\n          <br>\n          Concepte d'analítica del tràfic web. Objectius, indicadors clau de rendiment i mètriques. Utilització de Google Analytics.\n        </li>\n              <li id=\"cont-2384\">\n          Màrqueting en cercadors.\n          <br>\n          Funcionament dels buscadors i factors de rellevància d'una pàgina web. Posicionament orgànic versus posicionament de pagament. Investigació i selecció de paraules clau. Criteris d'optimització de la indexació (SEO). Utilització de anuncis patrocinats i contextuals amb Google Adwords. Disseny i gestió de campanyes i mesurament de resultats.\n        </li>\n              <li id=\"cont-2385\">\n          Fidelització i màrqueting de permís.\n          <br>\n          Concepte i importància de la fidelització. El e-mail màrqueting, tipus de campanyes i aspectes ètics. La bases de dades de contactes. El disseny de continguts i la personalització. Enviament i gestió de campanyes.\n        </li>\n              <li id=\"cont-2386\">\n          Màrqueting en xarxes socials.\n          <br>\n          Característiques de la web 2.0 i com utilitzar les xarxes socials per promocionar-se. Diferents tipus de xarxes socials. La funció de community management. La gestió de la reputació corporativa online.\n        </li>\n              <li id=\"cont-2387\">\n          Altres formats, eines i canals.\n          <br>\n          El màrqueting a Internet es un camp amb multitud serveis, eines i tècniques en constant evolució. Aquest darrer bloc es destina a cobrir menys profundament algunes de elles com les publicitat amb banners, campanyes virals, blog màrqueting, sindicació de continguts, vídeo màrqueting, màrqueting mòbil, etc.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-6986\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B1: Introducció al màrqueting digital i a la utilització de la web com unitat de negoci</h3>\n              En la primera classe s'explica el funcionament i estructura de l'assignatura i es formen els grups de treball. S'explica en què consisteix el màrqueting digital, el pla de màrqueting digital i els conceptes de conversió, trànsit web i les seves tipologies, fonts de trànsit, etc. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes formats triaran una empresa fictícia i treballaran definint els apartats de Anàlisi Prèvia i Estratègia del PMD.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3321\">1</a>\n                                  <a href=\"#obj-3322\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2381\">1 .\n                      Introducció al màrqueting a Internet i a la utilització de la web com unitat de negoci.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2387\">7 .\n                      Altres formats, eines i canals.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-7561\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B1: Entrega Anàlisi Prèvia i Estratègia del PMD</h3>\n              Consisteix en el lliurament al campus virtual (racó) del document elaborat amb els apartats d'Anàlisi Prèvia i Estratègia del PMD.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3321\">1</a>\n                                  <a href=\"#obj-3322\">2</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  3\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22273\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B1: Feedback Anàlisi Prèvia i Estratègia del PMD</h3>\n              Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3321\">1</a>\n                                  <a href=\"#obj-3322\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2381\">1 .\n                      Introducció al màrqueting a Internet i a la utilització de la web com unitat de negoci.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22274\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B2: Disseny de llocs web usables i persuasius que converteixen</h3>\n              En aquest bloc es treballen les tàctiques de conversió per a llocs web. S'aplicarà el procés de disseny d'un lloc web usable i persuasiu, així com els criteris i tècniques de disseny que permeten optimitzar la seva capacitat de convertir visitants en usuaris que realitzen les accions que l'empresa desitja. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes treballaran en les tasques aprofitant el suport del professorat per a dubtes i consultes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3323\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2382\">2 .\n                      Disseny de pàgines d'aterratge usables i optimitzades per a conversió de visites.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      16h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-7562\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B2: Presentacions treballs en grup</h3>\n              Els grups de treball lliuraran a través del campus virtual (racó) una presentació exposant el resultat de les tasques del bloc. Els grups requerits presentaran en classe de laboratori el seu treball.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3323\">3</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  6\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22284\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B2: Feedback treballs en grupo </h3>\n              Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3323\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2382\">2 .\n                      Disseny de pàgines d'aterratge usables i optimitzades per a conversió de visites.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22285\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B3: Analitica digital</h3>\n              En aquest bloc es treballen les tècniques d'analítica digital que permeten obtenir les mètriques per a realitzar el control i seguiment dels objectius que es fixin per a cada aspecte del PMD. Principalment, encara que no sols, es veurà el funcionament de Google Analytics i com usar-lo per a obtenir aquestes mètriques per a analitzar la conversió i el trànsit. S'ha de llegir/visionar la documentació que se subministra. Es resoldrà en classe un exercici escrit de cursos anteriors. La resta de blocs inclouen una tasca consistent a definir les mètriques (kpi) per a mesurar i controlar els objectius definits en aquests.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3324\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2383\">3 .\n                      Analítica web.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-7581\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B3: Exercici escrit d'analítica digital</h3>\n              Realització d¿un exercici individual amb preguntes relacionades amb la temàtica d¿analítica digital al voltant d¿un cas pràctic.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3324\">4</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22286\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B3: Feedback excercici escrit d'analitica digital</h3>\n              Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback general de l'exercici d'analítica digital així com pautes per a la versió final d'un dashboard de mètriques per al control i seguiment dels objectius de les diferents accions del PMD.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3324\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2383\">3 .\n                      Analítica web.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22287\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B4: Màrqueting en cercadors</h3>\n              Aquest bloc és el primer dels tres destinats a tractar l'adquisició de trànsit. Es torna sobre el concepte trànsit i les seves tipologies i es presenten les diferents fonts de trànsit i les seves característiques. Es treballa l'adquisició de trànsit procedent de cercadors, tant gratuït (SEO) com de pagament (SEM). Es veuran i aplicaran els factors que influeixen en el posicionament en cercadors i les tècniques per a crear campanyes d'anuncis mitjançant Google Ads.. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes treballaran en les tasques aprofitant el suport del professorat per a dubtes i consultes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3325\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2384\">4 .\n                      Màrqueting en cercadors.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      16h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-7582\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B4: Presentacions treballs en grup</h3>\n              Els grups de treball lliuraran a través del campus virtual (racó) una presentació exposant el resultat de les tasques del bloc. Els grups requerits presentaran en classe de laboratori el seu treball.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3325\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  8\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22288\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B4: Feedback treballs en grupo </h3>\n              Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3325\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2384\">4 .\n                      Màrqueting en cercadors.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22289\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B5: e-mail màrqueting</h3>\n              En aquest bloc es treballen les tàctiques adquisició de trànsit que empren com a font de trànsit i canal de comunicació el correu electrònic. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes treballaran en les tasques aprofitant el suport del professorat per a dubtes i consultes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3326\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2385\">5 .\n                      Fidelització i màrqueting de permís.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-7583\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B5: Presentacions treballs en grup</h3>\n              Els grups de treball lliuraran a través del campus virtual (racó) una presentació exposant el resultat de les tasques del bloc. Els grups requerits presentaran en classe de laboratori el seu treball.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3326\">6</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  10\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22290\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B5: Feedback treballs en grupo</h3>\n              Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3326\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2385\">5 .\n                      Fidelització i màrqueting de permís.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22291\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B6: Màrqueting en xarxes socials</h3>\n              En aquest bloc es treballarà l'ús de les xarxes socials que són un instrument molt versàtil. Es poden utilitzar per a aconseguir trànsit de qualsevol tipologia. També són un bon instrument per a difondre el coneixement de la marca i associar-la amb uns certs valors, per a mantenir el contacte i fidelitzar als clients. S'ha de llegir/visionar la documentació que se subministra, incloent-hi el document d'explicació de les tasques a realitzar en grup per a aquest bloc. Els grups d'alumnes treballaran en les tasques aprofitant el suport del professorat per a dubtes i consultes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3327\">7</a>\n                                  <a href=\"#obj-3328\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2386\">6 .\n                      Màrqueting en xarxes socials.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-7584\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B6: Presentacions treballs en grup</h3>\n              Els grups de treball lliuraran a través del campus virtual (racó) una presentació exposant el resultat de les tasques del bloc. Els grups requerits presentaran en classe de laboratori el seu treball.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3327\">7</a>\n                                  <a href=\"#obj-3328\">8</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22292\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>B6: Feedback treballs en grupo</h3>\n              Una sessió per videoconferència (Meet) per a cada grup de laboratori en la qual el professorat donarà feedback dels treballs realitzats en aquest bloc i indicacions de millora de cara blocs següent i al treball final del PMD.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3327\">7</a>\n                                  <a href=\"#obj-3328\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2386\">6 .\n                      Màrqueting en xarxes socials.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22294\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Pla de màrquetin digital (PMD)</h3>\n              Després del treball realitzat en els blocs B1 a B6, en els quals s'han anat construint l'estratègia i la tàctica (conversió i trànsit) de màrqueting digital per a l'empresa triada a principi del curs, s'elaborarà el document final de síntesi que reflecteix el Pla de Màrqueting Digital construït, donant coherència i integrant les diferents parts realitzades en blocs anteriors i integrant les modificacions i millores identificades prèviament.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3321\">1</a>\n                                  <a href=\"#obj-3322\">2</a>\n                                  <a href=\"#obj-3323\">3</a>\n                                  <a href=\"#obj-3324\">4</a>\n                                  <a href=\"#obj-3325\">5</a>\n                                  <a href=\"#obj-3326\">6</a>\n                                  <a href=\"#obj-3327\">7</a>\n                                  <a href=\"#obj-3328\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2381\">1 .\n                      Introducció al màrqueting a Internet i a la utilització de la web com unitat de negoci.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2382\">2 .\n                      Disseny de pàgines d'aterratge usables i optimitzades per a conversió de visites.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2383\">3 .\n                      Analítica web.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2384\">4 .\n                      Màrqueting en cercadors.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2385\">5 .\n                      Fidelització i màrqueting de permís.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2386\">6 .\n                      Màrqueting en xarxes socials.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2387\">7 .\n                      Altres formats, eines i canals.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-7585\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Entrega PMD</h3>\n              Consisteix en el lliurament al campus virtual (racó) del document elaborat amb el PMD.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3321\">1</a>\n                                  <a href=\"#obj-3322\">2</a>\n                                  <a href=\"#obj-3323\">3</a>\n                                  <a href=\"#obj-3324\">4</a>\n                                  <a href=\"#obj-3325\">5</a>\n                                  <a href=\"#obj-3326\">6</a>\n                                  <a href=\"#obj-3327\">7</a>\n                                  <a href=\"#obj-3328\">8</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

@@ -7,15 +7,475 @@
   "department": "ESSI",
   "web": "https://learnsql.fib.upc.edu/moodle",
   "summary": "",
+  "professors": [
+    {
+      "name": "Oscar Romero Moral",
+      "email": "oscar.romero@upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Anna Queralt Calafat",
+      "email": "anna.queralt@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Marc Maynou Yelamos",
+      "email": "marc.maynou@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Sessió 1: Motivació i introducció als sistemes NOSQL (més enllà de la tecnologia relacional).",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. Teoria: Motivació de la necessitat de flexibilitzar els sistemes relacionals per adaptar-se millor a qualsevol entorn.",
+      "objectives": [
+        "1",
+        "3",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 2: Fonaments dels sistemes de bases de dades distribuïts",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. Aprenentatge autònom: Llegir el document sobre disseny de bases de dades distribuïdes. Fer un exercici sobre el tema.",
+      "objectives": [
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 2.1: Optimització de consultes en sistemes distribuïts",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. Aprenentatge autònom: Fer un exercici sobre el tema.",
+      "objectives": [
+        "1",
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 2.2: Concurrència en sistemes distribuïts",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. Aprenentatge autònom: Llegir el document sobre concurrència en sistemes distribuïts. Fer un exercici sobre el tema.",
+      "objectives": [
+        "1",
+        "3",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 2.3: Recuperació en sistemes distribuïts",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. Aprenentatge autònom: Llegir el document sobre recuperació en sistemes distribuïts",
+      "objectives": [
+        "1",
+        "3",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 3.1: Key-value stores",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs.",
+      "objectives": [
+        "4",
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 3.2: MapReduce",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs.",
+      "objectives": [
+        "4",
+        "6",
+        "7",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 3.3: Document-stores",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs.",
+      "objectives": [
+        "4",
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 3.4: Object-relational",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. Teoria: Estudi de les extensions object-oriented dels sistemes relacionals Aprenentatge autònom: Cada estudiant ha de portar llegit un dels següents articles, que després es discutiran a classe: - \"The Object-Oriented Database System Manifesto\" - \"Third Generation Database System Manifesto\"",
+      "objectives": [
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "title": "Sessió 3.5: Graph databases",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs.",
+      "objectives": [
+        "4",
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 3.6: Column-store databases",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs.",
+      "objectives": [
+        "4",
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 4: Integració de dades",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs.",
+      "objectives": [
+        "2",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 4.1: Qualitat de les dades",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs.",
+      "objectives": [
+        "2",
+        "9",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Sessió 4.2: Processos ETL",
+      "isEvaluative": false,
+      "description": "Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs.",
+      "objectives": [
+        "2",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Lab 1: Pràctica sobre la teoria dels sistemes distribuïts",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "1",
+        "3",
+        "10",
+        "11"
+      ],
+      "week": 2,
+      "hours": []
+    },
+    {
+      "title": "Lab: Key-value stores (part 1)",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "10",
+        "11"
+      ],
+      "week": 3,
+      "hours": []
+    },
+    {
+      "title": "Lab: Key-value stores (part 2)",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "10",
+        "11"
+      ],
+      "week": 4,
+      "hours": []
+    },
+    {
+      "title": "Lab: Document-stores  (part 1)",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "10",
+        "11"
+      ],
+      "week": 5,
+      "hours": []
+    },
+    {
+      "title": "Lab: Document-stores (part 2)",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "10",
+        "11"
+      ],
+      "week": 6,
+      "hours": []
+    },
+    {
+      "title": "Lab: Object-relational Vs. Object-relational databases (part 1)",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "4",
+        "2",
+        "10",
+        "11"
+      ],
+      "week": 7,
+      "hours": []
+    },
+    {
+      "title": "Lab: Object-relational Vs. Object-relational databases (part 2)",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "2",
+        "10",
+        "11"
+      ],
+      "week": 8,
+      "hours": []
+    },
+    {
+      "title": "Lab: Graph databases (part 1)",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "10",
+        "11"
+      ],
+      "week": 9,
+      "hours": []
+    },
+    {
+      "title": "Lab: Graph databases (part 2)",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "10",
+        "11"
+      ],
+      "week": 10,
+      "hours": []
+    },
+    {
+      "title": "Lab 6: Simulacio de column-oriented DBs",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "10",
+        "11"
+      ],
+      "week": 11,
+      "hours": []
+    },
+    {
+      "title": "Exàmen final",
+      "isEvaluative": true,
+      "description": "Exàmen final de tots els continguts de l'assignatura",
+      "objectives": [
+        "1",
+        "3",
+        "4",
+        "5",
+        "6",
+        "2",
+        "7",
+        "9",
+        "8",
+        "10",
+        "11"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Oscar Romero Moral\n                                (oscar.romero@upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Anna Queralt Calafat\n                            (anna.queralt@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Marc Maynou Yelamos\n                            (marc.maynou@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT2\">\n                  <b>\n                    CT2 \n                                      </b>\n                  - Utilitzar d'una manera apropiada teories, procediments i eines en el desenvolupament professional de l'enginyeria informàtica en tots els seus àmbits (especificació, disseny, implementació, desplegament -implantació- i avaluació de productes) de manera que es demostri la comprensió dels compromisos adoptats a les decisions de disseny.\n                                      <ul>\n                                              <li id=\"CT2_4\">\n                          <b>\n                            CT2.4\n                          </b>\n                          - Demostrar coneixement i capacitat per a aplicar les eines necessàries a l'emmagatzematge, el processament i l'accés als sistemes d'informació, fins i tot els que es basen en la web. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat enginyeria del software</h4>\n                              <li id=\"CES1\">\n                  <b>\n                    CES1 \n                                      </b>\n                  - Desenvolupar, mantenir i avaluar serveis i sistemes software que satisfacin tots els requisits de l'usuari, que es comportin de forma fiable i eficient, que tinguin un desenvolupament i un manteniment assequible i que compleixin normes de qualitat aplicant les teories, els principis, els mètodes i les pràctiques d'Enginyeria del Software.\n                                      <ul>\n                                              <li id=\"CES1_2\">\n                          <b>\n                            CES1.2\n                          </b>\n                          - Donar solució a problemes d'integració en funció de les estratègies, dels estàndards i de les tecnologies disponibles.\n                        </li>\n                                              <li id=\"CES1_5\">\n                          <b>\n                            CES1.5\n                          </b>\n                          - Especificar, dissenyar, implementar i avaluar bases de dades.\n                        </li>\n                                              <li id=\"CES1_6\">\n                          <b>\n                            CES1.6\n                          </b>\n                          - Administrar bases de dades (CIS4.3)\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CES3\">\n                  <b>\n                    CES3 \n                                      </b>\n                  - Identificar i analitzar problemes; dissenyar, desenvolupar, implementar, verificar i documentar solucions software sobre la base d'un coneixement adient de les teories, dels models i de les tècniques actuals.\n                                      <ul>\n                                              <li id=\"CES3_2\">\n                          <b>\n                            CES3.2\n                          </b>\n                          - Dissenyar i gestionar un magatzem de dades (data warehouse).\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Actitud adequada davant el treball</h4>\n                              <li id=\"G8\">\n                  <b>\n                    G8 \n                                          [Avaluable]\n                                      </b>\n                  - Tenir motivació per a la realització professional i per a afrontar nous reptes, tenir una visió àmplia de les possibilitats de la carrera professional en l'àmbit de l'enginyeria en informàtica. Sentir-se motivat per la qualitat i la millora contínua, i actuar amb rigor en el desenvolupament professional. Capacitat d'adaptació als canvis organitzatius o tecnològics. Capacitat de treballar en situacions de carència d'informació i/o amb restriccions temporals i/o de recursos.\n                                      <ul>\n                                              <li id=\"G8_3\">\n                          <b>\n                            G8.3\n                          </b>\n                          - Estar motivat pel desenvolupament professional, per a afrontar nous reptes i per la millora contínua. Tenir capacitat de treball en situacions de falta d'informació.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +487,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-3094\">\n          Introducció\n          <br>\n          Paradigma one size fits all. Colls d'ampolla de les bases de dades relacionals. Els sistemes distribuïts no relacionals con a solució. Nous reptes i oportunitats.\n        </li>\n              <li id=\"cont-3096\">\n          Fonaments de bases de dades distribuïdes\n          <br>\n          Les noves arquitectures de bases de dades tenen un tret en comú: la distribució de les dades com a estratègia per afrontar volums ingents de dades. Aquest bloc es divideix en quatre grans apartats: <br>\n<br>\n1) Introducció: Taxonomia de bases de dades distribuïdes. Arquitectures. Disseny de bases de dades distribuïdes (fragmentació i replicació). Mesures d'escalabilitat.<br>\n<br>\n<br>\n2) Optimització de consultes en sistemes distribuits: Optimització semàntica, sintàctica i física de consultes. Paral·lelisme. Bases de dades paral·leles.<br>\n<br>\n<br>\n3) Concurrència en sistemes distribuïts: Extensions del mòdul de concurrència d'un sistema centralitzat per adaptar-ho a entorns distribuïts. CAP theorem. Two-phase locking. Multi-versió. Time-stamping. Tècniques optimistes. Eventually consistent.<br>\n<br>\n<br>\n4) Recuperació en sistemes distribuïts: Extensions del mòdul de recuperació d'un sistema centralitzat per adaptar-ho a entorns distribuïts. Checkpointing. Multi-level recovering. ARIES. 2-phase commit protocol. 3-phase commit protocol.\n        </li>\n              <li id=\"cont-3095\">\n          NOSQL\n          <br>\n          Sota l'etiqueta NOSQL trobem els nous sistemes distribuïts que relaxen tots (o alguns) dels colls d'ampolla del model relacional en entorns distribuïts. En aquest curs presentem una classificació d'aquests sistemes segons quina (o quines) característiques del model relacional relaxen i en veiem els 5 més rellevants:<br>\n<br>\n1) Object-oriented databases. Introducció i assumpcions. Model de dades. Escalabilitat. Llenguatges d'alt nivell. La primera extensió del model relacional: object-relational databases. Similituds i diferències.<br>\n2) Column-oriented stores. Introducció i assumpcions. Model de dades. Escalabilitat. Llenguatges d'alt nivell. Extensions relacionals DSS.<br>\n3) Key-value stores. Introducció i assumpcions. Model de dades. Escalabilitat. Llenguatges d'alt nivell. MapReduce.<br>\n4) Document-stores. Introducció i assumpcions. Model de dades. XML databases. Escalabilitat. Llenguatges d'alt nivell. <br>\n5) Graph databases. Introducció i assumpcions. Model de dades. RDF i triple stores. Escalabilitat. Llenguatges d'alt nivell. \n        </li>\n              <li id=\"cont-3104\">\n          Integració de dades\n          <br>\n          El trencament del paradigma one size fits all comporta la co-existència de diferents gestors de bases de dades, cadascun especialitzat en un tipus d'escenari (inclús d'escenaris dintre del mateix sistema) amb unes característiques concretes. Integrar (per creuar, analitzar, homogenitzar, etc.) dades provinents de diferents sistemes és, avui dia, un repte. En aquest bloc ens centrem en com resoldre la integració de dades a nivell d'esquema:<br>\n<br>\n1) Introducció: Tipus d'heterogeneïtats. Arquitectures: LAV, GAV, GLAV, Mediators, Peer-to-peer, Ontology-based data access. <br>\n<br>\n2) Processos ETL: Originalment associats als magatzems de dades, avui dia tenen un àmbit més general i són sinònims de migració de dades entre sistemes (normalment heterogenis). El punt anterior afronta l'heterogeneïtat a nivell d'esquema, mentre que els processos ETL ho fan a nivell d'instància. Conceptes bàsics. Extracció,  transformació i càrrega. Operadors ETL.<br>\n<br>\n3) Molt lligat amb la integració de dades, diferents sistemes requereixen diferent nivell de qualitat de les dades, i això impacta directament en el nombre de transformacions a aplicar a les dades durant els processos de migració. Introducció. Causes. Mètodes i tècniques. Avaluació de la qualitat.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-8584\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 1: Motivació i introducció als sistemes NOSQL (més enllà de la tecnologia relacional).</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Motivació de la necessitat de flexibilitzar els sistemes relacionals per adaptar-se millor a qualsevol entorn.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3831\">1</a>\n                                  <a href=\"#obj-3832\">3</a>\n                                  <a href=\"#obj-3838\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3094\">1 .\n                      Introducció</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8589\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 2: Fonaments dels sistemes de bases de dades distribuïts</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Llegir el document sobre disseny de bases de dades distribuïdes. Fer un exercici sobre el tema.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3832\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3096\">2 .\n                      Fonaments de bases de dades distribuïdes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8590\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 2.1: Optimització de consultes en sistemes distribuïts</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Fer un exercici sobre el tema.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3831\">1</a>\n                                  <a href=\"#obj-3832\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3096\">2 .\n                      Fonaments de bases de dades distribuïdes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8591\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 2.2: Concurrència en sistemes distribuïts</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Llegir el document sobre concurrència en sistemes distribuïts. Fer un exercici sobre el tema.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3831\">1</a>\n                                  <a href=\"#obj-3832\">3</a>\n                                  <a href=\"#obj-3835\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3096\">2 .\n                      Fonaments de bases de dades distribuïdes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-8592\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 2.3: Recuperació en sistemes distribuïts</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Llegir el document sobre recuperació en sistemes distribuïts\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3831\">1</a>\n                                  <a href=\"#obj-3832\">3</a>\n                                  <a href=\"#obj-3835\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3096\">2 .\n                      Fonaments de bases de dades distribuïdes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8594\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 3.1: Key-value stores</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3095\">3 .\n                      NOSQL</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-11285\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 3.2: MapReduce</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3839\">7</a>\n                                  <a href=\"#obj-3841\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3095\">3 .\n                      NOSQL</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3096\">2 .\n                      Fonaments de bases de dades distribuïdes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8595\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 3.3: Document-stores</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3095\">3 .\n                      NOSQL</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-8588\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 3.4: Object-relational</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Estudi de les extensions object-oriented dels sistemes relacionals\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Cada estudiant ha de portar llegit un dels següents articles, que després es discutiran a classe:\n- \"The Object-Oriented Database System Manifesto\"\n- \"Third Generation Database System Manifesto\"\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3838\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3095\">3 .\n                      NOSQL</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8596\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 3.5: Graph databases</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3095\">3 .\n                      NOSQL</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8593\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 3.6: Column-store databases</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3095\">3 .\n                      NOSQL</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8597\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 4: Integració de dades</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3838\">2</a>\n                                  <a href=\"#obj-3839\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3104\">4 .\n                      Integració de dades</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8599\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 4.1: Qualitat de les dades</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3838\">2</a>\n                                  <a href=\"#obj-3840\">9</a>\n                                  <a href=\"#obj-3841\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3104\">4 .\n                      Integració de dades</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8598\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Sessió 4.2: Processos ETL</h3>\n              Ve a classe i escolta. S'espera una actitud activa per part de l'alumne, ja sigui preguntant sobre els materials disponibles del tema, així com preparant i participant activament en les activitats d'aprenentatge actiu que s'aniran introduïnt durant el curs. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3838\">2</a>\n                                  <a href=\"#obj-3841\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3104\">4 .\n                      Integració de dades</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3262\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab 1: Pràctica sobre la teoria dels sistemes distribuïts</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3831\">1</a>\n                                  <a href=\"#obj-3832\">3</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  2\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3267\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab: Key-value stores (part 1)</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  3\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3263\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab: Key-value stores (part 2)</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  4\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3268\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab: Document-stores  (part 1)</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  5\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3269\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab: Document-stores (part 2)</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  6\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3261\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab: Object-relational Vs. Object-relational databases (part 1)</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3838\">2</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  7\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3264\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab: Object-relational Vs. Object-relational databases (part 2)</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3838\">2</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  8\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3265\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab: Graph databases (part 1)</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  9\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3270\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab: Graph databases (part 2)</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  10\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-3266\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Lab 6: Simulacio de column-oriented DBs</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  11\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-7221\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Exàmen final</h3>\n              Exàmen final de tots els continguts de l'assignatura\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3831\">1</a>\n                                  <a href=\"#obj-3832\">3</a>\n                                  <a href=\"#obj-3835\">4</a>\n                                  <a href=\"#obj-3836\">5</a>\n                                  <a href=\"#obj-3837\">6</a>\n                                  <a href=\"#obj-3838\">2</a>\n                                  <a href=\"#obj-3839\">7</a>\n                                  <a href=\"#obj-3840\">9</a>\n                                  <a href=\"#obj-3841\">8</a>\n                                  <a href=\"#obj-3842\">10</a>\n                                  <a href=\"#obj-3843\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

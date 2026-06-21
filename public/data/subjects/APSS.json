@@ -7,15 +7,371 @@
   "department": "THATC",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Antonia Soler Cervera",
+      "email": "antonia.soler@upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Athenea Botey i Riaza",
+      "email": "athenea.botey@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Maria del Carme Bordera Perez",
+      "email": "carme.bordera@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Marta Aguilar Perez",
+      "email": "marta.aguilar@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 2
+    },
+    {
+      "type": "Laboratori",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.4
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Comprendre els principis de la comunicació tècnica",
+      "isEvaluative": false,
+      "description": "Conèixer la resolució de problemes aplicada a la comunicació. Reconèixer diferents gèneres acadèmics. Analitzar exemples de gèneres acadèmics orals i l'estratègia comunicativa emprada",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Reconèixer la importància de la pronunciació per a la interacció oral en anglès",
+      "isEvaluative": false,
+      "description": "Identificar aspectes bàsics de la pronunciació anglesa contrastats amb la pronunciació del castellà i el català",
+      "objectives": [
+        "3",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Reconèixer i practicar la pronunciació dels sons de l'anglès i alguns elements bàsics d'accentuació i entonació",
+      "isEvaluative": false,
+      "description": "Reconèixer transcripcions fonètiques bàsiques en anglès. Identificar elements i patrons d'accentuació a nivell de paraula i a nivell de frase. Identificar tons",
+      "objectives": [
+        "3",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupar habilitats d'escolta activa per tal de millorar la comprensió oral en anglès",
+      "isEvaluative": false,
+      "description": "Reconèixer informació específica. Comprendre la idea principal. Identificar els marcadors discursius i les paraules clau. Prendre notes.",
+      "objectives": [
+        "3",
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Problemes",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Seleccionar i intercanviar informació tècnica oralment",
+      "isEvaluative": false,
+      "description": "Seleccionar informació de fonts orals i utilitzar la informació de manera efectiva per debatre sobre un tema relacionat amb la informàtica",
+      "objectives": [
+        "4",
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Examen parcial",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "week": 8,
+      "hours": []
+    },
+    {
+      "title": "Interactuar en activitats comunicatives orals de manera eficaç",
+      "isEvaluative": false,
+      "description": "Reconèixer diferents nivells de formalitat. Adaptar l'ús del llenguatge al nivell de formalitat. Utilitzar les funcions del llenguatge de manera apropiada en anglès per mantenir una conversa telefònica, fer explicacions tècniques, donar instruccions i debatre",
+      "objectives": [
+        "6",
+        "7",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Participar en un seminari de manera adequada i practicar la interacció en anglès",
+      "isEvaluative": false,
+      "description": "Debatre sobre conferències i lectures. Participar en el debat acadèmic: expressar i defensar les idees oralment",
+      "objectives": [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Preparar una presentació oral acadèmica o professional en anglès",
+      "isEvaluative": false,
+      "description": "Aplicar el procediment de resolució de problemes: planificar, executar i avaluar. Dissenyar l'estratègia adequada (informar / convèncer). Seleccionar la informació i estructurar la presentació",
+      "objectives": [
+        "7",
+        "8",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Executar una presentació oral en anglès i avaluar-la",
+      "isEvaluative": false,
+      "description": "Preparar el discurs. Dissenyar els elements visuals. Escollir el llenguatge correcte i apropiat. Integrar marcadors discursius. Utilitzar el llenguatge corporal adequadament. Aplicar criteris d'avaluació per les presentacions orals. Avaluar la pròpia presentació i la dels companys",
+      "objectives": [
+        "7",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 3
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Participar en una entrevista de feina en anglès i utilitzar l'estratègia adequada",
+      "isEvaluative": false,
+      "description": "Escriure un CV en anglès per una sol·licitud de feina. Participar en una entrevista de feina. Anticipar preguntes i preparar respostes segons el protocol, utilitzant el llenguatge i el nivell de formalitat adequats",
+      "objectives": [
+        "7",
+        "9"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 3
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 7
+        }
+      ]
+    },
+    {
+      "title": "Examen final",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "2",
+        "4",
+        "5",
+        "6",
+        "7",
+        "9",
+        "10"
+      ],
+      "week": 15,
+      "hours": []
+    },
+    {
+      "title": "Execució i avaluació de la presentació oral",
+      "isEvaluative": true,
+      "description": "Els estudiants faran les presentacions orals a classe i avaluaran als seus companys",
+      "objectives": [
+        "10",
+        "11",
+        "12"
+      ],
+      "week": 14,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Antonia Soler Cervera\n                                (antonia.soler@upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Athenea Botey i Riaza\n                            (athenea.botey@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Maria del Carme Bordera Perez\n                            (carme.bordera@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Marta Aguilar Perez\n                            (marta.aguilar@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Tercera llengua</h4>\n                              <li id=\"G3\">\n                  <b>\n                    G3 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer l'idioma anglès amb un nivell adequat de forma oral i escrita, i en consonància amb les necessitats que tindran els graduats i les graduades en Enginyeria Informàtica. Capacitat de treballar en un grup multidisciplinar i en un entorn multilingüe i de comunicar, tant per escrit com de forma oral, coneixements, procediments, resultats i idees relacionats amb la professió d'enginyer tècnic en informàtica.\n                                      <ul>\n                                              <li id=\"G3_3\">\n                          <b>\n                            G3.3\n                          </b>\n                          - Dur a terme una presentació oral en anglès i respondre a les preguntes de l'auditori. Treballar eficaçment en un context internacional, comunicar-se oralment en anglès amb persones de diferents nacionalitats.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +383,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-3321\">\n          Característiques de la comunicació acadèmica i professional en l'ambit de l'enginyeria\n          <br>\n          Resolució de problemes i concepte de gènere. Gèneres orals acadèmics i professionals. Funció comunicativa i estratègia comunicativa\n        </li>\n              <li id=\"cont-3322\">\n          Pautes per una pronunciació efectiva en anglès\n          <br>\n          La importància de la pronunciació per a la intelligibilitat del missatge. Fonètica anglesa: aspectes bàsics del sistema de sons de l'anglès, de l'accentuació i l'entonació. L'ús del diccionari per millorar la pronunciació\n        </li>\n              <li id=\"cont-3323\">\n          Estratègies per la comprensió oral i l'expressió oral en anglès en l'àmbit de la informàtica\n          <br>\n          Tècniques per desenvolupar l'escolta activa. La comprensió oral en conferències i xerrades: marcadors discursius. Prendre notes. Pràctica per a la comprensió i l'expressió oral: l'anglès parlat a l'àmbit de l'enginyeria\n        </li>\n              <li id=\"cont-3324\">\n          Interacció en activitats comunicatives acadèmiques i professionals: funcions i usos del llenguatge\n          <br>\n          Nivells de formalitat. Funcions comunicatives i ús del llenguatge per participar de manera efectiva en activitats acadèmiques i professionals: converses telefòniques, explicacions tècniques i instruccions, discussió i debat\n        </li>\n              <li id=\"cont-3325\">\n          Organització del discurs oral i gènere: habilitats per participar en situacions comunicatives acadèmiques\n          <br>\n          Seminaris internacionals: debat acadèmic. Presentacions orals: el procés de disseny d'una presentació oral (planificació, execució i avaluació). Estratègies i tècniques per realitzar una presentació efectiva. Elements visuals, marcadors discursius i llenguatge corporal\n        </li>\n              <li id=\"cont-3326\">\n          Organització del discurs i gènere: habilitats per participar en situacions comunicatives professionals en anglès\n          <br>\n          Cerca de feina: el CV i l'entrevista de feina. Estratègies per interactuar amb èxit\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8751\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Comprendre els principis de la comunicació tècnica</h3>\n              Conèixer la resolució de problemes aplicada a la comunicació. Reconèixer diferents gèneres acadèmics. Analitzar exemples de gèneres acadèmics orals i l'estratègia comunicativa emprada\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3961\">1</a>\n                                  <a href=\"#obj-3962\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3321\">1 .\n                      Característiques de la comunicació acadèmica i professional en l'ambit de l'enginyeria</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8752\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Reconèixer la importància de la pronunciació per a la interacció oral en anglès</h3>\n              Identificar aspectes bàsics de la pronunciació anglesa contrastats amb la pronunciació del castellà i el català\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3963\">3</a>\n                                  <a href=\"#obj-3964\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3322\">2 .\n                      Pautes per una pronunciació efectiva en anglès</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8754\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Reconèixer i practicar la pronunciació dels sons de l'anglès i alguns elements bàsics d'accentuació i entonació </h3>\n              Reconèixer transcripcions fonètiques bàsiques en anglès. Identificar elements i patrons d'accentuació a nivell de paraula i a nivell de frase. Identificar tons\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3963\">3</a>\n                                  <a href=\"#obj-3964\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3322\">2 .\n                      Pautes per una pronunciació efectiva en anglès</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8758\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupar habilitats d'escolta activa per tal de millorar la comprensió oral en anglès</h3>\n              Reconèixer informació específica. Comprendre la idea principal. Identificar els marcadors discursius i les paraules clau. Prendre notes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3963\">3</a>\n                                  <a href=\"#obj-3965\">5</a>\n                                  <a href=\"#obj-3966\">6</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8761\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Seleccionar i intercanviar informació tècnica oralment</h3>\n              Seleccionar informació de fonts orals i utilitzar la informació de manera efectiva per debatre sobre un tema relacionat amb la informàtica\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3964\">4</a>\n                                  <a href=\"#obj-3965\">5</a>\n                                  <a href=\"#obj-3966\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3322\">2 .\n                      Pautes per una pronunciació efectiva en anglès</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3323\">3 .\n                      Estratègies per la comprensió oral i l'expressió oral en anglès en l'àmbit de la informàtica</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3367\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen parcial</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3961\">1</a>\n                                  <a href=\"#obj-3962\">2</a>\n                                  <a href=\"#obj-3963\">3</a>\n                                  <a href=\"#obj-3964\">4</a>\n                                  <a href=\"#obj-3965\">5</a>\n                                  <a href=\"#obj-3966\">6</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  8\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8763\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Interactuar en activitats comunicatives orals de manera eficaç</h3>\n              Reconèixer diferents nivells de formalitat. Adaptar l'ús del llenguatge al nivell de formalitat. Utilitzar les funcions del llenguatge de manera apropiada en anglès per mantenir una conversa telefònica, fer explicacions tècniques, donar instruccions i debatre\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3966\">6</a>\n                                  <a href=\"#obj-3967\">7</a>\n                                  <a href=\"#obj-3968\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3323\">3 .\n                      Estratègies per la comprensió oral i l'expressió oral en anglès en l'àmbit de la informàtica</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3324\">4 .\n                      Interacció en activitats comunicatives acadèmiques i professionals: funcions i usos del llenguatge</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8764\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Participar en un seminari de manera adequada i practicar la interacció en anglès</h3>\n              Debatre sobre conferències i lectures. Participar en el debat acadèmic: expressar i defensar les idees oralment\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3966\">6</a>\n                                  <a href=\"#obj-3967\">7</a>\n                                  <a href=\"#obj-3968\">8</a>\n                                  <a href=\"#obj-3969\">9</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3323\">3 .\n                      Estratègies per la comprensió oral i l'expressió oral en anglès en l'àmbit de la informàtica</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3324\">4 .\n                      Interacció en activitats comunicatives acadèmiques i professionals: funcions i usos del llenguatge</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3325\">5 .\n                      Organització del discurs oral i gènere: habilitats per participar en situacions comunicatives acadèmiques</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8767\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Preparar una presentació oral acadèmica o professional en anglès </h3>\n              Aplicar el procediment de resolució de problemes: planificar, executar i avaluar. Dissenyar l'estratègia adequada (informar / convèncer). Seleccionar la informació i estructurar la presentació\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3967\">7</a>\n                                  <a href=\"#obj-3968\">8</a>\n                                  <a href=\"#obj-3970\">10</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8769\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Executar una presentació oral en anglès i avaluar-la</h3>\n              Preparar el discurs. Dissenyar els elements visuals. Escollir el llenguatge correcte i apropiat. Integrar marcadors discursius. Utilitzar el llenguatge corporal adequadament. Aplicar criteris d'avaluació per les presentacions orals. Avaluar la pròpia presentació i la dels companys\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3967\">7</a>\n                                  <a href=\"#obj-3970\">10</a>\n                                  <a href=\"#obj-3971\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3324\">4 .\n                      Interacció en activitats comunicatives acadèmiques i professionals: funcions i usos del llenguatge</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3325\">5 .\n                      Organització del discurs oral i gènere: habilitats per participar en situacions comunicatives acadèmiques</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8770\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Participar en una entrevista de feina en anglès i utilitzar l'estratègia adequada</h3>\n              Escriure un CV en anglès per una sol·licitud de feina. Participar en una entrevista de feina. Anticipar preguntes i preparar respostes segons el protocol, utilitzant el llenguatge i el nivell de formalitat adequats\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3967\">7</a>\n                                  <a href=\"#obj-3969\">9</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3326\">6 .\n                      Organització del discurs i gènere: habilitats per participar en situacions comunicatives professionals en anglès</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      7h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3368\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3962\">2</a>\n                                  <a href=\"#obj-3964\">4</a>\n                                  <a href=\"#obj-3965\">5</a>\n                                  <a href=\"#obj-3966\">6</a>\n                                  <a href=\"#obj-3967\">7</a>\n                                  <a href=\"#obj-3969\">9</a>\n                                  <a href=\"#obj-3970\">10</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3369\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Execució i avaluació de la presentació oral</h3>\n              Els estudiants faran les presentacions orals a classe i avaluaran als seus companys\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3970\">10</a>\n                                  <a href=\"#obj-3971\">11</a>\n                                  <a href=\"#obj-3974\">12</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

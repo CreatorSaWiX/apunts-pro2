@@ -7,15 +7,595 @@
   "department": "AC",
   "web": "http://docencia.ac.upc.edu/FIB/grau/SO/",
   "summary": "",
+  "professors": [
+    {
+      "name": "Yolanda Becerra Fontal",
+      "email": "yolandab@ac.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Adrià Armejach Sanosa",
+      "email": "adria.armejach@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Amador Millán Vizuete",
+      "email": "amillan@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Carlos Garcia Calatrava",
+      "email": "carlos.garcia.calatrava@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "David Álvarez Robert",
+      "email": "david.alvarez.robert@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Enric Morancho Llena",
+      "email": "enricm@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Hamid Latif Martinez",
+      "email": "hamid.latif@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Javier Verdu Mula",
+      "email": "jverdu@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jordi Fornes de Juan",
+      "email": "jfornes@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jordi Guitart Fernandez",
+      "email": "jguitart@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jordi Paillissé Vilanova",
+      "email": "jordi.paillisse@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jordi Torres Viñals",
+      "email": "torres@ac.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "José Luis Negueruela López",
+      "email": "jose.luis.negueruela@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Julita Corbalan Gonzalez",
+      "email": "julita.corbalan@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Pere Barlet Ros",
+      "email": "pbarlet@ac.upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Desenvolupament del tema de Introducció als S.O",
+      "isEvaluative": false,
+      "description": "Durant aquesta activitat es donarà a l'alumne una visió general del que és un S.O., quines son les seves funcionalitats i serveis i quins son els principals components dels sistema que anirem desenvolupant durant el curs.",
+      "objectives": [
+        "1",
+        "2",
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Familiarització amb l'entorn de treball",
+      "isEvaluative": false,
+      "description": "Durant aquesta activitat s'utilitzaran comandes bàsiques per treballar amb un entorn de treball Linux, especialment per treballar des de la línea de comandes però també entendre la relació amb un entorn gràfic. Es practicaran comandes per navegar pel sistema de fitxers, per manipular fitxers, etc.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Programació en C i desenvolupament de projectes",
+      "isEvaluative": false,
+      "description": "Durant aquesta activitat es treballarà la programació en C i es donaran algunes guies bàsiques per desenvolupar els petits projectes que faran els alumnes a les sessions de laboratori de forma que tinguin una estructura similar en quant a eines, organització de fitxers etc.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupament dels conceptes de Teoria associats a Processos",
+      "isEvaluative": false,
+      "description": "Durant aquestes hores es practicaran els conceptes i serveis bàsics relacionats amb processos i fluxes. S'explicaran els conceptes relacionats amb la organització i gestió internes que fa el S.O. per oferir aquests serveis i funcionalitats. També es tractaran aspectes relacionats amb la eficiència dels sistemes, fiabilitat, protecció, etc.",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Serveis bàsics relacionats amb processos",
+      "isEvaluative": false,
+      "description": "Durant aquesta activitat es practicaran les crides a sistema bàsiques que podem trobar a un sistema Linux per crear un procés, canviar el seu executable, esperar el procés y finalitzar el procés. També practicarem comandes des d'un punt de vista d'administrador relacionades amb la monitorització de processos.",
+      "objectives": [
+        "6",
+        "7",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Serveis avançats de processos",
+      "isEvaluative": false,
+      "description": "Durant aquesta activitat introduirem la gestió d'events entre processos (signals) tant com a mecanisme de comunicació com a servei de gestió de processos avançat. Es treballaran aspectes relacionats amb la concurrència dels processos.",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Gestió de processos:  sessió de problemes",
+      "isEvaluative": false,
+      "description": "Durant aquest sessió es resoldran exercicis rel.lacionats amb la gestió de problemes",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupament dels conceptes associats a gestió de memòria",
+      "isEvaluative": false,
+      "description": "Durant aquestes hores es practicaran els conceptes bàsics relacionats amb la gestió de la memòria, es descriuran els serveis i funcionalitats que ofereix el sistema als usuaris (incloent-hi les optimitzacions que es fan típicament a nivell de llibreria) i es descriuran els mecanismes i algorismes de gestió interns del kernel per gestionar la memòria virtual.",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Serveis bàsics per gestionar memòria",
+      "isEvaluative": false,
+      "description": "Durant aquesta sesió de laboratori es practicarà amb serveis bàsics per gestionar la memòria dels processos i algunes comandes per monitoritzar l'estat dels procesos",
+      "objectives": [
+        "5",
+        "6",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Primer control avaluació continuada",
+      "isEvaluative": true,
+      "description": "Aquest control inclourà els temes d'Introducció i Processos. Aquest exàmen pot incloure tant preguntes teòriques com problemes.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "week": 9,
+      "hours": []
+    },
+    {
+      "title": "Desenvolupament dels conceptes associats a la entrada /sortida de dades",
+      "isEvaluative": false,
+      "description": "Durant aquestes hores es s'explicaran els conceptes relacionats amb la gestió de la entrada/sortida de dades: tipus de dispositius, serveis i funcionalitats relacionats amb la entrada/sortida i gestió del sistema de la independència de dispositius.",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Serveis bàsics de gestió entrada / sortida",
+      "isEvaluative": false,
+      "description": "En aquesta sesió es practicarán serveis bàsics per gestionar la entrada/sortida de processos. Es faran exercicis per consolidar els conceptes relacionats amb la independència de dispositius.",
+      "objectives": [
+        "5",
+        "6",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Serveis avançats per gestionar la entrada/sortida",
+      "isEvaluative": false,
+      "description": "Durant aquesta sessió s'aprofundiran en serveis i comandes més complexes per gestionar la entrada/sortida de processos així com la relació amb altres serveis del sistema com per exemple la gestió d'events (signals)",
+      "objectives": [
+        "6",
+        "7",
+        "11",
+        "12",
+        "13",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Gestió d'Entrada/Sortida i comunicació de procesos: sessió de problemes",
+      "isEvaluative": false,
+      "description": "Durant aquesta sessió es fan exercicis rel.lacionats amb la gestió de la entrada/sortida de dades i la comunicació entre procesos",
+      "objectives": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Examen final laboratori",
+      "isEvaluative": true,
+      "description": "Examen final de laboratori que inclourà qualsevol crida a sistema, eina, concepte, etc practicat al laboratori.",
+      "objectives": [
+        "6",
+        "10",
+        "11"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Examen final teoria",
+      "isEvaluative": true,
+      "description": "Examen escrit que inclourà tot el temari del curs. Aquest examen pot incloure tant preguntes teòriques com problemes.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": 15,
+      "hours": []
+    },
+    {
+      "title": "Exercici pràctic sobre gestió de processos",
+      "isEvaluative": false,
+      "description": "Aquesta activitat consisteix a resoldre un enunciat del mateix estil i les mateixes condicions que els exàmens de l'assignatura",
+      "objectives": [],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "title": "Primer control de laboratori d'avaluación continua",
+      "isEvaluative": true,
+      "description": "Aquest control avalua els conceptes treballats a les sessions de laboratori de la 1 a la 5",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "11"
+      ],
+      "week": 9,
+      "hours": []
+    },
+    {
+      "title": "Exercici pràctic sobre gestió de l'entrada-sortida",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 7
+        }
+      ]
+    },
+    {
+      "title": "Gestió de memòria: sessió de problemes",
+      "isEvaluative": false,
+      "description": "En aquesta activitat resoldrem alguns exercicis sobre el tema de gestió de memòria. L'objectiu és consolidar el coneixement sobre algunes optimitzacions implementades pel sistema operatiu, entendre l¿organització de l¿espai d¿adreces de processos i com es pot modificar en temps d¿execució",
+      "objectives": [],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Gestió de fluxes d'execució",
+      "isEvaluative": false,
+      "description": "En aquesta activitat presentarem què aporta l'abstracció de flux d'execució, les estructures bàsiques que defineix el SO per a la gestió i una interfície bàsic per a la utilització.",
+      "objectives": [],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Gestió de fluxos d'execució: sessió de problemes",
+      "isEvaluative": false,
+      "description": "En aquesta activitat es resoldran exercicis relacionats amb la utilització de fluxos d'execució",
+      "objectives": [],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Serveis bàsics de gestió de fluxes d'execució",
+      "isEvaluative": false,
+      "description": "En aquesta activitat es programarà utilitzant una interfície bàsica de gestió de fluxos d'execució",
+      "objectives": [],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Yolanda Becerra Fontal\n                                (yolandab@ac.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Adrià Armejach Sanosa\n                            (adria.armejach@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Amador Millán Vizuete\n                            (amillan@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Carlos Garcia Calatrava\n                            (carlos.garcia.calatrava@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            David Álvarez Robert\n                            (david.alvarez.robert@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Enric Morancho Llena\n                            (enricm@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Hamid Latif Martinez\n                            (hamid.latif@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Javier Verdu Mula\n                            (jverdu@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jordi Fornes de Juan\n                            (jfornes@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jordi Guitart Fernandez\n                            (jguitart@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jordi Paillissé Vilanova\n                            (jordi.paillisse@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jordi Torres Viñals\n                            (torres@ac.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            José Luis Negueruela López\n                            (jose.luis.negueruela@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Julita Corbalan Gonzalez\n                            (julita.corbalan@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Pere Barlet Ros\n                            (pbarlet@ac.upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT2\">\n                  <b>\n                    CT2 \n                                      </b>\n                  - Utilitzar d'una manera apropiada teories, procediments i eines en el desenvolupament professional de l'enginyeria informàtica en tots els seus àmbits (especificació, disseny, implementació, desplegament -implantació- i avaluació de productes) de manera que es demostri la comprensió dels compromisos adoptats a les decisions de disseny.\n                                      <ul>\n                                              <li id=\"CT2_3\">\n                          <b>\n                            CT2.3\n                          </b>\n                          - Dissenyar, desenvolupar, seleccionar i avaluar aplicacions, sistemes i serveis informàtics i, al mateix temps, assegurar-ne la  fiabilitat, la seguretat i la qualitat en funció de principis ètics i de la legislació i la normativa vigents. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT3\">\n                  <b>\n                    CT3 \n                                      </b>\n                  - Demostrar coneixement i comprensió del context organitzatiu, econòmic i legal en el qual es desenvolupa la seva feina (coneixement adequat del concepte d'empresa, del marc institucional i jurídic de l'empresa, d'organització i gestió de les empreses). \n                                      <ul>\n                                              <li id=\"CT3_6\">\n                          <b>\n                            CT3.6\n                          </b>\n                          - Demostrar coneixement de la dimensió ètica a l'empresa: la responsabilitat social i corporativa en general i, en particular, les responsabilitats civils i professionals de l'enginyer en informàtica.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT6\">\n                  <b>\n                    CT6 \n                                      </b>\n                  - Demostrar coneixement i comprensió del funcionament intern d'un computador i del funcionament de les comunicacions entre ordinadors. \n                                      <ul>\n                                              <li id=\"CT6_1\">\n                          <b>\n                            CT6.1\n                          </b>\n                          - Demostrar coneixement i tenir capacitat per a administrar i mantenir sistemes, serveis i aplicacions informàtiques.\n                        </li>\n                                              <li id=\"CT6_2\">\n                          <b>\n                            CT6.2\n                          </b>\n                          - Demostrar coneixement, comprensió i capacitat d'avaluar l'estructura i l'arquitectura dels computadors, i els components bàsics que els componen.\n                        </li>\n                                              <li id=\"CT6_3\">\n                          <b>\n                            CT6.3\n                          </b>\n                          - Demostrar coneixement de les característiques, funcionalitats i estructura dels Sistemes Operatius que en permeti un ús adequat, administració i disseny, així com la implementació d'aplicacions basades en els seus serveis.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT7\">\n                  <b>\n                    CT7 \n                                      </b>\n                  - Avaluar i seleccionar plataformes de producció hardware i software per a l'execució d'aplicacions i de serveis informàtics. \n                                      <ul>\n                                              <li id=\"CT7_1\">\n                          <b>\n                            CT7.1\n                          </b>\n                          - Demostrar coneixement de les mètriques de qualitat i saber-les utilitzar. \n                        </li>\n                                              <li id=\"CT7_2\">\n                          <b>\n                            CT7.2\n                          </b>\n                          - Avaluar sistemes hardware/software en funció d'un criteri de qualitat determinat. \n                        </li>\n                                              <li id=\"CT7_3\">\n                          <b>\n                            CT7.3\n                          </b>\n                          - Determinar els factors que incideixen negativament en la seguretat i la fiabilitat d'un sistema hardware/software, i minimitzar-ne els efectes. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT8\">\n                  <b>\n                    CT8 \n                                      </b>\n                  - Planificar, concebre, desplegar i dirigir projectes, serveis i sistemes informàtics en tots els àmbits, liderar-ne la posada en marxa, la millora contínua i valorar-ne l'impacte econòmic i social. \n                                      <ul>\n                                              <li id=\"CT8_4\">\n                          <b>\n                            CT8.4\n                          </b>\n                          - Elaborar el plec de condicions tècniques d'una instal·lació informàtica que compleixi els estàndards i la normativa vigent.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Actitud adequada davant el treball</h4>\n                              <li id=\"G8\">\n                  <b>\n                    G8 \n                                          [Avaluable]\n                                      </b>\n                  - Tenir motivació per a la realització professional i per a afrontar nous reptes, tenir una visió àmplia de les possibilitats de la carrera professional en l'àmbit de l'enginyeria en informàtica. Sentir-se motivat per la qualitat i la millora contínua, i actuar amb rigor en el desenvolupament professional. Capacitat d'adaptació als canvis organitzatius o tecnològics. Capacitat de treballar en situacions de carència d'informació i/o amb restriccions temporals i/o de recursos.\n                                      <ul>\n                                              <li id=\"G8_1\">\n                          <b>\n                            G8.1\n                          </b>\n                          - Tenir una visió àmplia de les possibilitats de la carrera professional en l'àmbit de l'enginyeria en informàtica. Tenir una actitud positiva i receptiva respecte de la qualitat en el desenvolupament de la professió.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +607,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-321\">\n          Introducció als Sistemes Operatius\n          <br>\n          En aquest capítol es donarà una visió del que és un S.O. els recursos hardware que gestiona, quins son el serveis<br>\nque ofereix, funcionalitats etc. També s'introduiran els diferents tipus d'usuaris i aplicacions que interactuen amb el S.O. així com les diferents formes d'accedir.\n        </li>\n              <li id=\"cont-322\">\n          Gestió de processos\n          <br>\n          En aquest capítol es tractaran els següents punts: Concepte de procés. Contexte d'un procés. La vida d'un procés. Concepte de planificació de processos.. Mecanisme de canvi de context. Gestió d'events (signals). Concepte de flux. Concepte de concurrència. Problemes associats a la concurrència. Comunicació entre processos: memòria compartida i pas de missatges (només a nivell de concepte).. Serveis bàsics oferts pel sistema associats a processos i fluxes: crides a sistema i gestió de la eficiencia, seguretat entre usuaris, fiabilitat, etc. Idea/contexto: registros, pila, memoria (espacio de direcciones)/estados/eventos (signals) /usuario/variables de entorno .Representació interna de procesosen s en linux així com l'algorisme round robin de planificació a mode il.lustratiu.\n        </li>\n              <li id=\"cont-323\">\n          Gestió de memòria\n          <br>\n          En aquest capítol es tractaran els següents punts: Requeriments en quant a memòria d'un sistema multiprogramat de propósit general (espai d'adreces d'un procés i necessitat de la memoria virtual). Serveis bàsics de gestió de memòria oferts pel sistema: suport a la traducció d'adreces, protecció de processos, càrrega de processos, memòria dinàmica, gestió de la memòria virtual, etc. Estructuras y algoritmos para la gestión de la memoria virtual.\n        </li>\n              <li id=\"cont-324\">\n          Gestió de l'entrada/sortida\n          <br>\n          En aquest tema es tractaran els següents punts: Característiques i tipus de disposituis. Concepte d'Independencia de dispositivos. <br>\nRelació entre la gestió de entrada/sortida i la gestió de processos: operacions bloquejants. Tipus de dispositius lógics: pipes, consola, sockets i fitxers. Serveis bàsics i estructures de dades necessaries. Gestió de l'espai de noms. Diferents tipus de fitxers i serveis bàsics associats a fitxers. Organització interna a Linux : directoris, i-nodes.\n        </li>\n              <li id=\"cont-10801\">\n          Gestió de fluxes d'execució\n          <br>\n          En aquest tema es tractaran els següents aspectes: necessitat de l'abstracció fluxe d'execució, definició i presentació de les estructures internes bàsiques. Utilització d'una interfície bàsica de fluxes d'execució.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1085\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament del tema de Introducció als S.O</h3>\n              Durant aquesta activitat es donarà a l'alumne una visió general del que és un S.O., quines son les seves funcionalitats i serveis i quins son els principals components dels sistema que anirem desenvolupant durant el curs.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-922\">1</a>\n                                  <a href=\"#obj-923\">2</a>\n                                  <a href=\"#obj-924\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-321\">1 .\n                      Introducció als Sistemes Operatius</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1086\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Familiarització amb l'entorn de treball</h3>\n              Durant aquesta activitat s'utilitzaran comandes bàsiques per treballar amb un entorn de treball Linux, especialment per treballar des de la línea de comandes però també entendre la relació amb un entorn gràfic. Es practicaran comandes per navegar pel sistema de fitxers, per manipular fitxers, etc.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-922\">1</a>\n                                  <a href=\"#obj-923\">2</a>\n                                  <a href=\"#obj-924\">3</a>\n                                  <a href=\"#obj-1381\">12</a>\n                                  <a href=\"#obj-1382\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-321\">1 .\n                      Introducció als Sistemes Operatius</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1087\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Programació en C i desenvolupament de projectes</h3>\n              Durant aquesta activitat es treballarà la programació en C i es donaran algunes guies bàsiques per desenvolupar els petits projectes que faran els alumnes a les sessions de laboratori de forma que tinguin una estructura similar en quant a eines, organització de fitxers etc.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-922\">1</a>\n                                  <a href=\"#obj-923\">2</a>\n                                  <a href=\"#obj-924\">3</a>\n                                  <a href=\"#obj-1381\">12</a>\n                                  <a href=\"#obj-1382\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-321\">1 .\n                      Introducció als Sistemes Operatius</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1088\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament dels conceptes de Teoria associats a Processos </h3>\n              Durant aquestes hores es practicaran els conceptes i serveis bàsics relacionats amb processos i fluxes. S'explicaran els conceptes relacionats amb la organització i gestió internes que fa el S.O. per oferir aquests serveis i funcionalitats. També es tractaran aspectes relacionats amb la eficiència dels sistemes, fiabilitat, protecció, etc.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-929\">8</a>\n                                  <a href=\"#obj-930\">9</a>\n                                  <a href=\"#obj-931\">10</a>\n                                  <a href=\"#obj-932\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-322\">2 .\n                      Gestió de processos</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1089\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Serveis bàsics relacionats amb processos</h3>\n              Durant aquesta activitat es practicaran les crides a sistema bàsiques que podem trobar a un sistema Linux per crear un procés, canviar el seu executable, esperar el procés y finalitzar el procés. També practicarem comandes des d'un punt de vista d'administrador relacionades amb la monitorització de processos. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-931\">10</a>\n                                  <a href=\"#obj-932\">11</a>\n                                  <a href=\"#obj-1381\">12</a>\n                                  <a href=\"#obj-1382\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-322\">2 .\n                      Gestió de processos</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1090\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Serveis avançats de processos</h3>\n              Durant aquesta activitat introduirem la gestió d'events entre processos (signals) tant com a mecanisme de comunicació com a servei de gestió de processos avançat. Es treballaran aspectes relacionats amb la concurrència dels processos.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-931\">10</a>\n                                  <a href=\"#obj-932\">11</a>\n                                  <a href=\"#obj-1381\">12</a>\n                                  <a href=\"#obj-1382\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-322\">2 .\n                      Gestió de processos</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8928\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Gestió de processos:  sessió de problemes</h3>\n              Durant aquest sessió es resoldran exercicis rel.lacionats amb la gestió de problemes\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-929\">8</a>\n                                  <a href=\"#obj-930\">9</a>\n                                  <a href=\"#obj-931\">10</a>\n                                  <a href=\"#obj-932\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-322\">2 .\n                      Gestió de processos</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1185\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament dels conceptes associats a gestió de memòria</h3>\n              Durant aquestes hores es practicaran els conceptes bàsics relacionats amb la gestió de la memòria, es descriuran els serveis i funcionalitats que ofereix el sistema als usuaris (incloent-hi les optimitzacions que es fan típicament a nivell de llibreria) i es descriuran els mecanismes i algorismes de gestió interns del kernel per gestionar la memòria virtual.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-929\">8</a>\n                                  <a href=\"#obj-930\">9</a>\n                                  <a href=\"#obj-931\">10</a>\n                                  <a href=\"#obj-932\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-323\">3 .\n                      Gestió de memòria</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1207\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Serveis bàsics per gestionar memòria</h3>\n              Durant aquesta sesió de laboratori es practicarà amb serveis bàsics per gestionar la memòria dels processos i algunes comandes per monitoritzar l'estat dels procesos\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-1381\">12</a>\n                                  <a href=\"#obj-1382\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-323\">3 .\n                      Gestió de memòria</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-449\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Primer control avaluació continuada</h3>\n              Aquest control inclourà els temes d'Introducció i Processos. Aquest exàmen pot incloure tant preguntes teòriques com problemes. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-922\">1</a>\n                                  <a href=\"#obj-923\">2</a>\n                                  <a href=\"#obj-924\">3</a>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-929\">8</a>\n                                  <a href=\"#obj-930\">9</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  9\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1209\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament dels conceptes associats a la entrada /sortida de dades </h3>\n              Durant aquestes hores es s'explicaran els conceptes relacionats amb la gestió de la entrada/sortida de dades: tipus de dispositius, serveis i funcionalitats relacionats amb la entrada/sortida i gestió del sistema de la independència de dispositius.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-929\">8</a>\n                                  <a href=\"#obj-930\">9</a>\n                                  <a href=\"#obj-931\">10</a>\n                                  <a href=\"#obj-932\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-324\">4 .\n                      Gestió de l'entrada/sortida</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1210\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Serveis bàsics de gestió entrada / sortida</h3>\n              En aquesta sesió es practicarán serveis bàsics per gestionar la entrada/sortida de processos. Es faran exercicis per consolidar els conceptes relacionats amb la independència de dispositius. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-1381\">12</a>\n                                  <a href=\"#obj-1382\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-324\">4 .\n                      Gestió de l'entrada/sortida</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-1224\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Serveis avançats per gestionar la entrada/sortida</h3>\n              Durant aquesta sessió s'aprofundiran en serveis i comandes més complexes per gestionar la entrada/sortida de processos així com la relació amb altres serveis del sistema com per exemple la gestió d'events (signals)\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-932\">11</a>\n                                  <a href=\"#obj-1381\">12</a>\n                                  <a href=\"#obj-1382\">13</a>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-324\">4 .\n                      Gestió de l'entrada/sortida</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8929\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Gestió d'Entrada/Sortida i comunicació de procesos: sessió de problemes</h3>\n              Durant aquesta sessió es fan exercicis rel.lacionats amb la gestió de la entrada/sortida de dades i la comunicació entre procesos\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-929\">8</a>\n                                  <a href=\"#obj-930\">9</a>\n                                  <a href=\"#obj-931\">10</a>\n                                  <a href=\"#obj-932\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-322\">2 .\n                      Gestió de processos</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-324\">4 .\n                      Gestió de l'entrada/sortida</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-456\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final laboratori</h3>\n              Examen final de laboratori que inclourà qualsevol crida a sistema, eina, concepte, etc practicat al laboratori. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-931\">10</a>\n                                  <a href=\"#obj-932\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-455\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final teoria</h3>\n              Examen escrit que inclourà tot el temari del curs. Aquest examen pot incloure tant preguntes teòriques com problemes. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-922\">1</a>\n                                  <a href=\"#obj-923\">2</a>\n                                  <a href=\"#obj-924\">3</a>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-929\">8</a>\n                                  <a href=\"#obj-930\">9</a>\n                                  <a href=\"#obj-931\">10</a>\n                                  <a href=\"#obj-932\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-15627\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Exercici pràctic sobre gestió de processos</h3>\n              Aquesta activitat consisteix a resoldre un enunciat del mateix estil i les mateixes condicions que els exàmens de l'assignatura\n              <br>\n              \n              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-322\">2 .\n                      Gestió de processos</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-7641\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Primer control de laboratori d'avaluación continua</h3>\n              Aquest control avalua els conceptes treballats a les sessions de laboratori de la 1 a la 5\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-922\">1</a>\n                                  <a href=\"#obj-923\">2</a>\n                                  <a href=\"#obj-924\">3</a>\n                                  <a href=\"#obj-925\">4</a>\n                                  <a href=\"#obj-926\">5</a>\n                                  <a href=\"#obj-927\">6</a>\n                                  <a href=\"#obj-928\">7</a>\n                                  <a href=\"#obj-929\">8</a>\n                                  <a href=\"#obj-930\">9</a>\n                                  <a href=\"#obj-932\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  9\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-22446\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Exercici pràctic sobre gestió de l'entrada-sortida</h3>\n              \n              <br>\n              \n              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      7h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-25344\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Gestió de memòria: sessió de problemes</h3>\n              En aquesta activitat resoldrem alguns exercicis sobre el tema de gestió de memòria. L'objectiu és consolidar el coneixement sobre algunes optimitzacions implementades pel sistema operatiu, entendre l¿organització de l¿espai d¿adreces de processos i com es pot modificar en temps d¿execució\n              <br>\n              \n              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-25345\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Gestió de fluxes d'execució</h3>\n              En aquesta activitat presentarem què aporta l'abstracció de flux d'execució, les estructures bàsiques que defineix el SO per a la gestió i una interfície bàsic per a la utilització.\n              <br>\n              \n              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-25346\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Gestió de fluxos d'execució: sessió de problemes</h3>\n              En aquesta activitat es resoldran exercicis relacionats amb la utilització de fluxos d'execució\n              <br>\n              \n              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-25364\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Serveis bàsics de gestió de fluxes d'execució</h3>\n              En aquesta activitat es programarà utilitzant una interfície bàsica de gestió de fluxos d'execució\n              <br>\n              \n              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

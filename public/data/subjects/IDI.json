@@ -7,15 +7,363 @@
   "department": "CS",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Marta Fairen Gonzalez",
+      "email": "mfairen@cs.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Alejandro Beacco Porres",
+      "email": "alejandro.beacco@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Alejandro Ríos Jerez",
+      "email": "arios@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Amalia Duch Brown",
+      "email": "duch@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Antonio Chica Calaf",
+      "email": "achica@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Bernardino Casas Fernández",
+      "email": "bcasas@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Carlos Andujar Gran",
+      "email": "andujar@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Eduard Pujol Puig",
+      "email": "eduard.pujol.puig@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Francisco Jose Arias Arnedo",
+      "email": "francisco.jose.arias@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Genis Bayona Jaume",
+      "email": "genis.bayona@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Imanol Muñoz Pandiella",
+      "email": "imanolm@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Joan Fons Sánchez",
+      "email": "joan.fons.sanchez@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Jordi Luque Serrano",
+      "email": "jordi.luque.serrano@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Luis Alberto Carranza Cobeñas",
+      "email": "luis.carranza@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Maria Josep Blesa Aguilera",
+      "email": "mjblesa@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Nuria Pelechano Gomez",
+      "email": "npelechano@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Oscar Argudo Medrano",
+      "email": "oargudo@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Pere Pau Vázquez Alcocer",
+      "email": "ppau@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Víctor Antón Domínguez",
+      "email": "victor.anton@upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Víctor Franco Sánchez",
+      "email": "victor.franco.sanchez@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Processament de Geometria.",
+      "isEvaluative": false,
+      "description": "Estudiar les diferents formes de modelar escenes i objectes. Aprendre els elements del processat de la geometria 2D i 3D: malles de triangles. Repassar estructures de dades. Anàlisi de diferents estructures de dades per a la geometria. Estudiar els elements d'un sistema gràfic interactiu. Implementar aplicacions senzilles en OpenGL i 3D. Teoria: Models d'escenes i objectes. Elements del processat de la geometria 2D i 3D: malles de triangles. Estructures de dades per a la geometria. Elements d'un sistema gràfic interactiu. Aprenentatge autònom: Repàs de conceptes. Exercicis de malles de triangles. Exercicis d'estructures de dades per a geometria.",
+      "objectives": [
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Visualització 3D de dades.",
+      "isEvaluative": false,
+      "description": "Estudiar els conceptes bàsics de visualització en 3D. Aprendre el model de càmera. Fer exercicis de model de càmera i de transformacions geomètriques. Estudiar el pipeline de visualització programable. Teoria: Transformacions geomètriques. Model de càmera. Llibreries gràfiques. Diagrama conceptual del procés de visualització en openGL. Sistemes de coordenades, transformacions de Modelat i Visualització en OpenGL. Il·luminació en OpenGL. Aprenentatge autònom: Repàs de transformacions geomètriques. Exercicis de transformacions geomètriques. Exercicis de càmera. Repàs del procés de visualització.",
+      "objectives": [
+        "2",
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 10
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Programació d'aplicacions gràfiques.",
+      "isEvaluative": false,
+      "description": "Programar estructures de dades que emmagatzemin malles de triangles. Programar de forma bàsica la GPU amb GLSL. Entendre i utilitzar els càlculs d'il·luminació en OpenGL. Aprendre a gestionar la interacció en Qt. Laboratori: Aplicacions que utilitzin estructures de dades per a la geometria 3D. Simulació de la il·luminació utilitzant OpenGL. Interacció en Qt i OpenGL. Aprenentatge autònom: Programar una aplicació amb Qt i OpenGL.",
+      "objectives": [
+        "2",
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 18
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Introducció als sistemes interactius.",
+      "isEvaluative": false,
+      "description": "Estudiar els apunts d'interacció Persona-Computador. Estudiar els apunts d'usabilitat. Aprendre a dissenyar interfícies gràfiques. Aprendre a realitzar avaluacions d'usabilitat d'aplicacions i pàgines web. Teoria: Conceptes bàsics de sistemes interactius. Introducció a la interacció Persona-Computador. Disseny centrat en l'usuari. Aprenentatge autònom: Estudi apunts d'interacció.",
+      "objectives": [
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "title": "Ampliació o exercicis sobre un tema de disseny d'interfícies.",
+      "isEvaluative": false,
+      "description": "Resoldre exercicis o estudiar un tema de disseny d'interficies de forma autònoma. Aprenentatge autònom: Resoldre exercicis o estudiar un tema de disseny d'interficies de forma autònoma.",
+      "objectives": [
+        "8",
+        "1",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Prova Teo1: Control sobre interacció gràfica i disseny d'interfícies.",
+      "isEvaluative": true,
+      "description": "Parcial: Exercici escrit que avalua els coneixements adquirits d'interacció gràfica i disseny d'interfícies.",
+      "objectives": [
+        "8",
+        "2",
+        "3",
+        "5"
+      ],
+      "week": 7,
+      "hours": []
+    },
+    {
+      "title": "Prova Lab: Pràctica de laboratori d'implementació d'aplicacions gràfiques utilitzant OpenGL i dissenyant la iterfície amb Qt.",
+      "isEvaluative": true,
+      "description": "La prova pràctica de laboratori consisteix en la implementació d'una aplicació que utilitzi OpenGL i Qt.",
+      "objectives": [
+        "1",
+        "2",
+        "3"
+      ],
+      "week": 12,
+      "hours": []
+    },
+    {
+      "title": "Introducció a les interfícies gràfiques.",
+      "isEvaluative": false,
+      "description": "Aprendre a dissenyar i implementar interfícies gràfiques. Realitzar pràctiques en Qt. Laboratori: Introducció a la programació d'interfícies. Pràctiques de programació en Qt. Aprenentatge autònom: Programació de programes senzills utilitzant Qt.",
+      "objectives": [
+        "1"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Disseny d'interfícies d'usuari.",
+      "isEvaluative": false,
+      "description": "Estudiar el model Vista Controlador. Estudiar apunts sobre usabilitat d'aplicacions i pàgines web. Aprendre a dissenyar aplicacions en dispositius mòbils. Avaluar interfícies de dispositius mòbils. Teoria: Introducció a la Usabilitat. Mesures d'usabilitat: Llei de Fitts, Control-Display Ratio... Estudis d'usabilitat: Disseny estudi, informes d'experts, avaluació de resultats... Aspectes fonamentals en el disseny de pàgines web usables. Disseny d'interfícies per a dispositius portables. Aprenentatge autònom: Apunts d'usabilitat i avaluació d'interfícies. Apunts regles de disseny d'interfícies. Apunts metàfores d'interacció.",
+      "objectives": [
+        "8",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 10
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Introducció a la RA, RV i UC",
+      "isEvaluative": false,
+      "description": "Estudiar els conceptes bàsics d'interacció en entorns 3D, gràfics per computador, realitat virtual i realitat augmentada i fer els exercicis corresponents. Estudiar els apunts de l'assignatura. Teoria: Gràfics, Realitat Virtual i Realitat Augmentada. Introducció a la visualització d'informació. Models de color.",
+      "objectives": [
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Programació d'interfícies avançades utilitzant OpenGL i Qt.",
+      "isEvaluative": false,
+      "description": "Aprendre a programar interfícies avançades. Utilitzar els signals i slots de Qt. Integrar widgets complexes en interfícies avançades. Laboratori: Programació d'una aplicació completa que utilitzi widgets avançats i OpenGL. Aprenentatge autònom: Programació d'una aplicació completa que utilitzi widgets avançats i OpenGL.",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Prova Teo2: Examen final.",
+      "isEvaluative": true,
+      "description": "Examen que avaluarà els coneixements adquirits durant l'assignatura. Serà un examen escrit tradicional.",
+      "objectives": [
+        "8",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Marta Fairen Gonzalez\n                                (mfairen@cs.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Alejandro Beacco Porres\n                            (alejandro.beacco@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Alejandro Ríos Jerez\n                            (arios@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Amalia Duch Brown\n                            (duch@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Antonio Chica Calaf\n                            (achica@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Bernardino Casas Fernández\n                            (bcasas@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Carlos Andujar Gran\n                            (andujar@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Eduard Pujol Puig\n                            (eduard.pujol.puig@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Francisco Jose Arias Arnedo\n                            (francisco.jose.arias@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Genis Bayona Jaume\n                            (genis.bayona@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Imanol Muñoz Pandiella\n                            (imanolm@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Joan Fons Sánchez\n                            (joan.fons.sanchez@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Jordi Luque Serrano\n                            (jordi.luque.serrano@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Luis Alberto Carranza Cobeñas\n                            (luis.carranza@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Maria Josep Blesa Aguilera\n                            (mjblesa@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Nuria Pelechano Gomez\n                            (npelechano@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Oscar Argudo Medrano\n                            (oargudo@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Pere Pau Vázquez Alcocer\n                            (ppau@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Víctor Antón Domínguez\n                            (victor.anton@upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Víctor Franco Sánchez\n                            (victor.franco.sanchez@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT1\">\n                  <b>\n                    CT1 \n                                      </b>\n                  - Demostrar coneixement i comprensió de fets essencials, conceptes, principis i teories relatives a la informàtica i a les seves disciplines de referència.\n                                      <ul>\n                                              <li id=\"CT1_2A\">\n                          <b>\n                            CT1.2A\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB1: capacitat per a resoldre els problemes matemàtics que es plantegin en la enginyeria. Aptitud per a aplicar els coneixements sobre: àlgebra, càlcul diferencial i integral i mètodes numèrics; estadística i optimització.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT2\">\n                  <b>\n                    CT2 \n                                      </b>\n                  - Utilitzar d'una manera apropiada teories, procediments i eines en el desenvolupament professional de l'enginyeria informàtica en tots els seus àmbits (especificació, disseny, implementació, desplegament -implantació- i avaluació de productes) de manera que es demostri la comprensió dels compromisos adoptats a les decisions de disseny.\n                                      <ul>\n                                              <li id=\"CT2_5\">\n                          <b>\n                            CT2.5\n                          </b>\n                          - Dissenyar i avaluar interfícies persona-computador que garanteixin l'accessibilitat i la usabilitat als sistemes, als serveis i a les aplicacions informàtiques.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT4\">\n                  <b>\n                    CT4 \n                                      </b>\n                  - Demostrar coneixement i capacitat d'aplicació dels procediments algorísmics bàsics de les tecnologies informàtiques per a dissenyar solucions a problemes, analitzant la idoneïtat i la complexitat dels algorismes \n                                      <ul>\n                                              <li id=\"CT4_1\">\n                          <b>\n                            CT4.1\n                          </b>\n                          - Identificar les solucions algorísmiques més adequades per a resoldre problemes de dificultat mitjana.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT5\">\n                  <b>\n                    CT5 \n                                      </b>\n                  - Analitzar, dissenyar, construir i mantenir aplicacions de forma robusta, segura i eficient, triant el paradigma i els llenguatges de programació més adequats.\n                                      <ul>\n                                              <li id=\"CT5_2\">\n                          <b>\n                            CT5.2\n                          </b>\n                          - Conèixer, dissenyar i utilitzar de forma eficient els tipus i les  estructures de dades més adients per a la resolució d'un problema.\n                        </li>\n                                              <li id=\"CT5_3\">\n                          <b>\n                            CT5.3\n                          </b>\n                          - Dissenyar, escriure, provar, depurar, documentar i mantenir codi en un llenguatge d'alt nivell per a resoldre problemes de programació aplicant esquemes algorísmics i utilitzant estructures de dades. \n                        </li>\n                                              <li id=\"CT5_4\">\n                          <b>\n                            CT5.4\n                          </b>\n                          - Dissenyar l'arquitectura dels programes utilitzant tècniques d'orientació a objectes, de modularització i d'especificació i implementació de tipus abstractes de dades. \n                        </li>\n                                              <li id=\"CT5_5\">\n                          <b>\n                            CT5.5\n                          </b>\n                          - Usar les eines d'un entorn de desenvolupament de software per a  crear i desenvolupar aplicacions.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Actitud adequada davant el treball</h4>\n                              <li id=\"G8\">\n                  <b>\n                    G8 \n                                          [Avaluable]\n                                      </b>\n                  - Tenir motivació per a la realització professional i per a afrontar nous reptes, tenir una visió àmplia de les possibilitats de la carrera professional en l'àmbit de l'enginyeria en informàtica. Sentir-se motivat per la qualitat i la millora contínua, i actuar amb rigor en el desenvolupament professional. Capacitat d'adaptació als canvis organitzatius o tecnològics. Capacitat de treballar en situacions de carència d'informació i/o amb restriccions temporals i/o de recursos.\n                                      <ul>\n                                              <li id=\"G8_3\">\n                          <b>\n                            G8.3\n                          </b>\n                          - Estar motivat pel desenvolupament professional, per a afrontar nous reptes i per la millora contínua. Tenir capacitat de treball en situacions de falta d'informació.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +375,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1041\">\n          Introducció als sistemes interactius\n          <br>\n          Conceptes bàsics dels sistemes interactius. Introducció a la interacció persona ordinador.\n        </li>\n              <li id=\"cont-1042\">\n          Computació ubiqua i realitat augmentada\n          <br>\n          Definicions. Sistemes de Realitat Virtual i de Realitat Augmentada.\n        </li>\n              <li id=\"cont-1043\">\n          Disseny d'interfícies d'usuari\n          <br>\n          Introducció a la Usabilitat. Principis bàsics de disseny d'interfícies d'usuari. Regles de disseny.\n        </li>\n              <li id=\"cont-1044\">\n          Models de color\n          <br>\n          Representacions del color. Traducció entre models.\n        </li>\n              <li id=\"cont-1045\">\n          Programació d'interfícies\n          <br>\n          Introducció a Qt. Programació d'interfícies avançades amb Qt.\n        </li>\n              <li id=\"cont-1162\">\n          Processament i visualització de geometria 2D i 3D\n          <br>\n          Introducció als Gràfics per Computador. Visualització utilitzant OpenGL.\n        </li>\n              <li id=\"cont-1163\">\n          Desenvolupament centrat en l'usuari\n          <br>\n          Disseny centrat en l'usuari. Avaluació del disseny d'interfícies. Avaluació de pàgines web. Estudis d'usabilitat.\n        </li>\n              <li id=\"cont-1164\">\n          Arquitectura i programació de targetes gràfiques\n          <br>\n          Introducció a GLSL. Vertex shaders i fragment shaders.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-3732\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Processament de Geometria.</h3>\n              Estudiar les diferents formes de modelar escenes i objectes.\nAprendre els elements del processat de la geometria 2D i 3D: malles de triangles.\nRepassar estructures de dades. Anàlisi de diferents estructures de dades per a la geometria.\nEstudiar els elements d'un sistema gràfic interactiu.\nImplementar aplicacions senzilles en OpenGL i 3D.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Models d'escenes i objectes. Elements del processat de la geometria 2D i 3D: malles de triangles. Estructures de dades per a la geometria. Elements d'un sistema gràfic interactiu.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repàs de conceptes.\nExercicis de malles de triangles.\nExercicis d'estructures de dades per a geometria.\n\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2263\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1162\">6 .\n                      Processament i visualització de geometria 2D i 3D</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-3735\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Visualització 3D de dades.</h3>\n              Estudiar els conceptes bàsics de visualització en 3D.\nAprendre el model de càmera. Fer exercicis de model de càmera i de transformacions geomètriques.\nEstudiar el pipeline de visualització programable.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Transformacions geomètriques.\nModel de càmera.\nLlibreries gràfiques.\nDiagrama conceptual del procés de visualització en openGL.\nSistemes de coordenades, transformacions de Modelat i Visualització en OpenGL.\nIl·luminació en OpenGL.\n\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Repàs de transformacions geomètriques.\nExercicis de transformacions geomètriques.\nExercicis de càmera.\nRepàs del procés de visualització.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2263\">2</a>\n                                  <a href=\"#obj-2264\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1044\">4 .\n                      Models de color</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1162\">6 .\n                      Processament i visualització de geometria 2D i 3D</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1164\">8 .\n                      Arquitectura i programació de targetes gràfiques</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-3749\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Programació d'aplicacions gràfiques.</h3>\n              Programar estructures de dades que emmagatzemin malles de triangles.\nProgramar de forma bàsica la GPU amb GLSL. Entendre i utilitzar els càlculs d'il·luminació en OpenGL.\nAprendre a gestionar la interacció en Qt.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Aplicacions que utilitzin estructures de dades per a la geometria 3D.\nSimulació de la il·luminació utilitzant OpenGL.\nInteracció en Qt i OpenGL.\n\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Programar una aplicació amb Qt i OpenGL.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2263\">2</a>\n                                  <a href=\"#obj-2264\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1162\">6 .\n                      Processament i visualització de geometria 2D i 3D</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1164\">8 .\n                      Arquitectura i programació de targetes gràfiques</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      18h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-3738\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció als sistemes interactius.</h3>\n              Estudiar els apunts d'interacció Persona-Computador.\nEstudiar els apunts d'usabilitat.\nAprendre a dissenyar interfícies gràfiques. \nAprendre a realitzar avaluacions d'usabilitat d'aplicacions i pàgines web.\n\n\n\n\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Conceptes bàsics de sistemes interactius.\nIntroducció a la interacció Persona-Computador.\nDisseny centrat en l'usuari.\n\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Estudi apunts d'interacció.\n\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2261\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1041\">1 .\n                      Introducció als sistemes interactius</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1043\">3 .\n                      Disseny d'interfícies d'usuari</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1163\">7 .\n                      Desenvolupament centrat en l'usuari</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-3750\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Ampliació o exercicis sobre un tema de disseny d'interfícies.</h3>\n              Resoldre exercicis o estudiar un tema de disseny d'interficies de forma autònoma.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Resoldre exercicis o estudiar un tema de disseny d'interficies de forma autònoma.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2261\">8</a>\n                                  <a href=\"#obj-2262\">1</a>\n                                  <a href=\"#obj-2265\">4</a>\n                                  <a href=\"#obj-2581\">5</a>\n                                  <a href=\"#obj-2582\">6</a>\n                                  <a href=\"#obj-2583\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1043\">3 .\n                      Disseny d'interfícies d'usuari</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1045\">5 .\n                      Programació d'interfícies</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1163\">7 .\n                      Desenvolupament centrat en l'usuari</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1521\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Prova Teo1: Control sobre interacció gràfica i disseny d'interfícies.</h3>\n              Parcial: Exercici escrit que avalua els coneixements adquirits d'interacció gràfica i disseny d'interfícies.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2261\">8</a>\n                                  <a href=\"#obj-2263\">2</a>\n                                  <a href=\"#obj-2264\">3</a>\n                                  <a href=\"#obj-2581\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  7\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-1523\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Prova Lab: Pràctica de laboratori d'implementació d'aplicacions gràfiques utilitzant OpenGL i dissenyant la iterfície amb Qt.</h3>\n              La prova pràctica de laboratori consisteix en la implementació d'una aplicació que utilitzi OpenGL i Qt.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2262\">1</a>\n                                  <a href=\"#obj-2263\">2</a>\n                                  <a href=\"#obj-2264\">3</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  12\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-3745\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció a les interfícies gràfiques.</h3>\n              Aprendre a dissenyar i implementar interfícies gràfiques.\nRealitzar pràctiques en Qt.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Introducció a la programació d'interfícies.\nPràctiques de programació en Qt.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Programació de programes senzills utilitzant Qt.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2262\">1</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-3740\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Disseny d'interfícies d'usuari.</h3>\n              Estudiar el model Vista Controlador.\nEstudiar apunts sobre usabilitat d'aplicacions i pàgines web.\nAprendre a dissenyar aplicacions en dispositius mòbils.\nAvaluar interfícies de dispositius mòbils.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Introducció a la Usabilitat.\nMesures d'usabilitat: Llei de Fitts, Control-Display Ratio...\nEstudis d'usabilitat: Disseny estudi, informes d'experts, avaluació de resultats...\nAspectes fonamentals en el disseny de pàgines web usables.\nDisseny d'interfícies per a dispositius portables.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Apunts d'usabilitat i avaluació d'interfícies.\nApunts regles de disseny d'interfícies.\nApunts metàfores d'interacció.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2261\">8</a>\n                                  <a href=\"#obj-2265\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1041\">1 .\n                      Introducció als sistemes interactius</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1043\">3 .\n                      Disseny d'interfícies d'usuari</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1163\">7 .\n                      Desenvolupament centrat en l'usuari</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-3727\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció a la RA, RV i UC</h3>\n              Estudiar els conceptes bàsics d'interacció en entorns 3D, gràfics per computador, realitat virtual i realitat augmentada i fer els exercicis corresponents.\nEstudiar els apunts de l'assignatura.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Gràfics, Realitat Virtual i Realitat Augmentada.\nIntroducció a la visualització d'informació.\nModels de color.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2263\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1041\">1 .\n                      Introducció als sistemes interactius</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1042\">2 .\n                      Computació ubiqua i realitat augmentada</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1044\">4 .\n                      Models de color</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-3747\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Programació d'interfícies avançades utilitzant OpenGL i Qt.</h3>\n              Aprendre a programar interfícies avançades.\nUtilitzar els signals i slots de Qt.\nIntegrar widgets complexes en interfícies avançades.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Programació d'una aplicació completa que utilitzi widgets avançats i OpenGL.\n\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Programació d'una aplicació completa que utilitzi widgets avançats i OpenGL.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2262\">1</a>\n                                  <a href=\"#obj-2263\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1044\">4 .\n                      Models de color</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1045\">5 .\n                      Programació d'interfícies</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1162\">6 .\n                      Processament i visualització de geometria 2D i 3D</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1164\">8 .\n                      Arquitectura i programació de targetes gràfiques</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1525\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Prova Teo2: Examen final.</h3>\n              Examen que avaluarà els coneixements adquirits durant l'assignatura. Serà un examen escrit tradicional.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2261\">8</a>\n                                  <a href=\"#obj-2262\">1</a>\n                                  <a href=\"#obj-2263\">2</a>\n                                  <a href=\"#obj-2264\">3</a>\n                                  <a href=\"#obj-2265\">4</a>\n                                  <a href=\"#obj-2581\">5</a>\n                                  <a href=\"#obj-2582\">6</a>\n                                  <a href=\"#obj-2583\">7</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

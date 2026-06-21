@@ -7,15 +7,226 @@
   "department": "CS;BSC;ENTEL",
   "web": "http://www.cs.upc.edu/~mjserna/docencia/grauA/alg-GEI.html",
   "summary": "",
+  "professors": [
+    {
+      "name": "Maria Jose Serna Iglesias",
+      "email": "mjserna@cs.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "Amalia Duch Brown",
+      "email": "duch@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Conrado Martínez Parra",
+      "email": "conrado@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Maria Josep Blesa Aguilera",
+      "email": "mjblesa@cs.upc.edu",
+      "role": "Altres"
+    },
+    {
+      "name": "Santiago Marco Sola",
+      "email": "santiago.marco@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 2
+    },
+    {
+      "type": "Laboratori",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.4
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Conceptes Algorísmics Bàsics",
+      "isEvaluative": false,
+      "description": "Recordar conceptes fonamentals apresos a les assignatures prèvies, i familiaritzar-se amb la terminologia i notació que es farà servir al llarg del curs. Aprendre altes técniques algorítmiques bàsiques. Aprenentatge autònom: - Estudi de la teoria i problemes vistos a classe - Resolució dels exercicis proposats amb antelació",
+      "objectives": [],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Problemes",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Algorismes Golafres",
+      "isEvaluative": false,
+      "description": "Atendre les classes de teoria i problemes ón es desenvolupa el tema i fer els exercicis proposats pel professor per fer a casa o a classe Aprenentatge autònom: - Estudi de la teoria i problemes vistos a classe - Resolució dels exercicis proposats amb antelació",
+      "objectives": [
+        "1"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 6
+        },
+        {
+          "type": "Problemes",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 16
+        }
+      ]
+    },
+    {
+      "title": "Programació Dinàmica",
+      "isEvaluative": false,
+      "description": "Atendre les classes de teoria i problemes ón es desenvolupa el tema i fer els exercicis proposats pel professor per fer a casa o a classe Aprenentatge autònom: - Estudi de la teoria i problemes vistos a classe - Resolució dels exercicis proposats amb antelació",
+      "objectives": [
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Problemes",
+          "value": 9
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Fluxos sobre Xarxes",
+      "isEvaluative": false,
+      "description": "Atendre les classes de teoria i problemes ón es desenvolupa el tema i fer els exercicis proposats pel professor per fer a casa o a classe Aprenentatge autònom: - Estudi de la teoria i problemes vistos a classe - Resolució dels exercicis proposats amb antelació",
+      "objectives": [
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Problemes",
+          "value": 8
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Estructures de Dades Avançades",
+      "isEvaluative": false,
+      "description": "Atendre les classes de teoria i problemes ón es desenvolupa el tema i fer els exercicis proposats pel professor per fer a casa o a classe Aprenentatge autònom: - Estudi de la teoria i problemes vistos a classe - Resolució dels exercicis proposats amb antelació",
+      "objectives": [
+        "5",
+        "6"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Examen parcial",
+      "isEvaluative": true,
+      "description": "Examen parcial fora d'hores de classe. Cobrint la primera part del temari i el tema assignat com treball d'aprenentatge autònom",
+      "objectives": [
+        "1",
+        "2",
+        "5",
+        "6",
+        "7"
+      ],
+      "week": 8,
+      "hours": []
+    },
+    {
+      "title": "Examen Final\n\nExamen Final",
+      "isEvaluative": true,
+      "description": "Examen final sobre tota la materia del curs",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "7"
+      ],
+      "week": 15,
+      "hours": []
+    },
+    {
+      "title": "Estudi d'un tema fora dels continguts del curs",
+      "isEvaluative": false,
+      "description": "A principi de curs es plantejarà un tema d'estudi aquest tema formarà part del temari de l'examen parcial.",
+      "objectives": [],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Maria Jose Serna Iglesias\n                                (mjserna@cs.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Amalia Duch Brown\n                            (duch@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Conrado Martínez Parra\n                            (conrado@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Maria Josep Blesa Aguilera\n                            (mjblesa@cs.upc.edu)\n                      </li>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            Santiago Marco Sola\n                            (santiago.marco@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT1\">\n                  <b>\n                    CT1 \n                                      </b>\n                  - Demostrar coneixement i comprensió de fets essencials, conceptes, principis i teories relatives a la informàtica i a les seves disciplines de referència.\n                                      <ul>\n                                              <li id=\"CT1_2C\">\n                          <b>\n                            CT1.2C\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB3. Capacitat per a comprendre i dominar els conceptes bàsics de matemàtica discreta, lògica, algorísmica i complexitat computacional, i la seva aplicació per al tractament automàtic de la informació mitjançant sistemes computacionals i la seva aplicació per a la resolució de problemes propis de l'enginyeria.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT4\">\n                  <b>\n                    CT4 \n                                      </b>\n                  - Demostrar coneixement i capacitat d'aplicació dels procediments algorísmics bàsics de les tecnologies informàtiques per a dissenyar solucions a problemes, analitzant la idoneïtat i la complexitat dels algorismes \n                                      <ul>\n                                              <li id=\"CT4_1\">\n                          <b>\n                            CT4.1\n                          </b>\n                          - Identificar les solucions algorísmiques més adequades per a resoldre problemes de dificultat mitjana.\n                        </li>\n                                              <li id=\"CT4_2\">\n                          <b>\n                            CT4.2\n                          </b>\n                          - Raonar sobre la correcció i l'eficiència d'una solució algorísmica.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT5\">\n                  <b>\n                    CT5 \n                                      </b>\n                  - Analitzar, dissenyar, construir i mantenir aplicacions de forma robusta, segura i eficient, triant el paradigma i els llenguatges de programació més adequats.\n                                      <ul>\n                                              <li id=\"CT5_2\">\n                          <b>\n                            CT5.2\n                          </b>\n                          - Conèixer, dissenyar i utilitzar de forma eficient els tipus i les  estructures de dades més adients per a la resolució d'un problema.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Aprenentatge autònom</h4>\n                              <li id=\"G7\">\n                  <b>\n                    G7 \n                                          [Avaluable]\n                                      </b>\n                  - Detectar carències en el  coneixement propi i superar-les mitjançant la reflexió crítica i l'elecció de la millor actuació per ampliar aquest coneixement. Capacitat per a l'aprenentatge de nous mètodes i tecnologies, i versatilitat per a adaptar-se a noves situacions. \n                                      <ul>\n                                              <li id=\"G7_3\">\n                          <b>\n                            G7.3\n                          </b>\n                          - Aprenentatge autònom: capacitat de planificació i organització del treball personal. Aplicar els coneixements adquirits a la realització d'una tasca en funció de la pertinença i de la importància, decidir la manera de dur-la a terme i el temps que se li ha de dedicar, i seleccionar les fonts d'informació més adients. Identificar la importància d'establir i mantenir contactes amb els companys d'estudis, amb el professorat i amb els professionals (networking). Identificar fòrums d'informació sobre enginyeria TIC, els seus avenços i el seu impacte en la societat (IEEE, associacions, etc.).\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat computació</h4>\n                              <li id=\"CCO1\">\n                  <b>\n                    CCO1 \n                                      </b>\n                  - Tenir un coneixement profund dels principis fonamentals i dels models de la computació i saber-los aplicar per a interpretar, seleccionar, valorar, modelar i crear nous conceptes, teories, usos i desenvolupaments tecnològics, relacionats amb la informàtica. \n                                      <ul>\n                                              <li id=\"CCO1_1\">\n                          <b>\n                            CCO1.1\n                          </b>\n                          - Avaluar la complexitat computacional d'un problema, conèixer estratègies algorísmiques que puguin dur a la seva resolució, i recomanar, desenvolupar i implementar la que garanteixi el millor rendiment d'acord amb els requisits establerts.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CCO2\">\n                  <b>\n                    CCO2 \n                                      </b>\n                  - Desenvolupar de forma efectiva i eficient els algorismes i el software apropiats per a resoldre problemes complexos de computació. \n                                      <ul>\n                                              <li id=\"CCO2_5\">\n                          <b>\n                            CCO2.5\n                          </b>\n                          - Implementar software de cerca d'informació (information retrieval).\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CCO3\">\n                  <b>\n                    CCO3 \n                                      </b>\n                  - Desenvolupar les solucions informàtiques que, considerant l'entorn d'execució i l'arquitectura del computador sobre el qual s'executen, aconsegueixin el millor rendiment. \n                                      <ul>\n                                              <li id=\"CCO3_1\">\n                          <b>\n                            CCO3.1\n                          </b>\n                          - Implementar codi crític seguint criteris de temps d'execució, eficiència i seguretat.\n                        </li>\n                                              <li id=\"CCO3_2\">\n                          <b>\n                            CCO3.2\n                          </b>\n                          - Programar considerant l'arquitectura hardware, tant en asemblador com en alt nivell.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +238,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1106\">\n          Conceptes Algorísmics Bàsics\n          <br>\n          Anàlisi del cas pitjor. Notació asimptòtica. Dividir per conquerir. Anàlisi d'algorismes recursius. Ordenació lineal. Algoritmes per Grafs. Aleatorització.\n        </li>\n              <li id=\"cont-1107\">\n          Algorismes Golafres\n          <br>\n          Esquema dels algorismes golafres. Planificació de tasques. Algorismes de Bellman-Ford i Johnson  per als camins mínims. Algorismes de Kruskal i Prim per a arbres d'expansió mínims. Particions (Union-find). Codis de Huffman.\n        </li>\n              <li id=\"cont-1108\">\n          Programació Dinàmica\n          <br>\n          Principi d'optimalitat. Memoització.  Algorisme de Floyd-Warshall per a camins mínims. Problema del viatjant de comerç. Problema de la motxilla. Altres examples.\n        </li>\n              <li id=\"cont-1109\">\n          Fluxos sobre Xarxes\n          <br>\n          Conceptes bàsics. Teorema del maxflow-mincut. Algorisme de Ford-Fulkerson. Aplicacions: matching i  camins sense arestes en comú. Dualitat.\n        </li>\n              <li id=\"cont-1111\">\n          Estructures de Dades i Algorismes Avançats\n          <br>\n          Es farà una selecció d'algú dels algorismes i/o estructures de dades seguents (o d'altres).  Programació lineal. Monticles de Fibonaccci.  Hashing. Filtres de Bloom. Blockchain. Estructures de dades mètriques. Map Reduce. Grafs aleatoris.   PageRank.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-2764\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Conceptes Algorísmics Bàsics</h3>\n              Recordar conceptes fonamentals apresos a les assignatures prèvies, i familiaritzar-se amb la terminologia i notació que es farà servir al llarg del curs. Aprendre altes técniques algorítmiques bàsiques. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      - Estudi de la teoria i problemes vistos a classe\n- Resolució dels exercicis proposats amb antelació\n                    </li>\n                                  </ul>\n              \n              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1106\">1 .\n                      Conceptes Algorísmics Bàsics</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-2765\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Algorismes Golafres</h3>\n              Atendre les classes de teoria i problemes ón es desenvolupa el tema i fer els exercicis proposats pel professor per fer a casa o a classe \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      - Estudi de la teoria i problemes vistos a classe\n- Resolució dels exercicis proposats amb antelació\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1801\">1</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1107\">2 .\n                      Algorismes Golafres</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      16h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-2767\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Programació Dinàmica</h3>\n              Atendre les classes de teoria i problemes ón es desenvolupa el tema i fer els exercicis proposats pel professor per fer a casa o a classe \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      - Estudi de la teoria i problemes vistos a classe\n- Resolució dels exercicis proposats amb antelació\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1802\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1108\">3 .\n                      Programació Dinàmica</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      9h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-2768\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Fluxos sobre Xarxes</h3>\n              Atendre les classes de teoria i problemes ón es desenvolupa el tema i fer els exercicis proposats pel professor per fer a casa o a classe \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      - Estudi de la teoria i problemes vistos a classe\n- Resolució dels exercicis proposats amb antelació\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1803\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1109\">4 .\n                      Fluxos sobre Xarxes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-2771\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Estructures de Dades Avançades</h3>\n              Atendre les classes de teoria i problemes ón es desenvolupa el tema i fer els exercicis proposats pel professor per fer a casa o a classe \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      - Estudi de la teoria i problemes vistos a classe\n- Resolució dels exercicis proposats amb antelació\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1806\">5</a>\n                                  <a href=\"#obj-1807\">6</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1111\">5 .\n                      Estructures de Dades i Algorismes Avançats</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-4981\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen parcial</h3>\n              Examen parcial fora d'hores de classe.  Cobrint la primera part del temari i el tema assignat com treball d'aprenentatge autònom \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1801\">1</a>\n                                  <a href=\"#obj-1802\">2</a>\n                                  <a href=\"#obj-1806\">5</a>\n                                  <a href=\"#obj-1807\">6</a>\n                                  <a href=\"#obj-1808\">7</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  8\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1141\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen Final\n\nExamen Final</h3>\n              Examen final sobre tota la materia del curs\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1801\">1</a>\n                                  <a href=\"#obj-1802\">2</a>\n                                  <a href=\"#obj-1803\">3</a>\n                                  <a href=\"#obj-1805\">4</a>\n                                  <a href=\"#obj-1806\">5</a>\n                                  <a href=\"#obj-1808\">7</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-26084\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Estudi d'un tema fora dels continguts del curs</h3>\n              A principi de curs es plantejarà un tema d'estudi aquest tema formarà part del temari de l'examen parcial.\n              <br>\n              \n              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

@@ -7,15 +7,129 @@
   "department": "FIB",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Lidia Montero Mercadé",
+      "email": "lidia.montero@upc.edu",
+      "role": "Responsable"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 1
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 1
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 3
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Preparació Pla de Recerca",
+      "isEvaluative": false,
+      "description": "Informació per part del tutor sobre el context, l'objectiu i l'abast de la seva participació en el projecte de recerca. Acord conjunt sobre les fites i el temps assignat, així com el tipus de resultat final que s'espera de la participació de l'estudiant. Presentació i discussió del pla de recerca, mètode a seguir, fonts de dades, fonts bibliogràfiques i de programari i, en general, tot el que cal saber i tenir a mà per iniciar i seguir el projecte de recerca. Acord de periodicitat i forma de revisió al llarg del projecte. Acord i definició de formats de documentació interna, i format de publicació i possible participació en jornades científiques. Decisió sobre el tipus d'entorns d'emmagatzematge per al programari desenvolupat. Compartir criteris i llicències del programari desenvolupat. Criteris de protecció i intercanvi d'altres resultats de recerca.",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupament de la Recerca",
+      "isEvaluative": false,
+      "description": "Desenvolupament del projecte de recerca",
+      "objectives": [
+        "3",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 5
+        },
+        {
+          "type": "Laboratori",
+          "value": 15
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 30
+        }
+      ]
+    },
+    {
+      "title": "Preparació de la documentació",
+      "isEvaluative": false,
+      "description": "Preparació d'informes interns, docuemntació de software i de desenvolupament de hardware, informació sobre tot tipus de recursos necessaris per usar i replicar els resultats de la recerca: repositoris, sistemes de computació específics, configuracions de hardware i software, dispositiu hardware específics, conjunts de dades utiltizats i el seu lloc d'emmagatzament i forma de compartició; bibliografies, articles escrits, possibles presentacions de conferències, etc.Preparació de la memòria final del projecte de recerca.",
+      "objectives": [
+        "3",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Discussió del informe de l'activitat amb el tutor",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [
+        "3",
+        "2"
+      ],
+      "week": 1,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Lidia Montero Mercadé\n                                (lidia.montero@upc.edu)\n                          </b>\n          </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            3\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT4\">\n                  <b>\n                    CT4 \n                                      </b>\n                  - Demostrar coneixement i capacitat d'aplicació dels procediments algorísmics bàsics de les tecnologies informàtiques per a dissenyar solucions a problemes, analitzant la idoneïtat i la complexitat dels algorismes \n                                      <ul>\n                                              <li id=\"CT4_1\">\n                          <b>\n                            CT4.1\n                          </b>\n                          - Identificar les solucions algorísmiques més adequades per a resoldre problemes de dificultat mitjana.\n                        </li>\n                                              <li id=\"CT4_2\">\n                          <b>\n                            CT4.2\n                          </b>\n                          - Raonar sobre la correcció i l'eficiència d'una solució algorísmica.\n                        </li>\n                                              <li id=\"CT4_3\">\n                          <b>\n                            CT4.3\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació dels principis fonamentals i de les tècniques bàsiques dels sistemes intel·ligents i de la seva aplicació pràctica. \n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT5\">\n                  <b>\n                    CT5 \n                                      </b>\n                  - Analitzar, dissenyar, construir i mantenir aplicacions de forma robusta, segura i eficient, triant el paradigma i els llenguatges de programació més adequats.\n                                      <ul>\n                                              <li id=\"CT5_2\">\n                          <b>\n                            CT5.2\n                          </b>\n                          - Conèixer, dissenyar i utilitzar de forma eficient els tipus i les  estructures de dades més adients per a la resolució d'un problema.\n                        </li>\n                                              <li id=\"CT5_3\">\n                          <b>\n                            CT5.3\n                          </b>\n                          - Dissenyar, escriure, provar, depurar, documentar i mantenir codi en un llenguatge d'alt nivell per a resoldre problemes de programació aplicant esquemes algorísmics i utilitzant estructures de dades. \n                        </li>\n                                              <li id=\"CT5_4\">\n                          <b>\n                            CT5.4\n                          </b>\n                          - Dissenyar l'arquitectura dels programes utilitzant tècniques d'orientació a objectes, de modularització i d'especificació i implementació de tipus abstractes de dades. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +141,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-10241\">\n          Pla de Recerca.\n          <br>\n          Preparació del pla de recerca: objectius, revisió de l¿estat de l'art , selecció de mètode experimental, disseny d'experiments, criteris de validació.\n        </li>\n              <li id=\"cont-10242\">\n          Recerca: desenvolupament de l'activitat pròpiament dita\n          <br>\n          Experimentació, desenvolupament d'algoritmes i la seva prova, discussió de resultats amb el tutor i revisió d'hipòtesis\n        </li>\n              <li id=\"cont-10243\">\n          Documentació\n          <br>\n          Preparació d'informes de recerca, articles o presentacions tipus congrés científic i dipòsit de la documentació sobre el procés de recerca i els seus resultats en format article.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-24684\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Preparació Pla de Recerca</h3>\n              Informació per part del tutor sobre el context, l'objectiu i l'abast de la seva participació en el projecte de recerca. Acord conjunt sobre les fites i el temps assignat, així com el tipus de resultat final que s'espera de la participació de l'estudiant. Presentació i discussió del pla de recerca, mètode a seguir, fonts de dades, fonts bibliogràfiques i de programari i, en general, tot el que cal saber i tenir a mà per iniciar i seguir el projecte de recerca. Acord de periodicitat i forma de revisió al llarg del projecte. Acord i definició de formats de documentació interna, i format de publicació i possible participació en jornades científiques. Decisió sobre el tipus d'entorns d'emmagatzematge per al programari desenvolupat. Compartir criteris i llicències del programari desenvolupat. Criteris de protecció i intercanvi d'altres resultats de recerca.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-9762\">1</a>\n                                  <a href=\"#obj-9763\">2</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-24685\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament de la Recerca</h3>\n              Desenvolupament del projecte de recerca\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-9761\">3</a>\n                                  <a href=\"#obj-9763\">2</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      30h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-24686\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Preparació de la documentació</h3>\n              Preparació d'informes interns, docuemntació de software i de desenvolupament de hardware, informació sobre tot tipus de recursos necessaris per usar i replicar els resultats de la recerca: repositoris, sistemes de computació específics, configuracions de hardware i software, dispositiu hardware específics, conjunts de dades utiltizats i el seu lloc d'emmagatzament i forma de compartició; bibliografies, articles escrits, possibles presentacions de conferències, etc.Preparació de la memòria final del projecte de recerca.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-9761\">3</a>\n                                  <a href=\"#obj-9763\">2</a>\n                              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-8341\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Discussió del informe de l'activitat amb el tutor</h3>\n              \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-9761\">3</a>\n                                  <a href=\"#obj-9763\">2</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  1\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

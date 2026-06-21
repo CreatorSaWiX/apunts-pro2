@@ -7,15 +7,329 @@
   "department": "AC",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Daniel Jimenez Gonzalez",
+      "email": "djimenez@ac.upc.edu",
+      "role": "Responsable"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 1
+    },
+    {
+      "type": "Problemes",
+      "value": 1
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Introducció a la programació conscient de l'arquitectura",
+      "isEvaluative": false,
+      "description": "Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.",
+      "objectives": [
+        "1"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Eines de programació i optimització",
+      "isEvaluative": false,
+      "description": "Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.",
+      "objectives": [
+        "2",
+        "3",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Operacions de llarga latència",
+      "isEvaluative": false,
+      "description": "Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.",
+      "objectives": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "12"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Optimització del control de fluxe",
+      "isEvaluative": false,
+      "description": "Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "6",
+        "12",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 18
+        }
+      ]
+    },
+    {
+      "title": "Control 1-T",
+      "isEvaluative": true,
+      "description": "Temes 1-3.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "7",
+        "10"
+      ],
+      "week": 7,
+      "hours": []
+    },
+    {
+      "title": "Control-1-P",
+      "isEvaluative": true,
+      "description": "Temes 1-3",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "7",
+        "10"
+      ],
+      "week": 7,
+      "hours": []
+    },
+    {
+      "title": "Optimitzacions conscient de la memòria",
+      "isEvaluative": false,
+      "description": "Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "8",
+        "7",
+        "12",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 3
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 14
+        }
+      ]
+    },
+    {
+      "title": "Extensions vectorials i ús de hardware específic",
+      "isEvaluative": false,
+      "description": "Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "9",
+        "12",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 4
+        },
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 22
+        }
+      ]
+    },
+    {
+      "title": "Control 2-T",
+      "isEvaluative": true,
+      "description": "Tots els temes. Més centrat en temes 5-6, però pot sortir qualsevol concepte previ.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "8",
+        "7",
+        "9",
+        "11",
+        "12",
+        "10"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Control-2-P",
+      "isEvaluative": true,
+      "description": "Tots els temes. Més centrat en temes 4-6 però pot sortir qualsevol concepte previ.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "8",
+        "7",
+        "9",
+        "11",
+        "12",
+        "10"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Examen Final",
+      "isEvaluative": true,
+      "description": "Examen Final. Fora d'horari de classe.",
+      "objectives": [
+        "11",
+        "12",
+        "10",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "8",
+        "7",
+        "9"
+      ],
+      "week": 15,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Daniel Jimenez Gonzalez\n                                (djimenez@ac.upc.edu)\n                          </b>\n          </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Emprenedoria i innovació</h4>\n                              <li id=\"G1\">\n                  <b>\n                    G1 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer i comprendre l'organització d'una empresa i les ciències que regeixen la seva activitat; capacitat de comprendre les regles laborals i les relacions entre la planificació, les estratègies industrials i comercials, la qualitat i el benefici. Desenvolupar la creativitat, l'esperit emprenedor i la tendència a la innovació. \n                                      <ul>\n                                              <li id=\"G1_3\">\n                          <b>\n                            G1.3\n                          </b>\n                          - Ser resolutiu. Utilitzar coneixements i habilitats estratègiques per a la creació i la gestió de projectes, aplicar solucions sistèmiques a problemes complexos, i dissenyar i gestionar la innovació en la organització. Demostrar flexibilitat i professionalitat en el desenvolupament de la seva feina.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat enginyeria de computadors</h4>\n                              <li id=\"CEC2\">\n                  <b>\n                    CEC2 \n                                      </b>\n                  - Analitzar i avaluar arquitectures de computadors incloent plataformes paral·leles i distribuïdes, i desenvolupar i optimitzar software per a aquestes plataformes.\n                                      <ul>\n                                              <li id=\"CEC2_2\">\n                          <b>\n                            CEC2.2\n                          </b>\n                          - Programar considerant l'arquitectura hardware, tant en assemblador com en alt nivell. \n                        </li>\n                                              <li id=\"CEC2_3\">\n                          <b>\n                            CEC2.3\n                          </b>\n                          - Desenvolupar i analitzar software per a sistemes basats en microprocessadors i les seves interfícies amb usuaris i altres dispositius.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CEC3\">\n                  <b>\n                    CEC3 \n                                      </b>\n                  - Desenvolupar i analitzar hardware i software per a sistemes encastats i/o de molt baix consum. \n                                      <ul>\n                                              <li id=\"CEC3_1\">\n                          <b>\n                            CEC3.1\n                          </b>\n                          - Analitzar, avaluar i seleccionar les plataformes hardware i software més adients per al suport d'aplicacions encastades i de temps real.\n                        </li>\n                                              <li id=\"CEC3_2\">\n                          <b>\n                            CEC3.2\n                          </b>\n                          - Desenvolupar processadors específics i sistemes encastats; desenvolupar i optimitzar el software d'aquests sistemes.&nbsp;\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +341,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1601\">\n          Introducció: Programació conscient de l'arquitectura\n          <br>\n          Que entenem per programació consicent de l'arquitectura i en quins casos val la pena fer-ho. Estratègies d'optimització. Avaluació del rendiment.\n        </li>\n              <li id=\"cont-1602\">\n          Eines de programació i optimització\n          <br>\n          Mesura del rendiment dels programes. Opcions de compilació. Estudi del comportament dinàmic dels programes. Ús d'eines d'alt nivell per accelerar (optimitzar) amb hardware algunes parts del programa a partir de codi C.\n        </li>\n              <li id=\"cont-1603\">\n          Operacions de llarga latència\n          <br>\n          Alternatives a algunes operacions de cost d'execució elevat i/o llarga latència. Substitució d'operacions complexes per operacions més senzilles. Memorització de resultats. Detecció de casos trivials. Us dels recursos sistema operatiu.\n        </li>\n              <li id=\"cont-1604\">\n          Optimització del control de fluxe\n          <br>\n          Detecció i eliminació de salts crítics. Inlining. Desenrollat de bucles, etc. \n        </li>\n              <li id=\"cont-1605\">\n          Optimitzacions conscient de la memòria\n          <br>\n          Mida i alineació de dades. Divisió de les dades en blocs de mida proporcional a la memòria cache. Desambiguació de memòria. Definició de les estructures de dades i pragmas per millorar el rendiment de l'aplicació tant en hardware específic com en el processador de caràcter general.\n        </li>\n              <li id=\"cont-1606\">\n          Extensions vectorials i ús de hardware específic per \"vectoritzar\". \n          <br>\n          Instruccions del llenguatge màquina. Identificació de codis que es poden vectoritzar. Inserció de codi vectorial en codi C.<br>\nUs d'eines d'alt nivell per accelerar (optimitzar) amb hardware les parts del programa amb un % de temps molt elevat de consum de temps, dintre de sistemes SoC amb processadors ARM, utilitzant la mateixa idea de la vectorització.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3665\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3> Introducció a la programació conscient de l'arquitectura</h3>\n              Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat  i realitzar els exercicis que s'hagin proposat com a treball autònom. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2241\">1</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1601\">1 .\n                      Introducció: Programació conscient de l'arquitectura</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3667\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Eines de programació i optimització</h3>\n              Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom. \n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2282\">3</a>\n                                  <a href=\"#obj-6581\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1602\">2 .\n                      Eines de programació i optimització</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3684\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Operacions de llarga latència</h3>\n              Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2241\">1</a>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2283\">4</a>\n                                  <a href=\"#obj-2284\">5</a>\n                                  <a href=\"#obj-2367\">12</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1601\">1 .\n                      Introducció: Programació conscient de l'arquitectura</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1602\">2 .\n                      Eines de programació i optimització</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1603\">3 .\n                      Operacions de llarga latència</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      12h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3685\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Optimització del control de fluxe</h3>\n              Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2241\">1</a>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2282\">3</a>\n                                  <a href=\"#obj-2285\">6</a>\n                                  <a href=\"#obj-2367\">12</a>\n                                  <a href=\"#obj-6581\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1601\">1 .\n                      Introducció: Programació conscient de l'arquitectura</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1602\">2 .\n                      Eines de programació i optimització</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1604\">4 .\n                      Optimització del control de fluxe</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      18h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1601\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Control 1-T</h3>\n              Temes 1-3.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2241\">1</a>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2282\">3</a>\n                                  <a href=\"#obj-2283\">4</a>\n                                  <a href=\"#obj-2284\">5</a>\n                                  <a href=\"#obj-2341\">7</a>\n                                  <a href=\"#obj-6581\">10</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  7\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-5421\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Control-1-P</h3>\n              Temes 1-3\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2241\">1</a>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2282\">3</a>\n                                  <a href=\"#obj-2283\">4</a>\n                                  <a href=\"#obj-2284\">5</a>\n                                  <a href=\"#obj-2341\">7</a>\n                                  <a href=\"#obj-6581\">10</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  7\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3686\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Optimitzacions conscient de la memòria</h3>\n              Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2241\">1</a>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2282\">3</a>\n                                  <a href=\"#obj-2301\">8</a>\n                                  <a href=\"#obj-2341\">7</a>\n                                  <a href=\"#obj-2367\">12</a>\n                                  <a href=\"#obj-6581\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1601\">1 .\n                      Introducció: Programació conscient de l'arquitectura</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1602\">2 .\n                      Eines de programació i optimització</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1605\">5 .\n                      Optimitzacions conscient de la memòria</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      3h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      14h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3687\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Extensions vectorials i ús de hardware específic</h3>\n              Participar activament en una sessió de classe expositiva-participativa de 2 hores de teoria i problemes. (2 hores). Estudiar a casa el tema assignat i realitzar els exercicis que s'hagin proposat com a treball autònom.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2241\">1</a>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2282\">3</a>\n                                  <a href=\"#obj-2343\">9</a>\n                                  <a href=\"#obj-2367\">12</a>\n                                  <a href=\"#obj-6581\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1601\">1 .\n                      Introducció: Programació conscient de l'arquitectura</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1602\">2 .\n                      Eines de programació i optimització</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1603\">3 .\n                      Operacions de llarga latència</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1604\">4 .\n                      Optimització del control de fluxe</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1605\">5 .\n                      Optimitzacions conscient de la memòria</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1606\">6 .\n                      Extensions vectorials i ús de hardware específic per \"vectoritzar\". </a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      22h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1602\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Control 2-T</h3>\n              Tots els temes. Més centrat en temes 5-6, però pot sortir qualsevol concepte previ.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2241\">1</a>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2282\">3</a>\n                                  <a href=\"#obj-2283\">4</a>\n                                  <a href=\"#obj-2284\">5</a>\n                                  <a href=\"#obj-2285\">6</a>\n                                  <a href=\"#obj-2301\">8</a>\n                                  <a href=\"#obj-2341\">7</a>\n                                  <a href=\"#obj-2343\">9</a>\n                                  <a href=\"#obj-2344\">11</a>\n                                  <a href=\"#obj-2367\">12</a>\n                                  <a href=\"#obj-6581\">10</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-5422\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Control-2-P</h3>\n              Tots els temes. Més centrat en temes 4-6 però pot sortir qualsevol concepte previ.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2241\">1</a>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2282\">3</a>\n                                  <a href=\"#obj-2283\">4</a>\n                                  <a href=\"#obj-2284\">5</a>\n                                  <a href=\"#obj-2285\">6</a>\n                                  <a href=\"#obj-2301\">8</a>\n                                  <a href=\"#obj-2341\">7</a>\n                                  <a href=\"#obj-2343\">9</a>\n                                  <a href=\"#obj-2344\">11</a>\n                                  <a href=\"#obj-2367\">12</a>\n                                  <a href=\"#obj-6581\">10</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-1604\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen Final</h3>\n              Examen Final. Fora d'horari de classe.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2344\">11</a>\n                                  <a href=\"#obj-2367\">12</a>\n                                  <a href=\"#obj-6581\">10</a>\n                                  <a href=\"#obj-2241\">1</a>\n                                  <a href=\"#obj-2281\">2</a>\n                                  <a href=\"#obj-2282\">3</a>\n                                  <a href=\"#obj-2283\">4</a>\n                                  <a href=\"#obj-2284\">5</a>\n                                  <a href=\"#obj-2285\">6</a>\n                                  <a href=\"#obj-2301\">8</a>\n                                  <a href=\"#obj-2341\">7</a>\n                                  <a href=\"#obj-2343\">9</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

@@ -7,15 +7,404 @@
   "department": "ESSI",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Enric Mayol Sarroca",
+      "email": "enric.mayol@upc.edu",
+      "role": "Responsable"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Presentació assignatura i discussió sobre entorns de desenvolupament",
+      "isEvaluative": false,
+      "description": "L'alumne participarà en la discussió de les diferents alternatives de construcció de SI presentades pel professor",
+      "objectives": [
+        "1",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Introducció als conceptes bàsics de Sistema d'Informació i els seus rols proefssionals",
+      "isEvaluative": false,
+      "description": "El professor i els alumnes, de forma col·laborativa i participativa, analitzen el significat del concepte de Sistemes d'Informació i de l'activitat de Disseny dins del cicle de vida d'un sistema d'Informació. L'estudiant treballarà amb la lectura de diferents articles sobre els rols professionals que es discutiran i sintetitzararan a classe.",
+      "objectives": [
+        "3",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Estudi de les arquitectures de SI",
+      "isEvaluative": false,
+      "description": "L'estudiant complementa les descripcions d'arquitectures presentades pel professor amb un estudi basat en la bibliografia proporcionada i altre documentació que cerca el propi estudiant. Els estudiants es responsabilitzen de l'estudi d'una arquitectura en detall i de forma individualitzada. En la sessió de laboratori, els estudiants presenten el seu estudi per a discutir entre la resta de la classe. Posteriorment a la sessió, els alumnes resoldran unqüestionari referent a les conclusions i característiques de cada arquitectura presentada.",
+      "objectives": [
+        "4",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Tècniques de selecció per a l'adopció de software estàndard.",
+      "isEvaluative": false,
+      "description": "Els alumnes, a partir de la lectura de diferents articles, sintetitzaran de forma colaborativa la definició de les etapes i decisions a prendre en un procés de selecció de software, y a més, sintetitzaran els principals criteris i indicador a tenir en compte en aquest procés d'avaluació i de comparació de diferents paquests en el procés de selecció.",
+      "objectives": [
+        "9",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Estudi sobre el procés d'externalització del desenvolupament del software",
+      "isEvaluative": false,
+      "description": "Els alumnes realitzaran un aprofundiment de la temàtica a partir de la lectura de textos complementaris.",
+      "objectives": [
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Debat sobre metodologies de desenvolupament",
+      "isEvaluative": false,
+      "description": "L'estudiant realitza l'estudi en cert detall de les característiques principals de una de les metodologies de desenvolupament, els avantatges i limitacions, i les diferències entre les tres. Les conclusions d'aquest estudi es presentaran a la sessió de problemes plantejant un debat per comparar i analitzar les tres metodologies. Posteriorment a la sessió, els alumnes resoldran un qüestionari individuals sobre les conclusions del debat.",
+      "objectives": [
+        "2",
+        "3",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 6
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Estudi de l'Arquitectura en Capes",
+      "isEvaluative": false,
+      "description": "Els alumnes presentaran en grups diferents exemples de SI amb una arquitectura en capes. Posteriorment, els alumnes resoldran un qüestionari individualment amb les conclusions i característiques de les arquitectures presentades i discutides.",
+      "objectives": [
+        "4",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Assignació de Responsabilitats a Capes i Realització d'un Cas d'Ús",
+      "isEvaluative": false,
+      "description": "L'alumne documentarà la Realització d'un Cas d'Ús d'un SI realitzant problemes proposats per a discutir a la classe de problemes. A la vegada, els estudiants aplicaran aquests conceptes en el Cas d'Estudi del curs proposat.",
+      "objectives": [
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Disseny de la Capa de Presentació",
+      "isEvaluative": false,
+      "description": "L'alumne aprofundirà en l'estudi disseny extern d'una interfície d'usuari. Concretament, pel disseny extern, s'analitzaran els criteris de qualitat i recomanacions a tenir en compte, amb una valoració i crítica constructiva del disseny d'una pàgina web. Pel que fa al disseny intern de la mateixa interfície, l'alumnes crearà un mapa navegacional per a documentar el comportament de la web.",
+      "objectives": [
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Disseny de la Capa de Domini",
+      "isEvaluative": false,
+      "description": "L'estudiant participarà en el recordatori i aprofundiment d'aquestes decisions.",
+      "objectives": [
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Disseny de la Capa de Persistència",
+      "isEvaluative": false,
+      "description": "Els estudiants en grup faran diferents presentacions relatives a l'estratègia de generació automàtica de persistència i de les eines ORM del mercat. Posteriorment a la sessió, els alumnes resoldran un qüestionari individual referent a les diferents presentacions realitzades a classe.",
+      "objectives": [
+        "5",
+        "6",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Qüestionari global sobre l'arquitectura en 3 capes",
+      "isEvaluative": true,
+      "description": "Els alumnes resoldran un exercici de síntesi de les principals decisions que cal prendre en el disseny d'una arquitectura en 3 capes, un cop vistes de forma individualitzada en les activitats anteriors.",
+      "objectives": [
+        "5"
+      ],
+      "week": 11,
+      "hours": []
+    },
+    {
+      "title": "Reflexió sobre el rol de l'Administrador de la Base de Dades",
+      "isEvaluative": false,
+      "description": "Els alumnes analitzaran i discutiran amb el professor les responsabilitats i competències d'un Administrador de la Base de Dades d'una organització i la seva participació en l'activitat de disseny d'un SI.",
+      "objectives": [
+        "7"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Introducció a la integració d'aplicacions",
+      "isEvaluative": false,
+      "description": "Els alumnes realitzaran un aprofundiment de la temàtica a partir de la lectura de textos complementaris que es discutirà a les sessions de problemes. A la segona sessió es realitzarà una activitat de gamificació per aprofondir en l'estudi dels patrons d'integracioó basats en missatges.",
+      "objectives": [
+        "8",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "title": "Noves tendències i futur",
+      "isEvaluative": false,
+      "description": "L'alumne (i el professor), a través de la cerca de bibliografia i documentació, aportarà exemples dels nous avanços en el disseny de nous tipus de SI que estan apareixent a les organitzacions, les noves tendències metodològiques i noves arquitectures de SI.",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "title": "Treball pràctic de curs",
+      "isEvaluative": true,
+      "description": "Els alumnes realitzaran un traball de síntesi del curs consistent en la descripció d'una necessitat de SI d'una empresa i caldrà que els alumnis decideixin l'estrategia d'adopció que volen aplicar, i dissenyin les pases i decisions a prendre per durla a terme. el treball serà en grup.",
+      "objectives": [
+        "1",
+        "5",
+        "6",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "week": 13,
+      "hours": []
+    },
+    {
+      "title": "Questionari global final de curs",
+      "isEvaluative": true,
+      "description": "Es realitza un questionari referent a tota la temàtica del curs per valorar el nivell d'aprenentatge dels estudiants",
+      "objectives": [],
+      "week": 14,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Enric Mayol Sarroca\n                                (enric.mayol@upc.edu)\n                          </b>\n          </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT2\">\n                  <b>\n                    CT2 \n                                      </b>\n                  - Utilitzar d'una manera apropiada teories, procediments i eines en el desenvolupament professional de l'enginyeria informàtica en tots els seus àmbits (especificació, disseny, implementació, desplegament -implantació- i avaluació de productes) de manera que es demostri la comprensió dels compromisos adoptats a les decisions de disseny.\n                                      <ul>\n                                              <li id=\"CT2_2\">\n                          <b>\n                            CT2.2\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació de les característiques, funcionalitats i estructura de les bases de dades, que permetin fer-ne un ús adequat així com el disseny,  l'anàlisi i la implementació d'aplicacions basades en elles.\n                        </li>\n                                              <li id=\"CT2_3\">\n                          <b>\n                            CT2.3\n                          </b>\n                          - Dissenyar, desenvolupar, seleccionar i avaluar aplicacions, sistemes i serveis informàtics i, al mateix temps, assegurar-ne la  fiabilitat, la seguretat i la qualitat en funció de principis ètics i de la legislació i la normativa vigents. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat sistemes d'informació</h4>\n                              <li id=\"CSI2\">\n                  <b>\n                    CSI2 \n                                      </b>\n                  - Integrar solucions de Tecnologies de la Informació i les Comunicacions, i processos empresarials per a satisfer les necessitats d'informació de les organitzacions, permetent que assoleixin els seus objectius de forma efectiva. \n                                      <ul>\n                                              <li id=\"CSI2_2\">\n                          <b>\n                            CSI2.2\n                          </b>\n                          - Concebre, desplegar, organitzar i gestionar sistemes i serveis informàtics, en contextos empresarials o institucionals, per a millorar-ne els processos de negoci; responsabilitzar-se'n i liderar-ne la posada en marxa i la millora contínua; valorar el seu impacte econòmic i social.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CSI3\">\n                  <b>\n                    CSI3 \n                                      </b>\n                  - Determinar els requisits dels sistemes d'informació i comunicació d'una organització, atenent als aspectes de seguretat, compliment de la normativa i de la legislació vigent.\n                                      <ul>\n                                              <li id=\"CSI3_3\">\n                          <b>\n                            CSI3.3\n                          </b>\n                          - Avaluar ofertes tecnològiques per al desenvolupament de sistemes d'informació i gestió.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CSI4\">\n                  <b>\n                    CSI4 \n                                      </b>\n                  - Participar activament en l'especificació, el disseny, la implementació i el manteniment dels sistemes d'informació i de comunicació.\n                                      <ul>\n                                              <li id=\"CSI4_3\">\n                          <b>\n                            CSI4.3\n                          </b>\n                          - Administrar bases de dades (CES1.6). \n                        </li>\n                                              <li id=\"CSI4_2\">\n                          <b>\n                            CSI4.2\n                          </b>\n                          - Participar activament en el disseny, la implementació i el manteniment dels sistemes d'informació i de comunicació.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Aprenentatge autònom</h4>\n                              <li id=\"G7\">\n                  <b>\n                    G7 \n                                          [Avaluable]\n                                      </b>\n                  - Detectar carències en el  coneixement propi i superar-les mitjançant la reflexió crítica i l'elecció de la millor actuació per ampliar aquest coneixement. Capacitat per a l'aprenentatge de nous mètodes i tecnologies, i versatilitat per a adaptar-se a noves situacions. \n                                      <ul>\n                                              <li id=\"G7_3\">\n                          <b>\n                            G7.3\n                          </b>\n                          - Aprenentatge autònom: capacitat de planificació i organització del treball personal. Aplicar els coneixements adquirits a la realització d'una tasca en funció de la pertinença i de la importància, decidir la manera de dur-la a terme i el temps que se li ha de dedicar, i seleccionar les fonts d'informació més adients. Identificar la importància d'establir i mantenir contactes amb els companys d'estudis, amb el professorat i amb els professionals (networking). Identificar fòrums d'informació sobre enginyeria TIC, els seus avenços i el seu impacte en la societat (IEEE, associacions, etc.).\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +416,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-1501\">\n          Introducció al disseny de Sistemes d'Informació\n          <br>\n          S'introdueixen els conceptes de Sistema d'Informació, Tecnologies d'Informació, i s'introdueix en què consisteix l'activitat de disseny de SI.\n        </li>\n              <li id=\"cont-1502\">\n          Formes d'obtenir un SI\n          <br>\n          Es discuteixen i comenten diferents formes o alternatives per a incorporar un sistema d'informació a l'organització: desenvolupament a mida, externalització del desenvolupament, adquisició paquets estàndards, contractació serveis externs, ...\n        </li>\n              <li id=\"cont-1503\">\n          Metodologies de desenvolupament\n          <br>\n          Es presenta el concepte de metodologia de desenvolupament de software. S'analitzen dos exemples de metodologies. Es presenten els principis que guien el procés de disseny.\n        </li>\n              <li id=\"cont-1504\">\n          Arquitectura de SI\n          <br>\n          Es presenten els conceptes d'arquitectura empresarial i arquitectura de SI. Es treballen els patrons arquitectònics més rellevants. Es presenten les característiques de l'arquitectura de SI.\n        </li>\n              <li id=\"cont-1505\">\n          Disseny de SI basat en una arquitectura en capes\n          <br>\n          Es presenta en detall l'arquitectura en capes. Es realitza l'assignació de responsabilitats d'un cas d'ús en capes (Límit, Control, Entitat). Es realitza el disseny de la Capa de Presentació. Es realitza el disseny de la Capa de Domini. Es realitza el disseny de la Capa de Gestió de Dades. Es realitza el disseny de la Base de Dades a partir del esquema conceptual i s'estudien dos patrons de gestió de la persistència. Es descriuen les principals responsabilitats d'un Administrador de BD.\n        </li>\n              <li id=\"cont-1506\">\n          Integració d'aplicacions\n          <br>\n          Es descriu en què consisteix la integració d'aplicacions. Es descriuen diferents nivells i topologies d'integració.\n        </li>\n              <li id=\"cont-1507\">\n          Adopció de software estàndard\n          <br>\n          Es descriu el procés general a seguir per l'adquisició i selecció de software estàndard. Es descriuen els criteris de selecció. Es presenten les tècniques d'adaptació i d'extensió de les funcionalitats del software estandaritzat.\n        </li>\n              <li id=\"cont-1508\">\n          Externalització del desenvolupament de software\n          <br>\n          Es pressenten els conceptes de Outsourcing i Offshoring. Es descriuen les estratègies a seguir, les decisions a prendre. Es comenten els projectes candidats a ser externalitzat el seu desenvolupament. S'analitzen els avantatges i inconvenients.\n        </li>\n              <li id=\"cont-1509\">\n          Avenços en disseny de SI\n          <br>\n          S'analitzen breument els nous avenços a nivell metodològic, de tipologia de SI i de tecnologies que poden afectar a l'activitat de disseny de SI.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3965\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentació assignatura i discussió sobre entorns de desenvolupament</h3>\n              L'alumne participarà en la discussió de les diferents alternatives de construcció de SI presentades pel professor\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2121\">1</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1502\">2 .\n                      Formes d'obtenir un SI</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1509\">9 .\n                      Avenços en disseny de SI</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3944\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció als conceptes bàsics de Sistema d'Informació i els seus rols proefssionals</h3>\n              El professor i els alumnes, de forma col·laborativa i participativa, analitzen el significat del concepte de Sistemes d'Informació i de l'activitat de Disseny dins del cicle de vida d'un sistema d'Informació. L'estudiant treballarà amb la lectura de diferents articles sobre els rols professionals que es discutiran i sintetitzararan a classe.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2141\">3</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1501\">1 .\n                      Introducció al disseny de Sistemes d'Informació</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3967\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Estudi de les arquitectures de SI</h3>\n              L'estudiant complementa les descripcions d'arquitectures presentades pel professor amb un estudi basat en la bibliografia proporcionada i altre documentació que cerca el propi estudiant. Els estudiants es responsabilitzen de l'estudi d'una arquitectura en detall i de forma individualitzada. En la sessió de laboratori, els estudiants presenten el seu estudi per a discutir entre la resta de la classe.  Posteriorment a la sessió, els alumnes resoldran unqüestionari referent a les conclusions i característiques de cada arquitectura presentada.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2142\">4</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1504\">4 .\n                      Arquitectura de SI</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1509\">9 .\n                      Avenços en disseny de SI</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4036\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Tècniques de selecció per a l'adopció de software estàndard.</h3>\n              Els alumnes, a partir de la lectura de diferents articles, sintetitzaran de forma colaborativa la definició de les etapes i decisions a prendre en un procés de selecció de software, y a més, sintetitzaran els principals criteris i indicador a tenir en compte en aquest procés d'avaluació i de comparació de diferents paquests en el procés de selecció.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2147\">9</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1507\">7 .\n                      Adopció de software estàndard</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1509\">9 .\n                      Avenços en disseny de SI</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4065\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Estudi sobre el procés d'externalització del desenvolupament del software</h3>\n              Els alumnes realitzaran un aprofundiment de la temàtica a partir de la lectura de textos complementaris.\n\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2148\">10</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1508\">8 .\n                      Externalització del desenvolupament de software</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1509\">9 .\n                      Avenços en disseny de SI</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3966\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Debat sobre metodologies de desenvolupament</h3>\n              L'estudiant realitza l'estudi en cert detall de les característiques principals de una de les metodologies de desenvolupament, els avantatges i limitacions, i les diferències entre les tres. Les conclusions d'aquest estudi es presentaran a la sessió de problemes plantejant un debat per comparar i analitzar les tres metodologies. Posteriorment a la sessió, els alumnes resoldran un qüestionari individuals sobre les conclusions del debat.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2122\">2</a>\n                                  <a href=\"#obj-2141\">3</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1503\">3 .\n                      Metodologies de desenvolupament</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3969\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Estudi de l'Arquitectura en Capes</h3>\n              Els alumnes presentaran en grups diferents exemples de SI amb una arquitectura en capes. Posteriorment, els alumnes resoldran un qüestionari individualment amb les conclusions i característiques de les arquitectures presentades i discutides.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2142\">4</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1505\">5 .\n                      Disseny de SI basat en una arquitectura en capes</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1509\">9 .\n                      Avenços en disseny de SI</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3970\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Assignació de Responsabilitats a Capes i Realització d'un Cas d'Ús</h3>\n              L'alumne documentarà la Realització d'un Cas d'Ús d'un SI realitzant problemes proposats per a discutir a la classe de problemes. A la vegada, els estudiants aplicaran aquests conceptes en el Cas d'Estudi del curs proposat.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2143\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1505\">5 .\n                      Disseny de SI basat en una arquitectura en capes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-3971\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Disseny de la Capa de Presentació</h3>\n              L'alumne aprofundirà en l'estudi disseny extern d'una interfície d'usuari. Concretament, pel disseny extern, s'analitzaran els criteris de qualitat i recomanacions a tenir en compte, amb una valoració i crítica constructiva del disseny d'una pàgina web. Pel que fa al disseny intern de la mateixa interfície, l'alumnes crearà un mapa navegacional per a documentar el comportament de la web.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2143\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1505\">5 .\n                      Disseny de SI basat en una arquitectura en capes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4027\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Disseny de la Capa de Domini</h3>\n              L'estudiant participarà en el recordatori i aprofundiment d'aquestes decisions.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2143\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1505\">5 .\n                      Disseny de SI basat en una arquitectura en capes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4028\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Disseny de la Capa de Persistència</h3>\n              Els estudiants en grup faran diferents presentacions relatives a l'estratègia de generació automàtica de persistència i de les eines ORM del mercat. Posteriorment a la sessió, els alumnes resoldran un qüestionari individual referent a les diferents presentacions realitzades a classe.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2143\">5</a>\n                                  <a href=\"#obj-2144\">6</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1505\">5 .\n                      Disseny de SI basat en una arquitectura en capes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-7141\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Qüestionari global sobre l'arquitectura en 3 capes</h3>\n              Els alumnes resoldran un exercici de síntesi de les principals decisions que cal prendre en el disseny d'una arquitectura en 3 capes, un cop vistes de forma individualitzada en les activitats anteriors.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2143\">5</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  11\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4029\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Reflexió sobre el rol de l'Administrador de la Base de Dades</h3>\n              Els alumnes analitzaran i discutiran amb el professor les responsabilitats i competències d'un Administrador de la Base de Dades d'una organització i la seva participació en l'activitat de disseny d'un SI.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2145\">7</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1504\">4 .\n                      Arquitectura de SI</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1505\">5 .\n                      Disseny de SI basat en una arquitectura en capes</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4030\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Introducció a la integració d'aplicacions</h3>\n              Els alumnes realitzaran un aprofundiment de la temàtica a partir de la lectura de textos complementaris que es discutirà a les sessions de problemes. A la segona sessió es realitzarà una activitat de gamificació per aprofondir en l'estudi dels patrons d'integracioó basats en missatges.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2146\">8</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1506\">6 .\n                      Integració d'aplicacions</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1509\">9 .\n                      Avenços en disseny de SI</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      6h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-4068\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Noves tendències i futur</h3>\n              L'alumne (i el professor), a través de la cerca de bibliografia i documentació, aportarà exemples dels nous avanços en el disseny de nous tipus de SI que estan apareixent a les organitzacions, les noves tendències metodològiques i noves arquitectures de SI.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2121\">1</a>\n                                  <a href=\"#obj-2122\">2</a>\n                                  <a href=\"#obj-2141\">3</a>\n                                  <a href=\"#obj-2142\">4</a>\n                                  <a href=\"#obj-2146\">8</a>\n                                  <a href=\"#obj-2147\">9</a>\n                                  <a href=\"#obj-2148\">10</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-1502\">2 .\n                      Formes d'obtenir un SI</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1503\">3 .\n                      Metodologies de desenvolupament</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1504\">4 .\n                      Arquitectura de SI</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1505\">5 .\n                      Disseny de SI basat en una arquitectura en capes</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1506\">6 .\n                      Integració d'aplicacions</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1507\">7 .\n                      Adopció de software estàndard</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1508\">8 .\n                      Externalització del desenvolupament de software</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-1509\">9 .\n                      Avenços en disseny de SI</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-1701\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Treball pràctic de curs</h3>\n              Els alumnes realitzaran un traball de síntesi del curs consistent en la descripció d'una necessitat de SI d'una empresa i caldrà que els alumnis decideixin l'estrategia d'adopció que volen aplicar, i dissenyin les pases i decisions a prendre per durla a terme. el treball serà en grup.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-2121\">1</a>\n                                  <a href=\"#obj-2143\">5</a>\n                                  <a href=\"#obj-2144\">6</a>\n                                  <a href=\"#obj-2146\">8</a>\n                                  <a href=\"#obj-2147\">9</a>\n                                  <a href=\"#obj-2148\">10</a>\n                                  <a href=\"#obj-2149\">11</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  13\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3001\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Questionari global final de curs</h3>\n              Es realitza un questionari referent a tota la temàtica del curs per valorar el nivell d'aprenentatge dels estudiants\n              <br>\n              \n              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

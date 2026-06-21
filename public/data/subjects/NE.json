@@ -7,15 +7,401 @@
   "department": "OE",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Ferran Sabate Garriga",
+      "email": "ferran.sabate@upc.edu",
+      "role": "Responsable"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 1
+    },
+    {
+      "type": "Problemes",
+      "value": 1
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.4
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "A0. Presentació de l'assignatura i formació de grups",
+      "isEvaluative": false,
+      "description": "Prendre nota de la dinàmica de funcionament i plantejar dubtes Teoria: Explicar el funcionament de l'assignatura",
+      "objectives": [
+        "23"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Problemes",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "A1.1 La Societat de la informació i el rol dels Sistemes d'Informació en els negocis actuals",
+      "isEvaluative": false,
+      "description": "Treball en grup sobre el cas Accenture Aprenentatge autònom: Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.1, cas Accenture)",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Problemes",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 1.5
+        }
+      ]
+    },
+    {
+      "title": "A1.2 Tipus de sistemes d'informació empresarial",
+      "isEvaluative": false,
+      "description": "Treball en grup sobre el cas de la \"sessió Interactiva de la pàgina 55 del llibre de suport\". Aprenentatge autònom: Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.2)",
+      "objectives": [
+        "3"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Problemes",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "A2 El projecte de tenda electrònica",
+      "isEvaluative": false,
+      "description": "Implementar la seva tenda electrònica utilitzant el mòdul de PrestaShop corresponent a cada sessió, amb el suport d'una guia de treball Aprenentatge dirigit: Revisió nota projecte Aprenentatge autònom: Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (Apartats 2.1, 2.2, 2.3 i 2.4) i acabar els mòduls de Prestashops iniciats al laboratori anterior",
+      "objectives": [
+        "15",
+        "13",
+        "14",
+        "16",
+        "19",
+        "18",
+        "17",
+        "20",
+        "21"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 4
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 16
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 30
+        }
+      ]
+    },
+    {
+      "title": "A1.3 Sistemes empresarials integrals",
+      "isEvaluative": false,
+      "description": "Discussió Cas (base o alternatiu) Aprenentatge autònom: Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.3)",
+      "objectives": [
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Problemes",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2.5
+        }
+      ]
+    },
+    {
+      "title": "A1.4 Influencia dels sistemes d'informació a les organitzacions: impactes, obtenció i canvi organitzacional",
+      "isEvaluative": false,
+      "description": "Treball en grup per integrar solucions individuals resultants de les activitats d'auto-aprenentatge. Aprenentatge autònom: Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.4)",
+      "objectives": [
+        "5",
+        "8"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 1
+        },
+        {
+          "type": "Problemes",
+          "value": 1
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2.5
+        }
+      ]
+    },
+    {
+      "title": "A1.5 Sistemes per la gestió de la cadena de subministrament (Taller SCM)",
+      "isEvaluative": false,
+      "description": "Treball en grup sobre el cas Whirlpool; Taller SCM Laboratori: Taller SCM Aprenentatge autònom: Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball; Preparar el taller SCM",
+      "objectives": [
+        "5",
+        "22",
+        "7",
+        "19",
+        "18",
+        "20",
+        "21"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "NTallerSCM - Presentacions en públic del taller SCM",
+      "isEvaluative": true,
+      "description": "Cada grup fa una presentació en públic del treball realitzat en el taller SCM",
+      "objectives": [
+        "5",
+        "22",
+        "7",
+        "19",
+        "18",
+        "20",
+        "21"
+      ],
+      "week": 6,
+      "hours": []
+    },
+    {
+      "title": "A1.6 Sistemas per la gestió de les relaciones amb el cliente (Taller CRM)",
+      "isEvaluative": false,
+      "description": "Treball en grup sobre el cas IHop; Taller CRM Laboratori: Taller CRM Aprenentatge autònom: Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.6, cas IHop); Preparar el taller CRM",
+      "objectives": [
+        "5",
+        "6",
+        "7",
+        "19",
+        "18",
+        "20",
+        "21"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        },
+        {
+          "type": "Problemes",
+          "value": 2
+        },
+        {
+          "type": "Laboratori",
+          "value": 4
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "NTallerCRM - Presentacions en públic del taller CRM",
+      "isEvaluative": true,
+      "description": "Cada grup fa una presentació en públic del treball realitzat en el taller CRM",
+      "objectives": [
+        "5",
+        "6",
+        "7",
+        "19",
+        "18",
+        "20",
+        "21"
+      ],
+      "week": 10,
+      "hours": []
+    },
+    {
+      "title": "A1.7 Establiment del valor financer dels sistemes d'informació",
+      "isEvaluative": false,
+      "description": "Treball en grup sobre un cas (base o alternatiu) Aprenentatge autònom: Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.7)",
+      "objectives": [
+        "9"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 0.5
+        },
+        {
+          "type": "Problemes",
+          "value": 1.5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 1.5
+        }
+      ]
+    },
+    {
+      "title": "A1.8 - A1.9 Sistemes d'informació internacionals i problemàtica PIMEs",
+      "isEvaluative": false,
+      "description": "Tractar conceptes; Treball en grup sobre un cas Aprenentatge autònom: Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.8)",
+      "objectives": [
+        "10",
+        "11"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 0.5
+        },
+        {
+          "type": "Problemes",
+          "value": 1.5
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "NProjecteE-Commerce - Presentació en públic del projecte de tenda electrònica",
+      "isEvaluative": true,
+      "description": "Cada grup fa una presentació en públic del projecte de tenda electrònica",
+      "objectives": [
+        "15",
+        "13",
+        "14",
+        "16",
+        "19",
+        "18",
+        "17",
+        "20",
+        "21"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "NExamen - Examen",
+      "isEvaluative": true,
+      "description": "Examen de tots els continguts de l'assignatura",
+      "objectives": [
+        "23",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "22",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "15",
+        "13",
+        "14",
+        "16"
+      ],
+      "week": 15,
+      "hours": []
+    },
+    {
+      "title": "Revisió d'examen",
+      "isEvaluative": false,
+      "description": "Demana revisió d'examen",
+      "objectives": [],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge autònom",
+          "value": 1
+        }
+      ]
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Ferran Sabate Garriga\n                                (ferran.sabate@upc.edu)\n                          </b>\n          </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.4\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat sistemes d'informació</h4>\n                              <li id=\"CSI2\">\n                  <b>\n                    CSI2 \n                                      </b>\n                  - Integrar solucions de Tecnologies de la Informació i les Comunicacions, i processos empresarials per a satisfer les necessitats d'informació de les organitzacions, permetent que assoleixin els seus objectius de forma efectiva. \n                                      <ul>\n                                              <li id=\"CSI2_1\">\n                          <b>\n                            CSI2.1\n                          </b>\n                          - Demostrar comprensió i aplicar els principis i les tècniques de gestió de qualitat i d'innovació tecnològica a les organitzacions.\n                        </li>\n                                              <li id=\"CSI2_4\">\n                          <b>\n                            CSI2.4\n                          </b>\n                          - Demostrar coneixement i capacitat d'aplicació dels sistemes basats en Internet (e-commerce, e-learning, etc.).\n                        </li>\n                                              <li id=\"CSI2_7\">\n                          <b>\n                            CSI2.7\n                          </b>\n                          - Gestionar la presència de l'organització a Internet.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CSI3\">\n                  <b>\n                    CSI3 \n                                      </b>\n                  - Determinar els requisits dels sistemes d'informació i comunicació d'una organització, atenent als aspectes de seguretat, compliment de la normativa i de la legislació vigent.\n                                      <ul>\n                                              <li id=\"CSI3_4\">\n                          <b>\n                            CSI3.4\n                          </b>\n                          - Desenvolupar solucions de negoci mitjançant la implantació i la integració de hardware i software.\n                        </li>\n                                              <li id=\"CSI3_5\">\n                          <b>\n                            CSI3.5\n                          </b>\n                          - Proposar i coordinar canvis per a millorar l'explotació del sistema i de les aplicacions.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CSI1\">\n                  <b>\n                    CSI1 \n                                      </b>\n                  - Demostrar comprensió i aplicar els principis i les pràctiques de les organitzacions, de manera que puguin exercir d'enllaç entre les comunitats tècnica i de gestió d'una organització, i participar activament en la formació dels usuaris.\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Emprenedoria i innovació</h4>\n                              <li id=\"G1\">\n                  <b>\n                    G1 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer i comprendre l'organització d'una empresa i les ciències que regeixen la seva activitat; capacitat de comprendre les regles laborals i les relacions entre la planificació, les estratègies industrials i comercials, la qualitat i el benefici. Desenvolupar la creativitat, l'esperit emprenedor i la tendència a la innovació. \n                                      <ul>\n                                              <li id=\"G1_3\">\n                          <b>\n                            G1.3\n                          </b>\n                          - Ser resolutiu. Utilitzar coneixements i habilitats estratègiques per a la creació i la gestió de projectes, aplicar solucions sistèmiques a problemes complexos, i dissenyar i gestionar la innovació en la organització. Demostrar flexibilitat i professionalitat en el desenvolupament de la seva feina.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +413,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-2101\">\n          Mòdul 1: Negocis Electrònics i Sistemes d'Informació\n          <br>\n          \n        </li>\n              <li id=\"cont-801\">\n          1.1 La Societat de la informació i el rol dels Sistemes d'Informació en els negocis actuals\n          <br>\n          S'exposa la capacitat transformadora de les Tecnologies de la Informació i les seves conseqüències en els diferents àmbits de la Societat. En aquest context es fa èmfasi en l'encaix entre els negocis electrònics i les noves formes de comunicació, col.laboració i d'associació que permeten les noves TI i la Societat de la Informació que es configura.\n        </li>\n              <li id=\"cont-802\">\n          1.2 Tipus de sistemes d'informació empresarial\n          <br>\n          Es classifiquen els sistemes des de dues perspectives, la funcional i la dels usuaris. També es tracta la interrelació dels sistemes\n        </li>\n              <li id=\"cont-2102\">\n          1.3 Sistemes empresarials integrals\n          <br>\n          Es descriuen les aplicacions empresarials que tracten de manera integrada les necessitats informàtiques de l'empresa. També es presenta el paper que juguen les Intranets i les extranets en fer possible els negocis en línia, el comerç electrònic i el govern electrònic.\n        </li>\n              <li id=\"cont-2103\">\n          1.4 Influencia dels sistemes d'informació a les organitzacions: impactes, obtenció d'avantatges competitius i canvi organitzacional\n          <br>\n          Per una banda, s'analitza el impacte econòmic, organitzatiu i conductual dels sistemes d'informació i d'internet. Per l'altra banda es recorden alguns conceptes de negoci tals com el model de Porter, la cadena de valor i el sistema de valor, per tenir un marc de referència on pensar com els sistemes d'informació i internet poden ajudar a obtenir avantatges competitius. Finalment, es parlar del canvi organitzacional que implica la introducció d'un sistema empresarial \n        </li>\n              <li id=\"cont-2121\">\n          1.5 Sistemes per la gestió de la cadena de subministrament (Sistemes SCM)\n          <br>\n          Es presenta el concepte de cadena de subministrament i s'aprofundeix: 1) en la informació rellevant per a la seva administració; 2) en les aplicacions per donar suport a la seva gestió i 3) en el paper d'Internet. Finalment es reflexiona en com millorar el negoci mitjançant els sistemes SCM.\n        </li>\n              <li id=\"cont-2122\">\n          1.6 Sistemas per la gestió de les relaciones amb el cliente (sistemes CRM)\n          <br>\n          S'explica en què consisteix l'administració de les relacions amb el client i es presenten els sistemes informàtics per millorar aquest vincle amb el client (sistemes CRM). També s'explica com millorar el negoci mitjançant els sistemes CRM\n        </li>\n              <li id=\"cont-2124\">\n          1.7 Establiment del valor financer dels sistemes d'informació\n          <br>\n          S'explica com aproximar el valor financer d'una inversió en sistemes d'informació. S'introdueixen els conceptes de costos i beneficis, de pressupostació de capital i les limitacions dels models financers.\n        </li>\n              <li id=\"cont-2125\">\n          1.8 Introducció als sistemes d'informació internacionals per negocis globals\n          <br>\n          Es presenten les principals estratègies per establir negocis globals, els canvis necessaris en l'organització i la organització dels sistemes d'informació com a sistemes globals.\n        </li>\n              <li id=\"cont-2126\">\n          1.9 Sistemes d'informació a les petites i mitjanes empreses (PIME)\n          <br>\n          S'expliquen els condicionants específics que es troben les petites i mitjanes empreses quan volen gestionar i utilitzar sistemes d'informació. En aquest context es mostren algunes estratègies per poder utilitzar sistemes d'informació avançats.\n        </li>\n              <li id=\"cont-2127\">\n          Mòdul 2: El comerç electrònic: mercats digitals i bens digitals\n\n          <br>\n          \n        </li>\n              <li id=\"cont-2141\">\n          2.1 Comerç electrònic i internet\n          <br>\n          Es presenta l'actualitat del comerç electrònic i Internet i els conceptes clau del comerç electrònic com són els mercats digitals i els béns digitals. S'identifiquen els Models de negocis a Internet\n        </li>\n              <li id=\"cont-2142\">\n          2.2 Els models de comerç electrònic\n          <br>\n          Es tracten en detall els diferents models de comerç electrònic, fent especial èmfasi en els models B2C i B2B.\n        </li>\n              <li id=\"cont-2143\">\n          2.3 El comerç mòbil\n          <br>\n          D'acord amb la creixent importància del comerç mòbil es presenten els serveis i les aplicaciones desenvolupades, així com els reptes a que s'enfrenta aquest fenòmen. També es tracta la problemàtica d'accedir a la informació des de la Web inalámbrica.<br>\n\n        </li>\n              <li id=\"cont-2161\">\n          2.4 Sistemes de pagament pel comerç electrònic\n          <br>\n          Sistemes de pagament pel comerç electrònic i el comerç móbil\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-1584\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A0. Presentació de l'assignatura i formació de grups</h3>\n              Prendre nota de la dinàmica de funcionament i plantejar dubtes\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Explicar el funcionament de l'assignatura\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1301\">23</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2101\">1 .\n                      Mòdul 1: Negocis Electrònics i Sistemes d'Informació</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2127\">11 .\n                      Mòdul 2: El comerç electrònic: mercats digitals i bens digitals\n</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-6425\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A1.1 La Societat de la informació i el rol dels Sistemes d'Informació en els negocis actuals</h3>\n              Treball en grup sobre el cas Accenture\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Prèviament i  amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.1, cas Accenture)\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3061\">1</a>\n                                  <a href=\"#obj-3062\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-801\">2 .\n                      1.1 La Societat de la informació i el rol dels Sistemes d'Informació en els negocis actuals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1.5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-6426\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A1.2 Tipus de sistemes d'informació empresarial</h3>\n              Treball en grup sobre el cas de la \"sessió Interactiva de la pàgina 55 del llibre de suport\". \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Prèviament i  amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.2)\n\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3063\">3</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-802\">3 .\n                      1.2 Tipus de sistemes d'informació empresarial</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                    \n                                                        \n                          <div id=\"act-6436\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A2 El projecte de tenda electrònica</h3>\n              Implementar la seva tenda electrònica utilitzant el mòdul de PrestaShop corresponent a cada sessió, amb el suport d'una guia de treball\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Revisió nota projecte\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (Apartats 2.1, 2.2, 2.3 i 2.4) i acabar els mòduls de Prestashops iniciats al laboratori anterior\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3074\">15</a>\n                                  <a href=\"#obj-3075\">13</a>\n                                  <a href=\"#obj-3076\">14</a>\n                                  <a href=\"#obj-3077\">16</a>\n                                  <a href=\"#obj-3081\">19</a>\n                                  <a href=\"#obj-3082\">18</a>\n                                  <a href=\"#obj-3083\">17</a>\n                                  <a href=\"#obj-3084\">20</a>\n                                  <a href=\"#obj-3085\">21</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2141\">12 .\n                      2.1 Comerç electrònic i internet</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2142\">13 .\n                      2.2 Els models de comerç electrònic</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2143\">14 .\n                      2.3 El comerç mòbil</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-2161\">15 .\n                      2.4 Sistemes de pagament pel comerç electrònic</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      16h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      30h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-6427\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A1.3 Sistemes empresarials integrals</h3>\n              Discussió Cas (base o alternatiu)\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Prèviament i  amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.3)\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3064\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2102\">4 .\n                      1.3 Sistemes empresarials integrals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2.5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-6440\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A1.4 Influencia dels sistemes d'informació a les organitzacions: impactes, obtenció i canvi organitzacional</h3>\n              Treball en grup per integrar solucions individuals resultants de les activitats d'auto-aprenentatge.\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.4)\n\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3065\">5</a>\n                                  <a href=\"#obj-3069\">8</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2103\">5 .\n                      1.4 Influencia dels sistemes d'informació a les organitzacions: impactes, obtenció d'avantatges competitius i canvi organitzacional</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2.5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-6428\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A1.5 Sistemes per la gestió de la cadena de subministrament (Taller SCM)</h3>\n              Treball en grup sobre el cas Whirlpool; Taller SCM\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Taller SCM\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball; Preparar el taller SCM \n\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3065\">5</a>\n                                  <a href=\"#obj-3066\">22</a>\n                                  <a href=\"#obj-3068\">7</a>\n                                  <a href=\"#obj-3081\">19</a>\n                                  <a href=\"#obj-3082\">18</a>\n                                  <a href=\"#obj-3084\">20</a>\n                                  <a href=\"#obj-3085\">21</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2121\">6 .\n                      1.5 Sistemes per la gestió de la cadena de subministrament (Sistemes SCM)</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-2541\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>NTallerSCM - Presentacions en públic del taller SCM</h3>\n              Cada grup fa una presentació en públic del treball realitzat en el taller SCM\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3065\">5</a>\n                                  <a href=\"#obj-3066\">22</a>\n                                  <a href=\"#obj-3068\">7</a>\n                                  <a href=\"#obj-3081\">19</a>\n                                  <a href=\"#obj-3082\">18</a>\n                                  <a href=\"#obj-3084\">20</a>\n                                  <a href=\"#obj-3085\">21</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  6\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-6431\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A1.6 Sistemas per la gestió de les relaciones amb el cliente (Taller CRM)</h3>\n              Treball en grup sobre el cas IHop; Taller CRM\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Taller CRM\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.6, cas IHop); Preparar el taller CRM\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3065\">5</a>\n                                  <a href=\"#obj-3067\">6</a>\n                                  <a href=\"#obj-3068\">7</a>\n                                  <a href=\"#obj-3081\">19</a>\n                                  <a href=\"#obj-3082\">18</a>\n                                  <a href=\"#obj-3084\">20</a>\n                                  <a href=\"#obj-3085\">21</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2122\">7 .\n                      1.6 Sistemas per la gestió de les relaciones amb el cliente (sistemes CRM)</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-2542\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>NTallerCRM - Presentacions en públic del taller CRM</h3>\n              Cada grup fa una presentació en públic del treball realitzat en el taller CRM\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3065\">5</a>\n                                  <a href=\"#obj-3067\">6</a>\n                                  <a href=\"#obj-3068\">7</a>\n                                  <a href=\"#obj-3081\">19</a>\n                                  <a href=\"#obj-3082\">18</a>\n                                  <a href=\"#obj-3084\">20</a>\n                                  <a href=\"#obj-3085\">21</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  10\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-6433\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A1.7 Establiment del valor financer dels sistemes d'informació</h3>\n              Treball en grup sobre un cas (base o alternatiu)\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.7)\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3070\">9</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2124\">8 .\n                      1.7 Establiment del valor financer dels sistemes d'informació</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1.5h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                          <div id=\"act-6434\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>A1.8 - A1.9 Sistemes d'informació internacionals i problemàtica PIMEs</h3>\n              Tractar conceptes; Treball en grup sobre un cas\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Prèviament i amb anterioritat, realitzar les activitats d'auto-aprenentatge detallades a la guia de treball (apartat 1.8)\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3071\">10</a>\n                                  <a href=\"#obj-3072\">11</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-2125\">9 .\n                      1.8 Introducció als sistemes d'informació internacionals per negocis globals</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1.5h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-2561\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>NProjecteE-Commerce - Presentació en públic del projecte de tenda electrònica</h3>\n              Cada grup fa una presentació en públic del projecte de tenda electrònica\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3074\">15</a>\n                                  <a href=\"#obj-3075\">13</a>\n                                  <a href=\"#obj-3076\">14</a>\n                                  <a href=\"#obj-3077\">16</a>\n                                  <a href=\"#obj-3081\">19</a>\n                                  <a href=\"#obj-3082\">18</a>\n                                  <a href=\"#obj-3083\">17</a>\n                                  <a href=\"#obj-3084\">20</a>\n                                  <a href=\"#obj-3085\">21</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-2581\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>NExamen - Examen</h3>\n              Examen de tots els continguts de l'assignatura\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-1301\">23</a>\n                                  <a href=\"#obj-3061\">1</a>\n                                  <a href=\"#obj-3062\">2</a>\n                                  <a href=\"#obj-3063\">3</a>\n                                  <a href=\"#obj-3064\">4</a>\n                                  <a href=\"#obj-3065\">5</a>\n                                  <a href=\"#obj-3066\">22</a>\n                                  <a href=\"#obj-3067\">6</a>\n                                  <a href=\"#obj-3068\">7</a>\n                                  <a href=\"#obj-3069\">8</a>\n                                  <a href=\"#obj-3070\">9</a>\n                                  <a href=\"#obj-3071\">10</a>\n                                  <a href=\"#obj-3072\">11</a>\n                                  <a href=\"#obj-3073\">12</a>\n                                  <a href=\"#obj-3074\">15</a>\n                                  <a href=\"#obj-3075\">13</a>\n                                  <a href=\"#obj-3076\">14</a>\n                                  <a href=\"#obj-3077\">16</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  15\n                                      (Fora d'horari lectiu)\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-6525\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Revisió d'examen</h3>\n              Demana revisió d'examen\n              <br>\n              \n              \n              <br>\n\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      1h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

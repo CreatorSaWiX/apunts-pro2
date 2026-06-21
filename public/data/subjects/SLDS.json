@@ -7,15 +7,203 @@
   "department": "AC",
   "web": "",
   "summary": "",
+  "professors": [
+    {
+      "name": "Carlos Alvarez Martinez",
+      "email": "calvarez@ac.upc.edu",
+      "role": "Responsable"
+    },
+    {
+      "name": "David López Álvarez",
+      "email": "david.lopez@upc.edu",
+      "role": "Altres"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 0
+    },
+    {
+      "type": "Laboratori",
+      "value": 2
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0.28
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 5.72
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "Software Lliure",
+      "isEvaluative": false,
+      "description": "Software Lliure Teoria: En aquestes hores de teoria s'explica mitjançant classes teòriques com ha aparegut i evolucionat el software lliure al llarg de la historia. Aprenentatge autònom: En aquestes hores els alumnes han de repassar els conceptes introduïts a la teoria i llegir documentació associada que els aporti més coneixements sobre la matèria.",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "title": "Software Lliure i Societat",
+      "isEvaluative": false,
+      "description": "Software Lliure i Societat Teoria: En aquestes hores de teoria s'explica mitjançant classes teòriques les relacions entre Software Lliure i Societat. Aprenentatge autònom: En aquestes hores els alumnes han de repassar els conceptes introduïts a la teoria i llegir documentació associada que els aporti més coneixements sobre la matèria.",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 8
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "title": "Administració bàsica del sistema operatiu Linux",
+      "isEvaluative": false,
+      "description": "Administració bàsica del sistema operatiu Linux Laboratori: Es realitzen al laboratori pràctiques guiades d'administració bàsica del sistema operatiu Linux. Durant aquestes hores els alumnes segueixen amb la ajuda del professor un dossier de pràctiques i contesten a una serie de preguntes que entregaran al final de cada pràctica en forma de informa final. Aprenentatge autònom: Els alumnes completen les pràctiques inacabades i busquen informació complementaria per entendre millor tots els conceptes introduïts.",
+      "objectives": [
+        "3",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 13
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 18
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupament de programari lliure",
+      "isEvaluative": false,
+      "description": "Desenvolupament de programari lliure Laboratori: Es realitzen al laboratori pràctiques guiades de desenvolupament de programari lliure. Durant aquestes hores els alumnes segueixen amb la ajuda del professor un dossier de pràctiques i contesten a una serie de preguntes que entregaran al final de cada pràctica en forma de informa final. Aprenentatge dirigit: Els alumnes queden amb el professor per obtenir una guia de com desenvolupar el seu projecte. Aprenentatge autònom: Els alumnes completen les pràctiques inacabades i busquen informació complementaria per entendre millor tots els conceptes introduïts i desenvolupen un projecte de software lliure.",
+      "objectives": [
+        "3",
+        "4"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 15
+        },
+        {
+          "type": "Aprenentatge dirigit",
+          "value": 4.2
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 21.8
+        }
+      ]
+    },
+    {
+      "title": "Com presentar",
+      "isEvaluative": false,
+      "description": "Classe sobre presentacions Teoria: Els alumnes reben una classe de com presentar.",
+      "objectives": [
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "title": "Presentacions dels alumnes",
+      "isEvaluative": false,
+      "description": "Presentacions dels alumnes Teoria: Els alumnes fan presentacions públiques. Aprenentatge autònom: Preparació de les presentacions dels alumnes",
+      "objectives": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 10
+        },
+        {
+          "type": "Aprenentatge autònom",
+          "value": 20
+        }
+      ]
+    },
+    {
+      "title": "Examen Teoria",
+      "isEvaluative": true,
+      "description": "Examen Teoria",
+      "objectives": [
+        "1",
+        "2"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Examen Pràctiques",
+      "isEvaluative": true,
+      "description": "Examen Pràctiques",
+      "objectives": [
+        "3",
+        "4"
+      ],
+      "week": 14,
+      "hours": []
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Carlos Alvarez Martinez\n                                (calvarez@ac.upc.edu)\n                          </b>\n          </li>\n              </ul>\n    \n          <h3> Altres </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            David López Álvarez\n                            (david.lopez@upc.edu)\n                      </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0.28\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            5.72\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT3\">\n                  <b>\n                    CT3 \n                                      </b>\n                  - Demostrar coneixement i comprensió del context organitzatiu, econòmic i legal en el qual es desenvolupa la seva feina (coneixement adequat del concepte d'empresa, del marc institucional i jurídic de l'empresa, d'organització i gestió de les empreses). \n                                      <ul>\n                                              <li id=\"CT3_5\">\n                          <b>\n                            CT3.5\n                          </b>\n                          - Identificar les possibilitats d'ús i els beneficis que pot aportar l'aplicació en les diferents tipologies de software empresarial i serveis TIC existents.\n                        </li>\n                                              <li id=\"CT3_6\">\n                          <b>\n                            CT3.6\n                          </b>\n                          - Demostrar coneixement de la dimensió ètica a l'empresa: la responsabilitat social i corporativa en general i, en particular, les responsabilitats civils i professionals de l'enginyer en informàtica.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT5\">\n                  <b>\n                    CT5 \n                                      </b>\n                  - Analitzar, dissenyar, construir i mantenir aplicacions de forma robusta, segura i eficient, triant el paradigma i els llenguatges de programació més adequats.\n                                      <ul>\n                                              <li id=\"CT5_5\">\n                          <b>\n                            CT5.5\n                          </b>\n                          - Usar les eines d'un entorn de desenvolupament de software per a  crear i desenvolupar aplicacions.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat tecnologies de la informació</h4>\n                              <li id=\"CTI1\">\n                  <b>\n                    CTI1 \n                                      </b>\n                  - Definir, planificar i gestionar la instal·lació de la infraestructura TIC de l'organització.\n                                      <ul>\n                                              <li id=\"CTI1_1\">\n                          <b>\n                            CTI1.1\n                          </b>\n                          - Demostrar comprensió de l'entorn d'una organització i de les seves necessitats en l'àmbit de les tecnologies de la informació i les comunicacions.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CTI3\">\n                  <b>\n                    CTI3 \n                                      </b>\n                  - Dissenyar solucions que integrin tecnologies de hardware, software i comunicacions (i capacitat de desenvolupar solucions específiques de software de sistemes) per a sistemes distribuïts i dispositius de computació ubiqua.\n                                      <ul>\n                                              <li id=\"CTI3_1\">\n                          <b>\n                            CTI3.1\n                          </b>\n                          - Concebre sistemes, aplicacions i serveis basats en tecnologies de xarxa, tenint en compte Internet, web, comerç electrònic, multimèdia, serveis interactius i computació ubiqua.\n                        </li>\n                                          </ul>\n                                  </li>\n                                        <h4>Especialitat enginyeria de computadors</h4>\n                              <li id=\"CEC4\">\n                  <b>\n                    CEC4 \n                                      </b>\n                  - Dissenyar, desplegar, administrar i gestionar xarxes de computadors, i gestionar la garantia i la seguretat dels sistemes informàtics.\n                                      <ul>\n                                              <li id=\"CEC4_1\">\n                          <b>\n                            CEC4.1\n                          </b>\n                          - Dissenyar, desplegar, administrar i gestionar xarxes de computadors.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Sostenibilitat i compromís social</h4>\n                              <li id=\"G2\">\n                  <b>\n                    G2 \n                                          [Avaluable]\n                                      </b>\n                  - Conèixer i comprendre la complexitat dels fenòmens econòmics i socials típics de la societat del benestar. Ser capaç d'analitzar i valorar l'impacte social i mediambiental.\n                                      <ul>\n                                              <li id=\"G2_3\">\n                          <b>\n                            G2.3\n                          </b>\n                          - Tenir en compte les dimensions social, econòmica i ambiental, i el dret a la privacitat a aplicar solucions i dur a terme projectes coherents amb el desenvolupament humà i la sostenibilitat.\n                        </li>\n                                          </ul>\n                                  </li>\n                                        <h4>Comunicació eficaç oral i escrita</h4>\n                              <li id=\"G4\">\n                  <b>\n                    G4 \n                                          [Avaluable]\n                                      </b>\n                  - Comunicar de forma oral i escrita amb altres persones coneixements, procediments, resultats i idees. Participar en debats sobre temes propis de l'activitat de l'enginyer tècnic en informàtica. \n                                      <ul>\n                                              <li id=\"G4_3\">\n                          <b>\n                            G4.3\n                          </b>\n                          - Comunicar-se de manera clara i eficient en presentacions orals i escrites sobre temes complexos, adaptant-se a la situació, al tipus de públic i als objectius de la comunicació, utilitzant les estratègies i els mitjans adequats. Analitzar, valorar i respondre adequadament a les preguntes de l'auditori. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +215,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-3156\">\n          El software lliure i el Linux.\n          <br>\n          Descripció del software lliure i de la seva historia explicant els fets més importants i analitzant les seves causes.\n        </li>\n              <li id=\"cont-3157\">\n          Software Lliure i societat\n          <br>\n          Influencia del software lliure a la societat tant des del punt de vista ètic i social com econòmic i ambiental.\n        </li>\n              <li id=\"cont-3159\">\n          Administració bàsica del sistema operatiu Linux\n          <br>\n          Explicació de les eines de treball i administració (d'usuaris, sistemes i xarxa) més habituals en els sistemes operatius Linux.\n        </li>\n              <li id=\"cont-3158\">\n          Desenvolupament de programari lliure.\n          <br>\n          Explicació dels entorns i eines més usuals emprats per al desenvolupament de programari lliure.\n        </li>\n              <li id=\"cont-3160\">\n          Presentacions orals.\n          <br>\n          Eines bàsiques per realitzar presentacions orals eficaces.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-8608\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Software Lliure</h3>\n              Software Lliure\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      En aquestes hores de teoria s'explica mitjançant classes teòriques com ha aparegut i evolucionat el software lliure al llarg de la historia.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      En aquestes hores els alumnes han de repassar els conceptes introduïts a la teoria i llegir documentació associada que els aporti més coneixements sobre la matèria.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3868\">1</a>\n                                  <a href=\"#obj-3869\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3156\">1 .\n                      El software lliure i el Linux.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-8609\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Software Lliure i Societat</h3>\n              Software Lliure i Societat\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      En aquestes hores de teoria s'explica mitjançant classes teòriques les relacions entre Software Lliure i Societat.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      En aquestes hores els alumnes han de repassar els conceptes introduïts a la teoria i llegir documentació associada que els aporti més coneixements sobre la matèria.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3868\">1</a>\n                                  <a href=\"#obj-3869\">2</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3157\">2 .\n                      Software Lliure i societat</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-8610\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Administració bàsica del sistema operatiu Linux</h3>\n              Administració bàsica del sistema operatiu Linux\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Es realitzen al laboratori pràctiques guiades d'administració bàsica del sistema operatiu Linux. Durant aquestes hores els alumnes segueixen amb la ajuda del professor un dossier de pràctiques i contesten a una serie de preguntes que entregaran al final de cada pràctica en forma de informa final.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Els alumnes completen les pràctiques inacabades i busquen informació complementaria per entendre millor tots els conceptes introduïts.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3870\">3</a>\n                                  <a href=\"#obj-3871\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3159\">3 .\n                      Administració bàsica del sistema operatiu Linux</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      13h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      18h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                          \n                                                        \n                          <div id=\"act-8612\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament de programari lliure</h3>\n              Desenvolupament de programari lliure\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Laboratori:</b>\n                      Es realitzen al laboratori pràctiques guiades de desenvolupament de programari lliure. Durant aquestes hores els alumnes segueixen amb la ajuda del professor un dossier de pràctiques i contesten a una serie de preguntes que entregaran al final de cada pràctica en forma de informa final.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge dirigit:</b>\n                      Els alumnes queden amb el professor per obtenir una guia de com desenvolupar el seu projecte.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Els alumnes completen les pràctiques inacabades i busquen informació complementaria per entendre millor tots els conceptes introduïts i desenvolupen un projecte de software lliure.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3870\">3</a>\n                                  <a href=\"#obj-3871\">4</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3158\">4 .\n                      Desenvolupament de programari lliure.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      4.2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      21.8h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-8604\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Com presentar</h3>\n              Classe sobre presentacions\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Els alumnes reben una classe de com presentar.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3872\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3160\">5 .\n                      Presentacions orals.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      2h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                                                \n                          <div id=\"act-8613\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Presentacions dels alumnes</h3>\n              Presentacions dels alumnes\n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Els alumnes fan presentacions públiques.\n                    </li>\n                                      <li>\n                      <b>Aprenentatge autònom:</b>\n                      Preparació de les presentacions dels alumnes\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3868\">1</a>\n                                  <a href=\"#obj-3869\">2</a>\n                                  <a href=\"#obj-3870\">3</a>\n                                  <a href=\"#obj-3871\">4</a>\n                                  <a href=\"#obj-3872\">5</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3156\">1 .\n                      El software lliure i el Linux.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3157\">2 .\n                      Software Lliure i societat</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3158\">4 .\n                      Desenvolupament de programari lliure.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3159\">3 .\n                      Administració bàsica del sistema operatiu Linux</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3160\">5 .\n                      Presentacions orals.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      10h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      20h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3286\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen Teoria</h3>\n              Examen Teoria\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3868\">1</a>\n                                  <a href=\"#obj-3869\">2</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                      \n                            <div id=\"act-4941\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen Pràctiques</h3>\n              Examen Pràctiques\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3870\">3</a>\n                                  <a href=\"#obj-3871\">4</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",

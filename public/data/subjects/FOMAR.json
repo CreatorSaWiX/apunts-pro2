@@ -7,15 +7,241 @@
   "department": "FIS",
   "web": "https://www-fen.upc.es/~fmar",
   "summary": "",
+  "professors": [
+    {
+      "name": "Joaquim Casulleras Ambros",
+      "email": "joaquim.casulleras@upc.edu",
+      "role": "Responsable"
+    }
+  ],
+  "hours": [
+    {
+      "type": "Teoria",
+      "value": 2
+    },
+    {
+      "type": "Problemes",
+      "value": 1
+    },
+    {
+      "type": "Laboratori",
+      "value": 1
+    },
+    {
+      "type": "Aprenentatge dirigit",
+      "value": 0
+    },
+    {
+      "type": "Aprenentatge autònom",
+      "value": 6
+    }
+  ],
+  "activities": [
+    {
+      "title": "",
+      "isEvaluative": false,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "",
+      "isEvaluative": true,
+      "description": "",
+      "objectives": [],
+      "week": null,
+      "hours": []
+    },
+    {
+      "title": "examen parcial",
+      "isEvaluative": true,
+      "description": "examen escrit no eliminatori de materia.",
+      "objectives": [
+        "1",
+        "5",
+        "2",
+        "3",
+        "4"
+      ],
+      "week": 9,
+      "hours": []
+    },
+    {
+      "title": "Examen final",
+      "isEvaluative": true,
+      "description": "ExÃ men final de l'assignatura.",
+      "objectives": [
+        "1",
+        "5",
+        "2",
+        "3",
+        "4",
+        "6",
+        "7",
+        "8",
+        "9",
+        "11",
+        "10"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Realització i entrega de la pràctica final.",
+      "isEvaluative": true,
+      "description": "Preparació de la pràctica final amb el seu informe corresponent.",
+      "objectives": [
+        "5",
+        "2",
+        "3",
+        "4",
+        "6",
+        "7",
+        "8",
+        "9",
+        "11",
+        "10",
+        "12",
+        "13",
+        "1"
+      ],
+      "week": 14,
+      "hours": []
+    },
+    {
+      "title": "Desenvolupament de classes de Teoria",
+      "isEvaluative": false,
+      "description": "CombinaciÃ³ d'exposicions de pissarra amb projecciÃ³ de material multimedia. Teoria: Desenvolupament de classes de teoria. Inclouren el desenvolupament de nombrosos exemples prÃ ctics.",
+      "objectives": [
+        "1",
+        "5",
+        "2",
+        "3",
+        "4",
+        "6",
+        "7",
+        "8",
+        "9",
+        "11",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Teoria",
+          "value": 26
+        }
+      ]
+    },
+    {
+      "title": "Desenvolupament de classes de problemes",
+      "isEvaluative": false,
+      "description": "Discussio i resolucio de problemes.",
+      "objectives": [
+        "1",
+        "5",
+        "2",
+        "3",
+        "4",
+        "6",
+        "7",
+        "8",
+        "9",
+        "11",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Problemes",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Realització de pràctiques",
+      "isEvaluative": false,
+      "description": "Desenvolupar el treball de laboratori previst.",
+      "objectives": [
+        "1",
+        "5",
+        "2",
+        "3",
+        "4",
+        "6",
+        "7",
+        "8",
+        "9",
+        "11",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Laboratori",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "title": "Estudi i  treball preparatori de pràctiques.",
+      "isEvaluative": false,
+      "description": "L'alumne haurà d'estudiar el materia proporcionat, i a partir de les eines teòriques explicades a classe, preparar el treball de pràctiques que es realitzarà després al laboratori.",
+      "objectives": [
+        "1",
+        "5",
+        "2",
+        "3",
+        "4",
+        "6",
+        "7",
+        "8",
+        "9",
+        "11",
+        "10",
+        "12",
+        "13"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge autònom",
+          "value": 36
+        }
+      ]
+    },
+    {
+      "title": "Resolució d'exercicis i problemes",
+      "isEvaluative": false,
+      "description": "Treball personal de resolució d'exercicis i problemes",
+      "objectives": [
+        "1",
+        "5",
+        "2",
+        "3",
+        "4",
+        "6",
+        "7",
+        "8",
+        "9",
+        "11",
+        "10"
+      ],
+      "week": null,
+      "hours": [
+        {
+          "type": "Aprenentatge autònom",
+          "value": 22
+        }
+      ]
+    }
+  ],
   "sections": [
-    {
-      "title": "Professorat",
-      "html": "<h3> Responsable </h3>\n      <ul>\n         <!-- MIRAR FILTRE D'ORDENACIO TWIG -->\n          <li>\n            <b>\n              Joaquim Casulleras Ambros\n                                (joaquim.casulleras@upc.edu)\n                          </b>\n          </li>\n              </ul>"
-    },
-    {
-      "title": "Hores setmanals",
-      "html": "<div class=\"fitxa-gris-blavos\">\n      <div class=\"row\">\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Teoria</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            2\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Problemes</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-2\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Laboratori</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            1\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge dirigit</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            0\n          </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-3\">\n          <div class=\"col-xs-9 col-sm-12\">\n            <b>Aprenentatge autònom</b>\n          </div>\n          <div class=\"col-xs-3 col-sm-12\">\n            6\n          </div>\n        </div>\n      </div>\n    </div>"
-    },
     {
       "title": "Competències",
       "html": "<div class=\"gsc-accordion\">\n      <div class=\"panel-group skin-white\" id=\"competencies\">\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques\">Competències Tècniques</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Competències tècniques comunes</h4>\n                              <li id=\"CT1\">\n                  <b>\n                    CT1 \n                                      </b>\n                  - Demostrar coneixement i comprensió de fets essencials, conceptes, principis i teories relatives a la informàtica i a les seves disciplines de referència.\n                                      <ul>\n                                              <li id=\"CT1_2A\">\n                          <b>\n                            CT1.2A\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB1: capacitat per a resoldre els problemes matemàtics que es plantegin en la enginyeria. Aptitud per a aplicar els coneixements sobre: àlgebra, càlcul diferencial i integral i mètodes numèrics; estadística i optimització.\n                        </li>\n                                              <li id=\"CT1_2B\">\n                          <b>\n                            CT1.2B\n                          </b>\n                          - Interpretar, seleccionar i valorar conceptes, teories, usos i desenvolupaments tecnològics relacionats amb la informàtica i la seva aplicació a partir dels fonaments matemàtics, estadístics i físics necessaris. CEFB2. Capacitat per a comprendre i dominar els fonaments físics i tecnològics de la informàtica: electromagnetisme, ones, teoria de circuits, electrònica i fotònica i la seva aplicació per a la resolució de problemes propis de l'enginyeria.\n                        </li>\n                                          </ul>\n                                  </li>\n                              <li id=\"CT5\">\n                  <b>\n                    CT5 \n                                      </b>\n                  - Analitzar, dissenyar, construir i mantenir aplicacions de forma robusta, segura i eficient, triant el paradigma i els llenguatges de programació més adequats.\n                                      <ul>\n                                              <li id=\"CT5_1\">\n                          <b>\n                            CT5.1\n                          </b>\n                          - Triar, combinar i explotar diferents paradigmes de programació, en el moment de construir software, tenint en compte criteris com la facilitat de desenvolupament, l'eficiència, la portabilitat i la mantenibilitat.\n                        </li>\n                                              <li id=\"CT5_2\">\n                          <b>\n                            CT5.2\n                          </b>\n                          - Conèixer, dissenyar i utilitzar de forma eficient els tipus i les  estructures de dades més adients per a la resolució d'un problema.\n                        </li>\n                                              <li id=\"CT5_5\">\n                          <b>\n                            CT5.5\n                          </b>\n                          - Usar les eines d'un entorn de desenvolupament de software per a  crear i desenvolupar aplicacions.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-transversals\">Competències Transversals</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-transversals\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Raonament</h4>\n                              <li id=\"G9\">\n                  <b>\n                    G9 \n                                          [Avaluable]\n                                      </b>\n                  - Capacitat de raonament crític, lògic i matemàtic. Capacitat de resoldre problemes en la seva àrea d'estudi. Capacitat d'abstracció: capacitat de crear i utilitzar models que reflecteixin situacions reals. Capacitat de dissenyar i realitzar experiments senzills, i analitzar-ne i interpretar-ne els resultats. Capacitat d'anàlisi, de síntesi i d'avaluació.\n                                      <ul>\n                                              <li id=\"G9_1\">\n                          <b>\n                            G9.1\n                          </b>\n                          - Capacitat de raonament crític, lògic i matemàtic. Capacitat per comprendre l'abstracció i utilitzar-la adequadament. \n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n                <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">    \n            <h3 class=\"panel-title\">\n            <a role=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#competencies_competències-tècniques-de-cada-especialitat\">Competències Tècniques de cada especialitat</a>\n            </h3>\n          </div>\n          <div id=\"competencies_competències-tècniques-de-cada-especialitat\" class=\"panel-collapse collapse\" data-bs-parent=\"competencies\">\n            <div class=\"panel-body\">\n                            \n                          <h4>Especialitat computació</h4>\n                              <li id=\"CCO2\">\n                  <b>\n                    CCO2 \n                                      </b>\n                  - Desenvolupar de forma efectiva i eficient els algorismes i el software apropiats per a resoldre problemes complexos de computació. \n                                      <ul>\n                                              <li id=\"CCO2_2\">\n                          <b>\n                            CCO2.2\n                          </b>\n                          - Capacitat per a adquirir, obtenir, formalitzar i representar el coneixement humà d'una forma computable per a la resolució de problemes mitjançant un sistema informàtic en qualsevol àmbit d'aplicació, particularment en els que estan relacionats amb aspectes de computació, percepció i actuació en ambients o entorns intel·ligents.\n                        </li>\n                                          </ul>\n                                  </li>\n                                      </div>\n          </div>    \n        </div>\n              </div>  \n    </div>"
@@ -27,10 +253,6 @@
     {
       "title": "Continguts",
       "html": "<ol>\n              <li id=\"cont-3327\">\n          Transformacions geomètriques a l'espai. Formalisme Denavit-Hartenberg.\n          <br>\n          Relacions de transformació entre sistemes de referència. Formalisme de Denavit-Hartenberg. Modelització matemàtica de sistemes d'elements rígids articulats. \n        </li>\n              <li id=\"cont-3328\">\n          Física de cossos extensos.\n          <br>\n          Modelització matemàtica de les propietats físiques de cossos extensos (una roca, un element rígid), sistemes d'elements rígids articulats (robot, manipulador industrial). Distribució de massa, tensor d'inèrcia.\n        </li>\n              <li id=\"cont-3329\">\n          Sistemes de N cossos en interacció.\n          <br>\n          Cinemàtica i dinàmica en sistemes de moltes partícules. Teoremes de conservació. Tipus de forces rellevants: gravetat, resistència aerodinàmica, forces elàstiques. Xocs.\n        </li>\n              <li id=\"cont-3330\">\n          Dinàmica de sistemes amb N graus de llibertat. Dinàmica en condicions restringides.\n          <br>\n          Identificació de variables generalitzades rellevants. Sistemes sota condicions dinàmiques restringides. Determinació de les equacions dinàmiques restringides.\n        </li>\n              <li id=\"cont-3350\">\n          Animació de sistemes físicament realista.\n          <br>\n          Mètodes d'integració de les equacions del moviment. Trajectòria.  Visualització d'objectes i sistemes en moviment mitjançant la dinàmica sota restriccions cinemàtiques.\n        </li>\n          </ol>"
-    },
-    {
-      "title": "Activitats",
-      "html": "<p>\n      <span class=\"activitat\">Activitat</span>\n      <span class=\"acte_avaluatiu llegendaMargin\">Acte avaluatiu</span>\n    </p>\n    <br>\n    <div class=\"div-strip\">     \n                              \n\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3366\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>examen parcial</h3>\n              examen escrit no eliminatori de materia.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3972\">1</a>\n                                  <a href=\"#obj-3973\">5</a>\n                                  <a href=\"#obj-3981\">2</a>\n                                  <a href=\"#obj-3982\">3</a>\n                                  <a href=\"#obj-3983\">4</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  9\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3381\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Examen final</h3>\n              ExÃ&nbsp;men final de l'assignatura.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3972\">1</a>\n                                  <a href=\"#obj-3973\">5</a>\n                                  <a href=\"#obj-3981\">2</a>\n                                  <a href=\"#obj-3982\">3</a>\n                                  <a href=\"#obj-3983\">4</a>\n                                  <a href=\"#obj-3984\">6</a>\n                                  <a href=\"#obj-3985\">7</a>\n                                  <a href=\"#obj-3986\">8</a>\n                                  <a href=\"#obj-3987\">9</a>\n                                  <a href=\"#obj-3988\">11</a>\n                                  <a href=\"#obj-3989\">10</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                  <!-- Miro que actividad avaluativa es-->\n                          \n                                                                                                      <div id=\"act-3382\" class=\"acte_avaluatiu\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Realització i entrega de la pràctica final.</h3>\n              Preparació de la pràctica final amb el seu informe corresponent.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3973\">5</a>\n                                  <a href=\"#obj-3981\">2</a>\n                                  <a href=\"#obj-3982\">3</a>\n                                  <a href=\"#obj-3983\">4</a>\n                                  <a href=\"#obj-3984\">6</a>\n                                  <a href=\"#obj-3985\">7</a>\n                                  <a href=\"#obj-3986\">8</a>\n                                  <a href=\"#obj-3987\">9</a>\n                                  <a href=\"#obj-3988\">11</a>\n                                  <a href=\"#obj-3989\">10</a>\n                                  <a href=\"#obj-3990\">12</a>\n                                  <a href=\"#obj-3991\">13</a>\n                                  <a href=\"#obj-3972\">1</a>\n                              \n              <br>\n\n                                                              <b>Setmana:</b>\n                  14\n                                    <br>\n                              \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                                            <div id=\"act-8804\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament de classes de Teoria</h3>\n              CombinaciÃ³ d'exposicions de pissarra amb projecciÃ³ de material multimedia. \n              <br>\n                              <ul>\n                                      <li>\n                      <b>Teoria:</b>\n                      Desenvolupament de classes de teoria. Inclouren el desenvolupament de nombrosos exemples prÃ&nbsp;ctics.\n                    </li>\n                                  </ul>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3972\">1</a>\n                                  <a href=\"#obj-3973\">5</a>\n                                  <a href=\"#obj-3981\">2</a>\n                                  <a href=\"#obj-3982\">3</a>\n                                  <a href=\"#obj-3983\">4</a>\n                                  <a href=\"#obj-3984\">6</a>\n                                  <a href=\"#obj-3985\">7</a>\n                                  <a href=\"#obj-3986\">8</a>\n                                  <a href=\"#obj-3987\">9</a>\n                                  <a href=\"#obj-3988\">11</a>\n                                  <a href=\"#obj-3989\">10</a>\n                                  <a href=\"#obj-3990\">12</a>\n                                  <a href=\"#obj-3991\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3327\">1 .\n                      Transformacions geomètriques a l'espai. Formalisme Denavit-Hartenberg.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3328\">2 .\n                      Física de cossos extensos.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3329\">3 .\n                      Sistemes de N cossos en interacció.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3330\">4 .\n                      Dinàmica de sistemes amb N graus de llibertat. Dinàmica en condicions restringides.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3350\">5 .\n                      Animació de sistemes físicament realista.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      26h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8805\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Desenvolupament de classes de problemes</h3>\n              Discussio i resolucio de problemes.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3972\">1</a>\n                                  <a href=\"#obj-3973\">5</a>\n                                  <a href=\"#obj-3981\">2</a>\n                                  <a href=\"#obj-3982\">3</a>\n                                  <a href=\"#obj-3983\">4</a>\n                                  <a href=\"#obj-3984\">6</a>\n                                  <a href=\"#obj-3985\">7</a>\n                                  <a href=\"#obj-3986\">8</a>\n                                  <a href=\"#obj-3987\">9</a>\n                                  <a href=\"#obj-3988\">11</a>\n                                  <a href=\"#obj-3989\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3327\">1 .\n                      Transformacions geomètriques a l'espai. Formalisme Denavit-Hartenberg.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3328\">2 .\n                      Física de cossos extensos.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3329\">3 .\n                      Sistemes de N cossos en interacció.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3330\">4 .\n                      Dinàmica de sistemes amb N graus de llibertat. Dinàmica en condicions restringides.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3350\">5 .\n                      Animació de sistemes físicament realista.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8806\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Realització de pràctiques</h3>\n              Desenvolupar el treball de laboratori previst.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3972\">1</a>\n                                  <a href=\"#obj-3973\">5</a>\n                                  <a href=\"#obj-3981\">2</a>\n                                  <a href=\"#obj-3982\">3</a>\n                                  <a href=\"#obj-3983\">4</a>\n                                  <a href=\"#obj-3984\">6</a>\n                                  <a href=\"#obj-3985\">7</a>\n                                  <a href=\"#obj-3986\">8</a>\n                                  <a href=\"#obj-3987\">9</a>\n                                  <a href=\"#obj-3988\">11</a>\n                                  <a href=\"#obj-3989\">10</a>\n                                  <a href=\"#obj-3990\">12</a>\n                                  <a href=\"#obj-3991\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3327\">1 .\n                      Transformacions geomètriques a l'espai. Formalisme Denavit-Hartenberg.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3328\">2 .\n                      Física de cossos extensos.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3329\">3 .\n                      Sistemes de N cossos en interacció.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3330\">4 .\n                      Dinàmica de sistemes amb N graus de llibertat. Dinàmica en condicions restringides.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3350\">5 .\n                      Animació de sistemes físicament realista.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      15h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8807\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Estudi i  treball preparatori de pràctiques.</h3>\n              L'alumne haurà&nbsp; d'estudiar el materia proporcionat, i a partir de les eines teòriques explicades a classe, preparar el treball de pràctiques que es realitzarà&nbsp; després al laboratori.\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3972\">1</a>\n                                  <a href=\"#obj-3973\">5</a>\n                                  <a href=\"#obj-3981\">2</a>\n                                  <a href=\"#obj-3982\">3</a>\n                                  <a href=\"#obj-3983\">4</a>\n                                  <a href=\"#obj-3984\">6</a>\n                                  <a href=\"#obj-3985\">7</a>\n                                  <a href=\"#obj-3986\">8</a>\n                                  <a href=\"#obj-3987\">9</a>\n                                  <a href=\"#obj-3988\">11</a>\n                                  <a href=\"#obj-3989\">10</a>\n                                  <a href=\"#obj-3990\">12</a>\n                                  <a href=\"#obj-3991\">13</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3327\">1 .\n                      Transformacions geomètriques a l'espai. Formalisme Denavit-Hartenberg.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3328\">2 .\n                      Física de cossos extensos.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3329\">3 .\n                      Sistemes de N cossos en interacció.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3330\">4 .\n                      Dinàmica de sistemes amb N graus de llibertat. Dinàmica en condicions restringides.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3350\">5 .\n                      Animació de sistemes físicament realista.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      36h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n           \n                \n              \n        <!-- Si la actividad no es normal, es avaluativa -->        \n                <!-- Si la actividad es normal --> \n                                                                                      <div id=\"act-8808\" class=\"activitat\">\n          <div class=\"row\">\n            <div class=\"col-lg-9\">\n              <h3>Resolució d'exercicis i problemes</h3>\n              Treball personal de resolució d'exercicis i problemes\n              <br>\n              \n                              <b>Objectius:</b>\n                                  <a href=\"#obj-3972\">1</a>\n                                  <a href=\"#obj-3973\">5</a>\n                                  <a href=\"#obj-3981\">2</a>\n                                  <a href=\"#obj-3982\">3</a>\n                                  <a href=\"#obj-3983\">4</a>\n                                  <a href=\"#obj-3984\">6</a>\n                                  <a href=\"#obj-3985\">7</a>\n                                  <a href=\"#obj-3986\">8</a>\n                                  <a href=\"#obj-3987\">9</a>\n                                  <a href=\"#obj-3988\">11</a>\n                                  <a href=\"#obj-3989\">10</a>\n                              \n              <br>\n\n               \n                <b>Continguts:</b>\n                <ul>\n                                                          <li>\n                      <a href=\"#cont-3327\">1 .\n                      Transformacions geomètriques a l'espai. Formalisme Denavit-Hartenberg.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3328\">2 .\n                      Física de cossos extensos.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3329\">3 .\n                      Sistemes de N cossos en interacció.</a>\n\n                    </li>\n                                                          <li>\n                      <a href=\"#cont-3330\">4 .\n                      Dinàmica de sistemes amb N graus de llibertat. Dinàmica en condicions restringides.</a>\n\n                    </li>\n                                  </ul>\n                            \n            </div>\n            <div class=\"col-lg-3\">\n              <div class=\"fitxa-gris-blavos\">\n                <div class=\"row\">                  \n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Teoria</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Problemes</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Laboratori</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge dirigit</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      0h\n                    </div>\n                    <div class=\"col-xs-9 col-sm-10\">\n                      <b>Aprenentatge autònom</b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-2\">\n                      22h\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>        \n        <br>\n          </div>"
     },
     {
       "title": "Metodologia docent",
