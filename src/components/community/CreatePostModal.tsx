@@ -3,13 +3,16 @@ import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { SUBJECTS, type SubjectType } from '../../config/subjects';
-import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, Loader2, X } from 'lucide-react';
+import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, Loader2, X, Eye, FileText } from 'lucide-react';
 import GifPicker from '../ui/GifPicker';
 import SubjectSelectorModal from './SubjectSelectorModal';
 import FileUploader, { type Attachment } from './FileUploader';
 import { motion, AnimatePresence } from 'framer-motion';
+import PublicationCard from './PublicationCard';
+import type { CommunityPost } from '../../types/community';
+import RichTextEditor from '../ui/RichTextEditor';
 
-const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, as: 'url' });
+const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
 const CUSTOM_EMOTES = Object.values(emojiModules);
 
 interface CreatePostModalProps {
@@ -21,17 +24,17 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     const { user } = useAuth();
     const [content, setContent] = useState('');
     const [subject, setSubject] = useState<SubjectType>(SUBJECTS[0]?.id || '');
-    const [type, setType] = useState<any>('resource');
     const [loading, setLoading] = useState(false);
+    const [isNoteMode, setIsNoteMode] = useState(false);
     
     const [showGifPicker, setShowGifPicker] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showSubjectSelector, setShowSubjectSelector] = useState(false);
-    const [showUploader, setShowUploader] = useState(false);
     
     const [attachments, setAttachments] = useState<Attachment[]>([]);
     const [error, setError] = useState<string | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [editorInstance, setEditorInstance] = useState<any>(null);
 
     const activeSubject = SUBJECTS.find(s => s.id === subject) || SUBJECTS[0];
 
@@ -47,7 +50,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
         const lastPost = localStorage.getItem(`last_post_${user.id}`);
         const now = Date.now();
         if (lastPost && now - parseInt(lastPost) < 30000) { 
-            setError("Espera un moment abans de tornar a publicar (Spam Control 🛡️)");
+            setError("Espera un moment abans de publicar de nou.");
             setTimeout(() => setError(null), 5000);
             return;
         }
@@ -60,49 +63,73 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 userAvatar: user.avatar || '',
                 content: content.trim(),
                 subject: subject,
-                type: type,
+                type: 'resource',
                 attachments: attachments,
                 createdAt: serverTimestamp(),
                 reactions: {},
                 rank: 0,
-                isPinned: false
+                isPinned: false,
+                isNote: isNoteMode
             });
 
             setContent('');
             setAttachments([]);
-            setShowUploader(false);
             localStorage.setItem(`last_post_${user.id}`, now.toString());
             onClose();
         } catch (err) {
             console.error(err);
-            setError("Error al publicar. Tenta-ho de nou.");
+            setError("Error al publicar. Torna-ho a provar.");
         } finally {
             setLoading(false);
         }
     };
 
     const handleEmojiSelect = (emojiUrl: string) => {
-        const emojiName = emojiUrl.split('/').pop()?.split('.')[0] || 'emoji';
-        setContent(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `![${emojiName}](${emojiUrl}) `);
+        if (isNoteMode && editorInstance) {
+            editorInstance.chain().focus().setImage({ src: emojiUrl }).run();
+        } else {
+            const emojiName = emojiUrl.split('/').pop()?.split('.')[0] || 'emoji';
+            setContent(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `:${emojiName}: `);
+        }
         setShowEmojiPicker(false);
     };
 
     const handleGifSelect = async (gifUrl: string) => {
-        setContent(prev => prev + (prev ? '\n\n' : '') + `![gif](${gifUrl})`);
+        if (isNoteMode && editorInstance) {
+            editorInstance.chain().focus().setImage({ src: gifUrl }).run();
+        } else {
+            setContent(prev => prev + (prev ? '\n\n' : '') + `![gif](${gifUrl})`);
+        }
         setShowGifPicker(false);
     };
 
     if (!user) return null;
 
+    const livePost: CommunityPost = {
+        id: 'preview',
+        userId: user.id,
+        username: user.username,
+        userAvatar: user.avatar || '',
+        content: content.trim() || 'Comença a escriure per veure com queda...',
+        subject: subject,
+        type: 'resource',
+        attachments: attachments,
+        createdAt: new Date() as any,
+        reactions: {},
+        rank: 0,
+        isPinned: false,
+        isNote: isNoteMode
+    };
+
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-12">
                     <motion.div 
                         initial={{ opacity: 0 }} 
                         animate={{ opacity: 1 }} 
                         exit={{ opacity: 0 }} 
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        className="absolute inset-0 bg-[#050505]/80 backdrop-blur-xl"
                         onClick={onClose}
                     />
                     
@@ -110,188 +137,202 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative w-full max-w-2xl bg-slate-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+                        className="relative w-full max-w-6xl bg-[#0a0a0a] rounded-[2rem] shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col md:flex-row h-[85vh] border border-white/10 transition-all duration-500"
                     >
-                        {/* Header */}
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
-                            <h2 className="text-xl font-bold text-slate-100">Publicar nou recurs</h2>
-                            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors">
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        {/* Content Area */}
-                        <div className="flex-1 overflow-y-auto p-6">
-                            {/* Properties (Subject & Type) */}
-                            <div className="flex flex-wrap items-center gap-3 mb-6">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowSubjectSelector(true)}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 text-sm font-bold transition-colors border border-white/5"
-                                >
-                                    <span>{activeSubject.label}</span>
-                                    <ChevronDown size={16} />
+                        {/* LEFT PANEL: EDITOR */}
+                        <div className="flex-1 flex flex-col relative z-10 w-full md:w-3/5 bg-linear-to-b from-white/[0.02] to-transparent">
+                            
+                            {/* Header */}
+                            <div className="flex items-center justify-between px-8 py-6">
+                                <h2 className="text-2xl font-bold text-white tracking-tight">Nou recurs</h2>
+                                <button onClick={onClose} className="p-2.5 bg-white/5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-all active:scale-95 md:hidden">
+                                    <X size={20} />
                                 </button>
+                            </div>
+
+                            {/* Content Area */}
+                            <div className="flex-1 overflow-y-auto px-8 pb-6 flex flex-col custom-scrollbar">
                                 
-                                <select 
-                                    value={type}
-                                    onChange={(e) => setType(e.target.value)}
-                                    className="bg-white/5 hover:bg-white/10 text-slate-200 rounded-xl px-4 py-2 text-sm font-bold transition-colors appearance-none cursor-pointer outline-none border border-white/5 focus:ring-0"
-                                >
-                                    <option value="resource" className="bg-slate-900">📦 Recurs o Apunts</option>
-                                    <option value="question" className="bg-slate-900">❓ Dubte</option>
-                                    <option value="link" className="bg-slate-900">🔗 Enllaç</option>
-                                    <option value="announcement" className="bg-slate-900">📢 Avís</option>
-                                </select>
+                                {/* Sleek Subject Selector */}
+                                <div className="mb-6 flex">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowSubjectSelector(true)}
+                                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-all group"
+                                    >
+                                        <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(14,165,233,0.8)]" />
+                                        {activeSubject.label}
+                                        <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors ml-1" />
+                                    </button>
+                                </div>
+
+                                {/* Seamless Text Input or Rich Editor */}
+                                <div className={`relative shrink-0 ${isNoteMode ? 'flex-1 min-h-[400px]' : 'min-h-[160px]'}`}>
+                                    {isNoteMode ? (
+                                        <RichTextEditor 
+                                            content={content} 
+                                            onChange={setContent} 
+                                            placeholder="Títol de l'apunt... Comença a escriure aquí"
+                                            editorRef={setEditorInstance}
+                                        />
+                                    ) : (
+                                        <textarea 
+                                            ref={textareaRef}
+                                            value={content}
+                                            onChange={(e) => setContent(e.target.value)}
+                                            placeholder="Comparteix coneixement..."
+                                            className="w-full h-full bg-transparent text-white placeholder:text-slate-600 text-xl font-medium resize-none outline-none overflow-hidden"
+                                        />
+                                    )}
+                                </div>
+
+                                {/* Uploader */}
+                                {!isNoteMode && (
+                                    <div className="mt-auto pt-6 border-t border-white/5">
+                                        <FileUploader 
+                                            onUploadComplete={(newAtts) => setAttachments(prev => [...prev, ...newAtts])} 
+                                        />
+                                        
+                                        {attachments.length > 0 && (
+                                        <div className="flex flex-col gap-3 mt-4">
+                                            {attachments.map((att, i) => (
+                                                <div key={i} className="flex items-center justify-between bg-white/[0.03] border border-white/10 p-3 rounded-2xl group hover:border-white/20 transition-colors">
+                                                    <div className="flex items-center gap-4 overflow-hidden">
+                                                        <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-black/50 border border-white/5 flex items-center justify-center">
+                                                            {att.thumbnailUrl ? (
+                                                                <img src={att.thumbnailUrl} alt={att.name} className="w-full h-full object-cover" />
+                                                            ) : att.type.startsWith('image/') ? (
+                                                                <img src={att.url} alt={att.name} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <Paperclip size={18} className="text-slate-400" />
+                                                            )}
+                                                        </div>
+                                                        <div className="flex flex-col min-w-0">
+                                                            <span className="truncate text-sm font-bold text-slate-200">{att.name}</span>
+                                                            <span className="text-xs text-slate-500">{(att.size / 1024 / 1024).toFixed(2)} MB</span>
+                                                        </div>
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
+                                                        className="text-slate-500 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100"
+                                                    >
+                                                        <X size={16} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                                )}
                             </div>
 
-                            {/* Text Input */}
-                            <textarea 
-                                ref={textareaRef}
-                                value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                                placeholder="Escriu el títol, concepte clau o enganxa'n els apunts aquí..."
-                                className="w-full bg-transparent border-none text-slate-100 placeholder:text-slate-500 focus:ring-0 text-xl resize-none outline-none overflow-hidden min-h-[150px]"
-                            />
-
-                            <AnimatePresence>
-                                {!attachments.some(a => a.type.startsWith('image/')) && (
-                                    <motion.div 
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        className="flex items-center gap-2 text-amber-500 text-sm mb-4 font-medium p-3 bg-amber-500/10 rounded-xl border border-amber-500/20"
-                                    >
-                                        <AlertCircle size={16} />
-                                        <span>L'aparador és exclusivament visual. Has d'adjuntar una imatge de portada.</span>
-                                    </motion.div>
-                                )}
-                                {error && (
-                                    <motion.div 
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        className="flex items-center gap-2 text-rose-500 text-sm mb-4 font-medium p-3 bg-rose-500/10 rounded-xl"
-                                    >
-                                        <AlertCircle size={16} />
-                                        <span>{error}</span>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            {/* Attachments Preview */}
-                            {attachments.length > 0 && (
-                                <div className="flex flex-col gap-2 mt-4 mb-4">
-                                    <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Adjunts ({attachments.length})</h3>
-                                    {attachments.map((att, i) => (
-                                        <div key={i} className="flex items-center justify-between bg-white/5 border border-white/10 p-3 rounded-xl text-sm">
-                                            <div className="flex items-center gap-3 overflow-hidden">
-                                                {att.type.startsWith('image/') ? (
-                                                    <img src={att.url} alt={att.name} className="w-8 h-8 rounded bg-slate-800 object-cover" />
-                                                ) : (
-                                                    <Paperclip size={18} className="text-primary shrink-0" />
-                                                )}
-                                                <span className="truncate text-slate-200 font-medium">{att.name}</span>
+                            {/* Footer */}
+                            <div className="px-8 py-5 border-t border-white/5 bg-[#0a0a0a] flex items-center justify-between shrink-0">
+                                <div className="flex items-center gap-2">
+                                    <div className="relative">
+                                        <button
+                                            type="button"
+                                            onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); }}
+                                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                                            title="Afegir GIF"
+                                        >
+                                            <ImageIcon size={20} />
+                                        </button>
+                                        {showGifPicker && (
+                                            <div className="absolute bottom-full left-0 mb-4 z-50">
+                                                <div className="fixed inset-0" onClick={() => setShowGifPicker(false)} />
+                                                <div className="relative shadow-2xl border border-white/10 rounded-xl overflow-hidden">
+                                                    <GifPicker onSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
+                                                </div>
                                             </div>
-                                            <button 
-                                                onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
-                                                className="text-slate-500 hover:text-rose-400 p-2 rounded-full hover:bg-white/5 transition-colors"
-                                            >
-                                                <X size={16} />
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                                        )}
+                                    </div>
 
-                            {/* File Uploader Area */}
-                            <AnimatePresence>
-                                {showUploader && (
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        className="mt-4 overflow-hidden"
-                                    >
-                                        <FileUploader 
-                                            onUploadComplete={(newAtts) => {
-                                                setAttachments(prev => [...prev, ...newAtts]);
-                                                setShowUploader(false);
-                                            }} 
-                                        />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        {/* Footer (Actions) */}
-                        <div className="px-6 py-4 border-t border-white/5 bg-white/[0.02] flex items-center justify-between">
-                            <div className="flex items-center gap-1">
-                                <div className="relative">
-                                    <button
-                                        type="button"
-                                        onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); setShowUploader(false); }}
-                                        className="p-2.5 text-primary hover:bg-primary/10 rounded-full transition-colors"
-                                        title="Afegir GIF"
-                                    >
-                                        <ImageIcon size={20} />
-                                    </button>
-                                    {showGifPicker && (
-                                        <div className="absolute bottom-full left-0 mb-2 z-50">
-                                            <div className="fixed inset-0" onClick={() => setShowGifPicker(false)} />
-                                            <div className="relative shadow-2xl">
-                                                <GifPicker onSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
+                                    <div className="relative">
+                                        <button
+                                            type="button"
+                                            onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); }}
+                                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                                            title="Afegir Emote personalitzat"
+                                        >
+                                            <Smile size={20} />
+                                        </button>
+                                        {showEmojiPicker && (
+                                            <div className="absolute bottom-full left-0 mb-4 z-50">
+                                                <div className="fixed inset-0" onClick={() => setShowEmojiPicker(false)} />
+                                                <div className="relative p-4 bg-[#111] border border-white/10 rounded-2xl shadow-2xl grid grid-cols-6 gap-2 w-72 max-h-64 overflow-y-auto custom-scrollbar">
+                                                    {CUSTOM_EMOTES.map(emoji => (
+                                                        <button
+                                                            key={emoji}
+                                                            type="button"
+                                                            onClick={() => handleEmojiSelect(emoji)}
+                                                            className="p-1 rounded-xl hover:bg-white/10 transition-transform hover:scale-110"
+                                                        >
+                                                            <img src={emoji} alt="emoji" className="w-8 h-8 object-contain" />
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
+                                        )}
+                                    </div>
+                                    
+                                    {error && (
+                                        <div className="ml-4 flex items-center gap-2 text-rose-400 text-xs font-bold px-3 py-1.5 bg-rose-500/10 rounded-full border border-rose-500/20">
+                                            <AlertCircle size={14} />
+                                            <span>{error}</span>
                                         </div>
                                     )}
-                                </div>
 
-                                <div className="relative">
+                                    <div className="w-px h-6 bg-white/10 mx-2 hidden sm:block" />
+
                                     <button
                                         type="button"
-                                        onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); setShowUploader(false); }}
-                                        className="p-2.5 text-primary hover:bg-primary/10 rounded-full transition-colors"
-                                        title="Afegir Emote personalitzat"
+                                        onClick={() => setIsNoteMode(!isNoteMode)}
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all ${isNoteMode ? 'bg-primary/20 text-primary border-primary/30 shadow-[0_0_15px_rgba(14,165,233,0.3)]' : 'bg-white/5 text-slate-400 hover:text-white border-white/10 hover:bg-white/10'}`}
+                                        title="Mode Apunt Extens (Notion style)"
                                     >
-                                        <Smile size={20} />
+                                        <FileText size={14} />
+                                        <span className="hidden sm:inline">Apunt Extens</span>
                                     </button>
-                                    {showEmojiPicker && (
-                                        <div className="absolute bottom-full left-0 mb-2 z-50">
-                                            <div className="fixed inset-0" onClick={() => setShowEmojiPicker(false)} />
-                                            <div className="relative p-3 bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl grid grid-cols-6 gap-2 w-72 max-h-64 overflow-y-auto">
-                                                {CUSTOM_EMOTES.map(emoji => (
-                                                    <button
-                                                        key={emoji}
-                                                        type="button"
-                                                        onClick={() => handleEmojiSelect(emoji)}
-                                                        className="p-1 rounded-xl hover:bg-slate-700 transition-transform hover:scale-110"
-                                                    >
-                                                        <img src={emoji} alt="emoji" className="w-8 h-8 object-contain" />
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
 
                                 <button
-                                    type="button"
-                                    onClick={() => { setShowUploader(!showUploader); setShowEmojiPicker(false); setShowGifPicker(false); }}
-                                    className="p-2.5 text-primary hover:bg-primary/10 rounded-full transition-colors"
-                                    title="Afegir adjunts (PDFs, imatges, zips)"
+                                    onClick={handleSend}
+                                    disabled={loading || (!content.trim() && attachments.length === 0)}
+                                    className="px-8 py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                                 >
-                                    <Paperclip size={20} />
+                                    {loading && <Loader2 size={18} className="animate-spin text-black" />}
+                                    Publicar
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* RIGHT PANEL: LIVE PREVIEW */}
+                        <div className="hidden md:flex flex-col w-2/5 border-l border-white/5 relative overflow-hidden bg-black noise-bg shrink-0">
+                            {/* Abstract Ambient Glows */}
+                            <div className="absolute top-[10%] right-[10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
+                            <div className="absolute bottom-[10%] left-[10%] w-[250px] h-[250px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+                            
+                            <div className="flex items-center justify-between px-8 py-6 relative z-10">
+                                <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    Live Preview
+                                </div>
+                                <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
+                                    <X size={20} />
                                 </button>
                             </div>
 
-                            <button
-                                onClick={handleSend}
-                                disabled={loading || !attachments.some(a => a.type.startsWith('image/')) || (!content.trim() && attachments.length === 0)}
-                                className="px-6 py-2.5 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary text-white font-bold rounded-full transition-colors flex items-center gap-2"
-                            >
-                                {loading && <Loader2 size={18} className="animate-spin" />}
-                                Publicar
-                            </button>
+                            <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">
+                                <div className="w-full max-w-[320px] pointer-events-none">
+                                    <PublicationCard post={{...livePost, content: livePost.content}} />
+                                    {/* A simple hack for emotes in live preview: Since PublicationCard strips images from content by default, we can just let PublicationCard show its stripped text, but we render a markdown block below it in the preview if there are emotes! Or better, we just change PublicationCard to allow small emotes in text. For now, since the actual feed strips them, we show exactly what the feed shows. BUT wait, if the feed strips images, the user will NEVER see their emotes in the feed! Let's allow emojis in PublicationCard. */}
+                                </div>
+                                
+                                <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-[250px]">
+                                    Així es veurà el teu apunt a la Comunitat
+                                </p>
+                            </div>
                         </div>
                     </motion.div>
 

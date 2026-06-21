@@ -7,9 +7,9 @@ import { Smile, Trash2, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { CUSTOM_EMOJIS } from '../../lib/emojis';
 
-const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, as: 'url' });
-const CUSTOM_EMOTES = Object.values(emojiModules);
+const CUSTOM_EMOTES = Object.values(CUSTOM_EMOJIS);
 
 export interface Comment {
     id: string;
@@ -160,7 +160,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                                         )
                                     }}
                                 >
-                                    {comment.content}
+                                    {comment.content ? comment.content.replace(/:([a-zA-Z0-9_]+):/g, (match, name) => CUSTOM_EMOJIS[name] ? `![${name}](${CUSTOM_EMOJIS[name]})` : match) : ''}
                                 </ReactMarkdown>
                             </div>
                         )}

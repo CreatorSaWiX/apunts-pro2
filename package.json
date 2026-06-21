@@ -12,6 +12,8 @@
     "build:solucionaris-pdfs": "tsx scripts/build-solucionaris-pdfs.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1073.0",
+    "@aws-sdk/s3-request-presigner": "^3.1073.0",
     "@codemirror/lang-cpp": "^6.0.3",
     "@codemirror/lang-css": "^6.3.1",
     "@codemirror/lang-html": "^6.4.11",
@@ -27,6 +29,10 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@tailwindcss/vite": "^4.1.18",
+    "@tiptap/extension-image": "^3.27.1",
+    "@tiptap/extension-placeholder": "^3.27.1",
+    "@tiptap/react": "^3.27.1",
+    "@tiptap/starter-kit": "^3.27.1",
     "@types/crypto-js": "^4.2.2",
     "@types/mdast": "^4.0.4",
     "@types/three": "^0.183.1",
@@ -45,6 +51,7 @@
     "lucide-react": "^0.563.0",
     "mafs": "^0.21.0",
     "mdast-util-directive": "^3.1.0",
+    "pdfjs-dist": "^6.0.227",
     "r3f-perf": "^7.2.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

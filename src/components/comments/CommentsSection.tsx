@@ -12,7 +12,7 @@ import ConfirmModal from '../ui/ConfirmModal';
 import GifPicker from '../ui/GifPicker';
 import { AnimatePresence } from 'framer-motion';
 
-const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, as: 'url' });
+const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
 const CUSTOM_EMOTES = Object.values(emojiModules);
 
 interface CommentsSectionProps {
@@ -165,7 +165,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
 
     const handleEmojiSelect = (emojiUrl: string) => {
         const emojiName = emojiUrl.split('/').pop()?.split('.')[0] || 'emoji';
-        setNewComment(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `![${emojiName}](${emojiUrl}) `);
+        setNewComment(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `:${emojiName}: `);
         setShowEmojiPicker(false);
     };
 

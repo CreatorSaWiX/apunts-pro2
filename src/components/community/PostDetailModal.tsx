@@ -1,12 +1,13 @@
 import type { CommunityPost } from '../../types/community';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, Share2, Download, File, MessageSquare } from 'lucide-react';
+import { X, Heart, Share2, Download, File, MessageSquare, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import ReplySection from './ReplySection';
+import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
-import { doc, updateDoc, deleteField } from 'firebase/firestore';
+import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs } from 'firebase/firestore';
 
 interface PostDetailModalProps {
     post: CommunityPost | null;
@@ -42,6 +43,22 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
         } catch (err) { console.error(err); }
     };
 
+    const handleDelete = async () => {
+        if (!confirm('Segur que vols eliminar aquesta publicació? Aquesta acció no es pot desfer.')) return;
+        try {
+            // Eliminar respostes de la subcol·lecció primer
+            const repliesRef = collection(db, 'community_posts', post.id, 'replies');
+            const repliesSnapshot = await getDocs(repliesRef);
+            await Promise.all(repliesSnapshot.docs.map(replyDoc => deleteDoc(replyDoc.ref)));
+
+            await deleteDoc(doc(db, 'community_posts', post.id));
+            onClose();
+        } catch (err) {
+            console.error(err);
+            alert("Error en eliminar la publicació.");
+        }
+    };
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -66,7 +83,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                 <img src={post.userAvatar} alt={post.username} className="w-10 h-10 rounded-full object-cover bg-slate-800" />
                                 <div>
                                     <h3 className="font-bold text-slate-100">{post.username}</h3>
-                                    <p className="text-xs text-slate-500 font-medium">{post.type === 'question' ? 'Ha preguntat un dubte' : 'Ha compartit un recurs'}</p>
+                                    <p className="text-xs text-slate-500 font-medium">{post.isNote ? 'Ha creat un apunt extens' : (post.type === 'question' ? 'Ha preguntat un dubte' : 'Ha compartit un recurs')}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
@@ -77,6 +94,15 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                 <button className="p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors">
                                     <Share2 size={18} />
                                 </button>
+                                {user?.id === post.userId && (
+                                    <button 
+                                        onClick={handleDelete}
+                                        className="p-2.5 rounded-full bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors"
+                                        title="Eliminar publicació"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                )}
                                 <div className="w-px h-6 bg-white/10 mx-1" />
                                 <button onClick={onClose} className="p-2.5 rounded-full hover:bg-rose-500/20 text-slate-400 hover:text-rose-500 transition-colors">
                                     <X size={20} />
@@ -97,36 +123,31 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
 
                             <div className="max-w-3xl mx-auto px-6 py-12">
                                 {/* Text Content */}
-                                <div className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium">
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                        {post.content}
-                                    </ReactMarkdown>
-                                </div>
+                                {post.isNote ? (
+                                    <div className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium"
+                                         dangerouslySetInnerHTML={{ __html: post.content }}
+                                    />
+                                ) : (
+                                    <div className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium">
+                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                            {post.content}
+                                        </ReactMarkdown>
+                                    </div>
+                                )}
 
-                                {/* Files / Documents */}
+                                {/* Files / Documents with Viewers */}
                                 {post.attachments && post.attachments.filter(a => !a.type.startsWith('image/')).length > 0 && (
                                     <div className="mb-12">
-                                        <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Fitxers Adjunts</h4>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Fitxers Adjunts i Interacció</h4>
+                                        <div className="flex flex-col gap-8">
                                             {post.attachments.filter(a => !a.type.startsWith('image/')).map((file, i) => (
-                                                <a 
+                                                <FileViewerRenderer 
                                                     key={i} 
-                                                    href={file.url} 
-                                                    target="_blank" 
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center p-4 bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-primary/5 rounded-2xl group transition-all"
-                                                >
-                                                    <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-primary shrink-0 mr-4 group-hover:scale-110 transition-transform shadow-inner">
-                                                        <File size={24} />
-                                                    </div>
-                                                    <div className="flex-1 min-w-0 pr-2">
-                                                        <p className="font-bold text-slate-200 truncate group-hover:text-primary transition-colors">{file.name}</p>
-                                                        <p className="text-xs text-slate-500 mt-0.5">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                                                    </div>
-                                                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-colors shrink-0">
-                                                        <Download size={14} />
-                                                    </div>
-                                                </a>
+                                                    url={file.url} 
+                                                    filename={file.name} 
+                                                    type={file.type} 
+                                                    size={file.size} 
+                                                />
                                             ))}
                                         </div>
                                     </div>

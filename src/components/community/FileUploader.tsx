@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud, X, File, Loader2 } from 'lucide-react';
+import { UploadCloud, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export interface Attachment {
@@ -8,6 +8,7 @@ export interface Attachment {
     name: string;
     type: string;
     size: number;
+    thumbnailUrl?: string;
 }
 
 interface FileUploaderProps {
@@ -15,133 +16,168 @@ interface FileUploaderProps {
     maxFiles?: number;
 }
 
+const MAX_FILE_SIZE_MB = 20;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const FileUploader = ({ onUploadComplete, maxFiles = 3 }: FileUploaderProps) => {
-    const [files, setFiles] = useState<(File & { preview?: string })[]>([]);
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        const newFiles = acceptedFiles.map(file => Object.assign(file, {
-            preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined
-        }));
-        setFiles(prev => [...prev, ...newFiles].slice(0, maxFiles));
-    }, [maxFiles]);
-
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        maxFiles,
-        accept: {
-            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
-            'application/pdf': ['.pdf'],
-            'application/zip': ['.zip', '.rar']
+    const dataURLtoBlob = (dataurl: string) => {
+        const arr = dataurl.split(',');
+        const mimeMatch = arr[0].match(/:(.*?);/);
+        if (!mimeMatch) return null;
+        const mime = mimeMatch[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
         }
-    });
-
-    const removeFile = (name: string) => {
-        setFiles(files.filter(file => file.name !== name));
+        return new Blob([u8arr], { type: mime });
     };
 
-    const handleUpload = async () => {
-        if (files.length === 0) return;
+    const uploadToR2 = async (fileOrBlob: File | Blob, filename: string, contentType: string) => {
+        const res = await fetch('/api/r2-presign', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename, contentType })
+        });
+        
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => null);
+            throw new Error(errorData?.error || "Error obtenint URL de pujada. Tens el .env configurat?");
+        }
+        
+        const { presignedUrl, publicUrl } = await res.json();
+        
+        console.log("URL de pujada R2:", presignedUrl);
+        
+        const uploadRes = await fetch(presignedUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': contentType
+            },
+            body: fileOrBlob
+        }).catch(err => {
+            console.error("Fetch Error:", err);
+            throw new Error(`Failed to fetch (CORS o Xarxa).\\nURL intentada: ${presignedUrl}\\nError original: ${err.message}`);
+        });
+        
+        if (!uploadRes.ok) throw new Error(`Error HTTP: ${uploadRes.status} pujant a R2`);
+        
+        return publicUrl;
+    };
+
+    const onDrop = useCallback(async (acceptedFiles: File[]) => {
+        if (acceptedFiles.length === 0) return;
         setUploading(true);
         setProgress(0);
         
         const uploadedAttachments: Attachment[] = [];
         
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+        for (let i = 0; i < acceptedFiles.length; i++) {
+            const file = acceptedFiles[i];
             
             try {
-                // S'utilitza una pujada simulada per donar resposta a la restricció "sense firebase, gratuït"
-                // Per a un entorn de producció Awwwards, es recomana Catbox API o Cloudinary (unsigned preset).
-                setProgress(((i) / files.length) * 100);
-                await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network
+                setProgress(((i) / acceptedFiles.length) * 100);
                 
-                // Si l'arxiu és petit, podem guardar-lo com a DataURI (Base64) a Firestore directament.
-                // Com que això és un MVP de disseny visual, simulem el comportament.
+                // 1. Generate preview
+                const { generatePreview } = await import('../../lib/previewGenerator');
+                const previewUrl = await generatePreview(file);
+                
+                // 2. Upload main file
+                const filePublicUrl = await uploadToR2(file, file.name, file.type || 'application/octet-stream');
+                
+                // 3. Upload thumbnail if it's a generated dataUrl
+                let thumbnailPublicUrl = undefined;
+                if (previewUrl && previewUrl.startsWith('data:')) {
+                    const blob = dataURLtoBlob(previewUrl);
+                    if (blob) {
+                        thumbnailPublicUrl = await uploadToR2(
+                            blob, 
+                            `thumb_${file.name.split('.')[0] || 'img'}.jpg`, 
+                            'image/jpeg'
+                        );
+                    }
+                } else {
+                    thumbnailPublicUrl = previewUrl;
+                }
+                
                 uploadedAttachments.push({
-                    url: file.preview || URL.createObjectURL(file), // Blob local
+                    url: filePublicUrl, 
                     name: file.name,
                     type: file.type,
-                    size: file.size
+                    size: file.size,
+                    thumbnailUrl: thumbnailPublicUrl
                 });
-                setProgress(((i + 1) / files.length) * 100);
-            } catch (err) {
-                console.error("Upload failed", err);
+                
+                setProgress(((i + 1) / acceptedFiles.length) * 100);
+            } catch (err: any) {
+                console.error("Error pujant arxiu:", err);
+                alert(`Error amb ${file.name}: ${err.message}`);
             }
         }
         
         setUploading(false);
         onUploadComplete(uploadedAttachments);
-        setFiles([]);
-    };
+    }, [maxFiles, onUploadComplete]);
+
+    const onDropRejected = useCallback((fileRejections: any[]) => {
+        const errors = fileRejections.map(r => {
+            if (r.errors.find((e: any) => e.code === 'file-too-large')) {
+                return `L'arxiu "${r.file.name}" és massa gran. El límit és de ${MAX_FILE_SIZE_MB}MB.`;
+            }
+            return `L'arxiu "${r.file.name}" no s'ha pogut pujar. Format no acceptat o massa gran.`;
+        });
+        alert(errors.join('\\n'));
+    }, []);
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        onDropRejected,
+        maxFiles,
+        maxSize: MAX_FILE_SIZE_BYTES,
+        accept: {
+            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
+            'application/pdf': ['.pdf'],
+            'application/zip': ['.zip', '.rar'],
+            'text/javascript': ['.js', '.jsx'],
+            'text/typescript': ['.ts', '.tsx'],
+            'text/plain': ['.txt', '.cc', '.cpp', '.c', '.h', '.hpp'],
+            'model/gltf-binary': ['.glb'],
+            'model/gltf+json': ['.gltf']
+        }
+    });
 
     return (
-        <div className="w-full mt-4">
-            {files.length === 0 && !uploading && (
+        <div className="w-full mt-2">
+            {!uploading && (
                 <div 
                     {...getRootProps()} 
-                    className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300
-                        ${isDragActive ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(14,165,233,0.2)]' : 'border-white/10 hover:border-white/20 hover:bg-white/5'}`}
+                    className={`border border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all duration-300
+                        ${isDragActive ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(14,165,233,0.2)]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}
                 >
                     <input {...getInputProps()} />
-                    <UploadCloud className="mx-auto mb-3 text-slate-400" size={32} />
-                    <p className="text-sm font-bold text-slate-300">Arrossega arxius o clica per pujar</p>
-                    <p className="text-xs text-slate-500 mt-1">PDFs, Imatges, ZIP (Max {maxFiles} arxius)</p>
+                    <UploadCloud className="mx-auto mb-2 text-slate-400" size={24} />
+                    <p className="text-sm font-bold text-slate-300">Arrossega arxius per adjuntar</p>
+                    <p className="text-xs text-slate-500 mt-1">Codi, PDFs, 3D, Imatges, ZIP (Màxim {MAX_FILE_SIZE_MB}MB per arxiu)</p>
                 </div>
             )}
 
             <AnimatePresence>
-                {files.length > 0 && !uploading && (
-                    <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"
-                    >
-                        {files.map((file) => (
-                            <div key={file.name} className="relative group bg-white/5 border border-white/10 rounded-xl p-2 flex items-center gap-3">
-                                <button 
-                                    onClick={(e) => { e.stopPropagation(); removeFile(file.name); }}
-                                    className="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-lg"
-                                >
-                                    <X size={12} />
-                                </button>
-                                {file.preview ? (
-                                    <img src={file.preview} alt={file.name} className="w-10 h-10 rounded-lg object-cover" />
-                                ) : (
-                                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                                        <File size={20} className="text-slate-400" />
-                                    </div>
-                                )}
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-bold text-slate-200 truncate">{file.name}</p>
-                                    <p className="text-[10px] text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                                </div>
-                            </div>
-                        ))}
-                        
-                        <button 
-                            type="button"
-                            onClick={(e) => { e.preventDefault(); handleUpload(); }}
-                            className="col-span-full mt-2 w-full py-2.5 bg-primary text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all active:scale-95"
-                        >
-                            Confirmar i Pujar Arxius
-                        </button>
-                    </motion.div>
-                )}
-
                 {uploading && (
                     <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="flex flex-col items-center justify-center py-8 bg-white/5 border border-white/10 rounded-2xl"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-2xl"
                     >
-                        <Loader2 className="animate-spin text-primary mb-3" size={32} />
-                        <p className="text-sm font-bold text-slate-300">Pujant a la xarxa...</p>
-                        <div className="w-48 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden">
+                        <Loader2 className="animate-spin text-white mb-3" size={24} />
+                        <p className="text-sm font-bold text-white">Preparant i pujant a la xarxa...</p>
+                        <div className="w-48 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden relative">
                             <motion.div 
-                                className="h-full bg-primary"
+                                className="absolute left-0 top-0 bottom-0 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ ease: "linear" }}

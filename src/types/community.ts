@@ -30,6 +30,7 @@ export interface CommunityPost {
     reactions: Record<string, Reaction>; // Key is userId
     rank: PostRank;
     isPinned: boolean;
+    isNote?: boolean;
     reports?: number;
     attachments?: { url: string; name: string; type: string; size: number }[];
 }

@@ -9,7 +9,7 @@ import SubjectSelectorModal from './SubjectSelectorModal';
 import FileUploader, { type Attachment } from './FileUploader';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, as: 'url' });
+const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
 const CUSTOM_EMOTES = Object.values(emojiModules);
 
 const PostComposer = () => {
@@ -83,7 +83,7 @@ const PostComposer = () => {
 
     const handleEmojiSelect = (emojiUrl: string) => {
         const emojiName = emojiUrl.split('/').pop()?.split('.')[0] || 'emoji';
-        setContent(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `![${emojiName}](${emojiUrl}) `);
+        setContent(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `:${emojiName}: `);
         setShowEmojiPicker(false);
     };
 

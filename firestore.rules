@@ -11,10 +11,15 @@ service cloud.firestore {
 
     // Usuaris
     match /users/{userId} {
-      allow read: if true;
+      // Només els usuaris autenticats poden veure perfils (tapa el leak d'emails)
+      allow read: if request.auth != null;
       allow update: if request.auth != null && request.auth.uid == userId;
+      
+      // Creació d'usuaris amb verificació segura del codi d'invitació via Firestore rules
       allow create: if request.auth != null && request.auth.uid == userId
-                    && (request.resource.data.role == 'invitat' || request.resource.data.role == 'moderador');
+                    && (request.resource.data.role == 'invitat' || 
+                        (request.resource.data.role == 'moderador' && exists(/databases/$(database)/documents/invites/$(request.resource.data.inviteCodeUsed)))
+                       );
 
       // Historial de xat de l'assistent IA: cada usuari accedeix NOMÉS al seu propi
       match /chats/{chatId} {
@@ -31,7 +36,10 @@ service cloud.firestore {
     }
 
     match /invites/{code} {
-      allow read, write: if false;
+      // Permetem que el client pugui comprovar si el document amb ID={code} existeix,
+      // però bloquegem "list" perquè no puguin descarregar tots els codis vàlids.
+      allow get: if true;
+      allow list, write: if false;
     }
 
     // Missatges: permetre llegir els propis missatges, o enviar a qualsevol si estàs autenticat

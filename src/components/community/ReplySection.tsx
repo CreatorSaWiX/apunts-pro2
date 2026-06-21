@@ -11,6 +11,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { formatDistanceToNow } from 'date-fns';
 import { ca } from 'date-fns/locale';
+import { CUSTOM_EMOJIS } from '../../lib/emojis';
 
 interface ReplySectionProps {
     postId: string;
@@ -18,8 +19,7 @@ interface ReplySectionProps {
     postContent: string;
 }
 
-const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, as: 'url' });
-const CUSTOM_EMOTES = Object.values(emojiModules);
+const CUSTOM_EMOTES = Object.values(CUSTOM_EMOJIS);
 
 const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) => {
     const { user } = useAuth();
@@ -88,7 +88,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
 
     const handleEmojiSelect = (emojiUrl: string) => {
         const emojiName = emojiUrl.split('/').pop()?.split('.')[0] || 'emoji';
-        setNewReply(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `![${emojiName}](${emojiUrl}) `);
+        setNewReply(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `:${emojiName}: `);
         setShowEmojiPicker(false);
     };
 
@@ -125,7 +125,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                                     </div>
                                     <div className="text-xs text-slate-400 prose prose-invert prose-sm max-w-none prose-p:leading-normal prose-img:w-5 prose-img:h-5 prose-img:inline-block">
                                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                            {reply.content}
+                                            {reply.content ? reply.content.replace(/:([a-zA-Z0-9_]+):/g, (match, name) => CUSTOM_EMOJIS[name] ? `![${name}](${CUSTOM_EMOJIS[name]})` : match) : ''}
                                         </ReactMarkdown>
                                     </div>
                                 </div>
