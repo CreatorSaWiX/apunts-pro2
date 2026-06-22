@@ -11,6 +11,8 @@ import { Send, Loader, MessageCircle, Info, Image as ImageIcon, Smile } from 'lu
 import ConfirmModal from '../ui/ConfirmModal';
 import GifPicker from '../ui/GifPicker';
 import { AnimatePresence } from 'framer-motion';
+import { useMentions } from '../../hooks/useMentions';
+import MentionPopup from '../ui/MentionPopup';
 
 const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
 const CUSTOM_EMOTES = Object.values(emojiModules) as string[];
@@ -31,6 +33,14 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [visibleCount, setVisibleCount] = useState(20);
     const commentsEndRef = useRef<HTMLDivElement>(null);
+
+    const { 
+        mentionSearch, 
+        handleInputChange, 
+        insertMention, 
+        getMentionedUsers, 
+        suggestedUsers 
+    } = useMentions();
 
     // Delete Modal State
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -134,6 +144,26 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                     fromUserName: user.username,
                     fromUserAvatar: user.avatar || '',
                     resourceId: solutionId, // To link back
+                    resourceTitle: solutionTitle || 'Solució',
+                    commentId: docRef.id,
+                    read: false,
+                    createdAt: serverTimestamp()
+                });
+            }
+
+            // Send notifications to mentioned users
+            const mentionedUsers = getMentionedUsers(content, user.id);
+            for (const mUser of mentionedUsers) {
+                // Skip if owner already notified via reply
+                if (replyToObj && mUser.id === replyToObj.userId) continue;
+                
+                await addDoc(collection(db, 'notifications'), {
+                    userId: mUser.id,
+                    type: 'mention',
+                    fromUserId: user.id,
+                    fromUserName: user.username,
+                    fromUserAvatar: user.avatar || '',
+                    resourceId: solutionId,
                     resourceTitle: solutionTitle || 'Solució',
                     commentId: docRef.id,
                     read: false,
@@ -373,20 +403,28 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                                     )}
                                 </div>
 
-                                <input
-                                    type="text"
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                    placeholder={`Escriu un comentari...`}
-                                    className="w-full bg-slate-900 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all"
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={!newComment.trim()}
-                                    className="absolute right-2 p-2 bg-sky-500 hover:bg-sky-400 text-white rounded-lg disabled:opacity-50 disabled:bg-slate-700 transition-colors shadow-lg shadow-sky-500/20"
-                                >
-                                    <Send size={16} />
-                                </button>
+                                <div className="relative flex-1">
+                                    {mentionSearch && (
+                                        <MentionPopup users={suggestedUsers} onSelect={(u) => setNewComment(insertMention(newComment, u))} position="top" />
+                                    )}
+                                    <input
+                                        type="text"
+                                        value={newComment}
+                                        onChange={(e) => {
+                                            setNewComment(e.target.value);
+                                            handleInputChange(e.target.value, e.target.selectionStart || 0);
+                                        }}
+                                        placeholder={`Escriu un comentari...`}
+                                        className="w-full bg-slate-900 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all"
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={!newComment.trim()}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-sky-500 hover:bg-sky-400 text-white rounded-lg disabled:opacity-50 disabled:bg-slate-700 transition-colors shadow-lg shadow-sky-500/20"
+                                    >
+                                        <Send size={16} />
+                                    </button>
+                                </div>
                             </div>
                             
                             <div className="mt-2 text-[10px] text-slate-500 flex items-center gap-1.5 opacity-60 pl-1">

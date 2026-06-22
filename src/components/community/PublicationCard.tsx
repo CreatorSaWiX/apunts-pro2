@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import type { CommunityPost } from '../../types/community';
 import { Heart, Eye, FileCode2, Box, FileVideo, FileText, Archive } from 'lucide-react';
 import { db } from '../../lib/firebase';
-import { doc, updateDoc, deleteField, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, deleteField, deleteDoc, collection, setDoc, serverTimestamp } from 'firebase/firestore';
 import Tilt from 'react-parallax-tilt';
 import { renderEmojis } from '../../lib/emojis';
 
@@ -56,13 +56,17 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
         try {
             if (hasLiked) {
                 await updateDoc(postRef, { [`reactions.${user.id}`]: deleteField() });
+                
+                if (post.userId !== user.id) {
+                    await deleteDoc(doc(db, 'notifications', `like_${post.id}_${user.id}`));
+                }
             } else {
                 await updateDoc(postRef, {
                     [`reactions.${user.id}`]: { emoji: '❤️', username: user.username, userId: user.id }
                 });
 
                 if (post.userId !== user.id) {
-                    await addDoc(collection(db, 'notifications'), {
+                    await setDoc(doc(db, 'notifications', `like_${post.id}_${user.id}`), {
                         userId: post.userId,
                         type: 'like',
                         fromUserId: user.id,

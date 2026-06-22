@@ -67,6 +67,12 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
         return node ? node.data as SubjectNodeData : null;
     }, [selectedNodeId, nodes]);
 
+    const currentSpecNode = nodes.find(n => n.data.type === 'specialization');
+    const currentSpec = useMemo(() => {
+        if (!currentSpecNode) return null;
+        return specializations.find(s => s.mandatory.includes(currentSpecNode.id));
+    }, [currentSpecNode]);
+
     const handleSave = async () => {
         setIsSaving(true);
         try {
@@ -190,10 +196,23 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                         <div className="relative">
                             <button 
                                 onClick={() => setIsSpecMenuOpen(!isSpecMenuOpen)}
-                                className="h-11 px-6 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 hover:border-indigo-500/50 text-indigo-300 font-bold rounded-full flex items-center gap-2 transition-all group"
+                                className={`h-11 px-6 ${currentSpec ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-100 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300'} hover:bg-indigo-500/30 border hover:border-indigo-400 font-bold rounded-full flex items-center gap-2 transition-all group`}
                             >
-                                <GraduationCap size={18} className="group-hover:text-indigo-200 transition-colors" />
-                                <span className="text-sm tracking-wide">Especialitat</span>
+                                <GraduationCap size={18} className={`${currentSpec ? 'text-indigo-300' : 'text-indigo-400'} group-hover:text-indigo-200 transition-colors`} />
+                                <div className="relative overflow-hidden flex items-center justify-center">
+                                    <AnimatePresence mode="popLayout" initial={false}>
+                                        <motion.span
+                                            key={currentSpec ? currentSpec.id : 'default'}
+                                            initial={{ y: -20, opacity: 0 }}
+                                            animate={{ y: 0, opacity: 1 }}
+                                            exit={{ y: 20, opacity: 0 }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                            className="text-sm tracking-wide whitespace-nowrap block"
+                                        >
+                                            {currentSpec ? currentSpec.name : 'Especialitat'}
+                                        </motion.span>
+                                    </AnimatePresence>
+                                </div>
                                 <ChevronUp size={16} className={`transition-transform duration-300 opacity-50 group-hover:opacity-100 ${isSpecMenuOpen ? 'rotate-180' : ''}`} />
                             </button>
 

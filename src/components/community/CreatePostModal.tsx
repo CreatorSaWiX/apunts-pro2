@@ -7,7 +7,7 @@ import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, Loader2
 import GifPicker from '../ui/GifPicker';
 import SubjectSelectorModal from './SubjectSelectorModal';
 import FileUploader, { type Attachment } from './FileUploader';
-import { motion, AnimatePresence } from 'framer-motion';
+import Modal from '../ui/Modal';
 import PublicationCard from './PublicationCard';
 import type { CommunityPost } from '../../types/community';
 import RichTextEditor from '../ui/RichTextEditor';
@@ -122,36 +122,17 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     };
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-12">
-                    <motion.div 
-                        initial={{ opacity: 0 }} 
-                        animate={{ opacity: 1 }} 
-                        exit={{ opacity: 0 }} 
-                        className="absolute inset-0 bg-[#050505]/80 backdrop-blur-xl"
-                        onClick={onClose}
-                    />
-                    
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative w-full max-w-6xl bg-[#0a0a0a] rounded-[2rem] shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col md:flex-row h-[85vh] border border-white/10 transition-all duration-500"
-                    >
+        <Modal isOpen={isOpen} onClose={onClose} size="6xl">
+            <Modal.Layout className="flex-col md:flex-row h-full w-full">
                         {/* LEFT PANEL: EDITOR */}
-                        <div className="flex-1 flex flex-col relative z-10 w-full md:w-3/5 bg-linear-to-b from-white/[0.02] to-transparent">
+                        <div className="flex-1 flex flex-col relative z-10 w-full md:w-3/5">
                             
-                            {/* Header */}
-                            <div className="flex items-center justify-between px-8 py-6">
+                            <Modal.Header className="!px-8 !py-6 !border-none !bg-transparent">
                                 <h2 className="text-2xl font-bold text-white tracking-tight">Nou recurs</h2>
-                                <button onClick={onClose} className="p-2.5 bg-white/5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-all active:scale-95 md:hidden">
-                                    <X size={20} />
-                                </button>
-                            </div>
+                            </Modal.Header>
 
                             {/* Content Area */}
-                            <div className="flex-1 overflow-y-auto px-8 pb-6 flex flex-col custom-scrollbar">
+                            <Modal.Body className="!px-8 !pb-6 !pt-0 bg-transparent flex flex-col custom-scrollbar">
                                 
                                 {/* Sleek Subject Selector */}
                                 <div className="mb-6 flex">
@@ -224,10 +205,10 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                     )}
                                 </div>
                                 )}
-                            </div>
+                            </Modal.Body>
 
                             {/* Footer */}
-                            <div className="px-8 py-5 border-t border-white/5 bg-[#0a0a0a] flex items-center justify-between shrink-0">
+                            <div className="px-8 py-5 border-t border-white/5 bg-transparent flex items-center justify-between shrink-0">
                                 <div className="flex items-center gap-2">
                                     <div className="relative">
                                         <button
@@ -334,17 +315,14 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                 </p>
                             </div>
                         </div>
-                    </motion.div>
-
-                    <SubjectSelectorModal 
-                        isOpen={showSubjectSelector}
-                        onClose={() => setShowSubjectSelector(false)}
-                        onSelect={(id) => setSubject(id)}
-                        selectedId={subject}
-                    />
-                </div>
-            )}
-        </AnimatePresence>
+            </Modal.Layout>
+            <SubjectSelectorModal 
+                isOpen={showSubjectSelector}
+                onClose={() => setShowSubjectSelector(false)}
+                onSelect={(id) => setSubject(id)}
+                selectedId={subject}
+            />
+        </Modal>
     );
 };
 

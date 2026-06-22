@@ -12,6 +12,8 @@ import remarkGfm from 'remark-gfm';
 import { formatDistanceToNow } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import { CUSTOM_EMOJIS } from '../../lib/emojis';
+import { useMentions } from '../../hooks/useMentions';
+import MentionPopup from '../ui/MentionPopup';
 
 interface ReplySectionProps {
     postId: string;
@@ -29,6 +31,14 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [visibleLimit, setVisibleLimit] = useState(3);
     const repliesEndRef = useRef<HTMLDivElement>(null);
+    
+    const { 
+        mentionSearch, 
+        handleInputChange, 
+        insertMention, 
+        getMentionedUsers, 
+        suggestedUsers 
+    } = useMentions();
 
     useEffect(() => {
         const q = query(
@@ -75,6 +85,25 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                     resourceId: postId,
                     resourceTitle: postContent.substring(0, 30) + '...',
                     commentId: 'community_post_reply',
+                    read: false,
+                    createdAt: serverTimestamp()
+                });
+            }
+
+            // Send notifications to mentioned users
+            const mentionedUsers = getMentionedUsers(content, user.id);
+            for (const mUser of mentionedUsers) {
+                if (mUser.id === postAuthorId) continue; // Skip if owner already notified
+                
+                await addDoc(collection(db, 'notifications'), {
+                    userId: mUser.id,
+                    type: 'mention',
+                    fromUserId: user.id,
+                    fromUserName: user.username,
+                    fromUserAvatar: user.avatar || '',
+                    resourceId: postId,
+                    resourceTitle: postContent.substring(0, 30) + '...',
+                    commentId: 'community_post_mention',
                     read: false,
                     createdAt: serverTimestamp()
                 });
@@ -177,13 +206,21 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                             )}
                         </div>
 
-                        <input 
-                            type="text" 
-                            value={newReply}
-                            onChange={(e) => setNewReply(e.target.value)}
-                            placeholder="Escriu una resposta..."
-                            className="flex-1 bg-slate-950/50 border border-white/5 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-primary/50 transition-all"
-                        />
+                        <div className="relative flex-1">
+                            {mentionSearch && (
+                                <MentionPopup users={suggestedUsers} onSelect={(u) => setNewReply(insertMention(newReply, u))} position="top" />
+                            )}
+                            <input 
+                                type="text" 
+                                value={newReply}
+                                onChange={(e) => {
+                                    setNewReply(e.target.value);
+                                    handleInputChange(e.target.value, e.target.selectionStart || 0);
+                                }}
+                                placeholder="Escriu una resposta..."
+                                className="w-full bg-slate-950/50 border border-white/5 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-primary/50 transition-all"
+                            />
+                        </div>
 
                         <button 
                             type="submit"

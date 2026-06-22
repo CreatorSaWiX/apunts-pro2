@@ -8,7 +8,7 @@ import ReplySection from './ReplySection';
 import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
-import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment } from 'firebase/firestore';
+import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment, addDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 interface PostDetailModalProps {
     post: CommunityPost | null;
@@ -27,7 +27,10 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
         if (!post || !isOpen) return;
 
         const recordView = async () => {
-            const viewedPostsStr = localStorage.getItem('viewed_posts') || '{}';
+            if (user && post.userId === user.id) return; // Els autors no sumen visualitzacions
+            
+            const storageKey = user ? `viewed_posts_${user.id}` : 'viewed_posts';
+            const viewedPostsStr = localStorage.getItem(storageKey) || '{}';
             let viewedPosts: Record<string, boolean> = {};
             try {
                 const parsed = JSON.parse(viewedPostsStr);
@@ -40,7 +43,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
 
             if (!viewedPosts[post.id]) {
                 viewedPosts[post.id] = true;
-                localStorage.setItem('viewed_posts', JSON.stringify(viewedPosts));
+                localStorage.setItem(storageKey, JSON.stringify(viewedPosts));
                 
                 const postRef = doc(db, 'community_posts', post.id);
                 try {
@@ -54,7 +57,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
         };
 
         recordView();
-    }, [post, isOpen]);
+    }, [post, isOpen, user]);
 
     const handleLike = async () => {
         if (!user) return;
@@ -65,6 +68,11 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                 await updateDoc(postRef, {
                     [`reactions.${user.id}`]: deleteField()
                 });
+                
+                // Remove notification if un-liked
+                if (post.userId !== user.id) {
+                    await deleteDoc(doc(db, 'notifications', `like_${post.id}_${user.id}`));
+                }
             } else {
                 await updateDoc(postRef, {
                     [`reactions.${user.id}`]: {
@@ -73,6 +81,21 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                         userId: user.id
                     }
                 });
+
+                if (post.userId !== user.id) {
+                    await setDoc(doc(db, 'notifications', `like_${post.id}_${user.id}`), {
+                        userId: post.userId,
+                        type: 'like',
+                        fromUserId: user.id,
+                        fromUserName: user.username,
+                        fromUserAvatar: user.avatar || '',
+                        resourceId: post.id,
+                        resourceTitle: post.content ? post.content.substring(0, 30) + '...' : 'Publicació',
+                        commentId: 'community_post_like',
+                        read: false,
+                        createdAt: serverTimestamp()
+                    });
+                }
             }
         } catch (err) { console.error(err); }
     };
@@ -122,10 +145,16 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
-                                <button onClick={handleLike} className={`px-4 py-2 rounded-full transition-colors flex items-center gap-2 ${hasLiked ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent'}`}>
-                                    <Heart size={18} fill={hasLiked ? 'currentColor' : 'none'} />
+                                <motion.button 
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={handleLike} 
+                                    className={`px-4 py-2 rounded-full transition-colors flex items-center gap-2 ${hasLiked ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent'}`}
+                                >
+                                    <motion.div animate={{ scale: hasLiked ? [1, 1.3, 1] : 1 }} transition={{ duration: 0.3 }}>
+                                        <Heart size={18} fill={hasLiked ? 'currentColor' : 'none'} />
+                                    </motion.div>
                                     <span className="text-sm font-bold hidden sm:inline">{likeCount > 0 ? likeCount : 'M\'agrada'}</span>
-                                </button>
+                                </motion.button>
                                 <button className="p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors">
                                     <Share2 size={18} />
                                 </button>

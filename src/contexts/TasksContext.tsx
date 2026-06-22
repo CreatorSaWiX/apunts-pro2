@@ -179,7 +179,10 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 createdAt: new Date().toISOString()
             };
 
-            const docRef = await addDoc(collection(db, 'users', user.id, 'tasks'), newTask);
+            // Remove undefined fields to prevent Firestore errors
+            const cleanTask = Object.fromEntries(Object.entries(newTask).filter(([_, v]) => v !== undefined));
+
+            const docRef = await addDoc(collection(db, 'users', user.id, 'tasks'), cleanTask);
             return docRef.id;
         } catch (err) {
             console.error("Error adding task:", err);
@@ -199,12 +202,17 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
             tasksData.forEach(taskData => {
                 const newDocRef = doc(tasksRef);
-                batch.set(newDocRef, {
+                const newTask = {
                     ...taskData,
                     userId: user.id,
                     title: taskData.title.trim() === '' ? 'Nova Tasca' : taskData.title,
                     createdAt: new Date().toISOString()
-                });
+                };
+                
+                // Remove undefined fields
+                const cleanTask = Object.fromEntries(Object.entries(newTask).filter(([_, v]) => v !== undefined));
+                
+                batch.set(newDocRef, cleanTask);
             });
 
             await batch.commit();

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Mail, Reply, ExternalLink, ChevronRight, Send } from 'lucide-react';
+import { Mail, Reply, ExternalLink, ChevronRight, Send } from 'lucide-react';
 import { collection, query, where, getDocs, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { decryptMessage } from '../../utils/encryption';
@@ -8,6 +8,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import ComposeMessageModal from './ComposeMessageModal';
 import CodeBlock from '../ui/CodeBlock';
+import Modal from '../ui/Modal';
+import NavigationPill from '../ui/NavigationPill';
 
 interface Message {
     id: string;
@@ -147,56 +149,63 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-                className="bg-[#0f172a] border border-white/10 rounded-3xl w-full max-w-5xl h-[700px] shadow-2xl relative flex overflow-hidden ring-1 ring-white/5"
-            >
-                {/* Close Button */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-5 right-5 z-20 text-slate-400 hover:text-white bg-black/20 hover:bg-black/40 p-2 rounded-full transition-all backdrop-blur-sm"
-                >
-                    <X size={18} />
-                </button>
-
+        <Modal isOpen={isOpen} onClose={onClose} size="5xl">
+            <Modal.Layout>
                 {/* Left Panel: List */}
-                <div className={`w-full md:w-[350px] border-r border-white/5 flex flex-col bg-slate-900/50 ${selectedMessage ? 'hidden md:flex' : 'flex'}`}>
-                    <div className="p-6 border-b border-white/5 space-y-4">
-                        <h2 className="text-xl font-bold text-white flex items-center gap-3">
-                            <div className="p-2 bg-sky-500/10 rounded-xl text-sky-400">
-                                <Mail size={20} />
+                <Modal.Sidebar className={selectedMessage ? 'hidden md:flex' : 'flex'}>
+                    <Modal.Header>
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center gap-3">
+                                <span className="text-xl font-bold text-white tracking-tight">Bústia</span>
                             </div>
-                            Bústia
-                        </h2>
-                        
-                        <div className="flex p-1 bg-slate-800/50 rounded-lg ring-1 ring-white/5 relative z-10 w-full">
-                            <button
-                                onClick={() => setActiveTab('inbox')}
-                                className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'inbox' ? 'bg-sky-500 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
-                            >
-                                Rebuts
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('sent')}
-                                className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'sent' ? 'bg-sky-500 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
-                            >
-                                Enviats
-                            </button>
+                            
+                            <NavigationPill className="w-full flex !p-1.5">
+                                <button
+                                    onClick={() => setActiveTab('inbox')}
+                                    className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition-all duration-300 ${activeTab === 'inbox' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                                >
+                                    {activeTab === 'inbox' && (
+                                        <motion.div
+                                            layoutId="mailbox-nav-active"
+                                            className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
+                                            initial={false}
+                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                        >
+                                            <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                                        </motion.div>
+                                    )}
+                                    <span className="relative z-10">Rebuts</span>
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('sent')}
+                                    className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition-all duration-300 ${activeTab === 'sent' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                                >
+                                    {activeTab === 'sent' && (
+                                        <motion.div
+                                            layoutId="mailbox-nav-active"
+                                            className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
+                                            initial={false}
+                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                        >
+                                            <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                                        </motion.div>
+                                    )}
+                                    <span className="relative z-10">Enviats</span>
+                                </button>
+                            </NavigationPill>
                         </div>
-                    </div>
+                    </Modal.Header>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
-                        {isLoading ? (
-                            <div className="flex flex-col items-center justify-center h-40 gap-3">
+                    <Modal.Body className="!p-2 relative min-h-[400px] flex flex-col">
+                        {isLoading && (
+                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0B1120]/60 backdrop-blur-sm rounded-xl gap-3">
                                 <div className="w-5 h-5 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
-                                <span className="text-xs text-slate-500 font-medium">Sincronitzant...</span>
+                                <span className="text-xs text-sky-400 font-medium">Sincronitzant...</span>
                             </div>
-                        ) : messages.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-64 text-slate-500 gap-2">
+                        )}
+                        
+                        {!isLoading && messages.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center flex-1 text-slate-500 gap-2 min-h-[300px]">
                                 <Mail size={32} className="opacity-20" />
                                 <span className="text-sm">No tens missatges {activeTab === 'inbox' ? 'rebuts' : 'enviats'}</span>
                             </div>
@@ -252,11 +261,11 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                 })}
                             </div>
                         )}
-                    </div>
-                </div>
+                    </Modal.Body>
+                </Modal.Sidebar>
 
                 {/* Right Panel: Content */}
-                <div className={`w-full md:flex-1 flex flex-col bg-[#0f172a] relative ${!selectedMessage ? 'hidden md:flex items-center justify-center' : 'flex'}`}>
+                <div className={`w-full md:flex-1 flex flex-col relative ${!selectedMessage ? 'hidden md:flex items-center justify-center' : 'flex'}`}>
                     {selectedMessage ? (
                         <>
                             {/* Mobile Back Button */}
@@ -271,9 +280,9 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 key={selectedMessage.id}
-                                className="flex flex-col h-full"
+                                className="flex flex-col h-full w-full"
                             >
-                                <div className="p-8 border-b border-white/5 bg-slate-900/30">
+                                <Modal.Header className="!p-8">
                                     {/* Subject and Actions */}
                                     {/* Subject */}
                                     <div className="mb-8">
@@ -315,9 +324,9 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                             </div>
                                         </Link>
                                     </div>
-                                </div>
+                                </Modal.Header>
 
-                                <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
+                                <Modal.Body className="!p-8">
                                     <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
                                         {renderMessageBody(decryptMessage(selectedMessage.body))}
                                     </div>
@@ -351,7 +360,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                         Missatge encriptat (AES-256)
                                         <div className="w-1 h-1 rounded-full bg-slate-700" />
                                     </div>
-                                </div>
+                                </Modal.Body>
                             </motion.div>
                         </>
                     ) : (
@@ -374,8 +383,8 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                         initialSubject={selectedMessage.subject.toUpperCase().startsWith('RE:') ? selectedMessage.subject : `RE: ${selectedMessage.subject}`}
                     />
                 )}
-            </motion.div>
-        </div>
+            </Modal.Layout>
+        </Modal>
     );
 };
 

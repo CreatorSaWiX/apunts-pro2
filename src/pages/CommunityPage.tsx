@@ -549,7 +549,7 @@ const CommunityPage = () => {
 
             {selectedPost && (
                 <PostDetailModal 
-                    post={selectedPost}
+                    post={posts.find(p => p.id === selectedPost.id) || selectedPost}
                     isOpen={!!selectedPost}
                     onClose={() => setSelectedPost(null)}
                 />

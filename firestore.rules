@@ -73,8 +73,8 @@ service cloud.firestore {
       allow read: if true;
       allow create: if request.auth != null;
       allow update: if request.auth != null && (
-        // Reaccions i reports: qualsevol autenticat
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions', 'reports']) ||
+        // Reaccions, reports i visualitzacions: qualsevol autenticat
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions', 'reports', 'views']) ||
         // Rank i Pin: només moderadors
         isModerator() ||
         // Propi contingut: l'autor
