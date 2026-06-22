@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Linkedin } from 'lucide-react';
+import Spinner from './Spinner';
 
 interface LinkedInEmbedProps {
     /** Full LinkedIn embed URL (urn:li:ugcPost:...) */
@@ -83,7 +84,7 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
                 {/* Placeholder shown before intersection OR while iframe is loading internal content */}
                 {!isLoaded && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-950/40 backdrop-blur-sm">
-                        <div className="w-8 h-8 rounded-full border-2 border-[#0A66C2]/30 border-t-[#0A66C2] animate-spin" />
+                        <Spinner size="lg" variant="linkedin" />
                         <span className="text-xs font-mono text-slate-500 uppercase tracking-widest animate-pulse">
                             Carregant contingut…
                         </span>

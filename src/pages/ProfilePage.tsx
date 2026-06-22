@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { User, LogOut, Upload, Globe, Loader, Edit2, X, Save, Mail, Send, Bell, Info } from 'lucide-react';
+import { User, LogOut, Upload, Globe, Edit2, X, Save, Mail, Send, Bell, Info } from 'lucide-react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
@@ -12,6 +12,7 @@ import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
 import SSLParticles from '../components/SSLParticles';
+import Spinner from '../components/ui/Spinner';
 
 // --- Spotlight Card (Re-used from TopicCarousel to ensure identical UI consistency) ---
 function SpotlightCard({
@@ -172,7 +173,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                                     disabled={isLoading}
                                     className="bg-gradient-to-r from-primary/90 to-accent/90 hover:from-primary hover:to-accent px-8 py-2.5 rounded-xl shadow-lg shadow-primary/20 text-white font-semibold flex items-center gap-2 transition-all transform hover:-translate-y-0.5"
                                 >
-                                    {isLoading ? <Loader size={18} className="animate-spin" /> : <Save size={18} />}
+                                    {isLoading ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={18} />}
                                     Desar canvis
                                 </button>
                             </div>
@@ -292,7 +293,7 @@ const ProfilePage = () => {
     if (authLoading || isFetchingUser || !extendedUser) {
         return (
             <div className="min-h-screen flex items-center justify-center pt-24 relative z-10 w-full">
-                <Loader size={32} className="text-primary animate-spin" />
+                <Spinner size="lg" variant="primary" />
             </div>
         );
     }

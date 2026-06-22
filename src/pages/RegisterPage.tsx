@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Lock, User, ArrowRight, Loader, Mail } from 'lucide-react';
+import { Lock, User, ArrowRight, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AuthCanvasBackground } from '../components/ui/AuthCanvasBackground';
 import { PremiumInput } from '../components/ui/PremiumInput';
+import Spinner from '../components/ui/Spinner';
 
 const RegisterPage = () => {
     const [email, setEmail] = useState('');
@@ -166,7 +167,7 @@ const RegisterPage = () => {
                                                     exit={{ y: -20, opacity: 0 }}
                                                     transition={{ duration: 0.3 }}
                                                 >
-                                                    <Loader className="animate-spin" size={20} />
+                                                    <Spinner size="sm" variant="emerald" />
                                                 </motion.div>
                                             ) : (
                                                 <motion.div

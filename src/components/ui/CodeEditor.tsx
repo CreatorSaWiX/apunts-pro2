@@ -2,7 +2,7 @@ import { cpp } from '@codemirror/lang-cpp';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { EditorView } from '@codemirror/view';
-import { Loader2 } from 'lucide-react';
+import Spinner from './Spinner';
 import { forwardRef, useEffect, useState } from 'react';
 
 interface CodeEditorProps {
@@ -47,7 +47,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(({
     if (!mounted) {
         return (
             <div className={`flex items-center justify-center bg-[#1e1e1e] text-slate-500 ${className}`} style={{ height }}>
-                <Loader2 className="animate-spin" size={20} />
+                <Spinner size="sm" variant="slate" glow={false} />
             </div>
         );
     }

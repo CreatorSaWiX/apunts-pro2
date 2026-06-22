@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Send, Loader, AlertCircle, FileCode, Code } from 'lucide-react';
+import { X, Send, AlertCircle, FileCode, Code } from 'lucide-react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { encryptMessage } from '../../utils/encryption';
 import ProblemSelectorModal from './ProblemSelectorModal';
+import Spinner from '../ui/Spinner';
 
 interface ComposeMessageModalProps {
     isOpen: boolean;
@@ -229,7 +230,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                                 disabled={isLoading}
                                 className="w-full py-3.5 bg-linear-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
                             >
-                                {isLoading ? <Loader size={18} className="animate-spin" /> : <Send size={18} />}
+                                {isLoading ? <Spinner size="sm" variant="white" glow={false} /> : <Send size={18} />}
                                 Enviar missatge
                             </button>
                         </div>

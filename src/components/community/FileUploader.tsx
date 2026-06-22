@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud, Loader2 } from 'lucide-react';
+import { UploadCloud } from 'lucide-react';
+
+import Spinner from '../ui/Spinner';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export interface Attachment {
@@ -174,7 +176,7 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3 }: FileUploaderProps) => 
                         exit={{ opacity: 0, height: 0 }}
                         className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-2xl"
                     >
-                        <Loader2 className="animate-spin text-white mb-3" size={24} />
+                        <Spinner size="lg" variant="white" className="mb-3" glow={false} />
                         <p className="text-sm font-bold text-white">Preparant i pujant a la xarxa...</p>
                         <div className="w-48 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden relative">
                             <motion.div 

@@ -12,6 +12,7 @@ import "mafs/font.css"; // Mafs fonts
 import { remarkDirectiveRehype } from "./remarkDirectiveRehype";
 import { remarkCodeMetadata } from "./remarkCodeMetadata";
 import CodeBlock from "../components/ui/CodeBlock";
+import Spinner from "../components/ui/Spinner";
 import Callout from "../components/ui/Callout";
 
 const GraphVisualizer = React.lazy(() => import("../components/ui/GraphVisualizer"));
@@ -49,7 +50,7 @@ const ThreeVisualizer = React.lazy(() =>
 const VizFallback = () => (
     <div className="h-64 animate-pulse bg-slate-900/40 border border-white/5 rounded-2xl w-full my-12 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-            <div className="w-8 h-8 rounded-full border-2 border-emerald-500/30 border-t-emerald-500 animate-spin"></div>
+            <Spinner size="lg" variant="emerald" />
             <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">Carregant motor gràfic...</span>
         </div>
     </div>

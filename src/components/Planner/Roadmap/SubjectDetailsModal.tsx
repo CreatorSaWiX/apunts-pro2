@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, ExternalLink, Users, Clock, Target, CheckSquare, Layers, Activity, Book, Key } from 'lucide-react';
+import Spinner from '../../ui/Spinner';
 
 interface SubjectDetailsModalProps {
     isOpen: boolean;
@@ -96,9 +97,8 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                         )}
 
                         {loading ? (
-                            <div className="w-full h-full flex flex-col items-center justify-center relative z-10">
-                                <div className="w-12 h-12 border-2 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
-                                <p className="mt-4 text-slate-400 font-mono tracking-widest uppercase text-xs animate-pulse">Carregant informació de la FIB...</p>
+                            <div className="flex items-center justify-center min-h-[400px] w-full">
+                                <Spinner size="2xl" variant="sky" />
                             </div>
                         ) : !data ? (
                             <div className="flex-1 flex flex-col items-center justify-center text-center px-6">

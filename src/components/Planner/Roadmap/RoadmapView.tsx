@@ -7,7 +7,8 @@ import SubjectContextMenu from './SubjectContextMenu';
 import SubjectSearchModal from './SubjectSearchModal';
 import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
-import { Save, Loader2, Plus, GraduationCap, ChevronUp, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
+import Spinner from '../../ui/Spinner';
+import { Save, Plus, GraduationCap, ChevronUp, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -89,7 +90,7 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
             <div className="w-full h-full flex flex-col items-center justify-center bg-[#09090b]">
                 <div className="relative">
                     <div className="absolute inset-0 bg-sky-500/20 blur-xl rounded-full" />
-                    <Loader2 className="w-10 h-10 text-sky-400 animate-spin relative z-10" />
+                    <Spinner size="xl" variant="sky" className="relative z-10" />
                 </div>
                 <span className="mt-6 text-sky-400/80 font-mono text-xs tracking-[0.3em] uppercase animate-pulse">Iniciant Sistemes...</span>
             </div>
@@ -272,7 +273,7 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                                     : 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 border border-emerald-500/20 hover:border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]'
                                 }`}
                         >
-                            {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                            {isSaving ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={16} />}
                             {isSaving ? 'Guardant...' : 'Guardar'}
                         </button>
 

@@ -11,6 +11,7 @@ import CommunityHero3D from '../components/community/CommunityHero3D';
 import SubjectSelectorModal from '../components/community/SubjectSelectorModal';
 import CreatePostModal from '../components/community/CreatePostModal';
 import PostDetailModal from '../components/community/PostDetailModal';
+import Spinner from '../components/ui/Spinner';
 
 const mockEpicPost: CommunityPost = {
     id: 'mock-epic',
@@ -459,7 +460,7 @@ const CommunityPage = () => {
                                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                                 className="flex justify-center py-32"
                             >
-                                <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                <Spinner size="2xl" variant="primary" />
                             </motion.div>
                         ) : posts.length === 0 ? (
                             <motion.div 
@@ -527,7 +528,7 @@ const CommunityPage = () => {
                     
                     {loadingMore && (
                         <div className="flex justify-center py-10">
-                            <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                            <Spinner size="lg" variant="white" />
                         </div>
                     )}
                 </div>

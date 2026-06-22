@@ -17,11 +17,11 @@ const SIZE_MAP = {
     'md': 'max-w-md w-full',
     'lg': 'max-w-lg w-full',
     'xl': 'max-w-xl w-full',
-    '2xl': 'max-w-2xl w-full',
-    '3xl': 'max-w-3xl w-full',
-    '4xl': 'max-w-4xl w-full',
-    '5xl': 'max-w-5xl w-full',
-    '6xl': 'max-w-6xl w-full',
+    '2xl': 'max-w-2xl w-full h-[70vh] min-h-[500px]',
+    '3xl': 'max-w-3xl w-full h-[75vh] min-h-[500px]',
+    '4xl': 'max-w-4xl w-full h-[80vh] min-h-[600px]',
+    '5xl': 'max-w-5xl w-full h-[85vh] min-h-[600px]',
+    '6xl': 'max-w-6xl w-full h-[85vh] min-h-[600px]',
     'full': 'w-[95vw] max-w-7xl h-[90vh]',
     'auto': 'w-auto'
 };
@@ -62,7 +62,7 @@ export const Modal = ({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="fixed inset-0 bg-[#020617]/70 backdrop-blur-xl"
+                        className="fixed inset-0 bg-[#020617]/50 backdrop-blur-md"
                         onClick={() => closeOnOutsideClick && onClose()}
                     />
                     <motion.div 
@@ -70,18 +70,23 @@ export const Modal = ({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        className={`relative z-10 flex flex-col bg-[#0b0f19]/90 backdrop-blur-3xl border border-white/10 rounded-[32px] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] max-h-[85vh] ${SIZE_MAP[size]} ${className}`}
+                        className={`relative z-10 flex flex-col bg-[#0F172A]/70 backdrop-blur-[40px] border border-white/[0.12] rounded-[32px] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_60px_rgba(0,0,0,0.6)] max-h-[85vh] ${SIZE_MAP[size]} ${className}`}
                     >
+                        {/* Subtle noise texture overlay for realism */}
+                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+                        
                         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent z-50 pointer-events-none" />
                         {!hideCloseButton && (
                             <button 
                                 onClick={onClose}
-                                className="absolute top-4 right-4 z-[60] p-2 bg-black/40 hover:bg-white/10 hover:rotate-90 rounded-full transition-all duration-300 text-slate-400 hover:text-white border border-white/5 backdrop-blur-md"
+                                className="absolute top-4 right-4 z-[60] p-2 bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 rounded-full transition-all duration-300 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
                             >
                                 <X size={20} strokeWidth={2.5} />
                             </button>
                         )}
-                        {children}
+                        <div className="relative z-10 flex flex-col h-full overflow-hidden">
+                            {children}
+                        </div>
                     </motion.div>
                 </div>
             )}
@@ -90,20 +95,20 @@ export const Modal = ({
 };
 
 export const ModalHeader = ({ title, children, className = '' }: { title?: string, children?: React.ReactNode, className?: string }) => (
-    <div className={`p-6 border-b border-white/5 relative bg-white/[0.01] shrink-0 ${className}`}>
+    <div className={`p-6 border-b border-white/[0.08] relative shrink-0 ${className}`}>
         {title && <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>}
         {children}
     </div>
 );
 
 export const ModalBody = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-    <div className={`flex-1 overflow-y-auto p-6 bg-gradient-to-b from-transparent to-slate-950/50 custom-scrollbar ${className}`}>
+    <div className={`flex-1 overflow-y-auto p-6 custom-scrollbar ${className}`}>
         {children}
     </div>
 );
 
 export const ModalSidebar = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-    <div className={`w-72 border-r border-white/5 bg-black/20 shrink-0 flex flex-col ${className}`}>
+    <div className={`w-72 border-r border-white/[0.08] bg-white/[0.02] shrink-0 flex flex-col ${className}`}>
         {children}
     </div>
 );

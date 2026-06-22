@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader, Image as ImageIcon, AlertCircle, X } from 'lucide-react';
+import Spinner from './Spinner';
+import { Search, Image as ImageIcon, AlertCircle, X } from 'lucide-react';
 
 // Fallback GIFs in case no API key or error
 const DEMO_GIFS = [
@@ -100,7 +101,7 @@ const GifPicker = ({ onSelect, onClose }: GifPickerProps) => {
             <div className="flex-1 overflow-y-auto max-h-[300px] p-2 custom-scrollbar min-h-[200px]">
                 {loading ? (
                     <div className="flex justify-center items-center h-full py-8">
-                        <Loader size={20} className="animate-spin text-sky-500" />
+                        <Spinner size="sm" variant="sky" />
                     </div>
                 ) : (
                     <>

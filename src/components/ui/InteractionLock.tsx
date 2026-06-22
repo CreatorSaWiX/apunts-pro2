@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Maximize2, X } from 'lucide-react';
+import Spinner from './Spinner';
 import { InteractionProvider } from '../../contexts/InteractionContext';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
@@ -219,7 +220,7 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
                             children
                         ) : (
                             <div className="w-full h-[500px] bg-slate-950 flex items-center justify-center">
-                                <div className="w-10 h-10 border-2 border-white/5 border-t-white/40 rounded-full animate-spin" />
+                                <Spinner size="xl" variant="white" glow={false} />
                             </div>
                         )}
                     </div>
@@ -286,7 +287,7 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
                                 </div>
                             ) : (
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="w-8 h-8 border-2 border-white/10 border-t-white/50 rounded-full animate-spin" />
+                                    <Spinner size="lg" variant="white" glow={false} />
                                 </div>
                             )}
                         </div>

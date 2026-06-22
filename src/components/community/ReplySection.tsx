@@ -6,11 +6,12 @@ import {
     addDoc, serverTimestamp 
 } from 'firebase/firestore';
 import type { PostReply } from '../../types/community';
-import { Send, Smile, Loader, ChevronDown } from 'lucide-react';
+import { Send, Smile, ChevronDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { formatDistanceToNow } from 'date-fns';
 import { ca } from 'date-fns/locale';
+import Spinner from '../ui/Spinner';
 import { CUSTOM_EMOJIS } from '../../lib/emojis';
 import { useMentions } from '../../hooks/useMentions';
 import MentionPopup from '../ui/MentionPopup';
@@ -130,7 +131,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
             <div className="space-y-4">
                 {loading ? (
                     <div className="flex justify-center py-4">
-                        <Loader className="animate-spin text-slate-600" size={16} />
+                        <Spinner size="sm" variant="slate" glow={false} />
                     </div>
                 ) : replies.length === 0 ? (
                     <div className="text-center py-4 text-slate-500 text-xs italic">

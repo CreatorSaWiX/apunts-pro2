@@ -12,7 +12,7 @@ import NavigationPill from '../components/ui/NavigationPill';
 import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-
+import Spinner from '../components/ui/Spinner';
 // Contributor Interface
 interface Contributor {
     uid: string;
@@ -455,7 +455,7 @@ const AboutSection = () => {
                             <div className="space-y-4 relative z-10">
                                 {isLoadingContributors ? (
                                     <div className="flex justify-center items-center py-8">
-                                        <div className="w-8 h-8 rounded-full border-t-2 border-r-2 border-rose-500 animate-spin" />
+                                        <Spinner size="lg" variant="rose" />
                                     </div>
                                 ) : (
                                     contributors.map((user, i) => (

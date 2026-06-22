@@ -1,7 +1,9 @@
 import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
+
+import Spinner from '../../ui/Spinner';
 import { OrbitControls, Stage, useGLTF } from '@react-three/drei';
-import { Loader2, Maximize2 } from 'lucide-react';
+import { Maximize2 } from 'lucide-react';
 
 interface Model3DViewerProps {
     url: string;
@@ -29,7 +31,7 @@ const Model3DViewer = ({ url, filename }: Model3DViewerProps) => {
 
             <Suspense fallback={
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20">
-                    <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
+                    <Spinner size="xl" variant="primary" className="mb-4" />
                     <span className="text-sm font-medium text-slate-400">Carregant entorn 3D...</span>
                 </div>
             }>

@@ -3,8 +3,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { SUBJECTS, type SubjectType } from '../../config/subjects';
-import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, Loader2 } from 'lucide-react';
+import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip } from 'lucide-react';
 import GifPicker from '../ui/GifPicker';
+import Spinner from '../ui/Spinner';
 import SubjectSelectorModal from './SubjectSelectorModal';
 import FileUploader, { type Attachment } from './FileUploader';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -266,7 +267,7 @@ const PostComposer = () => {
                                     disabled={loading || (!content.trim() && attachments.length === 0)}
                                     className="px-5 py-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary text-white font-bold rounded-full transition-colors flex items-center gap-2 text-sm"
                                 >
-                                    {loading && <Loader2 size={14} className="animate-spin" />}
+                                    {loading && <Spinner size="xs" variant="slate" glow={false} />}
                                     Piular
                                 </button>
                             </div>

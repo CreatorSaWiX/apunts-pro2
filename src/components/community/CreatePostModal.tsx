@@ -3,10 +3,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { SUBJECTS, type SubjectType } from '../../config/subjects';
-import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, Loader2, X, FileText } from 'lucide-react';
+import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, X, FileText } from 'lucide-react';
+
 import GifPicker from '../ui/GifPicker';
 import SubjectSelectorModal from './SubjectSelectorModal';
 import FileUploader, { type Attachment } from './FileUploader';
+import Spinner from '../ui/Spinner';
 import Modal from '../ui/Modal';
 import PublicationCard from './PublicationCard';
 import type { CommunityPost } from '../../types/community';
@@ -282,7 +284,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                     disabled={loading || (!content.trim() && attachments.length === 0)}
                                     className="px-8 py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                                 >
-                                    {loading && <Loader2 size={18} className="animate-spin text-black" />}
+                                    {loading && <Spinner size="sm" variant="black" glow={false} />}
                                     Publicar
                                 </button>
                             </div>

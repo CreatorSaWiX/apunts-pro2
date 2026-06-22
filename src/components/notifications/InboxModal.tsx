@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { motion } from 'framer-motion';
 
 import { Bell, Heart, MessageCircle, AtSign } from 'lucide-react';
 import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
@@ -8,6 +9,8 @@ import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import Modal from '../ui/Modal';
+import NavigationPill from '../ui/NavigationPill';
+import Spinner from '../ui/Spinner';
 
 interface Notification {
     id: string;
@@ -115,38 +118,52 @@ const InboxModal = ({ isOpen, onClose }: any) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="2xl">
             <Modal.Header>
-                <div className="flex items-center justify-between w-full pr-8">
-                    <div className="flex items-center gap-3">
-                        <span className="text-xl font-bold text-white tracking-tight">Activitat</span>
+                <div className="relative flex items-center justify-between w-full">
+                    <span className="text-xl font-bold text-white tracking-tight shrink-0 z-20">Activitat</span>
+                    
+                    <div className="flex-1 flex justify-center px-2 sm:px-4 sm:absolute sm:left-1/2 sm:-translate-x-1/2 z-10">
+                        <NavigationPill className="!p-1 flex gap-1 overflow-x-auto custom-scrollbar max-w-[200px] sm:max-w-[400px]">
+                            {(['all', 'mentions', 'likes', 'comments'] as const).map(f => (
+                                <button
+                                    key={f}
+                                    onClick={() => setFilter(f)}
+                                    className={`relative px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 ${filter === f ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                                >
+                                    {filter === f && (
+                                        <motion.div 
+                                            layoutId="inbox-filter-pill"
+                                            className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1)]"
+                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                        >
+                                            <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                                        </motion.div>
+                                    )}
+                                    <span className="relative z-10">{f === 'all' ? 'Totes' : f === 'mentions' ? 'Mencions' : f === 'likes' ? 'Likes' : 'Comentaris'}</span>
+                                </button>
+                            ))}
+                        </NavigationPill>
                     </div>
-                    {notifications.some(n => !n.read) && (
-                        <button
-                            onClick={markAllAsRead}
-                            className="text-xs font-bold text-indigo-400 hover:text-indigo-300 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-lg transition-colors"
-                        >
-                            Marcar tot com llegit
-                        </button>
-                    )}
+
+                    <div className="shrink-0 z-20">
+                        {notifications.some(n => !n.read) && (
+                            <button
+                                onClick={markAllAsRead}
+                                className="hidden sm:block text-xs font-bold text-indigo-400 hover:text-indigo-300 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-lg transition-colors"
+                            >
+                                Marcar tot com llegit
+                            </button>
+                        )}
+                    </div>
                 </div>
             </Modal.Header>
 
-            <Modal.Body className="p-2 flex flex-col max-h-[70vh]">
-                <div className="flex items-center gap-2 p-2 shrink-0 overflow-x-auto custom-scrollbar border-b border-white/5">
-                    {(['all', 'mentions', 'likes', 'comments'] as const).map(f => (
-                        <button
-                            key={f}
-                            onClick={() => setFilter(f)}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${filter === f ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'}`}
-                        >
-                            {f === 'all' ? 'Totes' : f === 'mentions' ? 'Mencions' : f === 'likes' ? 'Likes' : 'Comentaris'}
-                        </button>
-                    ))}
-                </div>
+            <Modal.Body className="!p-0 flex flex-col flex-1 overflow-hidden">
+                {/* Filter navigation moved to header */}
                 
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
                     {isLoading ? (
-                        <div className="flex justify-center p-8">
-                            <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="flex-1 flex items-center justify-center min-h-[400px]">
+                            <Spinner size="md" variant="indigo" />
                         </div>
                     ) : groupedNotifications.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-3">
@@ -170,9 +187,9 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                                 to={linkTo}
                                 key={notification.id}
                                 onClick={() => markAsRead(notification)}
-                                className={`flex items-start gap-4 p-4 rounded-xl border transition-all ${notification.read
-                                    ? 'bg-transparent border-transparent hover:bg-white/5'
-                                    : 'bg-indigo-500/5 border-indigo-500/20 hover:bg-indigo-500/10'
+                                className={`group flex items-start gap-4 p-4 rounded-xl border transition-all ${notification.read
+                                    ? 'border-transparent hover:bg-white/[0.04] hover:border-white/10 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]'
+                                    : 'bg-white/[0.08] border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]'
                                     }`}
                             >
                                 <div className="relative mt-1">
@@ -181,7 +198,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                                         alt=""
                                         className="w-10 h-10 rounded-full bg-slate-800 object-cover ring-2 ring-slate-900"
                                     />
-                                    <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0f172a] ${isLikeOrReaction ? 'bg-pink-500 text-white' : (notification.type === 'mention' ? 'bg-amber-500 text-white' : 'bg-sky-500 text-white')
+                                    <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center border border-white/20 shadow-[0_0_10px_rgba(0,0,0,0.5)] backdrop-blur-md ${isLikeOrReaction ? 'bg-pink-500/80 text-white shadow-pink-500/50' : (notification.type === 'mention' ? 'bg-amber-500/80 text-white shadow-amber-500/50' : 'bg-sky-500/80 text-white shadow-sky-500/50')
                                         }`}>
                                         {isLikeOrReaction ? <Heart size={10} fill="currentColor" /> : (notification.type === 'mention' ? <AtSign size={10} /> : <MessageCircle size={10} />)}
                                     </div>

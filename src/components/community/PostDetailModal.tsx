@@ -8,7 +8,7 @@ import ReplySection from './ReplySection';
 import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
-import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment, addDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment, setDoc, serverTimestamp } from 'firebase/firestore';
 
 interface PostDetailModalProps {
     post: CommunityPost | null;

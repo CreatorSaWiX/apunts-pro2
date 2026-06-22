@@ -7,6 +7,7 @@ import { ChatBot } from './components/ChatBot';
 // import FeedbackModal from './components/FeedbackModal';
 import HomePage from './pages/HomePage';
 import { AuthProvider } from './contexts/AuthContext';
+import Spinner from './components/ui/Spinner';
 import { SubjectProvider } from './contexts/SubjectContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
@@ -42,7 +43,7 @@ function App() {
 
               <Suspense fallback={
                 <div className="min-h-screen flex items-center justify-center relative z-10 w-full">
-                  <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <Spinner size="2xl" variant="primary" />
                 </div>
               }>
                 <Routes>

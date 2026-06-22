@@ -6,7 +6,8 @@ import { cpp } from '@codemirror/lang-cpp';
 import { css } from '@codemirror/lang-css';
 import { html } from '@codemirror/lang-html';
 import { json } from '@codemirror/lang-json';
-import { Loader2, Copy, Check } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
+import Spinner from '../../ui/Spinner';
 
 
 interface CodeViewerProps {
@@ -77,7 +78,7 @@ const CodeViewer = ({ url, filename }: CodeViewerProps) => {
     if (loading) {
         return (
             <div className="w-full h-64 bg-[#0d1117] rounded-xl flex items-center justify-center border border-white/10">
-                <Loader2 className="w-8 h-8 text-slate-500 animate-spin" />
+                <Spinner size="lg" variant="slate" glow={false} />
             </div>
         );
     }

@@ -10,6 +10,7 @@ import ComposeMessageModal from './ComposeMessageModal';
 import CodeBlock from '../ui/CodeBlock';
 import Modal from '../ui/Modal';
 import NavigationPill from '../ui/NavigationPill';
+import Spinner from '../ui/Spinner';
 
 interface Message {
     id: string;
@@ -197,14 +198,11 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                     </Modal.Header>
 
                     <Modal.Body className="!p-2 relative min-h-[400px] flex flex-col">
-                        {isLoading && (
-                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0B1120]/60 backdrop-blur-sm rounded-xl gap-3">
-                                <div className="w-5 h-5 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
-                                <span className="text-xs text-sky-400 font-medium">Sincronitzant...</span>
+                        {isLoading ? (
+                            <div className="flex-1 flex items-center justify-center min-h-[400px]">
+                                <Spinner size="md" variant="sky" />
                             </div>
-                        )}
-                        
-                        {!isLoading && messages.length === 0 ? (
+                        ) : messages.length === 0 ? (
                             <div className="flex flex-col items-center justify-center flex-1 text-slate-500 gap-2 min-h-[300px]">
                                 <Mail size={32} className="opacity-20" />
                                 <span className="text-sm">No tens missatges {activeTab === 'inbox' ? 'rebuts' : 'enviats'}</span>
@@ -220,9 +218,9 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                         key={msg.id}
                                         layoutId={msg.id}
                                         onClick={() => handleReadMessage(msg)}
-                                        className={`group relative p-4 rounded-xl cursor-pointer transition-all border border-transparent ${selectedMessage?.id === msg.id
-                                            ? 'bg-sky-500/10 border-sky-500/20'
-                                            : 'hover:bg-white/5 hover:border-white/5'
+                                        className={`group relative p-4 rounded-xl cursor-pointer transition-all border ${selectedMessage?.id === msg.id
+                                            ? 'bg-white/[0.08] border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]'
+                                            : 'border-transparent hover:bg-white/[0.04] hover:border-white/10 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]'
                                             }`}
                                     >
                                         {showUnread && (
@@ -327,7 +325,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                 </Modal.Header>
 
                                 <Modal.Body className="!p-8">
-                                    <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
+                                    <div className="p-6 rounded-2xl bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] space-y-2">
                                         {renderMessageBody(decryptMessage(selectedMessage.body))}
                                     </div>
                                     <div className="mt-6 flex flex-wrap items-center justify-end gap-3 pt-6 border-t border-white/5">

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import type { UserMention } from '../../hooks/useMentions';
 
 interface MentionPopupProps {

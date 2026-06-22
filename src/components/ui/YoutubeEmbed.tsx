@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 
+import Spinner from './Spinner';
+
 interface YoutubeEmbedProps {
     /** Full YouTube URL or video ID */
     src: string;
@@ -83,7 +85,7 @@ const YoutubeEmbed: React.FC<YoutubeEmbedProps> = ({
                 {/* Placeholder shown before intersection OR while iframe is loading */}
                 {embedUrl && !isLoaded && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-950">
-                        <div className="w-8 h-8 rounded-full border-2 border-[#FF0000]/30 border-t-[#FF0000] animate-spin" />
+                        <Spinner size="lg" variant="youtube" />
                         <span className="text-xs font-mono text-slate-500 uppercase tracking-widest animate-pulse">
                             Carregant vídeo en alta definició…
                         </span>

@@ -5,6 +5,7 @@ import NavigationPill from '../ui/NavigationPill';
 import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles, Route } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RoadmapProvider } from '../../contexts/RoadmapContext';
+import Spinner from '../ui/Spinner';
 import AIPromptBar from './AIPromptBar';
 import GlobalTaskContextMenu from './GlobalTaskContextMenu';
 import GlobalFiltersBar from './GlobalFiltersBar';
@@ -85,7 +86,7 @@ const PlannerLayout: React.FC = () => {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center flex-1">
-                <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                <Spinner size="2xl" variant="primary" />
             </div>
         );
     }
@@ -100,7 +101,7 @@ const PlannerLayout: React.FC = () => {
 
     const FallbackSpinner = () => (
         <div className="flex items-center justify-center w-full h-full min-h-[300px]">
-            <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin opacity-50"></div>
+            <Spinner size="xl" variant="primary" className="opacity-50" />
         </div>
     );
 
@@ -147,7 +148,7 @@ const PlannerLayout: React.FC = () => {
                                     <Icon size={16} strokeWidth={isActive ? 2.5 : 2} className={`transition-colors ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} />
                                     <span className="hidden sm:inline">{tab.label}</span>
                                     {isActive && isPending && (
-                                        <div className="w-3.5 h-3.5 ml-1 border-2 border-white/80 border-t-transparent rounded-full animate-spin" />
+                                        <Spinner size="xs" variant="white" className="ml-1" glow={false} />
                                     )}
                                 </button>
                             );

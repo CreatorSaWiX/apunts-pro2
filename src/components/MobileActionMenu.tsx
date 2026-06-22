@@ -6,6 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
+import Spinner from './ui/Spinner';
 
 interface Contributor {
     uid: string;
@@ -196,7 +197,7 @@ export const MobileActionMenu: React.FC<{
                                     <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                                         {isLoadingContributors ? (
                                             <div className="flex justify-center py-8">
-                                                <div className="w-6 h-6 border-2 border-rose-500 border-t-transparent rounded-full animate-spin"></div>
+                                                <Spinner size="md" variant="rose" glow={false} />
                                             </div>
                                         ) : (
                                             <div className="space-y-3">

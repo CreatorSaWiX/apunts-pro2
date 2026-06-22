@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, FileText, ChevronLeft, ChevronRight, CheckCircle, Loader, Edit, Save, X, ExternalLink } from 'lucide-react';
+import { ArrowLeft, FileText, ChevronLeft, ChevronRight, CheckCircle, Edit, Save, X, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSolution, useSolutions } from '../hooks/useSolutions';
 import CodeBlock from '../components/ui/CodeBlock';
@@ -11,7 +11,7 @@ import CodeEditor from '../components/ui/CodeEditor';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
-
+import Spinner from '../components/ui/Spinner';
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();
     const [lang, setLang] = useState('ca');
@@ -121,7 +121,7 @@ const SolutionDetailPage = () => {
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center pt-24 pb-20 px-4">
             <div className="flex flex-col items-center gap-4">
-                <Loader className="animate-spin text-sky-500" size={32} />
+                <Spinner size="lg" variant="sky" />
                 <p className="text-slate-400 text-sm">Carregant solució...</p>
             </div>
         </div>
