@@ -10,41 +10,50 @@ interface SpinnerProps {
     glow?: boolean;
 }
 
-const SIZE_MAP: Record<SpinnerSize, string> = {
-    'xs': 'w-3.5 h-3.5 border-2',
-    'sm': 'w-5 h-5 border-2',
-    'md': 'w-6 h-6 border-2',
-    'lg': 'w-8 h-8 border-2',
-    'xl': 'w-10 h-10 border-2',
-    '2xl': 'w-12 h-12 border-2'
+const SIZE_MAP: Record<SpinnerSize, number> = {
+    'xs': 16,
+    'sm': 20,
+    'md': 24,
+    'lg': 32,
+    'xl': 40,
+    '2xl': 48
 };
 
-const VARIANT_MAP: Record<SpinnerVariant, string> = {
-    'primary': 'border-primary/20 border-t-primary',
-    'white': 'border-white/20 border-t-white',
-    'slate': 'border-slate-500/30 border-t-slate-500',
-    'sky': 'border-sky-500/30 border-t-sky-500',
-    'rose': 'border-rose-500/30 border-t-rose-500',
-    'emerald': 'border-emerald-500/30 border-t-emerald-500',
-    'fuchsia': 'border-fuchsia-500/30 border-t-fuchsia-500',
-    'linkedin': 'border-[#0A66C2]/30 border-t-[#0A66C2]',
-    'youtube': 'border-[#FF0000]/30 border-t-[#FF0000]',
-    'black': 'border-black/30 border-t-black',
-    'indigo': 'border-indigo-500/30 border-t-indigo-500'
+const STROKE_MAP: Record<SpinnerSize, number> = {
+    'xs': 2.5,
+    'sm': 3,
+    'md': 3.5,
+    'lg': 4,
+    'xl': 4.5,
+    '2xl': 5
+};
+
+const GRADIENT_MAP: Record<SpinnerVariant, { light: string, dark: string }> = {
+    'primary': { light: 'rgba(var(--primary-rgb), 0.4)', dark: 'var(--primary)' },
+    'white':   { light: 'rgba(255,255,255,0.2)', dark: '#ffffff' },
+    'slate':   { light: '#cbd5e1', dark: '#475569' },
+    'sky':     { light: '#bae6fd', dark: '#0ea5e9' },
+    'rose':    { light: '#fecdd3', dark: '#e11d48' },
+    'emerald': { light: '#a7f3d0', dark: '#059669' },
+    'fuchsia': { light: '#f5d0fe', dark: '#c026d3' },
+    'linkedin':{ light: '#93c5fd', dark: '#0A66C2' },
+    'youtube': { light: '#fca5a5', dark: '#FF0000' },
+    'black':   { light: '#d1d5db', dark: '#000000' },
+    'indigo':  { light: '#c7d2fe', dark: '#4f46e5' }
 };
 
 const GLOW_MAP: Record<SpinnerVariant, string> = {
-    'primary': 'shadow-[0_0_15px_rgba(56,189,248,0.5)]',
-    'white': 'shadow-[0_0_15px_rgba(255,255,255,0.5)]',
-    'slate': 'shadow-[0_0_10px_rgba(100,116,139,0.3)]',
-    'sky': 'shadow-[0_0_15px_rgba(14,165,233,0.5)]',
-    'rose': 'shadow-[0_0_15px_rgba(244,63,94,0.5)]',
-    'emerald': 'shadow-[0_0_15px_rgba(16,185,129,0.5)]',
-    'fuchsia': 'shadow-[0_0_15px_rgba(217,70,239,0.5)]',
-    'linkedin': 'shadow-[0_0_15px_rgba(10,102,194,0.5)]',
-    'youtube': 'shadow-[0_0_15px_rgba(255,0,0,0.5)]',
-    'black': 'shadow-[0_0_10px_rgba(0,0,0,0.3)]',
-    'indigo': 'shadow-[0_0_15px_rgba(99,102,241,0.5)]'
+    'primary': 'drop-shadow(0 0 6px rgba(var(--primary-rgb), 0.5))',
+    'white': 'drop-shadow(0 0 6px rgba(255,255,255,0.5))',
+    'slate': 'drop-shadow(0 0 6px rgba(71,85,105,0.3))',
+    'sky': 'drop-shadow(0 0 6px rgba(14,165,233,0.5))',
+    'rose': 'drop-shadow(0 0 6px rgba(225,29,72,0.5))',
+    'emerald': 'drop-shadow(0 0 6px rgba(5,150,105,0.5))',
+    'fuchsia': 'drop-shadow(0 0 6px rgba(192,38,211,0.5))',
+    'linkedin': 'drop-shadow(0 0 6px rgba(10,102,194,0.5))',
+    'youtube': 'drop-shadow(0 0 6px rgba(255,0,0,0.5))',
+    'black': 'none',
+    'indigo': 'drop-shadow(0 0 6px rgba(79,70,229,0.5))'
 };
 
 const Spinner: React.FC<SpinnerProps> = ({ 
@@ -53,12 +62,60 @@ const Spinner: React.FC<SpinnerProps> = ({
     className = '',
     glow = true
 }) => {
+    const pxSize = SIZE_MAP[size];
+    const strokeWidth = STROKE_MAP[size];
+    const colors = GRADIENT_MAP[variant] || GRADIENT_MAP['sky'];
+
     return (
         <div 
-            className={`rounded-full animate-spin border-t-transparent ${SIZE_MAP[size]} ${VARIANT_MAP[variant]} ${glow ? GLOW_MAP[variant] : ''} ${className}`}
+            className={`relative flex items-center justify-center shrink-0 ${className}`}
+            style={{ width: pxSize, height: pxSize }}
             role="status"
             aria-label="Carregant..."
-        />
+        >
+            {/* Background Track */}
+            <div 
+                className="absolute inset-0 rounded-full"
+                style={{
+                    border: `${strokeWidth}px solid ${colors.light}`,
+                    opacity: 0.15
+                }}
+            />
+            
+            {/* Spinning Gradient Ring */}
+            <div 
+                className="absolute inset-0 animate-spin"
+                style={{ 
+                    animationDuration: '0.8s', 
+                    animationTimingFunction: 'linear',
+                    filter: glow ? GLOW_MAP[variant] : 'none'
+                }}
+            >
+                {/* Conic Gradient */}
+                <div 
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                        background: `conic-gradient(from 0deg, transparent 0%, transparent 10%, ${colors.light} 30%, ${colors.dark} 100%)`,
+                        WebkitMaskImage: `radial-gradient(closest-side, transparent calc(100% - ${strokeWidth}px - 0.5px), black calc(100% - ${strokeWidth}px + 0.5px))`,
+                        maskImage: `radial-gradient(closest-side, transparent calc(100% - ${strokeWidth}px - 0.5px), black calc(100% - ${strokeWidth}px + 0.5px))`
+                    }}
+                />
+                
+                {/* Rounded Head Dot */}
+                <div 
+                    className="absolute"
+                    style={{
+                        top: 0,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: strokeWidth,
+                        height: strokeWidth,
+                        backgroundColor: colors.dark,
+                        borderRadius: '50%'
+                    }}
+                />
+            </div>
+        </div>
     );
 };
 
