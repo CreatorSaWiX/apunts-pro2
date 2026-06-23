@@ -97,56 +97,62 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
     });
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+        <Modal isOpen={isOpen} onClose={onClose} size="4xl" overlayVariant="transparent">
             <Modal.Layout className="flex-col h-full w-full">
                 {/* Inner Glow Line */}
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-400/40 to-transparent z-50 pointer-events-none" />
 
-                <Modal.Header className="flex flex-col gap-4 !p-6">
-                                <div className="relative flex items-center pr-12">
-                                    <Search className="absolute left-4 text-sky-400/70" size={28} strokeWidth={2.5} />
-                                    <input
-                                        ref={inputRef}
-                                        type="text"
-                                        placeholder="Busca l'optativa perfecta..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full bg-transparent border-none py-3 pl-16 text-3xl font-bold text-white placeholder-slate-600 focus:outline-none focus:ring-0 selection:bg-sky-500/30"
-                                        spellCheck={false}
-                                    />
-                                </div>
-
-                                {/* Filter Pills */}
-                                <div className="flex w-full overflow-x-auto custom-scrollbar pb-2">
-                                    <div className="bg-[#0F172A]/80 backdrop-blur-[40px] p-1.5 rounded-full border border-white/[0.12] flex items-center shrink-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_40px_rgba(0,0,0,0.5)]">
-                                        {visibleCategories.map(cat => {
-                                            const isActive = activeFilter === cat.id;
-                                            return (
-                                                <button
-                                                    key={cat.id}
-                                                    onClick={() => setActiveFilter(cat.id)}
-                                                    className={`relative px-4 py-2 text-sm font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-2 rounded-full ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}
-                                                >
-                                                    {isActive && (
-                                                        <motion.div
-                                                            layoutId="search-nav-active"
-                                                            className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
-                                                            initial={false}
-                                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                                                        >
-                                                            <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
-                                                        </motion.div>
-                                                    )}
-                                                    <span className="relative z-10 flex items-center gap-2">
-                                                        {cat.icon && cat.icon}
-                                                        {cat.label}
-                                                    </span>
-                                                </button>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
+                <Modal.Header>
+                    <div className="flex flex-col">
+                        <span className="text-xl font-bold text-white tracking-tight">Buscar Assignatura</span>
+                    </div>
                 </Modal.Header>
+
+                {/* Search Bar */}
+                <div className="p-4 border-b border-white/[0.08] bg-white/[0.02] shrink-0">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-sky-400 transition-colors" size={18} />
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            placeholder="Busca per nom o codi..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
+                            spellCheck={false}
+                        />
+                    </div>
+                </div>
+
+                <div className="px-4 py-4 border-b border-white/[0.08] flex gap-2 overflow-x-auto custom-scrollbar bg-white/[0.02] shrink-0">
+                    <div className="bg-[#0F172A]/80 backdrop-blur-[40px] p-1.5 rounded-full border border-white/[0.12] flex items-center shrink-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_40px_rgba(0,0,0,0.5)]">
+                        {visibleCategories.map(cat => {
+                            const isActive = activeFilter === cat.id;
+                            return (
+                                <button
+                                    key={cat.id}
+                                    onClick={() => setActiveFilter(cat.id)}
+                                    className={`relative px-4 py-2 text-sm font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-2 rounded-full ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="search-nav-active"
+                                            className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
+                                            initial={false}
+                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                        >
+                                            <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                                        </motion.div>
+                                    )}
+                                    <span className="relative z-10 flex items-center gap-2">
+                                        {cat.icon && cat.icon}
+                                        {cat.label}
+                                    </span>
+                                </button>
+                            )
+                        })}
+                    </div>
+                </div>
 
                 <Modal.Body className="!p-6 bg-transparent custom-scrollbar">
                                 {filteredSubjects.length === 0 ? (

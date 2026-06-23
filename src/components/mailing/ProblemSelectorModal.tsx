@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { X, Search, Layers, ChevronRight, Hash, Database } from 'lucide-react';
+import { Search, Layers, ChevronRight, Hash } from 'lucide-react';
 import { courseStructure } from '../../content/data/courseStructure';
+import Modal from '../ui/Modal';
 
 interface Problem {
     id: string;
@@ -71,29 +71,17 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="bg-[#0f172a] border border-white/10 rounded-2xl w-full max-w-2xl h-[80vh] shadow-2xl relative flex flex-col ring-1 ring-white/5 overflow-hidden"
-            >
-                {/* Header */}
-                <div className="p-6 border-b border-white/5 bg-slate-900/50 flex justify-between items-center shrink-0">
-                    <div>
-                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                            <Database size={20} className="text-sky-400" />
-                            Seleccionar Exercici
-                        </h3>
-                        <p className="text-xs text-slate-400 mt-1">Vincula un problema al teu missatge</p>
+        <Modal isOpen={isOpen} onClose={onClose} size="3xl" overlayVariant="transparent">
+            <Modal.Layout className="flex-col">
+                <Modal.Header>
+                    <div className="flex flex-col">
+                        <span className="text-xl font-bold text-white tracking-tight">Seleccionar Exercici</span>
+                        <span className="text-xs text-slate-400 mt-1">Vincula un problema al teu missatge</span>
                     </div>
-                    <button onClick={onClose} className="text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-lg transition-colors">
-                        <X size={20} />
-                    </button>
-                </div>
+                </Modal.Header>
 
                 {/* Search Bar */}
-                <div className="p-4 border-b border-white/5 bg-slate-900/30 shrink-0">
+                <div className="p-4 border-b border-white/[0.08] bg-white/[0.02] shrink-0">
                     <div className="relative group">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-sky-400 transition-colors" size={18} />
                         <input
@@ -101,7 +89,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Buscar per codi (P37500) o títol..."
-                            className="w-full bg-slate-900/80 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
+                            className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
                             autoFocus
                         />
                     </div>
@@ -109,7 +97,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
 
                 {/* Topic Tabs (Only visible if not searching) */}
                 {search.trim() === '' && (
-                    <div className="px-4 py-3 border-b border-white/5 flex gap-2 overflow-x-auto custom-scrollbar bg-slate-900/20 shrink-0">
+                    <div className="px-4 py-3 border-b border-white/[0.08] flex gap-2 overflow-x-auto custom-scrollbar bg-white/[0.02] shrink-0">
                         {courseStructure.map(topic => (
                             <button
                                 key={topic.id}
@@ -126,7 +114,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                 )}
 
                 {/* Results List */}
-                <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-[#0f172a]">
+                <Modal.Body className="bg-transparent">
                     {results.length > 0 ? (
                         <div className="grid grid-cols-1 gap-2">
                             {results.map((problem) => (
@@ -159,14 +147,14 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-2 opacity-50">
+                        <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-2 opacity-50 pt-10">
                             <Hash size={48} />
                             <p>No s'han trobat exercicis</p>
                         </div>
                     )}
-                </div>
-            </motion.div>
-        </div>
+                </Modal.Body>
+            </Modal.Layout>
+        </Modal>
     );
 };
 

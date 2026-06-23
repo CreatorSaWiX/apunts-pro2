@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
@@ -10,6 +11,7 @@ interface ModalProps {
     closeOnOutsideClick?: boolean;
     className?: string;
     hideCloseButton?: boolean;
+    overlayVariant?: 'default' | 'transparent';
 }
 
 const SIZE_MAP = {
@@ -33,7 +35,8 @@ export const Modal = ({
     size = 'md', 
     closeOnOutsideClick = true,
     className = '',
-    hideCloseButton = false
+    hideCloseButton = false,
+    overlayVariant = 'default'
 }: ModalProps) => {
 
     useEffect(() => {
@@ -53,7 +56,7 @@ export const Modal = ({
         return () => { document.body.style.overflow = 'unset'; };
     }, [isOpen]);
 
-    return (
+    const content = (
         <AnimatePresence>
             {isOpen && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
@@ -62,7 +65,7 @@ export const Modal = ({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="fixed inset-0 bg-[#020617]/50 backdrop-blur-md"
+                        className={`fixed inset-0 ${overlayVariant === 'transparent' ? 'bg-[#020617]/20 backdrop-blur-sm' : 'bg-[#020617]/50 backdrop-blur-md'}`}
                         onClick={() => closeOnOutsideClick && onClose()}
                     />
                     <motion.div 
@@ -70,7 +73,7 @@ export const Modal = ({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        className={`relative z-10 flex flex-col bg-[#0F172A]/70 backdrop-blur-[40px] border border-white/[0.12] rounded-[32px] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_60px_rgba(0,0,0,0.6)] max-h-[85vh] ${SIZE_MAP[size]} ${className}`}
+                        className={`relative z-10 flex flex-col ${overlayVariant === 'transparent' ? 'bg-[#0F172A]/30' : 'bg-[#0F172A]/70'} backdrop-blur-[40px] border border-white/[0.12] rounded-[32px] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_60px_rgba(0,0,0,0.6)] max-h-[85vh] ${SIZE_MAP[size]} ${className}`}
                     >
                         {/* Subtle noise texture overlay for realism */}
                         <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
@@ -92,6 +95,9 @@ export const Modal = ({
             )}
         </AnimatePresence>
     );
+
+    if (typeof document === 'undefined') return null;
+    return createPortal(content, document.body);
 };
 
 export const ModalHeader = ({ title, children, className = '' }: { title?: string, children?: React.ReactNode, className?: string }) => (

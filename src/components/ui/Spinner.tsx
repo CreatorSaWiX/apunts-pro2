@@ -1,7 +1,8 @@
 import React from 'react';
+import { tailwindColors } from '../../contexts/SubjectContext';
 
 type SpinnerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-type SpinnerVariant = 'primary' | 'white' | 'slate' | 'sky' | 'rose' | 'emerald' | 'fuchsia' | 'linkedin' | 'youtube' | 'black' | 'indigo';
+type SpinnerVariant = 'primary' | 'white' | 'black' | 'linkedin' | 'youtube' | string;
 
 interface SpinnerProps {
     size?: SpinnerSize;
@@ -64,7 +65,22 @@ const Spinner: React.FC<SpinnerProps> = ({
 }) => {
     const pxSize = SIZE_MAP[size];
     const strokeWidth = STROKE_MAP[size];
-    const colors = GRADIENT_MAP[variant] || GRADIENT_MAP['sky'];
+    
+    let colors = GRADIENT_MAP[variant as keyof typeof GRADIENT_MAP];
+    let filterGlow = GLOW_MAP[variant as keyof typeof GLOW_MAP];
+
+    if (!colors && tailwindColors[variant]) {
+        colors = {
+            light: `rgba(${tailwindColors[variant].primary_rgb}, 0.4)`,
+            dark: tailwindColors[variant].primary
+        };
+        filterGlow = `drop-shadow(0 0 6px rgba(${tailwindColors[variant].primary_rgb}, 0.5))`;
+    }
+
+    if (!colors) {
+        colors = GRADIENT_MAP['sky'];
+        filterGlow = GLOW_MAP['sky'];
+    }
 
     return (
         <div 
@@ -88,7 +104,7 @@ const Spinner: React.FC<SpinnerProps> = ({
                 style={{ 
                     animationDuration: '0.8s', 
                     animationTimingFunction: 'linear',
-                    filter: glow ? GLOW_MAP[variant] : 'none'
+                    filter: glow ? filterGlow : 'none'
                 }}
             >
                 {/* Conic Gradient */}

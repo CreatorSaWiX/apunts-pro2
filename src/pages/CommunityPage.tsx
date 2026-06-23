@@ -12,6 +12,8 @@ import SubjectSelectorModal from '../components/community/SubjectSelectorModal';
 import CreatePostModal from '../components/community/CreatePostModal';
 import PostDetailModal from '../components/community/PostDetailModal';
 import Spinner from '../components/ui/Spinner';
+import { useSettings } from '../contexts/SettingsContext';
+import { SUBJECTS } from '../config/subjects';
 
 const mockEpicPost: CommunityPost = {
     id: 'mock-epic',
@@ -74,6 +76,7 @@ const CommunityPage = () => {
     const [showSubjectFilter, setShowSubjectFilter] = useState(false);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
+    const { customSubjectColors } = useSettings();
 
     // New Filter States
     const [showRarityFilter, setShowRarityFilter] = useState(false);
@@ -460,7 +463,14 @@ const CommunityPage = () => {
                                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                                 className="flex justify-center py-32"
                             >
-                                <Spinner size="2xl" variant="primary" />
+                                <Spinner 
+                                    size="2xl" 
+                                    variant={
+                                        activeSubject !== 'all' 
+                                            ? customSubjectColors[SUBJECTS.find(s => s.id === activeSubject)?.label || ''] || SUBJECTS.find(s => s.id === activeSubject)?.color || 'primary'
+                                            : 'primary'
+                                    } 
+                                />
                             </motion.div>
                         ) : posts.length === 0 ? (
                             <motion.div 
@@ -528,7 +538,14 @@ const CommunityPage = () => {
                     
                     {loadingMore && (
                         <div className="flex justify-center py-10">
-                            <Spinner size="lg" variant="white" />
+                            <Spinner 
+                                size="lg" 
+                                variant={
+                                    activeSubject !== 'all' 
+                                        ? customSubjectColors[SUBJECTS.find(s => s.id === activeSubject)?.label || ''] || SUBJECTS.find(s => s.id === activeSubject)?.color || 'white'
+                                        : 'white'
+                                } 
+                            />
                         </div>
                     )}
                 </div>

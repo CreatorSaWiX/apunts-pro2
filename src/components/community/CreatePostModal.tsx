@@ -13,6 +13,8 @@ import Modal from '../ui/Modal';
 import PublicationCard from './PublicationCard';
 import type { CommunityPost } from '../../types/community';
 import RichTextEditor from '../ui/RichTextEditor';
+import { useSettings } from '../../contexts/SettingsContext';
+import { tailwindColors } from '../../contexts/SubjectContext';
 
 const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
 const CUSTOM_EMOTES = Object.values(emojiModules) as string[];
@@ -25,9 +27,10 @@ interface CreatePostModalProps {
 const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     const { user } = useAuth();
     const [content, setContent] = useState('');
-    const [subject, setSubject] = useState<SubjectType>(SUBJECTS[0]?.id || '');
+    const [subject, setSubject] = useState<SubjectType>('');
     const [loading, setLoading] = useState(false);
     const [isNoteMode, setIsNoteMode] = useState(false);
+    const { customSubjectColors } = useSettings();
     
     const [showGifPicker, setShowGifPicker] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -38,7 +41,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [editorInstance, setEditorInstance] = useState<any>(null);
 
-    const activeSubject = SUBJECTS.find(s => s.id === subject) || SUBJECTS[0];
+    const activeSubject = SUBJECTS.find(s => s.id === subject);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -143,8 +146,14 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                         onClick={() => setShowSubjectSelector(true)}
                                         className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-all group"
                                     >
-                                        <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(14,165,233,0.8)]" />
-                                        {activeSubject.label}
+                                        <span 
+                                            className="w-2 h-2 rounded-full" 
+                                            style={activeSubject ? { 
+                                                backgroundColor: tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary || '#0ea5e9',
+                                                boxShadow: `0 0 10px rgba(${tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary_rgb || '14, 165, 233'}, 0.8)`
+                                            } : { backgroundColor: '#64748b' }} 
+                                        />
+                                        {activeSubject ? activeSubject.label : 'Sense assignatura'}
                                         <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors ml-1" />
                                     </button>
                                 </div>
@@ -271,7 +280,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                     <button
                                         type="button"
                                         onClick={() => setIsNoteMode(!isNoteMode)}
-                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all ${isNoteMode ? 'bg-primary/20 text-primary border-primary/30 shadow-[0_0_15px_rgba(14,165,233,0.3)]' : 'bg-white/5 text-slate-400 hover:text-white border-white/10 hover:bg-white/10'}`}
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all ${isNoteMode ? 'bg-white/10 text-white border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]' : 'bg-white/5 text-slate-400 hover:text-white border-white/10 hover:bg-white/10'}`}
                                         title="Mode Apunt Extens (Notion style)"
                                     >
                                         <FileText size={14} />
@@ -284,7 +293,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                     disabled={loading || (!content.trim() && attachments.length === 0)}
                                     className="px-8 py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                                 >
-                                    {loading && <Spinner size="sm" variant="black" glow={false} />}
+                                    {loading && <Spinner size="sm" variant="primary" />}
                                     Publicar
                                 </button>
                             </div>
@@ -301,9 +310,6 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                     Live Preview
                                 </div>
-                                <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
-                                    <X size={20} />
-                                </button>
                             </div>
 
                             <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">
@@ -323,6 +329,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 onClose={() => setShowSubjectSelector(false)}
                 onSelect={(id) => setSubject(id)}
                 selectedId={subject}
+                allowNone={true}
             />
         </Modal>
     );

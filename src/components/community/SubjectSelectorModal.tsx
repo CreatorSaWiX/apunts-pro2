@@ -2,6 +2,8 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import Modal from '../ui/Modal';
 import { Search, Check } from 'lucide-react';
 import { SUBJECTS } from '../../config/subjects';
+import { useSettings } from '../../contexts/SettingsContext';
+import { tailwindColors } from '../../contexts/SubjectContext';
 
 interface SubjectSelectorModalProps {
     isOpen: boolean;
@@ -9,11 +11,13 @@ interface SubjectSelectorModalProps {
     onSelect: (subjectId: string) => void;
     selectedId?: string;
     allowAll?: boolean;
+    allowNone?: boolean;
 }
 
-const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll = false }: SubjectSelectorModalProps) => {
+const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll = false, allowNone = false }: SubjectSelectorModalProps) => {
     const [search, setSearch] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
+    const { customSubjectColors } = useSettings();
 
     useEffect(() => {
         if (isOpen) {
@@ -67,21 +71,54 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                     </button>
                                 )}
 
+                                {allowNone && (
+                                    <button
+                                        onClick={() => { onSelect(''); onClose(); }}
+                                        className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${!selectedId || selectedId === '' ? 'bg-white/10 border-white/20 shadow-inner' : 'border-transparent hover:bg-white/5'}`}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-black/50 flex items-center justify-center shrink-0 border border-white/5 relative overflow-hidden">
+                                                <div className="absolute inset-0 bg-white/5" />
+                                                <div className="w-2.5 h-2.5 rounded-full bg-slate-500 relative z-10" />
+                                            </div>
+                                            <div className="text-left">
+                                                <div className={`font-bold transition-colors ${!selectedId || selectedId === '' ? 'text-white' : 'text-slate-300'}`}>Sense assignatura</div>
+                                                <div className="text-xs text-slate-500">Publicació general de la comunitat</div>
+                                            </div>
+                                        </div>
+                                        {(!selectedId || selectedId === '') && <Check size={18} className="text-white" />}
+                                    </button>
+                                )}
+
                                 {filteredSubjects.length === 0 ? (
                                     <div className="py-12 text-center text-slate-500 text-sm font-medium">
                                         No s'ha trobat cap assignatura.
                                     </div>
                                 ) : (
-                                    filteredSubjects.map(subject => (
+                                    filteredSubjects.map(subject => {
+                                        const colorFamily = customSubjectColors[subject.label] || subject.color;
+                                        const theme = tailwindColors[colorFamily] || tailwindColors['slate'];
+                                        
+                                        return (
                                         <button
                                             key={subject.id}
                                             onClick={() => { onSelect(subject.id); onClose(); }}
                                             className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${selectedId === subject.id ? 'bg-white/10 border-white/20 shadow-inner' : 'border-transparent hover:bg-white/5'}`}
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-xl bg-black/50 flex items-center justify-center shrink-0 border border-white/5 relative overflow-hidden">
-                                                    <div className="absolute inset-0 bg-white/5" />
-                                                    <span className="text-[11px] font-black text-white relative z-10">{subject.label}</span>
+                                                <div 
+                                                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border relative overflow-hidden"
+                                                    style={{ 
+                                                        backgroundColor: `rgba(${theme.primary_rgb}, 0.1)`, 
+                                                        borderColor: `rgba(${theme.primary_rgb}, 0.2)` 
+                                                    }}
+                                                >
+                                                    <span 
+                                                        className="text-[11px] font-black relative z-10"
+                                                        style={{ color: theme.accent || theme.primary }}
+                                                    >
+                                                        {subject.label}
+                                                    </span>
                                                 </div>
                                                 <div className="text-left">
                                                     <div className={`font-bold transition-colors ${selectedId === subject.id ? 'text-white' : 'text-slate-300'}`}>{subject.label}</div>
@@ -90,7 +127,8 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                             </div>
                                             {selectedId === subject.id && <Check size={18} className="text-white" />}
                                         </button>
-                                    ))
+                                        );
+                                    })
                                 )}
             </Modal.Body>
         </Modal>

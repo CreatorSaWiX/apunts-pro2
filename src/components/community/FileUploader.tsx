@@ -176,7 +176,7 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3 }: FileUploaderProps) => 
                         exit={{ opacity: 0, height: 0 }}
                         className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-2xl"
                     >
-                        <Spinner size="lg" variant="white" className="mb-3" glow={false} />
+                        <Spinner size="lg" variant="primary" className="mb-3" />
                         <p className="text-sm font-bold text-white">Preparant i pujant a la xarxa...</p>
                         <div className="w-48 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden relative">
                             <motion.div 
