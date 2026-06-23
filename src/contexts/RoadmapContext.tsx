@@ -65,7 +65,7 @@ const createInitialGraph = () => {
         id: `e-${e.source}-${e.target}-${idx}`,
         source: e.source,
         target: e.target,
-        animated: true
+        animated: false
     }));
 
     return getGridLayoutedElements(nodes, edges);

@@ -1,8 +1,8 @@
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 
 import Spinner from '../../ui/Spinner';
-import { OrbitControls, Stage, useGLTF } from '@react-three/drei';
+import { OrbitControls, Stage, useGLTF, PerformanceMonitor } from '@react-three/drei';
 import { Maximize2 } from 'lucide-react';
 
 interface Model3DViewerProps {
@@ -16,6 +16,8 @@ const Model = ({ url }: { url: string }) => {
 };
 
 const Model3DViewer = ({ url, filename }: Model3DViewerProps) => {
+    const [dpr, setDpr] = useState(1.5);
+
     return (
         <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-white/10 bg-linear-to-b from-[#111] to-[#050505] shadow-[0_0_40px_rgba(0,0,0,0.5)] group">
             
@@ -35,7 +37,8 @@ const Model3DViewer = ({ url, filename }: Model3DViewerProps) => {
                     <span className="text-sm font-medium text-slate-400">Carregant entorn 3D...</span>
                 </div>
             }>
-                <Canvas shadows camera={{ position: [0, 0, 150], fov: 45 }}>
+                <Canvas shadows camera={{ position: [0, 0, 150], fov: 45 }} dpr={dpr}>
+                    <PerformanceMonitor onIncline={() => setDpr(1.5)} onDecline={() => setDpr(1)} />
                     <Stage environment="city" intensity={0.5} adjustCamera>
                         <Model url={url} />
                     </Stage>

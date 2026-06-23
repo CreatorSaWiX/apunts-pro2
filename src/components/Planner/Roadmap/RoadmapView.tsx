@@ -1,5 +1,5 @@
-import React, { useMemo, useCallback, useState } from 'react';
-import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow } from '@xyflow/react'; 
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow } from '@xyflow/react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
 import SubjectNode from './SubjectNode';
@@ -10,7 +10,7 @@ import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import Spinner from '../../ui/Spinner';
 import { Save, Plus, GraduationCap, ChevronUp, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
 
 const nodeTypes = {
     subjectNode: SubjectNode,
@@ -50,6 +50,17 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
     const [isSpecMenuOpen, setIsSpecMenuOpen] = useState(false);
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const isPresent = useIsPresent();
+    const [shouldRender, setShouldRender] = useState(true);
+
+    useEffect(() => {
+        if (!isPresent) {
+            const timer = setTimeout(() => setShouldRender(false), 500); // 500ms allows the 400ms exit animation to finish
+            return () => clearTimeout(timer);
+        } else {
+            setShouldRender(true);
+        }
+    }, [isPresent]);
 
     // Set the node type for all nodes
     const typedNodes = useMemo(() => {
@@ -84,6 +95,8 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
             setIsSaving(false);
         }
     };
+
+    if (!shouldRender) return null; // Unmount heavy ReactFlow after exit transition to prevent FPS drop
 
     if (isLoading) {
         return (
@@ -126,7 +139,7 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                     maxZoom={2}
                     defaultEdgeOptions={{
                         type: 'smoothstep',
-                        animated: true,
+                        animated: false,
                         style: { stroke: 'rgba(56, 189, 248, 0.4)', strokeWidth: 2 }
                     }}
                 >

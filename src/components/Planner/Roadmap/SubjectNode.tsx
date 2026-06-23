@@ -90,13 +90,13 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             whileHover={{ scale: 1.05, rotateX: 5, rotateY: 5 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             style={{ transformStyle: 'preserve-3d' }}
-            className={`relative min-w-[150px] max-w-[180px] p-0 rounded-lg backdrop-blur-xl border-2 transition-colors duration-300 ${containerClasses} ${selected ? 'ring-2 ring-white/70 ring-offset-2 ring-offset-slate-950' : ''}`}
+            className={`relative min-w-[150px] max-w-[180px] p-0 rounded-lg border-2 transition-colors duration-300 ${containerClasses} ${selected ? 'ring-2 ring-white/70 ring-offset-2 ring-offset-slate-950' : ''}`}
         >
             <Handle type="target" position={Position.Top} className="w-3 h-1 !bg-sky-400 !border-0 !rounded-sm opacity-50" />
 
             <div className="relative z-10 flex flex-col p-3 items-center text-center overflow-hidden rounded-lg h-full">
                 {/* Tech texture pattern overlay */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '8px 8px' }}></div>
+                <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '8px 8px' }}></div>
 
                 {/* Type indicator line */}
                 <div className={`absolute top-0 left-0 w-full h-[2px] ${data.type === 'specialization' ? 'bg-fuchsia-500' : data.type === 'optional' ? 'bg-emerald-500' : 'bg-sky-500'} opacity-50`}></div>

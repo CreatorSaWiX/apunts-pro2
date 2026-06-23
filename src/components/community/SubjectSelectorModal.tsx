@@ -39,7 +39,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
     }, [search]);
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="lg">
+        <Modal isOpen={isOpen} onClose={onClose} size="lg" overlayVariant="transparent">
             <Modal.Header className="flex items-center gap-4 py-4 pr-12">
                 <Search size={20} className="text-slate-500 shrink-0" />
                 <input

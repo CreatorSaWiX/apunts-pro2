@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Stars, OrbitControls, Grid } from '@react-three/drei';
+import { Stars, OrbitControls, Grid, PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
 import GraphVisualizer from './GraphVisualizer';
 import { Mafs, Coordinates, Plot } from 'mafs';
@@ -17,7 +17,7 @@ interface AuthCanvasBackgroundProps {
 const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
     const geometry = useMemo(() => {
         const size = 30;
-        const segments = 60;
+        const segments = 45; // Optimized from 60 to 45 (approx 44% less vertices) to save CPU
         const geo = new THREE.PlaneGeometry(size, size, segments, segments);
         geo.rotateX(-Math.PI / 2);
 
@@ -27,11 +27,12 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
         return geo;
     }, []);
 
+    const color = useMemo(() => new THREE.Color(), []);
+
     useFrame((state) => {
         const t = state.clock.getElapsedTime() * 0.8;
         const position = geometry.attributes.position;
         const colorAttr = geometry.attributes.color;
-        const color = new THREE.Color();
 
         for (let i = 0; i < position.count; i++) {
             const x = position.getX(i);
@@ -86,19 +87,24 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
     );
 };
 
-const SpaceBackground = ({ variant }: { variant: 'login' | 'register' }) => (
-    <div className="absolute inset-0 w-full h-full bg-[#020617] pointer-events-auto">
-        <Canvas camera={{ position: [0, 8, 18], fov: 60 }}>
-            <fog attach="fog" args={['#020617', 10, 40]} />
-            <ambientLight intensity={0.6} />
-            <pointLight position={[10, 20, 10]} intensity={1.5} color="#ffffff" />
-            <AnimatedSurface variant={variant} />
-            <Grid infiniteGrid fadeDistance={50} cellColor="#334155" sectionColor="#475569" sectionThickness={1} cellThickness={0.5} position={[0, -5, 0]} />
-            <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.8} maxPolarAngle={Math.PI / 2 - 0.05} minPolarAngle={Math.PI / 4} target={[0, 2, 0]} />
-            <Stars radius={100} depth={50} count={4000} factor={5} saturation={0} fade speed={1.5} />
-        </Canvas>
-    </div>
-);
+const SpaceBackground = ({ variant }: { variant: 'login' | 'register' }) => {
+    const [dpr, setDpr] = useState(1.5);
+    
+    return (
+        <div className="absolute inset-0 w-full h-full bg-[#020617] pointer-events-auto">
+            <Canvas camera={{ position: [0, 8, 18], fov: 60 }} dpr={dpr}>
+                <PerformanceMonitor onIncline={() => setDpr(1.5)} onDecline={() => setDpr(1)} />
+                <fog attach="fog" args={['#020617', 10, 40]} />
+                <ambientLight intensity={0.6} />
+                <pointLight position={[10, 20, 10]} intensity={1.5} color="#ffffff" />
+                <AnimatedSurface variant={variant} />
+                <Grid infiniteGrid fadeDistance={50} cellColor="#334155" sectionColor="#475569" sectionThickness={1} cellThickness={0.5} position={[0, -5, 0]} />
+                <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.8} maxPolarAngle={Math.PI / 2 - 0.05} minPolarAngle={Math.PI / 4} target={[0, 2, 0]} />
+                <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1.5} />
+            </Canvas>
+        </div>
+    );
+};
 
 // ---------------------------
 // Phase 2: Network (Force Graph)

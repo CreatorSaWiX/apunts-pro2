@@ -15,6 +15,7 @@ const BoardView = lazy(() => import('./Board/BoardView'));
 const CalendarView = lazy(() => import('./Calendar/CalendarView'));
 const GanttView = lazy(() => import('./Gantt/GanttView'));
 const RoadmapView = lazy(() => import('./Roadmap/RoadmapView'));
+import { ReactFlowProvider } from '@xyflow/react';
 
 
 type ViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
@@ -147,9 +148,11 @@ const PlannerLayout: React.FC = () => {
                                     )}
                                     <Icon size={16} strokeWidth={isActive ? 2.5 : 2} className={`transition-colors ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} />
                                     <span className="hidden sm:inline">{tab.label}</span>
-                                    {isActive && isPending && (
-                                        <Spinner size="xs" variant="white" className="ml-1" glow={false} />
-                                    )}
+                                    {/* {isActive && isPending && (
+                                        <div className="absolute right-1 sm:right-1.5 flex items-center">
+                                            <Spinner size="xs" variant="white" glow={false} />
+                                        </div>
+                                    )} */}
                                 </button>
                             );
                         })}
@@ -181,64 +184,60 @@ const PlannerLayout: React.FC = () => {
                 {/* Main Content Area */}
                 <div className="flex-1 relative flex flex-col w-full h-full">
 
-                    <AnimatePresence mode="wait">
+                    <Suspense fallback={<FallbackSpinner />}>
+                        <AnimatePresence mode="wait">
                         {view === 'board' && (
                             <motion.div
                                 key="board"
-                                initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }}
-                                animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-                                exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
                                 transition={{ duration: 0.4, ease: 'easeInOut' }}
                                 className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
                             >
-                                <Suspense fallback={<FallbackSpinner />}>
-                                    <BoardView />
-                                </Suspense>
+                                <BoardView />
                             </motion.div>
                         )}
                         {view === 'calendar' && (
                             <motion.div
                                 key="calendar"
-                                initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }}
-                                animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-                                exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
                                 transition={{ duration: 0.4, ease: 'easeInOut' }}
                                 className="absolute inset-x-0 bottom-0 top-[88px] z-10"
                             >
-                                <Suspense fallback={<FallbackSpinner />}>
-                                    <CalendarView />
-                                </Suspense>
+                                <CalendarView />
                             </motion.div>
                         )}
                         {view === 'gantt' && (
                             <motion.div
                                 key="gantt"
-                                initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }}
-                                animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-                                exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
                                 transition={{ duration: 0.4, ease: 'easeInOut' }}
                                 className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
                             >
-                                <Suspense fallback={<FallbackSpinner />}>
-                                    <GanttView />
-                                </Suspense>
+                                <GanttView />
                             </motion.div>
                         )}
                         {view === 'roadmap' && (
                             <motion.div
                                 key="roadmap"
-                                initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }}
-                                animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-                                exit={{ opacity: 0, filter: 'blur(10px)', y: -10 }}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
                                 transition={{ duration: 0.4, ease: 'easeInOut' }}
                                 className="fixed inset-0 z-0"
                             >
-                                <Suspense fallback={<FallbackSpinner />}>
+                                <ReactFlowProvider>
                                     <RoadmapView isOpenAI={isAIModalOpen} onCloseAI={() => setIsAIModalOpen(false)} />
-                                </Suspense>
+                                </ReactFlowProvider>
                             </motion.div>
                         )}
-                    </AnimatePresence>
+                        </AnimatePresence>
+                    </Suspense>
                 </div>
 
                 {/* AI Screen Glow Effect */}

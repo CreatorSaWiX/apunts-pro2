@@ -3,9 +3,11 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Background from './components/Background';
 import { ChatBot } from './components/ChatBot';
-// import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
+import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
 // import FeedbackModal from './components/FeedbackModal';
 import HomePage from './pages/HomePage';
+import PageTransition from './components/ui/PageTransition';
+import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './contexts/AuthContext';
 import Spinner from './components/ui/Spinner';
 import { SubjectProvider } from './contexts/SubjectContext';
@@ -37,7 +39,7 @@ function App() {
             <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
 
               <Background />
-              {/* <PerformanceMonitor /> */}
+              <PerformanceMonitor />
               <Navigation />
               {/* <FeedbackModal /> */}
 
@@ -46,21 +48,23 @@ function App() {
                   <Spinner size="2xl" variant="primary" />
                 </div>
               }>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/profile/:uid" element={<ProfilePage />} />
-                  <Route path="/new-solution" element={<NewSolutionPage />} />
-                  <Route path="/tema/:id" element={<TopicPage />} />
-                  <Route path="/tema/:id/test" element={<QuizPage />} />
-                  <Route path="/tema/:id/solucionaris" element={<SolutionsListPage />} />
-                  <Route path="/tema/:id/solucionaris/:problemId" element={<SolutionDetailPage />} />
-                  <Route path="/comunitat" element={<CommunityPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route path="/planner" element={<PlannerPage />} />
-                  <Route path="/settings" element={<SettingsPage />} />
+              <AnimatePresence mode="wait">
+                <Routes location={location} key={location.pathname}>
+                  <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
+                  <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
+                  <Route path="/profile" element={<PageTransition><ProfilePage /></PageTransition>} />
+                  <Route path="/profile/:uid" element={<PageTransition><ProfilePage /></PageTransition>} />
+                  <Route path="/new-solution" element={<PageTransition><NewSolutionPage /></PageTransition>} />
+                  <Route path="/tema/:id" element={<PageTransition><TopicPage /></PageTransition>} />
+                  <Route path="/tema/:id/test" element={<PageTransition><QuizPage /></PageTransition>} />
+                  <Route path="/tema/:id/solucionaris" element={<PageTransition><SolutionsListPage /></PageTransition>} />
+                  <Route path="/tema/:id/solucionaris/:problemId" element={<PageTransition><SolutionDetailPage /></PageTransition>} />
+                  <Route path="/comunitat" element={<PageTransition><CommunityPage /></PageTransition>} />
+                  <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
+                  <Route path="/planner" element={<PageTransition><PlannerPage /></PageTransition>} />
+                  <Route path="/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
                 </Routes>
+              </AnimatePresence>
               </Suspense>
 
               <Analytics />
