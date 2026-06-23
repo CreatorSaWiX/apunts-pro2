@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Sparkles, StopCircle, CheckCircle2 } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface RoadmapAIPromptBarProps {
     isOpen: boolean;
@@ -19,6 +21,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const [prompt, setPrompt] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [loadingText, setLoadingText] = useState('Connectant...');
     const [messages, setMessages] = useState<Message[]>([]);
     const { nodes, addSubjectNode } = useRoadmap();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -38,13 +41,35 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
-    }, [messages, isGenerating]);
+    }, [messages, isGenerating, loadingText]);
 
     useEffect(() => {
         if (isOpen && textareaRef.current) {
             textareaRef.current.focus();
         }
     }, [isOpen]);
+
+    // Missatges dinàmics mentre carrega
+    useEffect(() => {
+        if (!isGenerating) return;
+
+        const texts = [
+            "Analitzant el teu roadmap...",
+            "Consultant la memòria...",
+            "Pensant...",
+            "Redactant la resposta..."
+        ];
+
+        let i = 0;
+        setLoadingText(texts[0]);
+
+        const interval = setInterval(() => {
+            i = (i + 1) % texts.length;
+            setLoadingText(texts[i]);
+        }, 2500);
+
+        return () => clearInterval(interval);
+    }, [isGenerating]);
 
     const handleGenerate = async () => {
         if (!prompt.trim() || isGenerating) return;
@@ -59,21 +84,42 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
 
         const activeNodes = nodes
             .filter(n => ['passed', 'in_progress', 'retaking'].includes(n.data.status))
-            .map(n => n.id);
+            .map(n => ({ id: n.id, status: n.data.status }));
 
         try {
-            const { auth } = await import('../../../lib/firebase');
+            const { auth, db } = await import('../../../lib/firebase');
+            const { doc, getDoc, setDoc } = await import('firebase/firestore');
             const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+            const uid = auth.currentUser?.uid;
+
+            let memory = {};
+            if (uid) {
+                try {
+                    const memoryDoc = await getDoc(doc(db, 'ai_memory', uid));
+                    if (memoryDoc.exists()) {
+                        memory = memoryDoc.data();
+                    }
+                } catch (e) {
+                    console.error("No s'ha pogut carregar la memòria", e);
+                }
+            }
+
+            const history = messages.slice(-10).map(m => ({
+                role: m.role === 'user' ? 'user' : 'model',
+                content: m.content
+            }));
 
             const response = await fetch('/api/roadmap-ai', {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     prompt: userMsg,
-                    currentNodes: activeNodes
+                    currentNodes: activeNodes,
+                    history,
+                    memory
                 })
             });
 
@@ -83,7 +129,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
             }
 
             const data = await response.json();
-            
+
             const aiResponse = data.reply || "He processat la teva petició però no tinc comentaris addicionals.";
             const changes = data.actions || [];
 
@@ -98,6 +144,15 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
 
             const aiMsg: Message = { id: (Date.now() + 1).toString(), role: 'ai', content: aiResponse, changes };
             setMessages(prev => [...prev, aiMsg]);
+
+            if (uid && data.newMemoryData) {
+                try {
+                    await setDoc(doc(db, 'ai_memory', uid), data.newMemoryData, { merge: true });
+                } catch (e) {
+                    console.error("No s'ha pogut desar la memòria nova", e);
+                }
+            }
+
             window.dispatchEvent(new CustomEvent('ai-magic-done'));
 
         } catch (err: any) {
@@ -126,15 +181,15 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
             {isOpen && (
                 <>
                     {/* Completely transparent backdrop to allow seeing the roadmap clearly */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[90] bg-transparent" 
-                        onClick={onClose} 
+                        className="fixed inset-0 z-[90] bg-transparent"
+                        onClick={onClose}
                     />
-                    
-                    <motion.div 
+
+                    <motion.div
                         initial={{ y: 100, opacity: 0, scale: 0.95 }}
                         animate={{ y: 0, opacity: 1, scale: 1 }}
                         exit={{ y: 50, opacity: 0, scale: 0.95 }}
@@ -143,13 +198,13 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                     >
                         {/* Chat Area (Floating above input) */}
                         {messages.length > 0 && (
-                            <div 
+                            <div
                                 className="overflow-y-auto px-2 pb-6 space-y-6 custom-scrollbar pointer-events-auto max-h-[60vh] flex flex-col"
                                 ref={chatContainerRef}
                             >
                                 <AnimatePresence initial={false}>
                                     {messages.map((msg) => (
-                                        <motion.div 
+                                        <motion.div
                                             key={msg.id}
                                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -158,7 +213,15 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                             {/* Bubble */}
                                             <div className={`flex flex-col gap-2 max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                                                 <div className="px-6 py-4 rounded-[24px] text-[15px] leading-relaxed text-slate-200 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] backdrop-blur-xl border border-white/10 bg-slate-800/40">
-                                                    {msg.content}
+                                                    {msg.role === 'ai' ? (
+                                                        <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-black/20 prose-pre:border prose-pre:border-white/10 prose-a:text-cyan-400 text-[15px]">
+                                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                                {msg.content}
+                                                            </ReactMarkdown>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="whitespace-pre-wrap">{msg.content}</span>
+                                                    )}
                                                 </div>
 
                                                 {/* Changes */}
@@ -178,15 +241,29 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
 
                                     {/* Thinking Indicator */}
                                     {isGenerating && (
-                                        <motion.div 
+                                        <motion.div
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
                                             className="flex gap-3 flex-row items-end"
                                         >
-                                            <div className="bg-slate-800/40 backdrop-blur-xl border border-white/10 px-6 py-4 rounded-[24px] flex gap-1.5 items-center shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)]">
-                                                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                            <div className="bg-slate-800/40 backdrop-blur-xl border border-white/10 px-5 py-3 rounded-[24px] flex gap-3 items-center shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                                                <div className="flex gap-1.5">
+                                                    <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                                    <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                                    <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                                </div>
+                                                <AnimatePresence mode="wait">
+                                                    <motion.span
+                                                        key={loadingText}
+                                                        initial={{ opacity: 0, x: -5 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        exit={{ opacity: 0, x: 5 }}
+                                                        className="text-[13px] font-medium text-slate-300 tracking-wide"
+                                                    >
+                                                        {loadingText}
+                                                    </motion.span>
+                                                </AnimatePresence>
                                             </div>
                                         </motion.div>
                                     )}
@@ -196,9 +273,9 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
 
                         {/* Error Message */}
                         {error && (
-                            <motion.div 
-                                initial={{ opacity: 0, height: 0 }} 
-                                animate={{ opacity: 1, height: 'auto' }} 
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
                                 className="px-4 pb-2"
                             >
                                 <div className="text-red-400 text-xs font-medium bg-red-500/10 backdrop-blur-xl border border-red-500/20 px-3 py-2 rounded-lg shadow-lg">
@@ -210,14 +287,14 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                         {/* Input Area (Planner AI style) */}
                         <div className="relative pointer-events-auto">
                             {/* Glowing Aura (Apple Intelligence Style) */}
-                            <div 
+                            <div
                                 className={`absolute -inset-[1px] rounded-[32px] blur-md transition-all duration-700 pointer-events-none
-                                    ${isGenerating 
-                                        ? 'bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 opacity-50 animate-[pulse_1s_ease-in-out_infinite]' 
+                                    ${isGenerating
+                                        ? 'bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 opacity-50 animate-[pulse_1s_ease-in-out_infinite]'
                                         : 'bg-gradient-to-r from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 opacity-20'}
-                                `} 
+                                `}
                             />
-                            
+
                             {/* Pulsing glow when generating */}
                             {isGenerating && (
                                 <div className="absolute -inset-4 bg-fuchsia-500/20 blur-3xl rounded-[100%] animate-[pulse_2s_ease-in-out_infinite] pointer-events-none" />
@@ -238,7 +315,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                         onChange={(e) => setPrompt(e.target.value)}
                                         onKeyDown={handleKeyDown}
                                         disabled={isGenerating}
-                                        placeholder="Demana el que vulguis a l'Apunts AI..."
+                                        placeholder="Demana el que vulguis al teu tutor..."
                                         className="flex-1 max-h-[120px] min-h-[44px] py-[12px] bg-transparent text-[15px] leading-relaxed text-white placeholder:text-slate-500 focus:outline-none resize-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                                         rows={1}
                                     />
@@ -249,10 +326,10 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                             onClick={handleGenerate}
                                             disabled={!prompt.trim() && !isGenerating}
                                             className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 
-                                                ${(!prompt.trim() && !isGenerating) 
-                                                    ? 'bg-white/5 text-white/30 cursor-not-allowed' 
-                                                    : isGenerating 
-                                                        ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50' 
+                                                ${(!prompt.trim() && !isGenerating)
+                                                    ? 'bg-white/5 text-white/30 cursor-not-allowed'
+                                                    : isGenerating
+                                                        ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50'
                                                         : 'bg-white text-black hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]'
                                                 }`}
                                         >

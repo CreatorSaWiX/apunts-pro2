@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Background from './components/Background';
 import { ChatBot } from './components/ChatBot';
-import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
+// import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
 // import FeedbackModal from './components/FeedbackModal';
 import HomePage from './pages/HomePage';
 import PageTransition from './components/ui/PageTransition';
@@ -39,7 +39,7 @@ function App() {
             <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
 
               <Background />
-              <PerformanceMonitor />
+              {/* <PerformanceMonitor /> */}
               <Navigation />
               {/* <FeedbackModal /> */}
 

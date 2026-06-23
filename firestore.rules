@@ -89,6 +89,11 @@ service cloud.firestore {
       }
     }
 
+    // Memòria de la IA
+    match /ai_memory/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
     // Fallback
     match /{document=**} {
       allow read: if request.auth != null;

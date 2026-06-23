@@ -221,7 +221,7 @@ export default defineConfig(({ mode }) => {
                   const { prompt, currentTasks, subjects, currentDate } = JSON.parse(body);
                   const { GoogleGenerativeAI } = await import('@google/generative-ai');
                   const apiKey = env.GEMINI_API_KEY;
-                  
+
                   if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
                     res.statusCode = 500;
                     res.end(JSON.stringify({ error: 'Clau de Gemini no configurada al servidor' }));
@@ -238,7 +238,7 @@ IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SE
 - Assignatures vàlides (selecciona l'id apropiat, o null):
   ${JSON.stringify(subjects || [])}
 - Tasques actuals de l'usuari (fes-ho servir per trobar els 'taskId' quan hagis de modificar o esborrar tasques existents):
-  ${JSON.stringify(currentTasks?.map((t:any) => ({id: t.id, title: t.title, subjectId: t.subjectId, status: t.status})) || [])}
+  ${JSON.stringify(currentTasks?.map((t: any) => ({ id: t.id, title: t.title, subjectId: t.subjectId, status: t.status })) || [])}
 
 # INSTRUCCIONS:
 Pots executar una llista d'accions. Les accions possibles són:
@@ -277,15 +277,15 @@ L'estructura exacta ha de ser:
   ]
 }`;
 
-                  const model = genAI.getGenerativeModel({ 
-                    model: 'gemini-2.5-flash', 
+                  const model = genAI.getGenerativeModel({
+                    model: 'gemini-2.5-flash',
                     systemInstruction,
                     generationConfig: { responseMimeType: "application/json" }
                   });
-                  
+
                   const result = await model.generateContent(prompt);
                   const responseText = result.response.text();
-                  
+
                   res.setHeader('Content-Type', 'application/json');
                   res.end(responseText);
                 } catch (e: any) {
@@ -309,10 +309,10 @@ L'estructura exacta ha de ser:
               });
               req.on('end', async () => {
                 try {
-                  const { prompt, currentNodes } = JSON.parse(body);
+                  const { prompt, currentNodes, history = [], memory = {} } = JSON.parse(body);
                   const { GoogleGenerativeAI } = await import('@google/generative-ai');
                   const apiKey = env.GEMINI_API_KEY;
-                  
+
                   if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
                     res.statusCode = 500;
                     res.end(JSON.stringify({ error: 'Clau de Gemini no configurada al servidor' }));
@@ -320,37 +320,46 @@ L'estructura exacta ha de ser:
                   }
 
                   const genAI = new GoogleGenerativeAI(apiKey);
-                  const systemInstruction = `Ets un asistent acadèmic (copilot) que ajuda als estudiants del Grau en Enginyeria Informàtica (FIB-UPC) a planificar les seves assignatures.
-                  
-IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SENSE TEXT AL VOLTANT.
+                  const systemInstruction = `Ets un Senior Software Engineer i mentor que ajuda estudiants de la FIB-UPC amb el seu roadmap.
+Tens una personalitat propera, honesta i que parla de tu a tu, com un company més veterà.
+NO ets un llibre ni un robot que fa discursos. Aquest és un xat normal.
 
-# CONTEXT ACTUAL:
-- Sigles d'assignatures actualment a la graella de l'usuari: ${JSON.stringify(currentNodes)}
+REGLES D'ESTIL I CONTINGUT:
+1. NATURALITAT EXTREMA: Comporta't com en un xat normal amb un col·lega. Si et diuen "Hola", respon una cosa com "Ei, com va tot? Com enfoques el semestre?". No facis monòlegs enormes sense venir al cas.
+2. ADAPTA'T AL MISSATGE: 
+   - Si el missatge és curt o casual, fes una resposta curta i directa (1-2 línies o paràgrafs).
+   - NOMÉS si l'usuari et planteja un dubte profund sobre el seu futur (ex: "No sé si fer Software o Computació si vull anar a l'EPFL"), llavors desenvolupa una resposta més llarga i estratègica, usant capçaleres i llistes.
+3. ZERO farciment: Mai diguis "Sóc un assistent virtual", parla com un humà.
+4. MAQUETACIÓ: Utilitza Markdown només quan aporti valor (ressaltar en **negreta** conceptes clau o llistar opcions).
+
+IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SENSE TEXT AL VOLTANT. Fes servir el caràcter de salt de línia (\\n) dins els strings del JSON per fer paràgrafs.
+
+# CONTEXT DE L'ESTUDIANT:
+- Memòria del perfil de l'estudiant (objectius, interessos): ${JSON.stringify(memory)}
+- Assignatures al Roadmap actual: ${JSON.stringify(currentNodes)}
 - Assignatures oficials optatives GEI FIB per especialitat:
-  Computació (C): A, G, IA, LI, LP, TC i recomanades AA, APA, CAIM, CL, CN, IO, SID.
-  Software (ES): AS, ASW, DBD, ER, GPS, PES i recomanades CAP, CBDE, CSI, ECSDI, SIM, SOAD.
-  Sistemes (SI): ADEI, DSI, NE, PSI, SIO, ABD i recomanades EDO, MI, VPE.
-  Xarxes/IT (TI): ASO, PI, PTI, SI, SOA, TXC i recomanades AD, CASO, CPD, IM, SDX, TCI.
-  Computadors (EC): AC2, DSBM, MP, PEC, SO2, XC2 i recomanades CASO, CPD, PAP, PCA, PDS, STR, VLSI.
+  Computació (C): A, G, IA, LI, LP, TC, TGA, FOMAR, GEOC, etc.
+  Software (ES): AS, ASW, DBD, ER, GPS, PES, etc.
+  Sistemes (SI): ADEI, DSI, NE, PSI, SIO, ABD, etc.
+  Xarxes/IT (TI): ASO, PI, PTI, SI, SOA, TXC, etc.
+  Computadors (EC): AC2, DSBM, MP, PEC, SO2, XC2, etc.
 
 # INSTRUCCIONS:
-Respon a l'usuari amb un to informal i amigable explicant què faràs o recomanant-li. Si l'usuari vol alguna cosa (com Erasmus, Intel·ligència Artificial, Videojocs), proposa-li "add" d'assignatures apropiades (fes servir només les sigles correctes existents). 
-Si simplement et demana si veus el seu roadmap, digues que sí, llegeix-li algunes de les assignatures de ${JSON.stringify(currentNodes)} i pregunta-li com vol continuar.
+Respon de forma natural i fluïda al missatge de l'usuari. Si l'usuari dóna nova informació sobre les seves metes (ex: "vull treballar a FAANG", "m'agraden els gràfics 3D"), guarda-ho a "newMemoryData". Si l'usuari demana explícitament afegir o treure una assignatura, usa l'array "actions".
 
-L'estructura exacta ha de ser:
+L'estructura exacta ha de ser (Exemple per un hola genèric):
 {
-  "reply": "Genial! He afegit dues optatives que t'aniran de perles: APA i CAIM. Com ho veus?",
-  "actions": [
-    {
-      "type": "add",
-      "subject": "APA"
-    },
-    {
-      "type": "remove",
-      "subject": "ASO"
-    }
-  ]
+  "reply": "Ei què tal! He vist que tens unes quantes optatives penjades, vols que mirem cap on encarar el quart curs o només passaves a saludar?",
+  "actions": [],
+  "newMemoryData": null
 }`;
+
+                  const formattedHistory = (history || []).map((msg: any) => ({
+                    role: msg.role === 'user' ? 'user' : 'model',
+                    parts: [{ text: msg.content }]
+                  }));
+
+                  const msgParts: any[] = [{ text: prompt }];
 
                   const MODELS = [
                     'gemini-3.5-flash',
@@ -365,15 +374,16 @@ L'estructura exacta ha de ser:
 
                   for (const modelName of MODELS) {
                     try {
-                      const model = genAI.getGenerativeModel({ 
-                        model: modelName, 
+                      const model = genAI.getGenerativeModel({
+                        model: modelName,
                         systemInstruction,
                         generationConfig: { responseMimeType: "application/json" }
                       });
-                      
-                      const result = await model.generateContent(prompt);
+
+                      const chat = model.startChat({ history: formattedHistory });
+                      const result = await chat.sendMessage(msgParts);
                       const responseText = result.response.text();
-                      
+
                       res.setHeader('Content-Type', 'application/json');
                       res.end(responseText);
                       replied = true;
@@ -413,11 +423,11 @@ L'estructura exacta ha de ser:
               req.on('end', async () => {
                 try {
                   const { filename, contentType } = JSON.parse(body);
-                  
+
                   // Importem dinàmicament el SDK d'AWS
                   const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
                   const { getSignedUrl } = await import('@aws-sdk/s3-request-presigner');
-                  
+
                   const accountId = env.R2_ACCOUNT_ID;
                   const endpoint = env.R2_ENDPOINT || (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : null);
                   const accessKeyId = env.R2_ACCESS_KEY_ID;
@@ -448,14 +458,14 @@ L'estructura exacta ha de ser:
                     ContentType: contentType,
                   });
 
-                  const presignedUrl = await getSignedUrl(S3, command, { 
+                  const presignedUrl = await getSignedUrl(S3, command, {
                     expiresIn: 300,
                     signableHeaders: new Set(['content-type'])
                   });
-                  
+
                   res.setHeader('Content-Type', 'application/json');
-                  res.end(JSON.stringify({ 
-                    presignedUrl, 
+                  res.end(JSON.stringify({
+                    presignedUrl,
                     objectKey,
                     publicUrl: `${publicUrlBase}/${objectKey}`
                   }));
