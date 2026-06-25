@@ -311,6 +311,8 @@ L'estructura exacta ha de ser:
                 try {
                   const { prompt, currentNodes, history = [], memory = {} } = JSON.parse(body);
                   const { GoogleGenerativeAI } = await import('@google/generative-ai');
+                  const fs = await import('fs');
+                  const path = await import('path');
                   const apiKey = env.GEMINI_API_KEY;
 
                   if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
@@ -319,40 +321,94 @@ L'estructura exacta ha de ser:
                     return;
                   }
 
+                  // --- EXTRACCIÓ DINÀMICA DE CONTEXT (RAG) ---
+                  let injectedContext = "";
+                  let mentionedNodes = (currentNodes || []).filter((node: any) => {
+                      const regex = new RegExp(`\\b${node.id}\\b`, 'i');
+                      return regex.test(prompt);
+                  });
+
+                  if (mentionedNodes.length === 0 && /(assignatur|cursar|roadmap|semestre|preparar|avaluaci|professor|hores|estudi|consell)/i.test(prompt)) {
+                      mentionedNodes = (currentNodes || []).filter((n: any) => n.status === 'in_progress');
+                      if (mentionedNodes.length === 0) mentionedNodes = (currentNodes || []).slice(0, 5);
+                  }
+
+                  res.setHeader('Content-Type', 'text/event-stream');
+                  res.setHeader('Cache-Control', 'no-cache');
+                  res.setHeader('Connection', 'keep-alive');
+                  if (typeof res.flushHeaders === 'function') res.flushHeaders();
+
+                  const sendSSE = (payload: any) => {
+                    res.write(`data: ${JSON.stringify(payload)}\n\n`);
+                    if (typeof (res as any).flush === 'function') {
+                      (res as any).flush();
+                    }
+                  };
+
+                  if (mentionedNodes.length > 0) {
+                    injectedContext += "\n\n# CONTEXT ESPECÍFIC DE LES ASSIGNATURES MENCIONADES:\n";
+                    for (const node of mentionedNodes) {
+                      try {
+                        const filePath = path.join(process.cwd(), 'public', 'data', 'subjects', `${node.id}.json`);
+                        if (fs.existsSync(filePath)) {
+                          const fileData = fs.readFileSync(filePath, 'utf-8');
+                          const parsedData = JSON.parse(fileData);
+
+                          const filteredData = {
+                            acronim: parsedData.acronim,
+                            credits: parsedData.credits,
+                            activities: parsedData.activities,
+                            sections: parsedData.sections?.map((s: any) => ({
+                              title: s.title,
+                              content: s.html ? s.html.replace(/<[^>]*>?/gm, '') : ''
+                            }))
+                          };
+
+                          injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(filteredData)}\n`;
+                        }
+                      } catch (e) {
+                        console.error(`Error llegint el context de ${node.id}:`, e);
+                      }
+                    }
+                  }
+
                   const genAI = new GoogleGenerativeAI(apiKey);
                   const systemInstruction = `Ets un Senior Software Engineer i mentor que ajuda estudiants de la FIB-UPC amb el seu roadmap.
 Tens una personalitat propera, honesta i que parla de tu a tu, com un company més veterà.
 NO ets un llibre ni un robot que fa discursos. Aquest és un xat normal.
 
 REGLES D'ESTIL I CONTINGUT:
-1. NATURALITAT EXTREMA: Comporta't com en un xat normal amb un col·lega. Si et diuen "Hola", respon una cosa com "Ei, com va tot? Com enfoques el semestre?". No facis monòlegs enormes sense venir al cas.
-2. ADAPTA'T AL MISSATGE: 
-   - Si el missatge és curt o casual, fes una resposta curta i directa (1-2 línies o paràgrafs).
-   - NOMÉS si l'usuari et planteja un dubte profund sobre el seu futur (ex: "No sé si fer Software o Computació si vull anar a l'EPFL"), llavors desenvolupa una resposta més llarga i estratègica, usant capçaleres i llistes.
-3. ZERO farciment: Mai diguis "Sóc un assistent virtual", parla com un humà.
-4. MAQUETACIÓ: Utilitza Markdown només quan aporti valor (ressaltar en **negreta** conceptes clau o llistar opcions).
-
-IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SENSE TEXT AL VOLTANT. Fes servir el caràcter de salt de línia (\\n) dins els strings del JSON per fer paràgrafs.
+1. NATURALITAT EXTREMA: Comporta't com en un xat normal amb un col·lega. Si et diuen "Hola", respon una cosa com "Ei, com va tot?". NO treguis el tema d'assignatures o la universitat si l'usuari només està saludant.
+2. ADAPTA'T AL MISSATGE: Respon curt i directe per defecte. Desenvolupa només si demanen consell estratègic (ex: triar especialitat, dubtes d'avaluació).
+3. ZERO farciment: Mai diguis "Sóc un assistent virtual".
+8. MANTENIMENT DE TEMA: Si l'usuari et parla de qualsevol cosa fora de la uni, respon amb naturalitat. No canviïs forçosament cap a l'estudi.
+9. ESTIL DE COMUNICACIÓ (ANTI-CRINGE): Sigues molt directe i al gra. NO t'enrotllis gens ni facis paràgrafs llargs. NO facis servir adjectius innecessaris, motivacionals, exagerats o emocionals (ex: "màgicament", "apassionant", "increïble", "submergiràs"). Parla com un company enginyer objectiu, amb fets concrets i zero cringe.
+10. CONTINGUT D'ASSIGNATURES: Quan donis el resum o expliquis una assignatura, obvia el professorat i les competències, centra't ÚNICAMENT en aquests 3 punts:
+   - **Què faran (Activitats)**: Llistat molt breu dels projectes o pràctiques clau perquè sàpiga exactament què haurà de programar o resoldre.
+   - **Mètode d'Avaluació**: Moltes assignatures tenen avaluacions complexes amb \`max()\` o sumen més de 100% (punts extra). Per solucionar-ho:
+     1. Escriu la fórmula oficial matemàtica de l'avaluació en format KaTeX (ex: \`$$ \\min(10, \\max(0.2 \\cdot P + ...)) $$\`) perquè l'usuari vegi tota la lògica i rutes alternatives. Afegeix una llegenda ràpida si cal.
+     2. A sota, genera EXACTAMENT un bloc de codi Markdown amb el llenguatge \`subject-evaluation\` i un array JSON a dins. Per aquest gràfic, tria NOMÉS la ruta principal (Avaluació Continuada) i posa els pesos base (les "weight" haurien de sumar prop de 100). Exemple:
+     \`\`\`subject-evaluation
+     [
+       {"acronym": "P", "name": "Examen Parcial", "weight": 30},
+       {"acronym": "F", "name": "Examen Final", "weight": 50},
+       {"acronym": "PR", "name": "Pràctiques", "weight": 20}
+     ]
+     \`\`\`
+   - **Gràfics d'Hores (IMPRESCINDIBLE)**: Perquè la UI renderitzi els gràfics visuals de càrrega, has de generar EXACTAMENT un bloc de codi Markdown amb el llenguatge "subject-stats". Exemple per a EDA:
+     \`\`\`subject-stats
+     EDA
+     \`\`\`
+     Mai posis "subject-stats" com a text normal, OBLIGATÒRIAMENT ha de ser un bloc de codi Markdown.
 
 # CONTEXT DE L'ESTUDIANT:
 - Memòria del perfil de l'estudiant (objectius, interessos): ${JSON.stringify(memory)}
 - Assignatures al Roadmap actual: ${JSON.stringify(currentNodes)}
-- Assignatures oficials optatives GEI FIB per especialitat:
-  Computació (C): A, G, IA, LI, LP, TC, TGA, FOMAR, GEOC, etc.
-  Software (ES): AS, ASW, DBD, ER, GPS, PES, etc.
-  Sistemes (SI): ADEI, DSI, NE, PSI, SIO, ABD, etc.
-  Xarxes/IT (TI): ASO, PI, PTI, SI, SOA, TXC, etc.
-  Computadors (EC): AC2, DSBM, MP, PEC, SO2, XC2, etc.
+${injectedContext}
 
-# INSTRUCCIONS:
-Respon de forma natural i fluïda al missatge de l'usuari. Si l'usuari dóna nova informació sobre les seves metes (ex: "vull treballar a FAANG", "m'agraden els gràfics 3D"), guarda-ho a "newMemoryData". Si l'usuari demana explícitament afegir o treure una assignatura, usa l'array "actions".
-
-L'estructura exacta ha de ser (Exemple per un hola genèric):
-{
-  "reply": "Ei què tal! He vist que tens unes quantes optatives penjades, vols que mirem cap on encarar el quart curs o només passaves a saludar?",
-  "actions": [],
-  "newMemoryData": null
-}`;
+# ACCIONS:
+L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCITAMENT que afegeixis o treguis una assignatura del seu roadmap, usa les Eines (Tools). Altrament, només respon de forma natural.
+`;
 
                   const formattedHistory = (history || []).map((msg: any) => ({
                     role: msg.role === 'user' ? 'user' : 'model',
@@ -362,12 +418,32 @@ L'estructura exacta ha de ser (Exemple per un hola genèric):
                   const msgParts: any[] = [{ text: prompt }];
 
                   const MODELS = [
-                    'gemini-3.5-flash',
-                    'gemini-3.1-flash-lite',
                     'gemini-2.5-flash',
-                    'gemini-2.5-flash-lite',
-                    'gemini-2.0-flash-lite',
+                    'gemini-1.5-flash',
                   ];
+
+                  const roadmapTool = {
+                    name: "modify_roadmap",
+                    description: "Modifica el roadmap de l'estudiant afegint o eliminant assignatures. Només cridar-ho si l'usuari ho demana explícitament (ex: 'Afegeix IA al meu roadmap').",
+                    parameters: {
+                      type: "object",
+                      properties: {
+                        actions: {
+                          type: "array",
+                          description: "Llista d'accions a aplicar al roadmap.",
+                          items: {
+                            type: "object",
+                            properties: {
+                              type: { type: "string", description: "Tipus d'acció: 'add' o 'remove'" },
+                              subject: { type: "string", description: "Acrònim de l'assignatura (ex: 'IA', 'EDA')" }
+                            },
+                            required: ["type", "subject"]
+                          }
+                        }
+                      },
+                      required: ["actions"]
+                    }
+                  };
 
                   let lastError: any;
                   let replied = false;
@@ -377,15 +453,36 @@ L'estructura exacta ha de ser (Exemple per un hola genèric):
                       const model = genAI.getGenerativeModel({
                         model: modelName,
                         systemInstruction,
-                        generationConfig: { responseMimeType: "application/json" }
+                        tools: [{ functionDeclarations: [roadmapTool] as any }]
                       });
 
                       const chat = model.startChat({ history: formattedHistory });
-                      const result = await chat.sendMessage(msgParts);
-                      const responseText = result.response.text();
+                      const result = await chat.sendMessageStream(msgParts);
 
-                      res.setHeader('Content-Type', 'application/json');
-                      res.end(responseText);
+                      let hasToolCall = false;
+                      let toolCallData = null;
+
+                      for await (const chunk of result.stream) {
+                        const functionCalls = chunk.functionCalls();
+                        if (functionCalls && functionCalls.length > 0) {
+                          hasToolCall = true;
+                          toolCallData = functionCalls[0].args;
+                          break;
+                        }
+
+                        const chunkText = chunk.text();
+                        if (chunkText) {
+                          sendSSE({ type: 'text', content: chunkText });
+                        }
+                      }
+
+                      if (hasToolCall && toolCallData) {
+                        sendSSE({ type: 'actions', content: toolCallData.actions });
+                      }
+
+                      res.write(`data: [DONE]\n\n`);
+                      if (typeof (res as any).flush === 'function') (res as any).flush();
+                      res.end();
                       replied = true;
                       break;
                     } catch (e: any) {
@@ -399,12 +496,27 @@ L'estructura exacta ha de ser (Exemple per un hola genèric):
                     }
                   }
 
-                  if (!replied) throw lastError ?? new Error('Tots els models han fallat');
+                  if (!replied) {
+                    if (lastError) {
+                      sendSSE({ type: 'error', content: 'Tots els models han fallat (Rate Limit)' });
+                    } else {
+                      sendSSE({ type: 'error', content: 'Tots els models han fallat' });
+                    }
+                    res.end();
+                  }
 
                 } catch (e: any) {
                   console.error("[DevServer Roadmap AI Error]:", e);
-                  res.statusCode = 500;
-                  res.end(JSON.stringify({ error: String(e.message || e) }));
+                  // Since we might have already sent headers, we can't change statusCode easily if stream started.
+                  // But if we fail before stream starts:
+                  if (!res.headersSent) {
+                    res.statusCode = 500;
+                    res.end(JSON.stringify({ error: String(e.message || e) }));
+                  } else {
+                    res.write(`data: ${JSON.stringify({ type: 'error', content: String(e.message || e) })}\n\n`);
+                    if (typeof (res as any).flush === 'function') (res as any).flush();
+                    res.end();
+                  }
                 }
               });
             } else {

@@ -67,7 +67,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
             {isOpen && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
                     {/* Deep Blur Backdrop */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -77,7 +77,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                     />
 
                     {/* Modal Content */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -88,7 +88,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(56,189,248,0.15)_0%,transparent_50%)] pointer-events-none" />
                         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(99,102,241,0.15)_0%,transparent_50%)] pointer-events-none" />
                         <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-fuchsia-500/10 blur-[120px] rounded-full pointer-events-none animate-[pulse_10s_ease-in-out_infinite]" />
-                        
+
                         {/* Huge Acronym Watermark Integrated */}
                         {data && (
                             <div className="absolute -top-10 -right-10 text-[250px] leading-none font-black text-transparent bg-clip-text bg-gradient-to-br from-white/[0.05] to-transparent pointer-events-none select-none z-0 transform rotate-12">
@@ -113,7 +113,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                 <div className="w-80 border-r border-white/5 bg-black/20 shrink-0 relative flex flex-col backdrop-blur-sm z-10">
                                     {/* Close Button Top Left */}
                                     <div className="p-6 pb-2">
-                                        <button 
+                                        <button
                                             onClick={onClose}
                                             className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-all hover:scale-110 text-slate-400 hover:text-white group flex items-center justify-center border border-white/10 hover:border-white/20"
                                         >
@@ -160,14 +160,13 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                 <button
                                                     key={title}
                                                     onClick={() => setActiveTab(title)}
-                                                    className={`w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-300 group overflow-hidden ${
-                                                        isActive 
-                                                        ? 'text-white' 
-                                                        : 'text-slate-400 hover:text-slate-200'
-                                                    }`}
+                                                    className={`w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-300 group overflow-hidden ${isActive
+                                                            ? 'text-white'
+                                                            : 'text-slate-400 hover:text-slate-200'
+                                                        }`}
                                                 >
                                                     {isActive && (
-                                                        <motion.div 
+                                                        <motion.div
                                                             layoutId="activeTabIndicator"
                                                             className="absolute inset-0 bg-white/10 rounded-xl"
                                                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
@@ -202,7 +201,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                     <div className="flex-1 overflow-y-auto p-8 pt-4 custom-scrollbar">
                                         <div className="max-w-4xl">
                                             <AnimatePresence mode="wait">
-                                                <motion.div 
+                                                <motion.div
                                                     key={activeTab}
                                                     initial={{ opacity: 0, y: 30, filter: 'blur(15px)' }}
                                                     animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
@@ -222,7 +221,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                         {prof.email && (
                                                                             <a href={`mailto:${prof.email}`} className="text-sm text-slate-400 hover:text-white truncate mt-2 flex items-center gap-2 transition-colors">
                                                                                 <div className="p-1.5 rounded-md bg-white/5 group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
                                                                                 </div>
                                                                                 {prof.email}
                                                                             </a>
@@ -242,7 +241,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                             Acte Avaluatiu
                                                                         </div>
                                                                     )}
-                                                                    
+
                                                                     <div className="flex items-start justify-between gap-4 mb-4">
                                                                         <h3 className={`text-xl font-bold tracking-tight leading-tight ${act.isEvaluative ? 'text-amber-400' : 'text-white'}`}>{act.title}</h3>
                                                                         {act.week !== null && (
@@ -297,27 +296,27 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                     '#6366f1'  // indigo-500
                                                                 ];
                                                                 const color = colors[i % colors.length];
-                                                                const maxHours = Math.max(...data.hours.map((h:any) => h.value), 10);
+                                                                const maxHours = Math.max(...data.hours.map((h: any) => h.value), 10);
                                                                 const percentage = Math.min((hour.value / maxHours) * 100, 100) || 0;
-                                                                
+
                                                                 return (
                                                                     <div key={i} className="p-6 bg-slate-900/40 border border-white/5 rounded-3xl flex flex-col items-center justify-center relative group">
                                                                         {/* SVG Speedometer/Ring */}
                                                                         <div className="relative w-32 h-32 flex items-center justify-center mb-4">
                                                                             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                                                                                 {/* Background Track */}
-                                                                                <circle 
-                                                                                    cx="50" cy="50" r="40" 
-                                                                                    fill="transparent" 
-                                                                                    stroke="currentColor" 
-                                                                                    strokeWidth="8" 
+                                                                                <circle
+                                                                                    cx="50" cy="50" r="40"
+                                                                                    fill="transparent"
+                                                                                    stroke="currentColor"
+                                                                                    strokeWidth="8"
                                                                                     className="text-slate-800"
                                                                                 />
                                                                                 {/* Animated Progress Ring */}
-                                                                                <motion.circle 
-                                                                                    cx="50" cy="50" r="40" 
-                                                                                    fill="transparent" 
-                                                                                    stroke={color} 
+                                                                                <motion.circle
+                                                                                    cx="50" cy="50" r="40"
+                                                                                    fill="transparent"
+                                                                                    stroke={color}
                                                                                     strokeWidth="8"
                                                                                     strokeLinecap="round"
                                                                                     strokeDasharray={251.2}
@@ -328,7 +327,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                                 />
                                                                             </svg>
                                                                             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                                                                <motion.span 
+                                                                                <motion.span
                                                                                     initial={{ opacity: 0, scale: 0.5 }}
                                                                                     animate={{ opacity: 1, scale: 1 }}
                                                                                     transition={{ delay: 0.5 + i * 0.1 }}
@@ -349,17 +348,17 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
 
                                                     {data.sections.map((sec: any) => {
                                                         if (sec.title !== activeTab) return null;
-                                                        
+
                                                         // Enhance HTML for better Awwwards UI
                                                         let processedHtml = sec.html;
-                                                        
+
                                                         // 1. Fix Bootstrap collapses (e.g. in Competències)
                                                         processedHtml = processedHtml.replace(/class="panel-collapse collapse"/g, 'class="mt-4"');
                                                         processedHtml = processedHtml.replace(/data-bs-toggle="collapse"/g, '');
-                                                        
+
                                                         // 2. Bold the first segment of list items ONLY for Continguts
                                                         if (sec.title === 'Continguts') {
-                                                            processedHtml = processedHtml.replace(/<li([^>]*)>\s*(.*?)(?:\s*<br>)([\s\S]*?)<\/li>/gi, 
+                                                            processedHtml = processedHtml.replace(/<li([^>]*)>\s*(.*?)(?:\s*<br>)([\s\S]*?)<\/li>/gi,
                                                                 '<li$1><strong class="text-sky-400 text-xl mb-2 block">$2</strong><span class="text-slate-300 block">$3</span></li>'
                                                             );
                                                         }
@@ -370,13 +369,13 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                         // 4. Highlight Competency IDs (e.g., CT4.2, G6.2) safely without touching HTML tags
                                                         const tempHtml = `> ${processedHtml} <`;
                                                         processedHtml = tempHtml.replace(/>([^<]+)</g, (_, text) => {
-                                                            return '>' + text.replace(/\b([A-Z]{1,3}[0-9]+(?:\.[0-9]+)?)\b/g, 
+                                                            return '>' + text.replace(/\b([A-Z]{1,3}[0-9]+(?:\.[0-9]+)?)\b/g,
                                                                 '<span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[11px] font-black bg-sky-500/10 text-sky-400 border border-sky-500/30 shadow-[0_0_8px_rgba(14,165,233,0.2)] ml-1 mr-0.5">$1</span>'
                                                             ) + '<';
                                                         }).slice(2, -2);
 
                                                         return (
-                                                            <div 
+                                                            <div
                                                                 key={sec.title}
                                                                 className="prose prose-invert prose-lg max-w-none 
                                                                     prose-headings:font-bold prose-headings:text-white prose-headings:tracking-tight 

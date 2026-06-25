@@ -186,56 +186,56 @@ const PlannerLayout: React.FC = () => {
 
                     <Suspense fallback={<FallbackSpinner />}>
                         <AnimatePresence mode="wait">
-                        {view === 'board' && (
-                            <motion.div
-                                key="board"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.4, ease: 'easeInOut' }}
-                                className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
-                            >
-                                <BoardView />
-                            </motion.div>
-                        )}
-                        {view === 'calendar' && (
-                            <motion.div
-                                key="calendar"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.4, ease: 'easeInOut' }}
-                                className="absolute inset-x-0 bottom-0 top-[88px] z-10"
-                            >
-                                <CalendarView />
-                            </motion.div>
-                        )}
-                        {view === 'gantt' && (
-                            <motion.div
-                                key="gantt"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.4, ease: 'easeInOut' }}
-                                className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
-                            >
-                                <GanttView />
-                            </motion.div>
-                        )}
-                        {view === 'roadmap' && (
-                            <motion.div
-                                key="roadmap"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.4, ease: 'easeInOut' }}
-                                className="fixed inset-0 z-0"
-                            >
-                                <ReactFlowProvider>
-                                    <RoadmapView isOpenAI={isAIModalOpen} onCloseAI={() => setIsAIModalOpen(false)} />
-                                </ReactFlowProvider>
-                            </motion.div>
-                        )}
+                            {view === 'board' && (
+                                <motion.div
+                                    key="board"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                                    className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
+                                >
+                                    <BoardView />
+                                </motion.div>
+                            )}
+                            {view === 'calendar' && (
+                                <motion.div
+                                    key="calendar"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                                    className="absolute inset-x-0 bottom-0 top-[88px] z-10"
+                                >
+                                    <CalendarView />
+                                </motion.div>
+                            )}
+                            {view === 'gantt' && (
+                                <motion.div
+                                    key="gantt"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                                    className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
+                                >
+                                    <GanttView />
+                                </motion.div>
+                            )}
+                            {view === 'roadmap' && (
+                                <motion.div
+                                    key="roadmap"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                                    className="fixed inset-0 z-0"
+                                >
+                                    <ReactFlowProvider>
+                                        <RoadmapView isOpenAI={isAIModalOpen} onCloseAI={() => setIsAIModalOpen(false)} />
+                                    </ReactFlowProvider>
+                                </motion.div>
+                            )}
                         </AnimatePresence>
                     </Suspense>
                 </div>

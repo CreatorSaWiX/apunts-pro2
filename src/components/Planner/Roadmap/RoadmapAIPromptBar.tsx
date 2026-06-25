@@ -1,9 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, StopCircle, CheckCircle2 } from 'lucide-react';
+import { ArrowUp, Sparkles, StopCircle, CheckCircle2, RotateCcw } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
+import SubjectHoursWidget from './Widgets/SubjectHoursWidget';
+import SubjectEvaluationWidget from './Widgets/SubjectEvaluationWidget';
+import SubjectCompetenciesWidget from './Widgets/SubjectCompetenciesWidget';
 
 interface RoadmapAIPromptBarProps {
     isOpen: boolean;
@@ -21,7 +27,6 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const [prompt, setPrompt] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [loadingText, setLoadingText] = useState('Connectant...');
     const [messages, setMessages] = useState<Message[]>([]);
     const { nodes, addSubjectNode } = useRoadmap();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -41,35 +46,13 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
-    }, [messages, isGenerating, loadingText]);
+    }, [messages, isGenerating]);
 
     useEffect(() => {
         if (isOpen && textareaRef.current) {
             textareaRef.current.focus();
         }
     }, [isOpen]);
-
-    // Missatges dinàmics mentre carrega
-    useEffect(() => {
-        if (!isGenerating) return;
-
-        const texts = [
-            "Analitzant el teu roadmap...",
-            "Consultant la memòria...",
-            "Pensant...",
-            "Redactant la resposta..."
-        ];
-
-        let i = 0;
-        setLoadingText(texts[0]);
-
-        const interval = setInterval(() => {
-            i = (i + 1) % texts.length;
-            setLoadingText(texts[i]);
-        }, 2500);
-
-        return () => clearInterval(interval);
-    }, [isGenerating]);
 
     const handleGenerate = async () => {
         if (!prompt.trim() || isGenerating) return;
@@ -124,32 +107,59 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
             });
 
             if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error || 'Error al comunicar amb la IA');
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || 'Error al comunicar amb la IA');
             }
 
-            const data = await response.json();
+            const reader = response.body?.getReader();
+            if (!reader) throw new Error("No s'ha pogut iniciar l'stream");
+            const decoder = new TextDecoder();
+            let aiResponse = "";
+            let changes: any[] = [];
+            let buffer = "";
+            const aiMsgId = (Date.now() + 1).toString();
 
-            const aiResponse = data.reply || "He processat la teva petició però no tinc comentaris addicionals.";
-            const changes = data.actions || [];
+            // Afegim el missatge buit abans de començar l'streaming
+            setMessages(prev => [...prev, { id: aiMsgId, role: 'ai', content: "", changes: [] }]);
 
-            // Apliquem canvis reals a la UI
-            if (changes && Array.isArray(changes)) {
-                for (const change of changes) {
-                    if (change.type === 'add' && change.subject) {
-                        addSubjectNode(change.subject, 'optional');
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+
+                // L'última línia pot estar incompleta si s'ha tallat el chunk TCP, la guardem
+                buffer = lines.pop() || "";
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const dataStr = line.slice(6);
+                        if (dataStr.trim() === '[DONE]') continue;
+
+                        try {
+                            const parsed = JSON.parse(dataStr);
+
+                            if (parsed.type === 'text') {
+                                aiResponse += parsed.content;
+                                setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, content: aiResponse } : m));
+                            } else if (parsed.type === 'actions') {
+                                changes = parsed.content;
+                                setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, changes } : m));
+
+                                // Apliquem canvis reals a la UI en temps real
+                                for (const change of changes) {
+                                    if (change.type === 'add' && change.subject) {
+                                        addSubjectNode(change.subject, 'optional');
+                                    }
+                                }
+                            } else if (parsed.type === 'error') {
+                                setError(parsed.content);
+                            }
+                        } catch (e) {
+                            // Ignorar chunks mal formats
+                        }
                     }
-                }
-            }
-
-            const aiMsg: Message = { id: (Date.now() + 1).toString(), role: 'ai', content: aiResponse, changes };
-            setMessages(prev => [...prev, aiMsg]);
-
-            if (uid && data.newMemoryData) {
-                try {
-                    await setDoc(doc(db, 'ai_memory', uid), data.newMemoryData, { merge: true });
-                } catch (e) {
-                    console.error("No s'ha pogut desar la memòria nova", e);
                 }
             }
 
@@ -197,7 +207,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                         className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] w-[90vw] max-w-2xl flex flex-col justify-end pointer-events-none"
                     >
                         {/* Chat Area (Floating above input) */}
-                        {messages.length > 0 && (
+                        <div className="relative pointer-events-auto">
                             <div
                                 className="overflow-y-auto px-2 pb-6 space-y-6 custom-scrollbar pointer-events-auto max-h-[60vh] flex flex-col"
                                 ref={chatContainerRef}
@@ -211,14 +221,96 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                             className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                                         >
                                             {/* Bubble */}
-                                            <div className={`flex flex-col gap-2 max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                                                <div className="px-6 py-4 rounded-[24px] text-[15px] leading-relaxed text-slate-200 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] backdrop-blur-xl border border-white/10 bg-slate-800/40">
+                                            <div className={`flex flex-col gap-2 ${msg.role === 'user' ? 'max-w-[85%] items-end' : 'w-[85%] items-start'}`}>
+                                                <div className="px-6 py-4 rounded-[24px] text-[15px] w-full leading-relaxed text-slate-200 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] backdrop-blur-xl border border-white/10 bg-slate-800/40">
                                                     {msg.role === 'ai' ? (
-                                                        <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-black/20 prose-pre:border prose-pre:border-white/10 prose-a:text-cyan-400 text-[15px]">
-                                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                                                {msg.content}
+                                                        !msg.content && isGenerating ? (
+                                                            <div className="flex gap-1.5 items-center h-6 py-1">
+                                                                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0 }} className="w-1.5 h-1.5 rounded-full bg-fuchsia-500" />
+                                                                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.15 }} className="w-1.5 h-1.5 rounded-full bg-fuchsia-400" />
+                                                                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.3 }} className="w-1.5 h-1.5 rounded-full bg-fuchsia-300" />
+                                                            </div>
+                                                        ) : (
+                                                            <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-transparent prose-pre:p-0 prose-pre:border-none prose-a:text-sky-400 hover:prose-a:text-sky-300 text-[15px] prose-strong:text-white prose-strong:font-bold prose-ul:my-3 prose-li:my-1 [&_.katex]:text-lg [&_.katex-display]:my-4 [&_.katex-display]:py-3 [&_.katex-display]:overflow-x-auto custom-scrollbar [&_.katex-display]:bg-black/20 [&_.katex-display]:rounded-2xl [&_.katex-display]:border [&_.katex-display]:border-white/5 [&_.katex-display]:shadow-inner">
+                                                            <ReactMarkdown
+                                                                remarkPlugins={[remarkGfm, remarkMath]}
+                                                                rehypePlugins={[rehypeKatex]}
+                                                                components={{
+                                                                    strong({ node, children, ...props }: any) {
+                                                                        const text = String(children);
+                                                                        const match = /^\[([A-Z0-9.-]+)\]$/.exec(text.trim());
+                                                                        if (match) {
+                                                                            return (
+                                                                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded text-[11px] font-black bg-sky-500/10 text-sky-400 border border-sky-500/30 shadow-[0_0_8px_rgba(14,165,233,0.2)] mx-1 align-middle">
+                                                                                    {match[1]}
+                                                                                </span>
+                                                                            );
+                                                                        }
+                                                                        return <strong {...props}>{children}</strong>;
+                                                                    },
+                                                                    pre({ node, children, ...props }: any) {
+                                                                        // Check if it's a custom widget block (language starts with subject-)
+                                                                        if (node && node.children && node.children.length === 1 && node.children[0].tagName === 'code') {
+                                                                            const codeNode = node.children[0];
+                                                                            const className = codeNode.properties?.className || [];
+                                                                            const langClass = className.find((c: string) => c.startsWith('language-subject-'));
+                                                                            if (langClass) {
+                                                                                // Do not wrap custom widgets in a <pre> block
+                                                                                return <>{children}</>;
+                                                                            }
+                                                                        }
+                                                                        return (
+                                                                            <pre className="bg-slate-950/50 backdrop-blur-xl border border-white/10 rounded-2xl p-4 overflow-x-auto custom-scrollbar my-4" {...props}>
+                                                                                {children}
+                                                                            </pre>
+                                                                        );
+                                                                    },
+                                                                    code({ node, className, children, ...props }: any) {
+                                                                        const text = String(children);
+                                                                        const matchClass = /language-([\w-]+)/.exec(className || '');
+
+                                                                        if (matchClass) {
+                                                                            if (matchClass[1] === 'subject-stats') {
+                                                                                return <SubjectHoursWidget subjectId={text.replace(/\n$/, '')} />
+                                                                            }
+                                                                            if (matchClass[1] === 'subject-evaluation') {
+                                                                                return <SubjectEvaluationWidget dataString={text} />
+                                                                            }
+                                                                            if (matchClass[1] === 'subject-competencies') {
+                                                                                return <SubjectCompetenciesWidget dataString={text} />
+                                                                            }
+                                                                            // Regular highlighted block code
+                                                                            return <code className={className} {...props}>{children}</code>;
+                                                                        }
+
+                                                                        // Distinguish inline code
+                                                                        const isInline = !text.includes('\n');
+
+                                                                        if (isInline) {
+                                                                            const match = /^\[([A-Z0-9.-]+)\]$/.exec(text.trim());
+                                                                            if (match) {
+                                                                                return (
+                                                                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded text-[11px] font-black bg-sky-500/10 text-sky-400 border border-sky-500/30 shadow-[0_0_8px_rgba(14,165,233,0.2)] mx-1 align-middle">
+                                                                                        {match[1]}
+                                                                                    </span>
+                                                                                );
+                                                                            }
+                                                                            return (
+                                                                                <code className="bg-sky-500/10 text-sky-300 px-1.5 py-0.5 rounded-md text-sm font-mono border border-sky-500/20" {...props}>
+                                                                                    {children}
+                                                                                </code>
+                                                                            );
+                                                                        }
+
+                                                                        // Block code without language
+                                                                        return <code className={className} {...props}>{children}</code>;
+                                                                    }
+                                                                }}
+                                                            >
+                                                                {msg.content + (isGenerating && msg.id === messages[messages.length - 1]?.id ? ' ▍' : '')}
                                                             </ReactMarkdown>
-                                                        </div>
+                                                            </div>
+                                                        )
                                                     ) : (
                                                         <span className="whitespace-pre-wrap">{msg.content}</span>
                                                     )}
@@ -239,37 +331,9 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                         </motion.div>
                                     ))}
 
-                                    {/* Thinking Indicator */}
-                                    {isGenerating && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            className="flex gap-3 flex-row items-end"
-                                        >
-                                            <div className="bg-slate-800/40 backdrop-blur-xl border border-white/10 px-5 py-3 rounded-[24px] flex gap-3 items-center shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)]">
-                                                <div className="flex gap-1.5">
-                                                    <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                                    <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                                    <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                                                </div>
-                                                <AnimatePresence mode="wait">
-                                                    <motion.span
-                                                        key={loadingText}
-                                                        initial={{ opacity: 0, x: -5 }}
-                                                        animate={{ opacity: 1, x: 0 }}
-                                                        exit={{ opacity: 0, x: 5 }}
-                                                        className="text-[13px] font-medium text-slate-300 tracking-wide"
-                                                    >
-                                                        {loadingText}
-                                                    </motion.span>
-                                                </AnimatePresence>
-                                            </div>
-                                        </motion.div>
-                                    )}
                                 </AnimatePresence>
                             </div>
-                        )}
+                        </div>
 
                         {/* Error Message */}
                         {error && (
