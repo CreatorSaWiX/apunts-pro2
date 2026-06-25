@@ -142,7 +142,7 @@ REGLES D'ESTIL I CONTINGUT (MOLT ESTRICTES):
 10. CONTINGUT D'ASSIGNATURES: Quan donis el resum o expliquis una assignatura, obvia el professorat i les competències, centra't ÚNICAMENT en aquests 3 punts:
    - **Què faran (Activitats)**: Llistat molt breu dels projectes o pràctiques clau perquè sàpiga exactament què haurà de programar o resoldre.
    - **Mètode d'Avaluació**: Moltes assignatures tenen avaluacions complexes amb \`max()\` o sumen més de 100% (punts extra). Per solucionar-ho:
-     1. Escriu la fórmula oficial matemàtica de l'avaluació en format KaTeX (ex: \`$$ \\min(10, \\max(0.2 \\cdot P + ...)) $$\`) perquè l'usuari vegi tota la lògica i rutes alternatives. Afegeix una llegenda ràpida si cal.
+     1. Explica com s'avalua de forma molt senzilla en text pla i llistes. Si hi ha rutes alternatives (ex: Avaluació Única) o condicions (com quedar-se amb la nota màxima), explica-ho ràpidament en llenguatge humà, SENSE usar fórmules matemàtiques complexes ni KaTeX, per evitar errors de sintaxi i no espantar l'alumne.
      2. A sota, genera EXACTAMENT un bloc de codi Markdown amb el llenguatge \`subject-evaluation\` i un array JSON a dins. Per aquest gràfic, tria NOMÉS la ruta principal (Avaluació Continuada) i posa els pesos base (les "weight" haurien de sumar prop de 100). Exemple:
      \`\`\`subject-evaluation
      [
@@ -172,8 +172,10 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
         }));
 
         const MODELS = [
+            'gemini-3.5-flash',
             'gemini-2.5-flash',
             'gemini-1.5-flash',
+            'gemini-3.1-flash-lite'
         ];
 
         // Definim la tool per modificar el roadmap
@@ -291,9 +293,9 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                 return;
                 
             } catch (e: any) {
-                const is429 = e?.status === 429 || String(e?.message || '').includes('429');
-                if (is429) {
-                    console.warn(`[Vercel Roadmap AI] ${modelName} rate limit, saltant...`);
+                const isFallbackable = e?.status === 429 || e?.status === 503 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').match(/exhausted/i);
+                if (isFallbackable) {
+                    console.warn(`[Vercel Roadmap AI] ${modelName} fallat (rate limit / server error), saltant al següent model...`);
                     lastError = e;
                     continue;
                 }

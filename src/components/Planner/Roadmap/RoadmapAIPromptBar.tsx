@@ -186,6 +186,82 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
         }
     };
 
+    const markdownComponents = React.useMemo(() => ({
+        strong({ node, children, ...props }: any) {
+            const text = String(children);
+            const match = /^\[([A-Z0-9.-]+)\]$/.exec(text.trim());
+            if (match) {
+                return (
+                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded text-[11px] font-black bg-sky-500/10 text-sky-400 border border-sky-500/30 shadow-[0_0_8px_rgba(14,165,233,0.2)] mx-1 align-middle">
+                        {match[1]}
+                    </span>
+                );
+            }
+            return <strong {...props}>{children}</strong>;
+        },
+        pre({ node, children, ...props }: any) {
+            // Check if it's a custom widget block (language starts with subject-)
+            if (node && node.children && node.children.length === 1 && node.children[0].tagName === 'code') {
+                const codeNode = node.children[0];
+                const className = codeNode.properties?.className || [];
+                const langClass = className.find((c: string) => c.startsWith('language-subject-'));
+                if (langClass) {
+                    // Do not wrap custom widgets in a <pre> block
+                    return <>{children}</>;
+                }
+            }
+            return (
+                <pre className="bg-slate-950/50 backdrop-blur-xl border border-white/10 rounded-2xl p-4 overflow-x-auto custom-scrollbar my-4" {...props}>
+                    {children}
+                </pre>
+            );
+        },
+        code({ node, className, children, ...props }: any) {
+            const text = String(children);
+            const matchClass = /language-([\w-]+)/.exec(className || '');
+
+            if (matchClass) {
+                if (matchClass[1] === 'subject-stats') {
+                    return <SubjectHoursWidget subjectId={text.replace(/\n$/, '')} />
+                }
+                if (matchClass[1] === 'subject-evaluation') {
+                    return <SubjectEvaluationWidget dataString={text} />
+                }
+                if (matchClass[1] === 'subject-competencies') {
+                    return <SubjectCompetenciesWidget dataString={text} />
+                }
+                // Regular highlighted block code
+                return <code className={className} {...props}>{children}</code>;
+            }
+
+            // Distinguish inline code
+            const isInline = !text.includes('\n');
+
+            if (isInline) {
+                // Gemini sometimes double-wraps inline code with backticks inside the actual text node
+                let cleanText = text.trim();
+                cleanText = cleanText.replace(/^`+|`+$/g, '').trim();
+
+                const match = /^\[([A-Z0-9.-]+)\]$/.exec(cleanText);
+                if (match) {
+                    return (
+                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded text-[11px] font-black bg-sky-500/10 text-sky-400 border border-sky-500/30 shadow-[0_0_8px_rgba(14,165,233,0.2)] mx-1 align-middle">
+                            {match[1]}
+                        </span>
+                    );
+                }
+                return (
+                    <code className="bg-sky-500/10 text-sky-300 px-1.5 py-0.5 rounded-md text-sm font-mono border border-sky-500/20" {...props}>
+                        {cleanText}
+                    </code>
+                );
+            }
+
+            // Block code without language
+            return <code className={className} {...props}>{children}</code>;
+        }
+    }), []);
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -234,78 +310,8 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                                             <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-transparent prose-pre:p-0 prose-pre:border-none prose-a:text-sky-400 hover:prose-a:text-sky-300 text-[15px] prose-strong:text-white prose-strong:font-bold prose-ul:my-3 prose-li:my-1 [&_.katex]:text-lg [&_.katex-display]:my-4 [&_.katex-display]:py-3 [&_.katex-display]:overflow-x-auto custom-scrollbar [&_.katex-display]:bg-black/20 [&_.katex-display]:rounded-2xl [&_.katex-display]:border [&_.katex-display]:border-white/5 [&_.katex-display]:shadow-inner">
                                                             <ReactMarkdown
                                                                 remarkPlugins={[remarkGfm, remarkMath]}
-                                                                rehypePlugins={[rehypeKatex]}
-                                                                components={{
-                                                                    strong({ node, children, ...props }: any) {
-                                                                        const text = String(children);
-                                                                        const match = /^\[([A-Z0-9.-]+)\]$/.exec(text.trim());
-                                                                        if (match) {
-                                                                            return (
-                                                                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded text-[11px] font-black bg-sky-500/10 text-sky-400 border border-sky-500/30 shadow-[0_0_8px_rgba(14,165,233,0.2)] mx-1 align-middle">
-                                                                                    {match[1]}
-                                                                                </span>
-                                                                            );
-                                                                        }
-                                                                        return <strong {...props}>{children}</strong>;
-                                                                    },
-                                                                    pre({ node, children, ...props }: any) {
-                                                                        // Check if it's a custom widget block (language starts with subject-)
-                                                                        if (node && node.children && node.children.length === 1 && node.children[0].tagName === 'code') {
-                                                                            const codeNode = node.children[0];
-                                                                            const className = codeNode.properties?.className || [];
-                                                                            const langClass = className.find((c: string) => c.startsWith('language-subject-'));
-                                                                            if (langClass) {
-                                                                                // Do not wrap custom widgets in a <pre> block
-                                                                                return <>{children}</>;
-                                                                            }
-                                                                        }
-                                                                        return (
-                                                                            <pre className="bg-slate-950/50 backdrop-blur-xl border border-white/10 rounded-2xl p-4 overflow-x-auto custom-scrollbar my-4" {...props}>
-                                                                                {children}
-                                                                            </pre>
-                                                                        );
-                                                                    },
-                                                                    code({ node, className, children, ...props }: any) {
-                                                                        const text = String(children);
-                                                                        const matchClass = /language-([\w-]+)/.exec(className || '');
-
-                                                                        if (matchClass) {
-                                                                            if (matchClass[1] === 'subject-stats') {
-                                                                                return <SubjectHoursWidget subjectId={text.replace(/\n$/, '')} />
-                                                                            }
-                                                                            if (matchClass[1] === 'subject-evaluation') {
-                                                                                return <SubjectEvaluationWidget dataString={text} />
-                                                                            }
-                                                                            if (matchClass[1] === 'subject-competencies') {
-                                                                                return <SubjectCompetenciesWidget dataString={text} />
-                                                                            }
-                                                                            // Regular highlighted block code
-                                                                            return <code className={className} {...props}>{children}</code>;
-                                                                        }
-
-                                                                        // Distinguish inline code
-                                                                        const isInline = !text.includes('\n');
-
-                                                                        if (isInline) {
-                                                                            const match = /^\[([A-Z0-9.-]+)\]$/.exec(text.trim());
-                                                                            if (match) {
-                                                                                return (
-                                                                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded text-[11px] font-black bg-sky-500/10 text-sky-400 border border-sky-500/30 shadow-[0_0_8px_rgba(14,165,233,0.2)] mx-1 align-middle">
-                                                                                        {match[1]}
-                                                                                    </span>
-                                                                                );
-                                                                            }
-                                                                            return (
-                                                                                <code className="bg-sky-500/10 text-sky-300 px-1.5 py-0.5 rounded-md text-sm font-mono border border-sky-500/20" {...props}>
-                                                                                    {children}
-                                                                                </code>
-                                                                            );
-                                                                        }
-
-                                                                        // Block code without language
-                                                                        return <code className={className} {...props}>{children}</code>;
-                                                                    }
-                                                                }}
+                                                                rehypePlugins={[[rehypeKatex, { strict: false, throwOnError: false, errorColor: '#cbd5e1' }]]}
+                                                                components={markdownComponents}
                                                             >
                                                                 {msg.content + (isGenerating && msg.id === messages[messages.length - 1]?.id ? ' ▍' : '')}
                                                             </ReactMarkdown>
