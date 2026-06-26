@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
 import { Flag, Bookmark } from 'lucide-react';
 import type { TaskPriority } from '../../types/tasks';
+import LiquidPanel from '../ui/glass/LiquidPanel';
 
 export interface TaskPopoverEventDetail {
     x: number;
@@ -92,9 +93,10 @@ const TaskPopover: React.FC = () => {
                     animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, filter: 'blur(5px)', y: -5 }}
                     transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 0.8 }}
-                    className="fixed z-[1001] bg-[#13131A]/90 backdrop-blur-[40px] border border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] rounded-[16px] w-[240px] flex flex-col origin-top-left"
+                    className="fixed z-[1001] w-[240px] flex flex-col origin-top-left"
                     style={{ left: position.x, top: position.y }}
                 >
+                    <LiquidPanel className="flex flex-col !rounded-[16px]">
                     {/* Títol Ràpid */}
                     <div className="p-3 border-b border-white/[0.05]">
                         <input 
@@ -129,7 +131,7 @@ const TaskPopover: React.FC = () => {
                             </button>
 
                             {showSubjectPicker && (
-                                <div className="absolute top-full left-0 right-0 mt-1 bg-[#13131A]/95 backdrop-blur-[40px] border border-white/[0.08] p-1.5 rounded-[12px] flex flex-col gap-1 shadow-[0_20px_50px_rgba(0,0,0,0.6)] z-50">
+                                <LiquidPanel className="absolute top-full left-0 right-0 mt-1 p-1.5 flex flex-col gap-1 z-50 !rounded-[12px]">
                                     <input 
                                         autoFocus
                                         value={subjectSearchQuery}
@@ -168,7 +170,7 @@ const TaskPopover: React.FC = () => {
                                             );
                                         })}
                                     </div>
-                                </div>
+                                </LiquidPanel>
                             )}
                         </div>
 
@@ -199,6 +201,7 @@ const TaskPopover: React.FC = () => {
                             })}
                         </div>
                     </div>
+                </LiquidPanel>
                 </motion.div>
             )}
         </AnimatePresence>

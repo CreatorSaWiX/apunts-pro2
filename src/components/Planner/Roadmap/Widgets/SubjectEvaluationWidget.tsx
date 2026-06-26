@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface EvaluationItem {
     acronym: string;
@@ -80,7 +80,6 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
             <div className="flex flex-wrap gap-4 mt-2">
                 {items.map((item, i) => {
                     const theme = themeColors[i % themeColors.length];
-                    const percentage = (item.weight / validTotal) * 100;
                     const isHovered = hoveredIndex === i;
 
                     return (

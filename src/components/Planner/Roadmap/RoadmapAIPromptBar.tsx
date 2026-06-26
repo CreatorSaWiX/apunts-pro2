@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, StopCircle, CheckCircle2, RotateCcw } from 'lucide-react';
+import { ArrowUp, Sparkles, StopCircle, CheckCircle2 } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -71,7 +71,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
 
         try {
             const { auth, db } = await import('../../../lib/firebase');
-            const { doc, getDoc, setDoc } = await import('firebase/firestore');
+            const { doc, getDoc } = await import('firebase/firestore');
             const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
             const uid = auth.currentUser?.uid;
 

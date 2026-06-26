@@ -11,6 +11,11 @@ import Spinner from '../../ui/Spinner';
 import { Save, Plus, GraduationCap, ChevronUp, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
+import { SpecializationModal } from './SpecializationModal';
+import LiquidPanel from '../../ui/glass/LiquidPanel';
+import LiquidDropdown from '../../ui/glass/LiquidDropdown';
+import { LiquidToolbar, LiquidToolbarButton } from '../../ui/glass/LiquidToolbar';
+import { Modal } from '../../ui/Modal';
 
 const nodeTypes = {
     subjectNode: SubjectNode,
@@ -20,21 +25,24 @@ const nodeTypes = {
 const CustomControls = () => {
     const { zoomIn, zoomOut, fitView } = useReactFlow();
     return (
-        <Panel position="bottom-left" className="m-6 flex flex-col gap-2 bg-slate-900/60 backdrop-blur-2xl border border-white/10 p-2 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-40">
-            <button onClick={() => zoomIn({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Zoom In">
-                <ZoomIn size={18} strokeWidth={2.5} />
-            </button>
-            <div className="w-full h-px bg-white/5" />
-            <button onClick={() => zoomOut({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Zoom Out">
-                <ZoomOut size={18} strokeWidth={2.5} />
-            </button>
-            <div className="w-full h-px bg-white/5" />
-            <button onClick={() => fitView({ padding: 0.2, duration: 800 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Fit View">
-                <Maximize size={18} strokeWidth={2.5} />
-            </button>
+        <Panel position="bottom-left" className="m-6 z-40">
+            <LiquidPanel className="flex flex-col gap-2 p-2">
+                <button onClick={() => zoomIn({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Zoom In">
+                    <ZoomIn size={18} strokeWidth={2.5} />
+                </button>
+                <div className="w-full h-px bg-white/5" />
+                <button onClick={() => zoomOut({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Zoom Out">
+                    <ZoomOut size={18} strokeWidth={2.5} />
+                </button>
+                <div className="w-full h-px bg-white/5" />
+                <button onClick={() => fitView({ padding: 0.2, duration: 800 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Fit View">
+                    <Maximize size={18} strokeWidth={2.5} />
+                </button>
+            </LiquidPanel>
         </Panel>
     );
 };
+
 
 interface RoadmapViewProps {
     isOpenAI?: boolean;
@@ -198,100 +206,55 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                 </motion.div>
 
                 {/* Floating Dock Action Buttons Bottom Center */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40"
-                >
-                    <div className="bg-slate-900/60 backdrop-blur-3xl border border-white/10 p-2 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)] flex items-center gap-2">
+                {/* Floating Dock Action Buttons Bottom Center */}
+                <LiquidToolbar delay={0.3}>
                         
                         {/* Tria Especialitat */}
                         <div className="relative">
-                            <button 
+                            <LiquidToolbarButton 
                                 onClick={() => setIsSpecMenuOpen(!isSpecMenuOpen)}
-                                className={`h-11 px-6 ${currentSpec ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-100 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300'} hover:bg-indigo-500/30 border hover:border-indigo-400 font-bold rounded-full flex items-center gap-2 transition-all group`}
                             >
-                                <GraduationCap size={18} className={`${currentSpec ? 'text-indigo-300' : 'text-indigo-400'} group-hover:text-indigo-200 transition-colors`} />
-                                <div className="relative overflow-hidden flex items-center justify-center">
-                                    <AnimatePresence mode="popLayout" initial={false}>
-                                        <motion.span
-                                            key={currentSpec ? currentSpec.id : 'default'}
-                                            initial={{ y: -20, opacity: 0 }}
-                                            animate={{ y: 0, opacity: 1 }}
-                                            exit={{ y: 20, opacity: 0 }}
-                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                            className="text-sm tracking-wide whitespace-nowrap block"
-                                        >
-                                            {currentSpec ? currentSpec.name : 'Especialitat'}
-                                        </motion.span>
-                                    </AnimatePresence>
-                                </div>
-                                <ChevronUp size={16} className={`transition-transform duration-300 opacity-50 group-hover:opacity-100 ${isSpecMenuOpen ? 'rotate-180' : ''}`} />
-                            </button>
-
-                            <AnimatePresence>
-                                {isSpecMenuOpen && (
-                                    <>
-                                        <div className="fixed inset-0 z-40" onClick={() => setIsSpecMenuOpen(false)} />
-                                        <motion.div 
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                                            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-72 bg-slate-900/90 border border-white/10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] overflow-hidden backdrop-blur-2xl z-50 p-2"
-                                        >
-                                            <div className="px-3 py-2 text-[10px] text-indigo-400/70 font-bold uppercase tracking-[0.15em] mb-1">
-                                                Mencions Disponibles
-                                            </div>
-                                            {specializations.map(spec => (
-                                                <button
-                                                    key={spec.id}
-                                                    onClick={() => {
-                                                        setSpecialization(spec.id);
-                                                        setIsSpecMenuOpen(false);
-                                                    }}
-                                                    className="w-full text-left px-4 py-3 hover:bg-white/10 text-slate-200 text-sm font-medium rounded-2xl transition-all hover:pl-5 group flex items-center gap-3"
-                                                >
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                    {spec.name}
-                                                </button>
-                                            ))}
-                                        </motion.div>
-                                    </>
-                                )}
-                            </AnimatePresence>
+                                <GraduationCap size={16} />
+                                <span className="hidden sm:inline">
+                                    {currentSpec ? currentSpec.name : 'Especialitat'}
+                                </span>
+                                <span className="sm:hidden">
+                                    {currentSpec ? currentSpec.name.substring(0, 6) + '.' : 'Espec.'}
+                                </span>
+                            </LiquidToolbarButton>
                         </div>
+
+                        <SpecializationModal
+                            isOpen={isSpecMenuOpen}
+                            onClose={() => setIsSpecMenuOpen(false)}
+                            currentSpecId={currentSpec?.id || null}
+                            onSelect={setSpecialization}
+                        />
 
                         <div className="w-px h-6 bg-white/10 mx-1" />
 
                         {/* Afegir Optativa */}
-                        <button 
+                        <LiquidToolbarButton 
                             onClick={() => setIsSearchModalOpen(true)}
-                            className="h-11 px-6 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/20 hover:border-sky-500/50 text-sky-300 font-bold rounded-full flex items-center gap-2 transition-all group"
                         >
-                            <Plus size={18} className="group-hover:text-sky-200 transition-colors" />
-                            <span className="text-sm tracking-wide">Optativa</span>
-                        </button>
+                            <Plus size={16} />
+                            <span className="hidden sm:inline">Optativa</span>
+                            <span className="sm:hidden">Opt.</span>
+                        </LiquidToolbarButton>
 
                         <div className="w-px h-6 bg-white/10 mx-1" />
 
                         {/* Guardar */}
-                        <button 
+                        <LiquidToolbarButton 
                             onClick={handleSave}
                             disabled={isSaving}
-                            className={`h-11 px-6 rounded-full flex items-center gap-2 text-sm font-bold tracking-wide transition-all
-                                ${isSaving 
-                                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5' 
-                                    : 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 border border-emerald-500/20 hover:border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]'
-                                }`}
                         >
                             {isSaving ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={16} />}
-                            {isSaving ? 'Guardant...' : 'Guardar'}
-                        </button>
+                            <span className="hidden sm:inline">{isSaving ? 'Guardant...' : 'Guardar'}</span>
+                            <span className="sm:hidden">{isSaving ? '...' : 'Desar'}</span>
+                        </LiquidToolbarButton>
 
-                    </div>
-                </motion.div>
+                </LiquidToolbar>
             </div>
 
             <SubjectContextMenu 

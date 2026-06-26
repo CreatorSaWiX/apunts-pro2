@@ -14,6 +14,9 @@ import PostDetailModal from '../components/community/PostDetailModal';
 import Spinner from '../components/ui/Spinner';
 import { useSettings } from '../contexts/SettingsContext';
 import { SUBJECTS } from '../config/subjects';
+import LiquidPanel from '../components/ui/glass/LiquidPanel';
+import LiquidDropdown from '../components/ui/glass/LiquidDropdown';
+import { LiquidToolbar, LiquidToolbarButton } from '../components/ui/glass/LiquidToolbar';
 
 const mockEpicPost: CommunityPost = {
     id: 'mock-epic',
@@ -273,7 +276,7 @@ const CommunityPage = () => {
                         >
                             <button
                                 onClick={handleUploadClick}
-                                className="group relative px-8 py-4 bg-white/5 backdrop-blur-xl border border-white/10 text-white font-bold text-lg rounded-full flex items-center gap-3 transition-all duration-500 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.05)] hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] overflow-hidden"
+                                className="group relative px-8 py-4 bg-[var(--glass-bg)] backdrop-blur-3xl backdrop-saturate-150 border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),0_0_40px_rgba(255,255,255,0.05)] text-white font-bold text-lg rounded-full flex items-center gap-3 transition-all duration-500 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] active:scale-95 hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] overflow-hidden"
                             >
                                 <div className="absolute inset-0 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out opacity-0 group-hover:opacity-100" />
                                 <Plus size={20} className="transition-transform group-hover:rotate-90 duration-300 relative z-10" />
@@ -355,104 +358,95 @@ const CommunityPage = () => {
             <main className="w-full max-w-[1600px] px-4 sm:px-8 lg:px-12 relative z-10">
                 
                 {/* Floating Glassmorphic Pill Filter (Awwwards Style) */}
-                <motion.div 
-                    initial={{ y: 100, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 20 }}
-                    className="fixed bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2 rounded-[2rem] bg-[#0F172A]/80 backdrop-blur-2xl border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8),0_0_20px_rgba(255,255,255,0.05)]"
-                >
-                    <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar pl-2">
-                        {/* Assignatures */}
-                        <button 
-                            onClick={() => setShowSubjectFilter(true)}
-                            className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${activeSubject !== 'all' ? 'bg-white text-black shadow-lg scale-105' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                <LiquidToolbar delay={0.5}>
+                    {/* Assignatures */}
+                    <LiquidToolbarButton 
+                        onClick={() => setShowSubjectFilter(true)}
+                        active={activeSubject !== 'all'}
+                    >
+                        <BookOpen size={16} />
+                        <span className="hidden sm:inline">Assignatures</span>
+                        <span className="sm:hidden">Assig.</span>
+                        {activeSubject !== 'all' && <span className="ml-1 text-[10px] bg-black/20 text-current px-1.5 py-0.5 rounded-md uppercase">{activeSubject}</span>}
+                    </LiquidToolbarButton>
+                    
+                    <div className="w-px h-6 bg-white/10 mx-1" />
+
+                    {/* Raresa */}
+                    <div className="relative">
+                        <LiquidToolbarButton
+                            onClick={() => setShowRarityFilter(!showRarityFilter)}
+                            active={activeRank !== null}
                         >
-                            <BookOpen size={16} />
-                            <span className="hidden sm:inline">Assignatures</span>
-                            <span className="sm:hidden">Assig.</span>
-                            {activeSubject !== 'all' && <span className="ml-1 text-[10px] bg-black/20 text-current px-1.5 py-0.5 rounded-md uppercase">{activeSubject}</span>}
+                            <Sparkles size={16} />
+                            <span className="hidden sm:inline">Raresa</span>
+                            <span className="sm:hidden">Rar.</span>
+                            {activeRank !== null && <span className="ml-1 text-[10px] bg-primary/20 text-current px-1.5 py-0.5 rounded-md uppercase">Lv.{activeRank}</span>}
+                        </LiquidToolbarButton>
+
+                        {/* Raresa Dropdown */}
+                        <AnimatePresence>
+                            {showRarityFilter && (
+                                <LiquidDropdown 
+                                    className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 origin-bottom z-50 w-44"
+                                    panelClassName="p-2 flex flex-col gap-1"
+                                >
+                                    <button 
+                                        onClick={() => { setActiveRank(null); setShowRarityFilter(false); }}
+                                        className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors ${activeRank === null ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                                    >
+                                        Qualsevol raresa
+                                    </button>
+                                    {[0, 1, 2, 3, 4].map(rank => (
+                                        <button
+                                            key={rank}
+                                            onClick={() => { setActiveRank(rank); setShowRarityFilter(false); }}
+                                            className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors flex items-center justify-between group ${activeRank === rank ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                                        >
+                                            <span>{['Normal', 'Featured', 'Epic', 'Legendary', 'Mythic'][rank]}</span>
+                                            <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${activeRank === rank ? 'bg-primary/30 text-primary' : 'bg-white/10 text-slate-400 group-hover:text-white'}`}>Lv.{rank}</span>
+                                        </button>
+                                    ))}
+                                </LiquidDropdown>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    <div className="w-px h-6 bg-white/10 mx-1" />
+
+                    {/* Buscar */}
+                    <div className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-[180px] sm:w-[280px] ml-1' : 'w-10 ml-0'}`}>
+                        <button 
+                            onClick={() => {
+                                if (isSearchOpen && !searchQuery) setIsSearchOpen(false);
+                                else setIsSearchOpen(true);
+                            }}
+                            className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isSearchOpen || searchQuery ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                            title="Buscar"
+                        >
+                            <Search size={18} />
                         </button>
                         
-                        <div className="w-px h-6 bg-white/10 mx-1" />
-
-                        {/* Raresa */}
-                        <div className="relative">
-                            <button
-                                onClick={() => setShowRarityFilter(!showRarityFilter)}
-                                className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${activeRank !== null ? 'bg-primary/20 text-primary shadow-lg scale-105' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
-                            >
-                                <Sparkles size={16} />
-                                <span className="hidden sm:inline">Raresa</span>
-                                <span className="sm:hidden">Rar.</span>
-                                {activeRank !== null && <span className="ml-1 text-[10px] bg-primary/20 text-current px-1.5 py-0.5 rounded-md uppercase">Lv.{activeRank}</span>}
-                            </button>
-
-                            {/* Raresa Dropdown */}
-                            <AnimatePresence>
-                                {showRarityFilter && (
-                                    <motion.div 
-                                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                                        className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 p-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl flex flex-col gap-1 w-44 origin-bottom z-50"
-                                    >
-                                        <button 
-                                            onClick={() => { setActiveRank(null); setShowRarityFilter(false); }}
-                                            className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors ${activeRank === null ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
-                                        >
-                                            Qualsevol raresa
-                                        </button>
-                                        {[0, 1, 2, 3, 4].map(rank => (
-                                            <button
-                                                key={rank}
-                                                onClick={() => { setActiveRank(rank); setShowRarityFilter(false); }}
-                                                className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors flex items-center justify-between group ${activeRank === rank ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
-                                            >
-                                                <span>{['Normal', 'Featured', 'Epic', 'Legendary', 'Mythic'][rank]}</span>
-                                                <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${activeRank === rank ? 'bg-primary/30 text-primary' : 'bg-white/10 text-slate-400 group-hover:text-white'}`}>Lv.{rank}</span>
-                                            </button>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        <div className="w-px h-6 bg-white/10 mx-1" />
-
-                        {/* Buscar */}
-                        <div className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-[180px] sm:w-[280px] ml-1' : 'w-10 ml-0'}`}>
-                            <button 
-                                onClick={() => {
-                                    if (isSearchOpen && !searchQuery) setIsSearchOpen(false);
-                                    else setIsSearchOpen(true);
-                                }}
-                                className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isSearchOpen || searchQuery ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
-                                title="Buscar"
-                            >
-                                <Search size={18} />
-                            </button>
-                            
-                            <div className="flex-1 relative h-10 flex items-center">
-                                <input 
-                                    autoFocus={isSearchOpen}
-                                    type="text"
-                                    placeholder="Cerca apunts..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none px-2 placeholder:text-slate-600"
-                                />
-                                {(searchQuery || isSearchOpen) && (
-                                    <button 
-                                        onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
-                                        className="absolute right-2 p-1 text-slate-500 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors z-10"
-                                    >
-                                        <X size={14} />
-                                    </button>
-                                )}
-                            </div>
+                        <div className="flex-1 relative h-10 flex items-center">
+                            <input 
+                                autoFocus={isSearchOpen}
+                                type="text"
+                                placeholder="Cerca apunts..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none px-2 placeholder:text-slate-600"
+                            />
+                            {(searchQuery || isSearchOpen) && (
+                                <button 
+                                    onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
+                                    className="absolute right-2 p-1 text-slate-500 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors z-10"
+                                >
+                                    <X size={14} />
+                                </button>
+                            )}
                         </div>
                     </div>
-                </motion.div>
+                </LiquidToolbar>
 
                 {/* Feed Section */}
                 <div className="w-full">

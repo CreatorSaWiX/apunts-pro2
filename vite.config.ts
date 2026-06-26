@@ -479,7 +479,7 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                       }
 
                       if (hasToolCall && toolCallData) {
-                        sendSSE({ type: 'actions', content: toolCallData.actions });
+                        sendSSE({ type: 'actions', content: (toolCallData as any).actions });
                       }
 
                       res.write(`data: [DONE]\n\n`);

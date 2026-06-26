@@ -63,6 +63,14 @@
   --accent-rgb: 56, 189, 248;
   /* Sky 400 */
   --secondary: #94a3b8;
+
+  /* Liquid Glass System */
+  --glass-bg: rgba(15, 23, 42, 0.15); /* Slate 900 very transparent */
+  --glass-bg-darker: rgba(11, 18, 33, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-light: rgba(255, 255, 255, 0.2);
+  --glass-shadow-inner: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  --glass-shadow-outer: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 body {

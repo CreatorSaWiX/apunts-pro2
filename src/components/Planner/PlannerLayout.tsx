@@ -64,7 +64,7 @@ const PlannerLayout: React.FC = () => {
     const { defaultPlannerView } = useSettings();
     const [activeTab, setActiveTab] = useState<ViewMode>(defaultPlannerView || 'board');
     const [view, setView] = useState<ViewMode>(defaultPlannerView || 'board');
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const [isAIModalOpen, setIsAIModalOpen] = useState(false);
     const [screenGlow, setScreenGlow] = useState(false);
 

@@ -87,7 +87,7 @@ export const Modal = ({
                                 <X size={20} strokeWidth={2.5} />
                             </button>
                         )}
-                        <div className="relative z-10 flex flex-col h-full overflow-hidden">
+                        <div className="relative z-10 flex flex-col flex-1 h-full overflow-hidden">
                             {children}
                         </div>
                     </motion.div>
