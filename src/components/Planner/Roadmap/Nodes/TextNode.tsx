@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { NodeToolbar, Position, NodeResizeControl, type NodeProps } from '@xyflow/react';
 import { useRoadmap, type SubjectNodeData } from '../../../../contexts/RoadmapContext';
-import { Trash2, Bold, GripHorizontal, Copy, Type } from 'lucide-react';
+import { Trash2, Bold, Copy, Type } from 'lucide-react';
 
 const COLORS = ['#ffffff', '#ef4444', '#3b82f6', '#eab308', '#a855f7', '#22c55e'];
 

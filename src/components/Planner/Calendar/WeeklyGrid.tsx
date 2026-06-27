@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { flushSync } from 'react-dom';
 import { useDroppable, useDraggable } from '@dnd-kit/core';
 import { startOfWeek, endOfWeek, eachDayOfInterval, format, isToday, addDays, subDays } from 'date-fns';
@@ -380,7 +380,25 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
 
     const startDate = subDays(baseDate, 28); // 4 weeks before
     const endDate = addDays(endOfWeek(baseDate, { weekStartsOn: 1 }), 28); // 4 weeks after (total 9 weeks = 63 days)
-    const days = eachDayOfInterval({ start: startDate, end: endDate });
+    const days = useMemo(() => eachDayOfInterval({ start: startDate, end: endDate }), [startDate, endDate]);
+    
+    // O(1) Pre-càlcul per agrupar tasques per dia i evitar el lag en el renderitzat
+    const tasksByDay = useMemo(() => {
+        const mapping: Record<string, typeof tasks> = {};
+        days.forEach((day: Date) => {
+            const dayStart = new Date(day);
+            dayStart.setHours(0, 0, 0, 0);
+            const dayEnd = new Date(day);
+            dayEnd.setHours(24, 0, 0, 0);
+            mapping[day.toISOString()] = tasks.filter(t => {
+                if (!t.startDate) return false;
+                const start = new Date(t.startDate);
+                const end = t.dueDate ? new Date(t.dueDate) : new Date(start.getTime() + (t.estimatedMinutes || 60) * 60000);
+                return start < dayEnd && end > dayStart;
+            });
+        });
+        return mapping;
+    }, [days, tasks]);
     
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -451,7 +469,7 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
                         <div className="w-14 flex-shrink-0 border-r border-white/5 sticky left-0 z-50 bg-slate-900/90 backdrop-blur-xl"></div>
                         
                         <div className="flex">
-                            {days.map(day => (
+                            {days.map((day: Date) => (
                                 <div key={day.toISOString()} style={{ width: columnWidth, minWidth: columnWidth }} className={`flex-shrink-0 text-center py-2.5 border-r border-white/5 last:border-0 ${isToday(day) ? 'bg-primary/5' : ''}`}>
                                     <div className="flex items-center justify-center gap-1.5">
                                         <span className={`text-[13px] font-medium capitalize ${isToday(day) ? 'text-primary font-semibold' : 'text-slate-400'}`}>
@@ -491,18 +509,8 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
                                 <CurrentTimeLine />
                             </div>
 
-                            {days.map(day => {
-                                const dayStart = new Date(day);
-                                dayStart.setHours(0, 0, 0, 0);
-                                const dayEnd = new Date(day);
-                                dayEnd.setHours(24, 0, 0, 0);
-
-                                const dayTasks = tasks.filter(t => {
-                                    if (!t.startDate) return false;
-                                    const start = new Date(t.startDate);
-                                    const end = t.dueDate ? new Date(t.dueDate) : new Date(start.getTime() + (t.estimatedMinutes || 60) * 60000);
-                                    return start < dayEnd && end > dayStart;
-                                });
+                            {days.map((day: Date) => {
+                                const dayTasks = tasksByDay[day.toISOString()] || [];
 
                                 return (
                                     <div key={day.toISOString()} style={{ width: columnWidth, minWidth: columnWidth }} className="flex-shrink-0 flex flex-col relative z-10">

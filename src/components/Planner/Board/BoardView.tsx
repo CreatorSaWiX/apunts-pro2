@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
     DndContext, 
     DragOverlay, 
@@ -49,6 +49,20 @@ const BoardView: React.FC = () => {
     const [isAddingColumn, setIsAddingColumn] = useState(false);
     const [newColumnName, setNewColumnName] = useState('');
     const [newColumnColor, setNewColumnColor] = useState(PRESET_COLORS[0]);
+
+    // O(1) Pre-càlcul: agrupem les tasques per columna per evitar iterar `localTasks` a cada columna de la pissarra.
+    const tasksByStatus = useMemo(() => {
+        const mapping: Record<string, Task[]> = {};
+        columns.forEach(c => mapping[c.id] = []);
+        localTasks.forEach(t => {
+            if (mapping[t.status]) {
+                mapping[t.status].push(t);
+            } else {
+                mapping[t.status] = [t];
+            }
+        });
+        return mapping;
+    }, [localTasks, columns]);
 
     useEffect(() => {
         localStorage.setItem('planner_columns', JSON.stringify(columns));
@@ -195,7 +209,7 @@ const BoardView: React.FC = () => {
                         <BoardColumn 
                             key={col.id} 
                             column={col} 
-                            tasks={localTasks.filter(t => t.status === col.id)} 
+                            tasks={tasksByStatus[col.id] || []} 
                             onAddTask={(taskData: Partial<Task> = {}) => {
                                 addTask({
                                     title: taskData.title || '',

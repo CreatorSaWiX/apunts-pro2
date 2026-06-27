@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { NodeToolbar, Position, NodeResizeControl, type NodeProps } from '@xyflow/react';
 import { useRoadmap, type SubjectNodeData } from '../../../../contexts/RoadmapContext';
-import { Trash2, Bold, GripHorizontal, Copy, Type } from 'lucide-react';
+import { Trash2, Bold, Copy, Type } from 'lucide-react';
 
 const COLORS = ['#fef08a', '#fbcfe8', '#bfdbfe', '#bbf7d0', '#e9d5ff', '#fed7aa']; // Pastel colors for post-its
 

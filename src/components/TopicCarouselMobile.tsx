@@ -53,16 +53,16 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
         (e.target as HTMLElement).releasePointerCapture(e.pointerId);
     };
 
+    // The PHYSICAL position of the thumb is strictly bound to the real carousel scroll
+    const scrollPercentage = useTransform(scrollX, [0, Math.max(1, sortedTopics.length - 1) * itemWidth], [0, 100]);
+    const scrollTooltipX = useTransform(scrollPercentage, p => `${Math.max(0, Math.min(p as number, 100))}%`);
+
     if (sortedTopics.length <= 1) return null;
 
     // The text in the floating tooltip uses hoverIndex during drag, or activeIndex
     const displayIndex = isDragging && hoverIndex !== null ? hoverIndex : activeIndex;
     const safeDisplayIndex = Math.min(displayIndex, Math.max(0, sortedTopics.length - 1));
     const tooltipTextX = `${(safeDisplayIndex / Math.max(1, sortedTopics.length - 1)) * 100}%`;
-
-    // The PHYSICAL position of the thumb is strictly bound to the real carousel scroll
-    const scrollPercentage = useTransform(scrollX, [0, Math.max(1, sortedTopics.length - 1) * itemWidth], [0, 100]);
-    const scrollTooltipX = useTransform(scrollPercentage, p => `${Math.max(0, Math.min(p, 100))}%`);
 
     return (
         <div className="w-full flex justify-center mt-4 mb-2 px-6 z-40 touch-none pointer-events-auto">

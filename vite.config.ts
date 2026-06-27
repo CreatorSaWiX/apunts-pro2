@@ -117,12 +117,19 @@ export default defineConfig(({ mode }) => {
                   const path = await import('node:path');
                   let allPersonalNotes = [];
                   try {
-                    const filePath = path.resolve('./.content-collections/generated/allPersonalNotes.js');
+                    const filePath = path.resolve('./.content-collections/generated/allPersonalNotes.json');
                     if (fs.existsSync(filePath)) {
                       const fileContent = fs.readFileSync(filePath, 'utf-8');
-                      const jsonStr = fileContent.replace('export default', '').trim().replace(/;$/, '');
-                      // Usem eval de forma segura per carregar el JS array que genera Content Collections
-                      allPersonalNotes = eval(`(${jsonStr})`);
+                      // Usem JSON.parse enlloc d'eval per evitar vulnerabilitats
+                      allPersonalNotes = JSON.parse(fileContent);
+                    } else {
+                      // Fallback si és el fitxer .js
+                      const jsPath = path.resolve('./.content-collections/generated/allPersonalNotes.js');
+                      if (fs.existsSync(jsPath)) {
+                        const fileContent = fs.readFileSync(jsPath, 'utf-8');
+                        const jsonStr = fileContent.replace('export default', '').trim().replace(/;$/, '');
+                        allPersonalNotes = JSON.parse(jsonStr);
+                      }
                     }
                   } catch (e) {
                     console.error("Error llegint els apunts locals:", e);
