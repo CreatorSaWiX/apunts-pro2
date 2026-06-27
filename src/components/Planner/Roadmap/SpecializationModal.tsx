@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Modal } from '../../ui/Modal';
 import { specializations, type SpecializationData } from '../../../data/curriculum';
-import { Sparkles, Briefcase, BookOpen, Star, ArrowRight } from 'lucide-react';
+import { Briefcase, BookOpen, Star, ArrowRight } from 'lucide-react';
 
 interface SpecializationModalProps {
     isOpen: boolean;

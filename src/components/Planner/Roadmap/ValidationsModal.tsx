@@ -128,7 +128,6 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                             <div className="flex flex-col gap-2">
                                 {CFGS_DEGREES.map(cfgs => {
                                     const isSelected = activeTab === 'cfgs' && selectedId === cfgs.id;
-                                    const isApplied = currentAppliedCFGSId === cfgs.id;
                                     const totalCredits = cfgs.modules.reduce((acc, curr) => acc + curr.credits, 0);
 
                                     return (

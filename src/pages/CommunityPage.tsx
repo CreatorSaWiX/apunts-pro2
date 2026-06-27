@@ -14,7 +14,7 @@ import PostDetailModal from '../components/community/PostDetailModal';
 import Spinner from '../components/ui/Spinner';
 import { useSettings } from '../contexts/SettingsContext';
 import { SUBJECTS } from '../config/subjects';
-import LiquidPanel from '../components/ui/glass/LiquidPanel';
+
 import LiquidDropdown from '../components/ui/glass/LiquidDropdown';
 import { LiquidToolbar, LiquidToolbarButton } from '../components/ui/glass/LiquidToolbar';
 

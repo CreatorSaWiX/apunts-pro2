@@ -5,7 +5,7 @@ import type { SubjectNodeData } from '../../../../contexts/RoadmapContext';
 import { motion } from 'framer-motion';
 import { GraduationCap, Sparkles } from 'lucide-react';
 
-const CapstoneNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) => {
+const CapstoneNode = ({ data, selected }: NodeProps<Node<SubjectNodeData>>) => {
     return (
         <motion.div
             initial={{ scale: 0.9, opacity: 0 }}

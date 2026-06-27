@@ -5,7 +5,7 @@ import type { SubjectNodeData } from '../../../../contexts/RoadmapContext';
 import { motion } from 'framer-motion';
 import { Globe, Plane } from 'lucide-react';
 
-const MobilityNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) => {
+const MobilityNode = ({ data, selected }: NodeProps<Node<SubjectNodeData>>) => {
     return (
         <motion.div
             initial={{ scale: 0.9, opacity: 0 }}

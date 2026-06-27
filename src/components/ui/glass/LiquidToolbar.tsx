@@ -20,7 +20,7 @@ export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, classNam
             className={`fixed bottom-6 sm:bottom-10 inset-x-0 z-50 flex justify-center pointer-events-none ${isReady ? '!transform-none' : ''}`}
         >
             <div className={`relative flex items-center pointer-events-auto ${className}`}>
-                <LiquidPanel className="absolute inset-0 !rounded-full pointer-events-none" />
+                <LiquidPanel className="absolute inset-0 !rounded-full pointer-events-none">{null}</LiquidPanel>
                 <div className="relative flex items-center gap-1 p-2 overflow-visible">
                     {children}
                 </div>

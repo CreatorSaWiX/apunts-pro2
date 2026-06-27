@@ -17,7 +17,7 @@ export interface SubjectNodeData extends Record<string, unknown> {
     label: string;
     credits: number;
     status: SubjectStatus;
-    type: 'obligatory' | 'specialization' | 'optional' | 'basic' | 'master' | 'mobility' | 'internship' | 'tfg' | 'tfm';
+    type: 'obligatory' | 'specialization' | 'optional' | 'basic' | 'master' | 'mobility' | 'internship' | 'tfg' | 'tfm' | 'text' | 'postit';
     attempts: number;
     description: string;
     semester: number;
@@ -29,6 +29,11 @@ export interface SubjectNodeData extends Record<string, unknown> {
         role?: string;
         title?: string;
     };
+    // Annotation fields
+    text?: string;
+    color?: string;
+    fontSize?: number;
+    fontWeight?: string;
 }
 
 interface RoadmapContextType {
@@ -41,17 +46,21 @@ interface RoadmapContextType {
     onConnect: (connection: Connection) => void;
     updateNodeStatus: (nodeId: string, status: SubjectStatus) => void;
     updateNodeGrade: (nodeId: string, grade: number | null) => void;
-    saveRoadmap: () => Promise<void>;
+    saveRoadmap: (strokes?: any[]) => Promise<void>;
     addSubjectNode: (acronym: string, type: SubjectNodeData['type']) => void;
     addExperienceNode: (type: 'mobility' | 'internship' | 'tfg' | 'tfm', details: any) => void;
     addCFGSValidations: (cfgsId: string) => void;
     addCustomValidation: (name: string, credits: number) => void;
+    addAnnotationNode: (type: 'text' | 'postit', x: number, y: number) => void;
+    updateNodeData: (nodeId: string, data: Partial<SubjectNodeData>) => void;
+    duplicateAnnotation: (nodeId: string) => void;
     removeNode: (nodeId: string) => void;
     setSpecialization: (specializationId: string) => void;
     isLoading: boolean;
     totalPassedECTS: number;
     canStartMaster: boolean;
     averageGrade: number | null;
+    initialStrokes: any[];
 }
 
 const RoadmapContext = createContext<RoadmapContextType | undefined>(undefined);
@@ -108,6 +117,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
     const { user } = useAuth();
     const [nodes, setNodes] = useState<Node<SubjectNodeData>[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
+    const [initialStrokes, setInitialStrokes] = useState<any[]>([]);
     const [itinerary, setItinerary] = useState<ItineraryType>('GEI_STANDARD');
     const [isLoading, setIsLoading] = useState(true);
 
@@ -152,16 +162,17 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                             });
                         }
 
-                        const { nodes: layoutedNodes } = getGridLayoutedElements(migratedNodes, data.edges);
-                        setNodes(layoutedNodes as Node<SubjectNodeData>[]);
+                        setNodes(migratedNodes as Node<SubjectNodeData>[]);
                         setEdges(data.edges);
                         if (data.itinerary) setItinerary(data.itinerary);
+                        if (data.strokes) setInitialStrokes(data.strokes);
                     }
                 } else if (isMounted) {
                     // Initialize default GEI tree
                     const { nodes: layoutedNodes, edges: layoutedEdges } = createInitialGraph();
                     setNodes(layoutedNodes as Node<SubjectNodeData>[]);
                     setEdges(layoutedEdges);
+                    setInitialStrokes([]);
                 }
             } catch (err) {
                 console.error("Failed to load roadmap:", err);
@@ -420,16 +431,66 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         setNodes(prev => {
             const newNodes = [...prev, newNode];
-            const { nodes: layouted } = getGridLayoutedElements(newNodes, edges);
-            return layouted as Node<SubjectNodeData>[];
+            return newNodes as Node<SubjectNodeData>[];
         });
     }, [edges]);
+
+    const addAnnotationNode = useCallback((type: 'text' | 'postit', x: number, y: number) => {
+        const newNode: Node<SubjectNodeData> = {
+            id: `ANNOTATION_${Date.now()}`,
+            position: { x, y },
+            type: type === 'text' ? 'textNode' : 'postItNode',
+            style: { width: type === 'text' ? 300 : 250, height: type === 'text' ? 100 : 250 },
+            data: {
+                label: '',
+                credits: 0,
+                status: 'available',
+                type,
+                attempts: 0,
+                description: '',
+                semester: 0,
+                text: type === 'text' ? 'El teu text aquí' : 'Nota',
+                color: type === 'text' ? '#ffffff' : '#fef08a',
+                fontSize: 16,
+                fontWeight: 'normal'
+            }
+        };
+
+        setNodes(prev => [...prev, newNode]);
+    }, []);
+
+    const updateNodeData = useCallback((nodeId: string, data: Partial<SubjectNodeData>) => {
+        setNodes(prev => prev.map(n => {
+            if (n.id === nodeId) {
+                return { ...n, data: { ...n.data, ...data } };
+            }
+            return n;
+        }));
+    }, []);
+
+    const duplicateAnnotation = useCallback((nodeId: string) => {
+        setNodes(prev => {
+            const sourceNode = prev.find(n => n.id === nodeId);
+            if (!sourceNode) return prev;
+
+            const newNode: Node<SubjectNodeData> = {
+                ...sourceNode,
+                id: `ANNOTATION_${Date.now()}`,
+                selected: false, // Deselect the clone initially
+                style: sourceNode.style,
+                position: {
+                    x: sourceNode.position.x + 40,
+                    y: sourceNode.position.y + 40
+                }
+            };
+            return [...prev, newNode];
+        });
+    }, []);
 
     const removeNode = useCallback((nodeId: string) => {
         setNodes(prev => {
             const newNodes = prev.filter(n => n.id !== nodeId);
-            const { nodes: layouted } = getGridLayoutedElements(newNodes, edges);
-            return layouted as Node<SubjectNodeData>[];
+            return newNodes as Node<SubjectNodeData>[];
         });
         setEdges(prev => prev.filter(e => e.source !== nodeId && e.target !== nodeId));
     }, [edges]);
@@ -465,9 +526,8 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 }
             });
 
-            // Re-apply layout
-            const { nodes: layouted } = getGridLayoutedElements(newNodes, edges);
-            return checkPrerequisites(layouted as Node<SubjectNodeData>[], edges);
+            // Apply prerequisites
+            return checkPrerequisites(newNodes as Node<SubjectNodeData>[], edges);
         });
     }, [edges, checkPrerequisites]);
 
@@ -477,8 +537,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             setEdges((eds) => {
                 const newEdges = addEdge(params, eds);
                 setNodes(nds => {
-                    const { nodes: layouted } = getGridLayoutedElements(nds, newEdges);
-                    return layouted as Node<SubjectNodeData>[];
+                    return checkPrerequisites(nds, newEdges) as Node<SubjectNodeData>[];
                 });
                 return newEdges;
             });
@@ -486,13 +545,14 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         []
     );
 
-    const saveRoadmap = useCallback(async () => {
+    const saveRoadmap = useCallback(async (strokes: any[] = []) => {
         if (!user) return;
         try {
             // Clean nodes and edges to avoid Firebase errors from undefined or non-serializable fields added by ReactFlow
             const cleanNodes = nodes.map(n => ({
                 id: n.id,
                 position: n.position,
+                style: n.style,
                 data: {
                     label: n.data.label,
                     credits: n.data.credits,
@@ -501,7 +561,11 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                     attempts: n.data.attempts,
                     description: n.data.description,
                     semester: n.data.semester,
-                    grade: n.data.grade
+                    grade: n.data.grade,
+                    text: n.data.text,
+                    color: n.data.color,
+                    fontSize: n.data.fontSize,
+                    fontWeight: n.data.fontWeight
                 },
                 type: n.type || 'subjectNode',
             }));
@@ -517,6 +581,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 nodes: cleanNodes,
                 edges: cleanEdges,
                 itinerary,
+                strokes,
                 updatedAt: new Date().toISOString()
             })));
         } catch (err) {
@@ -529,9 +594,9 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         <RoadmapContext.Provider value={{
             nodes, edges, itinerary, setItinerary,
             onNodesChange, onEdgesChange, onConnect,
-            updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, removeNode,
+            updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode,
             setSpecialization,
-            isLoading, totalPassedECTS, canStartMaster, averageGrade
+            isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes
         }}>
             {children}
         </RoadmapContext.Provider>

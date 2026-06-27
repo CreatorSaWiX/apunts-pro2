@@ -10,7 +10,6 @@ interface LiquidDropdownProps extends Omit<HTMLMotionProps<"div">, 'children'> {
     variant?: 'default' | 'darker';
 }
 
-const MotionLiquidPanel = motion(LiquidPanel as any);
 
 const LiquidDropdown = React.forwardRef<HTMLDivElement, LiquidDropdownProps>(
     ({ children, className = '', panelClassName = '', variant = 'default', ...props }, ref) => {

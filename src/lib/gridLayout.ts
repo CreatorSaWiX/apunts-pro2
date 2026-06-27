@@ -13,10 +13,14 @@ export const getGridLayoutedElements = (nodes: Node[], edges: Edge[]) => {
     // Separem els nodes estrictes per quadrimestre (assignatures base) dels seqüencials (TFG, optatives, CFGS)
     const strictNodesBySemester: Record<number, Node[]> = {};
     const sequentialNodes: Node[] = [];
+    const absoluteNodes: Node[] = [];
     
     nodes.forEach(node => {
-        const type = node.data?.type as string;
-        if (['basic', 'obligatory', 'specialization'].includes(type)) {
+        const dataType = node.data?.type as string;
+        const nodeType = node.type as string;
+        if (node.id.startsWith('ANNOTATION_') || ['text', 'postit'].includes(dataType) || ['textNode', 'postItNode'].includes(nodeType)) {
+            absoluteNodes.push(node);
+        } else if (['basic', 'obligatory', 'specialization'].includes(dataType)) {
             const semester = (node.data?.semester as number) || getSemesterForSubject(node.id);
             if (!strictNodesBySemester[semester]) strictNodesBySemester[semester] = [];
             strictNodesBySemester[semester].push(node);
@@ -86,6 +90,11 @@ export const getGridLayoutedElements = (nodes: Node[], edges: Edge[]) => {
         });
 
         currentColumnIndex++;
+    });
+
+    // 3. Afegir els nodes absoluts sense tocar la seva posició
+    absoluteNodes.forEach(node => {
+        layoutedNodes.push(node);
     });
 
     return { nodes: layoutedNodes, edges };

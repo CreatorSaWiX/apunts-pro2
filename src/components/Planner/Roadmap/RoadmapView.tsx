@@ -8,16 +8,18 @@ import SubjectSearchModal from './SubjectSearchModal';
 import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import Spinner from '../../ui/Spinner';
-import { Save, Plus, GraduationCap, ChevronUp, ZoomIn, ZoomOut, Maximize, Sparkles, Award } from 'lucide-react';
+import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, X, Type, StickyNote } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
 import { SpecializationModal } from './SpecializationModal';
 import ExperienceSelectorModal from './ExperienceSelectorModal';
 import ValidationsModal from './ValidationsModal';
+import TextNode from './Nodes/TextNode';
+import PostItNode from './Nodes/PostItNode';
+import DrawLayer from './DrawLayer';
+import { DrawProvider, useDrawContext } from '../../../contexts/DrawContext';
 import LiquidPanel from '../../ui/glass/LiquidPanel';
-import LiquidDropdown from '../../ui/glass/LiquidDropdown';
 import { LiquidToolbar, LiquidToolbarButton } from '../../ui/glass/LiquidToolbar';
-import { Modal } from '../../ui/Modal';
 
 const nodeTypes = {
     subjectNode: SubjectNode,
@@ -25,6 +27,8 @@ const nodeTypes = {
     internship: SubjectNode,
     tfg: SubjectNode,
     tfm: SubjectNode,
+    textNode: TextNode,
+    postItNode: PostItNode,
 };
 
 // Custom Zoom Controls Component
@@ -55,8 +59,10 @@ interface RoadmapViewProps {
     onCloseAI?: () => void;
 }
 
-const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI = () => {} }) => {
-    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade } = useRoadmap();
+const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI = () => {} }) => {
+    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade, initialStrokes, addAnnotationNode } = useRoadmap();
+    const { isDrawMode, setIsDrawMode, currentColor, setCurrentColor, clearStrokes, undoStroke, strokes, setStrokes } = useDrawContext();
+    const reactFlowInstance = useReactFlow();
     const [isSaving, setIsSaving] = useState(false);
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -78,6 +84,12 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
         }
     }, [isPresent]);
 
+    useEffect(() => {
+        if (initialStrokes && initialStrokes.length > 0) {
+            setStrokes(initialStrokes);
+        }
+    }, [initialStrokes, setStrokes]);
+
     // Set the node type for all nodes
     const typedNodes = useMemo(() => {
         return nodes.map(n => {
@@ -85,12 +97,21 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
             if (['mobility', 'internship', 'tfg', 'tfm'].includes(n.data.type as string)) {
                 return { ...n, type: n.data.type };
             }
+            if (n.data.type === 'text') {
+                return { ...n, type: 'textNode' };
+            }
+            if (n.data.type === 'postit') {
+                return { ...n, type: 'postItNode' };
+            }
             return { ...n, type: 'subjectNode' };
         });
     }, [nodes]);
 
     const onNodeClick = useCallback((event: React.MouseEvent, node: any) => {
         setSelectedNodeId(node.id);
+        if (node.data?.type === 'text' || node.data?.type === 'postit') {
+            return;
+        }
         setMenuPosition({ x: event.clientX, y: event.clientY });
         setIsMenuOpen(true);
     }, []);
@@ -110,12 +131,18 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            await saveRoadmap();
+            await saveRoadmap(strokes);
         } catch(err) {
             console.error("Failed to save", err);
         } finally {
             setIsSaving(false);
         }
+    };
+
+    const handleAddAnnotation = (type: 'text' | 'postit') => {
+        const center = reactFlowInstance.screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+        addAnnotationNode(type, center.x, center.y);
+        setIsDrawMode(false);
     };
 
     // Planned ECTS calculation moved here to respect Rules of Hooks
@@ -143,10 +170,6 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
     const percentage = Math.min(totalPassedECTS / 240, 1);
     const strokeDashoffset = circumference - percentage * circumference;
 
-    // Grade calculation
-    const gradePercentage = averageGrade !== null ? Math.min(averageGrade / 10, 1) : 0;
-    const gradeStrokeDashoffset = circumference - gradePercentage * circumference;
-
     // Planned ECTS calculation variables
     const plannedPercentage = Math.min(totalPlannedECTS / 240, 1);
     const plannedStrokeDashoffset = circumference - plannedPercentage * circumference;
@@ -172,6 +195,13 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                     className="bg-transparent"
                     minZoom={0.1}
                     maxZoom={2}
+                    panOnDrag={!isDrawMode}
+                    nodesDraggable={!isDrawMode}
+                    zoomOnScroll={!isDrawMode}
+                    zoomOnPinch={!isDrawMode}
+                    zoomOnDoubleClick={false}
+                    elementsSelectable={!isDrawMode}
+                    nodesConnectable={!isDrawMode}
                     defaultEdgeOptions={{
                         type: 'smoothstep',
                         animated: false,
@@ -180,6 +210,7 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                 >
                     <Background color="#38bdf8" variant={BackgroundVariant.Dots} gap={24} size={2} className="opacity-10" />
                     <CustomControls />
+                    <DrawLayer />
                 </ReactFlow>
 
                 {/* ECTS Circular Glass Widget Bottom Right */}
@@ -283,8 +314,62 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                 {/* Floating Dock Action Buttons Bottom Center */}
                 {/* Floating Dock Action Buttons Bottom Center */}
                 <LiquidToolbar delay={0.3}>
-                        
-                        {/* Tria Especialitat */}
+                    {isDrawMode ? (
+                        <>
+                            <LiquidToolbarButton onClick={() => setCurrentColor('#ef4444')} className={currentColor === '#ef4444' ? 'text-red-500' : 'text-slate-400 hover:text-red-400'}>
+                                <div className="w-4 h-4 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                                <span className="hidden sm:inline font-medium">Vermell</span>
+                            </LiquidToolbarButton>
+                            
+                            <LiquidToolbarButton onClick={() => setCurrentColor('#3b82f6')} className={currentColor === '#3b82f6' ? 'text-blue-500' : 'text-slate-400 hover:text-blue-400'}>
+                                <div className="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                                <span className="hidden sm:inline font-medium">Blau</span>
+                            </LiquidToolbarButton>
+
+                            <LiquidToolbarButton onClick={() => setCurrentColor('#eab308')} className={currentColor === '#eab308' ? 'text-yellow-500' : 'text-slate-400 hover:text-yellow-400'}>
+                                <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
+                                <span className="hidden sm:inline font-medium">Groc</span>
+                            </LiquidToolbarButton>
+
+                            <LiquidToolbarButton onClick={() => setCurrentColor('#a855f7')} className={currentColor === '#a855f7' ? 'text-purple-500' : 'text-slate-400 hover:text-purple-400'}>
+                                <div className="w-4 h-4 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
+                                <span className="hidden sm:inline font-medium">Lila</span>
+                            </LiquidToolbarButton>
+
+                            <div className="w-px h-6 bg-white/10 mx-1" />
+
+                            <LiquidToolbarButton onClick={() => handleAddAnnotation('text')} title="Afegir Text">
+                                <Type size={16} />
+                                <span className="hidden sm:inline font-medium">Text</span>
+                            </LiquidToolbarButton>
+
+                            <LiquidToolbarButton onClick={() => handleAddAnnotation('postit')} title="Afegir Post-it">
+                                <StickyNote size={16} />
+                                <span className="hidden sm:inline font-medium">Post-it</span>
+                            </LiquidToolbarButton>
+
+                            <div className="w-px h-6 bg-white/10 mx-1" />
+
+                            <LiquidToolbarButton onClick={undoStroke} title="Desfer">
+                                <Undo2 size={16} />
+                                <span className="hidden sm:inline font-medium">Desfer</span>
+                            </LiquidToolbarButton>
+
+                            <LiquidToolbarButton onClick={clearStrokes} title="Netejar tot" className="hover:text-rose-400">
+                                <Trash2 size={16} />
+                                <span className="hidden sm:inline font-medium">Netejar</span>
+                            </LiquidToolbarButton>
+
+                            <div className="w-px h-6 bg-white/10 mx-1" />
+                            
+                            <LiquidToolbarButton onClick={() => setIsDrawMode(false)} className="text-white hover:text-slate-300">
+                                <X size={16} />
+                                <span className="hidden sm:inline font-bold">Sortir</span>
+                            </LiquidToolbarButton>
+                        </>
+                    ) : (
+                        <>
+                            {/* Tria Especialitat */}
                         <div className="relative">
                             <LiquidToolbarButton 
                                 onClick={() => setIsSpecMenuOpen(!isSpecMenuOpen)}
@@ -338,6 +423,16 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                             <span className="sm:hidden font-medium">Conval.</span>
                         </LiquidToolbarButton>
 
+                        {/* Dibuixar */}
+                        <div className="w-px h-6 bg-white/10 mx-1" />
+                        <LiquidToolbarButton 
+                            onClick={() => setIsDrawMode(true)}
+                        >
+                            <Palette size={16} />
+                            <span className="hidden sm:inline font-medium">Dibuixar</span>
+                            <span className="sm:hidden font-medium">Dib.</span>
+                        </LiquidToolbarButton>
+
                         <div className="w-px h-6 bg-white/10 mx-1" />
 
                         {/* Guardar */}
@@ -349,7 +444,8 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                             <span className="hidden sm:inline">{isSaving ? 'Guardant...' : 'Guardar'}</span>
                             <span className="sm:hidden">{isSaving ? '...' : 'Desar'}</span>
                         </LiquidToolbarButton>
-
+                    </>
+                )}
                 </LiquidToolbar>
             </div>
 
@@ -391,5 +487,10 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
     );
 };
 
-export default RoadmapView;
+const RoadmapView: React.FC<RoadmapViewProps> = (props) => (
+    <DrawProvider>
+        <RoadmapViewInner {...props} />
+    </DrawProvider>
+);
 
+export default RoadmapView;
