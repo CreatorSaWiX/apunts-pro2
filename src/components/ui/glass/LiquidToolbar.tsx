@@ -38,11 +38,11 @@ interface LiquidToolbarButtonProps extends React.ButtonHTMLAttributes<HTMLButton
 export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active, variant = 'default', children, className = '', ...props }) => {
     return (
         <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            whileHover="hover"
+            whileTap="tap"
+            variants={{ hover: {}, tap: {} }}
             className={`
-                shrink-0 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2
+                shrink-0 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300
                 ${variant === 'default' ? (
                     active 
                         ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.4)]' 
@@ -50,9 +50,18 @@ export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active
                 ) : ''}
                 ${className}
             `}
-            {...props}
+            {...(props as any)}
         >
-            {children}
+            <motion.div
+                variants={{
+                    hover: { scale: 1.05 },
+                    tap: { scale: 0.95 }
+                }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                className="flex items-center gap-2"
+            >
+                {children}
+            </motion.div>
         </motion.button>
     );
 };

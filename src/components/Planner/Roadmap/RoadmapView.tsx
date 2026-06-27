@@ -8,10 +8,12 @@ import SubjectSearchModal from './SubjectSearchModal';
 import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import Spinner from '../../ui/Spinner';
-import { Save, Plus, GraduationCap, ChevronUp, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
+import { Save, Plus, GraduationCap, ChevronUp, ZoomIn, ZoomOut, Maximize, Sparkles, Award } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
 import { SpecializationModal } from './SpecializationModal';
+import ExperienceSelectorModal from './ExperienceSelectorModal';
+import ValidationsModal from './ValidationsModal';
 import LiquidPanel from '../../ui/glass/LiquidPanel';
 import LiquidDropdown from '../../ui/glass/LiquidDropdown';
 import { LiquidToolbar, LiquidToolbarButton } from '../../ui/glass/LiquidToolbar';
@@ -19,6 +21,10 @@ import { Modal } from '../../ui/Modal';
 
 const nodeTypes = {
     subjectNode: SubjectNode,
+    mobility: SubjectNode,
+    internship: SubjectNode,
+    tfg: SubjectNode,
+    tfm: SubjectNode,
 };
 
 // Custom Zoom Controls Component
@@ -50,7 +56,7 @@ interface RoadmapViewProps {
 }
 
 const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI = () => {} }) => {
-    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization } = useRoadmap();
+    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade } = useRoadmap();
     const [isSaving, setIsSaving] = useState(false);
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,6 +64,8 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
     const [isSpecMenuOpen, setIsSpecMenuOpen] = useState(false);
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [isExperienceModalOpen, setIsExperienceModalOpen] = useState(false);
+    const [isValidationsModalOpen, setIsValidationsModalOpen] = useState(false);
     const isPresent = useIsPresent();
     const [shouldRender, setShouldRender] = useState(true);
 
@@ -72,7 +80,13 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
 
     // Set the node type for all nodes
     const typedNodes = useMemo(() => {
-        return nodes.map(n => ({ ...n, type: 'subjectNode' }));
+        return nodes.map(n => {
+            // Keep specialized types if they match our custom nodes
+            if (['mobility', 'internship', 'tfg', 'tfm'].includes(n.data.type as string)) {
+                return { ...n, type: n.data.type };
+            }
+            return { ...n, type: 'subjectNode' };
+        });
     }, [nodes]);
 
     const onNodeClick = useCallback((event: React.MouseEvent, node: any) => {
@@ -104,6 +118,9 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
         }
     };
 
+    // Planned ECTS calculation moved here to respect Rules of Hooks
+    const totalPlannedECTS = useMemo(() => nodes.reduce((sum, n) => sum + (n.data.credits || 0), 0), [nodes]);
+
     if (!shouldRender) return null; // Unmount heavy ReactFlow after exit transition to prevent FPS drop
 
     if (isLoading) {
@@ -121,8 +138,18 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
     // Circular Progress Calculation
     const radius = 22;
     const circumference = 2 * Math.PI * radius;
+    
+    // ECTS calculation
     const percentage = Math.min(totalPassedECTS / 240, 1);
     const strokeDashoffset = circumference - percentage * circumference;
+
+    // Grade calculation
+    const gradePercentage = averageGrade !== null ? Math.min(averageGrade / 10, 1) : 0;
+    const gradeStrokeDashoffset = circumference - gradePercentage * circumference;
+
+    // Planned ECTS calculation variables
+    const plannedPercentage = Math.min(totalPlannedECTS / 240, 1);
+    const plannedStrokeDashoffset = circumference - plannedPercentage * circumference;
 
     return (
         <div className="w-full h-full relative bg-[#09090b] overflow-hidden flex">
@@ -162,25 +189,73 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="absolute bottom-6 right-6 z-40 flex flex-col items-end gap-3 pointer-events-none"
                 >
-                    <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-full py-3 px-5 flex items-center gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)] pointer-events-auto">
-                        <div className="relative w-[50px] h-[50px] flex items-center justify-center">
-                            {/* Background Circle */}
-                            <svg className="w-full h-full transform -rotate-90 absolute inset-0">
-                                <circle cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent" className="text-slate-800" />
-                                <circle 
-                                    cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent" 
-                                    strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} 
-                                    strokeLinecap="round"
-                                    className="text-sky-500 transition-all duration-1000 ease-out drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]" 
-                                />
-                            </svg>
-                            <span className="text-[10px] font-bold text-sky-400 mt-0.5">{Math.round(percentage * 100)}%</span>
+                    <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-3xl p-3 flex flex-col gap-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] pointer-events-auto">
+                        
+                        {/* Nota Mitjana Widget */}
+                        <div className="flex items-center gap-4 px-2 py-1">
+                            <div className="relative w-[50px] h-[50px] flex items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-500/20 to-purple-500/20 border border-fuchsia-500/30 shadow-[inset_0_0_20px_rgba(217,70,239,0.3),0_0_15px_rgba(217,70,239,0.2)]">
+                                <span className="text-[15px] font-black text-white drop-shadow-[0_0_8px_rgba(217,70,239,0.8)] tracking-tight">
+                                    {averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}
+                                </span>
+                            </div>
+                            <div className="flex flex-col pr-6">
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">Mitjana Ponderada</span>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-xl font-black text-white tracking-tight">{averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}</span>
+                                    <span className="text-xs font-medium text-slate-500">/10</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex flex-col pr-2">
-                            <span className="text-[10px] text-slate-400 font-mono uppercase tracking-[0.2em] mb-0.5">Crèdits Aprovats</span>
-                            <div className="flex items-baseline gap-1">
-                                <span className="text-2xl font-black text-white tracking-tight">{totalPassedECTS}</span>
-                                <span className="text-sm font-medium text-slate-500">/240</span>
+
+                        <div className="w-full h-px bg-white/5 rounded-full" />
+
+                        {/* ECTS Widget */}
+                        <div className="flex items-center gap-4 px-2 py-1">
+                            <div className="relative w-[50px] h-[50px] flex items-center justify-center">
+                                {/* Background Circle */}
+                                <svg className="w-full h-full transform -rotate-90 absolute inset-0">
+                                    <circle cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent" className="text-slate-800" />
+                                    <circle 
+                                        cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent" 
+                                        strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} 
+                                        strokeLinecap="round"
+                                        className="text-sky-500 transition-all duration-1000 ease-out drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]" 
+                                    />
+                                </svg>
+                                <span className="text-[10px] font-bold text-sky-400 mt-0.5">{Math.round(percentage * 100)}%</span>
+                            </div>
+                            <div className="flex flex-col pr-6">
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">Crèdits Aprovats</span>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-xl font-black text-white tracking-tight">{totalPassedECTS}</span>
+                                    <span className="text-xs font-medium text-slate-500">/240</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="w-full h-px bg-white/5 rounded-full" />
+
+                        {/* Planned ECTS Widget */}
+                        <div className="flex items-center gap-4 px-2 py-1">
+                            <div className="relative w-[50px] h-[50px] flex items-center justify-center">
+                                {/* Background Circle */}
+                                <svg className="w-full h-full transform -rotate-90 absolute inset-0">
+                                    <circle cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent" className="text-slate-800" />
+                                    <circle 
+                                        cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent" 
+                                        strokeDasharray={circumference} strokeDashoffset={plannedStrokeDashoffset} 
+                                        strokeLinecap="round"
+                                        className="text-violet-500 transition-all duration-1000 ease-out drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]" 
+                                    />
+                                </svg>
+                                <span className="text-[10px] font-bold text-violet-400 mt-0.5">{Math.round(plannedPercentage * 100)}%</span>
+                            </div>
+                            <div className="flex flex-col pr-6">
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">Crèdits Planificats</span>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-xl font-black text-white tracking-tight">{totalPlannedECTS}</span>
+                                    <span className="text-xs font-medium text-slate-500">/240</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -244,6 +319,27 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
 
                         <div className="w-px h-6 bg-white/10 mx-1" />
 
+                        {/* Afegir Experiència */}
+                        <LiquidToolbarButton 
+                            onClick={() => setIsExperienceModalOpen(true)}
+                        >
+                            <Sparkles size={16} />
+                            <span className="hidden sm:inline font-medium">Experiència</span>
+                            <span className="sm:hidden font-medium">Exp.</span>
+                        </LiquidToolbarButton>
+
+                         <div className="w-px h-6 bg-white/10 mx-1" />
+                         
+                        <LiquidToolbarButton 
+                            onClick={() => setIsValidationsModalOpen(true)}
+                        >
+                            <Award size={16} />
+                            <span className="hidden sm:inline font-medium">Convalidacions</span>
+                            <span className="sm:hidden font-medium">Conval.</span>
+                        </LiquidToolbarButton>
+
+                        <div className="w-px h-6 bg-white/10 mx-1" />
+
                         {/* Guardar */}
                         <LiquidToolbarButton 
                             onClick={handleSave}
@@ -275,6 +371,16 @@ const RoadmapView: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI =
                 isOpen={isDetailsOpen}
                 onClose={() => setIsDetailsOpen(false)}
                 subjectId={selectedNodeId}
+            />
+
+            <ExperienceSelectorModal 
+                isOpen={isExperienceModalOpen}
+                onClose={() => setIsExperienceModalOpen(false)}
+            />
+
+            <ValidationsModal 
+                isOpen={isValidationsModalOpen}
+                onClose={() => setIsValidationsModalOpen(false)}
             />
 
             <RoadmapAIPromptBar 

@@ -7,6 +7,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from './AuthContext';
 import subjectsData from '../data/subjects.json';
 import { geiBaseNodes, geiBaseEdges, getCreditsForSubject, getSemesterForSubject, specializations } from '../data/curriculum';
+import { CFGS_DEGREES } from '../data/cfgs';
 import { getGridLayoutedElements } from '../lib/gridLayout';
 
 export type SubjectStatus = 'locked' | 'available' | 'in_progress' | 'passed' | 'failed' | 'retaking';
@@ -16,10 +17,18 @@ export interface SubjectNodeData extends Record<string, unknown> {
     label: string;
     credits: number;
     status: SubjectStatus;
-    type: 'obligatory' | 'specialization' | 'optional' | 'basic' | 'master';
+    type: 'obligatory' | 'specialization' | 'optional' | 'basic' | 'master' | 'mobility' | 'internship' | 'tfg' | 'tfm';
     attempts: number;
     description: string;
     semester: number;
+    grade?: number | null;
+    details?: {
+        destination?: string;
+        program?: string;
+        company?: string;
+        role?: string;
+        title?: string;
+    };
 }
 
 interface RoadmapContextType {
@@ -31,12 +40,18 @@ interface RoadmapContextType {
     onEdgesChange: (changes: EdgeChange[]) => void;
     onConnect: (connection: Connection) => void;
     updateNodeStatus: (nodeId: string, status: SubjectStatus) => void;
+    updateNodeGrade: (nodeId: string, grade: number | null) => void;
     saveRoadmap: () => Promise<void>;
     addSubjectNode: (acronym: string, type: SubjectNodeData['type']) => void;
+    addExperienceNode: (type: 'mobility' | 'internship' | 'tfg' | 'tfm', details: any) => void;
+    addCFGSValidations: (cfgsId: string) => void;
+    addCustomValidation: (name: string, credits: number) => void;
+    removeNode: (nodeId: string) => void;
     setSpecialization: (specializationId: string) => void;
     isLoading: boolean;
     totalPassedECTS: number;
     canStartMaster: boolean;
+    averageGrade: number | null;
 }
 
 const RoadmapContext = createContext<RoadmapContextType | undefined>(undefined);
@@ -56,7 +71,8 @@ const createInitialGraph = () => {
                 type: 'basic',
                 attempts: isQ1 ? 1 : 0,
                 description: subject?.description || acronym,
-                semester
+                semester,
+                grade: null
             }
         };
     });
@@ -67,6 +83,23 @@ const createInitialGraph = () => {
         target: e.target,
         animated: false
     }));
+
+    // Add TFG by default
+    const tfgNode: Node<SubjectNodeData> = {
+        id: `tfg_default`,
+        position: { x: 0, y: 0 },
+        data: {
+            label: 'Treball Final de Grau',
+            credits: 18,
+            status: 'locked',
+            type: 'tfg',
+            attempts: 0,
+            description: 'TFG',
+            semester: 8,
+            grade: null
+        }
+    };
+    nodes.push(tfgNode);
 
     return getGridLayoutedElements(nodes, edges);
 };
@@ -91,14 +124,34 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 if (snap.exists() && isMounted) {
                     const data = snap.data();
                     if (data.nodes && data.edges) {
-                        // Migrate old nodes that don't have a semester
-                        const migratedNodes = data.nodes.map((n: any) => ({
+                        // Migrate old nodes that don't have a semester or grade
+                        let migratedNodes = data.nodes.map((n: any) => ({
                             ...n,
                             data: {
                                 ...n.data,
-                                semester: n.data.semester || getSemesterForSubject(n.id)
+                                semester: n.data.semester || getSemesterForSubject(n.id),
+                                grade: n.data.grade !== undefined ? n.data.grade : null
                             }
                         }));
+
+                        // Ensure TFG exists for older roadmaps
+                        if (!migratedNodes.some((n: any) => n.data.type === 'tfg')) {
+                            migratedNodes.push({
+                                id: `tfg_default`,
+                                position: { x: 0, y: 0 },
+                                data: {
+                                    label: 'Treball Final de Grau',
+                                    credits: 18,
+                                    status: 'locked',
+                                    type: 'tfg',
+                                    attempts: 0,
+                                    description: 'TFG',
+                                    semester: 8,
+                                    grade: null
+                                }
+                            });
+                        }
+
                         const { nodes: layoutedNodes } = getGridLayoutedElements(migratedNodes, data.edges);
                         setNodes(layoutedNodes as Node<SubjectNodeData>[]);
                         setEdges(data.edges);
@@ -128,6 +181,20 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         }, 0);
     }, [nodes]);
 
+    // Derived Logic for Average Grade (Nota Mitjana Ponderada)
+    const averageGrade = useMemo(() => {
+        let totalGradePoints = 0;
+        let totalGradedCredits = 0;
+        nodes.forEach((node) => {
+            if (node.data.status === 'passed' && typeof node.data.grade === 'number') {
+                totalGradePoints += node.data.grade * node.data.credits;
+                totalGradedCredits += node.data.credits;
+            }
+        });
+        if (totalGradedCredits === 0) return null;
+        return totalGradePoints / totalGradedCredits;
+    }, [nodes]);
+
     // PARS Rule: Can start master if remaining credits < 27 (excluding TFG 18)
     // Degree total is 240. ECTS remaining = 240 - passed. If remaining <= 27 + 18?
     // Wait, the rule is "missing max 27 ECTS including TFG? No, missing max 9 ECTS + TFG = 27".
@@ -149,32 +216,53 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
 
 
     const checkPrerequisites = useCallback((currentNodes: Node<SubjectNodeData>[], currentEdges: Edge[]) => {
-        // Find the maximum semester where the user has passed at least one subject
-        const maxPassedSemester = currentNodes.reduce((max, n) => n.data.status === 'passed' ? Math.max(max, n.data.semester || getSemesterForSubject(n.id)) : max, 0);
-        const allowedSemester = Math.max(1, maxPassedSemester + 1);
+        let nodesChanged = true;
+        let newNodes = [...currentNodes];
 
-        return currentNodes.map(node => {
-            if (node.data.status === 'passed' || node.data.status === 'in_progress' || node.data.status === 'failed' || node.data.status === 'retaking') {
-                return node; // Already interacted with
-            }
-            
-            // Find dependencies
-            const incomingEdges = currentEdges.filter(e => e.target === node.id);
-            const edgePrereqsPassed = incomingEdges.length === 0 || incomingEdges.every(e => {
-                const sourceNode = currentNodes.find(n => n.id === e.source);
-                return sourceNode?.data.status === 'passed';
+        // Evaluate repeatedly until the graph stabilizes (to handle cascading locks/unlocks)
+        let safetyCounter = 0;
+        while (nodesChanged && safetyCounter < 15) {
+            nodesChanged = false;
+            safetyCounter++;
+
+            const maxPassedSemester = newNodes.reduce((max, n) => n.data.status === 'passed' ? Math.max(max, n.data.semester || getSemesterForSubject(n.id)) : max, 0);
+            const allowedSemester = Math.max(1, maxPassedSemester + 1);
+            const passedCredits = newNodes.reduce((sum, n) => n.data.status === 'passed' ? sum + n.data.credits : sum, 0);
+
+            newNodes = newNodes.map(node => {
+                const incomingEdges = currentEdges.filter(e => e.target === node.id);
+                const edgePrereqsPassed = incomingEdges.length === 0 || incomingEdges.every(e => {
+                    const sourceNode = newNodes.find(n => n.id === e.source);
+                    return sourceNode?.data.status === 'passed';
+                });
+
+                const isSemesterAllowed = (node.data.semester || getSemesterForSubject(node.id)) <= allowedSemester;
+                let prereqsMet = edgePrereqsPassed && isSemesterAllowed;
+
+                // Els blocs finals (TFG, Mobilitat, Pràctiques) no depenen d'un semestre seqüencial estricte,
+                // sinó d'haver superat una quantitat suficient de crèdits (aprox. 3 anys = 180 ECTS).
+                // Rebaixem a 160 per donar flexibilitat.
+                if (['tfg', 'tfm', 'mobility', 'internship'].includes(node.data.type)) {
+                    prereqsMet = edgePrereqsPassed && passedCredits >= 160;
+                }
+
+                // If prerequisites are NOT met, force node to locked
+                if (!prereqsMet && node.data.status !== 'locked') {
+                    nodesChanged = true;
+                    return { ...node, data: { ...node.data, status: 'locked' as SubjectStatus, attempts: 0, grade: null } };
+                }
+
+                // If prerequisites ARE met but node is locked, unlock it to 'in_progress'
+                if (prereqsMet && node.data.status === 'locked') {
+                    nodesChanged = true;
+                    return { ...node, data: { ...node.data, status: 'in_progress' as SubjectStatus, attempts: 1 } };
+                }
+
+                return node;
             });
+        }
 
-            // Semester gating: You can only unlock subjects up to allowedSemester
-            const isSemesterAllowed = (node.data.semester || getSemesterForSubject(node.id)) <= allowedSemester;
-
-            if (edgePrereqsPassed && isSemesterAllowed) {
-                // Auto-progress to 'in_progress' as requested by the user
-                return { ...node, data: { ...node.data, status: 'in_progress' as SubjectStatus, attempts: 1 } };
-            }
-
-            return { ...node, data: { ...node.data, status: 'locked' as SubjectStatus } };
-        });
+        return newNodes;
     }, []);
 
     const updateNodeStatus = useCallback((nodeId: string, status: SubjectStatus) => {
@@ -191,7 +279,14 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                     if (status === 'in_progress' && newAttempts === 0) {
                         newAttempts = 1;
                     }
-                    return { ...node, data: { ...node.data, status, attempts: newAttempts } };
+
+                    // Clear grade if status is not passed anymore
+                    let newGrade = node.data.grade;
+                    if (status !== 'passed') {
+                        newGrade = null;
+                    }
+
+                    return { ...node, data: { ...node.data, status, attempts: newAttempts, grade: newGrade } };
                 }
                 return node;
             });
@@ -199,6 +294,17 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             return checkPrerequisites(mapped, edges);
         });
     }, [edges, checkPrerequisites]);
+
+    const updateNodeGrade = useCallback((nodeId: string, grade: number | null) => {
+        setNodes((nds) =>
+            nds.map((node) => {
+                if (node.id === nodeId) {
+                    return { ...node, data: { ...node.data, grade } };
+                }
+                return node;
+            })
+        );
+    }, []);
 
     const addSubjectNode = useCallback((acronym: string, type: SubjectNodeData['type']) => {
         const subject = subjectsData.find((s: any) => s.name === acronym);
@@ -213,7 +319,8 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 type,
                 attempts: 0,
                 description: subject?.description || acronym,
-                semester
+                semester,
+                grade: null
             }
         };
 
@@ -224,6 +331,109 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         });
     }, [edges]);
 
+    const addExperienceNode = useCallback((type: 'mobility' | 'internship' | 'tfg' | 'tfm', details: any) => {
+        const id = `${type}_${Date.now()}`;
+        const credits = details.credits || (type === 'tfg' ? 18 : type === 'tfm' ? 30 : 12);
+
+        let label = 'Experiència';
+        let description = '';
+        if (type === 'mobility') {
+            label = `Mobilitat: ${details.destination || 'Internacional'}`;
+            description = `Programa: ${details.program || 'Erasmus+'}`;
+        } else if (type === 'internship') {
+            label = `Pràctiques: ${details.company || 'Empresa'}`;
+            description = `Rol: ${details.role || 'Enginyer'}`;
+        } else if (type === 'tfg') {
+            label = 'Treball Final de Grau';
+            description = details.title || 'TFG';
+        } else if (type === 'tfm') {
+            label = 'Treball Final de Màster';
+            description = details.title || 'TFM';
+        }
+
+        const newNode: Node<SubjectNodeData> = {
+            id,
+            position: { x: 0, y: 0 },
+            data: {
+                label,
+                credits,
+                status: 'in_progress', // Start in progress visually
+                type,
+                attempts: 1,
+                description,
+                semester: 8, // Usually later in the degree
+                grade: null,
+                details
+            }
+        };
+
+        setNodes(prev => {
+            const newNodes = [...prev, newNode];
+            const { nodes: layouted } = getGridLayoutedElements(newNodes, edges);
+            return layouted as Node<SubjectNodeData>[];
+        });
+    }, [edges]);
+
+    const addCFGSValidations = useCallback((cfgsId: string) => {
+        const cfgs = CFGS_DEGREES.find(c => c.id === cfgsId);
+        if (!cfgs) return;
+
+        const newNodes: Node<SubjectNodeData>[] = cfgs.modules.map((mod, idx) => ({
+            id: `CFGS_${cfgsId}_${idx}_${Date.now()}`,
+            position: { x: 0, y: 0 },
+            data: {
+                label: mod.name,
+                credits: mod.credits,
+                status: 'passed',
+                type: 'optional',
+                attempts: 1,
+                description: `Convalidació de CFGS: ${cfgs.title}`,
+                semester: 9, // Place at the bottom of the graph
+                grade: null
+            }
+        }));
+
+        setNodes(prev => {
+            // Remove any existing CFGS validation nodes so they don't accumulate
+            const filteredPrev = prev.filter(n => !n.id.startsWith('CFGS_'));
+            const combined = [...filteredPrev, ...newNodes];
+            const { nodes: layouted } = getGridLayoutedElements(combined, edges);
+            return layouted as Node<SubjectNodeData>[];
+        });
+    }, [edges]);
+
+    const addCustomValidation = useCallback((name: string, credits: number) => {
+        const newNode: Node<SubjectNodeData> = {
+            id: `VALIDATION_${Date.now()}`,
+            position: { x: 0, y: 0 },
+            data: {
+                label: name,
+                credits,
+                status: 'passed',
+                type: 'optional',
+                attempts: 1,
+                description: `Convalidació: ${name}`,
+                semester: 9, // Place at the bottom
+                grade: null
+            }
+        };
+
+        setNodes(prev => {
+            const newNodes = [...prev, newNode];
+            const { nodes: layouted } = getGridLayoutedElements(newNodes, edges);
+            return layouted as Node<SubjectNodeData>[];
+        });
+    }, [edges]);
+
+    const removeNode = useCallback((nodeId: string) => {
+        setNodes(prev => {
+            const newNodes = prev.filter(n => n.id !== nodeId);
+            const { nodes: layouted } = getGridLayoutedElements(newNodes, edges);
+            return layouted as Node<SubjectNodeData>[];
+        });
+        setEdges(prev => prev.filter(e => e.source !== nodeId && e.target !== nodeId));
+    }, [edges]);
+
     const setSpecialization = useCallback((specializationId: string) => {
         const spec = specializations.find(s => s.id === specializationId);
         if (!spec) return;
@@ -231,7 +441,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         setNodes(prev => {
             // Remove existing specialization nodes
             let newNodes = prev.filter(n => n.data.type !== 'specialization');
-            
+
             // Add new nodes
             spec.mandatory.forEach(acronym => {
                 // Check if already exists to avoid duplicates
@@ -248,7 +458,8 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                             type: 'specialization',
                             attempts: 0,
                             description: subject?.description || acronym,
-                            semester
+                            semester,
+                            grade: null
                         }
                     });
                 }
@@ -289,7 +500,8 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                     type: n.data.type,
                     attempts: n.data.attempts,
                     description: n.data.description,
-                    semester: n.data.semester
+                    semester: n.data.semester,
+                    grade: n.data.grade
                 },
                 type: n.type || 'subjectNode',
             }));
@@ -314,12 +526,12 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
     }, [nodes, edges, itinerary, user]);
 
     return (
-        <RoadmapContext.Provider value={{ 
-            nodes, edges, itinerary, setItinerary, 
-            onNodesChange, onEdgesChange, onConnect, 
-            updateNodeStatus, saveRoadmap, addSubjectNode, 
+        <RoadmapContext.Provider value={{
+            nodes, edges, itinerary, setItinerary,
+            onNodesChange, onEdgesChange, onConnect,
+            updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, removeNode,
             setSpecialization,
-            isLoading, totalPassedECTS, canStartMaster 
+            isLoading, totalPassedECTS, canStartMaster, averageGrade
         }}>
             {children}
         </RoadmapContext.Provider>

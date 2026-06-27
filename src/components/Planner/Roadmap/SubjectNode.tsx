@@ -76,12 +76,34 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
         if (data.type === 'obligatory') return 'bg-sky-500/20 border-sky-500/50 shadow-[0_0_15px_rgba(14,165,233,0.3)] shadow-[inset_0_0_15px_rgba(14,165,233,0.2)]';
         if (data.type === 'specialization') return 'bg-fuchsia-500/20 border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)] shadow-[inset_0_0_15px_rgba(217,70,239,0.2)]';
         if (data.type === 'optional') return 'bg-emerald-500/20 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)] shadow-[inset_0_0_15px_rgba(16,185,129,0.2)]';
+        if (data.type === 'tfg' || data.type === 'tfm') return 'bg-purple-500/20 border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.3)] shadow-[inset_0_0_15px_rgba(168,85,247,0.2)]';
+        if (data.type === 'mobility') return 'bg-amber-500/20 border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.3)] shadow-[inset_0_0_15px_rgba(245,158,11,0.2)]';
+        if (data.type === 'internship') return 'bg-teal-500/20 border-teal-500/50 shadow-[0_0_15px_rgba(20,184,166,0.3)] shadow-[inset_0_0_15px_rgba(20,184,166,0.2)]';
         return 'bg-slate-500/20 border-slate-500/50';
     };
 
     const containerClasses = data.status === 'passed'
         ? getPassedClasses()
         : `${s.bg} ${s.border} ${s.shadow} ${s.glow}`;
+
+    const getTopBarColor = () => {
+        if (data.type === 'specialization') return 'bg-fuchsia-500';
+        if (data.type === 'optional') return 'bg-emerald-500';
+        if (data.type === 'tfg' || data.type === 'tfm') return 'bg-purple-500';
+        if (data.type === 'mobility') return 'bg-amber-500';
+        if (data.type === 'internship') return 'bg-teal-500';
+        return 'bg-sky-500';
+    };
+
+    const getBottomTag = () => {
+        if (data.type === 'mobility') return 'MOBILITAT';
+        if (data.type === 'internship') return 'PRÀCTIQUES';
+        if (data.type === 'tfg') return 'TFG';
+        if (data.type === 'tfm') return 'TFM';
+        if (id.startsWith('VALIDATION_')) return 'ACTIVITATS';
+        if (id.startsWith('CFGS_')) return 'CFGS';
+        return id;
+    };
 
     return (
         <motion.div
@@ -99,7 +121,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
                 <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '8px 8px' }}></div>
 
                 {/* Type indicator line */}
-                <div className={`absolute top-0 left-0 w-full h-[2px] ${data.type === 'specialization' ? 'bg-fuchsia-500' : data.type === 'optional' ? 'bg-emerald-500' : 'bg-sky-500'} opacity-50`}></div>
+                <div className={`absolute top-0 left-0 w-full h-[2px] ${getTopBarColor()} opacity-50`}></div>
 
                 <span className={`text-[13px] font-bold tracking-wide mt-1 leading-tight ${s.text} font-sans`}>
                     {data.label}
@@ -107,7 +129,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
 
                 <div className="flex items-center justify-between w-full mt-3">
                     <span className="text-[10px] opacity-50 font-mono font-semibold tracking-wider text-slate-300">
-                        {id}
+                        {getBottomTag()}
                     </span>
                     <span className="text-[10px] opacity-70 font-mono text-sky-200">
                         {data.credits} ECTS
@@ -124,9 +146,21 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             )}
 
             {/* ATTEMPTS BADGE */}
-            {data.attempts > 1 && (
+            {data.attempts > 1 && data.status !== 'passed' && (
                 <div className="absolute -top-2 -right-2 bg-amber-500 text-amber-950 text-[9px] font-black px-1.5 py-0.5 rounded-sm shadow-[0_0_10px_rgba(245,158,11,0.6)] border border-amber-300 z-20 flex items-center gap-1 transform rotate-3">
                     <span className="animate-pulse">⚠️</span> INTENT {data.attempts}
+                </div>
+            )}
+
+            {/* GRADE BADGE */}
+            {data.status === 'passed' && typeof data.grade === 'number' && (
+                <div className={`absolute -top-3 -right-3 text-[11px] font-black px-2 py-0.5 rounded-md z-20 flex items-center shadow-lg border transform rotate-6 hover:scale-110 transition-transform cursor-default
+                    ${data.grade >= 9.0 ? 'bg-gradient-to-br from-fuchsia-400 to-fuchsia-600 text-white border-fuchsia-300/50 shadow-[0_0_20px_rgba(217,70,239,0.8)]' :
+                        data.grade >= 7.0 ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white border-emerald-300/50 shadow-[0_0_15px_rgba(16,185,129,0.5)]' :
+                            'bg-gradient-to-br from-sky-400 to-sky-600 text-white border-sky-300/50 shadow-[0_0_10px_rgba(14,165,233,0.5)]'}
+                `}>
+                    {data.grade >= 9.0 && <span className="mr-1 drop-shadow-md">⭐</span>}
+                    {data.grade.toFixed(1)}
                 </div>
             )}
 

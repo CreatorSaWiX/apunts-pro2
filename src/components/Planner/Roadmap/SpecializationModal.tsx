@@ -98,7 +98,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                     {isPreviewed && (
                                         <motion.div
                                             layoutId="activeSpecBackground"
-                                            className={`absolute inset-0 rounded-2xl ${specTheme.bg} ${isSelected ? specTheme.border + ' border' : ''}`}
+                                            className={`absolute inset-0 rounded-2xl ${specTheme.bg} ${specTheme.border} border`}
                                             initial={false}
                                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                         />
@@ -120,10 +120,10 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                 </div>
 
                 {/* Right Column: Details View */}
-                <div className="w-full md:w-2/3 p-6 md:p-8 flex flex-col z-10 relative min-h-0 h-full">
+                <div className="w-full md:w-2/3 py-6 md:py-8 pr-6 md:pr-8 pl-4 md:pl-6 flex flex-col z-10 relative min-h-0 h-full">
                     
                     {/* Scrollable Content Area */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 md:pr-4 mb-4 min-h-0">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar pl-2 pr-2 md:pr-4 mb-4 min-h-0">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeSpec.id}
@@ -206,7 +206,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                     </div>
 
                     {/* Fixed Action Button */}
-                    <div className="pt-4 border-t border-white/10 flex justify-end shrink-0">
+                    <div className="pt-4 border-t border-white/10 flex justify-end shrink-0 pl-2">
                         <button
                             onClick={() => {
                                 onSelect(activeSpec.id);

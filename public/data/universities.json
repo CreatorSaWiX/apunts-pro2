@@ -1,0 +1,1852 @@
+[
+  {
+    "id": "1",
+    "name": "Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU) (Double Degree - EUMaster4HPC)",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D__ERLANGE01-DT",
+    "webLink": "https://www.fau.eu/",
+    "docLink": ""
+  },
+  {
+    "id": "2",
+    "name": "Sofia University \"St. Kliment Ohridski\"  (Double Degree - EUMaster4HPC)",
+    "country": "Bulgària",
+    "flag": "🌍",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/BG_SOFIA06-DT",
+    "webLink": "https://www.uni-sofia.bg/index.php/eng/the_university/international_relations_office/exchange_students",
+    "docLink": ""
+  },
+  {
+    "id": "3",
+    "name": "Georgia Institute of Technology - Georgia Tech Lorraine (Double Degree)",
+    "country": "EUA",
+    "flag": "🌍",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/USA_ATLANT01-DT",
+    "webLink": "https://europe.gatech.edu/en/graduate-eligibility-applying/new-applicants",
+    "docLink": ""
+  },
+  {
+    "id": "4",
+    "name": "Illinois Institute of Technology Chicago - (Double Degree)",
+    "country": "EUA",
+    "flag": "🌍",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/USA_ILLINOIS-DT",
+    "webLink": "http://www.iit.edu/",
+    "docLink": ""
+  },
+  {
+    "id": "5",
+    "name": "Clermont Auvergne INP (Double Degree)",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_AUBIERE04-DT",
+    "webLink": "https://www.uca.fr/international/mobilites-internationales-et-bourses/venir-a-l-uca/je-suis-etudiant",
+    "docLink": ""
+  },
+  {
+    "id": "6",
+    "name": "Grenoble INP - UGA Institute Of Engineering And Management (Double Degree)",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_GRENOBLE22-DT",
+    "webLink": "https://www.grenoble-inp.fr/en/academics/exchange-or-double-degree-student",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_GRENOBLE22-DT.pdf"
+  },
+  {
+    "id": "7",
+    "name": "Sorbonne Université -  (Double Degree - EUMaster4HPC)",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F__PARIS468-DT",
+    "webLink": "https://eumaster4hpc.uni.lu/",
+    "docLink": ""
+  },
+  {
+    "id": "8",
+    "name": "Politecnico di Torino (Double Degree)",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_TORINO02-DT",
+    "webLink": "https://www.polito.it/didattica/studenti-internazionali/exchange-students/doppia-laureatitolo-congiunto",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_TORINO02-DT.pdf"
+  },
+  {
+    "id": "9",
+    "name": "Università degli Studi di Padova (Double Degree)",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I__PADOVA01-DT",
+    "webLink": "https://www.unipd.it/en/erasmus-studies-semp",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I__PADOVA01-DT.pdf"
+  },
+  {
+    "id": "10",
+    "name": "Université du Luxembourg (Double Degree - EUMaster4HPC)",
+    "country": "Luxemburg",
+    "flag": "🌍",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/LUXLUX-VIL01-DT",
+    "webLink": "https://www.uni.lu/en/mobility/incoming-exchange-students/",
+    "docLink": ""
+  },
+  {
+    "id": "11",
+    "name": "Pontificia Universidad Católica del Perú (Double Degree)",
+    "country": "Perú",
+    "flag": "🇵🇪",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/PERLIMA06-DT",
+    "webLink": "http://www.pucp.edu.pe/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/PERLIMA06-DT.pdf"
+  },
+  {
+    "id": "12",
+    "name": "Albert-Ludwigs-Universitat Freiburg",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_FREIBUR01",
+    "webLink": "https://www.international.uni-freiburg.de/en/erasmus/studies-incoming",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_FREIBUR01.pdf"
+  },
+  {
+    "id": "13",
+    "name": "Friedrich-Alexander-Universitat Erlangen-Nurnberg",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_ERLANGE01",
+    "webLink": "https://www.fau.eu/studying/international-students/students-on-exchange-programs/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_ERLANGE01.pdf"
+  },
+  {
+    "id": "14",
+    "name": "Goethe University Frankfurt",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_FRANKFU01",
+    "webLink": "http://www.goethe-university-frankfurt.de/44386987/exchprog?",
+    "docLink": ""
+  },
+  {
+    "id": "15",
+    "name": "Gottfried Wilhelm Leibniz Universitat Hannover",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_HANNOVE01",
+    "webLink": "https://www.uni-hannover.de/en/studium/im-studium/international/incoming/austauschprogramme/erasmus-incoming/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_HANNOVE01.pdf"
+  },
+  {
+    "id": "16",
+    "name": "Julius-Maximilians Universitaet Wuerzburg",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D__WURZBUR01",
+    "webLink": "https://www.uni-wuerzburg.de/en/international/studying-in-wuerzburg/exchange-students/",
+    "docLink": ""
+  },
+  {
+    "id": "17",
+    "name": "Karlsruher Institut fur Technologie (Fakultat fur Wirtschaftswissenschaften)",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_KARLSRU01-ECO",
+    "webLink": "http://www.intl.kit.edu/istudies/3171.php",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_KARLSRU01-ECO.pdf"
+  },
+  {
+    "id": "18",
+    "name": "Karlsruher Institut fur Technologie (Institut fur Technische Informatik)",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_KARLSRU01-INF",
+    "webLink": "http://www.intl.kit.edu/istudies/3171.php",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_KARLSRU01-INF.pdf"
+  },
+  {
+    "id": "19",
+    "name": "Philipps - Universitat Marburg",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_MARBURG01",
+    "webLink": "https://www.uni-marburg.de/en/studying/studying-at-umr/exchange/erasmus",
+    "docLink": ""
+  },
+  {
+    "id": "20",
+    "name": "Rheinisch Westfalische Technische Hochschule Aachen",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_AACHEN01",
+    "webLink": "https://www.rwth-aachen.de/cms/root/Studium/Im-Studium/Internationales/~bqtq/Exchange-Incomings/lidx/1/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_AACHEN01.pdf"
+  },
+  {
+    "id": "21",
+    "name": "Ruhr-Universität Bochum (RUB)",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_BOCHUM01",
+    "webLink": "https://international.ruhr-uni-bochum.de/en",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_BOCHUM01.pdf"
+  },
+  {
+    "id": "22",
+    "name": "Technische Universität Berlin",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_BERLIN02",
+    "webLink": "https://www.tu.berlin/en/go10007/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_BERLIN02.pdf"
+  },
+  {
+    "id": "23",
+    "name": "Technische Universität Darmstadt",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_DARMSTA01",
+    "webLink": "https://www.tu-darmstadt.de/studieren/studierende_tu/internationale_studierende_1/aufenthalt_international/index.en.jsp",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_DARMSTA01.pdf"
+  },
+  {
+    "id": "24",
+    "name": "Technische Universität München",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_MUNCHEN02",
+    "webLink": "https://www.cit.tum.de/en/cit/international/studies/incoming/informatics/",
+    "docLink": ""
+  },
+  {
+    "id": "25",
+    "name": "Universität des Saarlandes",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_SAARBRU01",
+    "webLink": "https://www.uni-saarland.de/en/international/coming/study.html",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D_SAARBRU01.pdf"
+  },
+  {
+    "id": "26",
+    "name": "Universitat Leipzig",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_LEIPZIG01",
+    "webLink": "https://www.uni-leipzig.de/en/international/exchange-students-at-leipzig-university/before-you-arrive/",
+    "docLink": "https://www.uni-leipzig.de/fileadmin/ul/Dokumente/SI_Erasmus_Fact-Sheet_EN.pdf"
+  },
+  {
+    "id": "27",
+    "name": "Universitat Mannheim",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D_MANNHEI01",
+    "webLink": "https://www.uni-mannheim.de/en/academics/coming-to-mannheim/exchange-students/",
+    "docLink": ""
+  },
+  {
+    "id": "28",
+    "name": "University of Stuttgart",
+    "country": "Alemanya",
+    "flag": "🇩🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/D__STUTTGA01",
+    "webLink": "https://www.uni-stuttgart.de/en/study/application/international-non-degree/erasmus/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/D__STUTTGA01.pdf"
+  },
+  {
+    "id": "29",
+    "name": "Instituto Tecnológico de Buenos Aires",
+    "country": "Argentina",
+    "flag": "🇦🇷",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/AL_ARGBUENOSA12",
+    "webLink": "https://www.itba.edu.ar/la-universidad/itba-global/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/AL_ARGBUENOSA12.pdf"
+  },
+  {
+    "id": "30",
+    "name": "Universidad de Buenos Aires",
+    "country": "Argentina",
+    "flag": "🇦🇷",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/ARGBUENOSA01",
+    "webLink": "https://www.fi.uba.ar/extranjeros",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/ARGBUENOSA01.pdf"
+  },
+  {
+    "id": "31",
+    "name": "Royal Melbourne Institute of technology (RMIT)",
+    "country": "Austràlia",
+    "flag": "🇦🇺",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/AU_MELBOU02",
+    "webLink": "https://www.rmit.edu.au/study-with-us/international-students/programs-for-international-students/study-abroad-and-exchange/student-exchange",
+    "docLink": ""
+  },
+  {
+    "id": "32",
+    "name": "Fachhochschule Vorarlberg",
+    "country": "Àustria",
+    "flag": "🇦🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/A_DORNBIR01",
+    "webLink": "https://www.fhv.at/incomings",
+    "docLink": ""
+  },
+  {
+    "id": "33",
+    "name": "Salzburg University of Applied Sciences",
+    "country": "Àustria",
+    "flag": "🇦🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/A__SALZBUR08",
+    "webLink": "https://www.fh-salzburg.ac.at/en/international/incoming-students/general-information",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/A__SALZBUR08.pdf"
+  },
+  {
+    "id": "34",
+    "name": "Technische Universitaet Graz",
+    "country": "Àustria",
+    "flag": "🇦🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/A__GRAZ02",
+    "webLink": "https://www.tugraz.at/en/studying-and-teaching/studying-internationally/incoming-students-exchange-at-tu-graz/mobility-programmes/erasmus",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/A__GRAZ02.pdf"
+  },
+  {
+    "id": "35",
+    "name": "Technische Universitat Wien - Faculty of Electrical Engineering and Information Technology",
+    "country": "Àustria",
+    "flag": "🇦🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/A_WIEN02-ELEC",
+    "webLink": "https://www.tuwien.at/en/studies/international/incoming-exchange-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/A_WIEN02-ELEC.pdf"
+  },
+  {
+    "id": "36",
+    "name": "Technische Universitat Wien - Faculty of Informatics",
+    "country": "Àustria",
+    "flag": "🇦🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/A_WIEN02-INFO",
+    "webLink": "https://www.tuwien.at/en/studies/international/incoming-exchange-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/A_WIEN02-INFO.pdf"
+  },
+  {
+    "id": "37",
+    "name": "Katholieke Universiteit Leuven",
+    "country": "Bèlgica",
+    "flag": "🇧🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/B__LEUVEN01",
+    "webLink": "https://eng.kuleuven.be/en/study/prospective-students/non-degree-seeking-students",
+    "docLink": ""
+  },
+  {
+    "id": "38",
+    "name": "Université Catholique de Louvain - École Polytechnique de Louvain (EPL)",
+    "country": "Bèlgica",
+    "flag": "🇧🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/B_LOUVAIN01",
+    "webLink": "https://www.uclouvain.be/fr/facultes/epl/incoming-exchange-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/B_LOUVAIN01.pdf"
+  },
+  {
+    "id": "39",
+    "name": "Université Catholique de Louvain - Faculty of Sciences (SC)",
+    "country": "Bèlgica",
+    "flag": "🇧🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/B_LOUVAIN01-FSC",
+    "webLink": "https://uclouvain.be/en/faculties/sc/student-exchange-programs.html",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/B_LOUVAIN01-FSC.pdf"
+  },
+  {
+    "id": "40",
+    "name": "Universiteit Antwerpen",
+    "country": "Bèlgica",
+    "flag": "🇧🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/B_ANTWERP01",
+    "webLink": "https://www.uantwerpen.be/en/about-uantwerp/faculties/faculty-of-applied-engineering/international/exchange-students/",
+    "docLink": ""
+  },
+  {
+    "id": "41",
+    "name": "Universiteit Gent",
+    "country": "Bèlgica",
+    "flag": "🇧🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/B_GENT01",
+    "webLink": "https://www.ugent.be/prospect/en/administration/application/application-exchange",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/B_GENT01.pdf"
+  },
+  {
+    "id": "42",
+    "name": "Vrije Universiteit Brussel",
+    "country": "Bèlgica",
+    "flag": "🇧🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/B_BRUSSEL01",
+    "webLink": "http://www.vub.ac.be/en/exchange",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/B_BRUSSEL01.pdf"
+  },
+  {
+    "id": "43",
+    "name": "Universidad Católica Boliviana (CINDA)",
+    "country": "Bolívia",
+    "flag": "🌍",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/BO_CATOLILAPAZ",
+    "webLink": "https://internacional.ucb.edu.bo/programa-de-movilidad-estudiantil/movilidad-estudiantil-entrante/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/BO_CATOLILAPAZ.pdf"
+  },
+  {
+    "id": "44",
+    "name": "Universidade de Sao Paulo",
+    "country": "Brasil",
+    "flag": "🇧🇷",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/BRASAOPAUL03",
+    "webLink": "https://internationaloffice.usp.br/en/index.php/admissions/studentexchange/#C4",
+    "docLink": ""
+  },
+  {
+    "id": "45",
+    "name": "Technical University of Sofia",
+    "country": "Bulgària",
+    "flag": "🌍",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/BG_SOFIA16",
+    "webLink": "https://tu-sofia.bg/erasmus/erasmus",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/BG_SOFIA16.pdf"
+  },
+  {
+    "id": "46",
+    "name": "École Polytechnique Montréal",
+    "country": "Canadà",
+    "flag": "🇨🇦",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CANMONTREAL01",
+    "webLink": "https://www.polymtl.ca/etudiants-internationaux/en/international-thematic-clusters-engineering",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CANMONTREAL01.pdf"
+  },
+  {
+    "id": "47",
+    "name": "Universite du Quebec (ETS)",
+    "country": "Canadà",
+    "flag": "🇨🇦",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CAN_ESMONT",
+    "webLink": "https://www.etsmtl.ca/en/study-at-ets/study-in-canada/mobility-programs/student-exchange-program",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CAN_ESMONT.pdf"
+  },
+  {
+    "id": "48",
+    "name": "Pontificia Universidad Javieriana",
+    "country": "Colòmbia",
+    "flag": "🇨🇴",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/AL_CO-PUJ",
+    "webLink": "https://www.javeriana.edu.co/inicio",
+    "docLink": ""
+  },
+  {
+    "id": "49",
+    "name": "Incheon National University",
+    "country": "Corea del Sud",
+    "flag": "🇰🇷",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/KR_INCHEON01",
+    "webLink": "http://www.inu.ac.kr/user/indexSub.do?codyMenuSeq=1667147&siteId=global",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/KR_INCHEON01.pdf"
+  },
+  {
+    "id": "50",
+    "name": "Pohang University of Science and Technology (POSTECH)",
+    "country": "Corea del Sud",
+    "flag": "🇰🇷",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/KR_POHANG02",
+    "webLink": "https://international.postech.ac.kr/user/index.do",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/KR_POHANG02.pdf"
+  },
+  {
+    "id": "51",
+    "name": "University of Zagreb",
+    "country": "Croàcia",
+    "flag": "🌍",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/HR_ZAGREB01",
+    "webLink": "http://www.unizg.hr/homepage/international-exchange/exchange-students/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/HR_ZAGREB01.pdf"
+  },
+  {
+    "id": "52",
+    "name": "IT University of Copenhagen",
+    "country": "Dinamarca",
+    "flag": "🇩🇰",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/DK_KOBENHA52",
+    "webLink": "https://en.itu.dk/Programmes/International-students/Exchange-students",
+    "docLink": ""
+  },
+  {
+    "id": "53",
+    "name": "Syddansk Universiteit",
+    "country": "Dinamarca",
+    "flag": "🇩🇰",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/DK_ODENSE01",
+    "webLink": "https://www.sdu.dk/en/uddannelse/exchange_programmes",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/DK_ODENSE01.pdf"
+  },
+  {
+    "id": "54",
+    "name": "Technical University of Denmark",
+    "country": "Dinamarca",
+    "flag": "🇩🇰",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/DK_LYNGBY01",
+    "webLink": "http://www.dtu.dk/english/Education/Incoming-students/Exchange",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/DK_LYNGBY01.pdf"
+  },
+  {
+    "id": "55",
+    "name": "Slovenska Technicka Univerzita V Bratislave - FIIT",
+    "country": "Eslovàquia",
+    "flag": "🌍",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/SK_BRATISL01",
+    "webLink": "https://www.stuba.sk/english/exchange-students/erasmus-students.html?page_id=5720",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/SK_BRATISL01.pdf"
+  },
+  {
+    "id": "56",
+    "name": "Univerza v Mariboru",
+    "country": "Eslovènia",
+    "flag": "🇸🇮",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/SI_MARIBOR01",
+    "webLink": "https://feri.um.si/en/study/erasmus-programme/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/SI_MARIBOR01.pdf"
+  },
+  {
+    "id": "57",
+    "name": "Universidad Autonoma de Madrid",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_MADRID04",
+    "webLink": "http://www.uam.es/UAM/Estudiantes-entrantes/1234886373883.htm?language=es&nodepath=Estudiantes%20Entrantes/%20Incoming&pid=1234886373883",
+    "docLink": ""
+  },
+  {
+    "id": "58",
+    "name": "Universidad Carlos III de Madrid",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_MADRID14",
+    "webLink": "http://www.uc3m.es/",
+    "docLink": ""
+  },
+  {
+    "id": "59",
+    "name": "Universidad de Alicante",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_ALICANTE01",
+    "webLink": "http://www.ua.es/",
+    "docLink": ""
+  },
+  {
+    "id": "60",
+    "name": "Universidad de Cádiz",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_CADIZ01",
+    "webLink": "http://www.uca.es/",
+    "docLink": ""
+  },
+  {
+    "id": "61",
+    "name": "Universidad de Córdoba",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_C%C3%93RDOBA01",
+    "webLink": "http://www.uco.es/",
+    "docLink": ""
+  },
+  {
+    "id": "62",
+    "name": "Universidad de Deusto",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_BILBAO02",
+    "webLink": "http://www.deusto.es/servlet/Satellite/Page/1101307572844/_cast/%231101307572844/c0/Inicio",
+    "docLink": ""
+  },
+  {
+    "id": "63",
+    "name": "Universidad de Granada",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_GRANADA01",
+    "webLink": "http://etsiit.ugr.es/",
+    "docLink": ""
+  },
+  {
+    "id": "64",
+    "name": "Universidad de la Laguna",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_TENERIF01",
+    "webLink": "https://www.ull.es/portal/convocatorias/convocatoria/sistema-intercambio-centros-universitarios-espanoles-sicue-2018-2019/",
+    "docLink": ""
+  },
+  {
+    "id": "65",
+    "name": "Universidad de las Palmas de Gran Canaria",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_LAS-PAL01",
+    "webLink": "http://www.ulpgc.es",
+    "docLink": ""
+  },
+  {
+    "id": "66",
+    "name": "Universidad de Malaga",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_MALAGA01",
+    "webLink": "http://www.uma.es/",
+    "docLink": ""
+  },
+  {
+    "id": "67",
+    "name": "Universidad de Murcia",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_MURCIA01",
+    "webLink": "http://www.um.es",
+    "docLink": ""
+  },
+  {
+    "id": "68",
+    "name": "Universidad de Oviedo",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_OVIEDO01",
+    "webLink": "http://www.uniovi.es",
+    "docLink": ""
+  },
+  {
+    "id": "69",
+    "name": "Universidad de Santiago de Compostela",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_SANTIAG01",
+    "webLink": "http://www.usc.es/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/E_SANTIAG01.pdf"
+  },
+  {
+    "id": "70",
+    "name": "Universidad de Sevilla",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_SEVILLA01",
+    "webLink": "https://www.upo.es/aric/foreign-students/index.html",
+    "docLink": ""
+  },
+  {
+    "id": "71",
+    "name": "Universidad De Valladolid",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E__VALLADO01",
+    "webLink": "https://relint.blogs.inf.uva.es/inicio/estudiantesin/",
+    "docLink": ""
+  },
+  {
+    "id": "72",
+    "name": "Universidad de Zaragoza",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_ZARAGOZ01",
+    "webLink": "http://www.unizar.es/",
+    "docLink": ""
+  },
+  {
+    "id": "73",
+    "name": "Universidad del País Vasco (EHU) - Escuela de Ingeniería de Vitoria-Gasteiz",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_BILBAO01-EIVG",
+    "webLink": "https://www.ehu.eus/es/web/vitoria-gasteizko-ingeniaritza-eskola",
+    "docLink": ""
+  },
+  {
+    "id": "74",
+    "name": "Universidad del País Vasco (EHU) - Facultad de Economía y Empresa",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_BILBAO01-FEE",
+    "webLink": "https://www.ehu.eus/es/web/ekonomia-enpresa-fakultatea",
+    "docLink": ""
+  },
+  {
+    "id": "75",
+    "name": "Universidad del Pais Vasco (EHU) - Facultad de Informática de San Sebastián",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_DONOSTIA99",
+    "webLink": "http://www.ehu.es",
+    "docLink": ""
+  },
+  {
+    "id": "76",
+    "name": "Universidad Pablo de Olavide",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_SEVILLA03",
+    "webLink": "http://www.upo.es",
+    "docLink": ""
+  },
+  {
+    "id": "77",
+    "name": "Universidad Politecnica de Madrid",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_MADRID01",
+    "webLink": "http://www.upm.es/FuturosEstudiantes/Movilidad",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/E_MADRID01.pdf"
+  },
+  {
+    "id": "78",
+    "name": "Universidad Politécnica de Valencia",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_VALENCI02",
+    "webLink": "https://www.upv.es/admision/traslados-e-intercambios/index-va.html",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/E_VALENCI02.pdf"
+  },
+  {
+    "id": "79",
+    "name": "Universidad Pública de Navarra",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_PAMPLON02",
+    "webLink": "http://www.unavarra.es/relacionesinternacionales/relaciones-internacionales-y-movilidad/estudiantes-sicue",
+    "docLink": ""
+  },
+  {
+    "id": "80",
+    "name": "Universidad Rey Juan Carlos",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E__MADRID26",
+    "webLink": "https://www.urjc.es/programa-de-movilidad-de-estudiantes-sicue",
+    "docLink": ""
+  },
+  {
+    "id": "81",
+    "name": "Universitat de les Illes Balears",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_PALMA01",
+    "webLink": "http://www.uib.es/ca/",
+    "docLink": ""
+  },
+  {
+    "id": "82",
+    "name": "Universitat de València",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_VALENCI01",
+    "webLink": "https://www.uv.es/",
+    "docLink": ""
+  },
+  {
+    "id": "83",
+    "name": "Universitat Jaume I",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_CASTELL01",
+    "webLink": "http://www.uji.es",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/E_CASTELL01.pdf"
+  },
+  {
+    "id": "84",
+    "name": "Universitat Rovira i Virgili",
+    "country": "Espanya",
+    "flag": "🇪🇸",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/E_TARRACO01",
+    "webLink": "http://www.urv.es/",
+    "docLink": ""
+  },
+  {
+    "id": "85",
+    "name": "Tartu Ülikool",
+    "country": "Estònia",
+    "flag": "🇪🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/EE_TARTU02",
+    "webLink": "https://ut.ee/en/content/exchange-studies",
+    "docLink": ""
+  },
+  {
+    "id": "86",
+    "name": "Georgia Institute of Technology",
+    "country": "EUA",
+    "flag": "🌍",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/USA_ATLANTA01",
+    "webLink": "http://oie.gatech.edu/accordion-exchange-student-application",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/USA_ATLANTA01.pdf"
+  },
+  {
+    "id": "87",
+    "name": "Aalto Yliopisto",
+    "country": "Finlàndia",
+    "flag": "🇫🇮",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/SF_ESPOO12",
+    "webLink": "https://www.aalto.fi/en/international-students/exchange-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/SF_ESPOO12.pdf"
+  },
+  {
+    "id": "88",
+    "name": "University of Oulu",
+    "country": "Finlàndia",
+    "flag": "🇫🇮",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/SF_OULU01-ITEE",
+    "webLink": "https://www.oulu.fi/en/for-students/incoming-student-exchange/university-oulu-fact-sheet",
+    "docLink": ""
+  },
+  {
+    "id": "89",
+    "name": "Centrale Lille",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_LILLE14",
+    "webLink": "https://ecole.centralelille.fr/semesterinenglish/",
+    "docLink": ""
+  },
+  {
+    "id": "90",
+    "name": "Centrale SUPÉLEC",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_GIF-YVE03",
+    "webLink": "http://www.centralesupelec.fr/en/how-apply-our-programs?tab=exchange-programs-lessons",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_GIF-YVE03.pdf"
+  },
+  {
+    "id": "91",
+    "name": "Clermont Auvergne INP",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_AUBIERE04",
+    "webLink": "https://www.uca.fr/international/mobilites-internationales-et-bourses/venir-a-l-uca/je-suis-etudiant",
+    "docLink": ""
+  },
+  {
+    "id": "92",
+    "name": "École Centrale de Lyon",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_LYON11",
+    "webLink": "https://www.ec-lyon.fr/es",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_LYON11.pdf"
+  },
+  {
+    "id": "93",
+    "name": "École Centrale de Marseille",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_MARSEIL11",
+    "webLink": "https://international.centrale-marseille.fr/en/international-student-0",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_MARSEIL11.pdf"
+  },
+  {
+    "id": "94",
+    "name": "École Centrale de Nantes",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_NANTES07",
+    "webLink": "https://www.ec-nantes.fr/study-at-centrale-nantes/international-study-programmes/exchange-study-programme-121766.kjsp?RH=1488910595665",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_NANTES07.pdf"
+  },
+  {
+    "id": "95",
+    "name": "École Centrale d'Electronique (ECE Paris)",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_PARIS222",
+    "webLink": "https://www.ece.fr/en/international-en/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_PARIS222.pdf"
+  },
+  {
+    "id": "96",
+    "name": "École Francaise Electronique et Informatique (EFREI)",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_PARIS066",
+    "webLink": "https://eng.efrei.fr/international-admission/application-for-an-exchange-program/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_PARIS066.pdf"
+  },
+  {
+    "id": "97",
+    "name": "École Normale Superieure de Lyon",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_LYON103",
+    "webLink": "https://www.ens-lyon.fr/en/studies/admissions/application-student-exchange-program",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_LYON103.pdf"
+  },
+  {
+    "id": "98",
+    "name": "École Supérieure d'Ingenieur en Électronique et Électrotechnique (ESIEE PARIS)",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_NOISY02",
+    "webLink": "http://www.esiee.fr/en/international/exchange-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_NOISY02.pdf"
+  },
+  {
+    "id": "99",
+    "name": "EPF École d'Ingénieurs",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_SCEAUX01",
+    "webLink": "https://www.epf.fr/en/exchange-students-0?_gl=1*idknjd*_up*MQ..*_ga*OTc4MTM2MzMwLjE3MTUyNTIzODg.*_ga_0DXML3F4CM*MTcxNTI1MjM4Ny4xLjAuMTcxNTI1MjM4Ny4wLjAuMA..",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_SCEAUX01.pdf"
+  },
+  {
+    "id": "100",
+    "name": "Grenoble INP (ENSIMAG) - UGA Institute Of Engineering And Management",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_GRENOBL22-ENSIMAG",
+    "webLink": "https://www.grenoble-inp.fr/en/academics/you-are-an-exchange-or-double-degree-student",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_GRENOBL22-ENSIMAG.pdf"
+  },
+  {
+    "id": "101",
+    "name": "Grenoble INP (ESISAR) - UGA Institute Of Engineering And Management",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F__GRENOBL22-ESISAR",
+    "webLink": "https://esisar.grenoble-inp.fr/en",
+    "docLink": ""
+  },
+  {
+    "id": "102",
+    "name": "Institut National des Sciences Appliquées de Lyon (INSA Lyon)",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_LYON12",
+    "webLink": "https://www.insa-lyon.fr/en/node/10535",
+    "docLink": ""
+  },
+  {
+    "id": "103",
+    "name": "Institut National Polytechnique de Toulouse",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_TOULOUS28",
+    "webLink": "http://www.enseeiht.fr/fr/international/coming-to-enseeiht.html",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_TOULOUS28.pdf"
+  },
+  {
+    "id": "104",
+    "name": "Institut National Universitaire Champollion",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_ALBI11",
+    "webLink": "https://www.univ-jfc.fr/formation/mobilite-internationale/etudier-en-france",
+    "docLink": ""
+  },
+  {
+    "id": "105",
+    "name": "Sorbonne université",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_PARIS468",
+    "webLink": "https://www.polytech.sorbonne-universite.fr/venir-etudier-polytech-sorbonne",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_PARIS468.pdf"
+  },
+  {
+    "id": "106",
+    "name": "Université  de Lorraine",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_NANCY43",
+    "webLink": "http://welcome.univ-lorraine.fr/get-to-know-ul/",
+    "docLink": ""
+  },
+  {
+    "id": "107",
+    "name": "Université de Montpellier",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_MONTPEL54",
+    "webLink": "http://www.polytech-montpellier.fr/international/venir-etudier-a-polytech-montpellier",
+    "docLink": "https://www.fib.upc.edu/sites/fib/files/documents/mobilitat/pomocio-universitat-montpellier.pdf"
+  },
+  {
+    "id": "108",
+    "name": "Universite de Nantes - Polytech Nantes",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_NANTES01",
+    "webLink": "http://web.polytech.univ-nantes.fr/73595262/1/fiche___pagelibre/&RH=1382455501084",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/F_NANTES01.pdf"
+  },
+  {
+    "id": "109",
+    "name": "Universite de Rennes 1",
+    "country": "França",
+    "flag": "🇫🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/F_RENNES01",
+    "webLink": "https://formations.univ-rennes.fr/en/coming-study-university-rennes",
+    "docLink": ""
+  },
+  {
+    "id": "110",
+    "name": "Ethniko Metsovio Polythecnio",
+    "country": "Grècia",
+    "flag": "🇬🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/G_ATHINE02",
+    "webLink": "http://erasmus.ntua.gr/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/G_ATHINE02.pdf"
+  },
+  {
+    "id": "111",
+    "name": "Panepistimio Kritis",
+    "country": "Grècia",
+    "flag": "🇬🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/G_KRITIS01",
+    "webLink": "https://www.admin.uoc.gr/intrel/en/students-en/erasmus-and-exchange-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/G_KRITIS01.pdf"
+  },
+  {
+    "id": "112",
+    "name": "University of West Attica - Panepistimio Dytikis Attikis",
+    "country": "Grècia",
+    "flag": "🇬🇷",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/G__EGALEO02",
+    "webLink": "https://erasmus.uniwa.gr/en/erasmus/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/G__EGALEO02.pdf"
+  },
+  {
+    "id": "113",
+    "name": "Budapest University of Technology and Economics",
+    "country": "Hongria",
+    "flag": "🇭🇺",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/HU_BUDAPES02",
+    "webLink": "https://kth.bme.hu/en/for-students/exchange-students/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/HU_BUDAPES02.pdf"
+  },
+  {
+    "id": "114",
+    "name": "Trinity College Dublin",
+    "country": "Irlanda",
+    "flag": "🇮🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/IRLDUBLIN01",
+    "webLink": "https://www.tcd.ie/global/mobility/inbound/how-to-apply/eu-and-erasmus-exchange/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/IRLDUBLIN01.pdf"
+  },
+  {
+    "id": "115",
+    "name": "Alma Mater Studiorum - Università di Bologna",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_BOLOGNA01",
+    "webLink": "https://www.unibo.it/en/international/incoming-exchange-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_BOLOGNA01.pdf"
+  },
+  {
+    "id": "116",
+    "name": "Politecnico di Milano",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_MILANO02",
+    "webLink": "https://www.polimi.it/en/exchange-students-incoming",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_MILANO02.pdf"
+  },
+  {
+    "id": "117",
+    "name": "Politecnico di Torino",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_TORINO02",
+    "webLink": "https://www.polito.it/didattica/studenti-internazionali/exchange-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_TORINO02.pdf"
+  },
+  {
+    "id": "118",
+    "name": "Università degli Studi della Campania \"Luigi Vanvitelli\"",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_NAPOLI09",
+    "webLink": "http://www.unina2.it/index.php/international/studiare-all-estero/erasmus",
+    "docLink": ""
+  },
+  {
+    "id": "119",
+    "name": "Università degli studi dell'Aquila",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I__L-AQUIL01",
+    "webLink": "https://www.univaq.it/en/en/section.php?id=545",
+    "docLink": ""
+  },
+  {
+    "id": "120",
+    "name": "Università Degli Studi Di Bari \"Aldo Moro\"",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I__BARI01",
+    "webLink": "https://www.uniba.it//it/internazionale/incoming-mobility",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I__BARI01.pdf"
+  },
+  {
+    "id": "121",
+    "name": "Universita degli studi di Brescia",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_BRESCIA01",
+    "webLink": "https://www.unibs.it/en/international/incoming-exchange",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_BRESCIA01.pdf"
+  },
+  {
+    "id": "122",
+    "name": "Universita degli studi di Cagliari",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_CAGLIAR01",
+    "webLink": "https://www.unica.it/unica/en/ateneo_s04_ss020.page",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_CAGLIAR01.pdf"
+  },
+  {
+    "id": "123",
+    "name": "Universita degli studi di Milano",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_MILANO01",
+    "webLink": "https://www.unimi.it/en/international/coming-abroad",
+    "docLink": ""
+  },
+  {
+    "id": "124",
+    "name": "Universita degli Studi di Padova \"Il Bo\" (Department of Information Engineering)",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_PADOVA01-ELEINF",
+    "webLink": "https://www.unipd.it/en/erasmus-studies-semp",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_PADOVA01-ELEINF.pdf"
+  },
+  {
+    "id": "125",
+    "name": "Universita degli Studi di Padova \"Il Bo\" (Department of Mathematics)",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I__PADOVA01-MATH",
+    "webLink": "https://www.unipd.it/en/erasmus-studies-semp",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I__PADOVA01-MATH.pdf"
+  },
+  {
+    "id": "126",
+    "name": "Università degli Studi di Perugia",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_PERUGIA01",
+    "webLink": "http://www.unipg.it/en/international-students/incoming-exchange-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_PERUGIA01.pdf"
+  },
+  {
+    "id": "127",
+    "name": "Universita degli studi di Roma \"La Sapienza\" - Faculty of Information Engineering, Informatics, and Statistics",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_ROMA01-INFO",
+    "webLink": "https://redazione.uniroma1.it/it/pagina/students-coming-sapienza",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_ROMA01-INFO.pdf"
+  },
+  {
+    "id": "128",
+    "name": "Universita degli studi di Roma \"La Sapienza\" - Faculty of Mathematics, Physics and Natural Sciences",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_ROMA01-MATH",
+    "webLink": "https://www.uniroma1.it/it/pagina/students-coming-sapienza",
+    "docLink": ""
+  },
+  {
+    "id": "129",
+    "name": "Università degli studi di Salerno",
+    "country": "Itàlia",
+    "flag": "🇮🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/I_SALERNO01",
+    "webLink": "https://web.unisa.it/unisa-rescue-page/dettaglio/id/685/module/196/row/21",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/I_SALERNO01.pdf"
+  },
+  {
+    "id": "130",
+    "name": "National Institute of Informatics",
+    "country": "Japó",
+    "flag": "🇯🇵",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/J_TOKYO11",
+    "webLink": "http://www.nii.ac.jp/en/",
+    "docLink": ""
+  },
+  {
+    "id": "131",
+    "name": "Riga Technical University",
+    "country": "Letònia",
+    "flag": "🇱🇻",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/LV_RIGA02",
+    "webLink": "https://incomingexchange.rtu.lv/courses/course/11-exchange-erasmus-europe",
+    "docLink": ""
+  },
+  {
+    "id": "132",
+    "name": "Vilniaus Gedimino Technikos Universitetas",
+    "country": "Lituània",
+    "flag": "🇱🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/LT_VILNIUS02",
+    "webLink": "https://vilniustech.lt/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/LT_VILNIUS02.pdf"
+  },
+  {
+    "id": "133",
+    "name": "Universidad De Monterrey",
+    "country": "Mèxic",
+    "flag": "🇲🇽",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/MX_MONTERREY02",
+    "webLink": "https://www.udem.edu.mx/es/estudia/un-semestre-en-udem",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/MX_MONTERREY02.pdf"
+  },
+  {
+    "id": "134",
+    "name": "Kristiania University of Applied Sciences",
+    "country": "Noruega",
+    "flag": "🇳🇴",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/N_OSLO58",
+    "webLink": "https://kristiania.no/do-you-want-to-become-an-exchange-student-at-kristiania-university-college",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/N_OSLO58.pdf"
+  },
+  {
+    "id": "135",
+    "name": "Norges Teknisk-Naturvitenskapelige Universitet",
+    "country": "Noruega",
+    "flag": "🇳🇴",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/N_TRONDHE01",
+    "webLink": "https://www.ntnu.edu/studies/exchange/how_to_apply",
+    "docLink": ""
+  },
+  {
+    "id": "136",
+    "name": "Universitet i Bergen",
+    "country": "Noruega",
+    "flag": "🇳🇴",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/N_BERGEN01",
+    "webLink": "https://www4.uib.no/en/studies/for-exchange-students-at-uib",
+    "docLink": ""
+  },
+  {
+    "id": "137",
+    "name": "Eindhoven University of Technology (Department of Mathematics and Computer Science)",
+    "country": "Països Baixos",
+    "flag": "🇳🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/NL_EINDHOV17-CS",
+    "webLink": "https://www.tue.nl/en/our-university/departments/mathematics-and-computer-science/education/",
+    "docLink": ""
+  },
+  {
+    "id": "138",
+    "name": "Eindhoven University of Technology (Faculty of Industrial Engineering and Innovation Sciences)",
+    "country": "Països Baixos",
+    "flag": "🇳🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/NL_EINDHOV17-IND",
+    "webLink": "https://www.tue.nl/en/our-university/departments/industrial-engineering-and-innovation-sciences",
+    "docLink": ""
+  },
+  {
+    "id": "139",
+    "name": "Fontys University of Applied Sciences",
+    "country": "Països Baixos",
+    "flag": "🇳🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/NL_EINDHOV03",
+    "webLink": "https://www.fontys.nl/en/Study-at-Fontys/Exchange-programmes/Erasmus-Programme.htm",
+    "docLink": ""
+  },
+  {
+    "id": "140",
+    "name": "Saxion University of Applied Sciences",
+    "country": "Països Baixos",
+    "flag": "🇳🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/NL_ENSCHED03",
+    "webLink": "https://www.saxion.edu/studying-in-the-netherlands",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/NL_ENSCHED03.pdf"
+  },
+  {
+    "id": "141",
+    "name": "Technische Universiteit Delft",
+    "country": "Països Baixos",
+    "flag": "🇳🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/NL_DELFT01",
+    "webLink": "https://www.tudelft.nl/onderwijs/opleidingen/exchange/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/NL_DELFT01.pdf"
+  },
+  {
+    "id": "142",
+    "name": "Universiteit Maastricht",
+    "country": "Països Baixos",
+    "flag": "🇳🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/NL_MAASTRI01",
+    "webLink": "https://www.maastrichtuniversity.nl/education/exchange/science-and-engineering/study-abroad",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/NL_MAASTRI01.pdf"
+  },
+  {
+    "id": "143",
+    "name": "University of Twente",
+    "country": "Països Baixos",
+    "flag": "🇳🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/NL_ENSCHED01",
+    "webLink": "https://www.utwente.nl/en/education/international-students/exchange-students/",
+    "docLink": ""
+  },
+  {
+    "id": "144",
+    "name": "Vrije Universiteit Amsterdam",
+    "country": "Països Baixos",
+    "flag": "🇳🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/NL_AMSTERD02",
+    "webLink": "https://vu.nl/en/education/exchange",
+    "docLink": ""
+  },
+  {
+    "id": "145",
+    "name": "AGH University of Science and Technology",
+    "country": "Polònia",
+    "flag": "🇵🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/PL_KRAKOW02",
+    "webLink": "https://www.international.agh.edu.pl/en/exchange",
+    "docLink": ""
+  },
+  {
+    "id": "146",
+    "name": "Gdansk University of Technology",
+    "country": "Polònia",
+    "flag": "🇵🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/PL_GDANSK02",
+    "webLink": "https://pg.edu.pl/en/international/erasmus/students-mobility/erasmus-incoming-students",
+    "docLink": ""
+  },
+  {
+    "id": "147",
+    "name": "Lodz University of Technology",
+    "country": "Polònia",
+    "flag": "🇵🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/PL_LODZ02",
+    "webLink": "https://p.lodz.pl/en",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/PL_LODZ02.pdf"
+  },
+  {
+    "id": "148",
+    "name": "Politechnika Warszawska - Faculty of Electronics and Information Technology",
+    "country": "Polònia",
+    "flag": "🇵🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/PL_WARSZAW02-ELEC",
+    "webLink": "http://www.elka.pw.edu.pl/eng/Studies/International-Students-Exchange/Erasmus-Programme",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/PL_WARSZAW02-ELEC.pdf"
+  },
+  {
+    "id": "149",
+    "name": "Politechnika Warszawska - Faculty of Mathematics and Information Sciences",
+    "country": "Polònia",
+    "flag": "🇵🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/PL_WARSZAW02-MATH",
+    "webLink": "https://ww4.mini.pw.edu.pl/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/PL_WARSZAW02-MATH.pdf"
+  },
+  {
+    "id": "150",
+    "name": "Politechnika Wroclawska",
+    "country": "Polònia",
+    "flag": "🇵🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/PL_WROCLAW02",
+    "webLink": "http://dwm.pwr.edu.pl/en/international-students/exchange-erasmus/incoming/erasmus-plus",
+    "docLink": ""
+  },
+  {
+    "id": "151",
+    "name": "Poznan University of Technology",
+    "country": "Polònia",
+    "flag": "🇵🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/PL_POZNAN02",
+    "webLink": "https://put.poznan.pl/en/erasmus-incoming",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/PL_POZNAN02.pdf"
+  },
+  {
+    "id": "152",
+    "name": "University of Gdansk",
+    "country": "Polònia",
+    "flag": "🇵🇱",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/PL_GDANSK01",
+    "webLink": "https://en.ug.edu.pl/incoming-students/erasmus-2021-2027/erasmus-incoming-students",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/PL_GDANSK01.pdf"
+  },
+  {
+    "id": "153",
+    "name": "Instituto Politecnico do Porto",
+    "country": "Portugal",
+    "flag": "🇵🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/P_PORTO05",
+    "webLink": "http://www.isep.ipp.pt/Page/ViewPage/MOBILITYSTUDENTS",
+    "docLink": ""
+  },
+  {
+    "id": "154",
+    "name": "Universidade de Coimbra - Electrical and Computer Engineering Department",
+    "country": "Portugal",
+    "flag": "🇵🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/P_COIMBRA01-DEEC",
+    "webLink": "http://www.uc.pt/en/driic/mobilidade/in/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/P_COIMBRA01-DEEC.pdf"
+  },
+  {
+    "id": "155",
+    "name": "Universidade de Coimbra - Faculdade de Ciencias e Tecnologia",
+    "country": "Portugal",
+    "flag": "🇵🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/P_COIMBRA01-CSD",
+    "webLink": "http://www.uc.pt/en/driic/mobilidade/in/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/P_COIMBRA01-CSD.pdf"
+  },
+  {
+    "id": "156",
+    "name": "Universidade de Lisboa - Faculty of Sciences, Informatics Department",
+    "country": "Portugal",
+    "flag": "🇵🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/P_LISBOA109-FC",
+    "webLink": "https://ciencias.ulisboa.pt/pt/erasmus",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/P_LISBOA109-FC.pdf"
+  },
+  {
+    "id": "157",
+    "name": "Universidade de Lisboa - Técnico Lisboa (Instituto Superior Técnico, IST)",
+    "country": "Portugal",
+    "flag": "🇵🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/P_LISBOA109-TL",
+    "webLink": "https://aai.tecnico.ulisboa.pt/en/nucleo-de-mobilidade-e-parcerias-internacionais/do-mundo-para-o-tecnico/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/P_LISBOA109-TL.pdf"
+  },
+  {
+    "id": "158",
+    "name": "Universidade do Minho",
+    "country": "Portugal",
+    "flag": "🇵🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/P_BRAGA01",
+    "webLink": "https://alunos.uminho.pt/EN/incomingstudents/Pages/default.aspx",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/P_BRAGA01.pdf"
+  },
+  {
+    "id": "159",
+    "name": "Universidade do Porto - Faculdade de Ciencias",
+    "country": "Portugal",
+    "flag": "🇵🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/P_PORTO02-CIENC",
+    "webLink": "https://sigarra.up.pt/up/en/WEB_BASE.GERA_PAGINA?p_pagina=122272",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/P_PORTO02-CIENC.pdf"
+  },
+  {
+    "id": "160",
+    "name": "Universidade do Porto - Faculty of Engineering (FEUP)",
+    "country": "Portugal",
+    "flag": "🇵🇹",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/P_PORTO02-FE",
+    "webLink": "https://sigarra.up.pt/up/en/WEB_BASE.GERA_PAGINA?p_pagina=122272",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/P_PORTO02-FE.pdf"
+  },
+  {
+    "id": "161",
+    "name": "University of Coventry",
+    "country": "Regne Unit",
+    "flag": "🇬🇧",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/UK_COVENTR02",
+    "webLink": "https://www.coventry.ac.uk/study-at-coventry/student-support/enhance-your-employability/global-opportunities/study-exchange/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/UK_COVENTR02.pdf"
+  },
+  {
+    "id": "162",
+    "name": "Ceske Vysoke Uceni Technicke v Praze",
+    "country": "República Txeca",
+    "flag": "🇨🇿",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CZ_PRAHA10",
+    "webLink": "https://international.cvut.cz/for-incomers/erasmus-and-exchange/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CZ_PRAHA10.pdf"
+  },
+  {
+    "id": "163",
+    "name": "Masarykova Univerzita v Brne",
+    "country": "República Txeca",
+    "flag": "🇨🇿",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CZ_BRNO05",
+    "webLink": "http://cic.muni.cz/en/left-incoming-mobility/incoming-student/incoming-student-exchange/erasmus-inc",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CZ_BRNO05.pdf"
+  },
+  {
+    "id": "164",
+    "name": "National University of Science and Technology Politehnica Bucharest",
+    "country": "Romania",
+    "flag": "🇷🇴",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/RO_BUCURES43",
+    "webLink": "https://upb.ro/en/erasmus/students/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/RO_BUCURES43.pdf"
+  },
+  {
+    "id": "165",
+    "name": "Blekinge Institute of Technology",
+    "country": "Suècia",
+    "flag": "🇸🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/S_KARLSKR01",
+    "webLink": "https://www.bth.se/english/education/international-student-guide/exchange-studies",
+    "docLink": ""
+  },
+  {
+    "id": "166",
+    "name": "Chalmers University of Technology",
+    "country": "Suècia",
+    "flag": "🇸🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/S_GOTEBOR02",
+    "webLink": "https://www.chalmers.se/en/education/programmes-and-courses/exchange-studies/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/S_GOTEBOR02.pdf"
+  },
+  {
+    "id": "167",
+    "name": "Kungliga Tekniska Högskolan",
+    "country": "Suècia",
+    "flag": "🇸🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/S__STOCKHO04-CBH",
+    "webLink": "https://www.kth.se/en/studies/exchange",
+    "docLink": ""
+  },
+  {
+    "id": "168",
+    "name": "Kungliga Tekniska Högskolan",
+    "country": "Suècia",
+    "flag": "🇸🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/S_STOCKHO04",
+    "webLink": "http://www.kth.se/en/studies/exchange",
+    "docLink": ""
+  },
+  {
+    "id": "169",
+    "name": "Linköpings Universitet",
+    "country": "Suècia",
+    "flag": "🇸🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/S_LINKOPI01",
+    "webLink": "https://liu.se/en/education/exchange-studies",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/S_LINKOPI01.pdf"
+  },
+  {
+    "id": "170",
+    "name": "Umea University",
+    "country": "Suècia",
+    "flag": "🇸🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/S_UMEA01",
+    "webLink": "https://www.umu.se/en/education/exchange-students/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/S_UMEA01.pdf"
+  },
+  {
+    "id": "171",
+    "name": "Uppsala Universitet",
+    "country": "Suècia",
+    "flag": "🇸🇪",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/S_UPPSALA01",
+    "webLink": "http://www.uu.se/en/admissions/exchange/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/S_UPPSALA01.pdf"
+  },
+  {
+    "id": "172",
+    "name": "Ecole Polytechnique Federale de Lausanne",
+    "country": "Suïssa",
+    "flag": "🇨🇭",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CH_LAUSANN06",
+    "webLink": "https://www.epfl.ch/education/international/en/coming-to-epfl/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CH_LAUSANN06.pdf"
+  },
+  {
+    "id": "173",
+    "name": "Eidgenössische Technische Hochschule Zürich",
+    "country": "Suïssa",
+    "flag": "🇨🇭",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CH_ZURICH07",
+    "webLink": "https://ethz.ch/en/studies/non-degree-courses/exchange.html",
+    "docLink": ""
+  },
+  {
+    "id": "174",
+    "name": "Haute Ecole Spécialisée de Suisse Occidentale, Haute École Ingenierie et de Gestion du Canton de Vaud",
+    "country": "Suïssa",
+    "flag": "🇨🇭",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CH_DELEMON02",
+    "webLink": "https://heig-vd.ch/en/international/stay",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CH_DELEMON02.pdf"
+  },
+  {
+    "id": "175",
+    "name": "National Taiwan University of Science and Technology - TAIWANTECH",
+    "country": "Taiwan",
+    "flag": "🇹🇼",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/TW_TAIPEI04",
+    "webLink": "https://oia.ntust.edu.tw/p/412-1060-8919.php?Lang=en",
+    "docLink": ""
+  },
+  {
+    "id": "176",
+    "name": "Universidad de Montevideo",
+    "country": "Uruguai",
+    "flag": "🇺🇾",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/UY_MONTEVI01",
+    "webLink": "https://www.um.edu.uy/internacional/movilidad-internacional#id-74",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/UY_MONTEVI01.pdf"
+  },
+  {
+    "id": "177",
+    "name": "Hanoi University of Science and Technology",
+    "country": "Vietnam",
+    "flag": "🇻🇳",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/VN_HANOI01",
+    "webLink": "https://hust.edu.vn/en/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/VN_HANOI01.pdf"
+  },
+  {
+    "id": "178",
+    "name": "Pontificia Universidad Católica de Chile",
+    "country": "Xile",
+    "flag": "🇨🇱",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CHISANTIAGOCH08",
+    "webLink": "https://internacionalizacion.uc.cl/quiero-ir-a-la-uc/viajar-a-la-uc/semestre-o-ano-en-la-uc/exchange/",
+    "docLink": ""
+  },
+  {
+    "id": "179",
+    "name": "Universidad Andrés Bello",
+    "country": "Xile",
+    "flag": "🇨🇱",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CHISANTIAGOCH12",
+    "webLink": "http://internacional.unab.cl/estudia-en-la-unab/intercambio/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CHISANTIAGOCH12.pdf"
+  },
+  {
+    "id": "180",
+    "name": "Universidad Técnica Federico Santa Maria",
+    "country": "Xile",
+    "flag": "🇨🇱",
+    "program": "Amèrica Llatina",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CHIVALPARA02",
+    "webLink": "https://oai.usm.cl/movilidad/hacia-la-usm-internacional/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CHIVALPARA02.pdf"
+  },
+  {
+    "id": "181",
+    "name": "Beihang University",
+    "country": "Xina",
+    "flag": "🇨🇳",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CHNBEIJING04",
+    "webLink": "https://global.buaa.edu.cn/en/Study_with_Us/Exchange_Programs.htm",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CHNBEIJING04.pdf"
+  },
+  {
+    "id": "182",
+    "name": "Beijing Institute of Technology",
+    "country": "Xina",
+    "flag": "🇨🇳",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CHNBEIJING05",
+    "webLink": "https://isc.bit.edu.cn/admissionsaid/essap/internationalexchange/index.htm",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CHNBEIJING05.pdf"
+  },
+  {
+    "id": "183",
+    "name": "City University of Hong Kong",
+    "country": "Xina",
+    "flag": "🇨🇳",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CHNHONGKO01",
+    "webLink": "https://www.cityu.edu.hk/geo/global-opportunities/student-exchange/inbound-student-exchange",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CHNHONGKO01.pdf"
+  },
+  {
+    "id": "184",
+    "name": "Tongji University",
+    "country": "Xina",
+    "flag": "🇨🇳",
+    "program": "Mobilitat fora d'Europa",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CHNSHANGH02",
+    "webLink": "https://study.tongji.edu.cn/info/1064/1457.htm",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CHNSHANGH02.pdf"
+  },
+  {
+    "id": "185",
+    "name": "Panepistimio Kyprou",
+    "country": "Xipre",
+    "flag": "🇨🇾",
+    "program": "Erasmus+",
+    "url": "https://www.fib.upc.edu/ca/mobilitat/aliances-internacionals/universitats-partner/CY_NICOSIA01",
+    "webLink": "https://www.ucy.ac.cy/",
+    "docLink": "https://www.fib.upc.edu/pdf/mobilitat/keydata/CY_NICOSIA01.pdf"
+  }
+]

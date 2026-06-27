@@ -434,7 +434,7 @@ const CommunityPage = () => {
                                 placeholder="Cerca apunts..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none px-2 placeholder:text-slate-600"
+                                className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none pl-2 pr-8 placeholder:text-slate-600"
                             />
                             {(searchQuery || isSearchOpen) && (
                                 <button 
