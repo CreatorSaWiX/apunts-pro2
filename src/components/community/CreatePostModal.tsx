@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -30,6 +30,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     const [subject, setSubject] = useState<SubjectType>('');
     const [loading, setLoading] = useState(false);
     const [isNoteMode, setIsNoteMode] = useState(false);
+    const [debouncedContent, setDebouncedContent] = useState('');
     const { customSubjectColors } = useSettings();
     
     const [showGifPicker, setShowGifPicker] = useState(false);
@@ -48,6 +49,13 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             textareaRef.current.style.height = '150px';
         }
     }, [isOpen]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedContent(content);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [content]);
 
     const handleSend = async () => {
         if (!user || (!content.trim() && attachments.length === 0)) return;
@@ -110,21 +118,24 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
     if (!user) return null;
 
-    const livePost: CommunityPost = {
-        id: 'preview',
-        userId: user.id,
-        username: user.username,
-        userAvatar: user.avatar || '',
-        content: content.trim() || 'Comença a escriure per veure com queda...',
-        subject: subject,
-        type: 'resource',
-        attachments: attachments,
-        createdAt: new Date() as any,
-        reactions: {},
-        rank: 0,
-        isPinned: false,
-        isNote: isNoteMode
-    };
+    const livePreviewElement = useMemo(() => {
+        const livePost: CommunityPost = {
+            id: 'preview',
+            userId: user.id,
+            username: user.username,
+            userAvatar: user.avatar || '',
+            content: debouncedContent.trim() || 'Comença a escriure per veure com queda...',
+            subject: subject,
+            type: 'resource',
+            attachments: attachments,
+            createdAt: new Date() as any,
+            reactions: {},
+            rank: 0,
+            isPinned: false,
+            isNote: isNoteMode
+        };
+        return <PublicationCard post={livePost} />;
+    }, [debouncedContent, user.id, user.username, user.avatar, subject, attachments, isNoteMode]);
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="6xl">
@@ -314,8 +325,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
                             <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">
                                 <div className="w-full max-w-[320px] pointer-events-none">
-                                    <PublicationCard post={{...livePost, content: livePost.content}} />
-                                    {/* A simple hack for emotes in live preview: Since PublicationCard strips images from content by default, we can just let PublicationCard show its stripped text, but we render a markdown block below it in the preview if there are emotes! Or better, we just change PublicationCard to allow small emotes in text. For now, since the actual feed strips them, we show exactly what the feed shows. BUT wait, if the feed strips images, the user will NEVER see their emotes in the feed! Let's allow emojis in PublicationCard. */}
+                                    {livePreviewElement}
                                 </div>
                                 
                                 <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-[250px]">
