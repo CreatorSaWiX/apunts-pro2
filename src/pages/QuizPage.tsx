@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle, XCircle, Clock, AlertTriangle, RefreshCw, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { quizzes } from '../content/data/quizzes';
-import confetti from 'canvas-confetti';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
@@ -135,11 +134,12 @@ const QuizPage: React.FC = () => {
         setSelectedAnswers(prev => ({ ...prev, [quiz!.questions[currentQuestionIdx].id]: optionId }));
     }, [isFinished, currentQuestionIdx, quiz]);
 
-    const finishQuiz = useCallback(() => {
+    const finishQuiz = useCallback(async () => {
         setIsFinished(true);
         if (!quiz) return;
         const finalScore = quiz.questions.reduce((acc, q) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
         if (finalScore === quiz.questions.length) {
+            const confetti = (await import('canvas-confetti')).default;
             confetti({
                 particleCount: 150,
                 spread: 70,

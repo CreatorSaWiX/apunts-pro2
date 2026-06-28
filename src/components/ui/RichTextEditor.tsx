@@ -98,7 +98,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
     );
 };
 
-export const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure...', editorRef }: RichTextEditorProps) => {
+const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure...', editorRef }: RichTextEditorProps) => {
     const editor = useEditor({
         extensions: [
             StarterKit,

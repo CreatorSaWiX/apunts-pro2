@@ -6,6 +6,7 @@ import { db } from '../../lib/firebase';
 import { doc, updateDoc, deleteField, deleteDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import Tilt from 'react-parallax-tilt';
 import { renderEmojis } from '../../lib/emojis';
+import DOMPurify from 'dompurify';
 
 interface PublicationCardProps {
     post: CommunityPost;
@@ -91,7 +92,7 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
         }
         textOnly = textOnly.replace(/!\[.*?\]\(.*?\)/g, '');
         const truncated = textOnly.length > length ? textOnly.substring(0, length) + '...' : textOnly;
-        return renderEmojis(truncated);
+        return DOMPurify.sanitize(renderEmojis(truncated));
     };
 
     const getRankStyles = (rank: number) => {
@@ -175,6 +176,7 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                         src={coverUrl} 
                         alt={post.content.substring(0, 20)} 
                         className={`w-full h-full object-cover transition-transform duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''}`}
+                        loading="lazy"
                     />
                 ) : (
                     <div className={`w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-white/10 to-white/5 p-6 text-center border border-white/5 relative overflow-hidden transition-transform duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''}`}>
@@ -237,7 +239,7 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                 
                 <div className="flex items-center justify-between mt-0.5">
                     <div className="flex items-center gap-1.5 min-w-0">
-                        <img src={post.userAvatar} alt={post.username} className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
+                        <img src={post.userAvatar} alt={post.username} className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" loading="lazy" />
                         <span className="text-[11px] text-slate-400 truncate group-hover:text-white transition-colors">
                             {post.username}
                         </span>

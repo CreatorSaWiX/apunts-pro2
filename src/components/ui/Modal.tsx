@@ -100,26 +100,26 @@ export const Modal = ({
     return createPortal(content, document.body);
 };
 
-export const ModalHeader = ({ title, children, className = '' }: { title?: string, children?: React.ReactNode, className?: string }) => (
+const ModalHeader = ({ title, children, className = '' }: { title?: string, children?: React.ReactNode, className?: string }) => (
     <div className={`p-6 border-b border-white/[0.08] relative shrink-0 ${className}`}>
         {title && <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>}
         {children}
     </div>
 );
 
-export const ModalBody = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
+const ModalBody = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
     <div className={`flex-1 overflow-y-auto p-6 custom-scrollbar ${className}`}>
         {children}
     </div>
 );
 
-export const ModalSidebar = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
+const ModalSidebar = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
     <div className={`w-72 border-r border-white/[0.08] bg-white/[0.02] shrink-0 flex flex-col ${className}`}>
         {children}
     </div>
 );
 
-export const ModalLayout = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
+const ModalLayout = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
     <div className={`flex flex-1 overflow-hidden h-full w-full ${className}`}>
         {children}
     </div>

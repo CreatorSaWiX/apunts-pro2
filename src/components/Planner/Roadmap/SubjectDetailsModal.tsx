@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, ExternalLink, Users, Clock, Target, CheckSquare, Layers, Activity, Book, Key } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
+import DOMPurify from 'dompurify';
 
 interface SubjectDetailsModalProps {
     isOpen: boolean;
@@ -408,7 +409,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                     prose-table:w-full prose-table:border-collapse prose-table:rounded-xl prose-table:overflow-hidden
                                                                     prose-td:border prose-td:border-white/5 prose-td:p-4 prose-td:bg-white/[0.02]
                                                                     prose-th:border prose-th:border-white/10 prose-th:bg-white/[0.05] prose-th:p-4 prose-th:text-left prose-th:text-white"
-                                                                dangerouslySetInnerHTML={{ __html: processedHtml }}
+                                                                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(processedHtml) }}
                                                             />
                                                         );
                                                     })}

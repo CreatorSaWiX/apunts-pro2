@@ -473,7 +473,7 @@ const AboutSection = () => {
                                             >
                                                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-tr from-sky-500 to-blue-500 flex items-center justify-center text-white font-bold shadow-lg shadow-sky-500/20 group-hover:scale-110 transition-transform relative">
                                                     {user.avatar ? (
-                                                        <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
+                                                        <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" loading="lazy" />
                                                     ) : (
                                                         <span>{user.username.charAt(0).toUpperCase()}</span>
                                                     )}

@@ -12,6 +12,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
 import Spinner from '../components/ui/Spinner';
+import DOMPurify from 'dompurify';
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();
     const [lang, setLang] = useState('ca');
@@ -198,7 +199,7 @@ const SolutionDetailPage = () => {
                             <span className="text-slate-500 mr-0.5">Autor:</span>
                             {solution.authorId ? (
                                 <Link to={`/profile/${solution.authorId}`} className="flex items-center gap-2 hover:text-sky-400 transition-colors">
-                                    {authorData?.avatar && <img src={authorData.avatar} className="w-5 h-5 rounded-full bg-slate-800 object-cover" />}
+                                    {authorData?.avatar && <img src={authorData.avatar} className="w-5 h-5 rounded-full bg-slate-800 object-cover" loading="lazy" />}
                                     {authorData?.username || solution.author || 'Anònim'}
                                 </Link>
                             ) : (
@@ -275,7 +276,7 @@ const SolutionDetailPage = () => {
                         </div>
                         <div className="p-6 text-slate-300 leading-relaxed text-[15px]">
                             {solution.statement ? (
-                                <div dangerouslySetInnerHTML={{ __html: solution.statement }} className="jutge-content space-y-4" />
+                                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(solution.statement) }} className="jutge-content space-y-4" />
                             ) : (
                                 <p className="italic text-slate-500">Enunciat no disponible.</p>
                             )}

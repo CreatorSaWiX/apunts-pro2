@@ -346,7 +346,7 @@ export const ChatBot: React.FC = () => {
           >
             {/* Background */}
             <div className="absolute inset-0 z-[-1] bg-[#020617]">
-              <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover blur-[30px] scale-[1.2] select-none pointer-events-none" />
+              <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover blur-[30px] scale-[1.2] select-none pointer-events-none" loading="lazy" />
               <div className="absolute inset-0 bg-[#020617]/30 backdrop-blur-xl" />
             </div>
 
@@ -531,7 +531,7 @@ export const ChatBot: React.FC = () => {
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="px-2 pt-2">
                       <div className="relative inline-block border border-white/10 rounded-xl bg-slate-900/50 p-1 mt-2 ml-2">
                         {attachedFile.mimeType.startsWith('image/') ? (
-                          <img src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`} alt="preview" className="h-16 object-contain rounded-lg" />
+                          <img src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`} alt="preview" className="h-16 object-contain rounded-lg" loading="lazy" />
                         ) : (
                           <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg"><span className="text-xs font-bold text-slate-300">PDF</span></div>
                         )}

@@ -65,6 +65,18 @@ interface RoadmapContextType {
 
 const RoadmapContext = createContext<RoadmapContextType | undefined>(undefined);
 
+const removeUndefined = (obj: any): any => {
+    if (Array.isArray(obj)) return obj.map(removeUndefined);
+    if (obj !== null && typeof obj === 'object') {
+        return Object.fromEntries(
+            Object.entries(obj)
+                .filter(([_, v]) => v !== undefined)
+                .map(([k, v]) => [k, removeUndefined(v)])
+        );
+    }
+    return obj;
+};
+
 const createInitialGraph = () => {
     const nodes: Node<SubjectNodeData>[] = geiBaseNodes.map(acronym => {
         const subject = subjectsData.find((s: any) => s.name === acronym);
@@ -577,13 +589,13 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             }));
 
             const docRef = doc(db, 'users', user.id, 'roadmaps', 'main');
-            await setDoc(docRef, JSON.parse(JSON.stringify({
+            await setDoc(docRef, removeUndefined({
                 nodes: cleanNodes,
                 edges: cleanEdges,
                 itinerary,
                 strokes,
                 updatedAt: new Date().toISOString()
-            })));
+            }));
         } catch (err) {
             console.error("Error saving roadmap:", err);
             throw err;
