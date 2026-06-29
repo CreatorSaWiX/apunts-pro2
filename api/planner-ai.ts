@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Configurar CORS
@@ -49,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(500).json({ error: 'Error intern del servidor (C)' });
         }
 
-        const genAI = new GoogleGenerativeAI(apiKey);
+        const ai = new GoogleGenAI({ apiKey });
 
         const MODELS = [
             'gemini-2.5-flash',
@@ -76,30 +76,27 @@ Les tasques han de seguir aquesta estructura per a cada element de l'array:
 }
 
 IMPORTANT:
-1. Retorna NOMÉS codi JSON vàlid (un array d'objectes).
-2. Cap markdown de block (\`\`\`json). Només el contingut JSON pur.
-3. Si el prompt no demana dates específiques, assigna-les intel·ligentment respectant les tasques existents o deixa-les en null. Avui és ${new Date().toISOString()}`;
+1. Retorna NOMÉS l'estructura JSON sol·licitada.
+2. Si el prompt no demana dates específiques, assigna-les intel·ligentment respectant les tasques existents o deixa-les en null. Avui és ${new Date().toISOString()}`;
 
         let lastError: any;
         for (const modelName of MODELS) {
             try {
-                const model = genAI.getGenerativeModel({ 
-                    model: modelName, 
-                    systemInstruction 
+                const response = await ai.models.generateContent({
+                    model: modelName,
+                    contents: prompt,
+                    config: {
+                        systemInstruction: systemInstruction,
+                        responseMimeType: "application/json",
+                    }
                 });
                 
-                const chat = model.startChat();
-                const result = await chat.sendMessage(prompt);
-                const textOutput = result.response.text();
-                
-                // Netejar markdown si l'ha posat per error
-                const cleanJson = textOutput.replace(/```json/g, '').replace(/```/g, '').trim();
-                
-                const parsedTasks = JSON.parse(cleanJson);
+                const textOutput = response.text;
+                const parsedTasks = JSON.parse(textOutput);
                 
                 return res.status(200).json({ tasks: parsedTasks });
             } catch (e: any) {
-                const is429 = e?.status === 429 || String(e?.message || '').includes('429');
+                const is429 = e?.status === 429 || e?.status === 404 || String(e?.message || '').includes('429') || String(e?.message || '').includes('404');
                 if (is429) {
                     console.warn(`[Gemini Planner] ${modelName} rate limit, saltant...`);
                     lastError = e;

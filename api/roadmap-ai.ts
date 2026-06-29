@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import fs from 'fs';
 import path from 'path';
 
@@ -112,7 +112,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
         }
 
-        const genAI = new GoogleGenerativeAI(apiKey);
+        const ai = new GoogleGenAI({ apiKey });
         const systemInstruction = `Ets un Senior Software Engineer i mentor executiu que ajuda estudiants de la FIB-UPC amb el seu roadmap.
 Tens una personalitat professional, molt directa i estricta. Respon amb màxima claredat i precisió.
 NO ets un xatbot convencional. Ets una eina de productivitat i planificació d'alt nivell.
@@ -121,7 +121,7 @@ REGLES D'ESTIL I CONTINGUT (MOLT ESTRICTES):
 1. **ZERO EMOJIS**: Sota CAP concepte pots utilitzar emojis. Mai.
 2. **ZERO FARCIMENT**: No facis introduccions ni comiats innecessaris ("Hola!", "Què tal?", "Com et puc ajudar?", "Que tinguis un bon dia"). Vés directe a la informació o a l'acció. Si et saluden només amb "Hola", respon amb "Digues-me."
 3. **MÀXIMA CONCISIÓ**: Fes servir llistes, punts i frases curtes. No escriguis paràgrafs densos que no aportin valor.
-4. PROCÉS DE PENSAMENT EXPLICAT: A petició de l'equip de disseny, SEMPRE has de començar la teva resposta explicant què estàs fent de forma transparent en cursiva. Això dóna feedback a l'estudiant del teu procés intern. Sigues molt curt. Exemples: "*Analitzant la salutació...*", "*Buscant la guia docent d'EDA...*", "*Avaluant trajectòria...*".
+4. PROCÉS DE PENSAMENT EXPLICAT: A petició de l'equip de disseny, SEMPRE has de començar la teva resposta explicant què estàs fent de forma transparent dins d'una etiqueta XML <think>. Això dóna feedback a l'estudiant del teu procés intern. Sigues molt curt. Exemples: "<think>Analitzant la salutació...</think>", "<think>Buscant la guia docent d'EDA...</think>", "<think>Avaluant trajectòria...</think>". Mai usis asteriscs per aquest propòsit, FES SERVIR NOMÉS TAGS <think>.
 5. FORMAT I UI (CRÍTIC PER A L'APP):
    - **Mètode d'Avaluació**: TRADUEIX explícitament l'avaluació a KaTeX PUR. És obligatori fer servir commands de LaTeX com \\min i \\max. La fórmula ha d'estar aïllada en un bloc $$:
      $$ \\text{NOTA} = \\min(10, \\max(0.225 \\cdot NPP + ...)) $$
@@ -174,7 +174,6 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
         const MODELS = [
             'gemini-3.5-flash',
             'gemini-2.5-flash',
-            'gemini-1.5-flash',
             'gemini-3.1-flash-lite'
         ];
 
@@ -206,17 +205,22 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
         
         for (const modelName of MODELS) {
             try {
-                const model = genAI.getGenerativeModel({
+                // Definim la tool per al nou format de genai
+                const roadmapToolGenAI = {
+                    name: "modify_roadmap",
+                    description: "Modifica el roadmap de l'estudiant afegint o eliminant assignatures. Només cridar-ho si l'usuari ho demana explícitament (ex: 'Afegeix IA al meu roadmap').",
+                    parameters: roadmapTool.parameters
+                };
+
+                const responseStream = await ai.models.generateContentStream({
                     model: modelName,
-                    systemInstruction,
-                    tools: [{ functionDeclarations: [roadmapTool] as any }],
-                    generationConfig: {
-                        temperature: 0.1
+                    contents: [...formattedHistory, { role: 'user', parts: [{ text: prompt }] }],
+                    config: {
+                        systemInstruction: systemInstruction,
+                        temperature: 0.1,
+                        tools: [{ functionDeclarations: [roadmapToolGenAI] }]
                     }
                 });
-
-                const chat = model.startChat({ history: formattedHistory });
-                const result = await chat.sendMessageStream([{ text: prompt }]);
                 
                 let hasToolCall = false;
                 let toolCallData = null;
@@ -225,54 +229,51 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                 let thoughtProcessBuffer = "";
                 let hasStartedThinking = false;
 
-                for await (const chunk of result.stream) {
+                for await (const chunk of responseStream) {
                     // Check for function calls
-                    const functionCalls = chunk.functionCalls();
+                    const functionCalls = chunk.functionCalls;
                     if (functionCalls && functionCalls.length > 0) {
                         hasToolCall = true;
                         toolCallData = functionCalls[0].args;
                         break;
                     }
 
-                    const chunkText = chunk.text();
+                    const chunkText = chunk.text;
                     if (chunkText) {
                         if (isThinking) {
                             thoughtProcessBuffer += chunkText;
                             
-                            // Busquem el primer asterisc que indica l'inici del pensament
                             if (!hasStartedThinking) {
-                                const startIdx = thoughtProcessBuffer.indexOf('*');
+                                const startTag = '<think>';
+                                const startIdx = thoughtProcessBuffer.indexOf(startTag);
                                 if (startIdx !== -1) {
                                     hasStartedThinking = true;
-                                    thoughtProcessBuffer = thoughtProcessBuffer.substring(startIdx + 1);
+                                    thoughtProcessBuffer = thoughtProcessBuffer.substring(startIdx + startTag.length);
+                                } else if (thoughtProcessBuffer.length > 15 && !thoughtProcessBuffer.includes('<')) {
+                                    isThinking = false;
+                                    sendSSE({ type: 'text', content: thoughtProcessBuffer });
                                 }
                             }
                             
                             if (hasStartedThinking) {
-                                const endIdx = thoughtProcessBuffer.indexOf('*');
+                                const endTag = '</think>';
+                                const endIdx = thoughtProcessBuffer.indexOf(endTag);
                                 if (endIdx !== -1) {
-                                    // Hem trobat el final del pensament
                                     const thoughtText = thoughtProcessBuffer.substring(0, endIdx).trim();
-                                    const remainingText = thoughtProcessBuffer.substring(endIdx + 1).trimStart();
+                                    const remainingText = thoughtProcessBuffer.substring(endIdx + endTag.length).trimStart();
                                     
                                     if (thoughtText) {
                                         sendSSE({ type: 'progress', content: thoughtText + "..." });
                                     }
                                     
-                                    isThinking = false; // Fi del pensament
+                                    isThinking = false; 
                                     
                                     if (remainingText) {
                                         sendSSE({ type: 'text', content: remainingText });
                                     }
                                 } else {
-                                    // Encara està pensant, actualitzem el text
-                                    sendSSE({ type: 'progress', content: thoughtProcessBuffer.replace(/\n/g, ' ') + "..." });
-                                }
-                            } else {
-                                // Si escriu més de 10 caràcters i no ha posat cap asterisc, ignorem el pensament
-                                if (thoughtProcessBuffer.length > 10) {
-                                    isThinking = false;
-                                    sendSSE({ type: 'text', content: thoughtProcessBuffer });
+                                    const cleanedThinking = thoughtProcessBuffer.replace(/\\n/g, ' ').replace(/<[^>]*>?/gm, '');
+                                    sendSSE({ type: 'progress', content: cleanedThinking + "..." });
                                 }
                             }
                         } else {
@@ -293,7 +294,7 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                 return;
                 
             } catch (e: any) {
-                const isFallbackable = e?.status === 429 || e?.status === 503 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').match(/exhausted/i);
+                const isFallbackable = e?.status === 429 || e?.status === 503 || e?.status === 404 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').includes('404') || String(e?.message || '').match(/exhausted/i);
                 if (isFallbackable) {
                     console.warn(`[Vercel Roadmap AI] ${modelName} fallat (rate limit / server error), saltant al següent model...`);
                     lastError = e;

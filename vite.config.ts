@@ -109,7 +109,7 @@ export default defineConfig(({ mode }) => {
               req.on('end', async () => {
                 try {
                   const { message, history, currentPath = '/', pageText = '', image } = JSON.parse(body);
-                  const { GoogleGenerativeAI } = await import('@google/generative-ai');
+                  const { GoogleGenAI } = await import('@google/genai');
 
                   // Per evitar el bucle infinit de recàrrega de Vite, llegim el fitxer manualment 
                   // en lloc d'utilitzar import() que Vite rastreja com a dependència.
@@ -146,7 +146,7 @@ export default defineConfig(({ mode }) => {
                     .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
                     .join('\n\n---\n\n');
 
-                  const genAI = new GoogleGenerativeAI(apiKey);
+                  const genAI = new GoogleGenAI({ apiKey });
 
                   const MODELS = [
                     'gemini-3.5-flash',          // nou model de referència 3.5
@@ -184,12 +184,14 @@ export default defineConfig(({ mode }) => {
 
                   for (const modelName of MODELS) {
                     try {
-                      const model = genAI.getGenerativeModel({ model: modelName, systemInstruction });
-                      const chat = model.startChat({ history: formattedHistory });
-                      const result = await chat.sendMessage(msgParts);
+                      const response = await genAI.models.generateContent({
+                        model: modelName,
+                        contents: [...formattedHistory, { role: 'user', parts: msgParts }],
+                        config: { systemInstruction }
+                      });
                       console.log(`✅ [Gemini] Model usat: ${modelName}`);
                       res.setHeader('Content-Type', 'application/json');
-                      res.end(JSON.stringify({ reply: result.response.text() }));
+                      res.end(JSON.stringify({ reply: response.text }));
                       replied = true;
                       break;
                     } catch (e: any) {
@@ -226,7 +228,7 @@ export default defineConfig(({ mode }) => {
               req.on('end', async () => {
                 try {
                   const { prompt, currentTasks, subjects, currentDate } = JSON.parse(body);
-                  const { GoogleGenerativeAI } = await import('@google/generative-ai');
+                  const { GoogleGenAI } = await import('@google/genai');
                   const apiKey = env.GEMINI_API_KEY;
 
                   if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
@@ -235,7 +237,7 @@ export default defineConfig(({ mode }) => {
                     return;
                   }
 
-                  const genAI = new GoogleGenerativeAI(apiKey);
+                  const genAI = new GoogleGenAI({ apiKey });
                   const systemInstruction = `Ets un asistent intel·ligent per a una aplicació de planificació d'estudiants universitaris. La teva feina és analitzar el missatge de l'usuari i determinar quines accions s'han de prendre sobre les tasques.
 
 IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SENSE TEXT AL VOLTANT. Només JSON.
@@ -284,14 +286,12 @@ L'estructura exacta ha de ser:
   ]
 }`;
 
-                  const model = genAI.getGenerativeModel({
+                  const response = await genAI.models.generateContent({
                     model: 'gemini-2.5-flash',
-                    systemInstruction,
-                    generationConfig: { responseMimeType: "application/json" }
+                    contents: prompt,
+                    config: { systemInstruction, responseMimeType: "application/json" }
                   });
-
-                  const result = await model.generateContent(prompt);
-                  const responseText = result.response.text();
+                  const responseText = response.text;
 
                   res.setHeader('Content-Type', 'application/json');
                   res.end(responseText);
@@ -317,7 +317,7 @@ L'estructura exacta ha de ser:
               req.on('end', async () => {
                 try {
                   const { prompt, currentNodes, history = [], memory = {} } = JSON.parse(body);
-                  const { GoogleGenerativeAI } = await import('@google/generative-ai');
+                  const { GoogleGenAI } = await import('@google/genai');
                   const fs = await import('fs');
                   const path = await import('path');
                   const apiKey = env.GEMINI_API_KEY;
@@ -379,7 +379,7 @@ L'estructura exacta ha de ser:
                     }
                   }
 
-                  const genAI = new GoogleGenerativeAI(apiKey);
+                  const genAI = new GoogleGenAI({ apiKey });
                   const systemInstruction = `Ets un Senior Software Engineer i mentor que ajuda estudiants de la FIB-UPC amb el seu roadmap.
 Tens una personalitat propera, honesta i que parla de tu a tu, com un company més veterà.
 NO ets un llibre ni un robot que fa discursos. Aquest és un xat normal.
@@ -459,27 +459,27 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
 
                   for (const modelName of MODELS) {
                     try {
-                      const model = genAI.getGenerativeModel({
+                      const responseStream = await genAI.models.generateContentStream({
                         model: modelName,
-                        systemInstruction,
-                        tools: [{ functionDeclarations: [roadmapTool] as any }]
+                        contents: [...formattedHistory, { role: 'user', parts: msgParts }],
+                        config: {
+                          systemInstruction,
+                          tools: [{ functionDeclarations: [roadmapTool] as any }]
+                        }
                       });
-
-                      const chat = model.startChat({ history: formattedHistory });
-                      const result = await chat.sendMessageStream(msgParts);
 
                       let hasToolCall = false;
                       let toolCallData = null;
 
-                      for await (const chunk of result.stream) {
-                        const functionCalls = chunk.functionCalls();
+                      for await (const chunk of responseStream) {
+                        const functionCalls = chunk.functionCalls;
                         if (functionCalls && functionCalls.length > 0) {
                           hasToolCall = true;
                           toolCallData = functionCalls[0].args;
                           break;
                         }
 
-                        const chunkText = chunk.text();
+                        const chunkText = chunk.text;
                         if (chunkText) {
                           sendSSE({ type: 'text', content: chunkText });
                         }
