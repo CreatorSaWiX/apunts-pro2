@@ -3,6 +3,7 @@ import { Handle, Position } from '@xyflow/react';
 import type { NodeProps, Node } from '@xyflow/react';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
 import { motion } from 'framer-motion';
+import Tilt from 'react-parallax-tilt';
 
 const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) => {
 
@@ -106,10 +107,23 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
     };
 
     return (
+        <Tilt
+            tiltMaxAngleX={10}
+            tiltMaxAngleY={10}
+            perspective={800}
+            scale={1.02}
+            transitionSpeed={1500}
+            gyroscope={false}
+            glareEnable={true}
+            glareMaxOpacity={0.1}
+            glareColor="#ffffff"
+            glarePosition="all"
+            glareBorderRadius="8px"
+            className="rounded-lg"
+        >
         <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            whileHover={{ scale: 1.05, rotateX: 5, rotateY: 5 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             style={{ transformStyle: 'preserve-3d' }}
             className={`relative min-w-[150px] max-w-[180px] p-0 rounded-lg border-2 transition-colors duration-300 ${containerClasses} ${selected ? 'ring-2 ring-white/70 ring-offset-2 ring-offset-slate-950' : ''}`}
@@ -166,6 +180,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
 
             <Handle type="source" position={Position.Bottom} className="w-3 h-1 !bg-sky-400 !border-0 !rounded-sm opacity-50" />
         </motion.div>
+        </Tilt>
     );
 };
 

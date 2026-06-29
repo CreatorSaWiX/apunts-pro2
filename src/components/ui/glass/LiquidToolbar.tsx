@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import LiquidPanel from './LiquidPanel';
 
 interface LiquidToolbarProps {
@@ -19,12 +19,20 @@ export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, classNam
             onAnimationComplete={() => setIsReady(true)}
             className={`fixed bottom-6 sm:bottom-10 inset-x-0 z-50 flex justify-center pointer-events-none ${isReady ? '!transform-none' : ''}`}
         >
-            <div className={`relative flex items-center pointer-events-auto ${className}`}>
-                <LiquidPanel className="absolute inset-0 !rounded-full pointer-events-none">{null}</LiquidPanel>
+            <motion.div 
+                layout
+                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                className={`relative flex items-center pointer-events-auto ${className}`}
+            >
+                <motion.div layout className="absolute inset-0 pointer-events-none">
+                    <LiquidPanel className="w-full h-full !rounded-full">{null}</LiquidPanel>
+                </motion.div>
                 <div className="relative flex items-center gap-1 p-2 overflow-visible">
-                    {children}
+                    <AnimatePresence mode="popLayout">
+                        {children}
+                    </AnimatePresence>
                 </div>
-            </div>
+            </motion.div>
         </motion.div>
     );
 };
@@ -38,6 +46,10 @@ interface LiquidToolbarButtonProps extends React.ButtonHTMLAttributes<HTMLButton
 export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active, variant = 'default', children, className = '', ...props }) => {
     return (
         <motion.button
+            layout
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
             whileHover="hover"
             whileTap="tap"
             variants={{ hover: {}, tap: {} }}
@@ -53,6 +65,7 @@ export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active
             {...(props as any)}
         >
             <motion.div
+                layout="position"
                 variants={{
                     hover: { scale: 1.05 },
                     tap: { scale: 0.95 }

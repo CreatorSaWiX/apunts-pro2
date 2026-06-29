@@ -8,7 +8,7 @@ import SubjectSearchModal from './SubjectSearchModal';
 import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import Spinner from '../../ui/Spinner';
-import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, X, Type, StickyNote } from 'lucide-react';
+import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, X, Type, StickyNote, MoreHorizontal } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
 import { SpecializationModal } from './SpecializationModal';
@@ -35,7 +35,7 @@ const nodeTypes = {
 const CustomControls = () => {
     const { zoomIn, zoomOut, fitView } = useReactFlow();
     return (
-        <Panel position="bottom-left" className="m-6 z-40">
+        <Panel position="bottom-left" className="m-6 z-40 opacity-30 hover:opacity-100 transition-opacity duration-300">
             <LiquidPanel className="flex flex-col gap-2 p-2">
                 <button onClick={() => zoomIn({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Zoom In">
                     <ZoomIn size={18} strokeWidth={2.5} />
@@ -72,6 +72,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [isExperienceModalOpen, setIsExperienceModalOpen] = useState(false);
     const [isValidationsModalOpen, setIsValidationsModalOpen] = useState(false);
+    const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
     const isPresent = useIsPresent();
     const [shouldRender, setShouldRender] = useState(true);
 
@@ -177,8 +178,11 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     return (
         <div className="w-full h-full relative bg-[#09090b] overflow-hidden flex">
             
+            {/* Animated Sci-Fi Grid Overlay */}
+            <div className="absolute inset-0 pointer-events-none z-0 opacity-30" style={{ backgroundImage: 'linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px)', backgroundSize: '60px 60px', maskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)', WebkitMaskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)' }} />
+            
             {/* Radial Gradient Focus Overlay */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.03)_0%,rgba(9,9,11,1)_100%)] pointer-events-none z-0" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.06)_0%,rgba(9,9,11,0.6)_60%,rgba(9,9,11,1)_100%)] pointer-events-none z-0" />
 
             <div className="flex-1 relative z-10">
                 <ReactFlow
@@ -213,7 +217,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     <DrawLayer />
                 </ReactFlow>
 
-                {/* ECTS Circular Glass Widget Bottom Right */}
+                {/* ECTS Circular Glass Widget Bottom Right (Spatial UI) */}
                 <motion.div 
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -404,27 +408,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                         <div className="w-px h-6 bg-white/10 mx-1" />
 
-                        {/* Afegir Experiència */}
-                        <LiquidToolbarButton 
-                            onClick={() => setIsExperienceModalOpen(true)}
-                        >
-                            <Sparkles size={16} />
-                            <span className="hidden sm:inline font-medium">Experiència</span>
-                            <span className="sm:hidden font-medium">Exp.</span>
-                        </LiquidToolbarButton>
-
-                         <div className="w-px h-6 bg-white/10 mx-1" />
-                         
-                        <LiquidToolbarButton 
-                            onClick={() => setIsValidationsModalOpen(true)}
-                        >
-                            <Award size={16} />
-                            <span className="hidden sm:inline font-medium">Convalidacions</span>
-                            <span className="sm:hidden font-medium">Conval.</span>
-                        </LiquidToolbarButton>
-
                         {/* Dibuixar */}
-                        <div className="w-px h-6 bg-white/10 mx-1" />
                         <LiquidToolbarButton 
                             onClick={() => setIsDrawMode(true)}
                         >
@@ -435,15 +419,47 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                         <div className="w-px h-6 bg-white/10 mx-1" />
 
-                        {/* Guardar */}
-                        <LiquidToolbarButton 
-                            onClick={handleSave}
-                            disabled={isSaving}
-                        >
-                            {isSaving ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={16} />}
-                            <span className="hidden sm:inline">{isSaving ? 'Guardant...' : 'Guardar'}</span>
-                            <span className="sm:hidden">{isSaving ? '...' : 'Desar'}</span>
-                        </LiquidToolbarButton>
+                        {/* Més Accions */}
+                        <div className="relative">
+                            <LiquidToolbarButton 
+                                onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+                                active={isMoreMenuOpen}
+                            >
+                                <MoreHorizontal size={16} />
+                                <span className="hidden sm:inline font-medium">Més</span>
+                            </LiquidToolbarButton>
+                            
+                            <AnimatePresence>
+                                {isMoreMenuOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 flex flex-col gap-1 p-2 min-w-[200px] pointer-events-auto"
+                                    >
+                                        <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
+                                        
+                                        <button onClick={() => { setIsExperienceModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors text-sm font-medium">
+                                            <Sparkles size={16} className="text-yellow-400" />
+                                            Afegir Experiència
+                                        </button>
+                                        
+                                        <button onClick={() => { setIsValidationsModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors text-sm font-medium">
+                                            <Award size={16} className="text-fuchsia-400" />
+                                            Convalidacions
+                                        </button>
+                                        
+                                        <div className="h-px bg-white/10 my-1 relative z-10" />
+                                        
+                                        <button onClick={() => { handleSave(); setIsMoreMenuOpen(false); }} disabled={isSaving} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-sky-500/20 text-sky-400 hover:text-sky-300 transition-colors text-sm font-medium">
+                                            {isSaving ? <Spinner size="sm" variant="sky" glow={false} /> : <Save size={16} />}
+                                            {isSaving ? 'Guardant...' : 'Guardar Roadmap'}
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </>
                 )}
                 </LiquidToolbar>
