@@ -116,9 +116,8 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
         setShowGifPicker(false);
     };
 
-    if (!user) return null;
-
     const livePreviewElement = useMemo(() => {
+        if (!user) return null;
         const livePost: CommunityPost = {
             id: 'preview',
             userId: user.id,
@@ -135,7 +134,9 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             isNote: isNoteMode
         };
         return <PublicationCard post={livePost} />;
-    }, [debouncedContent, user.id, user.username, user.avatar, subject, attachments, isNoteMode]);
+    }, [debouncedContent, user?.id, user?.username, user?.avatar, subject, attachments, isNoteMode]);
+
+    if (!user) return null;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="6xl">

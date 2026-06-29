@@ -287,8 +287,7 @@ const CommunityPage = () => {
 
                     {/* Right Visuals (Floating Cards Showcase - Awwwards Style) */}
                     <div 
-                        className="hidden lg:flex relative h-[450px] w-full items-center justify-center pointer-events-auto perspective-[1200px]"
-                        onMouseLeave={() => setHoveredCard(null)}
+                        className="hidden lg:flex relative h-[450px] w-full items-center justify-center perspective-[1200px]"
                     >
                         <div className="relative w-full h-full max-w-[550px]">
                             {/* Decorational backglow */}
@@ -337,6 +336,7 @@ const CommunityPage = () => {
                                         animate={animateState}
                                         transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.8 }}
                                         onMouseEnter={() => setHoveredCard(card.id)}
+                                        onMouseLeave={() => setHoveredCard(null)}
                                         className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer origin-center ${card.align === 'center' ? 'w-[300px]' : card.align === 'right' ? 'w-[260px]' : 'w-[240px]'}`}
                                     >
                                         <motion.div
@@ -344,7 +344,7 @@ const CommunityPage = () => {
                                             transition={{ duration: card.align === 'center' ? 5 : 4, repeat: Infinity, ease: "easeInOut", delay: card.id * 0.5 }}
                                         >
                                             <div className={`absolute ${card.align === 'center' ? '-inset-10 blur-[50px]' : '-inset-8 blur-[40px]'} rounded-full pointer-events-none transition-opacity duration-700 ${card.glow} ${isHovered ? 'opacity-100' : (hoveredCard === null && card.align === 'center' ? 'opacity-50' : 'opacity-0')}`} />
-                                            <div className="relative pointer-events-none group-hover:pointer-events-auto"><PublicationCard post={card.post} isHeroMode={true} /></div>
+                                            <div className="relative"><PublicationCard post={card.post} isHeroMode={true} /></div>
                                         </motion.div>
                                     </motion.div>
                                 );
