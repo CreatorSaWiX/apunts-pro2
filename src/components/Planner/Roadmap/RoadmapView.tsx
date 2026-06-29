@@ -8,7 +8,7 @@ import SubjectSearchModal from './SubjectSearchModal';
 import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import Spinner from '../../ui/Spinner';
-import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, X, Type, StickyNote, MoreHorizontal } from 'lucide-react';
+import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, Redo2, X, Type, StickyNote, MoreHorizontal } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
 import { SpecializationModal } from './SpecializationModal';
@@ -61,7 +61,7 @@ interface RoadmapViewProps {
 
 const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI = () => {} }) => {
     const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade, initialStrokes, addAnnotationNode } = useRoadmap();
-    const { isDrawMode, setIsDrawMode, currentColor, setCurrentColor, clearStrokes, undoStroke, strokes, setStrokes } = useDrawContext();
+    const { isDrawMode, setIsDrawMode, currentColor, setCurrentColor, clearStrokes, undoStroke, redoStroke, canUndo, canRedo, strokes, setStrokes } = useDrawContext();
     const reactFlowInstance = useReactFlow();
     const [isSaving, setIsSaving] = useState(false);
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -320,48 +320,54 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                 <LiquidToolbar delay={0.3}>
                     {isDrawMode ? (
                         <>
-                            <LiquidToolbarButton onClick={() => setCurrentColor('#ef4444')} className={currentColor === '#ef4444' ? 'text-red-500' : 'text-slate-400 hover:text-red-400'}>
+                            <LiquidToolbarButton onClick={() => setCurrentColor('#ef4444')} className={currentColor === '#ef4444' ? 'text-red-500' : 'text-slate-400 hover:text-red-400'} title="Vermell">
                                 <div className="w-4 h-4 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
-                                <span className="hidden sm:inline font-medium">Vermell</span>
                             </LiquidToolbarButton>
                             
-                            <LiquidToolbarButton onClick={() => setCurrentColor('#3b82f6')} className={currentColor === '#3b82f6' ? 'text-blue-500' : 'text-slate-400 hover:text-blue-400'}>
+                            <LiquidToolbarButton onClick={() => setCurrentColor('#3b82f6')} className={currentColor === '#3b82f6' ? 'text-blue-500' : 'text-slate-400 hover:text-blue-400'} title="Blau">
                                 <div className="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
-                                <span className="hidden sm:inline font-medium">Blau</span>
                             </LiquidToolbarButton>
 
-                            <LiquidToolbarButton onClick={() => setCurrentColor('#eab308')} className={currentColor === '#eab308' ? 'text-yellow-500' : 'text-slate-400 hover:text-yellow-400'}>
+                            <LiquidToolbarButton onClick={() => setCurrentColor('#eab308')} className={currentColor === '#eab308' ? 'text-yellow-500' : 'text-slate-400 hover:text-yellow-400'} title="Groc">
                                 <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
-                                <span className="hidden sm:inline font-medium">Groc</span>
                             </LiquidToolbarButton>
 
-                            <LiquidToolbarButton onClick={() => setCurrentColor('#a855f7')} className={currentColor === '#a855f7' ? 'text-purple-500' : 'text-slate-400 hover:text-purple-400'}>
+                            <LiquidToolbarButton onClick={() => setCurrentColor('#a855f7')} className={currentColor === '#a855f7' ? 'text-purple-500' : 'text-slate-400 hover:text-purple-400'} title="Lila">
                                 <div className="w-4 h-4 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
-                                <span className="hidden sm:inline font-medium">Lila</span>
                             </LiquidToolbarButton>
 
                             <div className="w-px h-6 bg-white/10 mx-1" />
 
                             <LiquidToolbarButton onClick={() => handleAddAnnotation('text')} title="Afegir Text">
                                 <Type size={16} />
-                                <span className="hidden sm:inline font-medium">Text</span>
                             </LiquidToolbarButton>
 
                             <LiquidToolbarButton onClick={() => handleAddAnnotation('postit')} title="Afegir Post-it">
                                 <StickyNote size={16} />
-                                <span className="hidden sm:inline font-medium">Post-it</span>
                             </LiquidToolbarButton>
 
                             <div className="w-px h-6 bg-white/10 mx-1" />
 
-                            <LiquidToolbarButton onClick={undoStroke} title="Desfer">
+                            <LiquidToolbarButton 
+                                onClick={undoStroke} 
+                                title="Desfer"
+                                disabled={!canUndo}
+                                className={!canUndo ? 'opacity-50 cursor-not-allowed' : ''}
+                            >
                                 <Undo2 size={16} />
-                                <span className="hidden sm:inline font-medium">Desfer</span>
+                            </LiquidToolbarButton>
+
+                            <LiquidToolbarButton 
+                                onClick={redoStroke} 
+                                title="Refer"
+                                disabled={!canRedo}
+                                className={!canRedo ? 'opacity-50 cursor-not-allowed' : ''}
+                            >
+                                <Redo2 size={16} />
                             </LiquidToolbarButton>
 
                             <LiquidToolbarButton onClick={clearStrokes} title="Netejar tot" className="hover:text-rose-400">
                                 <Trash2 size={16} />
-                                <span className="hidden sm:inline font-medium">Netejar</span>
                             </LiquidToolbarButton>
 
                             <div className="w-px h-6 bg-white/10 mx-1" />
@@ -440,20 +446,20 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                     >
                                         <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
                                         
-                                        <button onClick={() => { setIsExperienceModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors text-sm font-medium">
-                                            <Sparkles size={16} className="text-yellow-400" />
+                                        <button onClick={() => { setIsExperienceModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
+                                            <Sparkles size={16} className="text-white" />
                                             Afegir Experiència
                                         </button>
                                         
-                                        <button onClick={() => { setIsValidationsModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors text-sm font-medium">
-                                            <Award size={16} className="text-fuchsia-400" />
+                                        <button onClick={() => { setIsValidationsModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
+                                            <Award size={16} className="text-white" />
                                             Convalidacions
                                         </button>
                                         
                                         <div className="h-px bg-white/10 my-1 relative z-10" />
                                         
-                                        <button onClick={() => { handleSave(); setIsMoreMenuOpen(false); }} disabled={isSaving} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-sky-500/20 text-sky-400 hover:text-sky-300 transition-colors text-sm font-medium">
-                                            {isSaving ? <Spinner size="sm" variant="sky" glow={false} /> : <Save size={16} />}
+                                        <button onClick={() => { handleSave(); setIsMoreMenuOpen(false); }} disabled={isSaving} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
+                                            {isSaving ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={16} className="text-white" />}
                                             {isSaving ? 'Guardant...' : 'Guardar Roadmap'}
                                         </button>
                                     </motion.div>

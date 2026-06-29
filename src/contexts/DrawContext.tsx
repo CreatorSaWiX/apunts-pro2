@@ -17,6 +17,9 @@ interface DrawContextType {
     addStroke: (stroke: Stroke) => void;
     clearStrokes: () => void;
     undoStroke: () => void;
+    redoStroke: () => void;
+    canUndo: boolean;
+    canRedo: boolean;
 }
 
 const DrawContext = createContext<DrawContextType | undefined>(undefined);
@@ -25,15 +28,40 @@ export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [isDrawMode, setIsDrawMode] = useState(false);
     const [currentColor, setCurrentColor] = useState('#ef4444'); // Default red
     const [strokes, setStrokes] = useState<Stroke[]>([]);
+    const [undoneStrokes, setUndoneStrokes] = useState<Stroke[]>([]);
 
     const addStroke = (stroke: Stroke) => {
         setStrokes((prev) => [...prev, stroke]);
+        setUndoneStrokes([]);
     };
 
-    const clearStrokes = () => setStrokes([]);
+    const clearStrokes = () => {
+        setStrokes([]);
+        setUndoneStrokes([]);
+    };
 
     const undoStroke = () => {
-        setStrokes((prev) => prev.slice(0, -1));
+        setStrokes((prev) => {
+            if (prev.length === 0) return prev;
+            const newStrokes = [...prev];
+            const popped = newStrokes.pop();
+            if (popped) {
+                setUndoneStrokes((u) => [...u, popped]);
+            }
+            return newStrokes;
+        });
+    };
+
+    const redoStroke = () => {
+        setUndoneStrokes((prev) => {
+            if (prev.length === 0) return prev;
+            const newUndone = [...prev];
+            const popped = newUndone.pop();
+            if (popped) {
+                setStrokes((s) => [...s, popped]);
+            }
+            return newUndone;
+        });
     };
 
     return (
@@ -47,7 +75,10 @@ export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 setStrokes,
                 addStroke,
                 clearStrokes,
-                undoStroke
+                undoStroke,
+                redoStroke,
+                canUndo: strokes.length > 0,
+                canRedo: undoneStrokes.length > 0
             }}
         >
             {children}

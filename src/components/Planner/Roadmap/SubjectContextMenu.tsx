@@ -41,8 +41,8 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
             {isOpen && (
                 <>
                     {/* Invisible backdrop just to catch clicks outside */}
-                    <div 
-                        className="fixed inset-0 z-[100]" 
+                    <div
+                        className="fixed inset-0 z-[100]"
                         onClick={onClose}
                         onContextMenu={(e) => { e.preventDefault(); onClose(); }}
                     />
@@ -106,7 +106,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                             )}
 
                             {!['mobility', 'internship', 'tfg', 'tfm'].includes(nodeData.type) && (
-                                <button 
+                                <button
                                     onClick={() => {
                                         if (onOpenDetails) onOpenDetails();
                                         onClose();
@@ -120,113 +120,113 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                 </button>
                             )}
 
-                                    <button 
-                                        disabled={nodeData.status === 'locked'}
-                                        onClick={() => handleStatusChange('in_progress')}
-                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
+                            <button
+                                disabled={nodeData.status === 'locked'}
+                                onClick={() => handleStatusChange('in_progress')}
+                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
                                             ${nodeData.status === 'in_progress' ? 'bg-sky-500/20 text-sky-400 font-bold border border-sky-500/30 shadow-[0_0_15px_rgba(14,165,233,0.2)]' : 'hover:bg-white/5 text-slate-300 hover:text-white border border-transparent'}
                                             ${nodeData.status === 'locked' ? 'opacity-50 cursor-not-allowed' : ''}
                                         `}
-                                    >
-                                        {nodeData.status === 'in_progress' && <div className="absolute inset-0 bg-gradient-to-r from-sky-500/0 via-sky-500/10 to-sky-500/0 -translate-x-full animate-[shimmer_2s_infinite]" />}
-                                        <Clock size={16} className={nodeData.status === 'in_progress' ? 'text-sky-400' : 'text-slate-400 group-hover:text-white'} />
-                                        <span className="relative z-10">En Curs</span>
-                                    </button>
+                            >
+                                {nodeData.status === 'in_progress' && <div className="absolute inset-0 bg-gradient-to-r from-sky-500/0 via-sky-500/10 to-sky-500/0 -translate-x-full animate-[shimmer_2s_infinite]" />}
+                                <Clock size={16} className={nodeData.status === 'in_progress' ? 'text-sky-400' : 'text-slate-400 group-hover:text-white'} />
+                                <span className="relative z-10">En Curs</span>
+                            </button>
 
-                                    <button 
-                                        disabled={nodeData.status === 'locked'}
-                                        onClick={() => handleStatusChange('passed')}
-                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
+                            <button
+                                disabled={nodeData.status === 'locked'}
+                                onClick={() => handleStatusChange('passed')}
+                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
                                             ${nodeData.status === 'passed' ? 'bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'hover:bg-white/5 text-slate-300 hover:text-white border border-transparent'}
                                             ${nodeData.status === 'locked' ? 'opacity-50 cursor-not-allowed' : ''}
                                         `}
+                            >
+                                <CheckCircle size={16} className={nodeData.status === 'passed' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-emerald-400'} />
+                                <span className="relative z-10">
+                                    {['mobility', 'internship'].includes(nodeData.type) ? 'Reconeguda' : 'Aprovada'}
+                                </span>
+                            </button>
+
+                            <AnimatePresence>
+                                {nodeData.status === 'passed' && !['mobility', 'internship'].includes(nodeData.type) && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                                        animate={{ height: 'auto', opacity: 1, marginTop: 8 }}
+                                        exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                                        className="w-full flex flex-col gap-2 pt-3 pb-1 border-t border-white/5 overflow-hidden"
                                     >
-                                        <CheckCircle size={16} className={nodeData.status === 'passed' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-emerald-400'} />
-                                        <span className="relative z-10">
-                                            {['mobility', 'internship'].includes(nodeData.type) ? 'Reconeguda' : 'Aprovada'}
-                                        </span>
-                                    </button>
+                                        <div className="flex items-center justify-between px-2">
+                                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Nota Final</span>
+                                            <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                                                {nodeData.grade !== null && nodeData.grade !== undefined ? nodeData.grade.toFixed(1) : '-.--'}
+                                            </span>
+                                        </div>
+                                        <div className="grid grid-cols-4 gap-1.5 mt-1">
+                                            {[5.0, 7.0, 9.0, 10.0].map(g => (
+                                                <button
+                                                    key={g}
+                                                    onClick={() => updateNodeGrade(nodeId, g)}
+                                                    className={`py-1.5 rounded-xl text-xs font-bold transition-all border ${nodeData.grade === g ? 'bg-emerald-500 text-emerald-950 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-black/40 text-slate-300 border-white/5 hover:border-emerald-500/30 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
+                                                >
+                                                    {g.toFixed(1)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="flex items-center mt-1 relative">
+                                            <input
+                                                type="number"
+                                                min="5" max="10" step="0.1"
+                                                placeholder="Nota exacta (ex: 8.4)"
+                                                value={nodeData.grade || ''}
+                                                onChange={(e) => {
+                                                    const val = parseFloat(e.target.value);
+                                                    if (!isNaN(val) && val >= 5 && val <= 10) {
+                                                        updateNodeGrade(nodeId, val);
+                                                    } else if (e.target.value === '') {
+                                                        updateNodeGrade(nodeId, null);
+                                                    }
+                                                }}
+                                                className="w-full bg-black/40 border border-white/10 rounded-xl pl-3 pr-8 py-2 text-sm font-medium text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:bg-emerald-500/5 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            />
+                                            {/* Small icon indicator inside input */}
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-50 text-slate-400">
+                                                <Edit2 size={14} />
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
 
-                                    <AnimatePresence>
-                                        {nodeData.status === 'passed' && !['mobility', 'internship'].includes(nodeData.type) && (
-                                            <motion.div
-                                                initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                                                animate={{ height: 'auto', opacity: 1, marginTop: 8 }}
-                                                exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                                                className="w-full flex flex-col gap-2 pt-3 pb-1 border-t border-white/5 overflow-hidden"
-                                            >
-                                                <div className="flex items-center justify-between px-2">
-                                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Nota Final</span>
-                                                    <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
-                                                        {nodeData.grade !== null && nodeData.grade !== undefined ? nodeData.grade.toFixed(1) : '-.--'}
-                                                    </span>
-                                                </div>
-                                                <div className="grid grid-cols-4 gap-1.5 mt-1">
-                                                    {[5.0, 7.0, 9.0, 10.0].map(g => (
-                                                        <button
-                                                            key={g}
-                                                            onClick={() => updateNodeGrade(nodeId, g)}
-                                                            className={`py-1.5 rounded-xl text-xs font-bold transition-all border ${nodeData.grade === g ? 'bg-emerald-500 text-emerald-950 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-black/40 text-slate-300 border-white/5 hover:border-emerald-500/30 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
-                                                        >
-                                                            {g.toFixed(1)}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                                <div className="flex items-center mt-1 relative">
-                                                    <input 
-                                                        type="number" 
-                                                        min="5" max="10" step="0.1" 
-                                                        placeholder="Nota exacta (ex: 8.4)"
-                                                        value={nodeData.grade || ''}
-                                                        onChange={(e) => {
-                                                            const val = parseFloat(e.target.value);
-                                                            if (!isNaN(val) && val >= 5 && val <= 10) {
-                                                                updateNodeGrade(nodeId, val);
-                                                            } else if (e.target.value === '') {
-                                                                updateNodeGrade(nodeId, null);
-                                                            }
-                                                        }}
-                                                        className="w-full bg-black/40 border border-white/10 rounded-xl pl-3 pr-8 py-2 text-sm font-medium text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:bg-emerald-500/5 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                    />
-                                                    {/* Small icon indicator inside input */}
-                                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-50 text-slate-400">
-                                                        <Edit2 size={14} />
-                                                    </div>
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-
-                                    {!['mobility', 'internship'].includes(nodeData.type) && (
-                                        <>
-                                            <button 
-                                                disabled={nodeData.status === 'locked'}
-                                                onClick={() => handleStatusChange('failed')}
-                                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
+                            {!['mobility', 'internship'].includes(nodeData.type) && (
+                                <>
+                                    <button
+                                        disabled={nodeData.status === 'locked'}
+                                        onClick={() => handleStatusChange('failed')}
+                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
                                                     ${nodeData.status === 'failed' ? 'bg-red-500/20 text-red-400 font-bold border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'hover:bg-white/5 text-slate-300 hover:text-white border border-transparent'}
                                                     ${nodeData.status === 'locked' ? 'opacity-50 cursor-not-allowed' : ''}
                                                 `}
-                                            >
-                                                <XCircle size={16} className={nodeData.status === 'failed' ? 'text-red-400' : 'text-slate-400 group-hover:text-red-400'} />
-                                                <span className="relative z-10">Suspesa</span>
-                                            </button>
+                                    >
+                                        <XCircle size={16} className={nodeData.status === 'failed' ? 'text-red-400' : 'text-slate-400 group-hover:text-red-400'} />
+                                        <span className="relative z-10">Suspesa</span>
+                                    </button>
 
-                                            {nodeData.status === 'failed' && (
-                                                <motion.button 
-                                                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                                                    animate={{ height: 'auto', opacity: 1, marginTop: 8 }}
-                                                    onClick={() => handleStatusChange('retaking')}
-                                                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-sm hover:bg-amber-500 text-amber-500 hover:text-amber-950 transition-all border border-amber-500/30 font-bold group shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]"
-                                                >
-                                                    <RefreshCw size={14} className="group-hover:animate-spin-slow" />
-                                                    Tornar a matricular
-                                                </motion.button>
-                                            )}
-                                        </>
+                                    {nodeData.status === 'failed' && (
+                                        <motion.button
+                                            initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                                            animate={{ height: 'auto', opacity: 1, marginTop: 8 }}
+                                            onClick={() => handleStatusChange('retaking')}
+                                            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-sm hover:bg-amber-500 text-amber-500 hover:text-amber-950 transition-all border border-amber-500/30 font-bold group shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]"
+                                        >
+                                            <RefreshCw size={14} className="group-hover:animate-spin-slow" />
+                                            Tornar a matricular
+                                        </motion.button>
                                     )}
+                                </>
+                            )}
 
                             {nodeData.type !== 'obligatory' && nodeData.type !== 'basic' && nodeData.type !== 'tfg' && nodeData.type !== 'tfm' && (
-                                <button 
+                                <button
                                     onClick={() => {
                                         removeNode(nodeId);
                                         onClose();
