@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { type AISettings, DEFAULT_AI_SETTINGS } from '../types/ai';
 
 export type PlannerViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
 
@@ -12,6 +13,8 @@ interface SettingsContextType {
     setDefaultPlannerView: React.Dispatch<React.SetStateAction<PlannerViewMode>>;
     customSubjectColors: Record<string, string>;
     setCustomSubjectColors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+    aiSettings: AISettings;
+    setAiSettings: React.Dispatch<React.SetStateAction<AISettings>>;
     isSettingsLoaded: boolean;
 }
 
@@ -50,6 +53,29 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return {};
     });
 
+    const [aiSettings, setAiSettings] = useState<AISettings>(() => {
+        const saved = localStorage.getItem('app-settings-ai');
+        if (saved) {
+            try { 
+                const parsed = JSON.parse(saved);
+                return {
+                    ...DEFAULT_AI_SETTINGS,
+                    ...parsed,
+                    identity: { ...DEFAULT_AI_SETTINGS.identity, ...(parsed.identity || {}) },
+                    userContext: { 
+                        ...DEFAULT_AI_SETTINGS.userContext, 
+                        ...(parsed.userContext || {}),
+                        memories: parsed.userContext?.memories || []
+                    },
+                    soul: { ...DEFAULT_AI_SETTINGS.soul, ...(parsed.soul || {}) }
+                };
+            } catch (e) { 
+                return DEFAULT_AI_SETTINGS; 
+            }
+        }
+        return DEFAULT_AI_SETTINGS;
+    });
+
     // Load from Firebase on mount if user is logged in
     useEffect(() => {
         let isMounted = true;
@@ -66,6 +92,26 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                     if (data.homeSubjects) setHomeSubjects(data.homeSubjects);
                     if (data.defaultPlannerView) setDefaultPlannerView(data.defaultPlannerView);
                     if (data.customSubjectColors) setCustomSubjectColors(data.customSubjectColors);
+                    
+                    if (data.aiSettings) {
+                        setAiSettings({
+                            ...DEFAULT_AI_SETTINGS,
+                            ...data.aiSettings,
+                            identity: {
+                                ...DEFAULT_AI_SETTINGS.identity,
+                                ...(data.aiSettings.identity || {})
+                            },
+                            userContext: {
+                                ...DEFAULT_AI_SETTINGS.userContext,
+                                ...(data.aiSettings.userContext || {}),
+                                memories: data.aiSettings.userContext?.memories || []
+                            },
+                            soul: {
+                                ...DEFAULT_AI_SETTINGS.soul,
+                                ...(data.aiSettings.soul || {})
+                            }
+                        });
+                    }
                 }
             } catch (err) {
                 console.error('Failed to load settings from Firebase:', err);
@@ -73,6 +119,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                 if (isMounted) setIsSettingsLoaded(true);
             }
         };
+
         loadFirebaseSettings();
         return () => { isMounted = false; };
     }, [user]);
@@ -83,6 +130,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         localStorage.setItem('app-settings-home-subjects', JSON.stringify(homeSubjects));
         localStorage.setItem('app-settings-planner-view', defaultPlannerView);
         localStorage.setItem('app-settings-subject-colors', JSON.stringify(customSubjectColors));
+        localStorage.setItem('app-settings-ai', JSON.stringify(aiSettings));
 
         if (isSettingsLoaded && user) {
             const saveToFirebase = async () => {
@@ -91,7 +139,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                     await setDoc(docRef, {
                         homeSubjects,
                         defaultPlannerView,
-                        customSubjectColors
+                        customSubjectColors,
+                        aiSettings
                     }, { merge: true });
                 } catch (err) {
                     console.error('Failed to save settings to Firebase:', err);
@@ -99,7 +148,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             };
             saveToFirebase();
         }
-    }, [homeSubjects, defaultPlannerView, customSubjectColors, isSettingsLoaded, user]);
+    }, [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, isSettingsLoaded, user]);
 
     return (
         <SettingsContext.Provider value={{
@@ -109,6 +158,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             setDefaultPlannerView,
             customSubjectColors,
             setCustomSubjectColors,
+            aiSettings,
+            setAiSettings,
             isSettingsLoaded
         }}>
             {children}

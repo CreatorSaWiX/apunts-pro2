@@ -7,12 +7,15 @@ import { tailwindColors } from '../contexts/SubjectContext';
 import { RoadmapProvider } from '../contexts/RoadmapContext';
 
 import subjectsData from '../data/subjects.json';
-import { Globe, LayoutGrid, Calendar, CalendarDays, Route, Github, X, Settings2, Sparkles, Command, Search, ChevronRight, Heart } from 'lucide-react';
+import { Globe, LayoutGrid, Calendar, CalendarDays, Route, Github, X, Settings2, Sparkles, Command, Search, ChevronRight, Heart, Bot, Save } from 'lucide-react';
 import NavigationPill from '../components/ui/NavigationPill';
 import { db } from '../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useAuth } from '../contexts/AuthContext';
+import { type AISettings, DEFAULT_AI_SETTINGS } from '../types/ai';
 import { Link } from 'react-router-dom';
 import Spinner from '../components/ui/Spinner';
+import FileUploader from '../components/community/FileUploader';
 // Contributor Interface
 interface Contributor {
     uid: string;
@@ -22,12 +25,13 @@ interface Contributor {
 }
 
 // --- Tabs Configuration ---
-type TabId = 'general' | 'planner' | 'subjects' | 'about';
+type TabId = 'general' | 'planner' | 'subjects' | 'ai' | 'about';
 
 const TABS: { id: TabId; label: string; icon: any }[] = [
     { id: 'general', label: 'General', icon: Settings2 },
     { id: 'planner', label: 'Planificador', icon: LayoutGrid },
     { id: 'subjects', label: 'Assignatures', icon: Route },
+    { id: 'ai', label: 'Assistent IA', icon: Bot },
     { id: 'about', label: 'Quant a', icon: Sparkles },
 ];
 
@@ -352,6 +356,223 @@ const SubjectsSection = () => {
         </motion.div>
     );
 };
+const AISection = () => {
+    const { user } = useAuth();
+    const { aiSettings, setAiSettings } = useSettings();
+    const [isSaving, setIsSaving] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const handleSave = async () => {
+        if (!user) return;
+        setIsSaving(true);
+        try {
+            const docRef = doc(db, 'users', user.id);
+            await setDoc(docRef, { aiSettings, updatedAt: Date.now() }, { merge: true });
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 3000);
+        } catch (error) {
+            console.error("Error saving AI settings:", error);
+        } finally {
+            setIsSaving(false);
+        }
+    };;
+
+
+
+    return (
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }} 
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} 
+            exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex flex-col items-center justify-start gap-8 w-full max-w-2xl mx-auto h-[70vh] overflow-y-auto custom-scrollbar px-4 pb-32 pt-4"
+        >
+            <div className="w-full space-y-6">
+                
+                {/* IDENTITY GROUP */}
+                <div className="bg-white/5 border border-white/10 rounded-3xl p-6 space-y-6">
+                    <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                        <Bot className="text-sky-400" size={24} />
+                        <h3 className="text-xl font-bold text-white">Identitat (Qui soc)</h3>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-400">Nom de la IA</label>
+                            <input 
+                                type="text"
+                                value={aiSettings.identity.name || ''}
+                                onChange={(e) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, name: e.target.value }})}
+                                className="w-full bg-[#0a0d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition-colors"
+                                placeholder="ex: Cloufy"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-400">Avatar / Emoji URL</label>
+                            <div className="flex gap-2">
+                                <input 
+                                    type="text"
+                                    value={aiSettings.identity.avatarUrl || ''}
+                                    onChange={(e) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, avatarUrl: e.target.value }})}
+                                    className="flex-1 bg-[#0a0d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition-colors"
+                                    placeholder="ex: 🤖 o https://..."
+                                />
+                            </div>
+                            <div className="mt-2 border border-white/10 rounded-xl p-2 bg-[#0a0d16]">
+                                <FileUploader 
+                                    maxFiles={1} 
+                                    onUploadComplete={(atts) => {
+                                        if (atts.length > 0) {
+                                            setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, avatarUrl: atts[0].url }})
+                                        }
+                                    }} 
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-400">Pronoms</label>
+                            <input 
+                                type="text"
+                                value={aiSettings.identity.pronouns || ''}
+                                onChange={(e) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, pronouns: e.target.value }})}
+                                className="w-full bg-[#0a0d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition-colors"
+                                placeholder="ex: he, she, they"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <label className="text-sm font-semibold text-slate-400">Com vols que et digui?</label>
+                                <button 
+                                    onClick={() => setAiSettings({ ...aiSettings, userContext: { ...aiSettings.userContext, userPreferredName: user?.displayName || 'Estudiant' }})}
+                                    className="text-xs text-sky-400 hover:text-sky-300 transition-colors"
+                                >
+                                    Igual que el meu nom d'usuari
+                                </button>
+                            </div>
+                            <input 
+                                type="text"
+                                value={aiSettings.userContext?.userPreferredName || ''}
+                                onChange={(e) => setAiSettings({ ...aiSettings, userContext: { ...aiSettings.userContext, userPreferredName: e.target.value }})}
+                                className="w-full bg-[#0a0d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition-colors"
+                                placeholder="ex: sawix, mestre..."
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-semibold text-slate-400">Personalitat (Vibe)</label>
+                        <textarea 
+                            value={aiSettings.identity.vibe || ''}
+                            onChange={(e) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, vibe: e.target.value }})}
+                            className="w-full bg-[#0a0d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition-colors h-24 resize-none"
+                            placeholder="Be the assistant you'd actually want to talk to..."
+                        />
+                    </div>
+                </div>
+
+                {/* SOUL GROUP */}
+                <div className="bg-white/5 border border-white/10 rounded-3xl p-6 space-y-6">
+                    <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                        <Sparkles className="text-rose-400" size={24} />
+                        <h3 className="text-xl font-bold text-white">Ànima (Com em comporto)</h3>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-semibold text-slate-400">Regles (Rules)</label>
+                        <textarea 
+                            value={aiSettings.soul.rules || ''}
+                            onChange={(e) => setAiSettings({ ...aiSettings, soul: { ...aiSettings.soul, rules: e.target.value }})}
+                            className="w-full bg-[#0a0d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 transition-colors min-h-[150px] resize-y"
+                            placeholder="Be genuinely helpful..."
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-semibold text-slate-400">Límits (Boundaries)</label>
+                        <textarea 
+                            value={aiSettings.soul.boundaries || ''}
+                            onChange={(e) => setAiSettings({ ...aiSettings, soul: { ...aiSettings.soul, boundaries: e.target.value }})}
+                            className="w-full bg-[#0a0d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 transition-colors min-h-[120px] resize-y"
+                            placeholder="- Private things stay private..."
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-semibold text-slate-400">Continuïtat (Continuity)</label>
+                        <textarea 
+                            value={aiSettings.soul.continuity || ''}
+                            onChange={(e) => setAiSettings({ ...aiSettings, soul: { ...aiSettings.soul, continuity: e.target.value }})}
+                            className="w-full bg-[#0a0d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 transition-colors min-h-[100px] resize-y"
+                            placeholder="Each session, you wake up fresh..."
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-semibold text-slate-400">Directrius Core (Custom Directives)</label>
+                        <textarea 
+                            value={aiSettings.soul.customDirectives || ''}
+                            onChange={(e) => setAiSettings({ ...aiSettings, soul: { ...aiSettings.soul, customDirectives: e.target.value }})}
+                            className="w-full bg-[#0a0d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 transition-colors h-24 resize-none"
+                            placeholder="Qualsevol altra indicació extra per a la IA."
+                        />
+                    </div>
+                </div>
+
+                {/* MEMORIES GROUP */}
+                <div className="bg-white/5 border border-white/10 rounded-3xl p-6 space-y-6">
+                    <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                        <h3 className="text-xl font-bold text-white">Memòria a Llarg Termini</h3>
+                    </div>
+                    <div className="space-y-3">
+                        <p className="text-sm text-slate-400">
+                            Aquests són els detalls que la IA ha après sobre tu per personalitzar la teva experiència. Pots esborrar-ne qualsevol.
+                        </p>
+                        {(!aiSettings.userContext?.memories || aiSettings.userContext.memories.length === 0) ? (
+                            <div className="text-center py-4 bg-[#0a0d16] rounded-xl border border-white/10 text-slate-500 text-sm italic">
+                                La IA encara no té memòries guardades.
+                            </div>
+                        ) : (
+                            <div className="space-y-2">
+                                {aiSettings.userContext.memories.map((mem, idx) => (
+                                    <div key={idx} className="flex items-start justify-between gap-4 p-3 bg-[#0a0d16] border border-white/10 rounded-xl">
+                                        <span className="text-sm text-slate-300">{mem}</span>
+                                        <button 
+                                            onClick={() => {
+                                                const newMems = [...(aiSettings.userContext?.memories || [])];
+                                                newMems.splice(idx, 1);
+                                                setAiSettings({
+                                                    ...aiSettings,
+                                                    userContext: { ...aiSettings.userContext, userPreferredName: aiSettings.userContext?.userPreferredName || '', memories: newMems }
+                                                });
+                                            }}
+                                            className="shrink-0 text-slate-500 hover:text-rose-500 transition-colors p-1"
+                                            title="Esborrar memòria"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="flex justify-end pt-4">
+                    <button 
+                        onClick={handleSave}
+                        disabled={isSaving}
+                        className="group flex items-center gap-2 px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-bold transition-all outline-none shadow-[0_0_20px_rgba(56,189,248,0.3)] disabled:opacity-50"
+                    >
+                        {isSaving ? <Spinner size="sm" variant="white" /> : <Save size={20} />}
+                        <span>{showSuccess ? 'Guardat!' : 'Guardar Configuració'}</span>
+                    </button>
+                </div>
+            </div>
+        </motion.div>
+    );
+};
 
 const AboutSection = () => {
     const { preferredLang } = useLanguage();
@@ -539,6 +760,7 @@ const SettingsContent = () => {
                     {activeTab === 'general' && <GeneralSection key="general" />}
                     {activeTab === 'planner' && <PlannerSection key="planner" />}
                     {activeTab === 'subjects' && <SubjectsSection key="subjects" />}
+                    {activeTab === 'ai' && <AISection key="ai" />}
                     {activeTab === 'about' && <AboutSection key="about" />}
                 </AnimatePresence>
             </main>

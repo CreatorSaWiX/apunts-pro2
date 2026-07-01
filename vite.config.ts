@@ -108,7 +108,7 @@ export default defineConfig(({ mode }) => {
               });
               req.on('end', async () => {
                 try {
-                  const { message, history, currentPath = '/', pageText = '', image } = JSON.parse(body);
+                  const { message, history, currentPath = '/', pageText = '', image, aiSettings } = JSON.parse(body);
                   const { GoogleGenAI } = await import('@google/genai');
 
                   // Per evitar el bucle infinit de recàrrega de Vite, llegim el fitxer manualment 
@@ -156,18 +156,47 @@ export default defineConfig(({ mode }) => {
                     'gemini-2.0-flash-lite',     // de rescat
                   ];
 
-                  const systemInstruction = `Ets un company de classe o tutor que ajuda amb l'assignatura PRO2 a la FIB (UPC).
-                    RESPON DE FORMA MOLT NATURAL, BREU I HUMANA. NO siguis robòtic ni donis explicacions llargues del teu "context" o de "la ruta".
+                  const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
+L'usuari amb qui parles vol que li diguis: ${aiSettings?.userContext?.userPreferredName || "l'alumne"}.
+Memòria a llarg termini de l'usuari (Fets que ja coneixes):
+${(aiSettings?.userContext?.memories || []).map((m: string) => `- ${m}`).join('\n')}
+
+[VIBE]
+${aiSettings?.identity?.vibe || "Ets útil."}
+
+[RULES]
+${aiSettings?.soul?.rules || ""}
+
+[BOUNDARIES]
+${aiSettings?.soul?.boundaries || ""}
+
+[CONTINUITY]
+${aiSettings?.soul?.continuity || ""}
+
+[CUSTOM DIRECTIVES]
+${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
+
+RESPON DE FORMA MOLT NATURAL, BREU I HUMANA. NO siguis robòtic ni donis explicacions llargues del teu "context" o de "la ruta".
                     Si no saps una cosa o no la veus, digues simplement "Ostres, no veig el codi/solucionari que dius" o "Això no ho tinc als meus apunts".
                     L'alumne està actualment a la pàgina: ${currentPath}
 
+                    MOLT IMPORTANT: La teva sortida ha de ser ÚNICAMENT un objecte JSON amb aquesta estructura exacta:
+                    {
+                      "reply": "La teva resposta natural i formatada en markdown com ho faries normalment.",
+                      "keywords": ["paraula1", "paraula2", "paraula3"], // 3 a 5 paraules clau rellevants per a l'usuari
+                      "memories_to_add": [] // Retorna un array buit per defecte. NOMÉS hi has d'afegir un string si l'usuari acaba de revelar informació vital a llarg termini sobre el seu perfil (ex. un projecte, una tecnologia que aprèn, preferències). Evita guardar dades temporals o de xerrada casual.
+                    }
                     Aquest és el text visible a la seva pantalla ara mateix (útil si està mirant un solucionari penjat per algú):
                     """
                     ${pageText}
                     """
 
                     I aquest és el coneixement base oficial de l'assignatura:
-                    ${notesContext}`;
+                    ${notesContext}
+
+MOLT IMPORTANT SOBRE LA CERCA:
+Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actualitat, dates, conferències, documentació o qualsevol cosa que no estigui al "coneixement base oficial", **HAS D'UTILITZAR GOOGLE SEARCH per buscar la resposta a Internet** i respondre-li amb la informació trobada. Mai diguis "no ho tinc als meus apunts" si ho pots buscar a Google.`;
 
                   const formattedHistory = (history || []).map((msg: any) => ({
                     role: msg.role === 'user' ? 'user' : 'model',
@@ -187,11 +216,37 @@ export default defineConfig(({ mode }) => {
                       const response = await genAI.models.generateContent({
                         model: modelName,
                         contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                        config: { systemInstruction }
+                        config: { 
+                          systemInstruction, 
+                          tools: [{ googleSearch: {} } as any]
+                        }
                       });
                       console.log(`✅ [Gemini] Model usat: ${modelName}`);
                       res.setHeader('Content-Type', 'application/json');
-                      res.end(JSON.stringify({ reply: response.text }));
+                      let rData;
+                      try {
+                        let cleanText = response.text.trim();
+                        if (cleanText.startsWith("```json")) {
+                            cleanText = cleanText.substring(7).replace(/```$/, '').trim();
+                        } else if (cleanText.startsWith("```")) {
+                            cleanText = cleanText.substring(3).replace(/```$/, '').trim();
+                        }
+                        // Remove any potential trailing backticks or garbage if there's multiple blocks
+                        const firstBrace = cleanText.indexOf('{');
+                        const lastBrace = cleanText.lastIndexOf('}');
+                        if (firstBrace !== -1 && lastBrace !== -1) {
+                            cleanText = cleanText.substring(firstBrace, lastBrace + 1);
+                        }
+                        rData = JSON.parse(cleanText);
+                      } catch (parseError: any) {
+                        console.warn("Gemini didn't return JSON, falling back to raw text.");
+                        rData = {
+                            reply: response.text,
+                            keywords: [],
+                            memories_to_add: []
+                        };
+                      }
+                      res.end(JSON.stringify({ reply: rData.reply, keywords: rData.keywords || [], memories_to_add: rData.memories_to_add || [] }));
                       replied = true;
                       break;
                     } catch (e: any) {
@@ -227,7 +282,7 @@ export default defineConfig(({ mode }) => {
               });
               req.on('end', async () => {
                 try {
-                  const { prompt, currentTasks, subjects, currentDate } = JSON.parse(body);
+                  const { prompt, currentTasks, subjects, currentDate, aiSettings } = JSON.parse(body);
                   const { GoogleGenAI } = await import('@google/genai');
                   const apiKey = env.GEMINI_API_KEY;
 
@@ -238,7 +293,25 @@ export default defineConfig(({ mode }) => {
                   }
 
                   const genAI = new GoogleGenAI({ apiKey });
-                  const systemInstruction = `Ets un asistent intel·ligent per a una aplicació de planificació d'estudiants universitaris. La teva feina és analitzar el missatge de l'usuari i determinar quines accions s'han de prendre sobre les tasques.
+                  const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
+
+[VIBE]
+${aiSettings?.identity?.vibe || "Ets útil."}
+
+[RULES]
+${aiSettings?.soul?.rules || ""}
+
+[BOUNDARIES]
+${aiSettings?.soul?.boundaries || ""}
+
+[CONTINUITY]
+${aiSettings?.soul?.continuity || ""}
+
+[CUSTOM DIRECTIVES]
+${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
+
+Ets un asistent intel·ligent per a una aplicació de planificació d'estudiants universitaris. La teva feina és analitzar el missatge de l'usuari i determinar quines accions s'han de prendre sobre les tasques.
 
 IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SENSE TEXT AL VOLTANT. Només JSON.
 
@@ -316,7 +389,7 @@ L'estructura exacta ha de ser:
               });
               req.on('end', async () => {
                 try {
-                  const { prompt, currentNodes, history = [], memory = {} } = JSON.parse(body);
+                  const { prompt, currentNodes, history = [], memory = {}, aiSettings, userName } = JSON.parse(body);
                   const { GoogleGenAI } = await import('@google/genai');
                   const fs = await import('fs');
                   const path = await import('path');
@@ -380,8 +453,28 @@ L'estructura exacta ha de ser:
                   }
 
                   const genAI = new GoogleGenAI({ apiKey });
-                  const systemInstruction = `Ets un Senior Software Engineer i mentor que ajuda estudiants de la FIB-UPC amb el seu roadmap.
-Tens una personalitat propera, honesta i que parla de tu a tu, com un company més veterà.
+                  const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
+
+[VIBE]
+${aiSettings?.identity?.vibe || "Ets útil."}
+
+[RULES]
+${aiSettings?.soul?.rules || ""}
+
+[BOUNDARIES]
+${aiSettings?.soul?.boundaries || ""}
+
+[CONTINUITY]
+${aiSettings?.soul?.continuity || ""}
+
+[CUSTOM DIRECTIVES]
+${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
+
+L'usuari amb qui estàs parlant es diu: ${aiSettings?.userContext?.userPreferredName || userName || "Estudiant"}
+
+Ets un mentor executiu que ajuda estudiants amb el seu roadmap.
+Tens una personalitat propera, honesta i que parla de tu a tu.
 NO ets un llibre ni un robot que fa discursos. Aquest és un xat normal.
 
 REGLES D'ESTIL I CONTINGUT:

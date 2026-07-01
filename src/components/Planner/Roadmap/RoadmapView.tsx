@@ -318,69 +318,66 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                 {/* Floating Dock Action Buttons Bottom Center */}
                 {/* Floating Dock Action Buttons Bottom Center */}
                 <LiquidToolbar delay={0.3}>
-                    {isDrawMode ? (
-                        <>
-                            <LiquidToolbarButton onClick={() => setCurrentColor('#ef4444')} className={currentColor === '#ef4444' ? 'text-red-500' : 'text-slate-400 hover:text-red-400'} title="Vermell">
+                    {isDrawMode ? [
+                            <LiquidToolbarButton key="color-red" onClick={() => setCurrentColor('#ef4444')} className={currentColor === '#ef4444' ? 'text-red-500' : 'text-slate-400 hover:text-red-400'} title="Vermell">
                                 <div className="w-4 h-4 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
-                            </LiquidToolbarButton>
+                            </LiquidToolbarButton>,
                             
-                            <LiquidToolbarButton onClick={() => setCurrentColor('#3b82f6')} className={currentColor === '#3b82f6' ? 'text-blue-500' : 'text-slate-400 hover:text-blue-400'} title="Blau">
+                            <LiquidToolbarButton key="color-blue" onClick={() => setCurrentColor('#3b82f6')} className={currentColor === '#3b82f6' ? 'text-blue-500' : 'text-slate-400 hover:text-blue-400'} title="Blau">
                                 <div className="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
-                            </LiquidToolbarButton>
+                            </LiquidToolbarButton>,
 
-                            <LiquidToolbarButton onClick={() => setCurrentColor('#eab308')} className={currentColor === '#eab308' ? 'text-yellow-500' : 'text-slate-400 hover:text-yellow-400'} title="Groc">
+                            <LiquidToolbarButton key="color-yellow" onClick={() => setCurrentColor('#eab308')} className={currentColor === '#eab308' ? 'text-yellow-500' : 'text-slate-400 hover:text-yellow-400'} title="Groc">
                                 <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
-                            </LiquidToolbarButton>
+                            </LiquidToolbarButton>,
 
-                            <LiquidToolbarButton onClick={() => setCurrentColor('#a855f7')} className={currentColor === '#a855f7' ? 'text-purple-500' : 'text-slate-400 hover:text-purple-400'} title="Lila">
+                            <LiquidToolbarButton key="color-purple" onClick={() => setCurrentColor('#a855f7')} className={currentColor === '#a855f7' ? 'text-purple-500' : 'text-slate-400 hover:text-purple-400'} title="Lila">
                                 <div className="w-4 h-4 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
-                            </LiquidToolbarButton>
+                            </LiquidToolbarButton>,
 
-                            <div className="w-px h-6 bg-white/10 mx-1" />
+                            <div key="sep-1" className="w-px h-6 bg-white/10 mx-1" />,
 
-                            <LiquidToolbarButton onClick={() => handleAddAnnotation('text')} title="Afegir Text">
+                            <LiquidToolbarButton key="add-text" onClick={() => handleAddAnnotation('text')} title="Afegir Text">
                                 <Type size={16} />
-                            </LiquidToolbarButton>
+                            </LiquidToolbarButton>,
 
-                            <LiquidToolbarButton onClick={() => handleAddAnnotation('postit')} title="Afegir Post-it">
+                            <LiquidToolbarButton key="add-postit" onClick={() => handleAddAnnotation('postit')} title="Afegir Post-it">
                                 <StickyNote size={16} />
-                            </LiquidToolbarButton>
+                            </LiquidToolbarButton>,
 
-                            <div className="w-px h-6 bg-white/10 mx-1" />
+                            <div key="sep-2" className="w-px h-6 bg-white/10 mx-1" />,
 
-                            <LiquidToolbarButton 
+                            <LiquidToolbarButton key="undo"
                                 onClick={undoStroke} 
                                 title="Desfer"
                                 disabled={!canUndo}
                                 className={!canUndo ? 'opacity-50 cursor-not-allowed' : ''}
                             >
                                 <Undo2 size={16} />
-                            </LiquidToolbarButton>
+                            </LiquidToolbarButton>,
 
-                            <LiquidToolbarButton 
+                            <LiquidToolbarButton key="redo"
                                 onClick={redoStroke} 
                                 title="Refer"
                                 disabled={!canRedo}
                                 className={!canRedo ? 'opacity-50 cursor-not-allowed' : ''}
                             >
                                 <Redo2 size={16} />
-                            </LiquidToolbarButton>
+                            </LiquidToolbarButton>,
 
-                            <LiquidToolbarButton onClick={clearStrokes} title="Netejar tot" className="hover:text-rose-400">
+                            <LiquidToolbarButton key="clear" onClick={clearStrokes} title="Netejar tot" className="hover:text-rose-400">
                                 <Trash2 size={16} />
-                            </LiquidToolbarButton>
+                            </LiquidToolbarButton>,
 
-                            <div className="w-px h-6 bg-white/10 mx-1" />
+                            <div key="sep-3" className="w-px h-6 bg-white/10 mx-1" />,
                             
-                            <LiquidToolbarButton onClick={() => setIsDrawMode(false)} className="text-white hover:text-slate-300">
+                            <LiquidToolbarButton key="exit-draw" onClick={() => setIsDrawMode(false)} className="text-white hover:text-slate-300">
                                 <X size={16} />
                                 <span className="hidden sm:inline font-bold">Sortir</span>
                             </LiquidToolbarButton>
-                        </>
-                    ) : (
-                        <>
-                            {/* Tria Especialitat */}
-                        <div className="relative">
+                    ] : [
+                        /* Tria Especialitat */
+                        <div key="spec-selector" className="relative">
                             <LiquidToolbarButton 
                                 onClick={() => setIsSpecMenuOpen(!isSpecMenuOpen)}
                             >
@@ -392,41 +389,42 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                     {currentSpec ? currentSpec.name.substring(0, 6) + '.' : 'Espec.'}
                                 </span>
                             </LiquidToolbarButton>
-                        </div>
+                        </div>,
 
                         <SpecializationModal
+                            key="spec-modal"
                             isOpen={isSpecMenuOpen}
                             onClose={() => setIsSpecMenuOpen(false)}
                             currentSpecId={currentSpec?.id || null}
                             onSelect={setSpecialization}
-                        />
+                        />,
 
-                        <div className="w-px h-6 bg-white/10 mx-1" />
+                        <div key="sep-4" className="w-px h-6 bg-white/10 mx-1" />,
 
-                        {/* Afegir Optativa */}
-                        <LiquidToolbarButton 
+                        /* Afegir Optativa */
+                        <LiquidToolbarButton key="add-optativa"
                             onClick={() => setIsSearchModalOpen(true)}
                         >
                             <Plus size={16} />
                             <span className="hidden sm:inline">Optativa</span>
                             <span className="sm:hidden">Opt.</span>
-                        </LiquidToolbarButton>
+                        </LiquidToolbarButton>,
 
-                        <div className="w-px h-6 bg-white/10 mx-1" />
+                        <div key="sep-5" className="w-px h-6 bg-white/10 mx-1" />,
 
-                        {/* Dibuixar */}
-                        <LiquidToolbarButton 
+                        /* Dibuixar */
+                        <LiquidToolbarButton key="draw-mode"
                             onClick={() => setIsDrawMode(true)}
                         >
                             <Palette size={16} />
                             <span className="hidden sm:inline font-medium">Dibuixar</span>
                             <span className="sm:hidden font-medium">Dib.</span>
-                        </LiquidToolbarButton>
+                        </LiquidToolbarButton>,
 
-                        <div className="w-px h-6 bg-white/10 mx-1" />
+                        <div key="sep-6" className="w-px h-6 bg-white/10 mx-1" />,
 
-                        {/* Més Accions */}
-                        <div className="relative">
+                        /* Més Accions */
+                        <div key="more-actions" className="relative">
                             <LiquidToolbarButton 
                                 onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
                                 active={isMoreMenuOpen}
@@ -466,8 +464,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                 )}
                             </AnimatePresence>
                         </div>
-                    </>
-                )}
+                    ]}
                 </LiquidToolbar>
             </div>
 

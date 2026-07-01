@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Sparkles, StopCircle } from 'lucide-react';
 import { useTasks } from '../../contexts/TasksContext';
+import { useSettings } from '../../contexts/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 // import type { Task } from '../../types/tasks';
 
@@ -14,6 +15,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { tasks, addTask, updateTask, deleteTask, subjects } = useTasks();
+    const { aiSettings } = useSettings();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Auto-resize textarea
@@ -54,7 +56,8 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                     prompt,
                     currentTasks: tasks,
                     subjects: subjects.map(s => ({ id: s.id, name: s.name })),
-                    currentDate: new Date().toISOString()
+                    currentDate: new Date().toISOString(),
+                    aiSettings
                 })
             });
 

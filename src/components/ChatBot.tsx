@@ -7,6 +7,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { useAuth } from '../contexts/AuthContext';
+import { useSettings } from '../contexts/SettingsContext';
 import { useLocation } from 'react-router-dom';
 import bgImage from '../assets/bg.webp';
 
@@ -79,6 +80,16 @@ const SendButton = ({
 
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
+  const { aiSettings, setAiSettings } = useSettings();
+  const aiName = aiSettings?.identity?.name || "Sahur AI";
+  
+  const renderAIAvatar = (iconSize: number, iconClass: string) => {
+    const url = aiSettings?.identity?.avatarUrl;
+    if (!url) return <Bot size={iconSize} className={iconClass} />;
+    if (url.startsWith('http')) return <img src={url} alt="AI" className="w-full h-full object-cover rounded-[inherit]" />;
+    return <span className="flex items-center justify-center w-full h-full text-[1.2em] leading-none select-none">{url}</span>;
+  };
+
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -306,7 +317,7 @@ export const ChatBot: React.FC = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}` 
         },
-        body: JSON.stringify({ message: userMsg, history: messages.slice(-10), currentPath: window.location.pathname, pageText, image: fileToSend ? { data: fileToSend.data, mimeType: fileToSend.mimeType } : undefined }),
+        body: JSON.stringify({ message: userMsg, history: messages.slice(-10), currentPath: window.location.pathname, pageText, image: fileToSend ? { data: fileToSend.data, mimeType: fileToSend.mimeType } : undefined, aiSettings }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error');
@@ -314,6 +325,17 @@ export const ChatBot: React.FC = () => {
       setMessages(final);
       await saveChat(currentChatId, final, autoTitle);
       fetchChatList().then(setChatList);
+      
+      if (data.memories_to_add && data.memories_to_add.length > 0) {
+        setAiSettings({
+          ...aiSettings,
+          userContext: {
+            ...aiSettings.userContext,
+            userPreferredName: aiSettings.userContext?.userPreferredName || '',
+            memories: [...(aiSettings.userContext?.memories || []), ...data.memories_to_add]
+          }
+        });
+      }
     } catch (err: any) {
       setMessages(prev => [...prev, { role: 'model', content: `**Error:** ${err.message}` }]);
     } finally { setIsLoading(false); }
@@ -355,16 +377,16 @@ export const ChatBot: React.FC = () => {
               <div className="absolute inset-0 z-[50] flex flex-col">
                 {/* Mini header */}
                 <div className="shrink-0 h-16 px-4 border-b border-white/5 flex items-center justify-between bg-[#020617]/50 backdrop-blur-xl">
-                  <span className="text-sm font-medium text-slate-300 ml-2">Sahur AI</span>
+                  <span className="text-sm font-medium text-slate-300 ml-2">{aiName}</span>
                   <button onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"><X size={18} /></button>
                 </div>
                 {/* Login content */}
                 <div className="flex-1 flex flex-col items-center justify-center gap-6 px-8 text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-slate-800/80 border border-white/10 flex items-center justify-center">
-                    <Bot size={28} className="text-slate-400" />
+                  <div className="w-14 h-14 rounded-2xl bg-slate-800/80 border border-white/10 flex items-center justify-center overflow-hidden">
+                    {renderAIAvatar(28, "text-slate-400")}
                   </div>
                   <div>
-                    <h2 className="text-slate-100 font-semibold text-lg mb-2">Sahur AI</h2>
+                    <h2 className="text-slate-100 font-semibold text-lg mb-2">{aiName}</h2>
                     <p className="text-slate-400 text-sm leading-relaxed">
                       L'assistent d'IA és exclusiu per als membres registrats<br />
                       Inicia sessió per accedir a l'historial i al xat
@@ -460,14 +482,16 @@ export const ChatBot: React.FC = () => {
             <div ref={messagesContainerRef} className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-28 md:px-6 space-y-8 custom-scrollbar z-0 flex flex-col">
               {messages.length === 0 && (
                 <div className="flex-1 flex flex-col items-center justify-center opacity-50 min-h-[50vh]">
-                  <Bot size={40} className="text-slate-600 mb-4" />
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden mb-4 opacity-70">
+                     {renderAIAvatar(40, "text-slate-600")}
+                  </div>
                 </div>
               )}
               {messages.map((msg, idx) => (
                 <div key={idx} className={`flex w-full items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.role === 'model' && (
-                    <div className="w-6 h-6 rounded-md bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0 mt-1">
-                      <Bot size={14} className="text-slate-400" />
+                    <div className="w-6 h-6 rounded-md bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0 mt-1 overflow-hidden">
+                      {renderAIAvatar(14, "text-slate-400")}
                     </div>
                   )}
                   <div className={`max-w-[85%] ${msg.role === 'user' ? 'bg-white/5 border border-white/10 text-slate-100 px-5 py-3 rounded-2xl backdrop-blur-md shadow-lg' : 'text-slate-300'}`}>
@@ -502,7 +526,9 @@ export const ChatBot: React.FC = () => {
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="w-6 h-6 rounded-md bg-slate-800 flex items-center justify-center shrink-0 mr-4 mt-1"><Bot size={14} className="text-slate-400" /></div>
+                  <div className="w-6 h-6 rounded-md bg-slate-800 flex items-center justify-center shrink-0 mr-4 mt-1 overflow-hidden">
+                    {renderAIAvatar(14, "text-slate-400")}
+                  </div>
                   <div className="flex gap-1.5 items-center h-8">
                     {[0, 0.2, 0.4].map((delay, i) => (
                       <motion.div key={i} animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.4, delay }} className="w-2 h-2 rounded-full bg-slate-500" />
@@ -550,7 +576,7 @@ export const ChatBot: React.FC = () => {
                     ref={textareaRef} value={input}
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-                    placeholder="Escriu a Sahur AI..."
+                    placeholder={`Escriu a ${aiName}...`}
                     className="flex-1 bg-transparent px-1 py-2.5 text-[15px] text-slate-200 placeholder-slate-400 focus:outline-none resize-none min-h-[44px] max-h-[250px] custom-scrollbar"
                     rows={1}
                   />

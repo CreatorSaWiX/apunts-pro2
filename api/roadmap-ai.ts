@@ -40,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(401).json({ error: 'Token invàlid o caducat.' });
         }
 
-        const { prompt, currentNodes = [], history = [], memory = {} } = req.body;
+        const { prompt, currentNodes = [], history = [], memory = {}, aiSettings, userName } = req.body;
 
         if (!prompt) {
             return res.status(400).json({ error: 'Falta el paràmetre "prompt"' });
@@ -113,8 +113,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         const ai = new GoogleGenAI({ apiKey });
-        const systemInstruction = `Ets un Senior Software Engineer i mentor executiu que ajuda estudiants de la FIB-UPC amb el seu roadmap.
-Tens una personalitat professional, molt directa i estricta. Respon amb màxima claredat i precisió.
+        const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
+
+[VIBE]
+${aiSettings?.identity?.vibe || "Ets útil."}
+
+[RULES]
+${aiSettings?.soul?.rules || ""}
+
+[BOUNDARIES]
+${aiSettings?.soul?.boundaries || ""}
+
+[CONTINUITY]
+${aiSettings?.soul?.continuity || ""}
+
+[CUSTOM DIRECTIVES]
+${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
+
+L'usuari amb qui estàs parlant es diu: ${aiSettings?.userContext?.userPreferredName || userName || "Estudiant"}
+
+Ets un mentor executiu que ajuda estudiants amb el seu roadmap.
+Tens una personalitat professional. Respon amb màxima claredat i precisió.
 NO ets un xatbot convencional. Ets una eina de productivitat i planificació d'alt nivell.
 
 REGLES D'ESTIL I CONTINGUT (MOLT ESTRICTES):

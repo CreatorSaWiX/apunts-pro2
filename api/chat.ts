@@ -41,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(401).json({ error: 'Token invàlid o caducat.' });
         }
 
-        const { message, history = [], currentPath = '/', pageText = '', image } = req.body;
+        const { message, history = [], currentPath = '/', pageText = '', image, aiSettings } = req.body;
 
         if (!message) {
             return res.status(400).json({ error: 'Falta el paràmetre "message"' });
@@ -87,15 +87,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             'gemini-2.5-flash-lite',     // 20 RPD, lite
         ];
 
-        const systemInstruction = `Ets un company de classe o tutor que ajuda amb l'assignatura PRO2 a la FIB (UPC).
-RESPON DE FORMA MOLT NATURAL, BREU I HUMANA. NO siguis robòtic ni donis explicacions llargues del teu "context" o de "la ruta".
-Si no saps una cosa o no la veus, digues simplement "Ostres, no veig el codi/solucionari que dius" o "Això no ho tinc als meus apunts".
+        const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
+L'usuari amb qui parles vol que li diguis: ${aiSettings?.userContext?.userPreferredName || "l'alumne"}.
+Memòria a llarg termini de l'usuari (Fets que ja coneixes):
+${(aiSettings?.userContext?.memories || []).map((m: string) => `- ${m}`).join('\n')}
+
+[VIBE]
+${aiSettings?.identity?.vibe || "Ets útil."}
+
+[RULES]
+${aiSettings?.soul?.rules || ""}
+
+[BOUNDARIES]
+${aiSettings?.soul?.boundaries || ""}
+
+[CONTINUITY]
+${aiSettings?.soul?.continuity || ""}
+
+[CUSTOM DIRECTIVES]
+${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
+
 L'alumne està actualment a la pàgina: ${currentPath}
 
 MOLT IMPORTANT: La teva sortida ha de ser ÚNICAMENT un objecte JSON amb aquesta estructura exacta:
 {
   "reply": "La teva resposta natural i formatada en markdown com ho faries normalment.",
-  "keywords": ["paraula1", "paraula2", "paraula3"] // 3 a 5 paraules clau rellevants per a l'usuari
+  "keywords": ["paraula1", "paraula2", "paraula3"], // 3 a 5 paraules clau rellevants per a l'usuari
+  "memories_to_add": [] // Retorna un array buit per defecte. NOMÉS hi has d'afegir un string si l'usuari acaba de revelar informació vital a llarg termini sobre el seu perfil (ex. un projecte, una tecnologia que aprèn, preferències). Evita guardar dades temporals o de xerrada casual.
 }
 
 Aquest és el text visible a la seva pantalla ara mateix (útil si està mirant un solucionari penjat per algú):
@@ -104,7 +123,10 @@ ${pageText}
 """
 
 I aquest és el coneixement base oficial de l'assignatura:
-${notesContext}`;
+${notesContext}
+
+MOLT IMPORTANT SOBRE LA CERCA:
+Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actualitat, dates, conferències, documentació o qualsevol cosa que no estigui al "coneixement base oficial", **HAS D'UTILITZAR GOOGLE SEARCH per buscar la resposta a Internet** i respondre-li amb la informació trobada. Mai diguis "no ho tinc als meus apunts" si ho pots buscar a Google.`;
 
         // 3. Format de l'historial per a Gemini
         const formattedHistory = history.map((msg: any) => ({
@@ -124,20 +146,41 @@ ${notesContext}`;
                 const response = await ai.models.generateContent({
                     model: modelName,
                     contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                    config: {
-                        systemInstruction: systemInstruction,
-                        responseMimeType: "application/json"
-                    }
+                        config: {
+                            systemInstruction: systemInstruction,
+                            tools: [{ googleSearch: {} } as any]
+                        }
                 });
                 console.log(`✅ [Gemini] Model usat: ${modelName}`);
                 
-                const responseData = JSON.parse(response.text);
+                let rData;
+                try {
+                    let cleanText = response.text.trim();
+                    if (cleanText.startsWith("```json")) {
+                        cleanText = cleanText.substring(7).replace(/```$/, '').trim();
+                    } else if (cleanText.startsWith("```")) {
+                        cleanText = cleanText.substring(3).replace(/```$/, '').trim();
+                    }
+                    const firstBrace = cleanText.indexOf('{');
+                    const lastBrace = cleanText.lastIndexOf('}');
+                    if (firstBrace !== -1 && lastBrace !== -1) {
+                        cleanText = cleanText.substring(firstBrace, lastBrace + 1);
+                    }
+                    rData = JSON.parse(cleanText);
+                } catch (parseError: any) {
+                    console.warn("Gemini didn't return JSON, falling back to raw text.");
+                    rData = {
+                        reply: response.text,
+                        keywords: [],
+                        memories_to_add: []
+                    };
+                }
                 
                 // Mantenim el camp 'reply' per al frontend actual, 
-                // i enviem 'keywords' perquè l'equip de frontend ho pugui usar quan vulgui.
                 return res.status(200).json({ 
-                    reply: responseData.reply,
-                    keywords: responseData.keywords || []
+                    reply: rData.reply,
+                    keywords: rData.keywords || [],
+                    memories_to_add: rData.memories_to_add || []
                 });
             } catch (e: any) {
                 const is429 = e?.status === 429 || e?.status === 404 || String(e?.message || '').includes('429') || String(e?.message || '').includes('404') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate');

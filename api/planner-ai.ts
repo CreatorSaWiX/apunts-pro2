@@ -38,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(401).json({ error: 'Token invàlid o caducat.' });
         }
 
-        const { prompt, currentTasks = [] } = req.body;
+        const { prompt, currentTasks = [], aiSettings } = req.body;
 
         if (!prompt) {
             return res.status(400).json({ error: 'Falta el paràmetre "prompt"' });
@@ -57,7 +57,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             'gemini-3.1-flash-lite',
         ];
 
-        const systemInstruction = `Ets un assistent d'estudi avançat (IA Planner).
+        const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
+
+[VIBE]
+${aiSettings?.identity?.vibe || "Ets útil."}
+
+[RULES]
+${aiSettings?.soul?.rules || ""}
+
+[BOUNDARIES]
+${aiSettings?.soul?.boundaries || ""}
+
+[CONTINUITY]
+${aiSettings?.soul?.continuity || ""}
+
+[CUSTOM DIRECTIVES]
+${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
+
+Ets un assistent d'estudi avançat (IA Planner).
 La teva missió és llegir la petició de l'usuari (text lliure o imatge/text copiat d'assignatures) i retornar un ARRAY DE TASQUES en format JSON pur.
 
 Tens les següents tasques actualment programades (per si cal distribuir la feina o no sobreposar):

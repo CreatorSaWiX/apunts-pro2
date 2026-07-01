@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Sparkles, StopCircle, CheckCircle2 } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
+import { useSettings } from '../../../contexts/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -29,6 +30,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const [error, setError] = useState<string | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const { nodes, addSubjectNode } = useRoadmap();
+    const { aiSettings } = useSettings();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -92,6 +94,8 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                 content: m.content
             }));
 
+            const userName = auth.currentUser?.displayName || 'Estudiant';
+
             const response = await fetch('/api/roadmap-ai', {
                 method: 'POST',
                 headers: {
@@ -102,7 +106,9 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                     prompt: userMsg,
                     currentNodes: activeNodes,
                     history,
-                    memory
+                    memory,
+                    aiSettings,
+                    userName
                 })
             });
 
