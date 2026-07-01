@@ -12,7 +12,7 @@ interface User {
 interface AuthContextType {
     user: User | null;
     login: (email: string, password: string) => Promise<void>;
-    signup: (email: string, password: string, username: string, inviteCode?: string) => Promise<void>;
+    signup: (email: string, password: string, username: string) => Promise<void>;
     logout: () => Promise<void>;
     isLoading: boolean;
 }
@@ -84,10 +84,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await signInWithEmailAndPassword(auth, email, password);
     };
 
-    const signup = async (email: string, password: string, username: string, inviteCode?: string) => {
+    const signup = async (email: string, password: string, username: string) => {
         const { auth, db } = await import('../lib/firebase');
-        const { createUserWithEmailAndPassword, updateProfile, deleteUser } = await import('firebase/auth');
-        const { doc, setDoc, getDoc } = await import('firebase/firestore');
+        const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
+        const { doc, setDoc } = await import('firebase/firestore');
 
         // 1. Create User (Auth)
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -102,22 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
 
             // 3. Determine Role and Data
-            let finalRole = 'invitat';
-            if (inviteCode) {
-                try {
-                    const inviteRef = doc(db, 'invites', inviteCode);
-                    const inviteSnap = await getDoc(inviteRef);
-                    if (inviteSnap.exists()) {
-                        finalRole = 'moderador';
-                    } else {
-                        throw new Error("Invalid code");
-                    }
-                } catch (e) {
-                    await updateProfile(firebaseUser, { displayName: username }); // fallback cleanup
-                    await deleteUser(firebaseUser);
-                    throw new Error("El codi d'invitació introduït no és correcte.");
-                }
-            }
+            const finalRole = 'invitat';
 
             const userData: any = {
                 username: username,
@@ -126,10 +111,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 role: finalRole,
                 createdAt: new Date().toISOString()
             };
-
-            if (inviteCode && finalRole === 'moderador') {
-                userData.inviteCodeUsed = inviteCode;
-            }
 
             // 4. Create Firestore Document
             await setDoc(doc(db, 'users', firebaseUser.uid), userData);

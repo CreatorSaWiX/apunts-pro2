@@ -119,14 +119,14 @@ export default defineConfig(({ mode }) => {
                   try {
                     const filePath = path.resolve('./.content-collections/generated/allPersonalNotes.json');
                     if (fs.existsSync(filePath)) {
-                      const fileContent = fs.readFileSync(filePath, 'utf-8');
+                      const fileContent = await fs.promises.readFile(filePath, 'utf-8');
                       // Usem JSON.parse enlloc d'eval per evitar vulnerabilitats
                       allPersonalNotes = JSON.parse(fileContent);
                     } else {
                       // Fallback si és el fitxer .js
                       const jsPath = path.resolve('./.content-collections/generated/allPersonalNotes.js');
                       if (fs.existsSync(jsPath)) {
-                        const fileContent = fs.readFileSync(jsPath, 'utf-8');
+                        const fileContent = await fs.promises.readFile(jsPath, 'utf-8');
                         const jsonStr = fileContent.replace('export default', '').trim().replace(/;$/, '');
                         allPersonalNotes = JSON.parse(jsonStr);
                       }
@@ -136,7 +136,7 @@ export default defineConfig(({ mode }) => {
                   }
 
                   const apiKey = env.GEMINI_API_KEY;
-                  if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
+                  if (!apiKey) {
                     res.statusCode = 500;
                     res.end(JSON.stringify({ error: 'Clau de Gemini no configurada al servidor (.env.local)' }));
                     return;
@@ -221,7 +221,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                           tools: [{ googleSearch: {} } as any]
                         }
                       });
-                      console.log(`✅ [Gemini] Model usat: ${modelName}`);
+                      console.log(`[Gemini] Model usat: ${modelName}`);
                       res.setHeader('Content-Type', 'application/json');
                       let rData;
                       try {
@@ -286,7 +286,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                   const { GoogleGenAI } = await import('@google/genai');
                   const apiKey = env.GEMINI_API_KEY;
 
-                  if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
+                  if (!apiKey) {
                     res.statusCode = 500;
                     res.end(JSON.stringify({ error: 'Clau de Gemini no configurada al servidor' }));
                     return;
@@ -395,7 +395,7 @@ L'estructura exacta ha de ser:
                   const path = await import('path');
                   const apiKey = env.GEMINI_API_KEY;
 
-                  if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
+                  if (!apiKey) {
                     res.statusCode = 500;
                     res.end(JSON.stringify({ error: 'Clau de Gemini no configurada al servidor' }));
                     return;
@@ -590,7 +590,7 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                     } catch (e: any) {
                       const is429 = e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate');
                       if (is429) {
-                        console.warn(`⚠️ [DevServer Roadmap AI] ${modelName} rate limit/503, provant el seguent model...`);
+                        console.warn(`[DevServer Roadmap AI] ${modelName} rate limit/503, provant el seguent model...`);
                         lastError = e;
                         continue;
                       }
