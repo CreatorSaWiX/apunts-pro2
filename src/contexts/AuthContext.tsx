@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import type { User as FirebaseUser } from 'firebase/auth';
 
 interface User {
@@ -78,13 +78,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
     }, []);
 
-    const login = async (email: string, password: string) => {
+    const login = useCallback(async (email: string, password: string) => {
         const { auth } = await import('../lib/firebase');
         const { signInWithEmailAndPassword } = await import('firebase/auth');
         await signInWithEmailAndPassword(auth, email, password);
-    };
+    }, []);
 
-    const signup = async (email: string, password: string, username: string) => {
+    const signup = useCallback(async (email: string, password: string, username: string) => {
         const { auth, db } = await import('../lib/firebase');
         const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
         const { doc, setDoc } = await import('firebase/firestore');
@@ -128,16 +128,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error("Error creating user profile:", error);
             throw new Error(error instanceof Error ? error.message : "Error al crear el perfil d'usuari.");
         }
-    };
+    }, []);
 
-    const logout = async () => {
+    const logout = useCallback(async () => {
         const { auth } = await import('../lib/firebase');
         const { signOut } = await import('firebase/auth');
         await signOut(auth);
-    };
+    }, []);
+
+    const contextValue = useMemo(() => ({
+        user,
+        login,
+        logout,
+        signup,
+        isLoading
+    }), [user, login, logout, signup, isLoading]);
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, signup, isLoading }}>
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );
