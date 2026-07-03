@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -133,7 +133,9 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         localStorage.setItem('app-settings-ai', JSON.stringify(aiSettings));
 
         if (isSettingsLoaded && user) {
-            const saveToFirebase = async () => {
+            // DEBOUNCE: Esperem 1 segon abans d'enviar-ho al servidor de Firebase
+            // per no saturar la xarxa si l'usuari fa canvis molt ràpids.
+            const timeoutId = setTimeout(async () => {
                 try {
                     const docRef = doc(db, 'users', user.id);
                     await setDoc(docRef, {
@@ -145,23 +147,29 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                 } catch (err) {
                     console.error('Failed to save settings to Firebase:', err);
                 }
-            };
-            saveToFirebase();
+            }, 1000); // 1000 ms (1 segon) de rebot (debounce)
+
+            // Si hi ha un altre canvi abans del segon, es cancel·la el timer anterior (com aturar la IRQ)
+            return () => clearTimeout(timeoutId);
         }
     }, [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, isSettingsLoaded, user]);
 
+    // MEMOITZACIÓ: Evitem fer un "new Struct" cada cop i mantenim el punter estable al Heap.
+    // Això salva a tota l'aplicació de repintar-se si les variables de dalt no han canviat realment.
+    const contextValue = useMemo(() => ({
+        homeSubjects,
+        setHomeSubjects,
+        defaultPlannerView,
+        setDefaultPlannerView,
+        customSubjectColors,
+        setCustomSubjectColors,
+        aiSettings,
+        setAiSettings,
+        isSettingsLoaded
+    }), [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, isSettingsLoaded]);
+
     return (
-        <SettingsContext.Provider value={{
-            homeSubjects,
-            setHomeSubjects,
-            defaultPlannerView,
-            setDefaultPlannerView,
-            customSubjectColors,
-            setCustomSubjectColors,
-            aiSettings,
-            setAiSettings,
-            isSettingsLoaded
-        }}>
+        <SettingsContext.Provider value={contextValue}>
             {children}
         </SettingsContext.Provider>
     );
