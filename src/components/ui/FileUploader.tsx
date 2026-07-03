@@ -16,12 +16,13 @@ export interface Attachment {
 interface FileUploaderProps {
     onUploadComplete: (attachments: Attachment[]) => void;
     maxFiles?: number;
+    variant?: 'default' | 'avatar';
 }
 
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
-const FileUploader = ({ onUploadComplete, maxFiles = 3 }: FileUploaderProps) => {
+const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default' }: FileUploaderProps) => {
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
 
@@ -154,38 +155,46 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3 }: FileUploaderProps) => 
     });
 
     return (
-        <div className="w-full mt-2">
+        <div className={`w-full ${variant === 'avatar' ? 'h-full' : 'mt-2'}`}>
             {!uploading && (
                 <div 
                     {...getRootProps()} 
-                    className={`border border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all duration-300
-                        ${isDragActive ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(14,165,233,0.2)]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}
+                    className={variant === 'avatar' 
+                        ? 'absolute inset-0 cursor-pointer z-10 outline-none'
+                        : `border border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all duration-300 ${isDragActive ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(14,165,233,0.2)]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`
+                    }
                 >
                     <input {...getInputProps()} />
-                    <UploadCloud className="mx-auto mb-2 text-slate-400" size={24} />
-                    <p className="text-sm font-bold text-slate-300">Arrossega arxius per adjuntar</p>
-                    <p className="text-xs text-slate-500 mt-1">Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {MAX_FILE_SIZE_MB}MB per arxiu)</p>
+                    {variant === 'default' && (
+                        <>
+                            <UploadCloud className="mx-auto mb-2 text-slate-400" size={24} />
+                            <p className="text-sm font-bold text-slate-300">Arrossega arxius per adjuntar</p>
+                            <p className="text-xs text-slate-500 mt-1">Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {MAX_FILE_SIZE_MB}MB per arxiu)</p>
+                        </>
+                    )}
                 </div>
             )}
 
             <AnimatePresence>
                 {uploading && (
                     <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-2xl"
+                        initial={{ opacity: 0, height: variant === 'avatar' ? '100%' : 0 }}
+                        animate={{ opacity: 1, height: variant === 'avatar' ? '100%' : 'auto' }}
+                        exit={{ opacity: 0, height: variant === 'avatar' ? '100%' : 0 }}
+                        className={`flex flex-col items-center justify-center ${variant === 'avatar' ? 'absolute inset-0 bg-black/60 z-20' : 'p-6 bg-white/5 border border-white/10 rounded-2xl'}`}
                     >
-                        <Spinner size="lg" variant="primary" className="mb-3" />
-                        <p className="text-sm font-bold text-white">Preparant i pujant a la xarxa...</p>
-                        <div className="w-48 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden relative">
-                            <motion.div 
-                                className="absolute left-0 top-0 bottom-0 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
-                                initial={{ width: 0 }}
-                                animate={{ width: `${progress}%` }}
-                                transition={{ ease: "linear" }}
-                            />
-                        </div>
+                        <Spinner size={variant === 'avatar' ? 'sm' : 'lg'} variant="primary" className={variant === 'avatar' ? '' : 'mb-3'} />
+                        {variant !== 'avatar' && <p className="text-sm font-bold text-white">Preparant i pujant a la xarxa...</p>}
+                        {variant !== 'avatar' && (
+                            <div className="w-48 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden relative">
+                                <motion.div 
+                                    className="absolute left-0 top-0 bottom-0 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${progress}%` }}
+                                    transition={{ ease: "linear" }}
+                                />
+                            </div>
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>
