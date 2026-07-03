@@ -15,7 +15,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { type AISettings, DEFAULT_AI_SETTINGS } from '../types/ai';
 import { Link } from 'react-router-dom';
 import Spinner from '../components/ui/Spinner';
-import FileUploader from '../components/community/FileUploader';
+import FileUploader from '../components/ui/FileUploader';
 // Contributor Interface
 interface Contributor {
     uid: string;

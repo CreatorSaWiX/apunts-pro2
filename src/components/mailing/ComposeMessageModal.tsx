@@ -130,14 +130,12 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                         </div>
 
                         <div className="relative group">
-                            <input
-                                type="text"
+                            <Modal.Input
                                 value={subject}
                                 onChange={(e) => {
                                     setSubject(e.target.value);
                                     if (error) setError('');
                                 }}
-                                className="w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-white placeholder:text-slate-600 focus:border-sky-500/50 focus:ring-4 focus:ring-sky-500/10 outline-none transition-all font-medium"
                                 placeholder="[P12345] Dubte d'aquest exercici"
                             />
                         </div>
@@ -175,13 +173,13 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                                 <Code size={14} /> Afegeix Codi
                             </button>
                         </div>
-                        <textarea
+                        <Modal.Textarea
                             value={body}
                             onChange={(e) => {
                                 setBody(e.target.value);
                                 if (error) setError('');
                             }}
-                            className="w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-slate-300 placeholder:text-slate-600 focus:border-sky-500/50 focus:ring-4 focus:ring-sky-500/10 outline-none transition-all min-h-[200px] resize-y custom-scrollbar"
+                            className="min-h-[200px]"
                             placeholder="Escriu el teu missatge aquí... (Pots fer servir ```cpp per afegir codi)"
                         />
                     </div>
@@ -194,14 +192,14 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                     )}
 
                     <div className="pt-2">
-                        <button
+                        <Modal.Button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(14,165,233,0.4)] disabled:opacity-70 disabled:hover:bg-sky-500 disabled:hover:shadow-none"
+                            className="w-full py-3"
                         >
                             {isLoading ? <Spinner size="sm" variant="white" glow={false} /> : <Send size={18} />}
                             {isLoading ? 'Enviant missatge...' : 'Enviar missatge'}
-                        </button>
+                        </Modal.Button>
                     </div>
                 </form>
             </Modal.Body>

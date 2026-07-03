@@ -18,19 +18,20 @@ const ranks: Omit<Rank, 'division'>[] = [
 ];
 
 export const getRank = (solutionsCount: number): Rank => {
-    let rankTier = ranks[0];
+    let currentTierIndex = 0;
+    
     for (let i = ranks.length - 1; i >= 0; i--) {
         if (solutionsCount >= ranks[i].minSolutions) {
-            rankTier = ranks[i];
+            currentTierIndex = i;
             break;
         }
     }
 
+    const rankTier = ranks[currentTierIndex];
+
     if (rankTier.name === 'SSL') return { ...rankTier };
 
-    const currentTierIndex = ranks.findIndex(r => r.name === rankTier.name);
     const nextTier = ranks[currentTierIndex + 1];
-
     let division: 'I' | 'II' | 'III' = 'I';
 
     if (nextTier) {

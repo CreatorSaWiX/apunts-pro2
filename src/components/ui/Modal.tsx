@@ -125,9 +125,58 @@ const ModalLayout = ({ children, className = '' }: { children: React.ReactNode, 
     </div>
 );
 
+const ModalInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(({ className = '', ...props }, ref) => (
+    <input
+        ref={ref}
+        className={`w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-white placeholder:text-slate-600 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all font-medium text-sm ${className}`}
+        {...props}
+    />
+));
+ModalInput.displayName = 'ModalInput';
+
+const ModalTextarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(({ className = '', ...props }, ref) => (
+    <textarea
+        ref={ref}
+        className={`w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-slate-300 placeholder:text-slate-600 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all min-h-[120px] resize-y custom-scrollbar ${className}`}
+        {...props}
+    />
+));
+ModalTextarea.displayName = 'ModalTextarea';
+
+const ModalButton = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'danger' | 'ghost' }>(({ className = '', variant = 'primary', ...props }, ref) => {
+    let variantStyles = '';
+    switch (variant) {
+        case 'primary':
+            variantStyles = 'bg-gradient-to-r from-primary/90 to-accent/90 hover:from-primary hover:to-accent text-white shadow-lg shadow-primary/20';
+            break;
+        case 'secondary':
+            variantStyles = 'bg-white/5 hover:bg-white/10 border border-transparent hover:border-white/10 text-slate-300 hover:text-white';
+            break;
+        case 'danger':
+            variantStyles = 'bg-rose-500/90 hover:bg-rose-500 text-white shadow-lg shadow-rose-500/20';
+            break;
+        case 'ghost':
+            variantStyles = 'bg-transparent hover:bg-white/5 text-slate-400 hover:text-white';
+            break;
+    }
+
+    return (
+        <button
+            ref={ref}
+            className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:hover:transform-none disabled:cursor-not-allowed ${variantStyles} ${className}`}
+            {...props}
+        />
+    );
+});
+ModalButton.displayName = 'ModalButton';
+
+
 Modal.Header = ModalHeader;
 Modal.Body = ModalBody;
 Modal.Sidebar = ModalSidebar;
 Modal.Layout = ModalLayout;
+Modal.Input = ModalInput;
+Modal.Textarea = ModalTextarea;
+Modal.Button = ModalButton;
 
 export default Modal;

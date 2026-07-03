@@ -13,6 +13,8 @@ import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
 import SSLParticles from '../components/SSLParticles';
 import Spinner from '../components/ui/Spinner';
+import Modal from '../components/ui/Modal';
+import FileUploader, { type Attachment } from '../components/ui/FileUploader';
 
 // --- Spotlight Card (Re-used from TopicCarousel to ensure identical UI consistency) ---
 function SpotlightCard({
@@ -66,6 +68,9 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
     const [banner, setBanner] = useState(user?.banner || '');
     const [bio, setBio] = useState(user?.bio || '');
     const [isLoading, setIsLoading] = useState(false);
+    
+    // Uploader state
+    const [activeUploader, setActiveUploader] = useState<'avatar' | 'banner' | null>(null);
 
     useEffect(() => {
         if (user) {
@@ -90,98 +95,121 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
         }
     };
 
+    const handleUploadComplete = (attachments: Attachment[], type: 'avatar' | 'banner') => {
+        if (attachments.length > 0) {
+            if (type === 'avatar') {
+                setAvatar(attachments[0].url);
+            } else {
+                setBanner(attachments[0].url);
+            }
+        }
+        setActiveUploader(null);
+    };
+
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-0 bg-[#0B0F19]/80 backdrop-blur-sm shadow-2xl overflow-y-auto">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                        transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-                        className="bg-[#0a0d16] border border-white/10 rounded-[32px] w-full max-w-lg p-6 md:p-8 shadow-2xl relative my-8"
-                    >
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-white tracking-tight">Editar Perfil</h2>
-                            <button onClick={onClose} className="p-2 bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors hover:bg-white/10">
-                                <X size={20} strokeWidth={2} />
-                            </button>
+        <Modal isOpen={isOpen} onClose={onClose} size="lg" overlayVariant="transparent">
+            <Modal.Header title="Editar Perfil" className="pb-4" />
+            <Modal.Body>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Nom d'usuari</label>
+                        <div className="relative w-full">
+                            <Modal.Input
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
                         </div>
+                    </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Nom d'usuari</label>
-                                <div className="relative w-full">
-                                    <input
-                                        type="text"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        className="w-full bg-[#0a0d16] border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:border-primary/50 focus:bg-slate-900 focus:ring-1 focus:ring-primary/50 outline-none transition-all"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Avatar & Banner</label>
-                                <div className="grid grid-cols-2 gap-3 w-full">
-                                    <input
-                                        type="text"
+                    <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Avatar & Banner</label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                            {/* Avatar Section */}
+                            <div className="flex flex-col gap-2">
+                                <div className="flex items-center gap-2">
+                                    <Modal.Input
                                         value={avatar}
                                         onChange={(e) => setAvatar(e.target.value)}
                                         placeholder="URL de l'Avatar"
-                                        className="w-full bg-[#0a0d16] border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:border-primary/50 focus:bg-slate-900 focus:ring-1 focus:ring-primary/50 outline-none transition-all placeholder-slate-600 text-sm"
                                     />
-                                    <input
-                                        type="text"
+                                    <button
+                                        type="button"
+                                        onClick={() => setActiveUploader(activeUploader === 'avatar' ? null : 'avatar')}
+                                        className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0"
+                                        title="Pujar des de local"
+                                    >
+                                        <Upload size={18} />
+                                    </button>
+                                </div>
+                                <AnimatePresence>
+                                    {activeUploader === 'avatar' && (
+                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                                            <FileUploader maxFiles={1} onUploadComplete={(atts) => handleUploadComplete(atts, 'avatar')} />
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Banner Section */}
+                            <div className="flex flex-col gap-2">
+                                <div className="flex items-center gap-2">
+                                    <Modal.Input
                                         value={banner}
                                         onChange={(e) => setBanner(e.target.value)}
                                         placeholder="URL del Banner"
-                                        className="w-full bg-[#0a0d16] border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:border-primary/50 focus:bg-slate-900 focus:ring-1 focus:ring-primary/50 outline-none transition-all placeholder-slate-600 text-sm"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setActiveUploader(activeUploader === 'banner' ? null : 'banner')}
+                                        className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0"
+                                        title="Pujar des de local"
+                                    >
+                                        <Upload size={18} />
+                                    </button>
                                 </div>
+                                <AnimatePresence>
+                                    {activeUploader === 'banner' && (
+                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                                            <FileUploader maxFiles={1} onUploadComplete={(atts) => handleUploadComplete(atts, 'banner')} />
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
+                        </div>
+                    </div>
 
-                            <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Identitat web</label>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
-                                    <div className="relative w-full">
-                                        <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                        <input
-                                            type="text"
-                                            value={portfolio}
-                                            onChange={(e) => setPortfolio(e.target.value)}
-                                            className="w-full bg-[#0a0d16] border border-white/5 rounded-2xl pl-11 pr-4 py-3.5 text-white focus:border-primary/50 focus:bg-slate-900 focus:ring-1 focus:ring-primary/50 outline-none transition-all placeholder-slate-600 text-sm"
-                                            placeholder="https://portfolio.com"
-                                        />
-                                    </div>
-                                    <input
-                                        type="text"
-                                        value={bio}
-                                        onChange={(e) => setBio(e.target.value)}
-                                        className="w-full bg-[#0a0d16] border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:border-primary/50 focus:bg-slate-900 focus:ring-1 focus:ring-primary/50 outline-none transition-all placeholder-slate-600 text-sm"
-                                        placeholder="La teva biografia / rol curt..."
-                                    />
-                                </div>
+                    <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Identitat web</label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
+                            <div className="relative w-full">
+                                <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                                <Modal.Input
+                                    value={portfolio}
+                                    onChange={(e) => setPortfolio(e.target.value)}
+                                    placeholder="https://portfolio.com"
+                                    className="pl-11"
+                                />
                             </div>
+                            <Modal.Input
+                                value={bio}
+                                onChange={(e) => setBio(e.target.value)}
+                                placeholder="La teva biografia / rol curt..."
+                            />
+                        </div>
+                    </div>
 
-                            <div className="pt-6 flex justify-end gap-3 border-t border-white/5">
-                                <button type="button" onClick={onClose} className="px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-slate-300 hover:text-white font-medium transition-colors text-sm border border-transparent hover:border-white/10">
-                                    Cancel·lar
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="bg-gradient-to-r from-primary/90 to-accent/90 hover:from-primary hover:to-accent px-8 py-2.5 rounded-xl shadow-lg shadow-primary/20 text-white font-semibold flex items-center gap-2 transition-all transform hover:-translate-y-0.5"
-                                >
-                                    {isLoading ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={18} />}
-                                    Desar canvis
-                                </button>
-                            </div>
-                        </form>
-                    </motion.div>
-                </div>
-            )}
-        </AnimatePresence>
+                    <div className="pt-6 flex justify-end gap-3 border-t border-white/5">
+                        <Modal.Button type="button" onClick={onClose} variant="secondary">
+                            Cancel·lar
+                        </Modal.Button>
+                        <Modal.Button type="submit" disabled={isLoading} variant="primary">
+                            {isLoading ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={18} />}
+                            Desar canvis
+                        </Modal.Button>
+                    </div>
+                </form>
+            </Modal.Body>
+        </Modal>
     );
 };
 

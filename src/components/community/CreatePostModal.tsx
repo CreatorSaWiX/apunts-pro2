@@ -7,7 +7,7 @@ import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, X, File
 
 import GifPicker from '../ui/GifPicker';
 import SubjectSelectorModal from './SubjectSelectorModal';
-import FileUploader, { type Attachment } from './FileUploader';
+import FileUploader, { type Attachment } from '../ui/FileUploader';
 import Spinner from '../ui/Spinner';
 import Modal from '../ui/Modal';
 import PublicationCard from './PublicationCard';
