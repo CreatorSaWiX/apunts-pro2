@@ -4,7 +4,7 @@ import { X, Send, AlertCircle, FileCode, Code } from 'lucide-react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
-import { encryptMessage } from '../../utils/encryption';
+
 import ProblemSelectorModal from './ProblemSelectorModal';
 import Spinner from '../ui/Spinner';
 import Modal from '../ui/Modal';
@@ -64,7 +64,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
         setError('');
 
         try {
-            const encryptedBody = encryptMessage(body);
+
 
             let receiverAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${receiverName}`;
             try {
@@ -85,7 +85,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                 receiverName: receiverName,
                 receiverAvatar: receiverAvatar,
                 subject: subject,
-                body: encryptedBody,
+                body: body,
                 relatedProblemId: selectedProblem ? selectedProblem.id : null,
                 relatedTopicId: selectedProblem ? selectedProblem.topicId : null,
                 read: false,
@@ -170,9 +170,6 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                         <div className="flex justify-between items-center">
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
                                 Missatge
-                                <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 font-normal normal-case">
-                                    <AlertCircle size={10} /> Encriptat amb AES-256
-                                </span>
                             </label>
                             <button type="button" className="text-xs text-sky-400 flex items-center gap-1 hover:text-sky-300 transition-colors" onClick={() => setBody(prev => prev + '\n```cpp\n// El teu codi aquí\n```\n')}>
                                 <Code size={14} /> Afegeix Codi

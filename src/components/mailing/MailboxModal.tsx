@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Mail, Reply, ExternalLink, ChevronRight, Send } from 'lucide-react';
 import { collection, query, where, getDocs, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { decryptMessage } from '../../utils/encryption';
+
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import ComposeMessageModal from './ComposeMessageModal';
@@ -326,7 +326,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
 
                                 <Modal.Body className="!p-8">
                                     <div className="p-6 rounded-2xl bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] space-y-2">
-                                        {renderMessageBody(decryptMessage(selectedMessage.body))}
+                                        {renderMessageBody(selectedMessage.body)}
                                     </div>
                                     <div className="mt-6 flex flex-wrap items-center justify-end gap-3 pt-6 border-t border-white/5">
                                         {selectedMessage.relatedProblemId && (
@@ -353,11 +353,6 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                         </button>
                                     </div>
 
-                                    <div className="mt-8 flex items-center gap-2 text-[10px] text-slate-600 uppercase tracking-widest justify-center opacity-50">
-                                        <div className="w-1 h-1 rounded-full bg-slate-700" />
-                                        Missatge encriptat (AES-256)
-                                        <div className="w-1 h-1 rounded-full bg-slate-700" />
-                                    </div>
                                 </Modal.Body>
                             </motion.div>
                         </>
