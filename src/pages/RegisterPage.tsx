@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AuthCanvasBackground } from '../components/ui/AuthCanvasBackground';
 import { PremiumInput } from '../components/ui/PremiumInput';
 import Spinner from '../components/ui/Spinner';
+import PrivacyModal from '../components/ui/PrivacyModal';
 
 const RegisterPage = () => {
     const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ const RegisterPage = () => {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
     const { signup } = useAuth();
     const navigate = useNavigate();
 
@@ -186,6 +188,19 @@ const RegisterPage = () => {
                                     </div>
                                 </button>
                             </motion.div>
+
+                            <motion.div variants={fadeInUp} className="text-center mt-4">
+                                <p className="text-[11px] text-slate-500 font-medium leading-relaxed max-w-xs mx-auto">
+                                    En registrar-vos, accepteu la nostra{' '}
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setIsPrivacyOpen(true)}
+                                        className="text-slate-300 hover:text-emerald-400 underline decoration-slate-600 hover:decoration-emerald-400/50 underline-offset-2 transition-all"
+                                    >
+                                        Política de Privacitat
+                                    </button>
+                                </p>
+                            </motion.div>
                         </form>
 
                         <motion.div variants={fadeInUp} className="mt-8 text-center text-sm font-medium text-slate-500">
@@ -198,6 +213,8 @@ const RegisterPage = () => {
                     </motion.div>
                 </div>
             </div>
+
+            <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
         </div>
     );
 };

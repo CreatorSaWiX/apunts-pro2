@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings2, Sparkles, Bot} from 'lucide-react';
+import { Settings2, Sparkles, Bot } from 'lucide-react';
 import { RoadmapProvider } from '../contexts/RoadmapContext';
+import { useAuth } from '../contexts/AuthContext';
 
 import { GeneralSection } from '../components/settings/GeneralSection';
 import { PlannerSection } from '../components/settings/PlannerSection';
 import { SubjectsSection } from '../components/settings/SubjectsSection';
+import { PrivacySection } from '../components/settings/PrivacySection';
+import { DeleteAccSection } from '../components/settings/DeleteAccSection';
 import { AISection } from '../components/settings/AISection';
 import { AboutSection } from '../components/settings/AboutSection';
 
@@ -18,18 +21,30 @@ const TABS: { id: TabId; label: string; icon: any }[] = [
 ];
 
 const SettingsContent = () => {
+    const { user } = useAuth();
     const [activeTab, setActiveTab] = useState<TabId>('general');
+
+    const availableTabs = TABS.filter(tab => {
+        if (tab.id === 'ai' && !user) return false;
+        return true;
+    });
 
     const renderActiveSection = () => {
         switch (activeTab) {
             case 'general': return (
                 <div className="flex flex-col">
                     <GeneralSection />
-                    <PlannerSection />
                     <SubjectsSection />
+                    {user && (
+                        <>
+                            <PlannerSection />
+                            <PrivacySection />
+                            <DeleteAccSection />
+                        </>
+                    )}
                 </div>
             );
-            case 'ai': return <AISection />;
+            case 'ai': return user ? <AISection /> : null;
             case 'about': return <AboutSection />;
             default: return null;
         }
@@ -50,7 +65,7 @@ const SettingsContent = () => {
                     {/* Sidebar (Desktop) / Header (Mobile) */}
                     <aside className="w-full md:w-[280px] shrink-0 flex flex-col z-20 md:sticky md:top-0 md:h-dvh relative bg-transparent border-none">
                         <nav className="flex-1 flex md:flex-col justify-start md:justify-center overflow-x-auto custom-scrollbar px-6 md:px-8 gap-1 md:overflow-x-hidden hide-scrollbar py-2">
-                            {TABS.map(tab => {
+                            {availableTabs.map(tab => {
                                 const isActive = activeTab === tab.id;
                                 return (
                                     <button

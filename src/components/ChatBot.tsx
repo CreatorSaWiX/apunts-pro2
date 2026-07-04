@@ -81,7 +81,7 @@ const SendButton = ({
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
   const { aiSettings, setAiSettings } = useSettings();
-  const aiName = aiSettings?.identity?.name || "Sahur AI";
+  const aiName = aiSettings?.identity?.name;
   
   const renderAIAvatar = (iconSize: number, iconClass: string) => {
     const url = aiSettings?.identity?.avatarUrl;
@@ -588,6 +588,11 @@ export const ChatBot: React.FC = () => {
                     cooldownMs={COOLDOWN_MS}
                   />
                 </div>
+              </div>
+              <div className="text-center mt-2.5 mb-0.5 pointer-events-auto">
+                <p className="text-[10px] text-slate-500/60 font-medium tracking-wide">
+                  L'IA pot cometre errors. No comparteixis dades sensibles ni personals.
+                </p>
               </div>
             </div>
           </motion.div>
