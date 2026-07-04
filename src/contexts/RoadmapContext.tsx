@@ -2,8 +2,6 @@ import React, { createContext, useContext, useState, useCallback, useEffect, use
 import type { ReactNode } from 'react';
 import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
 import type { Node, Edge, NodeChange, EdgeChange, Connection } from '@xyflow/react';
-import { db } from '../lib/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from './AuthContext';
 import subjectsData from '../data/subjects.json';
 import { geiBaseNodes, geiBaseEdges, getCreditsForSubject, getSemesterForSubject, specializations } from '../data/curriculum';
@@ -141,6 +139,8 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 return;
             }
             try {
+                const { db } = await import('../lib/firebase');
+                const { doc, getDoc } = await import('firebase/firestore');
                 const docRef = doc(db, 'users', user.id, 'roadmaps', 'main');
                 const snap = await getDoc(docRef);
                 if (snap.exists() && isMounted) {
@@ -588,6 +588,8 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 animated: !!e.animated
             }));
 
+            const { db } = await import('../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
             const docRef = doc(db, 'users', user.id, 'roadmaps', 'main');
             await setDoc(docRef, removeUndefined({
                 nodes: cleanNodes,

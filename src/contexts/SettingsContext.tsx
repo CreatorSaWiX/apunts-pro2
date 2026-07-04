@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useAuth } from './AuthContext';
-import { db } from '../lib/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { type AISettings, DEFAULT_AI_SETTINGS } from '../types/ai';
 
 export type PlannerViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
@@ -85,6 +83,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                 return;
             }
             try {
+                const { db } = await import('../lib/firebase');
+                const { doc, getDoc } = await import('firebase/firestore');
                 const docRef = doc(db, 'users', user.id);
                 const snap = await getDoc(docRef);
                 if (snap.exists() && isMounted) {
@@ -137,6 +137,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             // per no saturar la xarxa si l'usuari fa canvis molt ràpids.
             const timeoutId = setTimeout(async () => {
                 try {
+                    const { db } = await import('../lib/firebase');
+                    const { doc, setDoc } = await import('firebase/firestore');
                     const docRef = doc(db, 'users', user.id);
                     await setDoc(docRef, {
                         homeSubjects,

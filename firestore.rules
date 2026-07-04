@@ -11,8 +11,9 @@ service cloud.firestore {
 
     // Usuaris
     match /users/{userId} {
-      // Només els usuaris autenticats poden veure perfils (tapa el leak d'emails)
-      allow read: if request.auth != null;
+      // Només els usuaris autenticats poden veure perfils individuals (evita descarregar l'objecte sencer i PII leak)
+      allow get: if request.auth != null;
+      allow list: if false;
       allow update: if request.auth != null && request.auth.uid == userId;
       
       // Creació d'usuaris amb verificació segura del codi d'invitació via Firestore rules

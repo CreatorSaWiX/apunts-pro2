@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings2, Sparkles, Bot, ChevronLeft, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Settings2, Sparkles, Bot} from 'lucide-react';
 import { RoadmapProvider } from '../contexts/RoadmapContext';
 
 import { GeneralSection } from '../components/settings/GeneralSection';
@@ -20,7 +19,6 @@ const TABS: { id: TabId; label: string; icon: any }[] = [
 
 const SettingsContent = () => {
     const [activeTab, setActiveTab] = useState<TabId>('general');
-    const navigate = useNavigate();
 
     const renderActiveSection = () => {
         switch (activeTab) {
@@ -38,7 +36,7 @@ const SettingsContent = () => {
     };
 
     return (
-        <div className="w-full h-[100dvh] bg-[#0a0d16] text-slate-300 overflow-hidden relative selection:bg-sky-500/30 selection:text-sky-200">
+        <div className="w-full h-dvh bg-[#0a0d16] text-slate-300 overflow-hidden relative selection:bg-sky-500/30 selection:text-sky-200">
             {/* Ambient Background Effects */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-sky-500/10 rounded-full blur-[150px] opacity-70" />
@@ -50,22 +48,7 @@ const SettingsContent = () => {
             <div className="w-full h-full overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10">
                 <div className="w-full max-w-[1100px] mx-auto min-h-full flex flex-col md:flex-row relative">
                     {/* Sidebar (Desktop) / Header (Mobile) */}
-                    <aside className="w-full md:w-[280px] shrink-0 flex flex-col z-20 md:sticky md:top-0 md:h-[100dvh] relative bg-transparent border-none">
-                        <div className="p-6 md:p-8 flex items-center justify-between md:justify-start">
-                            <button onClick={() => navigate(-1)} className="group flex items-center gap-2 text-neutral-500 hover:text-white transition-colors outline-none mr-2 md:hidden">
-                                <ChevronLeft size={20} />
-                            </button>
-                            <span className="text-xs font-semibold text-neutral-500 tracking-wider hidden sm:block">Ajustaments</span>
-                            {/* Mobile Close Button */}
-                            <button
-                                onClick={() => navigate(-1)}
-                                className="md:hidden p-2 rounded-full text-neutral-500 hover:text-white transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        {/* Centered Nav */}
+                    <aside className="w-full md:w-[280px] shrink-0 flex flex-col z-20 md:sticky md:top-0 md:h-dvh relative bg-transparent border-none">
                         <nav className="flex-1 flex md:flex-col justify-start md:justify-center overflow-x-auto custom-scrollbar px-6 md:px-8 gap-1 md:overflow-x-hidden hide-scrollbar py-2">
                             {TABS.map(tab => {
                                 const isActive = activeTab === tab.id;
