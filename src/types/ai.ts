@@ -1,7 +1,7 @@
 export interface AISettings {
   identity: {
     name: string;
-    avatarUrl: string; // URL o un emoji
+    avatarUrl: string; 
     pronouns: string;
     vibe: string;
   };

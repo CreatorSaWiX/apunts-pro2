@@ -251,10 +251,10 @@ const SubjectsSection = () => {
                                 >
                                     <div className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/20 hover:bg-white/[0.05] transition-all duration-300 shadow-sm pointer-events-auto">
                                         <button
-                                            onClick={(e) => { 
-                                                e.preventDefault(); 
-                                                e.stopPropagation(); 
-                                                if (!isDraggingRef.current) setEditingSubjectColor(subject.name); 
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                if (!isDraggingRef.current) setEditingSubjectColor(subject.name);
                                             }}
                                             className="flex items-center gap-2.5 outline-none group/btn cursor-pointer"
                                         >
@@ -434,41 +434,15 @@ const TextAreaField = ({ label, value, onChange, placeholder, minHeight = "100px
 const AISection = () => {
     const { user } = useAuth();
     const { aiSettings, setAiSettings } = useSettings();
-    const [isSaving, setIsSaving] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
     const [editingSoulField, setEditingSoulField] = useState<'rules' | 'boundaries' | 'customDirectives' | null>(null);
-
-    const handleSave = async () => {
-        if (!user) return;
-        setIsSaving(true);
-        try {
-            const docRef = doc(db, 'users', user.id);
-            await setDoc(docRef, { aiSettings, updatedAt: Date.now() }, { merge: true });
-            setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
-        } catch (error) {
-            console.error("Error saving AI settings:", error);
-        } finally {
-            setIsSaving(false);
-        }
-    };
 
     return (
         <div id="ai" className="flex flex-col gap-10 w-full pt-4 pb-16">
             <div className="w-full flex items-center justify-between border-b border-white/10 pb-4">
                 <div>
                     <h2 className="text-2xl font-bold text-white mb-2">Assistent IA</h2>
-                    <p className="text-slate-400 text-sm font-medium">Configura la personalitat i el comportament del teu copilot.</p>
+                    <p className="text-slate-400 text-sm font-medium">Configura la personalitat i el comportament del teu copilot. Aquesta funcionalitat està inspirat en <a href="https://openclaw.ai">OpenClaw</a>.</p>
                 </div>
-
-                <button
-                    onClick={handleSave}
-                    disabled={isSaving}
-                    className="shrink-0 flex items-center gap-2 px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 text-white rounded-xl font-bold transition-all outline-none disabled:opacity-50"
-                >
-                    {isSaving ? <Spinner size="sm" variant="white" /> : <Save size={18} />}
-                    <span>{showSuccess ? 'Guardat!' : 'Guardar'}</span>
-                </button>
             </div>
 
             <div className="space-y-8">
