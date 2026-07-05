@@ -12,6 +12,7 @@ import Spinner from './components/ui/Spinner';
 import { Analytics } from "@vercel/analytics/react";
 
 import { ConsentBanner } from './components/ui/ConsentBanner';
+import { UpdateManager } from './components/ui/UpdateManager';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
@@ -65,6 +66,7 @@ function App() {
 
         {import.meta.env.PROD && hasAnalyticsConsent && <Analytics />}
         <ConsentBanner />
+        <UpdateManager />
         {showChatBot && <ChatBot />}
       </div>
     </AppProviders>

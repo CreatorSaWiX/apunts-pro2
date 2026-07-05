@@ -91,6 +91,20 @@ const CommunityPage = () => {
     // Hero 3D Showcase State
     const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
+    // Offline state
+    const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+    useEffect(() => {
+        const handleOnline = () => setIsOffline(false);
+        const handleOffline = () => setIsOffline(true);
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        }
+    }, []);
+
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
         return () => clearTimeout(timer);
@@ -118,6 +132,11 @@ const CommunityPage = () => {
     const POSTS_PER_PAGE = 24;
 
     useEffect(() => {
+        if (isOffline) {
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         setHasMore(true);
         setPosts([]);
@@ -158,10 +177,10 @@ const CommunityPage = () => {
         });
 
         return () => unsubscribe();
-    }, [activeSubject, activeRank, debouncedSearch]);
+    }, [activeSubject, activeRank, debouncedSearch, isOffline]);
 
     const loadMore = useCallback(async () => {
-        if (loadingMore || !hasMore || !lastVisible) return;
+        if (loadingMore || !hasMore || !lastVisible || isOffline) return;
         setLoadingMore(true);
 
         const currentLimit = debouncedSearch ? 100 : POSTS_PER_PAGE;
@@ -465,6 +484,26 @@ const CommunityPage = () => {
                                             : 'primary'
                                     } 
                                 />
+                            </motion.div>
+                        ) : isOffline ? (
+                            <motion.div 
+                                key="offline"
+                                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+                                className="flex flex-col items-center justify-center py-20 px-4 text-center"
+                            >
+                                <div className="w-full max-w-lg rounded-3xl p-10 sm:p-14 flex flex-col items-center bg-linear-to-b from-red-500/5 to-transparent border border-red-500/10 relative overflow-hidden group">
+                                    <div className="absolute inset-0 bg-red-500/5 blur-3xl rounded-full group-hover:bg-red-500/10 transition-colors duration-700 pointer-events-none" />
+                                    
+                                    <div className="relative w-20 h-20 bg-black/50 backdrop-blur-xl border border-red-500/20 rounded-2xl flex items-center justify-center mb-8 shadow-2xl group-hover:scale-110 transition-transform duration-500">
+                                        <div className="absolute inset-0 bg-linear-to-br from-red-500/10 to-transparent opacity-50 rounded-2xl pointer-events-none" />
+                                        <div className="relative text-red-400 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+                                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 2l20 20"/><path d="M8.53 8.53C5.58 9.5 3 11 3 11l3.5 4.5"/><path d="M14.12 14.12A12.53 12.53 0 0 1 12 14c-1.3 0-2.58.19-3.8.53"/><path d="M21 11s-1.87-1.3-4.5-2.2"/><path d="M12 20h.01"/></svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <h3 className="font-bold text-3xl text-white mb-3 tracking-tight relative z-10">Sense connexió</h3>
+                                    <p className="text-slate-400 max-w-sm text-sm leading-relaxed relative z-10">Actualment estàs offline. Per consultar els recursos de la comunitat o pujar-ne un de nou cal que et connectis a Internet.</p>
+                                </div>
                             </motion.div>
                         ) : posts.length === 0 ? (
                             <motion.div 

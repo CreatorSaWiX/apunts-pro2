@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings2, Sparkles, Bot } from 'lucide-react';
+import { Settings2, Sparkles, Bot, Database } from 'lucide-react';
 import { RoadmapProvider } from '../contexts/RoadmapContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -11,11 +11,13 @@ import { PrivacySection } from '../components/settings/PrivacySection';
 import { DeleteAccSection } from '../components/settings/DeleteAccSection';
 import { AISection } from '../components/settings/AISection';
 import { AboutSection } from '../components/settings/AboutSection';
+import { OfflineSection } from '../components/settings/OfflineSection';
 
-type TabId = 'general' | 'ai' | 'about';
+type TabId = 'general' | 'offline' | 'ai' | 'about';
 
 const TABS: { id: TabId; label: string; icon: any }[] = [
     { id: 'general', label: 'General', icon: Settings2 },
+    { id: 'offline', label: 'Emmagatzematge', icon: Database },
     { id: 'ai', label: 'Assistent IA', icon: Bot },
     { id: 'about', label: 'Quant a', icon: Sparkles },
 ];
@@ -44,6 +46,7 @@ const SettingsContent = () => {
                     )}
                 </div>
             );
+            case 'offline': return <OfflineSection />;
             case 'ai': return user ? <AISection /> : null;
             case 'about': return <AboutSection />;
             default: return null;

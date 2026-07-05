@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
       react(),
       tailwindcss(),
       VitePWA({
-        registerType: 'prompt',
+        registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
         manifest: {
           name: 'Apunts PRO2',
@@ -43,7 +43,7 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
           maximumFileSizeToCacheInBytes: 3000000,
           navigateFallbackDenylist: [/^\/pdfs\//], // EXCLOURE ELS PDFS DEL SERVICE WORKER
           runtimeCaching: [
@@ -216,8 +216,8 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                       const response = await genAI.models.generateContent({
                         model: modelName,
                         contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                        config: { 
-                          systemInstruction, 
+                        config: {
+                          systemInstruction,
                           tools: [{ googleSearch: {} } as any]
                         }
                       });
@@ -227,23 +227,23 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                       try {
                         let cleanText = response.text.trim();
                         if (cleanText.startsWith("```json")) {
-                            cleanText = cleanText.substring(7).replace(/```$/, '').trim();
+                          cleanText = cleanText.substring(7).replace(/```$/, '').trim();
                         } else if (cleanText.startsWith("```")) {
-                            cleanText = cleanText.substring(3).replace(/```$/, '').trim();
+                          cleanText = cleanText.substring(3).replace(/```$/, '').trim();
                         }
                         // Remove any potential trailing backticks or garbage if there's multiple blocks
                         const firstBrace = cleanText.indexOf('{');
                         const lastBrace = cleanText.lastIndexOf('}');
                         if (firstBrace !== -1 && lastBrace !== -1) {
-                            cleanText = cleanText.substring(firstBrace, lastBrace + 1);
+                          cleanText = cleanText.substring(firstBrace, lastBrace + 1);
                         }
                         rData = JSON.parse(cleanText);
                       } catch (parseError: any) {
                         console.warn("Gemini didn't return JSON, falling back to raw text.");
                         rData = {
-                            reply: response.text,
-                            keywords: [],
-                            memories_to_add: []
+                          reply: response.text,
+                          keywords: [],
+                          memories_to_add: []
                         };
                       }
                       res.end(JSON.stringify({ reply: rData.reply, keywords: rData.keywords || [], memories_to_add: rData.memories_to_add || [] }));
@@ -404,13 +404,13 @@ L'estructura exacta ha de ser:
                   // --- EXTRACCIÓ DINÀMICA DE CONTEXT (RAG) ---
                   let injectedContext = "";
                   let mentionedNodes = (currentNodes || []).filter((node: any) => {
-                      const regex = new RegExp(`\\b${node.id}\\b`, 'i');
-                      return regex.test(prompt);
+                    const regex = new RegExp(`\\b${node.id}\\b`, 'i');
+                    return regex.test(prompt);
                   });
 
                   if (mentionedNodes.length === 0 && /(assignatur|cursar|roadmap|semestre|preparar|avaluaci|professor|hores|estudi|consell)/i.test(prompt)) {
-                      mentionedNodes = (currentNodes || []).filter((n: any) => n.status === 'in_progress');
-                      if (mentionedNodes.length === 0) mentionedNodes = (currentNodes || []).slice(0, 5);
+                    mentionedNodes = (currentNodes || []).filter((n: any) => n.status === 'in_progress');
+                    if (mentionedNodes.length === 0) mentionedNodes = (currentNodes || []).slice(0, 5);
                   }
 
                   res.setHeader('Content-Type', 'text/event-stream');

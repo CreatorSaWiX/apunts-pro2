@@ -75,7 +75,7 @@ export const AISection = () => {
                                 <div className="flex items-baseline justify-between">
                                     <label className="text-sm font-semibold text-slate-200">Com vols que et digui?</label>
                                     <button
-                                        onClick={() => setAiSettings({ ...aiSettings, userContext: { ...aiSettings.userContext, userPreferredName: user?.username || 'Estudiant' } })}
+                                        onClick={() => setAiSettings({ ...aiSettings, userContext: { memories: aiSettings.userContext?.memories || [], ...aiSettings.userContext, userPreferredName: user?.username || 'Estudiant' } })}
                                         className="text-[10px] uppercase font-bold text-slate-400 hover:text-white transition-colors"
                                     >
                                         Usar nom d'usuari
@@ -84,7 +84,7 @@ export const AISection = () => {
                                 <input
                                     type="text"
                                     value={aiSettings.userContext?.userPreferredName || ''}
-                                    onChange={(e) => setAiSettings({ ...aiSettings, userContext: { ...aiSettings.userContext, userPreferredName: e.target.value } })}
+                                    onChange={(e) => setAiSettings({ ...aiSettings, userContext: { memories: aiSettings.userContext?.memories || [], ...aiSettings.userContext, userPreferredName: e.target.value } })}
                                     className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/[0.06] transition-all"
                                     placeholder="ex: mestre, cap..."
                                 />

@@ -4,6 +4,10 @@ import { type AISettings, DEFAULT_AI_SETTINGS } from '../types/ai';
 
 export type PlannerViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
 
+export type OfflineStorageSettings = Record<string, boolean>;
+
+const DEFAULT_OFFLINE_STORAGE: OfflineStorageSettings = {};
+
 interface SettingsContextType {
     homeSubjects: string[];
     setHomeSubjects: React.Dispatch<React.SetStateAction<string[]>>;
@@ -13,6 +17,8 @@ interface SettingsContextType {
     setCustomSubjectColors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
     aiSettings: AISettings;
     setAiSettings: React.Dispatch<React.SetStateAction<AISettings>>;
+    offlineStorage: OfflineStorageSettings;
+    setOfflineStorage: React.Dispatch<React.SetStateAction<OfflineStorageSettings>>;
     isSettingsLoaded: boolean;
 }
 
@@ -74,6 +80,18 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return DEFAULT_AI_SETTINGS;
     });
 
+    const [offlineStorage, setOfflineStorage] = useState<OfflineStorageSettings>(() => {
+        const saved = localStorage.getItem('app-settings-offline');
+        if (saved) {
+            try {
+                return { ...DEFAULT_OFFLINE_STORAGE, ...JSON.parse(saved) };
+            } catch (e) {
+                return DEFAULT_OFFLINE_STORAGE;
+            }
+        }
+        return DEFAULT_OFFLINE_STORAGE;
+    });
+
     // Load from Firebase on mount if user is logged in
     useEffect(() => {
         let isMounted = true;
@@ -112,6 +130,9 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                             }
                         });
                     }
+                    if (data.offlineStorage) {
+                        setOfflineStorage({ ...DEFAULT_OFFLINE_STORAGE, ...data.offlineStorage });
+                    }
                 }
             } catch (err) {
                 console.error('Failed to load settings from Firebase:', err);
@@ -131,6 +152,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         localStorage.setItem('app-settings-planner-view', defaultPlannerView);
         localStorage.setItem('app-settings-subject-colors', JSON.stringify(customSubjectColors));
         localStorage.setItem('app-settings-ai', JSON.stringify(aiSettings));
+        localStorage.setItem('app-settings-offline', JSON.stringify(offlineStorage));
 
         if (isSettingsLoaded && user) {
             // DEBOUNCE: Esperem 1 segon abans d'enviar-ho al servidor de Firebase
@@ -144,7 +166,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                         homeSubjects,
                         defaultPlannerView,
                         customSubjectColors,
-                        aiSettings
+                        aiSettings,
+                        offlineStorage
                     }, { merge: true });
                 } catch (err) {
                     console.error('Failed to save settings to Firebase:', err);
@@ -154,7 +177,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             // Si hi ha un altre canvi abans del segon, es cancel·la el timer anterior (com aturar la IRQ)
             return () => clearTimeout(timeoutId);
         }
-    }, [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, isSettingsLoaded, user]);
+    }, [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, isSettingsLoaded, user]);
 
     // MEMOITZACIÓ: Evitem fer un "new Struct" cada cop i mantenim el punter estable al Heap.
     // Això salva a tota l'aplicació de repintar-se si les variables de dalt no han canviat realment.
@@ -167,8 +190,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setCustomSubjectColors,
         aiSettings,
         setAiSettings,
+        offlineStorage,
+        setOfflineStorage,
         isSettingsLoaded
-    }), [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, isSettingsLoaded]);
+    }), [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, isSettingsLoaded]);
 
     return (
         <SettingsContext.Provider value={contextValue}>

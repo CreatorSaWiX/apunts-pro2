@@ -24,7 +24,7 @@ const RegisterPage = () => {
         setIsLoading(true);
 
         try {
-            await signup(email, password, username, ''); // Empty string for invite code
+            await signup(email, password, username);
             navigate('/');
         } catch (err: any) {
             console.error(err);

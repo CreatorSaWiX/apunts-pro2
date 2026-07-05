@@ -54,7 +54,7 @@ export const AboutSection = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <a
-                    href="https://github.com/CreatorSaWiX"
+                    href="https://github.com/CreatorSaWiX/apunts-pro2"
                     target="_blank"
                     rel="noreferrer"
                     className="group relative flex flex-col justify-between p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-white/20 transition-all duration-500 overflow-hidden outline-none h-48"
