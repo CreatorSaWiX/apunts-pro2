@@ -22,7 +22,7 @@ const toLocalDatetime = (d: Date) => {
 };
 
 const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onUpdateColumn, onDeleteColumn }) => {
-    const { subjects } = useTasks();
+    const { subjects, deleteTask } = useTasks();
     const taskIds = useMemo(() => tasks.map(t => t.id), [tasks]);
     const [isDrafting, setIsDrafting] = useState(false);
     const [draftTitle, setDraftTitle] = useState('');
@@ -218,11 +218,23 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover/col:opacity-100 transition-opacity">
                     <button
+                        onClick={(e) => { 
+                            e.stopPropagation(); 
+                            if (tasks.length > 0 && window.confirm('Segur que vols eliminar TOTES les tasques d\'aquesta llista?')) {
+                                tasks.forEach(t => deleteTask(t.id));
+                            }
+                        }}
+                        className="text-slate-500 hover:text-amber-400 transition-all duration-200 pointer-events-auto p-1"
+                        title="Buidar llista"
+                    >
+                        <Trash2 size={14} />
+                    </button>
+                    <button
                         onClick={(e) => { e.stopPropagation(); onDeleteColumn?.(); }}
                         className="text-slate-500 hover:text-red-400 transition-all duration-200 pointer-events-auto p-1"
                         title="Eliminar llista"
                     >
-                        <Trash2 size={14} />
+                        <X size={16} />
                     </button>
                     <button
                         onClick={(e) => { e.stopPropagation(); startDrafting(); }}

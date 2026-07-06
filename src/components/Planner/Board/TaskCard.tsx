@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
-import { Calendar, Flag, Play, X, Check } from 'lucide-react';
+import { Calendar, Flag, Play, X, Check, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { DateTimePicker } from './DateTimePicker';
 
@@ -25,7 +25,7 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
-    const { updateTask, subjects } = useTasks();
+    const { updateTask, subjects, deleteTask } = useTasks();
     const subject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
 
     const getSubjectClasses = (token: string) => {
@@ -388,6 +388,13 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                             <h4 className="text-[13px] font-semibold text-white/90 flex-1 leading-snug tracking-wide">
                                 {task.title}
                             </h4>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); deleteTask(task.id); }}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-500 hover:text-red-400 p-1 pointer-events-auto"
+                                title="Eliminar tasca"
+                            >
+                                <Trash2 size={14} />
+                            </button>
                         </div>
 
                         {renderProgressBar()}

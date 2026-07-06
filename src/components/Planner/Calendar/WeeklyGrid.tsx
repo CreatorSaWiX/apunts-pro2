@@ -263,7 +263,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 </div>
             )}
 
-            <div className={`px-2 flex flex-col h-full pointer-events-none select-none overflow-hidden ${height < 40 ? 'py-0.5' : 'py-2'}`}>
+            <div className={`pl-3 pr-2 flex flex-col h-full pointer-events-none select-none overflow-hidden ${height < 40 ? 'py-0.5' : 'py-2'}`}>
                 {height >= 40 && (
                     <div className="flex items-center gap-1.5 opacity-60 mb-0.5 pr-4 shrink-0">
                         <span className="text-[9px] font-bold tracking-[0.1em] text-slate-300">{startTimeStr} - {endTimeStr}</span>
@@ -273,7 +273,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 {isEditing ? (
                     <input
                         ref={inputRef}
-                        className="text-[12px] font-bold leading-tight bg-slate-800/80 rounded px-1 -mx-1 text-white outline-none w-full border border-white/20 pointer-events-auto"
+                        className="text-[12px] font-bold leading-tight bg-slate-900/90 rounded-md px-1.5 py-0.5 -mx-1.5 -my-0.5 text-white outline-none w-[calc(100%+0.75rem)] border border-white/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/30 pointer-events-auto shadow-lg backdrop-blur-sm transition-all"
                         value={editTitle}
                         onChange={e => setEditTitle(e.target.value)}
                         onBlur={handleTitleSubmit}
@@ -284,7 +284,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                     />
                 ) : (
                     <div 
-                        className={`font-bold leading-tight text-slate-200 pointer-events-auto cursor-text shrink-0 ${height < 30 ? 'text-[9px] truncate' : 'text-[12px] line-clamp-3'}`}
+                        className={`font-bold leading-tight text-slate-200 pointer-events-auto shrink-0 ${height < 30 ? 'text-[9px] truncate' : 'text-[12px] line-clamp-3'}`}
                     >
                         {task.title}
                     </div>
@@ -415,14 +415,25 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
         return () => window.removeEventListener('resize', updateWidth);
     }, []);
 
-    // Auto-scroll to 8 AM and current week on load or when external currentDate changes
+    // Auto-scroll to current time and current day on load or when external currentDate changes
     useEffect(() => {
         setBaseDate(startOfWeek(currentDate, { weekStartsOn: 1 }));
         if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollTop = 8 * 60 - 20;
-            // Use the freshly calculated width for exact positioning
-            const width = Math.max(140, (scrollContainerRef.current.clientWidth - 56) / 7);
-            scrollContainerRef.current.scrollLeft = 28 * width;
+            const container = scrollContainerRef.current;
+            const clientWidth = container.clientWidth;
+            const clientHeight = container.clientHeight;
+            
+            // Vertical scroll: center the current time
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            container.scrollTop = Math.max(0, currentMinutes - clientHeight / 2);
+            
+            // Horizontal scroll: Center the current day of the week unconditionally
+            const exactFitWidth = (clientWidth - 56) / 7;
+            const width = Math.max(140, exactFitWidth);
+            
+            const dayOffset = (currentDate.getDay() + 6) % 7;
+            container.scrollLeft = (28 + dayOffset) * width - (clientWidth - 56) / 2 + width / 2;
         }
     }, [currentDate]);
 

@@ -326,7 +326,7 @@ canvas {
 
 /* Community Glassmorphism & Effects */
 .glass-panel {
-  @apply bg-slate-900/40 backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.3)];
+  @apply bg-slate-900/40 backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
 }
 
 .glass-panel-hover {
