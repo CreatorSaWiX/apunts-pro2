@@ -17,15 +17,24 @@
     from {
       transform: translateX(-200%) skewX(12deg);
     }
+
     to {
       transform: translateX(200%) skewX(12deg);
     }
   }
 
   @keyframes gradient-x {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
   }
 }
 
@@ -65,7 +74,8 @@
   --secondary: #94a3b8;
 
   /* Liquid Glass System */
-  --glass-bg: rgba(15, 23, 42, 0.15); /* Slate 900 very transparent */
+  --glass-bg: rgba(15, 23, 42, 0.15);
+  /* Slate 900 very transparent */
   --glass-bg-darker: rgba(11, 18, 33, 0.4);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-border-light: rgba(255, 255, 255, 0.2);
@@ -233,6 +243,7 @@ body.player-fullscreen .nav-pill-container {
 .jutge-content .vertical-view {
   display: block;
 }
+
 /* Global Canvas Fixes */
 canvas {
   outline: none !important;
@@ -241,14 +252,12 @@ canvas {
 
 /* Custom SSL Platinum Rank Styling & Animations */
 .ssl-platinum-rank {
-  background: linear-gradient(
-    90deg,
-    #94a3b8 0%,
-    #cbd5e1 25%,
-    #f8fafc 50%,
-    #cbd5e1 75%,
-    #94a3b8 100%
-  );
+  background: linear-gradient(90deg,
+      #94a3b8 0%,
+      #cbd5e1 25%,
+      #f8fafc 50%,
+      #cbd5e1 75%,
+      #94a3b8 100%);
   background-size: 200% auto;
   color: transparent !important;
   -webkit-background-clip: text !important;
@@ -267,15 +276,19 @@ canvas {
   0% {
     background-position: 0% center;
   }
+
   100% {
     background-position: 200% center;
   }
 }
 
 @keyframes ssl-pulse-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.15)) drop-shadow(0 0 4px rgba(203, 213, 225, 0.1));
   }
+
   50% {
     filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 8px rgba(203, 213, 225, 0.2));
   }
@@ -286,12 +299,15 @@ canvas {
     transform: translateY(2px) scale(0);
     opacity: 0;
   }
+
   15% {
     opacity: 0.85;
   }
+
   75% {
     opacity: 0.6;
   }
+
   100% {
     transform: translateY(-55px) scale(1) translateX(var(--drift));
     opacity: 0;
@@ -310,7 +326,7 @@ canvas {
 
 /* Community Glassmorphism & Effects */
 .glass-panel {
-  @apply bg-slate-900/40 backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+  @apply bg-slate-900/40 backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.3)];
 }
 
 .glass-panel-hover {
@@ -320,6 +336,7 @@ canvas {
 .noise-bg {
   position: relative;
 }
+
 .noise-bg::before {
   content: "";
   position: absolute;
@@ -344,7 +361,57 @@ canvas {
 .masonry-item {
   break-inside: avoid;
   margin-bottom: 1.5rem;
-  transform: translateZ(0); /* Hardware acceleration */
+  transform: translateZ(0);
+  /* Hardware acceleration */
 }
 
 @plugin "@tailwindcss/typography";
+
+/* -------------------------------------------------------------------------- */
+/*                        APPLE MINIMAL PROFILE UTILITIES                     */
+/* -------------------------------------------------------------------------- */
+
+.apple-shadow-avatar {
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.apple-glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.apple-text-gradient {
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.5) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.apple-mask-hero {
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                        PREMIUM BENTO GRID UTILITIES                        */
+/* -------------------------------------------------------------------------- */
+
+.premium-bento-card {
+  background: rgba(13, 15, 23, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 4px 20px -8px rgba(0, 0, 0, 0.8);
+}
+
+.premium-bento-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.premium-bento-hover:hover {
+  background: rgba(20, 22, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 12px 32px -8px rgba(0, 0, 0, 0.8);
+}

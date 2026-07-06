@@ -4,10 +4,10 @@ import { User, LogOut, Upload, Globe, Edit2, X, Save, Mail, Send, Bell, Info } f
 import { useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
-import { doc, getDoc, setDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, onSnapshot, getDocs, orderBy } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { updateProfile } from 'firebase/auth';
-import { motion, AnimatePresence, useMotionTemplate, useMotionValue } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
@@ -15,50 +15,9 @@ import SSLParticles from '../components/SSLParticles';
 import Spinner from '../components/ui/Spinner';
 import Modal from '../components/ui/Modal';
 import FileUploader, { type Attachment } from '../components/ui/FileUploader';
-
-// --- Spotlight Card (Re-used from TopicCarousel to ensure identical UI consistency) ---
-function SpotlightCard({
-    children,
-    className = "",
-    isActive = false,
-    ...props
-}: {
-    children: React.ReactNode;
-    className?: string;
-    isActive?: boolean;
-    [key: string]: any;
-}) {
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-
-    const backgroundStyle = useMotionTemplate`
-        radial-gradient(
-          800px circle at ${mouseX}px ${mouseY}px,
-          rgba(var(--primary-rgb), 0.12),
-          transparent 80%
-        )
-    `;
-
-    function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
-        const { left, top } = currentTarget.getBoundingClientRect();
-        mouseX.set(clientX - left);
-        mouseY.set(clientY - top);
-    }
-
-    return (
-        <div
-            className={`group/card relative overflow-hidden transition-all duration-300 ${isActive ? 'bg-slate-900/80 border-primary/20 shadow-2xl shadow-primary/20 ring-1 ring-primary/20 backdrop-blur-md' : 'bg-slate-900/40 border-[0.5px] border-white/5'} ${className}`}
-            onMouseMove={handleMouseMove}
-            {...props}
-        >
-            <motion.div
-                className="pointer-events-none absolute -inset-px rounded-[inherit] opacity-0 transition duration-300 group-hover/card:opacity-100 z-50"
-                style={{ background: backgroundStyle }}
-            />
-            {children}
-        </div>
-    );
-}
+import type { CommunityPost } from '../types/community';
+import PublicationCard from '../components/community/PublicationCard';
+import PostDetailModal from '../components/community/PostDetailModal';
 
 // --- Edit Profile Modal Component ---
 const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
@@ -69,7 +28,6 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
     const [bio, setBio] = useState(user?.bio || '');
     const [isLoading, setIsLoading] = useState(false);
     
-    // Uploader state
     const [activeUploader, setActiveUploader] = useState<'avatar' | 'banner' | null>(null);
 
     useEffect(() => {
@@ -114,30 +72,17 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                     <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
                         <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Nom d'usuari</label>
                         <div className="relative w-full">
-                            <Modal.Input
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
+                            <Modal.Input value={username} onChange={(e) => setUsername(e.target.value)} />
                         </div>
                     </div>
 
                     <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
                         <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Avatar & Banner</label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                            {/* Avatar Section */}
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center gap-2">
-                                    <Modal.Input
-                                        value={avatar}
-                                        onChange={(e) => setAvatar(e.target.value)}
-                                        placeholder="URL de l'Avatar"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setActiveUploader(activeUploader === 'avatar' ? null : 'avatar')}
-                                        className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0"
-                                        title="Pujar des de local"
-                                    >
+                                    <Modal.Input value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="URL de l'Avatar" />
+                                    <button type="button" onClick={() => setActiveUploader(activeUploader === 'avatar' ? null : 'avatar')} className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0">
                                         <Upload size={18} />
                                     </button>
                                 </div>
@@ -150,20 +95,10 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                                 </AnimatePresence>
                             </div>
 
-                            {/* Banner Section */}
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center gap-2">
-                                    <Modal.Input
-                                        value={banner}
-                                        onChange={(e) => setBanner(e.target.value)}
-                                        placeholder="URL del Banner"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setActiveUploader(activeUploader === 'banner' ? null : 'banner')}
-                                        className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0"
-                                        title="Pujar des de local"
-                                    >
+                                    <Modal.Input value={banner} onChange={(e) => setBanner(e.target.value)} placeholder="URL del Banner" />
+                                    <button type="button" onClick={() => setActiveUploader(activeUploader === 'banner' ? null : 'banner')} className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0">
                                         <Upload size={18} />
                                     </button>
                                 </div>
@@ -183,25 +118,14 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
                             <div className="relative w-full">
                                 <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                <Modal.Input
-                                    value={portfolio}
-                                    onChange={(e) => setPortfolio(e.target.value)}
-                                    placeholder="https://portfolio.com"
-                                    className="pl-11"
-                                />
+                                <Modal.Input value={portfolio} onChange={(e) => setPortfolio(e.target.value)} placeholder="https://portfolio.com" className="pl-11" />
                             </div>
-                            <Modal.Input
-                                value={bio}
-                                onChange={(e) => setBio(e.target.value)}
-                                placeholder="La teva biografia / rol curt..."
-                            />
+                            <Modal.Input value={bio} onChange={(e) => setBio(e.target.value)} placeholder="La teva biografia / rol curt..." />
                         </div>
                     </div>
 
                     <div className="pt-6 flex justify-end gap-3 border-t border-white/5">
-                        <Modal.Button type="button" onClick={onClose} variant="secondary">
-                            Cancel·lar
-                        </Modal.Button>
+                        <Modal.Button type="button" onClick={onClose} variant="secondary">Cancel·lar</Modal.Button>
                         <Modal.Button type="submit" disabled={isLoading} variant="primary">
                             {isLoading ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={18} />}
                             Desar canvis
@@ -214,6 +138,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
 };
 
 
+// --- Main Profile Component ---
 const ProfilePage = () => {
     const { uid } = useParams();
     const { user: authUser, logout, isLoading: authLoading } = useAuth();
@@ -224,7 +149,6 @@ const ProfilePage = () => {
     const { solutions: userContributions } = useUserSolutions(userIdToFetch || '');
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    // Mailing & Activity State
     const [isMailboxOpen, setIsMailboxOpen] = useState(false);
     const [isInboxOpen, setIsInboxOpen] = useState(false);
     const [isComposeOpen, setIsComposeOpen] = useState(false);
@@ -234,6 +158,10 @@ const ProfilePage = () => {
     const [extendedUser, setExtendedUser] = useState<any>(null);
     const [isFetchingUser, setIsFetchingUser] = useState(true);
     const [isHoveringSSL, setIsHoveringSSL] = useState(false);
+
+    const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
+    const [isFetchingPosts, setIsFetchingPosts] = useState(true);
+    const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -258,339 +186,305 @@ const ProfilePage = () => {
         fetchUserData();
     }, [userIdToFetch, authUser, isOwnProfile]);
 
-    // Fetch unread counts
+    useEffect(() => {
+        if (!userIdToFetch) return;
+        const fetchPosts = async () => {
+            setIsFetchingPosts(true);
+            try {
+                const q = query(collection(db, 'community_posts'), where('userId', '==', userIdToFetch));
+                const snapshot = await getDocs(q);
+                const posts: CommunityPost[] = [];
+                snapshot.forEach(doc => {
+                    posts.push({ id: doc.id, ...doc.data() } as CommunityPost);
+                });
+                posts.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+                setUserPosts(posts);
+            } catch (err) {
+                console.error("Error fetching user posts:", err);
+            } finally {
+                setIsFetchingPosts(false);
+            }
+        };
+        fetchPosts();
+    }, [userIdToFetch]);
+
     useEffect(() => {
         if (!isOwnProfile || !authUser) return;
+        const qMsg = query(collection(db, 'messages'), where('receiverId', '==', authUser.id), where('read', '==', false));
+        const unsubscribeMsg = onSnapshot(qMsg, (snapshot) => setUnreadCount(snapshot.size));
 
-        // Messages
-        const qMsg = query(
-            collection(db, 'messages'),
-            where('receiverId', '==', authUser.id),
-            where('read', '==', false)
-        );
-        const unsubscribeMsg = onSnapshot(qMsg, (snapshot) => {
-            setUnreadCount(snapshot.size);
-        });
+        const qNotif = query(collection(db, 'notifications'), where('userId', '==', authUser.id), where('read', '==', false));
+        const unsubscribeNotif = onSnapshot(qNotif, (snapshot) => setUnreadNotificationsCount(snapshot.size));
 
-        // Notifications
-        const qNotif = query(
-            collection(db, 'notifications'),
-            where('userId', '==', authUser.id),
-            where('read', '==', false)
-        );
-        const unsubscribeNotif = onSnapshot(qNotif, (snapshot) => {
-            setUnreadNotificationsCount(snapshot.size);
-        });
-
-        return () => {
-            unsubscribeMsg();
-            unsubscribeNotif();
-        };
+        return () => { unsubscribeMsg(); unsubscribeNotif(); };
     }, [isOwnProfile, authUser]);
 
     const handleUpdateProfile = async (data: any) => {
         if (!authUser?.id) return;
-
         const userRef = doc(db, 'users', authUser.id);
-
         try {
             await setDoc(userRef, data, { merge: true });
-
             if (auth.currentUser && data.username) {
-                await updateProfile(auth.currentUser, {
-                    displayName: data.username,
-                    photoURL: data.avatar || auth.currentUser.photoURL
-                });
+                await updateProfile(auth.currentUser, { displayName: data.username, photoURL: data.avatar || auth.currentUser.photoURL });
             }
-
             setExtendedUser((prev: any) => ({ ...prev, ...data }));
-
-            if (data.username !== authUser.username) {
-                window.location.reload();
-            }
-
+            if (data.username !== authUser.username) window.location.reload();
         } catch (error) {
             console.error("Error updating profile:", error);
         }
     };
 
-    if (!userIdToFetch && !authLoading) {
-        return <Navigate to="/login" replace />;
-    }
+    if (!userIdToFetch && !authLoading) return <Navigate to="/login" replace />;
 
     if (authLoading || isFetchingUser || !extendedUser) {
         return (
-            <div className="min-h-screen flex items-center justify-center pt-24 relative z-10 w-full">
+            <div className="min-h-screen flex items-center justify-center relative z-10 w-full bg-[#0a0a0a]">
                 <Spinner size="lg" variant="primary" />
             </div>
         );
     }
 
     const rank = getRank(userContributions.length);
-
     const displayUrl = (url: string) => {
-        try {
-            return new URL(url).hostname;
-        } catch {
-            return url;
-        }
+        try { return new URL(url).hostname; } catch { return url; }
     };
 
+    const spring = { type: "spring", stiffness: 100, damping: 20, mass: 1 };
+    const bannerUrl = extendedUser?.banner || `https://picsum.photos/seed/${extendedUser?.username || 'Apunts'}/1920/1080`;
+    const avatarUrl = extendedUser?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`;
+
     return (
-        <div className="min-h-screen md:h-screen py-6 md:py-10 px-4 md:px-8 max-w-[1040px] mx-auto relative z-10 font-sans flex flex-col justify-center overflow-y-auto md:overflow-hidden">
-            <EditProfileModal
-                isOpen={isEditModalOpen}
-                onClose={() => setIsEditModalOpen(false)}
-                user={extendedUser}
-                onUpdate={handleUpdateProfile}
-            />
+        <div className="min-h-screen w-full relative z-10 font-sans overflow-x-hidden bg-transparent">
+            <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} user={extendedUser} onUpdate={handleUpdateProfile} />
 
-            {/* Banner Section */}
-            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="relative mb-6 md:mb-6 shrink-0 z-30">
-                <SpotlightCard className="h-56 md:h-75 rounded-[32px] md:rounded-[40px] border border-[0.5px] border-white/5 relative shadow-none [mask-image:linear-gradient(to_bottom,black_5%,transparent_90%)]">
-                    {extendedUser?.banner ? (
-                        <div
-                            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover/card:scale-105"
-                            style={{ backgroundImage: `url(${extendedUser.banner})` }}
-                        />
-                    ) : (
-                        <div
-                            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover/card:scale-105 opacity-80"
-                            style={{ backgroundImage: `url(https://picsum.photos/seed/${extendedUser?.username || 'Apunts'}/960/540)` }}
-                        />
-                    )}
-                </SpotlightCard>
+            {/* HERO SECTION - Premium Bento Approach */}
+            <div className="relative w-full h-[280px] md:h-[320px] lg:h-[380px] mb-8">
+                {/* Immersive background header with smooth mask */}
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className="absolute inset-0 apple-mask-hero pointer-events-none select-none">
+                    <div className="absolute inset-0 bg-cover bg-center opacity-40 blur-[40px] scale-110" style={{ backgroundImage: `url(${bannerUrl})` }} />
+                    <div className="absolute inset-0 bg-cover bg-center opacity-70" style={{ backgroundImage: `url(${bannerUrl})` }} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/60 to-transparent opacity-100" />
+                </motion.div>
 
-                {/* Overlapping Identity Section */}
-                <div className="absolute -bottom-5 md:-bottom-2 left-6 md:left-12 flex items-end gap-6 w-[calc(100%-3rem)] md:w-[calc(100%-6rem)] z-20">
-                    <div className="relative shrink-0 transition-transform duration-300 hover:scale-[1.02]">
-                        <div className="relative z-10 shadow-[0_8px_30px_rgb(0,0,0,0.5)] rounded-[1.8rem]">
-                            <img
-                                src={extendedUser?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`}
-                                alt={extendedUser?.username}
-                                className="w-28 h-28 md:w-36 md:h-36 rounded-[1.8rem] bg-[#0f111a] object-cover"
-                            />
+                <div className="absolute bottom-0 left-0 w-full px-4 md:px-8 max-w-[1100px] left-1/2 -translate-x-1/2 flex items-end gap-5 md:gap-8 translate-y-1/3 z-20">
+                    <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: 0.1 }} className="relative shrink-0">
+                        <div className="w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-[1.5rem] md:rounded-[2rem] p-1 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/20">
+                            <img src={avatarUrl} alt={extendedUser?.username} className="w-full h-full rounded-[1.2rem] md:rounded-[1.7rem] object-cover bg-[#111]" />
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <div className="pb-3 flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.2 }} className="pb-2 md:pb-4 flex-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4 relative z-20">
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white line-clamp-1">
-                                {extendedUser?.username || 'Usuari'}
-                            </h1>
-                            <p className="text-sm font-light text-slate-400 mt-1">
-                                {extendedUser?.bio || 'Membre de la comunitat'}
-                            </p>
+                            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-1 drop-shadow-lg line-clamp-1">{extendedUser?.username || 'Usuari'}</h1>
+                            <p className="text-sm md:text-base text-slate-300 font-medium tracking-wide max-w-xl line-clamp-2">{extendedUser?.bio || 'Creative Developer'}</p>
                         </div>
-
-                        {isOwnProfile && (
-                            <div className="flex items-center gap-2 pb-1 shrink-0">
-                                <button
-                                    onClick={() => setIsEditModalOpen(true)}
-                                    className="group/btn flex items-center gap-2 bg-slate-900/40 hover:bg-slate-900/80 border border-white/5 px-4 py-2.5 rounded-xl text-slate-300 hover:text-white hover:border-primary/20 transition-all font-semibold backdrop-blur-md shadow-lg"
-                                >
-                                    <Edit2 size={16} className="text-slate-400 group-hover/btn:text-primary transition-colors" />
-                                    <span>Editar Perfil</span>
+                        
+                        <div className="flex items-center gap-3 shrink-0">
+                            {isOwnProfile ? (
+                                <>
+                                    <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 px-4 py-2.5 rounded-xl text-white transition-all font-semibold shadow-lg text-sm">
+                                        <Edit2 size={15} /> <span>Editar Perfil</span>
+                                    </button>
+                                    <button onClick={logout} className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 shadow-lg">
+                                        <LogOut size={16} strokeWidth={2.5} />
+                                    </button>
+                                </>
+                            ) : (
+                                <button onClick={() => { if (!authUser) return window.location.href = '/login'; setIsComposeOpen(true); }} className="flex items-center gap-2 bg-white hover:bg-slate-200 text-black px-5 py-2.5 rounded-xl transition-all font-bold shadow-lg text-sm">
+                                    <Send size={16} strokeWidth={2.5} /> <span>Contactar</span>
                                 </button>
-                                <button
-                                    onClick={logout}
-                                    className="p-2.5 rounded-xl bg-red-500/5 hover:bg-red-500/10 text-red-500 hover:text-red-400 transition-all border border-red-500/10 hover:border-red-500/20 shadow-lg"
-                                    title="Tancar sessió"
-                                >
-                                    <LogOut size={16} strokeWidth={2} />
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    </motion.div>
                 </div>
-            </motion.div>
+            </div>
 
-            {/* Profile Content Grid */}
-            <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 shrink-0 relative z-40`}>
-
+            {/* BENTO GRID CONTENT */}
+            <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-24 md:mt-28 relative z-30 pb-32">
+                
                 {(extendedUser?.role === 'moderador' || extendedUser?.role === 'editor') && (
-                    <>
-                        {/* Stats Card: Solucionaris */}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="h-full">
-                            <SpotlightCard className="h-full min-h-[220px] rounded-[24px] md:rounded-[36px] p-6 lg:p-8 flex flex-col justify-between group/metric hover:bg-slate-900/60 transition-colors">
-                                <div className="flex justify-between items-start mb-6">
-                                    <div className="p-3.5 rounded-2xl bg-white/5 border border-white/5 text-slate-500 group-hover/metric:bg-primary/10 group-hover/metric:border-primary/20 group-hover/metric:text-accent group-hover/metric:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)] transition-all duration-300">
-                                        <Upload size={24} strokeWidth={1.5} />
-                                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-4 md:mb-5">
+                        
+                        {/* Solucionaris Card */}
+                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.3 }} className="h-full">
+                            <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group">
+                                <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 mb-6 group-hover:text-white group-hover:border-white/20 transition-all">
+                                    <Upload size={20} strokeWidth={2} />
                                 </div>
-                                <div className="mt-8 relative z-20">
-                                    <span className="block text-3xl md:text-4xl font-bold leading-tight tracking-tight text-white mb-4 truncate">
+                                <div>
+                                    <span className="block text-4xl md:text-5xl font-bold tracking-tight text-white mb-2 tabular-nums">
                                         {userContributions.length}
                                     </span>
-                                    <span className="text-xs font-mono text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                        <div className="h-px w-6 bg-slate-700 group-hover/metric:w-12 group-hover/metric:bg-primary transition-all duration-300" />
+                                    <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                        <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
                                         SOLUCIONARIS
                                     </span>
                                 </div>
-                            </SpotlightCard>
+                            </div>
                         </motion.div>
 
-                        {/* Rank Card */}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="h-full relative z-[50]">
-                            <SpotlightCard className="h-full min-h-[220px] rounded-[24px] md:rounded-[36px] p-6 lg:p-8 flex flex-col justify-between group/metric hover:bg-slate-900/60 transition-colors !overflow-visible">
-                                <div className="flex justify-between items-start mb-6 w-full relative z-40">
-                                    <div className="p-3.5 rounded-2xl bg-white/5 border border-white/5 text-slate-500 group-hover/metric:bg-primary/10 group-hover/metric:border-primary/20 group-hover/metric:text-accent transition-all duration-300 group-hover/metric:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]">
-                                        <User size={24} strokeWidth={1.5} />
+                        {/* Rank Card (Wider) */}
+                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.4 }} className="h-full md:col-span-1 relative z-50">
+                            <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group relative overflow-visible">
+                                <div className="flex justify-between items-start w-full relative z-40 mb-6">
+                                    <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all">
+                                        <User size={20} strokeWidth={2} />
                                     </div>
-                                    <div className="absolute right-0 top-0 group/info cursor-help z-[100]">
-                                        <div className="p-2 hover:bg-white/5 rounded-full transition-colors text-slate-500 group-hover/info:text-primary">
-                                            <Info size={18} />
+                                    <div className="group/info cursor-help">
+                                        <div className="p-1.5 hover:bg-white/10 rounded-full transition-colors text-slate-500 group-hover/info:text-white">
+                                            <Info size={16} />
                                         </div>
-                                        {/* Pure CSS Popover - Positioned explicitly below icon to prevent obscuring profile header */}
-                                        <div className="absolute right-0 top-full mt-2 w-[240px] md:w-[260px] p-5 bg-[#0f111a] border border-white/10 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all duration-300 origin-top-right translate-y-2 group-hover/info:translate-y-0 z-[100]">
-                                            <h4 className="font-bold text-white mb-4 tracking-tight text-sm">Escala de rangs</h4>
-                                            <ul className="space-y-2.5 text-xs font-semibold">
-                                                <li className="flex justify-between items-center"><span className="text-orange-500">Bronze</span> <span className="text-slate-500">0+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-slate-400">Silver</span> <span className="text-slate-500">5+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-yellow-400">Gold</span> <span className="text-slate-500">10+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-cyan-400">Platinum</span> <span className="text-slate-500">15+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-blue-500">Diamond</span> <span className="text-slate-500">20+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-purple-500">Champion</span> <span className="text-slate-500">25+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-red-500">Grand Champion</span> <span className="text-slate-500">35+</span></li>
-                                                <li className="flex justify-between items-center"><span className="ssl-platinum-rank text-transparent bg-clip-text font-black">SSL</span> <span className="text-slate-400">50+</span></li>
+                                        {/* Rank Tooltip */}
+                                        <div className="absolute right-0 top-full mt-2 w-64 p-5 bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all duration-300 origin-top-right translate-y-2 group-hover/info:translate-y-0 z-50 pointer-events-none">
+                                            <h4 className="font-bold text-white mb-4 tracking-tight text-xs uppercase">Escala de Rangs</h4>
+                                            <ul className="space-y-2.5 text-[11px] font-semibold">
+                                                <li className="flex justify-between items-center"><span className="text-orange-500">Bronze</span> <span className="text-slate-500 tabular-nums">0+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-slate-300">Silver</span> <span className="text-slate-500 tabular-nums">5+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-yellow-400">Gold</span> <span className="text-slate-500 tabular-nums">10+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-cyan-400">Platinum</span> <span className="text-slate-500 tabular-nums">15+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-blue-500">Diamond</span> <span className="text-slate-500 tabular-nums">20+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-purple-500">Champion</span> <span className="text-slate-500 tabular-nums">25+</span></li>
+                                                <li className="flex justify-between items-center"><span className="text-red-500">Grand Champion</span> <span className="text-slate-500 tabular-nums">35+</span></li>
+                                                <li className="flex justify-between items-center"><span className="ssl-platinum-rank text-transparent bg-clip-text font-black">SSL</span> <span className="text-slate-400 tabular-nums">50+</span></li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="mt-8 relative z-20">
+                                <div className="relative z-20">
                                     <div 
-                                        className={`flex items-baseline gap-2 mb-4 relative ${rank.color}`}
+                                        className={`flex items-baseline gap-2 mb-2 ${rank.color}`}
                                         onMouseEnter={rank.name === 'SSL' ? () => setIsHoveringSSL(true) : undefined}
                                         onMouseLeave={rank.name === 'SSL' ? () => setIsHoveringSSL(false) : undefined}
                                     >
                                         {rank.name === 'SSL' && <SSLParticles isHovered={isHoveringSSL} />}
-                                        <span className={`text-3xl md:text-4xl font-bold leading-tight tracking-tight truncate ${rank.color.includes('bg-clip-text') ? rank.color : ''}`}>
+                                        <span className={`text-3xl md:text-4xl font-bold tracking-tight truncate ${rank.color.includes('bg-clip-text') ? rank.color : 'text-white'}`}>
                                             {rank.name}
                                         </span>
                                         {rank.division && (
-                                            <div className="flex gap-1 ml-1" title={`Divisió ${rank.division}`}>
+                                            <div className="flex gap-1 ml-1">
                                                 {[1, 2, 3].map((bar) => {
                                                     const isActive = bar <= (rank.division === 'I' ? 1 : rank.division === 'II' ? 2 : 3);
                                                     return (
-                                                        <div
-                                                            key={bar}
-                                                            className={`h-4 w-[5px] rounded-[1px] skew-x-[-15deg] transition-all duration-300 ${isActive
-                                                                ? `bg-current shadow-[0_0_8px_currentColor] opacity-90`
-                                                                : 'bg-white/10'
-                                                                }`}
-                                                        />
+                                                        <div key={bar} className={`h-4 w-1.5 rounded-[1px] skew-x-[-15deg] transition-all duration-300 ${isActive ? `bg-current shadow-[0_0_8px_currentColor] opacity-100` : 'bg-white/10'}`} />
                                                     );
                                                 })}
                                             </div>
                                         )}
                                     </div>
-                                    <span className="text-xs font-mono text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                        <div className="h-px w-6 bg-slate-700 group-hover/metric:w-12 group-hover/metric:bg-primary transition-all duration-300" />
-                                        RANG ACTUAL
+                                    <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                        <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
+                                        NIVELL ACTUAL
                                     </span>
                                 </div>
-                            </SpotlightCard>
+                            </div>
                         </motion.div>
 
                         {/* Portfolio Card */}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="h-full">
-                            <SpotlightCard className={`h-full min-h-[220px] rounded-[24px] md:rounded-[36px] p-6 lg:p-8 flex flex-col justify-between transition-colors ${extendedUser?.portfolio ? 'group/metric hover:bg-slate-900/60 hover:border-primary/20 cursor-pointer' : 'opacity-60 isolate border-[0.5px] border-white/5'}`}>
-                                {extendedUser?.portfolio ? (
-                                    <a
-                                        href={extendedUser.portfolio}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="absolute inset-0 z-10"
-                                    />
-                                ) : null}
-
-                                <div className="flex justify-between items-start mb-6">
-                                    <div className={`p-3.5 rounded-2xl bg-white/5 border border-white/5 text-slate-500 transition-all duration-300 ${extendedUser?.portfolio ? 'group-hover/metric:bg-primary/10 group-hover/metric:border-primary/20 group-hover/metric:text-accent group-hover/metric:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]' : ''}`}>
-                                        <Globe size={24} strokeWidth={1.5} />
-                                    </div>
+                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.5 }} className="h-full">
+                            <div className={`premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group ${extendedUser?.portfolio ? 'premium-bento-hover cursor-pointer' : 'opacity-60'}`}>
+                                {extendedUser?.portfolio && (
+                                    <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="absolute inset-0 z-10" />
+                                )}
+                                <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 mb-6 group-hover:text-white group-hover:border-white/20 transition-all">
+                                    <Globe size={20} strokeWidth={2} />
                                 </div>
-                                <div className="mt-8 relative z-20 pointer-events-none">
-                                    <span className="block text-2xl lg:text-3xl font-bold leading-tight tracking-tight text-white mb-4 truncate">
+                                <div className="relative z-20 pointer-events-none">
+                                    <span className="block text-xl md:text-2xl font-bold tracking-tight text-white mb-2 truncate">
                                         {extendedUser?.portfolio ? displayUrl(extendedUser.portfolio) : 'Sense vincular'}
                                     </span>
-                                    <span className="text-xs font-mono text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                        <div className={`h-px bg-slate-700 transition-all duration-300 ${extendedUser?.portfolio ? 'w-6 group-hover/metric:w-12 group-hover/metric:bg-primary' : 'w-6'}`} />
+                                    <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                        <div className={`h-px bg-slate-700 transition-all ${extendedUser?.portfolio ? 'w-4 group-hover:w-8 group-hover:bg-white/50' : 'w-4'}`} />
                                         PORTFOLI
                                     </span>
                                 </div>
-                            </SpotlightCard>
+                            </div>
                         </motion.div>
-                    </>
+
+                    </div>
                 )}
-            </div>
 
-            {/* Public action for viewing someone else's profile */}
-            {!isOwnProfile && (
-                <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="w-full mt-10 md:mt-16 flex justify-center shrink-0 z-20">
-                    <button
-                        onClick={() => {
-                            if (!authUser) return window.location.href = '/login';
-                            setIsComposeOpen(true);
-                        }}
-                        className="group flex items-center gap-3 bg-gradient-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-8 py-3.5 rounded-2xl shadow-xl shadow-primary/20 text-white font-bold transition-all transform hover:-translate-y-1 text-base relative overflow-hidden"
-                    >
-                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
-                        <Send size={20} strokeWidth={2.5} className="relative z-10 group-hover:rotate-12 transition-transform" />
-                        <span className="relative z-10">Enviar missatge directe</span>
-                    </button>
-                </motion.div>
-            )}
-
-            {/* Mailing & Activity System for the Owner */}
-            {isOwnProfile && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 w-full mt-4 flex-1 min-h-0 pb-6">
-                    <motion.div className="h-full min-h-[140px]" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                        <button onClick={() => setIsMailboxOpen(true)} className="w-full h-full outline-none text-left flex">
-                            <SpotlightCard className="w-full h-full rounded-[24px] md:rounded-[36px] p-6 lg:p-8 flex items-center gap-5 group/action hover:bg-slate-900/60 transition-colors border-white/5 border hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
+                {/* Mailing & Notifications Row */}
+                {isOwnProfile && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                        <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.6 }} onClick={() => setIsMailboxOpen(true)} className="text-left outline-none">
+                            <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
                                 <div className="relative">
-                                    <div className="p-4 rounded-[1.2rem] bg-slate-900 border border-white/5 text-slate-400 group-hover/action:text-accent group-hover/action:border-primary/20 transition-all duration-300 shrink-0 shadow-lg group-hover/action:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]">
-                                        <Mail size={24} strokeWidth={1.5} />
+                                    <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
+                                        <Mail size={20} strokeWidth={2} />
                                     </div>
                                     {unreadCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 w-[22px] h-[22px] bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[var(--bg-app-color,#0B0F19)]">
+                                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[#0d0f17]">
                                             {unreadCount}
                                         </span>
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-lg md:text-xl font-bold text-white mb-1 leading-tight group-hover/action:text-accent transition-colors tracking-tight">Bústia privada</h3>
-                                    <p className="text-sm font-light text-slate-500 truncate">
-                                        {unreadCount > 0 ? `Tens ${unreadCount} ${unreadCount === 1 ? 'missatge' : 'missatges'} pendents de llegir` : 'Sense nous missatges, tot net.'}
+                                    <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">Bústia Privada</h3>
+                                    <p className="text-sm text-slate-500 truncate">
+                                        {unreadCount > 0 ? `Tens ${unreadCount} missatges pendents` : 'Tot llegit.'}
                                     </p>
                                 </div>
-                            </SpotlightCard>
-                        </button>
-                    </motion.div>
+                            </div>
+                        </motion.button>
 
-                    <motion.div className="h-full min-h-[140px]" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-                        <button onClick={() => setIsInboxOpen(true)} className="w-full h-full outline-none text-left flex">
-                            <SpotlightCard className="w-full h-full rounded-[24px] md:rounded-[36px] p-6 lg:p-8 flex items-center gap-5 group/action hover:bg-slate-900/60 transition-colors border-white/5 border hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
+                        <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.7 }} onClick={() => setIsInboxOpen(true)} className="text-left outline-none">
+                            <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
                                 <div className="relative">
-                                    <div className="p-4 rounded-[1.2rem] bg-slate-900 border border-white/5 text-slate-400 group-hover/action:text-accent group-hover/action:border-primary/20 transition-all duration-300 shrink-0 shadow-lg group-hover/action:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]">
-                                        <Bell size={24} strokeWidth={1.5} />
+                                    <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
+                                        <Bell size={20} strokeWidth={2} />
                                     </div>
                                     {unreadNotificationsCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 w-[22px] h-[22px] bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[var(--bg-app-color,#0B0F19)]">
+                                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[#0d0f17]">
                                             {unreadNotificationsCount}
                                         </span>
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-lg md:text-xl font-bold text-white mb-1 leading-tight group-hover/action:text-accent transition-colors tracking-tight">Notificacions</h3>
-                                    <p className="text-sm font-light text-slate-500 truncate">
-                                        {unreadNotificationsCount > 0 ? `${unreadNotificationsCount} novetats per revisar` : 'Estàs al dia amb l\'activitat.'}
+                                    <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">Notificacions</h3>
+                                    <p className="text-sm text-slate-500 truncate">
+                                        {unreadNotificationsCount > 0 ? `${unreadNotificationsCount} novetats sense llegir` : 'Estàs al dia.'}
                                     </p>
                                 </div>
-                            </SpotlightCard>
-                        </button>
-                    </motion.div>
+                            </div>
+                        </motion.button>
+                    </div>
+                )}
+            </div>
+
+            {/* USER POSTS MASONRY GRID */}
+            <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-4 md:mt-8 pb-32 relative z-30">
+                <div className="mb-8 border-b border-white/5 pb-4">
+                    <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
+                        Publicacions
+                        <span className="bg-white/10 text-white text-xs py-1 px-2.5 rounded-full font-bold">
+                            {userPosts.length}
+                        </span>
+                    </h2>
                 </div>
-            )}
+
+                {isFetchingPosts ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Spinner size="md" variant="primary" />
+                    </div>
+                ) : userPosts.length > 0 ? (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        transition={{ duration: 0.5, delay: 0.8 }}
+                        className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6"
+                    >
+                        {userPosts.map(post => (
+                            <div key={post.id} className="break-inside-avoid">
+                                <PublicationCard post={post} onClick={() => setSelectedPost(post)} />
+                            </div>
+                        ))}
+                    </motion.div>
+                ) : (
+                    <div className="text-center py-20">
+                        <p className="text-slate-500 font-medium">Aquest usuari encara no ha publicat res.</p>
+                    </div>
+                )}
+            </div>
 
             {/* Modals Layer */}
             <AnimatePresence>
@@ -603,6 +497,13 @@ const ProfilePage = () => {
                         receiverId={extendedUser.id}
                         receiverName={extendedUser.username}
                         initialSubject=""
+                    />
+                )}
+                {selectedPost && (
+                    <PostDetailModal
+                        isOpen={!!selectedPost}
+                        onClose={() => setSelectedPost(null)}
+                        post={selectedPost}
                     />
                 )}
             </AnimatePresence>
