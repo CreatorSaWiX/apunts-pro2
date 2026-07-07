@@ -38,10 +38,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(401).json({ error: 'Token invàlid o caducat.' });
         }
 
-        const { prompt, currentTasks = [], aiSettings } = req.body;
+        const { prompt, currentTasks = [], aiSettings, attachedFile } = req.body;
 
-        if (!prompt) {
-            return res.status(400).json({ error: 'Falta el paràmetre "prompt"' });
+        if (!prompt && !attachedFile) {
+            return res.status(400).json({ error: 'Falta el paràmetre "prompt" o arxiu adjunt' });
         }
 
         const apiKey = process.env.GEMINI_API_KEY;
@@ -97,12 +97,20 @@ IMPORTANT:
 1. Retorna NOMÉS l'estructura JSON sol·licitada.
 2. Si el prompt no demana dates específiques, assigna-les intel·ligentment respectant les tasques existents o deixa-les en null. Avui és ${new Date().toISOString()}`;
 
+        const msgParts: any[] = [];
+        if (prompt) msgParts.push({ text: prompt });
+        else msgParts.push({ text: "Analitza aquest document." });
+
+        if (attachedFile && attachedFile.data && attachedFile.mimeType) {
+            msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
+        }
+
         let lastError: any;
         for (const modelName of MODELS) {
             try {
                 const response = await ai.models.generateContent({
                     model: modelName,
-                    contents: prompt,
+                    contents: msgParts,
                     config: {
                         systemInstruction: systemInstruction,
                         responseMimeType: "application/json",

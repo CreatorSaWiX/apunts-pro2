@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, StopCircle, CheckCircle2 } from 'lucide-react';
+import { ArrowUp, Sparkles, StopCircle, CheckCircle2, Plus, X } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { useSettings } from '../../../contexts/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,6 +22,8 @@ interface Message {
     role: 'user' | 'ai';
     content: string;
     changes?: { type: 'add' | 'remove'; subject: string }[];
+    attachmentName?: string;
+    attachmentType?: 'image' | 'pdf';
 }
 
 const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose }) => {
@@ -33,6 +35,34 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const { aiSettings } = useSettings();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [attachedFile, setAttachedFile] = useState<{ mimeType: string, data: string, name: string } | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
+
+    const processFile = (file: File) => {
+        if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+            setError('Només es permeten imatges o PDFs.');
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            setError("L'arxiu és massa gran. Màxim 5MB.");
+            return;
+        }
+        setError(null);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64 = (e.target?.result as string).split(',')[1];
+            setAttachedFile({ mimeType: file.type, data: base64, name: file.name });
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const onDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
+    const onDragLeave = () => setIsDragging(false);
+    const onDrop = (e: React.DragEvent) => {
+        e.preventDefault(); setIsDragging(false);
+        if (e.dataTransfer.files?.[0]) processFile(e.dataTransfer.files[0]);
+    };
 
     // Auto-resize textarea
     useEffect(() => {
@@ -57,14 +87,23 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     }, [isOpen]);
 
     const handleGenerate = async () => {
-        if (!prompt.trim() || isGenerating) return;
+        if ((!prompt.trim() && !attachedFile) || isGenerating) return;
 
         const userMsg = prompt.trim();
         setPrompt('');
+        setAttachedFile(null);
         setError(null);
         setIsGenerating(true);
 
-        const newMsg: Message = { id: Date.now().toString(), role: 'user', content: userMsg };
+        const newMsg: Message = { 
+            id: Date.now().toString(), 
+            role: 'user', 
+            content: userMsg,
+            ...(attachedFile && {
+                attachmentName: attachedFile.name,
+                attachmentType: attachedFile.mimeType.startsWith('image/') ? 'image' : 'pdf'
+            })
+        };
         setMessages(prev => [...prev, newMsg]);
 
         const activeNodes = nodes
@@ -108,7 +147,8 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                     history,
                     memory,
                     aiSettings,
-                    userName
+                    userName,
+                    attachedFile
                 })
             });
 
@@ -314,17 +354,28 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                                             </div>
                                                         ) : (
                                                             <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-transparent prose-pre:p-0 prose-pre:border-none prose-a:text-sky-400 hover:prose-a:text-sky-300 text-[15px] prose-strong:text-white prose-strong:font-bold prose-ul:my-3 prose-li:my-1 [&_.katex]:text-lg [&_.katex-display]:my-4 [&_.katex-display]:py-3 [&_.katex-display]:overflow-x-auto custom-scrollbar [&_.katex-display]:bg-black/20 [&_.katex-display]:rounded-2xl [&_.katex-display]:border [&_.katex-display]:border-white/5 [&_.katex-display]:shadow-inner">
-                                                            <ReactMarkdown
-                                                                remarkPlugins={[remarkGfm, remarkMath]}
-                                                                rehypePlugins={[[rehypeKatex, { strict: false, throwOnError: false, errorColor: '#cbd5e1' }]]}
-                                                                components={markdownComponents}
-                                                            >
-                                                                {msg.content + (isGenerating && msg.id === messages[messages.length - 1]?.id ? ' ▍' : '')}
-                                                            </ReactMarkdown>
+                                                                <ReactMarkdown
+                                                                    remarkPlugins={[remarkGfm, remarkMath]}
+                                                                    rehypePlugins={[[rehypeKatex, { strict: false, throwOnError: false, errorColor: '#cbd5e1' }]]}
+                                                                    components={markdownComponents}
+                                                                >
+                                                                    {msg.content + (isGenerating && msg.id === messages[messages.length - 1]?.id ? ' ▍' : '')}
+                                                                </ReactMarkdown>
                                                             </div>
                                                         )
                                                     ) : (
-                                                        <span className="whitespace-pre-wrap">{msg.content}</span>
+                                                        <div className="space-y-2">
+                                                            {msg.attachmentName && (
+                                                                <div className={`flex items-center gap-1.5 text-xs rounded-lg px-2 py-1 w-fit ${msg.attachmentType === 'image'
+                                                                    ? 'bg-blue-500/15 border border-blue-400/20 text-blue-300'
+                                                                    : 'bg-orange-500/15 border border-orange-400/20 text-orange-300'
+                                                                }`}>
+                                                                    <span>{msg.attachmentType === 'image' ? '🖼' : '📄'}</span>
+                                                                    <span className="truncate max-w-[180px]">{msg.attachmentName}</span>
+                                                                </div>
+                                                            )}
+                                                            {msg.content && <span className="whitespace-pre-wrap">{msg.content}</span>}
+                                                        </div>
                                                     )}
                                                 </div>
 
@@ -377,12 +428,37 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                             )}
 
                             {/* Main Input Container */}
-                            <div className="relative bg-slate-800/40 backdrop-blur-xl transform-gpu border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden flex flex-col p-2">
+                            <div
+                                className={`relative bg-slate-800/40 backdrop-blur-xl transform-gpu border ${isDragging ? 'border-fuchsia-500/50 bg-slate-800/60' : 'border-white/10'} rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden flex flex-col p-2 transition-colors duration-300`}
+                                onDragOver={onDragOver}
+                                onDragLeave={onDragLeave}
+                                onDrop={onDrop}
+                            >
+
+                                <AnimatePresence>
+                                    {attachedFile && (
+                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="px-4 pt-2">
+                                            <div className="relative inline-block border border-white/10 rounded-xl bg-slate-900/50 p-1 mt-2">
+                                                {attachedFile.mimeType.startsWith('image/') ? (
+                                                    <img src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`} alt="preview" className="h-16 object-contain rounded-lg" loading="lazy" />
+                                                ) : (
+                                                    <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg"><span className="text-xs font-bold text-slate-300">PDF</span></div>
+                                                )}
+                                                <button onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20">
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
                                 <div className="relative flex items-end gap-2">
-                                    {/* Icon / Sparkles */}
-                                    <div className="pl-4 pb-[14px] shrink-0 pointer-events-none">
-                                        <Sparkles size={20} className={`transition-all duration-700 ${isGenerating ? 'text-fuchsia-400 animate-pulse' : 'text-slate-400'}`} />
-                                    </div>
+
+                                    {/* File Input */}
+                                    <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf" onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
+                                    <button onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-1.5 ml-1" title="Adjuntar imatge o PDF">
+                                        <Plus size={20} />
+                                    </button>
 
                                     {/* Auto-growing Textarea */}
                                     <textarea
@@ -400,9 +476,9 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                     <div className="pr-2 pb-2 shrink-0">
                                         <button
                                             onClick={handleGenerate}
-                                            disabled={!prompt.trim() && !isGenerating}
+                                            disabled={(!prompt.trim() && !attachedFile) || isGenerating}
                                             className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 
-                                                ${(!prompt.trim() && !isGenerating)
+                                                ${(!prompt.trim() && !attachedFile && !isGenerating)
                                                     ? 'bg-white/5 text-white/30 cursor-not-allowed'
                                                     : isGenerating
                                                         ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50'

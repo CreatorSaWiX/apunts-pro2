@@ -40,10 +40,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(401).json({ error: 'Token invàlid o caducat.' });
         }
 
-        const { prompt, currentNodes = [], history = [], memory = {}, aiSettings, userName } = req.body;
+        const { prompt, currentNodes = [], history = [], memory = {}, aiSettings, userName, attachedFile } = req.body;
 
-        if (!prompt) {
-            return res.status(400).json({ error: 'Falta el paràmetre "prompt"' });
+        if (!prompt && !attachedFile) {
+            return res.status(400).json({ error: 'Falta el paràmetre "prompt" o arxiu adjunt' });
         }
 
         const apiKey = process.env.GEMINI_API_KEY;
@@ -232,9 +232,17 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                     parameters: roadmapTool.parameters
                 };
 
+                const msgParts: any[] = [];
+                if (prompt) msgParts.push({ text: prompt });
+                else msgParts.push({ text: "Analitza aquest document." });
+
+                if (attachedFile && attachedFile.data && attachedFile.mimeType) {
+                    msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
+                }
+
                 const responseStream = await ai.models.generateContentStream({
                     model: modelName,
-                    contents: [...formattedHistory, { role: 'user', parts: [{ text: prompt }] }],
+                    contents: [...formattedHistory, { role: 'user', parts: msgParts }],
                     config: {
                         systemInstruction: systemInstruction,
                         temperature: 0.1,

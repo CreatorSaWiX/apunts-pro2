@@ -283,7 +283,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
               });
               req.on('end', async () => {
                 try {
-                  const { prompt, currentTasks, subjects, currentDate, aiSettings } = JSON.parse(body);
+                  const { prompt, currentTasks, subjects, currentDate, aiSettings, attachedFile } = JSON.parse(body);
                   const { GoogleGenAI } = await import('@google/genai');
                   const apiKey = env.GEMINI_API_KEY;
 
@@ -360,9 +360,17 @@ L'estructura exacta ha de ser:
   ]
 }`;
 
+                  const msgParts: any[] = [];
+                  if (prompt) msgParts.push({ text: prompt });
+                  else msgParts.push({ text: "Analitza aquest document." });
+
+                  if (attachedFile && attachedFile.data && attachedFile.mimeType) {
+                    msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
+                  }
+
                   const response = await genAI.models.generateContent({
                     model: 'gemini-2.5-flash',
-                    contents: prompt,
+                    contents: msgParts,
                     config: { systemInstruction, responseMimeType: "application/json" }
                   });
                   const responseText = response.text;
@@ -390,7 +398,7 @@ L'estructura exacta ha de ser:
               });
               req.on('end', async () => {
                 try {
-                  const { prompt, currentNodes, history = [], memory = {}, aiSettings, userName } = JSON.parse(body);
+                  const { prompt, currentNodes, history = [], memory = {}, aiSettings, userName, attachedFile } = JSON.parse(body);
                   const { GoogleGenAI } = await import('@google/genai');
                   const fs = await import('fs');
                   const path = await import('path');
@@ -516,7 +524,13 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                     parts: [{ text: msg.content }]
                   }));
 
-                  const msgParts: any[] = [{ text: prompt }];
+                  const msgParts: any[] = [];
+                  if (prompt) msgParts.push({ text: prompt });
+                  else msgParts.push({ text: "Analitza aquest document." });
+
+                  if (attachedFile && attachedFile.data && attachedFile.mimeType) {
+                    msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
+                  }
 
                   const MODELS = [
                     'gemini-3.5-flash',
