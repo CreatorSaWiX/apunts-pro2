@@ -37,9 +37,10 @@ const letterVariants = {
 interface HeroProps {
     isMenuOpen?: boolean;
     subjectOverride?: string;
+    isExiting?: boolean;
 }
 
-const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride }) => {
+const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExiting = false }) => {
     const { subject: contextSubject, theme } = useSubject();
     const subject = subjectOverride || contextSubject;
     const isMobile = useIsMobile();
@@ -125,14 +126,15 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride }) => {
                     </div>
                 ) : (
                     <AnimatePresence mode="wait">
-                        <motion.div
-                            key={subject}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                            variants={letterContainerVariants}
-                            className="relative"
-                        >
+                        {!isExiting && (
+                            <motion.div
+                                key={subject}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                variants={letterContainerVariants}
+                                className="relative"
+                            >
                             <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
                                 <span className="inline-block mr-4">
                                     {"APUNTS".split("").map((char, index) => (
@@ -159,6 +161,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride }) => {
                                 </span>
                             </h1>
                         </motion.div>
+                        )}
                     </AnimatePresence>
                 )}
             </MotionConfig>

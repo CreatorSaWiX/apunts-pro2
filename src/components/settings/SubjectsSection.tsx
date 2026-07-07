@@ -15,6 +15,7 @@ export const SubjectsSection = () => {
     const isDraggingRef = useRef(false);
     const [editingSubjectColor, setEditingSubjectColor] = useState<string | null>(null);
     const [previewSubject, setPreviewSubject] = useState<string>('');
+    const [subjectError, setSubjectError] = useState<string | null>(null);
 
     useEffect(() => {
         if (homeSubjects.length > 0 && !homeSubjects.includes(previewSubject)) {
@@ -39,8 +40,18 @@ export const SubjectsSection = () => {
 
     const toggleSubject = (subjectId: string) => {
         if (homeSubjects.includes(subjectId)) {
+            if (homeSubjects.length <= 1) {
+                setSubjectError("Has de deixar com a mínim una assignatura a l'Inici.");
+                return;
+            }
+            setSubjectError(null);
             setHomeSubjects(homeSubjects.filter(id => id !== subjectId));
         } else {
+            if (homeSubjects.length >= 6) {
+                setSubjectError("Pots tenir un màxim de 6 assignatures a l'Inici.");
+                return;
+            }
+            setSubjectError(null);
             setHomeSubjects([...homeSubjects, subjectId]);
         }
     };
@@ -92,9 +103,16 @@ export const SubjectsSection = () => {
                                                 key={subject.id}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
+                                                    if (homeSubjects.length >= 6) {
+                                                        setSubjectError("Pots tenir un màxim de 6 assignatures a l'Inici.");
+                                                        setSearchQuery('');
+                                                        setIsCommandOpen(false);
+                                                        return;
+                                                    }
                                                     setHomeSubjects([...homeSubjects, subject.name]);
                                                     setSearchQuery('');
                                                     setIsCommandOpen(false);
+                                                    setSubjectError(null);
                                                 }}
                                                 className="flex items-center justify-between px-4 py-3 rounded-xl transition-all text-left group/item hover:bg-white/[0.05]"
                                             >
@@ -180,6 +198,17 @@ export const SubjectsSection = () => {
                         Cap assignatura afegida actualment.
                     </motion.div>
                 )}
+
+                <AnimatePresence>
+                    {subjectError && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}
+                            className="text-rose-400 text-sm font-medium mt-3"
+                        >
+                            {subjectError}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Navbar Preview */}

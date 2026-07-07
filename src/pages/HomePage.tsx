@@ -1,4 +1,4 @@
-import { useEffect, useState, useDeferredValue, lazy, Suspense } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import { useSettings } from '../contexts/SettingsContext';
 import Hero from '../components/Hero';
@@ -12,8 +12,31 @@ const MobileActionMenu = lazy(() => import('../components/MobileActionMenu'));
 const HomePage = () => {
     const { subject, setSubject } = useSubject();
     const { homeSubjects } = useSettings();
-    const deferredSubject = useDeferredValue(subject);
+    const [displaySubject, setDisplaySubject] = useState(subject);
+    const [isExiting, setIsExiting] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    useEffect(() => {
+        if (subject !== displaySubject && !isExiting) {
+            setDisplaySubject(subject);
+        }
+    }, [subject, displaySubject, isExiting]);
+
+    const handleSubjectChange = (newSubj: string) => {
+        if (newSubj === subject || isExiting) return;
+        
+        // Canviar colors, targetes i menú instantàniament
+        setSubject(newSubj);
+        setDisplaySubject(newSubj);
+        
+        // Activar animació de sortida només pel títol
+        setIsExiting(true);
+        
+        // Esperar a que acabi la sortida per fer l'entrada del nou títol
+        setTimeout(() => {
+            setIsExiting(false);
+        }, 200);
+    };
 
     // Lock scroll on mount
     useEffect(() => {
@@ -46,7 +69,7 @@ const HomePage = () => {
                         return (
                             <button
                                 key={subj}
-                                onClick={() => setSubject(subj)}
+                                onClick={() => handleSubjectChange(subj)}
                                 className={`relative px-4 md:px-5 h-9 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-[13px] font-black tracking-widest transition-all duration-300 z-10 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                             >
                                 {isActive && (
@@ -68,11 +91,11 @@ const HomePage = () => {
 
             <div className="flex-none pt-4 z-20 pointer-events-none">
                 <div className="pointer-events-auto">
-                    <Hero isMenuOpen={isMenuOpen} subjectOverride={deferredSubject} />
+                    <Hero isMenuOpen={isMenuOpen} subjectOverride={displaySubject} isExiting={isExiting} />
                 </div>
             </div>
             <div className="flex-1 min-h-0 relative z-10 flex flex-col justify-center md:pt-0 md:-mt-4 pb-16">
-                <TopicCarousel isMenuOpen={isMenuOpen} subjectOverride={deferredSubject} />
+                <TopicCarousel isMenuOpen={isMenuOpen} subjectOverride={displaySubject} />
             </div>
         </div>
     );
