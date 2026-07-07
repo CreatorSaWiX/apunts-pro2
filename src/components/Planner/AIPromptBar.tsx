@@ -124,9 +124,9 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                     <div className="fixed inset-0 z-[90]" onClick={onClose} />
 
                     <motion.div
-                        initial={{ y: 100, opacity: 0, scale: 0.95 }}
-                        animate={{ y: 0, opacity: 1, scale: 1 }}
-                        exit={{ y: 50, opacity: 0, scale: 0.95 }}
+                        initial={{ y: 150, scale: 0.95 }}
+                        animate={{ y: 0, scale: 1 }}
+                        exit={{ y: 150, scale: 0.95 }}
                         transition={{ type: "spring", bounce: 0.25, duration: 0.6 }}
                         className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] w-[90vw] max-w-2xl"
                     >
@@ -145,7 +145,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                         )}
 
                         {/* Main Container */}
-                        <div className="relative bg-slate-800/40 backdrop-blur-xl border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden flex flex-col p-2">
+                        <div className="relative bg-slate-800/40 backdrop-blur-xl transform-gpu border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden flex flex-col p-2">
 
                             {/* Error Message */}
                             {error && (
