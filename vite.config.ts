@@ -182,19 +182,23 @@ RESPON DE FORMA MOLT NATURAL, BREU I HUMANA. NO siguis robòtic ni donis explica
                     Si no saps una cosa o no la veus, digues simplement "Ostres, no veig el codi/solucionari que dius" o "Això no ho tinc als meus apunts".
                     L'alumne està actualment a la pàgina: ${currentPath}
 
-                    MOLT IMPORTANT: La teva sortida ha de ser ÚNICAMENT un objecte JSON amb aquesta estructura exacta:
-                    {
-                      "reply": "La teva resposta natural i formatada en markdown com ho faries normalment.",
-                      "keywords": ["paraula1", "paraula2", "paraula3"], // 3 a 5 paraules clau rellevants per a l'usuari
-                      "memories_to_add": [] // Retorna un array buit per defecte. NOMÉS hi has d'afegir un string si l'usuari acaba de revelar informació vital a llarg termini sobre el seu perfil (ex. un projecte, una tecnologia que aprèn, preferències). Evita guardar dades temporals o de xerrada casual.
-                    }
-                    Aquest és el text visible a la seva pantalla ara mateix (útil si està mirant un solucionari penjat per algú):
-                    """
-                    ${pageText}
-                    """
+Al FINAL de la teva resposta (després de tot el contingut), afegeix EXACTAMENT aquest bloc de metadades en una línia nova:
 
-                    I aquest és el coneixement base oficial de l'assignatura:
-                    ${notesContext}
+---META---
+KEYWORDS: paraula1, paraula2, paraula3
+MEMORIES: -
+---END---
+
+On KEYWORDS són 3-5 paraules clau rellevants de la conversa.
+On MEMORIES: per defecte escriu "-". NOMÉS hi has d'afegir fets separats per "|" si l'usuari acaba de revelar informació vital a llarg termini sobre el seu perfil (ex. un projecte, una tecnologia que aprèn, preferències). Evita guardar dades temporals o de xerrada casual.
+
+Aquest és el text visible a la seva pantalla ara mateix:
+"""
+${pageText}
+"""
+
+I aquest és el coneixement base oficial de l'assignatura:
+${notesContext}
 
 MOLT IMPORTANT SOBRE LA CERCA:
 Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actualitat, dates, conferències, documentació o qualsevol cosa que no estigui al "coneixement base oficial", **HAS D'UTILITZAR GOOGLE SEARCH per buscar la resposta a Internet** i respondre-li amb la informació trobada. Mai diguis "no ho tinc als meus apunts" si ho pots buscar a Google.`;
@@ -209,63 +213,158 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                     msgParts.push({ inlineData: { data: image.data, mimeType: image.mimeType } });
                   }
 
+                  res.writeHead(200, {
+                    'Content-Type': 'text/event-stream',
+                    'Cache-Control': 'no-cache, no-transform',
+                    'Connection': 'keep-alive',
+                    'X-Accel-Buffering': 'no'
+                  });
+
+                  const emit = (event: string, data: object) => {
+                    res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+                    if ((res as any).flush) (res as any).flush();
+                  };
+
                   let lastError: any;
                   let replied = false;
+                  const META_MARKER = '---META---';
+                  const META_END = '---END---';
+
+                  function parseMetaBlock(fullText: string) {
+                      const metaIdx = fullText.indexOf(META_MARKER);
+                      if (metaIdx === -1) return { cleanText: fullText, keywords: [], memories_to_add: [] };
+
+                      const cleanText = fullText.substring(0, metaIdx).trimEnd();
+                      const metaBlock = fullText.substring(metaIdx + META_MARKER.length);
+                      const endIdx = metaBlock.indexOf(META_END);
+                      const metaContent = endIdx !== -1 ? metaBlock.substring(0, endIdx) : metaBlock;
+
+                      let keywords: string[] = [];
+                      let memories_to_add: string[] = [];
+
+                      for (const line of metaContent.split('\n')) {
+                          const trimmed = line.trim();
+                          if (trimmed.startsWith('KEYWORDS:')) {
+                              keywords = trimmed.substring(9).split(',').map((k: string) => k.trim()).filter(Boolean);
+                          } else if (trimmed.startsWith('MEMORIES:')) {
+                              const raw = trimmed.substring(9).trim();
+                              if (raw && raw !== '-' && raw.toLowerCase() !== 'cap') {
+                                  memories_to_add = raw.split('|').map((m: string) => m.trim()).filter(Boolean);
+                              }
+                          }
+                      }
+                      return { cleanText, keywords, memories_to_add };
+                  }
+
+                  const THINKING_MODELS = new Set(['gemini-3.5-flash', 'gemini-2.5-flash']);
 
                   for (const modelName of MODELS) {
                     try {
-                      const response = await genAI.models.generateContent({
-                        model: modelName,
-                        contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                        config: {
-                          systemInstruction,
-                          tools: [{ googleSearch: {} } as any]
-                        }
-                      });
-                      console.log(`[Gemini] Model usat: ${modelName}`);
-                      res.setHeader('Content-Type', 'application/json');
-                      let rData;
-                      try {
-                        let cleanText = response.text.trim();
-                        if (cleanText.startsWith("```json")) {
-                          cleanText = cleanText.substring(7).replace(/```$/, '').trim();
-                        } else if (cleanText.startsWith("```")) {
-                          cleanText = cleanText.substring(3).replace(/```$/, '').trim();
-                        }
-                        // Remove any potential trailing backticks or garbage if there's multiple blocks
-                        const firstBrace = cleanText.indexOf('{');
-                        const lastBrace = cleanText.lastIndexOf('}');
-                        if (firstBrace !== -1 && lastBrace !== -1) {
-                          cleanText = cleanText.substring(firstBrace, lastBrace + 1);
-                        }
-                        rData = JSON.parse(cleanText);
-                      } catch (parseError: any) {
-                        console.warn("Gemini didn't return JSON, falling back to raw text.");
-                        rData = {
-                          reply: response.text,
-                          keywords: [],
-                          memories_to_add: []
+                      const supportsThinking = THINKING_MODELS.has(modelName);
+                      const streamConfig: any = {
+                        systemInstruction,
+                        tools: [{ googleSearch: {} } as any]
+                      };
+
+                      if (supportsThinking) {
+                        streamConfig.thinkingConfig = {
+                          includeThoughts: true,
+                          thinkingBudget: 1024,
                         };
                       }
-                      res.end(JSON.stringify({ reply: rData.reply, keywords: rData.keywords || [], memories_to_add: rData.memories_to_add || [] }));
+
+                      const responseStream = await genAI.models.generateContentStream({
+                        model: modelName,
+                        contents: [...formattedHistory, { role: 'user', parts: msgParts }],
+                        config: streamConfig
+                      });
+
+                      console.log(`[Vite Proxy] Gemini usat: ${modelName}`);
+                      emit('status', { phase: 'thinking', model: modelName });
+
+                      let accumulatedText = '';
+                      let lastSentIndex = 0;
+                      let hasStartedWriting = false;
+                      const BUFFER_MARGIN = META_MARKER.length + 5;
+
+                      for await (const chunk of responseStream) {
+                        if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+                          for (const part of chunk.candidates[0].content.parts) {
+                            if (part.thought && part.text) {
+                              emit('thought', { text: part.text });
+                            } else if (part.text) {
+                              accumulatedText += part.text;
+                              const metaIdx = accumulatedText.indexOf(META_MARKER);
+                              if (metaIdx === -1) {
+                                const safeEnd = accumulatedText.length - BUFFER_MARGIN;
+                                if (safeEnd > lastSentIndex) {
+                                  const toSend = accumulatedText.substring(lastSentIndex, safeEnd);
+                                  if (toSend) {
+                                    if (!hasStartedWriting) {
+                                      emit('status', { phase: 'writing' });
+                                      hasStartedWriting = true;
+                                    }
+                                    emit('delta', { text: toSend });
+                                    lastSentIndex = safeEnd;
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+
+                      const { cleanText, keywords, memories_to_add } = parseMetaBlock(accumulatedText);
+                      const remaining = cleanText.substring(lastSentIndex);
+                      if (remaining) {
+                        if (!hasStartedWriting) {
+                          emit('status', { phase: 'writing' });
+                        }
+                        emit('delta', { text: remaining });
+                      }
+
+                      emit('metadata', { keywords, memories_to_add });
+                      emit('done', {});
+                      res.end();
                       replied = true;
                       break;
                     } catch (e: any) {
-                      const isFallbackable = e?.status === 429 || e?.status === 503 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').match(/exhausted/i);
+                      const errMsg = String(e?.message || '');
+                      const errStatus = e?.status;
+                      const isFallbackable =
+                        errStatus === 429 || errStatus === 503 || errStatus === 404 ||
+                        errMsg.includes('429') || errMsg.includes('503') || errMsg.includes('404') ||
+                        errMsg.match(/exhausted/i) || errMsg.match(/not found/i);
+                        
                       if (isFallbackable) {
                         console.warn(`[Vite proxy] ${modelName} fallat (rate limit / server error), saltant al següent model...`);
                         lastError = e;
                         continue;
                       }
-                      throw e; // error que no és rate-limit → propagar
+                      
+                      // Error fatal: ja hem enviat headers SSE, així que emetem un event d'error
+                      emit('error', { message: e.message || 'Error intern del servidor' });
+                      emit('done', {});
+                      res.end();
+                      replied = true;
+                      break;
                     }
                   }
 
-                  if (!replied) throw lastError ?? new Error('Tots els models han fallat');
+                  if (!replied) {
+                      emit('error', { message: lastError?.message || 'Tots els models han fallat' });
+                      emit('done', {});
+                      res.end();
+                  }
                 } catch (e: any) {
                   console.error("[DevServer Gemini Error]:", e);
-                  res.statusCode = 500;
-                  res.end(JSON.stringify({ error: String(e.message || e) }));
+                  // Només enviem el 500 si no hem respost encara
+                  if (!res.headersSent) {
+                    res.statusCode = 500;
+                    res.end(JSON.stringify({ error: String(e.message || e) }));
+                  } else {
+                    res.end();
+                  }
                 }
               });
             } else {
@@ -368,15 +467,119 @@ L'estructura exacta ha de ser:
                     msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
                   }
 
-                  const response = await genAI.models.generateContent({
-                    model: 'gemini-2.5-flash',
-                    contents: msgParts,
-                    config: { systemInstruction, responseMimeType: "application/json" }
+                  res.writeHead(200, {
+                    'Content-Type': 'text/event-stream',
+                    'Cache-Control': 'no-cache, no-transform',
+                    'Connection': 'keep-alive',
+                    'X-Accel-Buffering': 'no'
                   });
-                  const responseText = response.text;
 
-                  res.setHeader('Content-Type', 'application/json');
-                  res.end(responseText);
+                  const emit = (event: string, data: object) => {
+                    res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+                    if ((res as any).flush) (res as any).flush();
+                  };
+
+                  let lastError: any;
+                  let replied = false;
+                  
+                  const MODELS = [
+                    'gemini-3.5-flash',          
+                    'gemini-3.1-flash-lite',     
+                    'gemini-2.5-flash',          
+                    'gemini-2.5-flash-lite',     
+                    'gemini-2.0-flash-lite',     
+                  ];
+                  const THINKING_MODELS = new Set(['gemini-3.5-flash', 'gemini-2.5-flash']);
+
+                  for (const modelName of MODELS) {
+                    try {
+                      const supportsThinking = THINKING_MODELS.has(modelName);
+                      const streamConfig: any = {
+                        systemInstruction,
+                        responseMimeType: "application/json"
+                      };
+
+                      if (supportsThinking) {
+                        streamConfig.thinkingConfig = {
+                          includeThoughts: true,
+                          thinkingBudget: 1024,
+                        };
+                      }
+
+                      const responseStream = await genAI.models.generateContentStream({
+                        model: modelName,
+                        contents: msgParts,
+                        config: streamConfig
+                      });
+
+                      console.log(`[Vite Proxy] Planner Gemini usat: ${modelName}`);
+                      emit('status', { phase: 'thinking', model: modelName });
+
+                      let accumulatedText = '';
+
+                      for await (const chunk of responseStream) {
+                        if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+                          for (const part of chunk.candidates[0].content.parts) {
+                            if (part.thought && part.text) {
+                              emit('thought', { text: part.text });
+                            } else if (part.text) {
+                              accumulatedText += part.text;
+                            }
+                          }
+                        }
+                      }
+
+                      let rData;
+                      try {
+                        let cleanText = accumulatedText.trim();
+                        if (cleanText.startsWith("```json")) {
+                          cleanText = cleanText.substring(7).replace(/```$/, '').trim();
+                        } else if (cleanText.startsWith("```")) {
+                          cleanText = cleanText.substring(3).replace(/```$/, '').trim();
+                        }
+                        const firstBrace = cleanText.indexOf('{');
+                        const lastBrace = cleanText.lastIndexOf('}');
+                        if (firstBrace !== -1 && lastBrace !== -1) {
+                          cleanText = cleanText.substring(firstBrace, lastBrace + 1);
+                        }
+                        rData = JSON.parse(cleanText);
+                      } catch (parseError: any) {
+                        console.warn("Planner didn't return valid JSON, falling back.", accumulatedText);
+                        rData = { actions: [] };
+                      }
+
+                      emit('actions', { actions: rData.actions || [] });
+                      emit('done', {});
+                      res.end();
+                      replied = true;
+                      break;
+                    } catch (e: any) {
+                      const errMsg = String(e?.message || '');
+                      const errStatus = e?.status;
+                      const isFallbackable =
+                        errStatus === 429 || errStatus === 503 || errStatus === 404 ||
+                        errMsg.includes('429') || errMsg.includes('503') || errMsg.includes('404') ||
+                        errMsg.match(/exhausted/i) || errMsg.match(/not found/i);
+                        
+                      if (isFallbackable) {
+                        console.warn(`[Vite proxy planner] ${modelName} fallat, saltant al següent model...`);
+                        lastError = e;
+                        continue;
+                      }
+                      
+                      emit('error', { message: e.message || 'Error intern del servidor' });
+                      emit('done', {});
+                      res.end();
+                      replied = true;
+                      break;
+                    }
+                  }
+
+                  if (!replied) {
+                      emit('error', { message: lastError?.message || 'Tots els models han fallat' });
+                      emit('done', {});
+                      res.end();
+                  }
                 } catch (e: any) {
                   console.error("[DevServer Planner AI Error]:", e);
                   res.statusCode = 500;
@@ -423,12 +626,13 @@ L'estructura exacta ha de ser:
                   }
 
                   res.setHeader('Content-Type', 'text/event-stream');
-                  res.setHeader('Cache-Control', 'no-cache');
+                  res.setHeader('Cache-Control', 'no-cache, no-transform');
                   res.setHeader('Connection', 'keep-alive');
+                  res.setHeader('X-Accel-Buffering', 'no');
                   if (typeof res.flushHeaders === 'function') res.flushHeaders();
 
-                  const sendSSE = (payload: any) => {
-                    res.write(`data: ${JSON.stringify(payload)}\n\n`);
+                  const emit = (event: string, data: object) => {
+                    res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
                     if (typeof (res as any).flush === 'function') {
                       (res as any).flush();
                     }
@@ -562,43 +766,62 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                     }
                   };
 
+                  const THINKING_MODELS = new Set(['gemini-3.5-flash', 'gemini-2.5-flash']);
+
                   let lastError: any;
                   let replied = false;
 
                   for (const modelName of MODELS) {
                     try {
+                      const supportsThinking = THINKING_MODELS.has(modelName);
+                      const streamConfig: any = {
+                        systemInstruction,
+                        tools: [{ functionDeclarations: [roadmapTool] as any }]
+                      };
+
+                      if (supportsThinking) {
+                        streamConfig.thinkingConfig = {
+                          includeThoughts: true,
+                          thinkingBudget: 1024,
+                        };
+                      }
+
                       const responseStream = await genAI.models.generateContentStream({
                         model: modelName,
                         contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                        config: {
-                          systemInstruction,
-                          tools: [{ functionDeclarations: [roadmapTool] as any }]
-                        }
+                        config: streamConfig
                       });
+
+                      emit('status', { phase: 'thinking', model: modelName });
 
                       let hasToolCall = false;
                       let toolCallData = null;
 
                       for await (const chunk of responseStream) {
+                        if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+                          for (const part of chunk.candidates[0].content.parts) {
+                            if (part.thought && part.text) {
+                              emit('thought', { text: part.text });
+                            } else if (part.text) {
+                              emit('status', { phase: 'writing' });
+                              emit('message', { text: part.text });
+                            }
+                          }
+                        }
+
                         const functionCalls = chunk.functionCalls;
                         if (functionCalls && functionCalls.length > 0) {
                           hasToolCall = true;
                           toolCallData = functionCalls[0].args;
                           break;
                         }
-
-                        const chunkText = chunk.text;
-                        if (chunkText) {
-                          sendSSE({ type: 'text', content: chunkText });
-                        }
                       }
 
                       if (hasToolCall && toolCallData) {
-                        sendSSE({ type: 'actions', content: (toolCallData as any).actions });
+                        emit('actions', { actions: (toolCallData as any).actions });
                       }
 
-                      res.write(`data: [DONE]\n\n`);
-                      if (typeof (res as any).flush === 'function') (res as any).flush();
+                      emit('done', {});
                       res.end();
                       replied = true;
                       break;
@@ -609,16 +832,18 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                         lastError = e;
                         continue;
                       }
-                      throw e;
+                      
+                      emit('error', { message: e.message || 'Error intern del servidor' });
+                      emit('done', {});
+                      res.end();
+                      replied = true;
+                      break;
                     }
                   }
 
                   if (!replied) {
-                    if (lastError) {
-                      sendSSE({ type: 'error', content: 'Tots els models han fallat (Rate Limit)' });
-                    } else {
-                      sendSSE({ type: 'error', content: 'Tots els models han fallat' });
-                    }
+                    emit('error', { message: lastError?.message || 'Tots els models han fallat' });
+                    emit('done', {});
                     res.end();
                   }
 
@@ -630,7 +855,7 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                     res.statusCode = 500;
                     res.end(JSON.stringify({ error: String(e.message || e) }));
                   } else {
-                    res.write(`data: ${JSON.stringify({ type: 'error', content: String(e.message || e) })}\n\n`);
+                    res.write(`event: error\ndata: ${JSON.stringify({ message: String(e.message || e) })}\n\n`);
                     if (typeof (res as any).flush === 'function') (res as any).flush();
                     res.end();
                   }

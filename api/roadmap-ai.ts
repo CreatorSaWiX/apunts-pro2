@@ -51,16 +51,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(500).json({ error: 'Error intern del servidor (C)' });
         }
 
-        // Com que enviarem progressos abans que la IA respongui, preparem el SSE
         res.setHeader('Content-Type', 'text/event-stream');
-        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Cache-Control', 'no-cache, no-transform');
         res.setHeader('Connection', 'keep-alive');
+        res.setHeader('X-Accel-Buffering', 'no');
         if (typeof res.flushHeaders === 'function') res.flushHeaders();
 
-        const sendSSE = (payload: any) => {
-            res.write(`data: ${JSON.stringify(payload)}\n\n`);
+        const emit = (event: string, data: object) => {
+            res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
             if (typeof (res as any).flush === 'function') {
-                (res as any).flush(); // Força a enviar el buffer de compressió si existeix
+                (res as any).flush();
             }
         };
 
@@ -141,7 +141,6 @@ REGLES D'ESTIL I CONTINGUT (MOLT ESTRICTES):
 1. **ZERO EMOJIS**: Sota CAP concepte pots utilitzar emojis. Mai.
 2. **ZERO FARCIMENT**: No facis introduccions ni comiats innecessaris ("Hola!", "Què tal?", "Com et puc ajudar?", "Que tinguis un bon dia"). Vés directe a la informació o a l'acció. Si et saluden només amb "Hola", respon amb "Digues-me."
 3. **MÀXIMA CONCISIÓ**: Fes servir llistes, punts i frases curtes. No escriguis paràgrafs densos que no aportin valor.
-4. PROCÉS DE PENSAMENT EXPLICAT: A petició de l'equip de disseny, SEMPRE has de començar la teva resposta explicant què estàs fent de forma transparent dins d'una etiqueta XML <think>. Això dóna feedback a l'estudiant del teu procés intern. Sigues molt curt. Exemples: "<think>Analitzant la salutació...</think>", "<think>Buscant la guia docent d'EDA...</think>", "<think>Avaluant trajectòria...</think>". Mai usis asteriscs per aquest propòsit, FES SERVIR NOMÉS TAGS <think>.
 5. FORMAT I UI (CRÍTIC PER A L'APP):
    - **Mètode d'Avaluació**: TRADUEIX explícitament l'avaluació a KaTeX PUR. És obligatori fer servir commands de LaTeX com \\min i \\max. La fórmula ha d'estar aïllada en un bloc $$:
      $$ \\text{NOTA} = \\min(10, \\max(0.225 \\cdot NPP + ...)) $$
@@ -221,127 +220,104 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
             }
         };
 
+        const THINKING_MODELS = new Set(['gemini-3.5-flash', 'gemini-2.5-flash']);
+
         let lastError: any;
-        
+        let replied = false;
+
+        const msgParts: any[] = [];
+        if (prompt) msgParts.push({ text: prompt });
+        else msgParts.push({ text: "Analitza aquest document." });
+
+        if (attachedFile && attachedFile.data && attachedFile.mimeType) {
+            msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
+        }
+
         for (const modelName of MODELS) {
             try {
-                // Definim la tool per al nou format de genai
-                const roadmapToolGenAI = {
-                    name: "modify_roadmap",
-                    description: "Modifica el roadmap de l'estudiant afegint o eliminant assignatures. Només cridar-ho si l'usuari ho demana explícitament (ex: 'Afegeix IA al meu roadmap').",
-                    parameters: roadmapTool.parameters
+                const supportsThinking = THINKING_MODELS.has(modelName);
+                const streamConfig: any = {
+                    systemInstruction,
+                    temperature: 0.1,
+                    tools: [{ functionDeclarations: [roadmapTool] as any }]
                 };
 
-                const msgParts: any[] = [];
-                if (prompt) msgParts.push({ text: prompt });
-                else msgParts.push({ text: "Analitza aquest document." });
-
-                if (attachedFile && attachedFile.data && attachedFile.mimeType) {
-                    msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
+                if (supportsThinking) {
+                    streamConfig.thinkingConfig = {
+                        includeThoughts: true,
+                        thinkingBudget: 1024,
+                    };
                 }
 
                 const responseStream = await ai.models.generateContentStream({
                     model: modelName,
                     contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                    config: {
-                        systemInstruction: systemInstruction,
-                        temperature: 0.1,
-                        tools: [{ functionDeclarations: [roadmapToolGenAI] }]
-                    }
+                    config: streamConfig
                 });
-                
+
+                emit('status', { phase: 'thinking', model: modelName });
+
                 let hasToolCall = false;
                 let toolCallData = null;
 
-                let isThinking = true;
-                let thoughtProcessBuffer = "";
-                let hasStartedThinking = false;
-
                 for await (const chunk of responseStream) {
-                    // Check for function calls
+                    if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+                        for (const part of chunk.candidates[0].content.parts) {
+                            if (part.thought && part.text) {
+                                emit('thought', { text: part.text });
+                            } else if (part.text) {
+                                emit('status', { phase: 'writing' });
+                                emit('message', { text: part.text });
+                            }
+                        }
+                    }
+
                     const functionCalls = chunk.functionCalls;
                     if (functionCalls && functionCalls.length > 0) {
                         hasToolCall = true;
                         toolCallData = functionCalls[0].args;
                         break;
                     }
-
-                    const chunkText = chunk.text;
-                    if (chunkText) {
-                        if (isThinking) {
-                            thoughtProcessBuffer += chunkText;
-                            
-                            if (!hasStartedThinking) {
-                                const startTag = '<think>';
-                                const startIdx = thoughtProcessBuffer.indexOf(startTag);
-                                if (startIdx !== -1) {
-                                    hasStartedThinking = true;
-                                    thoughtProcessBuffer = thoughtProcessBuffer.substring(startIdx + startTag.length);
-                                } else if (thoughtProcessBuffer.length > 15 && !thoughtProcessBuffer.includes('<')) {
-                                    isThinking = false;
-                                    sendSSE({ type: 'text', content: thoughtProcessBuffer });
-                                }
-                            }
-                            
-                            if (hasStartedThinking) {
-                                const endTag = '</think>';
-                                const endIdx = thoughtProcessBuffer.indexOf(endTag);
-                                if (endIdx !== -1) {
-                                    const thoughtText = thoughtProcessBuffer.substring(0, endIdx).trim();
-                                    const remainingText = thoughtProcessBuffer.substring(endIdx + endTag.length).trimStart();
-                                    
-                                    if (thoughtText) {
-                                        sendSSE({ type: 'progress', content: thoughtText + "..." });
-                                    }
-                                    
-                                    isThinking = false; 
-                                    
-                                    if (remainingText) {
-                                        sendSSE({ type: 'text', content: remainingText });
-                                    }
-                                } else {
-                                    const cleanedThinking = thoughtProcessBuffer.replace(/\\n/g, ' ').replace(/<[^>]*>?/gm, '');
-                                    sendSSE({ type: 'progress', content: cleanedThinking + "..." });
-                                }
-                            }
-                        } else {
-                            // Enviar com a text normal un cop ha acabat de pensar
-                            sendSSE({ type: 'text', content: chunkText });
-                        }
-                    }
                 }
 
-                // Si hi ha hagut una crida a una funció
                 if (hasToolCall && toolCallData) {
-                    sendSSE({ type: 'actions', content: toolCallData.actions });
+                    emit('actions', { actions: (toolCallData as any).actions });
                 }
 
-                res.write(`data: [DONE]\n\n`);
-                if (typeof (res as any).flush === 'function') (res as any).flush();
+                emit('done', {});
                 res.end();
-                return;
-                
+                replied = true;
+                break;
             } catch (e: any) {
-                const isFallbackable = e?.status === 429 || e?.status === 503 || e?.status === 404 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').includes('404') || String(e?.message || '').match(/exhausted/i);
-                if (isFallbackable) {
-                    console.warn(`[Vercel Roadmap AI] ${modelName} fallat (rate limit / server error), saltant al següent model...`);
+                const is429 = e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate');
+                if (is429) {
+                    console.warn(`[Prod Roadmap AI] ${modelName} rate limit/503, provant el seguent model...`);
                     lastError = e;
                     continue;
                 }
                 
-                // Si hi ha un error durant el stream, envia'l i tanca
-                sendSSE({ type: 'error', content: e.message });
+                emit('error', { message: e.message || 'Error intern del servidor' });
+                emit('done', {});
                 res.end();
-                return;
+                replied = true;
+                break;
             }
         }
 
-        if (lastError) {
-            res.status(500).json({ error: 'Tots els models han fallat (Rate Limit)' });
+        if (!replied) {
+            emit('error', { message: lastError?.message || 'Tots els models han fallat' });
+            emit('done', {});
+            res.end();
         }
 
-    } catch (error: any) {
-        console.error('[Roadmap AI Error]', error);
-        res.status(500).json({ error: 'Error processant la petició d\'IA' });
+    } catch (e: any) {
+        console.error("[Prod Roadmap AI Error]:", e);
+        if (!res.headersSent) {
+            res.status(500).json({ error: String(e.message || e) });
+        } else {
+            res.write(`event: error\ndata: ${JSON.stringify({ message: String(e.message || e) })}\n\n`);
+            if (typeof (res as any).flush === 'function') (res as any).flush();
+            res.end();
+        }
     }
 }

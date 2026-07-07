@@ -1,91 +1,143 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from '@google/genai';
 // Importem els apunts compilats per Content Collections
 import { allPersonalNotes } from '../.content-collections/generated/index.js';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-    // Configurar CORS
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+// ── Vercel Edge Runtime ──────────────────────────────────────────────────────
+export const config = { runtime: 'edge' };
 
-    // Preflight request (CORS)
+// ── CORS Headers ─────────────────────────────────────────────────────────────
+const CORS_HEADERS: Record<string, string> = {
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+    'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization',
+};
+
+// ── Models que suporten thinkingConfig ────────────────────────────────────────
+const THINKING_MODELS = new Set([
+    'gemini-3.5-flash',
+    'gemini-2.0-flash-thinking-exp-01-21',
+    'gemini-2.5-flash',
+]);
+
+const MODELS = [
+    'gemini-3.5-flash', // Primari (500 RPD)
+    'gemini-2.0-flash-thinking-exp-01-21', // Fallback oficial thinking
+    'gemini-3.1-flash-lite', // Fallback d'emergència
+];
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function jsonResponse(data: object, status = 200): Response {
+    return new Response(JSON.stringify(data), {
+        status,
+        headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+    });
+}
+
+// ── META block parser (keywords + memories) ──────────────────────────────────
+const META_MARKER = '---META---';
+const META_END = '---END---';
+
+function parseMetaBlock(fullText: string): {
+    cleanText: string;
+    keywords: string[];
+    memories_to_add: string[];
+} {
+    const metaIdx = fullText.indexOf(META_MARKER);
+    if (metaIdx === -1) return { cleanText: fullText, keywords: [], memories_to_add: [] };
+
+    const cleanText = fullText.substring(0, metaIdx).trimEnd();
+    const metaBlock = fullText.substring(metaIdx + META_MARKER.length);
+    const endIdx = metaBlock.indexOf(META_END);
+    const metaContent = endIdx !== -1 ? metaBlock.substring(0, endIdx) : metaBlock;
+
+    let keywords: string[] = [];
+    let memories_to_add: string[] = [];
+
+    for (const line of metaContent.split('\n')) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('KEYWORDS:')) {
+            keywords = trimmed.substring(9).split(',').map(k => k.trim()).filter(Boolean);
+        } else if (trimmed.startsWith('MEMORIES:')) {
+            const raw = trimmed.substring(9).trim();
+            if (raw && raw !== '-' && raw.toLowerCase() !== 'cap') {
+                memories_to_add = raw.split('|').map(m => m.trim()).filter(Boolean);
+            }
+        }
+    }
+
+    return { cleanText, keywords, memories_to_add };
+}
+
+// ── Main Handler ─────────────────────────────────────────────────────────────
+export default async function handler(req: Request): Promise<Response> {
+    // Preflight CORS
     if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
+        return new Response(null, { status: 200, headers: CORS_HEADERS });
     }
 
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Mètode no permès. Fes servir POST.' });
-    }   
+        return jsonResponse({ error: 'Mètode no permès. Fes servir POST.' }, 405);
+    }
 
     try {
-        const idToken = req.headers.authorization?.split('Bearer ')[1];
+        // ── Auth ─────────────────────────────────────────────────────────────
+        const authHeader = req.headers.get('authorization') || '';
+        const idToken = authHeader.split('Bearer ')[1];
         if (!idToken) {
-            return res.status(401).json({ error: 'No autoritzat. Cal iniciar sessió.' });
+            return jsonResponse({ error: 'No autoritzat. Cal iniciar sessió.' }, 401);
         }
 
         const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
         if (!firebaseApiKey) {
-            return res.status(500).json({ error: 'Configuració de Firebase incompleta al servidor.' });
+            return jsonResponse({ error: 'Configuració de Firebase incompleta al servidor.' }, 500);
         }
 
-        const verifyRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken })
-        });
-
+        const verifyRes = await fetch(
+            `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`,
+            { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken }) }
+        );
         if (!verifyRes.ok) {
-            return res.status(401).json({ error: 'Token invàlid o caducat.' });
+            return jsonResponse({ error: 'Token invàlid o caducat.' }, 401);
         }
 
-        const { message, history = [], currentPath = '/', pageText = '', image, aiSettings } = req.body;
+        // ── Body ─────────────────────────────────────────────────────────────
+        const { message, history = [], currentPath = '/', pageText = '', image, aiSettings } = await req.json();
 
         if (!message) {
-            return res.status(400).json({ error: 'Falta el paràmetre "message"' });
+            return jsonResponse({ error: 'Falta el paràmetre "message"' }, 400);
         }
 
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
-            return res.status(500).json({ error: 'Error intern del servidor (C)' });
+            return jsonResponse({ error: 'Error intern del servidor (C)' }, 500);
         }
 
-        // 1. Preparem el context: RAG lleuger basat en la URL (currentPath)
+        // ── 1. RAG lleuger basat en la URL ───────────────────────────────────
         const pathLower = currentPath.toLowerCase();
-        let activeSubject = null;
+        let activeSubject: string | null = null;
         if (pathLower.includes('pro2')) activeSubject = 'pro2';
         else if (pathLower.includes('m1')) activeSubject = 'm1';
         else if (pathLower.includes('m2')) activeSubject = 'm2';
 
         let relevantNotes = allPersonalNotes;
         if (activeSubject) {
-            relevantNotes = relevantNotes.filter(n => n.subject === activeSubject);
+            relevantNotes = relevantNotes.filter((n: any) => n.subject === activeSubject);
         }
 
-        // Si podem deduir el tema exacte pel slug de la URL, el prioritzem
         const slugMatch = pathLower.split('/').pop();
-        if (slugMatch && relevantNotes.some(n => n.slug && n.slug.includes(slugMatch))) {
-            relevantNotes = relevantNotes.filter(n => n.slug.includes(slugMatch));
+        if (slugMatch && relevantNotes.some((n: any) => n.slug && n.slug.includes(slugMatch))) {
+            relevantNotes = relevantNotes.filter((n: any) => n.slug.includes(slugMatch));
         } else if (relevantNotes.length > 5) {
-            // Si no hi ha slug específic i hi ha massa notes, ens quedem només amb els 5 primers per no saturar
             relevantNotes = relevantNotes.slice(0, 5);
         }
 
         const notesContext = relevantNotes
-            .map(note => `## Tema: ${note.title}\n\n${note.content}`)
+            .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
             .join('\n\n---\n\n');
 
-        // 2. Inicialitzem Gemini
+        // ── 2. Gemini init ───────────────────────────────────────────────────
         const ai = new GoogleGenAI({ apiKey });
-
-        const MODELS = [
-            'gemini-3.5-flash',          // nou model de referència 3.5
-            'gemini-3.1-flash-lite',     // 500 RPD → primer sempre
-            'gemini-2.5-flash',          // 20 RPD, millor qualitat
-            'gemini-2.5-flash-lite',     // 20 RPD, lite
-        ];
 
         const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
 Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
@@ -110,14 +162,19 @@ ${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
 
 L'alumne està actualment a la pàgina: ${currentPath}
 
-MOLT IMPORTANT: La teva sortida ha de ser ÚNICAMENT un objecte JSON amb aquesta estructura exacta:
-{
-  "reply": "La teva resposta natural i formatada en markdown com ho faries normalment.",
-  "keywords": ["paraula1", "paraula2", "paraula3"], // 3 a 5 paraules clau rellevants per a l'usuari
-  "memories_to_add": [] // Retorna un array buit per defecte. NOMÉS hi has d'afegir un string si l'usuari acaba de revelar informació vital a llarg termini sobre el seu perfil (ex. un projecte, una tecnologia que aprèn, preferències). Evita guardar dades temporals o de xerrada casual.
-}
+Respon de manera natural, formatant en Markdown. Sigues directe i útil.
 
-Aquest és el text visible a la seva pantalla ara mateix (útil si està mirant un solucionari penjat per algú):
+Al FINAL de la teva resposta (després de tot el contingut), afegeix EXACTAMENT aquest bloc de metadades en una línia nova:
+
+---META---
+KEYWORDS: paraula1, paraula2, paraula3
+MEMORIES: -
+---END---
+
+On KEYWORDS són 3-5 paraules clau rellevants de la conversa.
+On MEMORIES: per defecte escriu "-". NOMÉS hi has d'afegir fets separats per "|" si l'usuari acaba de revelar informació vital a llarg termini sobre el seu perfil (ex. un projecte, una tecnologia que aprèn, preferències). Evita guardar dades temporals o de xerrada casual.
+
+Aquest és el text visible a la seva pantalla ara mateix:
 """
 ${pageText}
 """
@@ -128,7 +185,7 @@ ${notesContext}
 MOLT IMPORTANT SOBRE LA CERCA:
 Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actualitat, dates, conferències, documentació o qualsevol cosa que no estigui al "coneixement base oficial", **HAS D'UTILITZAR GOOGLE SEARCH per buscar la resposta a Internet** i respondre-li amb la informació trobada. Mai diguis "no ho tinc als meus apunts" si ho pots buscar a Google.`;
 
-        // 3. Format de l'historial per a Gemini
+        // ── 3. Historial ────────────────────────────────────────────────────
         const formattedHistory = history.map((msg: any) => ({
             role: msg.role === 'user' ? 'user' : 'model',
             parts: [{ text: msg.content }]
@@ -139,63 +196,179 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
             msgParts.push({ inlineData: { data: image.data, mimeType: image.mimeType } });
         }
 
-        // 4. Cascada de models: prova cada un, salta si 429 o 404
-        let lastError: any;
-        for (const modelName of MODELS) {
-            try {
-                const response = await ai.models.generateContent({
-                    model: modelName,
-                    contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                        config: {
-                            systemInstruction: systemInstruction,
-                            tools: [{ googleSearch: {} } as any]
-                        }
-                });
-                console.log(`✅ [Gemini] Model usat: ${modelName}`);
-                
-                let rData;
-                try {
-                    let cleanText = response.text.trim();
-                    if (cleanText.startsWith("```json")) {
-                        cleanText = cleanText.substring(7).replace(/```$/, '').trim();
-                    } else if (cleanText.startsWith("```")) {
-                        cleanText = cleanText.substring(3).replace(/```$/, '').trim();
-                    }
-                    const firstBrace = cleanText.indexOf('{');
-                    const lastBrace = cleanText.lastIndexOf('}');
-                    if (firstBrace !== -1 && lastBrace !== -1) {
-                        cleanText = cleanText.substring(firstBrace, lastBrace + 1);
-                    }
-                    rData = JSON.parse(cleanText);
-                } catch (parseError: any) {
-                    console.warn("Gemini didn't return JSON, falling back to raw text.");
-                    rData = {
-                        reply: response.text,
-                        keywords: [],
-                        memories_to_add: []
-                    };
-                }
-                
-                // Mantenim el camp 'reply' per al frontend actual, 
-                return res.status(200).json({ 
-                    reply: rData.reply,
-                    keywords: rData.keywords || [],
-                    memories_to_add: rData.memories_to_add || []
-                });
-            } catch (e: any) {
-                const is429 = e?.status === 429 || e?.status === 404 || String(e?.message || '').includes('429') || String(e?.message || '').includes('404') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate');
-                if (is429) {
-                    console.warn(`⚠️ [Gemini] ${modelName} rate limit, provant el seguent...`);
-                    lastError = e;
-                    continue;
-                }
-                throw e;
-            }
-        }
+        // ── 4. SSE Stream ───────────────────────────────────────────────────
+        const encoder = new TextEncoder();
 
-        throw lastError ?? new Error('Tots els models de Gemini han fallat');
+        const sseStream = new ReadableStream({
+            async start(controller) {
+                const emit = (event: string, data: object) => {
+                    controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+                };
+
+                let lastError: any;
+                let success = false;
+                let intent = 'THINK'; // Default to THINK
+
+                // Tell frontend we are alive immediately
+                emit('status', { phase: 'thinking', model: 'AI Router' });
+                emit('thought', { text: "Classificant la intenció de la consulta..." });
+
+                // ── 4.1. Dynamic Intent Classification ──────────────────────
+                try {
+                    // Try to quickly classify the intent
+                    const intentRes = await ai.models.generateContent({
+                        model: 'gemini-2.5-flash-lite',
+                        contents: message,
+                        config: {
+                            systemInstruction: "Ets un classificador d'intencions ràpid. Si el missatge de l'usuari requereix informació externa d'internet (actualitat, notícies, esports, dates recents, buscar a google), respon NOMÉS 'SEARCH'. Per qualsevol altra cosa (programació, càlculs, teoria, resum, xerrada), respon NOMÉS 'THINK'. No justifiquis la resposta.",
+                            temperature: 0.1,
+                            maxOutputTokens: 5,
+                        }
+                    });
+                    if (intentRes.text.trim().toUpperCase().includes('SEARCH')) {
+                        intent = 'SEARCH';
+                    }
+                } catch (e) {
+                    console.error("Intent classifier failed, falling back to default:", e);
+                }
+
+                // If it's a search intent, we manually emit a thought to keep the UX alive
+                if (intent === 'SEARCH') {
+                    emit('status', { phase: 'thinking', model: 'Google Search' });
+                    emit('thought', { text: "Buscant a Google informació actualitzada..." });
+                }
+
+                for (const modelName of MODELS) {
+                    if (success) break;
+
+                    try {
+                        const supportsThinking = THINKING_MODELS.has(modelName);
+
+                        const streamConfig: any = {
+                            systemInstruction,
+                        };
+
+                        // Configure Tools OR Thinking based on intent
+                        if (intent === 'SEARCH') {
+                            streamConfig.tools = [{ googleSearch: {} }];
+                        } else if (supportsThinking) {
+                            streamConfig.thinkingConfig = {
+                                includeThoughts: true,
+                                thinkingBudget: 1024,
+                            };
+                        }
+
+                        const response = await ai.models.generateContentStream({
+                            model: modelName,
+                            contents: [...formattedHistory, { role: 'user', parts: msgParts }],
+                            config: streamConfig,
+                        });
+
+                        // Emit thinking status
+                        emit('status', { phase: 'thinking', model: modelName });
+
+                        let accumulatedText = '';
+                        let lastSentIndex = 0;
+                        let hasStartedWriting = false;
+                        // Buffer safety margin: length of META_MARKER + some margin
+                        const BUFFER_MARGIN = META_MARKER.length + 5;
+
+                        for await (const chunk of response) {
+                            // Process each part in the chunk
+                            if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+                                for (const part of chunk.candidates[0].content.parts) {
+                                    // Thought parts (native thinking from Gemini)
+                                    if (part.thought && part.text) {
+                                        emit('thought', { text: part.text });
+                                    }
+                                    // Regular text parts
+                                    else if (part.text) {
+                                        accumulatedText += part.text;
+
+                                        // Check if we've hit the META marker
+                                        const metaIdx = accumulatedText.indexOf(META_MARKER);
+
+                                        if (metaIdx === -1) {
+                                            // No META marker yet — stream text with buffer margin
+                                            const safeEnd = accumulatedText.length - BUFFER_MARGIN;
+                                            if (safeEnd > lastSentIndex) {
+                                                const toSend = accumulatedText.substring(lastSentIndex, safeEnd);
+                                                if (toSend) {
+                                                    if (!hasStartedWriting) {
+                                                        emit('status', { phase: 'writing' });
+                                                        hasStartedWriting = true;
+                                                    }
+                                                    emit('delta', { text: toSend });
+                                                    lastSentIndex = safeEnd;
+                                                }
+                                            }
+                                        }
+                                        // If META found, stop sending text deltas (rest goes to metadata)
+                                    }
+                                }
+                            }
+                        }
+
+                        // ── Stream ended: flush remaining text and parse metadata ───
+                        const { cleanText, keywords, memories_to_add } = parseMetaBlock(accumulatedText);
+
+                        // Send any remaining clean text that wasn't sent yet
+                        const remaining = cleanText.substring(lastSentIndex);
+                        if (remaining) {
+                            if (!hasStartedWriting) {
+                                emit('status', { phase: 'writing' });
+                            }
+                            emit('delta', { text: remaining });
+                        }
+
+                        // Emit metadata
+                        emit('metadata', { keywords, memories_to_add });
+                        emit('done', {});
+                        success = true;
+
+                    } catch (e: any) {
+                        const errMsg = String(e?.message || '');
+                        const errStatus = e?.status;
+                        const isRetryable =
+                            errStatus === 429 || errStatus === 404 ||
+                            errMsg.includes('429') || errMsg.includes('404') ||
+                            errMsg.toLowerCase().includes('quota') ||
+                            errMsg.toLowerCase().includes('rate') ||
+                            errMsg.toLowerCase().includes('not found') ||
+                            errMsg.toLowerCase().includes('not supported');
+
+                        if (isRetryable) {
+                            lastError = e;
+                            continue;
+                        }
+                        // Non-retryable error — emit error and stop
+                        emit('error', { message: e.message || 'Error intern del servidor' });
+                        emit('done', {});
+                        success = true; // prevent further retries
+                    }
+                }
+
+                if (!success) {
+                    emit('error', { message: lastError?.message || 'Tots els models de Gemini han fallat' });
+                    emit('done', {});
+                }
+
+                controller.close();
+            }
+        });
+
+        return new Response(sseStream, {
+            status: 200,
+            headers: {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+                ...CORS_HEADERS,
+            },
+        });
+
     } catch (error: any) {
-        console.error('[Gemini API Error]', error);
-        res.status(500).json({ error: 'Error intern del servidor' });
+        console.error('[Chat API Error]', error);
+        return jsonResponse({ error: 'Error intern del servidor' }, 500);
     }
 }

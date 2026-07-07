@@ -11,6 +11,7 @@ import 'katex/dist/katex.min.css';
 import SubjectHoursWidget from './Widgets/SubjectHoursWidget';
 import SubjectEvaluationWidget from './Widgets/SubjectEvaluationWidget';
 import SubjectCompetenciesWidget from './Widgets/SubjectCompetenciesWidget';
+import AIStreamingIndicator from '../../AIStreamingIndicator';
 
 interface RoadmapAIPromptBarProps {
     isOpen: boolean;
@@ -38,6 +39,10 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [attachedFile, setAttachedFile] = useState<{ mimeType: string, data: string, name: string } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    
+    // Nous estats per a l'stream
+    const [streamPhase, setStreamPhase] = useState<'idle' | 'connecting' | 'thinking' | 'writing' | 'done'>('idle');
+    const [thoughtText, setThoughtText] = useState('');
 
     const processFile = (file: File) => {
         if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
@@ -162,49 +167,68 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
             const decoder = new TextDecoder();
             let aiResponse = "";
             let changes: any[] = [];
-            let buffer = "";
+            let sseBuffer = "";
             const aiMsgId = (Date.now() + 1).toString();
 
             // Afegim el missatge buit abans de començar l'streaming
             setMessages(prev => [...prev, { id: aiMsgId, role: 'ai', content: "", changes: [] }]);
+            setStreamPhase('connecting');
+            setThoughtText('');
 
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
 
-                buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n');
+                sseBuffer += decoder.decode(value, { stream: true });
+                const events = sseBuffer.split('\n\n');
+                sseBuffer = events.pop() || '';
 
-                // L'última línia pot estar incompleta si s'ha tallat el chunk TCP, la guardem
-                buffer = lines.pop() || "";
+                for (const eventBlock of events) {
+                    if (!eventBlock.trim()) continue;
 
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const dataStr = line.slice(6);
-                        if (dataStr.trim() === '[DONE]') continue;
+                    let eventType = 'message';
+                    let eventData = '';
 
-                        try {
-                            const parsed = JSON.parse(dataStr);
+                    for (const line of eventBlock.split('\n')) {
+                        if (line.startsWith('event: ')) {
+                            eventType = line.substring(7).trim();
+                        } else if (line.startsWith('data: ')) {
+                            eventData = line.substring(6);
+                        }
+                    }
 
-                            if (parsed.type === 'text') {
-                                aiResponse += parsed.content;
+                    if (!eventData || eventData.trim() === '[DONE]') continue;
+
+                    try {
+                        const parsed = JSON.parse(eventData);
+
+                        switch (eventType) {
+                            case 'status':
+                                if (parsed.phase === 'thinking') setStreamPhase('thinking');
+                                else if (parsed.phase === 'writing') setStreamPhase('writing');
+                                break;
+                            case 'thought':
+                                setThoughtText(prev => prev + parsed.text);
+                                break;
+                            case 'message':
+                                aiResponse += parsed.text;
                                 setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, content: aiResponse } : m));
-                            } else if (parsed.type === 'actions') {
-                                changes = parsed.content;
+                                break;
+                            case 'actions':
+                                changes = parsed.actions || [];
                                 setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, changes } : m));
-
-                                // Apliquem canvis reals a la UI en temps real
                                 for (const change of changes) {
                                     if (change.type === 'add' && change.subject) {
                                         addSubjectNode(change.subject, 'optional');
                                     }
                                 }
-                            } else if (parsed.type === 'error') {
-                                setError(parsed.content);
-                            }
-                        } catch (e) {
-                            // Ignorar chunks mal formats
+                                break;
+                            case 'error':
+                                setError(parsed.message || parsed.content);
+                                break;
                         }
+                    } catch (e) {
+                        // Ignorar chunks mal formats
                     }
                 }
             }
@@ -216,6 +240,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
             setError(err.message || 'Error comunicant amb la IA');
         } finally {
             setIsGenerating(false);
+            setStreamPhase('done');
             if (textareaRef.current) {
                 textareaRef.current.focus();
             }
@@ -346,11 +371,13 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                             <div className={`flex flex-col gap-2 ${msg.role === 'user' ? 'max-w-[85%] items-end' : 'w-[85%] items-start'}`}>
                                                 <div className="px-6 py-4 rounded-[24px] text-[15px] w-full leading-relaxed text-slate-200 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] backdrop-blur-xl border border-white/10 bg-slate-800/40">
                                                     {msg.role === 'ai' ? (
-                                                        !msg.content && isGenerating ? (
-                                                            <div className="flex gap-1.5 items-center h-6 py-1">
-                                                                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0 }} className="w-1.5 h-1.5 rounded-full bg-fuchsia-500" />
-                                                                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.15 }} className="w-1.5 h-1.5 rounded-full bg-fuchsia-400" />
-                                                                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.3 }} className="w-1.5 h-1.5 rounded-full bg-fuchsia-300" />
+                                                        !msg.content && streamPhase !== 'writing' ? (
+                                                            <div className="-mx-2 -my-2 min-w-[200px]">
+                                                                <AIStreamingIndicator 
+                                                                    phase={streamPhase === 'idle' ? 'connecting' : streamPhase}
+                                                                    thoughtText={thoughtText}
+                                                                    renderAvatar={(size, color) => <Sparkles size={size} className={color} />}
+                                                                />
                                                             </div>
                                                         ) : (
                                                             <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-transparent prose-pre:p-0 prose-pre:border-none prose-a:text-sky-400 hover:prose-a:text-sky-300 text-[15px] prose-strong:text-white prose-strong:font-bold prose-ul:my-3 prose-li:my-1 [&_.katex]:text-lg [&_.katex-display]:my-4 [&_.katex-display]:py-3 [&_.katex-display]:overflow-x-auto custom-scrollbar [&_.katex-display]:bg-black/20 [&_.katex-display]:rounded-2xl [&_.katex-display]:border [&_.katex-display]:border-white/5 [&_.katex-display]:shadow-inner">

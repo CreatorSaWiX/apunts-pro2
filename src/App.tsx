@@ -11,7 +11,6 @@ import { AppProviders } from './contexts/AppProviders';
 import Spinner from './components/ui/Spinner';
 import { Analytics } from "@vercel/analytics/react";
 
-import { ConsentBanner } from './components/ui/ConsentBanner';
 import { UpdateManager } from './components/ui/UpdateManager';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
@@ -30,7 +29,6 @@ const ChatBot = lazy(() => import('./components/ChatBot').then(module => ({ defa
 function App() {
   const location = useLocation();
   const showChatBot = location.pathname.startsWith('/tema/');
-  const hasAnalyticsConsent = localStorage.getItem('analytics-consent') === 'granted';
 
   return (
     <AppProviders>
@@ -64,8 +62,7 @@ function App() {
         </AnimatePresence>
         </Suspense>
 
-        {import.meta.env.PROD && hasAnalyticsConsent && <Analytics />}
-        <ConsentBanner />
+        {import.meta.env.PROD && <Analytics />}
         <UpdateManager />
         {showChatBot && <ChatBot />}
       </div>

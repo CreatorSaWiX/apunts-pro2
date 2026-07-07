@@ -10,6 +10,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLocation } from 'react-router-dom';
 import bgImage from '../assets/bg.webp';
+import AIStreamingIndicator from './AIStreamingIndicator';
+import type { StreamPhase } from './AIStreamingIndicator';
 
 interface Message { role: 'user' | 'model'; content: string; attachmentName?: string; attachmentType?: 'image' | 'pdf'; }
 interface ChatMeta { id: string; title: string; updatedAt: number; }
@@ -102,7 +104,9 @@ export const ChatBot: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [streamPhase, setStreamPhase] = useState<StreamPhase>('idle');
+  const [thoughtText, setThoughtText] = useState('');
+  const [streamingText, setStreamingText] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [attachedFile, setAttachedFile] = useState<{ data: string; mimeType: string; name: string } | null>(null);
   const [lastSentTime, setLastSentTime] = useState(0);
@@ -276,7 +280,7 @@ export const ChatBot: React.FC = () => {
     } else {
       scrollToBottom(false); // smooth for new messages
     }
-  }, [messages, isLoading, scrollToBottom]);
+  }, [messages, streamPhase, streamingText, scrollToBottom]);
 
   // ── Send ──────────────────────────────────────────────────────────────────
 
@@ -284,7 +288,7 @@ export const ChatBot: React.FC = () => {
     // — Cooldown guard (anti-bypass: la comprovació és aquí, no només al botó disabled)
     const elapsed = Date.now() - lastSentAt.current;
     if (elapsed < COOLDOWN_MS) return;
-    if ((!input.trim() && !attachedFile) || isLoading) return;
+    if ((!input.trim() && !attachedFile) || streamPhase !== 'idle') return;
 
     // Marca el temps per iniciar el compte enrere visual al component fill
     lastSentAt.current = Date.now();
@@ -303,7 +307,10 @@ export const ChatBot: React.FC = () => {
       ...(fileToSend ? { attachmentName: fileToSend.name, attachmentType: (fileToSend.mimeType === 'application/pdf' ? 'pdf' : 'image') as 'image' | 'pdf' } : {})
     }];
     setMessages(newMessages);
-    setIsLoading(true);
+    setStreamPhase('connecting');
+    setThoughtText('');
+    setStreamingText('');
+
     try {
       let pageText = '';
       try { pageText = (document.querySelector('main') || document.body).innerText.slice(0, 4000); } catch (_) { }
@@ -312,33 +319,128 @@ export const ChatBot: React.FC = () => {
       const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
 
       const res = await fetch('/api/chat', {
-        method: 'POST', 
-        headers: { 
+        method: 'POST',
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ message: userMsg, history: messages.slice(-10), currentPath: window.location.pathname, pageText, image: fileToSend ? { data: fileToSend.data, mimeType: fileToSend.mimeType } : undefined, aiSettings }),
+        body: JSON.stringify({
+          message: userMsg,
+          history: messages.slice(-10),
+          currentPath: window.location.pathname,
+          pageText,
+          image: fileToSend ? { data: fileToSend.data, mimeType: fileToSend.mimeType } : undefined,
+          aiSettings
+        }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Error');
-      const final = [...newMessages, { role: 'model' as const, content: data.reply }];
+
+      if (!res.ok) {
+        // Non-SSE error response (auth, validation, etc.)
+        const errorData = await res.json().catch(() => ({ error: 'Error desconegut' }));
+        throw new Error(errorData.error || 'Error');
+      }
+
+      // ── Parse SSE stream ─────────────────────────────────────────────
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('El navegador no suporta streaming');
+
+      const decoder = new TextDecoder();
+      let sseBuffer = '';
+      let fullReplyText = '';
+      let metadata: { keywords?: string[]; memories_to_add?: string[] } = {};
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        sseBuffer += decoder.decode(value, { stream: true });
+
+        // Parse SSE lines: each event ends with \n\n
+        const events = sseBuffer.split('\n\n');
+        // Keep the last incomplete chunk in the buffer
+        sseBuffer = events.pop() || '';
+
+        for (const eventBlock of events) {
+          if (!eventBlock.trim()) continue;
+
+          let eventType = 'message';
+          let eventData = '';
+
+          for (const line of eventBlock.split('\n')) {
+            if (line.startsWith('event: ')) {
+              eventType = line.substring(7).trim();
+            } else if (line.startsWith('data: ')) {
+              eventData = line.substring(6);
+            }
+          }
+
+          if (!eventData) continue;
+
+          try {
+            const parsed = JSON.parse(eventData);
+
+            switch (eventType) {
+              case 'status':
+                if (parsed.phase === 'thinking') setStreamPhase('thinking');
+                else if (parsed.phase === 'writing') setStreamPhase('writing');
+                break;
+
+              case 'thought':
+                setStreamPhase('thinking');
+                setThoughtText(prev => prev + parsed.text);
+                break;
+
+              case 'delta':
+                if (fullReplyText === '') setStreamPhase('writing');
+                fullReplyText += parsed.text;
+                setStreamingText(fullReplyText);
+                break;
+
+              case 'metadata':
+                metadata = parsed;
+                break;
+
+              case 'error':
+                throw new Error(parsed.message || 'Error del servidor');
+
+              case 'done':
+                // Handled after the loop
+                break;
+            }
+          } catch (parseErr: any) {
+            if (eventType === 'error') throw parseErr;
+            // Skip unparseable events
+          }
+        }
+      }
+
+      // ── Consolidate final message ───────────────────────────────────
+      const finalText = fullReplyText || streamingText || 'Sense resposta.';
+      const final = [...newMessages, { role: 'model' as const, content: finalText }];
       setMessages(final);
+      setStreamingText('');
+      setStreamPhase('done');
+
       await saveChat(currentChatId, final, autoTitle);
       fetchChatList().then(setChatList);
-      
-      if (data.memories_to_add && data.memories_to_add.length > 0) {
+
+      if (metadata.memories_to_add && metadata.memories_to_add.length > 0) {
         setAiSettings({
           ...aiSettings,
           userContext: {
             ...aiSettings.userContext,
             userPreferredName: aiSettings.userContext?.userPreferredName || '',
-            memories: [...(aiSettings.userContext?.memories || []), ...data.memories_to_add]
+            memories: [...(aiSettings.userContext?.memories || []), ...metadata.memories_to_add]
           }
         });
       }
     } catch (err: any) {
       setMessages(prev => [...prev, { role: 'model', content: `**Error:** ${err.message}` }]);
-    } finally { setIsLoading(false); }
+    } finally {
+      setStreamPhase('idle');
+      setThoughtText('');
+      setStreamingText('');
+    }
   };
 
   const isHomePage = location.pathname === '/';
@@ -524,15 +626,24 @@ export const ChatBot: React.FC = () => {
                   )}
                 </div>
               ))}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="w-6 h-6 rounded-md bg-slate-800 flex items-center justify-center shrink-0 mr-4 mt-1 overflow-hidden">
+              {/* AI Streaming Indicator (connecting / thinking) */}
+              {(streamPhase === 'connecting' || streamPhase === 'thinking') && (
+                <AIStreamingIndicator
+                  phase={streamPhase}
+                  thoughtText={thoughtText}
+                  renderAvatar={renderAIAvatar}
+                />
+              )}
+              {/* Streaming text (writing phase) */}
+              {streamPhase === 'writing' && streamingText && (
+                <div className="flex w-full items-start gap-3 justify-start">
+                  <div className="w-6 h-6 rounded-md bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0 mt-1 overflow-hidden">
                     {renderAIAvatar(14, "text-slate-400")}
                   </div>
-                  <div className="flex gap-1.5 items-center h-8">
-                    {[0, 0.2, 0.4].map((delay, i) => (
-                      <motion.div key={i} animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.4, delay }} className="w-2 h-2 rounded-full bg-slate-500" />
-                    ))}
+                  <div className="max-w-[85%] text-slate-300">
+                    <div className={`${MARKDOWN_CLS} ai-cursor-blink`}>
+                      <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{streamingText}</ReactMarkdown>
+                    </div>
                   </div>
                 </div>
               )}
@@ -582,7 +693,7 @@ export const ChatBot: React.FC = () => {
                   />
                   <SendButton
                     onClick={handleSend}
-                    disabled={(!input.trim() && !attachedFile) || isLoading}
+                    disabled={(!input.trim() && !attachedFile) || streamPhase !== 'idle'}
                     hasInput={!!(input.trim() || attachedFile)}
                     lastSentTime={lastSentTime}
                     cooldownMs={COOLDOWN_MS}

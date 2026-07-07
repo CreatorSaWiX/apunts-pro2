@@ -3,7 +3,7 @@ import { ArrowUp, Sparkles, StopCircle, Plus, X } from 'lucide-react';
 import { useTasks } from '../../contexts/TasksContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
-// import type { Task } from '../../types/tasks';
+import AIStreamingIndicator, { type StreamPhase } from '../AIStreamingIndicator';
 
 interface AIPromptBarProps {
     isOpen: boolean;
@@ -13,11 +13,14 @@ interface AIPromptBarProps {
 const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
     const [prompt, setPrompt] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
+    const [streamPhase, setStreamPhase] = useState<StreamPhase>('idle');
+    const [thoughtText, setThoughtText] = useState('');
     const [error, setError] = useState<string | null>(null);
     const { tasks, addTask, updateTask, deleteTask, subjects } = useTasks();
     const { aiSettings } = useSettings();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
     const [attachedFile, setAttachedFile] = useState<{ mimeType: string, data: string, name: string } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
 
@@ -64,15 +67,29 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
         }
     }, [isOpen]);
 
+    const handleStop = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+        }
+        setIsGenerating(false);
+        setStreamPhase('idle');
+        setThoughtText('');
+    };
+
     const handleGenerate = async () => {
-        if (!prompt.trim() || isGenerating) return;
+        if ((!prompt.trim() && !attachedFile) || isGenerating) return;
 
         setIsGenerating(true);
         setError(null);
+        setStreamPhase('connecting');
+        setThoughtText('');
 
         try {
             const { auth } = await import('../../lib/firebase');
             const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+
+            abortControllerRef.current = new AbortController();
 
             const response = await fetch('/api/planner-ai', {
                 method: 'POST',
@@ -87,52 +104,106 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                     currentDate: new Date().toISOString(),
                     aiSettings,
                     attachedFile
-                })
+                }),
+                signal: abortControllerRef.current.signal
             });
 
             if (!response.ok) {
-                const data = await response.json();
+                const data = await response.json().catch(() => ({ error: 'Error desconegut' }));
                 throw new Error(data.error || 'Error al generar tasques');
             }
 
-            const data = await response.json();
-            const actions = data.actions;
+            const reader = response.body?.getReader();
+            if (!reader) throw new Error('El navegador no suporta streaming');
 
-            if (actions && Array.isArray(actions)) {
-                if (actions.length > 0) {
-                    for (const action of actions) {
-                        if (action.type === 'CREATE' && action.task) {
-                            await addTask({
-                                title: action.task.title || 'Tasca AI',
-                                description: action.task.description || '',
-                                status: action.task.status || 'TODO',
-                                priority: action.task.priority || 'MEDIUM',
-                                dueDate: action.task.dueDate || null,
-                                startDate: action.task.startDate || null,
-                                estimatedMinutes: action.task.estimatedMinutes || 60,
-                                subjectId: action.task.subjectId || undefined,
-                                source: 'AI'
-                            });
-                        } else if (action.type === 'UPDATE' && action.taskId && action.updates) {
-                            await updateTask(action.taskId, action.updates);
-                        } else if (action.type === 'DELETE' && action.taskId) {
-                            await deleteTask(action.taskId);
+            const decoder = new TextDecoder();
+            let sseBuffer = '';
+            
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                sseBuffer += decoder.decode(value, { stream: true });
+                const events = sseBuffer.split('\n\n');
+                sseBuffer = events.pop() || '';
+
+                for (const eventBlock of events) {
+                    if (!eventBlock.trim()) continue;
+
+                    let eventType = 'message';
+                    let eventData = '';
+
+                    for (const line of eventBlock.split('\n')) {
+                        if (line.startsWith('event: ')) {
+                            eventType = line.substring(7).trim();
+                        } else if (line.startsWith('data: ')) {
+                            eventData = line.substring(6);
                         }
                     }
+
+                    if (!eventData) continue;
+
+                    try {
+                        const parsed = JSON.parse(eventData);
+
+                        switch (eventType) {
+                            case 'status':
+                                if (parsed.phase === 'thinking') setStreamPhase('thinking');
+                                else if (parsed.phase === 'writing') setStreamPhase('writing');
+                                break;
+                            case 'thought':
+                                setThoughtText(prev => prev + parsed.text);
+                                break;
+                            case 'actions':
+                                setStreamPhase('writing'); 
+                                const actions = parsed.actions;
+                                if (actions && Array.isArray(actions) && actions.length > 0) {
+                                    for (const action of actions) {
+                                        if (action.type === 'CREATE' && action.task) {
+                                            await addTask({
+                                                title: action.task.title || 'Tasca AI',
+                                                description: action.task.description || '',
+                                                status: action.task.status || 'TODO',
+                                                priority: action.task.priority || 'MEDIUM',
+                                                dueDate: action.task.dueDate || null,
+                                                startDate: action.task.startDate || null,
+                                                estimatedMinutes: action.task.estimatedMinutes || 60,
+                                                subjectId: action.task.subjectId || undefined,
+                                                source: 'AI'
+                                            });
+                                        } else if (action.type === 'UPDATE' && action.taskId && action.updates) {
+                                            await updateTask(action.taskId, action.updates);
+                                        } else if (action.type === 'DELETE' && action.taskId) {
+                                            await deleteTask(action.taskId);
+                                        }
+                                    }
+                                }
+                                break;
+                            case 'error':
+                                throw new Error(parsed.message);
+                            case 'done':
+                                setStreamPhase('done');
+                                setPrompt('');
+                                setAttachedFile(null);
+                                window.dispatchEvent(new CustomEvent('ai-magic-done'));
+                                onClose();
+                                break;
+                        }
+                    } catch (e) {
+                        console.error('Error parsejant event SSE:', e);
+                    }
                 }
-                setPrompt('');
-                setAttachedFile(null);
-                window.dispatchEvent(new CustomEvent('ai-magic-done'));
-                onClose();
-            } else {
-                setError('La resposta de la IA no té el format correcte.');
             }
 
         } catch (err: any) {
+            if (err.name === 'AbortError') return;
             console.error(err);
             setError(err.message);
         } finally {
             setIsGenerating(false);
+            setStreamPhase('idle');
+            setThoughtText('');
+            abortControllerRef.current = null;
         }
     };
 
@@ -142,7 +213,8 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
             handleGenerate();
         }
         if (e.key === 'Escape') {
-            onClose();
+            if (isGenerating) handleStop();
+            else onClose();
         }
     };
 
@@ -220,28 +292,38 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                                     <Plus size={20} />
                                 </button>
 
-                                {/* Auto-growing Textarea */}
-                                <textarea
-                                    ref={textareaRef}
-                                    value={prompt}
-                                    onChange={(e) => setPrompt(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                    disabled={isGenerating}
-                                    placeholder="Escriu què necessites planificar..."
-                                    className="flex-1 max-h-[200px] min-h-[44px] py-[12px] bg-transparent text-[15px] leading-relaxed text-white placeholder:text-slate-500 focus:outline-none resize-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-                                    rows={1}
-                                />
+                                {/* Auto-growing Textarea or Streaming Indicator */}
+                                <div className="flex-1 min-h-[44px] py-[12px] flex flex-col justify-center">
+                                    {streamPhase !== 'idle' && streamPhase !== 'done' ? (
+                                        <AIStreamingIndicator 
+                                            phase={streamPhase} 
+                                            thoughtText={thoughtText}
+                                            hideAvatar={true}
+                                        />
+                                    ) : (
+                                        <textarea
+                                            ref={textareaRef}
+                                            value={prompt}
+                                            onChange={(e) => setPrompt(e.target.value)}
+                                            onKeyDown={handleKeyDown}
+                                            disabled={isGenerating}
+                                            placeholder="Escriu què necessites planificar..."
+                                            className="w-full max-h-[200px] bg-transparent text-[15px] leading-relaxed text-white placeholder:text-slate-500 focus:outline-none resize-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                                            rows={1}
+                                        />
+                                    )}
+                                </div>
 
-                                {/* Submit Button */}
+                                {/* Submit / Stop Button */}
                                 <div className="pr-2 pb-2 shrink-0">
                                     <button
-                                        onClick={handleGenerate}
-                                        disabled={(!prompt.trim() && !attachedFile) || isGenerating}
+                                        onClick={isGenerating ? handleStop : handleGenerate}
+                                        disabled={(!prompt.trim() && !attachedFile && !isGenerating)}
                                         className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 
                                         ${(!prompt.trim() && !attachedFile && !isGenerating)
                                                 ? 'bg-white/5 text-white/30 cursor-not-allowed'
                                                 : isGenerating
-                                                    ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50'
+                                                    ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50 hover:bg-fuchsia-500/30'
                                                     : 'bg-white text-black hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]'
                                             }`}
                                     >
