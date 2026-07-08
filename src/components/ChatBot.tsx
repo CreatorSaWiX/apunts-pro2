@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, ArrowUp, Plus, Clock, UploadCloud, Pencil, Trash2, Check, LogIn } from 'lucide-react';
+import { Bot, X, ArrowUp, Plus, Clock, UploadCloud, Pencil, Trash2, Check, LogIn, Brain } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -13,7 +13,7 @@ import bgImage from '../assets/bg.webp';
 import AIStreamingIndicator from './AIStreamingIndicator';
 import type { StreamPhase } from './AIStreamingIndicator';
 
-interface Message { role: 'user' | 'model'; content: string; attachmentName?: string; attachmentType?: 'image' | 'pdf'; }
+interface Message { role: 'user' | 'model'; content: string; attachmentName?: string; attachmentType?: 'image' | 'pdf'; addedMemories?: string[]; }
 interface ChatMeta { id: string; title: string; updatedAt: number; }
 
 const newId = () => `chat_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
@@ -416,7 +416,7 @@ export const ChatBot: React.FC = () => {
 
       // ── Consolidate final message ───────────────────────────────────
       const finalText = fullReplyText || streamingText || 'Sense resposta.';
-      const final = [...newMessages, { role: 'model' as const, content: finalText }];
+      const final = [...newMessages, { role: 'model' as const, content: finalText, addedMemories: metadata.memories_to_add }];
       setMessages(final);
       setStreamingText('');
       setStreamPhase('done');
@@ -611,8 +611,19 @@ export const ChatBot: React.FC = () => {
                         {msg.content && <p className="whitespace-pre-wrap text-[15px]">{msg.content}</p>}
                       </div>
                     ) : (
-                      <div className={MARKDOWN_CLS}>
-                        <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{msg.content}</ReactMarkdown>
+                      <div className="flex flex-col items-start">
+                        <div className={MARKDOWN_CLS}>
+                          <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{msg.content}</ReactMarkdown>
+                        </div>
+                        {msg.addedMemories && msg.addedMemories.length > 0 && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="inline-flex -mt-1 mb-1 px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-[11px] font-medium text-slate-400 tracking-wide select-none"
+                          >
+                            Memòria actualitzada
+                          </motion.div>
+                        )}
                       </div>
                     )}
                   </div>

@@ -112,40 +112,53 @@ export default defineConfig(({ mode }) => {
                   const { message, history, currentPath = '/', pageText = '', image, aiSettings } = JSON.parse(body);
                   const { GoogleGenAI } = await import('@google/genai');
 
-                  // Per evitar el bucle infinit de recàrrega de Vite, llegim el fitxer manualment 
-                  // en lloc d'utilitzar import() que Vite rastreja com a dependència.
-                  const fs = await import('node:fs');
-                  const path = await import('node:path');
-                  let allPersonalNotes = [];
-                  try {
-                    const filePath = path.resolve('./.content-collections/generated/allPersonalNotes.json');
-                    if (fs.existsSync(filePath)) {
-                      const fileContent = await fs.promises.readFile(filePath, 'utf-8');
-                      // Usem JSON.parse enlloc d'eval per evitar vulnerabilitats
-                      allPersonalNotes = JSON.parse(fileContent);
-                    } else {
-                      // Fallback si és el fitxer .js
-                      const jsPath = path.resolve('./.content-collections/generated/allPersonalNotes.js');
-                      if (fs.existsSync(jsPath)) {
-                        const fileContent = await fs.promises.readFile(jsPath, 'utf-8');
-                        const jsonStr = fileContent.replace('export default', '').trim().replace(/;$/, '');
-                        allPersonalNotes = JSON.parse(jsonStr);
-                      }
-                    }
-                  } catch (e) {
-                    console.error("Error llegint els apunts locals:", e);
-                  }
-
                   const apiKey = env.GEMINI_API_KEY;
                   if (!apiKey) {
                     res.statusCode = 500;
                     res.end(JSON.stringify({ error: 'Clau de Gemini no configurada al servidor (.env.local)' }));
                     return;
                   }
-
-                  const notesContext = allPersonalNotes
-                    .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
-                    .join('\n\n---\n\n');
+                  
+                  let notesContext = "";
+                  try {
+                    const aiEmbedding = new GoogleGenAI({ apiKey });
+                    const embedResponse = await aiEmbedding.models.embedContent({
+                        model: 'gemini-embedding-2',
+                        contents: message,
+                    });
+                    const userVector = embedResponse.embeddings?.[0]?.values;
+                    
+                    if (userVector) {
+                        const fs = await import('node:fs');
+                        const path = await import('node:path');
+                        const embeddingsPath = path.resolve('./src/data/embeddings.json');
+                        if (fs.existsSync(embeddingsPath)) {
+                            const data = await fs.promises.readFile(embeddingsPath, 'utf-8');
+                            const embeddingsData = JSON.parse(data);
+                            
+                            const scoredChunks = embeddingsData.map((chunk: any) => {
+                                let dotProduct = 0;
+                                let normA = 0;
+                                let normB = 0;
+                                for (let i = 0; i < userVector.length; i++) {
+                                    dotProduct += userVector[i] * chunk.embedding[i];
+                                    normA += userVector[i] * userVector[i];
+                                    normB += chunk.embedding[i] * chunk.embedding[i];
+                                }
+                                const score = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+                                return { ...chunk, score };
+                            });
+                            
+                            scoredChunks.sort((a: any, b: any) => b.score - a.score);
+                            const topChunks = scoredChunks.slice(0, 7);
+                            notesContext = topChunks
+                                .map((c: any) => `## Tema: ${c.title} (Relevància: ${(c.score * 100).toFixed(1)}%)\n\n${c.content}`)
+                                .join('\n\n---\n\n');
+                        }
+                    }
+                  } catch (e) {
+                      console.error("Error al calcular Vector Search local a Vite:", e);
+                  }
 
                   const genAI = new GoogleGenAI({ apiKey });
 
@@ -184,10 +197,10 @@ RESPON DE FORMA MOLT NATURAL, BREU I HUMANA. NO siguis robòtic ni donis explica
 
 Al FINAL de la teva resposta (després de tot el contingut), afegeix EXACTAMENT aquest bloc de metadades en una línia nova:
 
----META---
+<META>
 KEYWORDS: paraula1, paraula2, paraula3
 MEMORIES: -
----END---
+</META>
 
 On KEYWORDS són 3-5 paraules clau rellevants de la conversa.
 On MEMORIES: per defecte escriu "-". NOMÉS hi has d'afegir fets separats per "|" si l'usuari acaba de revelar informació vital a llarg termini sobre el seu perfil (ex. un projecte, una tecnologia que aprèn, preferències). Evita guardar dades temporals o de xerrada casual.
@@ -227,8 +240,8 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
 
                   let lastError: any;
                   let replied = false;
-                  const META_MARKER = '---META---';
-                  const META_END = '---END---';
+                  const META_MARKER = '<META>';
+                  const META_END = '</META>';
 
                   function parseMetaBlock(fullText: string) {
                       const metaIdx = fullText.indexOf(META_MARKER);
@@ -266,12 +279,6 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                         tools: [{ googleSearch: {} } as any]
                       };
 
-                      if (supportsThinking) {
-                        streamConfig.thinkingConfig = {
-                          includeThoughts: true,
-                          thinkingBudget: 1024,
-                        };
-                      }
 
                       const responseStream = await genAI.models.generateContentStream({
                         model: modelName,

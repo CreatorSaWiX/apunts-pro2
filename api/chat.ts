@@ -2,8 +2,10 @@ import { GoogleGenAI } from '@google/genai';
 // Importem els apunts compilats per Content Collections
 import { allPersonalNotes } from '../.content-collections/generated/index.js';
 
-// ── Vercel Edge Runtime ──────────────────────────────────────────────────────
-export const config = { runtime: 'edge' };
+// ── Node.js Serverless Runtime (Millor memòria) ──────────────────────────────────────────────
+// Hem suprimit l'Edge runtime perquè 'embeddings.json' pot pesar uns quants MBs quan escali
+// i l'Edge runtime limita l'script a 1MB/2MB, el que faria caure l'API en producció.
+// Vercel Serverless suporta fins a 50MB, sent perfecte per aquesta arquitectura RAG local.
 
 // ── CORS Headers ─────────────────────────────────────────────────────────────
 const CORS_HEADERS: Record<string, string> = {
@@ -35,8 +37,8 @@ function jsonResponse(data: object, status = 200): Response {
 }
 
 // ── META block parser (keywords + memories) ──────────────────────────────────
-const META_MARKER = '---META---';
-const META_END = '---END---';
+const META_MARKER = '<META>';
+const META_END = '</META>';
 
 function parseMetaBlock(fullText: string): {
     cleanText: string;
@@ -113,28 +115,64 @@ export default async function handler(req: Request): Promise<Response> {
             return jsonResponse({ error: 'Error intern del servidor (C)' }, 500);
         }
 
-        // ── 1. RAG lleuger basat en la URL ───────────────────────────────────
-        const pathLower = currentPath.toLowerCase();
-        let activeSubject: string | null = null;
-        if (pathLower.includes('pro2')) activeSubject = 'pro2';
-        else if (pathLower.includes('m1')) activeSubject = 'm1';
-        else if (pathLower.includes('m2')) activeSubject = 'm2';
+        // ── 1. RAG mitjançant Vector Embeddings ───────────────────────────────────
+        let notesContext = "";
+        try {
+            const aiEmbedding = new GoogleGenAI({ apiKey });
+            const embedResponse = await aiEmbedding.models.embedContent({
+                model: 'gemini-embedding-2',
+                contents: message,
+            });
+            const userVector = embedResponse.embeddings?.[0]?.values;
 
-        let relevantNotes = allPersonalNotes;
-        if (activeSubject) {
-            relevantNotes = relevantNotes.filter((n: any) => n.subject === activeSubject);
+            if (userVector) {
+                // Utilitzem una importació dinàmica per si l'arxiu és massa gran o es genera en build
+                const embeddingsData = await import('../src/data/embeddings.json', { with: { type: "json" } })
+                    .then(m => m.default || m)
+                    .catch(() => []);
+                
+                const scoredChunks = embeddingsData.map((chunk: any) => {
+                    let dotProduct = 0;
+                    let normA = 0;
+                    let normB = 0;
+                    for (let i = 0; i < userVector.length; i++) {
+                        dotProduct += userVector[i] * chunk.embedding[i];
+                        normA += userVector[i] * userVector[i];
+                        normB += chunk.embedding[i] * chunk.embedding[i];
+                    }
+                    const score = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+                    return { ...chunk, score };
+                });
+                
+                // Ordenem de major a menor similitud i agafem els 7 millors fragments
+                scoredChunks.sort((a: any, b: any) => b.score - a.score);
+                const topChunks = scoredChunks.slice(0, 7);
+                
+                notesContext = topChunks
+                    .map((c: any) => `## Tema: ${c.title} (Relevància: ${(c.score * 100).toFixed(1)}%)\n\n${c.content}`)
+                    .join('\n\n---\n\n');
+            }
+        } catch (error) {
+            console.error("Error calculant RAG per embeddings:", error);
+            // Si falla l'embedding (ex: no hi ha internet, no troba l'arxiu local)
+            // tornem a caure al mètode fallback bàsic
+            const pathLower = currentPath.toLowerCase();
+            let activeSubject: string | null = null;
+            if (pathLower.includes('pro2')) activeSubject = 'pro2';
+            else if (pathLower.includes('m1')) activeSubject = 'm1';
+            else if (pathLower.includes('m2')) activeSubject = 'm2';
+
+            let relevantNotes = allPersonalNotes;
+            if (activeSubject) {
+                relevantNotes = relevantNotes.filter((n: any) => n.subject === activeSubject);
+            }
+            if (relevantNotes.length > 5) {
+                relevantNotes = relevantNotes.slice(0, 5);
+            }
+            notesContext = relevantNotes
+                .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
+                .join('\n\n---\n\n');
         }
-
-        const slugMatch = pathLower.split('/').pop();
-        if (slugMatch && relevantNotes.some((n: any) => n.slug && n.slug.includes(slugMatch))) {
-            relevantNotes = relevantNotes.filter((n: any) => n.slug.includes(slugMatch));
-        } else if (relevantNotes.length > 5) {
-            relevantNotes = relevantNotes.slice(0, 5);
-        }
-
-        const notesContext = relevantNotes
-            .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
-            .join('\n\n---\n\n');
 
         // ── 2. Gemini init ───────────────────────────────────────────────────
         const ai = new GoogleGenAI({ apiKey });
@@ -166,10 +204,10 @@ Respon de manera natural, formatant en Markdown. Sigues directe i útil.
 
 Al FINAL de la teva resposta (després de tot el contingut), afegeix EXACTAMENT aquest bloc de metadades en una línia nova:
 
----META---
+<META>
 KEYWORDS: paraula1, paraula2, paraula3
 MEMORIES: -
----END---
+</META>
 
 On KEYWORDS són 3-5 paraules clau rellevants de la conversa.
 On MEMORIES: per defecte escriu "-". NOMÉS hi has d'afegir fets separats per "|" si l'usuari acaba de revelar informació vital a llarg termini sobre el seu perfil (ex. un projecte, una tecnologia que aprèn, preferències). Evita guardar dades temporals o de xerrada casual.

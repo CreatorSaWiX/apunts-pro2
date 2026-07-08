@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:offline-manifest && vite build && tsc -b",
+    "build": "npm run build:embeddings && npm run build:offline-manifest && vite build && tsc -b",
     "lint": "eslint .",
     "preview": "vite preview",
     "build:pdfs": "node scripts/build-pdfs.js",
     "build:solucionaris-pdfs": "tsx scripts/build-solucionaris-pdfs.ts",
-    "build:offline-manifest": "node scripts/build-offline-manifest.js"
+    "build:offline-manifest": "node scripts/build-offline-manifest.js",
+    "build:embeddings": "tsx --env-file=.env.local scripts/build-embeddings.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1073.0",

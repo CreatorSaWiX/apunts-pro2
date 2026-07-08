@@ -31,7 +31,22 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const [prompt, setPrompt] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<Message[]>(() => {
+        try {
+            const saved = sessionStorage.getItem('roadmap-ai-messages');
+            return saved ? JSON.parse(saved) : [];
+        } catch { return []; }
+    });
+
+    useEffect(() => {
+        sessionStorage.setItem('roadmap-ai-messages', JSON.stringify(messages));
+    }, [messages]);
+
+    const suggestions = [
+        "Què haig de fer si vull ser hardware engineer?",
+        "Afegeix IA al meu roadmap",
+        "Com s'avalua EDA?"
+    ];
     const { nodes, addSubjectNode } = useRoadmap();
     const { aiSettings } = useSettings();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -39,7 +54,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [attachedFile, setAttachedFile] = useState<{ mimeType: string, data: string, name: string } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
-    
+
     // Nous estats per a l'stream
     const [streamPhase, setStreamPhase] = useState<'idle' | 'connecting' | 'thinking' | 'writing' | 'done'>('idle');
     const [thoughtText, setThoughtText] = useState('');
@@ -100,9 +115,9 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
         setError(null);
         setIsGenerating(true);
 
-        const newMsg: Message = { 
-            id: Date.now().toString(), 
-            role: 'user', 
+        const newMsg: Message = {
+            id: Date.now().toString(),
+            role: 'user',
             content: userMsg,
             ...(attachedFile && {
                 attachmentName: attachedFile.name,
@@ -362,9 +377,11 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                 <AnimatePresence initial={false}>
                                     {messages.map((msg) => (
                                         <motion.div
+                                            layout
                                             key={msg.id}
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
                                             className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                                         >
                                             {/* Bubble */}
@@ -372,12 +389,13 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                                 <div className="px-6 py-4 rounded-[24px] text-[15px] w-full leading-relaxed text-slate-200 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] backdrop-blur-xl border border-white/10 bg-slate-800/40">
                                                     {msg.role === 'ai' ? (
                                                         !msg.content && streamPhase !== 'writing' ? (
-                                                            <div className="-mx-2 -my-2 min-w-[200px]">
-                                                                <AIStreamingIndicator 
+                                                            <div className="-mx-2 -my-2 min-w-[200px] flex flex-col gap-2">
+                                                                <AIStreamingIndicator
                                                                     phase={streamPhase === 'idle' ? 'connecting' : streamPhase}
                                                                     thoughtText={thoughtText}
                                                                     renderAvatar={(size, color) => <Sparkles size={size} className={color} />}
                                                                 />
+                                                                {streamPhase === 'connecting' && <span className="text-xs text-slate-400 font-medium ml-1.5 animate-pulse">Connectant i analitzant el teu roadmap...</span>}
                                                             </div>
                                                         ) : (
                                                             <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-transparent prose-pre:p-0 prose-pre:border-none prose-a:text-sky-400 hover:prose-a:text-sky-300 text-[15px] prose-strong:text-white prose-strong:font-bold prose-ul:my-3 prose-li:my-1 [&_.katex]:text-lg [&_.katex-display]:my-4 [&_.katex-display]:py-3 [&_.katex-display]:overflow-x-auto custom-scrollbar [&_.katex-display]:bg-black/20 [&_.katex-display]:rounded-2xl [&_.katex-display]:border [&_.katex-display]:border-white/5 [&_.katex-display]:shadow-inner">
@@ -396,7 +414,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                                                 <div className={`flex items-center gap-1.5 text-xs rounded-lg px-2 py-1 w-fit ${msg.attachmentType === 'image'
                                                                     ? 'bg-blue-500/15 border border-blue-400/20 text-blue-300'
                                                                     : 'bg-orange-500/15 border border-orange-400/20 text-orange-300'
-                                                                }`}>
+                                                                    }`}>
                                                                     <span>{msg.attachmentType === 'image' ? '🖼' : '📄'}</span>
                                                                     <span className="truncate max-w-[180px]">{msg.attachmentName}</span>
                                                                 </div>
@@ -439,85 +457,113 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                         )}
 
                         {/* Input Area (Planner AI style) */}
-                        <div className="relative pointer-events-auto">
-                            {/* Glowing Aura (Apple Intelligence Style) */}
-                            <div
-                                className={`absolute -inset-[1px] rounded-[32px] blur-md transition-all duration-700 pointer-events-none
-                                    ${isGenerating
-                                        ? 'bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 opacity-50 animate-[pulse_1s_ease-in-out_infinite]'
-                                        : 'bg-gradient-to-r from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 opacity-20'}
-                                `}
-                            />
+                        <div className="relative pointer-events-auto flex flex-col items-center">
 
-                            {/* Pulsing glow when generating */}
-                            {isGenerating && (
-                                <div className="absolute -inset-4 bg-fuchsia-500/20 blur-3xl rounded-[100%] animate-[pulse_2s_ease-in-out_infinite] pointer-events-none" />
-                            )}
+                            {/* Prompt Suggestions */}
+                            <AnimatePresence>
+                                {messages.length === 0 && !attachedFile && !prompt && !isGenerating && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
+                                        className="flex flex-wrap justify-center gap-2 mb-4 px-4 w-full"
+                                    >
+                                        {suggestions.map((s, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => { setPrompt(s); setTimeout(() => handleGenerate(), 50); }}
+                                                className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs text-slate-300 transition-colors backdrop-blur-md cursor-pointer whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
+                                            >
+                                                {s}
+                                            </button>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
 
-                            {/* Main Input Container */}
-                            <div
-                                className={`relative bg-slate-800/40 backdrop-blur-xl transform-gpu border ${isDragging ? 'border-fuchsia-500/50 bg-slate-800/60' : 'border-white/10'} rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden flex flex-col p-2 transition-colors duration-300`}
-                                onDragOver={onDragOver}
-                                onDragLeave={onDragLeave}
-                                onDrop={onDrop}
-                            >
+                            <div className="relative w-full">
+                                {/* Glowing Aura (Apple Intelligence Style) */}
+                                <div
+                                    className={`absolute -inset-[1px] rounded-[32px] blur-xl transition-all duration-1000 pointer-events-none
+                                        ${isGenerating
+                                            ? 'bg-gradient-to-r from-[#8b5cf6] via-[#d946ef] to-[#06b6d4] bg-[length:200%_auto] animate-[gradient-x_2s_linear_infinite] opacity-60'
+                                            : 'bg-gradient-to-r from-violet-500/30 via-fuchsia-500/30 to-cyan-500/30 opacity-30'}
+                                    `}
+                                />
 
-                                <AnimatePresence>
-                                    {attachedFile && (
-                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="px-4 pt-2">
-                                            <div className="relative inline-block border border-white/10 rounded-xl bg-slate-900/50 p-1 mt-2">
-                                                {attachedFile.mimeType.startsWith('image/') ? (
-                                                    <img src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`} alt="preview" className="h-16 object-contain rounded-lg" loading="lazy" />
-                                                ) : (
-                                                    <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg"><span className="text-xs font-bold text-slate-300">PDF</span></div>
-                                                )}
-                                                <button onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20">
-                                                    <X size={14} />
-                                                </button>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                                {/* Pulsing glow when generating */}
+                                {isGenerating && (
+                                    <div className="absolute -inset-4 bg-fuchsia-500/20 blur-3xl rounded-[100%] animate-[pulse_2s_ease-in-out_infinite] pointer-events-none" />
+                                )}
 
-                                <div className="relative flex items-end gap-2">
+                                {/* Main Input Container */}
+                                <div
+                                    className={`relative bg-slate-900/60 backdrop-blur-2xl transform-gpu border ${isDragging ? 'border-fuchsia-500/50 bg-slate-800/80' : 'border-white/10'} rounded-[24px] shadow-[0_16px_40px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-10px_20px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col p-2 transition-colors duration-300`}
+                                    onDragOver={onDragOver}
+                                    onDragLeave={onDragLeave}
+                                    onDrop={onDrop}
+                                >
 
-                                    {/* File Input */}
-                                    <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf" onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
-                                    <button onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-1.5 ml-1" title="Adjuntar imatge o PDF">
-                                        <Plus size={20} />
-                                    </button>
+                                    <AnimatePresence>
+                                        {attachedFile && (
+                                            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="px-4 pt-2">
+                                                <div className="relative inline-block border border-white/10 rounded-xl bg-slate-900/50 p-1 mt-2">
+                                                    {attachedFile.mimeType.startsWith('image/') ? (
+                                                        <img src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`} alt="preview" className="h-16 object-contain rounded-lg" loading="lazy" />
+                                                    ) : (
+                                                        <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg"><span className="text-xs font-bold text-slate-300">PDF</span></div>
+                                                    )}
+                                                    <button onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20">
+                                                        <X size={14} />
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
 
-                                    {/* Auto-growing Textarea */}
-                                    <textarea
-                                        ref={textareaRef}
-                                        value={prompt}
-                                        onChange={(e) => setPrompt(e.target.value)}
-                                        onKeyDown={handleKeyDown}
-                                        disabled={isGenerating}
-                                        placeholder="Demana el que vulguis al teu tutor..."
-                                        className="flex-1 max-h-[120px] min-h-[44px] py-[12px] bg-transparent text-[15px] leading-relaxed text-white placeholder:text-slate-500 focus:outline-none resize-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-                                        rows={1}
-                                    />
+                                    <div className="relative flex items-end gap-2">
 
-                                    {/* Submit Button */}
-                                    <div className="pr-2 pb-2 shrink-0">
-                                        <button
-                                            onClick={handleGenerate}
-                                            disabled={(!prompt.trim() && !attachedFile) || isGenerating}
-                                            className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 
+                                        {/* Actions Left */}
+                                        <div className="flex items-center pb-1.5 pl-1 gap-1">
+                                            <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf" onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
+                                            <button onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors" title="Adjuntar imatge o PDF">
+                                                <Plus size={20} />
+                                            </button>
+
+                                        </div>
+
+                                        {/* Auto-growing Textarea */}
+                                        <textarea
+                                            ref={textareaRef}
+                                            value={prompt}
+                                            onChange={(e) => setPrompt(e.target.value)}
+                                            onKeyDown={handleKeyDown}
+                                            disabled={isGenerating}
+                                            placeholder={`Escriu un missatge a ${aiSettings?.identity?.name || 'Roadmap AI'}...`}
+                                            className="flex-1 max-h-[120px] min-h-[44px] py-[12px] bg-transparent text-[15px] leading-relaxed text-white placeholder:text-slate-500 focus:outline-none resize-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                                            rows={1}
+                                        />
+
+                                        {/* Submit Button */}
+                                        <div className="pr-2 pb-2 shrink-0">
+                                            <button
+                                                onClick={handleGenerate}
+                                                disabled={(!prompt.trim() && !attachedFile) || isGenerating}
+                                                className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 
                                                 ${(!prompt.trim() && !attachedFile && !isGenerating)
-                                                    ? 'bg-white/5 text-white/30 cursor-not-allowed'
-                                                    : isGenerating
-                                                        ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50'
-                                                        : 'bg-white text-black hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]'
-                                                }`}
-                                        >
-                                            {isGenerating ? (
-                                                <StopCircle size={16} strokeWidth={2.5} className="animate-pulse" />
-                                            ) : (
-                                                <ArrowUp size={16} strokeWidth={3} />
-                                            )}
-                                        </button>
+                                                        ? 'bg-white/5 text-white/30 cursor-not-allowed'
+                                                        : isGenerating
+                                                            ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50'
+                                                            : 'bg-white text-black hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]'
+                                                    }`}
+                                            >
+                                                {isGenerating ? (
+                                                    <StopCircle size={16} strokeWidth={2.5} className="animate-pulse" />
+                                                ) : (
+                                                    <ArrowUp size={16} strokeWidth={3} />
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
