@@ -7,6 +7,8 @@ import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
 import { cpp } from '@codemirror/lang-cpp';
+import { allPersonalNotes } from 'content-collections';
+import AIStreamingIndicator from '../components/AIStreamingIndicator';
 
 const renderInlineCode = (text: string) => {
     if (!text.includes('`')) return text;
@@ -73,26 +75,94 @@ const QuizTimer = React.memo(({
 const QuizPage: React.FC = () => {
     const { id: topicId } = useParams();
 
-    // 1. Initial shuffling logic (Senior: prevent memorizing order)
-    const originalQuiz = useMemo(() => quizzes.find(q => q.topicId === topicId), [topicId]);
+    const [quiz, setQuiz] = useState<any>(null);
+    const [isGenerating, setIsGenerating] = useState(true);
+    const [aiPhase, setAiPhase] = useState<'idle'|'connecting'|'thinking'|'writing'>('connecting');
+    const [aiThought, setAiThought] = useState('');
 
-    const [quiz] = useState(() => {
-        if (!originalQuiz) return null;
-        // Shuffle questions
-        const shuffledQuestions = [...originalQuiz.questions].sort(() => Math.random() - 0.5);
-        // Shuffle options for each question
-        const fullyShuffled = shuffledQuestions.map(q => ({
-            ...q,
-            options: [...q.options].sort(() => Math.random() - 0.5)
-        }));
-        return { ...originalQuiz, questions: fullyShuffled };
-    });
+    useEffect(() => {
+        const loadQuiz = async () => {
+            if (!topicId) return;
+            
+            // 1. Hardcoded quiz?
+            const originalQuiz = quizzes.find(q => q.topicId === topicId);
+            if (originalQuiz) {
+                const fullyShuffled = {
+                    ...originalQuiz,
+                    questions: [...originalQuiz.questions]
+                        .sort(() => Math.random() - 0.5)
+                        .map(q => ({
+                            ...q,
+                            options: [...q.options].sort(() => Math.random() - 0.5)
+                        }))
+                };
+                setQuiz(fullyShuffled);
+                setIsGenerating(false);
+                return;
+            }
+
+            // 2. Not found, generate dynamically!
+            const normalizedTopicId = topicId.replace(/tema(\d)/, 'tema-$1');
+            const topicNote = allPersonalNotes.find(note => note.slug === normalizedTopicId && note.lang === 'ca') || 
+                              allPersonalNotes.find(note => note.slug === normalizedTopicId) ||
+                              allPersonalNotes.find(note => note.slug.startsWith(normalizedTopicId + '-'));
+                              
+            if (!topicNote || !topicNote.content) {
+                setIsGenerating(false); // No content to generate from
+                return;
+            }
+
+            try {
+                setAiPhase('thinking');
+                setAiThought('Llegint apunts i generant test (10 min, 10 preguntes)...');
+                const response = await fetch('/api/generate-quiz', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        topicId: topicId,
+                        markdownContent: topicNote.content
+                    })
+                });
+
+                if (response.ok) {
+                    const generatedQuiz = await response.json();
+                    const fullyShuffled = {
+                        ...generatedQuiz,
+                        questions: [...generatedQuiz.questions]
+                            .sort(() => Math.random() - 0.5)
+                            .map((q: any) => ({
+                                ...q,
+                                options: [...q.options].sort(() => Math.random() - 0.5)
+                            }))
+                    };
+                    setQuiz(fullyShuffled);
+                } else {
+                    const errText = await response.text();
+                    console.error("Failed to generate quiz:", response.status, errText);
+                }
+            } catch (e) {
+                console.error("Error connecting to Gemini", e);
+            } finally {
+                setIsGenerating(false);
+                setAiPhase('idle');
+            }
+        };
+        loadQuiz();
+    }, [topicId]);
 
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
     const [isFinished, setIsFinished] = useState(false);
-    const timeLeftRef = React.useRef(quiz ? quiz.timeLimitSeconds : 0);
-    const [initialTimeLeft, setInitialTimeLeft] = useState(quiz ? quiz.timeLimitSeconds : 0);
+    const timeLeftRef = React.useRef(0);
+    const [initialTimeLeft, setInitialTimeLeft] = useState(0);
+
+    // Update times when quiz loads
+    useEffect(() => {
+        if (quiz) {
+            timeLeftRef.current = quiz.timeLimitSeconds;
+            setInitialTimeLeft(quiz.timeLimitSeconds);
+        }
+    }, [quiz]);
 
     // 2. Persist progress in session storage (Senior: UX protection)
     useEffect(() => {
@@ -192,12 +262,27 @@ const QuizPage: React.FC = () => {
     if (!quiz) {
         return (
             <div className="min-h-screen pt-24 pb-12 px-4 max-w-2xl mx-auto flex flex-col items-center justify-center text-center relative z-10">
-                <AlertTriangle size={48} className="text-amber-500 mb-4" />
-                <h1 className="text-2xl font-bold text-white mb-2">Sense dades</h1>
-                <p className="text-slate-400 mb-8">Encara estem preparant els tests per a aquest tema. Torna-hi més endavant!</p>
-                <Link to="/" className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors">
-                    Tornar a l'inici
-                </Link>
+                {isGenerating ? (
+                    <div className="flex flex-col items-center gap-6">
+                        <div className="bg-slate-900/60 p-8 rounded-[2rem] border border-white/10 shadow-2xl">
+                            <AIStreamingIndicator 
+                                phase={aiPhase} 
+                                thoughtText={aiThought}
+                                hideAvatar={true}
+                            />
+                            <p className="mt-4 text-slate-400 text-sm">{aiThought}</p>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <AlertTriangle size={48} className="text-amber-500 mb-4 mx-auto" />
+                        <h1 className="text-2xl font-bold text-white mb-2">Sense dades</h1>
+                        <p className="text-slate-400 mb-8">No hem pogut trobar el test ni generar-ne un de nou.</p>
+                        <Link to="/" className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors inline-block">
+                            Tornar a l'inici
+                        </Link>
+                    </>
+                )}
             </div>
         );
     }
@@ -222,7 +307,7 @@ const QuizPage: React.FC = () => {
 
                 {!isFinished && (
                     <QuizTimer 
-                        initialTime={initialTimeLeft} 
+                        initialTime={initialTimeLeft > 0 ? initialTimeLeft : (quiz?.timeLimitSeconds || 600)} 
                         isFinished={isFinished} 
                         onTimeUp={() => setIsFinished(true)} 
                         onTick={(t) => {
