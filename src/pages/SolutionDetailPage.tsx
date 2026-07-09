@@ -6,8 +6,19 @@ import { useSolution, useSolutions } from '../hooks/useSolutions';
 import CodeBlock from '../components/ui/CodeBlock';
 import { useAuth } from '../contexts/AuthContext';
 import { courseStructure } from '../content/data/courseStructure';
+import { Suspense, lazy } from 'react';
 import CommentsSection from '../components/comments/CommentsSection';
-import CodeEditor from '../components/ui/CodeEditor';
+
+const CodeEditor = lazy(() => import('../components/ui/CodeEditor'));
+
+const CodeEditorSkeleton = () => (
+    <div className="w-full h-[600px] bg-slate-900/50 animate-pulse rounded-2xl border border-white/10 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-slate-500">
+            <Spinner />
+            <span className="text-sm font-medium">Carregant editor...</span>
+        </div>
+    </div>
+);
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
@@ -24,10 +35,12 @@ const SolutionDetailPage = () => {
     const { user } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [currentCode, setCurrentCode] = useState('');
+    const [prevSolutionId, setPrevSolutionId] = useState<string | undefined>(undefined);
 
-    useEffect(() => {
-        if (solution) setCurrentCode(solution.code || '');
-    }, [solution]);
+    if (solution?.id !== prevSolutionId) {
+        setPrevSolutionId(solution?.id);
+        setCurrentCode(solution?.code || '');
+    }
 
     // Fetch author data
     useEffect(() => {
@@ -331,13 +344,15 @@ const SolutionDetailPage = () => {
                                             </button>
                                         </div>
                                     </div>
-                                    <CodeEditor
-                                        value={currentCode}
-                                        onChange={setCurrentCode}
-                                        height="100%"
-                                        className="bg-transparent h-full flex-1"
-                                        variant="minimal"
-                                    />
+                                    <Suspense fallback={<CodeEditorSkeleton />}>
+                                        <CodeEditor
+                                            value={currentCode}
+                                            onChange={setCurrentCode}
+                                            height="100%"
+                                            className="bg-transparent h-full flex-1"
+                                            variant="minimal"
+                                        />
+                                    </Suspense>
                                 </>
                             ) : (
                                 <CodeBlock

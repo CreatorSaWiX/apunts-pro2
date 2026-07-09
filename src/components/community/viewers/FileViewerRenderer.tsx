@@ -1,8 +1,20 @@
-import CodeViewer from './CodeViewer';
+import { lazy, Suspense } from 'react';
 import Model3DViewer from './Model3DViewer';
 import VideoViewer from './VideoViewer';
-import PdfViewer from './PdfViewer';
 import { Download, File, Box } from 'lucide-react';
+import Spinner from '../../ui/Spinner';
+
+const PdfViewer = lazy(() => import('./PdfViewer'));
+const CodeViewer = lazy(() => import('./CodeViewer'));
+
+const ViewerSkeleton = ({ text }: { text: string }) => (
+    <div className="w-full h-64 md:h-96 bg-slate-900/50 animate-pulse rounded-xl border border-white/10 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-slate-500">
+            <Spinner />
+            <span className="text-sm font-medium">{text}</span>
+        </div>
+    </div>
+);
 
 interface FileViewerRendererProps {
     url: string;
@@ -23,11 +35,19 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
     }
 
     if (type === 'application/pdf') {
-        return <PdfViewer url={url} filename={filename} />;
+        return (
+            <Suspense fallback={<ViewerSkeleton text="Carregant visor PDF..." />}>
+                <PdfViewer url={url} filename={filename} />
+            </Suspense>
+        );
     }
 
     if (CODE_EXTENSIONS.includes(ext) || type.startsWith('text/')) {
-        return <CodeViewer url={url} filename={filename} />;
+        return (
+            <Suspense fallback={<ViewerSkeleton text="Carregant codi..." />}>
+                <CodeViewer url={url} filename={filename} />
+            </Suspense>
+        );
     }
 
     if (MODEL_EXTENSIONS.includes(ext) || type.includes('model')) {

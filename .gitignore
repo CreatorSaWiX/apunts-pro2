@@ -16,3 +16,4 @@ dist-ssr
 .vercel
 .env
 dev-dist
+bundle-report.html

@@ -111,9 +111,10 @@ const AIStreamingIndicator: React.FC<AIStreamingIndicatorProps> = ({
                             <AnimatePresence>
                                 {thoughtText && (
                                     <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
+                                        initial={{ opacity: 0, scaleY: 0 }}
+                                        animate={{ opacity: 1, scaleY: 1 }}
+                                        exit={{ opacity: 0, scaleY: 0 }}
+                                        style={{ originY: 0 }}
                                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                                         className="overflow-hidden"
                                     >

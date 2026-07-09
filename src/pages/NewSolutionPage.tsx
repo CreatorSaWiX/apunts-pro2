@@ -5,7 +5,19 @@ import { useAuth } from '../contexts/AuthContext';
 import { allPersonalNotes } from 'content-collections';
 import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import CodeEditor from '../components/ui/CodeEditor';
+import { Suspense, lazy } from 'react';
+import Spinner from '../components/ui/Spinner';
+
+const CodeEditor = lazy(() => import('../components/ui/CodeEditor'));
+
+const CodeEditorSkeleton = () => (
+    <div className="w-full h-full bg-slate-900/50 animate-pulse rounded-2xl border border-white/10 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-slate-500">
+            <Spinner />
+            <span className="text-sm font-medium">Carregant editor...</span>
+        </div>
+    </div>
+);
 
 const NewSolutionPage = () => {
     const { user } = useAuth();
@@ -133,13 +145,15 @@ const NewSolutionPage = () => {
                     </h2>
 
                     <div className="relative h-96">
-                        <CodeEditor
-                            value={code}
-                            onChange={setCode}
-                            height="100%"
-                            className="bg-slate-950/50"
-                            placeholder="#include <iostream>..."
-                        />
+                        <Suspense fallback={<CodeEditorSkeleton />}>
+                            <CodeEditor
+                                value={code}
+                                onChange={setCode}
+                                height="100%"
+                                className="bg-slate-950/50 h-full"
+                                placeholder="#include <iostream>..."
+                            />
+                        </Suspense>
                     </div>
                 </div>
 

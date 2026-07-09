@@ -566,12 +566,12 @@ const QuizPage: React.FC = () => {
                         <button
                             onClick={handleNext}
                             disabled={!selectedAnswers[currentQ.id]}
-                            className={`flex items-center justify-center gap-2 px-8 xl:px-10 py-3.5 xl:py-4 rounded-2xl font-black uppercase tracking-widest text-xs xl:text-sm transition-all duration-300 relative overflow-hidden group ${!!selectedAnswers[currentQ.id]
+                            className={`flex items-center justify-center gap-2 px-8 xl:px-10 py-3.5 xl:py-4 rounded-2xl font-black uppercase tracking-widest text-xs xl:text-sm transition-all duration-300 relative overflow-hidden group ${selectedAnswers[currentQ.id]
                                 ? 'bg-white text-slate-950 shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:scale-105 active:scale-95'
                                 : 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed opacity-50'
                                 }`}
                         >
-                            {!!selectedAnswers[currentQ.id] && (
+                            {selectedAnswers[currentQ.id] && (
                                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                             )}
 
@@ -579,7 +579,7 @@ const QuizPage: React.FC = () => {
                             {currentQuestionIdx !== quiz.questions.length - 1 && <ChevronRight size={18} className="relative z-10" />}
 
                             {/* Keyboard hint */}
-                            {!!selectedAnswers[currentQ.id] && (
+                            {selectedAnswers[currentQ.id] && (
                                 <span className="hidden lg:block absolute bottom-1 right-2 text-[8px] font-bold opacity-30 text-slate-900">
                                     ↵ ENTER
                                 </span>

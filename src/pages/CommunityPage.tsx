@@ -380,6 +380,7 @@ const CommunityPage = () => {
                 <LiquidToolbar delay={0.5}>
                     {/* Assignatures */}
                     <LiquidToolbarButton 
+                        key="assignatures"
                         onClick={() => setShowSubjectFilter(true)}
                         active={activeSubject !== 'all'}
                     >
@@ -389,10 +390,10 @@ const CommunityPage = () => {
                         {activeSubject !== 'all' && <span className="ml-1 text-[10px] bg-black/20 text-current px-1.5 py-0.5 rounded-md uppercase">{activeSubject}</span>}
                     </LiquidToolbarButton>
                     
-                    <div className="w-px h-6 bg-white/10 mx-1" />
+                    <div key="divider-1" className="w-px h-6 bg-white/10 mx-1" />
 
                     {/* Raresa */}
-                    <div className="relative">
+                    <div key="raresa" className="relative">
                         <LiquidToolbarButton
                             onClick={() => setShowRarityFilter(!showRarityFilter)}
                             active={activeRank !== null}
@@ -431,10 +432,10 @@ const CommunityPage = () => {
                         </AnimatePresence>
                     </div>
 
-                    <div className="w-px h-6 bg-white/10 mx-1" />
+                    <div key="divider-2" className="w-px h-6 bg-white/10 mx-1" />
 
                     {/* Buscar */}
-                    <div className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-[180px] sm:w-[280px] ml-1' : 'w-10 ml-0'}`}>
+                    <div key="buscar" className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-[180px] sm:w-[280px] ml-1' : 'w-10 ml-0'}`}>
                         <button 
                             onClick={() => {
                                 if (isSearchOpen && !searchQuery) setIsSearchOpen(false);
@@ -537,7 +538,6 @@ const CommunityPage = () => {
                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pt-8">
                                 {posts.map((post, index) => {
                                     const cardProps = {
-                                        key: post.id,
                                         onClick: () => setSelectedPost(post),
                                         className: "w-full cursor-pointer",
                                     };
@@ -554,13 +554,13 @@ const CommunityPage = () => {
 
                                     if (posts.length === index + 1) {
                                         return (
-                                            <div ref={lastPostRef} {...cardProps}>
+                                            <div key={post.id} ref={lastPostRef} {...cardProps}>
                                                 {cardContent}
                                             </div>
                                         );
                                     }
                                     return (
-                                        <div {...cardProps}>
+                                        <div key={post.id} {...cardProps}>
                                             {cardContent}
                                         </div>
                                     );

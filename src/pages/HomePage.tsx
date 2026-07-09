@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import { useSettings } from '../contexts/SettingsContext';
 import Hero from '../components/Hero';
@@ -13,14 +13,26 @@ const HomePage = () => {
     const { subject, setSubject } = useSubject();
     const { homeSubjects } = useSettings();
     const [displaySubject, setDisplaySubject] = useState(subject);
+    const [prevSubject, setPrevSubject] = useState(subject);
     const [isExiting, setIsExiting] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    useEffect(() => {
-        if (subject !== displaySubject && !isExiting) {
+    // Sync subject to displaySubject during render to avoid cascading renders
+    if (subject !== prevSubject) {
+        setPrevSubject(subject);
+        if (!isExiting) {
             setDisplaySubject(subject);
         }
-    }, [subject, displaySubject, isExiting]);
+    }
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+    }, []);
 
     const handleSubjectChange = (newSubj: string) => {
         if (newSubj === subject || isExiting) return;
@@ -32,8 +44,9 @@ const HomePage = () => {
         // Activar animació de sortida només pel títol
         setIsExiting(true);
         
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
         // Esperar a que acabi la sortida per fer l'entrada del nou títol
-        setTimeout(() => {
+        timeoutRef.current = setTimeout(() => {
             setIsExiting(false);
         }, 200);
     };

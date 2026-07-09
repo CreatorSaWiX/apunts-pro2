@@ -16,6 +16,12 @@ const TopicPage: React.FC = () => {
     // PDF Download state
     const [availablePdfs, setAvailablePdfs] = useState<{ ca: boolean; es: boolean }>({ ca: false, es: false });
     const [isPdfMenuOpen, setIsPdfMenuOpen] = useState(false);
+    const [prevId, setPrevId] = useState(id);
+
+    if (id !== prevId) {
+        setPrevId(id);
+        setIsPdfMenuOpen(false);
+    }
 
     let topic = allPersonalNotes.find(note => note.slug === id && note.lang === preferredLang);
     
@@ -33,10 +39,7 @@ const TopicPage: React.FC = () => {
 
     const isLab = topic?.slug.includes('-lab-');
 
-    // Redirigir si el tema no existeix o està en draft sempre
-    if (!topic || (topic as any).draft) {
-        return <Navigate to="/" replace />;
-    }
+
 
     const sortedTopics = [...allPersonalNotes]
         .filter(t => t.subject === topic?.subject)
@@ -57,7 +60,6 @@ const TopicPage: React.FC = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        setIsPdfMenuOpen(false); // amagar menú al canviar de tema
 
         if (topic) {
             const filename = topic.slug.replace(new RegExp(`^${topic.subject}-`), '');
@@ -86,7 +88,7 @@ const TopicPage: React.FC = () => {
         }
     }, [id, topic]);
 
-    if (!topic) {
+    if (!topic || (topic as any).draft) {
         return <Navigate to="/" replace />;
     }
 
