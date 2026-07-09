@@ -45,6 +45,8 @@ export const UpdateManager = () => {
                     }, 2000);
                 }
             }
+        }, (error) => {
+            // Silently ignore permissions error when user is not logged in yet
         });
 
         return () => unsubscribe();

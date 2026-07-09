@@ -14,6 +14,7 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;
     signup: (email: string, password: string, username: string) => Promise<void>;
     logout: () => Promise<void>;
+    resetPassword: (email: string) => Promise<void>;
     isLoading: boolean;
 }
 
@@ -136,13 +137,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await signOut(auth);
     }, []);
 
+    const resetPassword = useCallback(async (email: string) => {
+        const savedLang = localStorage.getItem('preferredLang') || 'ca';
+        
+        const response = await fetch('/api/reset-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, lang: savedLang }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || "No s'ha pogut enviar el correu de recuperació.");
+        }
+    }, []);
+
     const contextValue = useMemo(() => ({
         user,
         login,
         logout,
         signup,
+        resetPassword,
         isLoading
-    }), [user, login, logout, signup, isLoading]);
+    }), [user, login, logout, signup, resetPassword, isLoading]);
 
     return (
         <AuthContext.Provider value={contextValue}>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Lock, ArrowRight, Mail } from 'lucide-react';
+import { Lock, ArrowRight, Mail, CheckCircle2, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AuthCanvasBackground } from '../components/ui/AuthCanvasBackground';
 import { PremiumInput } from '../components/ui/PremiumInput';
@@ -12,7 +12,8 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const { login } = useAuth();
+    const [view, setView] = useState<'login' | 'forgot-password' | 'success'>('login');
+    const { login, resetPassword } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -30,6 +31,26 @@ const LoginPage = () => {
             } else {
                 setError('Hi ha hagut un error en iniciar sessió: ' + err.code);
             }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleResetPassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) {
+            setError('Introdueix el teu correu electrònic.');
+            return;
+        }
+        setError('');
+        setIsLoading(true);
+
+        try {
+            await resetPassword(email);
+            setView('success');
+        } catch (err: any) {
+            console.error(err);
+            setError("No s'ha pogut enviar el correu. Comprova que l'adreça sigui correcta.");
         } finally {
             setIsLoading(false);
         }
@@ -76,105 +97,212 @@ const LoginPage = () => {
                             <div className="absolute top-0 left-[-100%] w-[200%] h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-30deg] animate-pulse opacity-100" />
                         </div>
 
-                        <motion.div variants={fadeInUp} className="text-center mb-10">
-                            <h2 className="text-3xl font-bold text-white mb-3">Iniciar Sessió</h2>
-                            <p className="text-slate-400 text-sm font-light">Entén les bases tecnològiques del món digital.</p>
-                        </motion.div>
-
-                        <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-                            <motion.div variants={fadeInUp}>
-                                <PremiumInput
-                                    id="email"
-                                    type="email"
-                                    label="Correu Electrònic"
-                                    icon={Mail}
-                                    theme="sky"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </motion.div>
-
-                            <motion.div variants={fadeInUp} className="space-y-2">
-                                <PremiumInput
-                                    id="password"
-                                    type="password"
-                                    label="Contrasenya"
-                                    icon={Lock}
-                                    theme="sky"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                                <div className="flex justify-end pr-2">
-                                    <a href="#" className="text-[11px] font-semibold text-sky-400 hover:text-sky-300 transition-colors">Has oblidat la contrasenya?</a>
-                                </div>
-                            </motion.div>
-
-                            <AnimatePresence>
-                                {error && (
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0, y: -10 }}
-                                        animate={{ opacity: 1, height: 'auto', y: 0 }}
-                                        exit={{ opacity: 0, height: 0, y: -10 }}
-                                        className="overflow-hidden"
-                                    >
-                                        <div className="p-3 mt-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium">
-                                            {error}
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            <motion.div variants={fadeInUp} className="pt-4">
-                                <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="relative w-full group overflow-hidden rounded-xl bg-sky-500/90 text-white font-bold py-4 transition-all duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.6)]"
+                        <AnimatePresence mode="wait">
+                            {view === 'login' && (
+                                <motion.div
+                                    key="login"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    transition={{ duration: 0.4, ease: customEasing }}
+                                    className="relative z-10 w-full"
                                 >
-                                    {/* Shimmer Effect */}
-                                    <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-30deg] translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000" />
+                                    <div className="text-center mb-10">
+                                        <h2 className="text-3xl font-bold text-white mb-3">Iniciar Sessió</h2>
+                                        <p className="text-slate-400 text-sm font-light">Entén les bases tecnològiques del món digital.</p>
+                                    </div>
 
-                                    <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-sky-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                        <div>
+                                            <PremiumInput
+                                                id="email"
+                                                type="email"
+                                                label="Correu Electrònic"
+                                                icon={Mail}
+                                                theme="sky"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                required
+                                            />
+                                        </div>
 
-                                    <div className="relative flex items-center justify-center gap-2 h-6 overflow-hidden">
-                                        <AnimatePresence mode="wait">
-                                            {isLoading ? (
+                                        <div className="space-y-2">
+                                            <PremiumInput
+                                                id="password"
+                                                type="password"
+                                                label="Contrasenya"
+                                                icon={Lock}
+                                                theme="sky"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                required
+                                            />
+                                            <div className="flex justify-end pr-2">
+                                                <button type="button" onClick={() => { setView('forgot-password'); setError(''); }} className="text-[11px] font-semibold text-sky-400 hover:text-sky-300 transition-colors">Has oblidat la contrasenya?</button>
+                                            </div>
+                                        </div>
+
+                                        <AnimatePresence>
+                                            {error && (
                                                 <motion.div
-                                                    key="loading"
-                                                    initial={{ y: 20, opacity: 0 }}
-                                                    animate={{ y: 0, opacity: 1 }}
-                                                    exit={{ y: -20, opacity: 0 }}
-                                                    transition={{ duration: 0.3 }}
+                                                    initial={{ opacity: 0, height: 0, y: -10 }}
+                                                    animate={{ opacity: 1, height: 'auto', y: 0 }}
+                                                    exit={{ opacity: 0, height: 0, y: -10 }}
+                                                    className="overflow-hidden"
                                                 >
-                                                    <Spinner size="sm" variant="sky" />
-                                                </motion.div>
-                                            ) : (
-                                                <motion.div
-                                                    key="text"
-                                                    initial={{ y: 20, opacity: 0 }}
-                                                    animate={{ y: 0, opacity: 1 }}
-                                                    exit={{ y: -20, opacity: 0 }}
-                                                    transition={{ duration: 0.3 }}
-                                                    className="flex items-center gap-2"
-                                                >
-                                                    <span>Accedir al compte</span>
-                                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-500" />
+                                                    <div className="p-3 mt-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium">
+                                                        {error}
+                                                    </div>
                                                 </motion.div>
                                             )}
                                         </AnimatePresence>
-                                    </div>
-                                </button>
-                            </motion.div>
-                        </form>
 
-                        <motion.div variants={fadeInUp} className="mt-8 text-center text-sm font-medium text-slate-500">
-                            No tens un compte encara?{' '}
-                            <Link to="/register" className="text-white hover:text-sky-400 transition-colors inline-flex items-center gap-1 group relative">
-                                Registra't ara
-                                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-sky-400 transition-all group-hover:w-full"></span>
-                            </Link>
-                        </motion.div>
+                                        <div className="pt-4">
+                                            <button
+                                                type="submit"
+                                                disabled={isLoading}
+                                                className="relative w-full group overflow-hidden rounded-xl bg-sky-500/90 text-white font-bold py-4 transition-all duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.6)]"
+                                            >
+                                                {/* Shimmer Effect */}
+                                                <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-30deg] translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000" />
+                                                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-sky-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                                
+                                                <div className="relative flex items-center justify-center gap-2 h-6 overflow-hidden">
+                                                    <AnimatePresence mode="wait">
+                                                        {isLoading ? (
+                                                            <motion.div key="loading" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} transition={{ duration: 0.3 }}>
+                                                                <Spinner size="sm" variant="sky" />
+                                                            </motion.div>
+                                                        ) : (
+                                                            <motion.div key="text" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} transition={{ duration: 0.3 }} className="flex items-center gap-2">
+                                                                <span>Accedir al compte</span>
+                                                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-500" />
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <div className="mt-8 text-center text-sm font-medium text-slate-500">
+                                        No tens un compte encara?{' '}
+                                        <Link to="/register" className="text-white hover:text-sky-400 transition-colors inline-flex items-center gap-1 group relative">
+                                            Registra't ara
+                                            <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-sky-400 transition-all group-hover:w-full"></span>
+                                        </Link>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {view === 'forgot-password' && (
+                                <motion.div
+                                    key="forgot-password"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ duration: 0.4, ease: customEasing }}
+                                    className="relative z-10 w-full"
+                                >
+                                    <button onClick={() => { setView('login'); setError(''); }} className="absolute -top-4 -left-4 p-2 text-slate-400 hover:text-white transition-colors rounded-full hover:bg-white/5 z-20">
+                                        <ChevronLeft size={24} />
+                                    </button>
+                                    
+                                    <div className="text-center mb-10 mt-4">
+                                        <h2 className="text-3xl font-bold text-white mb-3">Recuperar</h2>
+                                        <p className="text-slate-400 text-sm font-light">T'enviarem un enllaç per restablir la teva contrasenya.</p>
+                                    </div>
+
+                                    <form onSubmit={handleResetPassword} className="space-y-6">
+                                        <div>
+                                            <PremiumInput
+                                                id="reset-email"
+                                                type="email"
+                                                label="Correu Electrònic"
+                                                icon={Mail}
+                                                theme="sky"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                required
+                                            />
+                                        </div>
+
+                                        <AnimatePresence>
+                                            {error && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, height: 0, y: -10 }}
+                                                    animate={{ opacity: 1, height: 'auto', y: 0 }}
+                                                    exit={{ opacity: 0, height: 0, y: -10 }}
+                                                    className="overflow-hidden"
+                                                >
+                                                    <div className="p-3 mt-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium">
+                                                        {error}
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+
+                                        <div className="pt-4">
+                                            <button
+                                                type="submit"
+                                                disabled={isLoading}
+                                                className="relative w-full group overflow-hidden rounded-xl bg-sky-500/90 text-white font-bold py-4 transition-all duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.6)]"
+                                            >
+                                                {/* Shimmer Effect */}
+                                                <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-30deg] translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000" />
+                                                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-sky-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                                
+                                                <div className="relative flex items-center justify-center gap-2 h-6 overflow-hidden">
+                                                    <AnimatePresence mode="wait">
+                                                        {isLoading ? (
+                                                            <motion.div key="loading" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} transition={{ duration: 0.3 }}>
+                                                                <Spinner size="sm" variant="sky" />
+                                                            </motion.div>
+                                                        ) : (
+                                                            <motion.div key="text" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} transition={{ duration: 0.3 }} className="flex items-center gap-2">
+                                                                <span>Enviar Enllaç</span>
+                                                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-500" />
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </motion.div>
+                            )}
+
+                            {view === 'success' && (
+                                <motion.div
+                                    key="success"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 1.05 }}
+                                    transition={{ duration: 0.5, ease: customEasing }}
+                                    className="relative z-10 flex flex-col items-center justify-center py-8 text-center w-full"
+                                >
+                                    <motion.div 
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.2 }}
+                                        className="w-20 h-20 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.3)]"
+                                    >
+                                        <CheckCircle2 size={40} className="text-emerald-400" />
+                                    </motion.div>
+                                    <h2 className="text-2xl font-bold text-white mb-3">Correu Enviat!</h2>
+                                    <p className="text-slate-400 text-sm font-light mb-8 max-w-[280px]">
+                                        T'hem enviat un correu a <span className="text-white font-medium">{email}</span> amb instruccions per restablir la teva contrasenya.
+                                    </p>
+                                    <button 
+                                        onClick={() => { setView('login'); setPassword(''); }}
+                                        className="text-sky-400 font-semibold hover:text-sky-300 transition-colors flex items-center gap-2 group"
+                                    >
+                                        <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                                        Tornar a Iniciar Sessió
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
                 </div>
             </div>

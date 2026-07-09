@@ -189,9 +189,9 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     const startTimeStr = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
 
     const radiusClass = isContinuingFromPrev && isContinuingToNext ? 'rounded-none border-y-0' 
-        : isContinuingFromPrev ? 'rounded-b-xl rounded-t-none border-t-0' 
-        : isContinuingToNext ? 'rounded-t-xl rounded-b-none border-b-0' 
-        : 'rounded-xl';
+        : isContinuingFromPrev ? 'rounded-b-md rounded-t-none border-t-0' 
+        : isContinuingToNext ? 'rounded-t-md rounded-b-none border-b-0' 
+        : 'rounded-md';
 
     const priorityColors = {
         HIGH: 'bg-red-500',
