@@ -7,7 +7,7 @@ import { getRank } from '../utils/ranks';
 import { doc, getDoc, setDoc, collection, query, where, onSnapshot, getDocs, orderBy } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { updateProfile } from 'firebase/auth';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
@@ -162,6 +162,45 @@ const ProfilePage = () => {
     const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
     const [isFetchingPosts, setIsFetchingPosts] = useState(true);
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
+    const bannerRef = React.useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        let animationFrameId: number;
+        
+        const render = () => {
+            if (!bannerRef.current) return;
+            
+            const y = window.scrollY;
+            
+            if (y < 0) {
+                // Native Safari/iOS Overscroll
+                const bannerHeight = bannerRef.current.offsetHeight || 380;
+                const scale = 1 + (Math.abs(y) / bannerHeight);
+                // translateY(y) moves it UP relative to the document, canceling the OS down-shift
+                bannerRef.current.style.transform = `translateY(${y}px) scale(${scale})`;
+            } else if (y > 0) {
+                // Parallax Effect on Scroll Down
+                bannerRef.current.style.transform = `translateY(${y * 0.4}px) scale(1)`;
+                const opacity = Math.max(0, 1 - (y / 500));
+                bannerRef.current.style.opacity = opacity.toString();
+            } else {
+                bannerRef.current.style.transform = `translateY(0px) scale(1)`;
+                bannerRef.current.style.opacity = '1';
+            }
+        };
+
+        const handleScroll = () => {
+            animationFrameId = requestAnimationFrame(render);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // Initial check
+        
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, []);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -254,17 +293,24 @@ const ProfilePage = () => {
     const avatarUrl = extendedUser?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`;
 
     return (
-        <div className="min-h-screen w-full relative z-10 font-sans overflow-x-hidden bg-transparent">
+        <div className="min-h-screen w-full relative z-10 font-sans bg-transparent">
             <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} user={extendedUser} onUpdate={handleUpdateProfile} />
 
             {/* HERO SECTION - Premium Bento Approach */}
             <div className="relative w-full h-[280px] md:h-[320px] lg:h-[380px] mb-8">
-                {/* Immersive background header with smooth mask */}
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className="absolute inset-0 apple-mask-hero pointer-events-none select-none">
-                    <div className="absolute inset-0 bg-cover bg-center opacity-40 blur-[40px] scale-110" style={{ backgroundImage: `url(${bannerUrl})` }} />
-                    <div className="absolute inset-0 bg-cover bg-center opacity-70" style={{ backgroundImage: `url(${bannerUrl})` }} />
+                {/* Immersive background header with smooth mask. Native scroll listener handles overscroll scale. */}
+                <div 
+                    ref={bannerRef}
+                    className="absolute inset-0 apple-mask-hero pointer-events-none select-none overflow-hidden"
+                    style={{
+                        transformOrigin: 'top',
+                        willChange: 'transform' // Performance optimization
+                    }}
+                >
+                    <div className="absolute inset-0 bg-cover bg-center opacity-40 blur-[40px] scale-110 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
+                    <div className="absolute inset-0 bg-cover bg-center opacity-70 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/60 to-transparent opacity-100" />
-                </motion.div>
+                </div>
 
                 <div className="absolute bottom-0 left-0 w-full px-4 md:px-8 max-w-[1100px] left-1/2 -translate-x-1/2 flex items-end gap-5 md:gap-8 translate-y-1/3 z-20">
                     <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: 0.1 }} className="relative shrink-0">
