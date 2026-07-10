@@ -1,35 +1,35 @@
 ---
-title: "Lab 2: Estructures de dades lineals"
-description: "Sessió de laboratori resolta. Stacks i queues (piles i cues)."
+title: "Lab 2: Estructuras de datos lineales"
+description: "Sesión de laboratorio resuelta. Stacks y queues (pilas y colas)."
 readTime: "12 min"
 order: 2.5
 ---
 
-## 1. Piles (stacks) i cues (queues) de la STL
+## 1. Pilas (stacks) y colas (queues) de la STL
 
-El segon laboratori ens posa a prova amb *Data Structures* lineals. Utilitzarem l'equivalent de la Standard Template Library (STL) per als contenidors `Stack` i `Queue`. Si alguna vegada has vist apilar plats (l'últim plat que fiques és el primer a rentar) o posar-te en una fila al supermercat (el primer a arribar és el primer en sortir), acabes d'entendre al 100% que és una pila i una cua.
+El segundo laboratorio nos pone a prueba con *Data Structures* lineales. Utilizaremos el equivalente de la Standard Template Library (STL) para los contenedores `Stack` y `Queue`. Si alguna vez has visto apilar platos (el último plato que pones es el primero en lavar) o ponerte en una fila en el supermercado (el primero en llegar es el primero en salir), acabas de entender al 100% qué es una pila y una cola.
 
-### Interfícies: `Stack` i `Queue`
+### Interfaces: `Stack` y `Queue`
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-6">
 <div>
 
 ```cpp [Interface Pila (Stack)]
-s.push(x) // Posa dalt.
-s.top()   // Mira el dalt.
-s.pop()   // Treu de dalt.
-s.empty() // Està buida?
-s.size()  // Elements.
+s.push(x) // Pone arriba.
+s.top()   // Mira el de arriba.
+s.pop()   // Saca de arriba.
+s.empty() // ¿Está vacía?
+s.size()  // Elementos.
 ```
 </div>
 <div>
 
-```cpp [Interface Cua (Queue)]
-q.push(x) // Posa a darrere.
-q.front() // Mira el davant.
-q.pop()   // Treu de davant.
-q.empty() // Està buida?
-q.size()  // Elements.
+```cpp [Interface Cola (Queue)]
+q.push(x) // Pone atrás.
+q.front() // Mira el de adelante.
+q.pop()   // Saca de adelante.
+q.empty() // ¿Está vacía?
+q.size()  // Elementos.
 ```
 </div>
 </div>
@@ -38,9 +38,9 @@ q.size()  // Elements.
 
 <!-- 2. Doctest -->
 
-## 2. Testos automàtics amb Doctest
+## 2. Tests automáticos con Doctest
 
-El jutge realitza múltiples proves introduint dades al teu codi per esborranar si té algun error. Aquestes proves automàtiques s'emparen en C++ sota el framework **Doctest**. Un cop has programat la teva solució (ex. `reverse.cc`), se t'inclou al laboratori el `Doctest` i el `Makefile`. Només caldrà executar la comanda:
+El juez realiza múltiples pruebas introduciendo datos en tu código para averiguar si tiene algún error. Estas pruebas automáticas se amparan en C++ bajo el framework **Doctest**. Una vez has programado tu solución (ej. `reverse.cc`), se te incluye en el laboratorio el `Doctest` y el `Makefile`. Solo habrá que ejecutar el comando:
 
 ```bash
 make test
@@ -49,16 +49,16 @@ make test
 
 ---
 
-## 3. Piles (Stacks)
+## 3. Pilas (Stacks)
 
-Garanteixen el sistema **LIFO: Last In, First Out** (Últim a entrar, primer a sortir).
+Garantizan el sistema **LIFO: Last In, First Out** (Último en entrar, primero en salir).
 
-### Exercici 1: Reverse
+### Ejercicio 1: Reverse
 
-Consisteix en llegir números constants i imprimir-los a l'inrevés. L'apilament ho fa automàticament! Introduirem els nombres un rere l'altre asimètricament al top de la Pila fins que no hi hagi dades a llegir de la cadena d'entrada (`while (cin >> n)`). Un cop plens, només anem imprimint els cim de l'actual recurs(`top()`) i desapilem (`pop()`) fins fons.
+Consiste en leer números constantes e imprimirlos al revés. ¡El apilamiento lo hace automáticamente! Introduciremos los números uno tras otro asimétricamente en el top de la Pila hasta que no haya datos que leer de la cadena de entrada (`while (cin >> n)`). Una vez llenos, solo vamos imprimiendo la cima del actual recurso(`top()`) y desapilamos (`pop()`) hasta el fondo.
 
 <details>
-<summary>Codi solució: reverse.cc</summary>
+<summary>Código solución: reverse.cc</summary>
 
 ```cpp [p1-reverse/reverse.cc]
 #include <iostream>
@@ -73,7 +73,7 @@ void reverse(istream& in, ostream& out) {
         s.push(n);
     }
     
-    // Anem desapilant i cridant el TOP per extreure en invers
+    // Vamos desapilando y llamando al TOP para extraer en inverso
     while (!s.empty()) {
         out << s.top();
         s.pop();
@@ -87,12 +87,12 @@ void reverse(istream& in, ostream& out) {
 :::oopviz{simulation="stack_reverse"}
 :::
 
-### Exercici 2: Validar Parèntesis
+### Ejercicio 2: Validar Paréntesis
 
-Apilem només les obertures (`(` o `[`). Quan arriba un tancament (`)` o `]`), comprovem si quadra amb el darrer obert emmagatzemat al cim de la pila (`top()`). Si quadren, el retirem amb `.pop()`. Qualsevol discrepància o parèntesi que quedi penjat significa seqüència l'incorrecta.
+Apilamos solo las aperturas (`(` o `[`). Cuando llega un cierre (`)` o `]`), comprobamos si cuadra con el último abierto almacenado en la cima de la pila (`top()`). Si cuadran, lo retiramos con `.pop()`. Cualquier discrepancia o paréntesis que quede colgado significa secuencia incorrecta.
 
 <details>
-<summary>Codi solució: parentesis.cc</summary>
+<summary>Código solución: parentesis.cc</summary>
 
 ```cpp [p2-parentesis/parentesis.cc]
 #include <iostream>
@@ -105,20 +105,20 @@ void parentesis(istream& in, ostream& out) {
     char c;
     int pos = 1;
 
-    // Llegim ignorant espais (in >> c) fins topar-nos pel caràcter punt delimitador pur
+    // Leemos ignorando espacios (in >> c) hasta toparnos con el carácter punto delimitador puro
     while (in >> c and c != '.') {
-        // Enfilem obertures al front pur
+        // Apilamos aperturas en el frente puro
         if (c == '(' or c == '[') {
             s.push(c);
         } 
         else if (c == ')' or c == ']') {
-            // Tancament excessiu o previ no quadra
+            // Cierre excesivo o previo no cuadra
             if (s.empty()) {
                 out << "Incorrecte " << pos << endl;
                 return;
             }
             char top = s.top();
-            // Avaluem matching i el desfem segurament:
+            // Evaluamos matching y lo deshacemos seguramente:
             if ((c == ')' and top == '(') or (c == ']' and top == '[')) {
                 s.pop();
             } else {
@@ -129,7 +129,7 @@ void parentesis(istream& in, ostream& out) {
         pos++;
     }
 
-    // Finalitzat, si ha restat alguna obertura lliure pendents considerarem error
+    // Finalizado, si ha quedado alguna apertura libre pendiente consideraremos error
     if (s.empty()) out << "Correcte\n";
     else out << "Incorrecte " << pos << endl;
 }
@@ -139,12 +139,12 @@ void parentesis(istream& in, ostream& out) {
 :::oopviz{simulation="stack_parentesis"}
 :::
 
-### Exercici 3: Recursivitat simulada amb Piles
+### Ejercicio 3: Recursividad simulada con Pilas
 
-L'ordinador utilitza una pila oculta (el Call-Stack) per processar funcions recursives. Aquest exercici ens demostra com qualsevol funció recursiva del tipus $f(n-1)$ pot traduir-se a codi iteratiu. Al bucle iteratiu prenem el `.top()`, i si compleix la condició de viabilitat ($v > 0$), simulem la creació teòrica d'activitats afegint manualment dues operacions més petites a la pila.
+El ordenador utiliza una pila oculta (el Call-Stack) para procesar funciones recursivas. Este ejercicio nos demuestra cómo cualquier función recursiva del tipo $f(n-1)$ puede traducirse a código iterativo. En el bucle iterativo tomamos el `.top()`, y si cumple la condición de viabilidad ($v > 0$), simulamos la creación teórica de actividades añadiendo manualmente dos operaciones más pequeñas a la pila.
 
 <details>
-<summary>Codi solució: recursivitat.cc</summary>
+<summary>Código solución: recursivitat.cc</summary>
 
 ```cpp [p3-recursivitat/recursivitat.cc]
 #include <iostream>
@@ -156,15 +156,15 @@ void escriu(int n, ostream& out) {
     Stack<int> s;
     s.push(n);
 
-    // Iterant contínuament fins haver desapilat per pur tota acció virtual
+    // Iterando continuamente hasta haber desapilado por puro toda acción virtual
     while (!s.empty()) {
         int v = s.top();
         s.pop();
         
         if (v > 0) {
             out << ' ' << v;
-            // Instanciem instint base C++, cap endarrere ja que el següent pas voldrà 
-            // fer 'pop' i consumir el "MÉS NOU"
+            // Instanciamos instinto base C++, hacia atrás ya que el siguiente paso querrá 
+            // hacer 'pop' y consumir el "MÁS NUEVO"
             s.push(v - 1);
             s.push(v - 1);
         }
@@ -178,16 +178,16 @@ void escriu(int n, ostream& out) {
 
 ---
 
-## 4. Cues (Queues)
+## 4. Colas (Queues)
 
-Les cues garanteixen l'estàndard **FIFO: First In, First Out**. Usarem `front` al revés per albirar exclusiu sortides lineals present!
+Las colas garantizan el estándar **FIFO: First In, First Out**. ¡Usaremos `front` al revés para divisar exclusivo salidas lineales presente!
 
-### Exercici 5: La Patata Calenta
+### Ejercicio 5: La Patata Caliente
 
-Resol el problema cíclic de Josephus de $N$ participants utilitzant només una Cua. Per simular passades rotatives d'1 en 1 de la patata caducable a pas de $K$, agafem repetidament el jugador del `front()`, el purguem `.pop()` del cap de la línia i l'enviem immediatament sa-i-estalvi cap on no l'hi toqui `.push()`. Passats $K$ girs, el qui romangui al cap s'esborra de la partida per sempre fins que només quedi 1.
+Resuelve el problema cíclico de Josephus de $N$ participantes utilizando solo una Cola. Para simular pasadas rotativas de 1 en 1 de la patata caducable a paso de $K$, cogemos repetidamente el jugador del `front()`, lo purgamos `.pop()` de la cabeza de la línea y lo enviamos inmediatamente sano y salvo hacia donde no le toque `.push()`. Pasados $K$ giros, el que permanezca en la cabeza se borra de la partida para siempre hasta que solo quede 1.
 
 <details>
-<summary>Codi solució: patata.cc</summary>
+<summary>Código solución: patata.cc</summary>
 
 ```cpp [p5-patata-calenta/patata.cc]
 void patata_calenta(istream& in, ostream& out) {
@@ -195,12 +195,12 @@ void patata_calenta(istream& in, ostream& out) {
     if (in >> N >> k) {
         Queue<int> q;
         for (int i = 1; i <= N; ++i) {
-            q.push(i); // Noms i gent dins del joc
+            q.push(i); // Nombres y gente dentro del juego
         }
         
         bool first = true;
-        while (q.size() > 1) { // Fins que sobrevisqui només pur 1 individu
-            // Fem K girs o "passos de patates calents" cap a fi del cicle
+        while (q.size() > 1) { // Hasta que sobreviva solo puro 1 individuo
+            // Hacemos K giros o "pasos de patatas calientes" hacia fin del ciclo
             for (int i = 0; i < k; ++i) {
                 int front = q.front();
                 q.pop();
@@ -208,7 +208,7 @@ void patata_calenta(istream& in, ostream& out) {
             }
             
             if (!first) out << " ";
-            // La pobra anima davantera que acaba tocant rep l'expulsió immediata
+            // La pobre alma delantera que acaba tocando recibe la expulsión inmediata
             out << q.front();
             q.pop(); 
             first = false;
@@ -226,12 +226,12 @@ void patata_calenta(istream& in, ostream& out) {
 :::oopviz{simulation="queue_patata"}
 :::
 
-### Exercici 6: Comptador Recents (Sliding Window)
+### Ejercicio 6: Contador Recientes (Sliding Window)
 
-Atès un llindar base de tolerància de temps $T$, quants anteriors segueixen "vius" passat el temps? Aquest patró es coneix com a finestra lliscant ("Sliding Window") i és la principal propietat vitalícies útil d'una cua. Al llegir un nou instant ($actual$), caduquem els més vells utilitzats mirant el `front()`: Si és menor que $actual - T$, ho podem donar per prescrit. Acabada la purga seqüencial, demanem simple quin `size()` actiu tenim!
+Dado un umbral base de tolerancia de tiempo $T$, ¿cuántos anteriores siguen "vivos" pasado el tiempo? Este patrón se conoce como ventana deslizante ("Sliding Window") y es la principal propiedad vitalicias útil de una cola. Al leer un nuevo instante ($actual$), caducamos los más viejos utilizados mirando el `front()`: Si es menor que $actual - T$, lo podemos dar por prescrito. Acabada la purga secuencial, ¡pedimos simple qué `size()` activo tenemos!
 
 <details>
-<summary>Codi solució: recents.cc</summary>
+<summary>Código solución: recents.cc</summary>
 
 ```cpp [p6-compta-recents/recents.cc]
 void compta_recents(istream& in, ostream& out) {
@@ -245,14 +245,14 @@ void compta_recents(istream& in, ostream& out) {
             in >> t;
             q.push(t);
             
-            // Evaluador extern caducant antics vells emmagatzemats d'espant 
-            // que queden enlloc pel rang de temps i de Cua fora:
+            // Evaluador externo caducando antiguos viejos almacenados de espanto 
+            // que quedan en ninguna parte por el rango de tiempo y de Cola fuera:
             while (!q.empty() && q.front() < t - T) {
                 q.pop();
             }
             
             if (!first) out << " ";
-            out << q.size(); // Mostra base actius vius
+            out << q.size(); // Muestra base activos vivos
             first = false;
         }
         out << endl;

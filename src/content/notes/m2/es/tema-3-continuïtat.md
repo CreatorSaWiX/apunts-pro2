@@ -12,14 +12,14 @@ Pensemos en una función como si fuera una máquina: tú introduces un número (
 Formalmente, una función real de variable real es una aplicación $f: D \to \mathbb{R}$, donde $D$ es un subconjunto de los números reales denotado como dominio de $f$. El elemento $y$ es la imagen de $x$, y la $x$ es la antiimagen de $y$.
 
 ## 2. Límite de una función
-El límite de una función $f$ en un punto $a$ es un número real $l$ al cual se acercan los valores de la función cuando nos acercamos a $a$. Se escribe como $\lim_{x \to a} f(x) = l$.
+El límite de una función $f$ en un punto $a$ es un número real $l$ al cual se acercan los valores de la función cuando nos acercamos a $a$. Se escribe con $\lim_{x \to a} f(x) = l$.
 
 ### Límites laterales
 Para que el límite global exista, los dos límites laterales deben existir y ser iguales:
 $$\lim_{x \to a} f(x) = l \iff \lim_{x \to a^+} f(x) = \lim_{x \to a^-} f(x) = l$$
 
 ## 3. Continuidad: dibujar sin levantar el lápiz
-Para que una función sea "continua" en un punto $a$, se deben cumplir tres reglas:
+Para que una función sea "continua" en un punto $a$, se tienen que cumplir tres reglas:
 1. Debe existir el límite: $l = \lim_{x \to a} f(x)$.
 2. El punto debe ser válido: $a \in D$.
 3. El límite y el valor de la función deben coincidir: $l = f(a)$.

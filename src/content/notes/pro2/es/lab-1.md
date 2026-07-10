@@ -1,5 +1,5 @@
 ---
-title: "Lab 1: De Struct a Clase"
+title: "Lab 1: Struct a class"
 description: "Sesión de laboratorio resuelta. Salto a la programación orientada a objetos."
 readTime: "8 min"
 order: 1.5
@@ -9,58 +9,58 @@ order: 1.5
 
 ## 1. El salto al paradigma orientado a objetos
 
-En PRO1, definíamos un `struct` y después haciamos funciones pasando la tupla como parámetro `funcion(tupla)`. 
+En PRO1, definíamos un `struct` y después hacíamos funciones pasando la tupla como parámetro `funcio(tupla)`. 
 
-Ahora, se trata de hacer que estas "funciones" vivan **dentro** del `struct` (métodos), de manera que tengan **acceso directo al estado interno**. Cambiaremos la sintaxis a `tupla.funcion()`, encapsulando finalmente el código usando la protección que da `class`.
+Ahora, se trata de hacer que estas "funciones" vivan **dentro** del `struct` (métodos), de forma que tengan **acceso directo al estado interno**. Cambiaremos la sintaxis por `tupla.funcio()`, encapsulando finalmente el código usando la protección que da `class`.
 
-### Cómo programábamos en PRO1 (fecha.cc)
+### Cómo programábamos en PRO1 (data.cc)
 
-```cpp [fecha.cc]
-struct Fecha {
-    int dia, mes, año;
+```cpp [data.cc]
+struct Data {
+    int dia, mes, any;
 };
 
-Fecha fecha_suma_dias(const Fecha& f, int dias) {
-    Fecha res = f;
-    res.dia += dias;
+Data data_suma_dies(const Data& d, int dies) {
+    Data res = d;
+    res.dia += dies;
     // ... 
     return res;
 }
 
 int main() {
-    Fecha hoy = fecha_actual();
-    Fecha mañana = fecha_suma_dias(hoy, 1);
+    Data avui = data_actual();
+    Data dema = data_suma_dies(avui, 1);
 }
 ```
 
 ### Cómo programaremos en PRO2
 
-Nuestra `Fecha` tiene **responsabilidades propias**. Solo permite el acceso a variables y funciones públicas.
+Nuestra `Data` tiene **responsabilidades propias**. Solo permite el acceso a variables y funciones públicas.
 
 
 ```cpp [main.cpp]
-class Fecha {
+class Data {
 private:
-    int dia, mes, año; 
+    int dia, mes, any; 
     
 public:
-    Fecha() { dia = 1; mes = 1; año = 2000; }
+    Data() { dia = 1; mes = 1; any = 2000; }
     
-    Fecha suma_dias(int dias) const {
-        Fecha resultado = *this;
-        resultado.dia += dias; 
-        return resultado;
+    Data suma_dies(int dies) const {
+        Data resultat = *this;
+        resultat.dia += dies; 
+        return resultat;
     }
 };
 
 int main() {
-    Fecha hoy; 
-    Fecha mañana = hoy.suma_dias(1);
+    Data avui; 
+    Data dema = avui.suma_dies(1);
 }
 ```
 </details>
 
-### Solución 1: Conversión a clase fecha.cc
+### Solución 1: Conversión a clase data.cc
 
 :::oopviz{simulation="data_class"}
 :::
@@ -82,11 +82,11 @@ int mcd(int a, int b) {
 	return a;
 }
 
-int signo(int n) {
+int signe(int n) {
 	return n < 0 ? -1 : 1;
 }
 
-Racional racional_lee() {
+Racional racional_llegeix() {
     char _;
     Racional r;
     cin >> r.num_ >> _ >> r.den_;
@@ -97,7 +97,7 @@ Racional racional_crea(int n, int d) {
 	if (n == 0) {
 		return {0, 1};
 	}
-	int sig = signo(n) * signo(d);
+	int sig = signe(n) * signe(d);
 	n = abs(n);
 	d = abs(d);
 	const int m = mcd(n, d);
@@ -116,11 +116,11 @@ Racional racional_multiplica(Racional a, Racional b) {
 	return racional_crea(a.num_ * b.num_, a.den_ * b.den_);
 }
 
-Racional racional_divide(Racional a, Racional b) {
+Racional racional_divideix(Racional a, Racional b) {
 	return racional_crea(a.num_ * b.den_, a.den_ * b.num_);
 }
 
-void racional_escribe(Racional a) {
+void racional_escriu(Racional a) {
 	cout << a.num_;
 	if (a.den_ > 1) {
 		cout << '/' << a.den_;
@@ -128,13 +128,13 @@ void racional_escribe(Racional a) {
 }
 
 int main() {
-    Racional acum = racional_lee();
-	racional_escribe(acum);
+    Racional acum = racional_llegeix();
+	racional_escriu(acum);
     cout << endl;
 
 	string op;
 	while (cin >> op) {
-		Racional r = racional_lee();
+		Racional r = racional_llegeix();
 		if (op == "+") {
 			acum = racional_suma(acum, r);
 		} else if (op == "-") {
@@ -142,9 +142,9 @@ int main() {
 		} else if (op == "*") {
 			acum = racional_multiplica(acum, r);
 		} else if (op == "/") {
-			acum = racional_divide(acum, r);
+			acum = racional_divideix(acum, r);
 		}
-		racional_escribe(acum);
+		racional_escriu(acum);
         cout << endl;
 	}
 }

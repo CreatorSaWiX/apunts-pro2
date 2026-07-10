@@ -1,6 +1,6 @@
 ---
 title: "Tema 9: Implementación de vectores"
-description: "Gestión de memoria, la Regla de los Tres y el costo amortizado."
+description: "Gestión de memoria, la Regla de los Tres y el coste amortizado."
 readTime: "15 min"
 order: 10
 draft: false
@@ -33,7 +33,7 @@ namespace pro2 {
 
 Si una clase gestiona memoria dinámica, necesita estos 3 métodos para evitar **segfaults** o **leaks**:
 
-### A. Constructor de copia (Deep Copy)
+### A. Constructor de copia
 Crea una copia real en un nuevo bloque de memoria, no solo copia el puntero.
 ```cpp
 Vector(const Vector& v) {
@@ -49,7 +49,7 @@ Libera la memoria vieja antes de copiar la nueva.
 ```cpp
 Vector& operator=(const Vector& v) {
     if (this != &v) {
-        delete[] data_; // 1. Limpieza
+        delete[] data_; // 1. Limpia
         data_ = new T[v.capacity_]; // 2. Reserva
         size_ = v.size_;
         capacity_ = v.capacity_;
@@ -67,20 +67,21 @@ El único que libera la memoria definitivamente.
 
 ## 3. Operadores
 
-| Categoría | Definición de la función (cpp) | Llamada desde el main |
-| :--- | :--- | :--- |
-| **Acceso** | `T& operator[](int i)` | `v[i] = x;` |
-| **Comparación** | `bool operator<(const V& v)` | `if (a < b)` |
-| **Asignación** | `void operator+=(const V& v)` | `a += b;` |
-| **Aritméticos** | `V operator+(const V& v)` | `c = a + b;` |
-| **Flujo** | `ostream& operator<<(ostream& o, const V& v)` | `cout << v;` |
+Cuando tú escribes `s += s2` en el main, el compilador de C++ busca si la clase tiene definida una función que se llame literalmente `operator+=`. Si la encuentra y acepta los argumentos que le pasas (en este caso un objeto de tipo Stack), hace la llamada directa.
 
 ```cpp
 Stack<int> s1, s2;
 s1 += s2;           // Sintaxis natural (en el main)
 s1.operator+=(s2);  // Equivalente a s1 += s2;
 ```
-Cuando escribes `s += s2` en el main, el compilador de C++ busca si la clase tiene definida una función que se llame literalmente `operator+=`. Si la encuentra y acepta los argumentos que le pasas (en este caso un objeto de tipo Stack), realiza la llamada directa.
+
+| Categoría | Definición de la función (c+pp) | Llamada desde el main |
+| :--- | :--- | :--- |
+| **Acceso** | `T& operator[](int i)` | `v[i] = x;` |
+| **Comparación** | `bool operator<(const V& v)` | `if (a < b)` |
+| **Asignación** | `void operator+=(const V& v)` | `a += b;` |
+| **Aritméticos** | `V operator+(const V& v)` | `c = a + b;` |
+| **Flujo** | `ostream& operator<<(ostream& o, const V& v)` | `cout << v;` |
 
 ## 4. Acceso e iteradores
 
@@ -97,9 +98,9 @@ iterator end() { return data_ + size_; }
 ```
 
 ## 5. El motor: `reallocate_` (La mudanza)
-Método privado que cambia la capacidad del vector. Operación costosa $\mathcal{O}(n)$.
-1. Pide un nuevo bloque.
-2. Copia los elementos viejos.
+Método privado que cambia la capacidad del vector. Operación cara $\mathcal{O}(n)$.
+1. Pide nuevo bloque.
+2. Copia elementos viejos.
 3. **`delete[]`** bloque viejo.
 4. Actualiza puntero y capacidad.
 
@@ -109,7 +110,7 @@ void reallocate_(int new_cap) {
     for (int i = 0; i < size_; ++i) {
         new_data[i] = data_[i];       // 2. Copia
     }
-    delete[] data_;                   // 3. Limpieza viejo
+    delete[] data_;                   // 3. Limpia viejo
     data_ = new_data;                 // 4. Actualiza
     capacity_ = new_cap;
 }
@@ -117,7 +118,7 @@ void reallocate_(int new_cap) {
 
 ## 6. Inserción y crecimiento
 - **`push_back`**: Si está lleno, **dobla** la capacidad.
-- **Costo Amortizado**: Aunque redimensionar es $\mathcal{O}(n)$, solo ocurre cada $2^k$ veces. El promedio es **$\mathcal{O}(1)$**.
+- **Coste Amortizado**: Aunque redimensionar es $\mathcal{O}(n)$, solo pasa cada $2^k$ veces. La media es **$\mathcal{O}(1)$**.
 
 ```cpp
 void push_back(const T& x) {
@@ -131,7 +132,7 @@ void push_back(const T& x) {
 ::vectorviz
 
 ## 7. Extracción y Thrashing
-Para evitar oscilaciones costosas (doblar/reducir constantemente):
+Para evitar oscilaciones caras (doblar/reducir constantemente):
 - **Estrategia**: Esperar a estar a **1/4** de capacidad para reducirla a la **mitad**.
 
 ```cpp
@@ -156,7 +157,7 @@ void pop_back() {
 | **`size/empty`** | $\Theta(1)$ | Consulta de atributos. |
 
 ## Extra: Operador de salida
-Muy útil para depurar la implementación:
+Muy útil para debugear la implementación:
 ```cpp
 template <typename T>
 ostream& operator<<(ostream& os, const Vector<T>& v) {

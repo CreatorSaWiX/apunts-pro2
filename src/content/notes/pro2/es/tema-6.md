@@ -1,6 +1,6 @@
 ---
 title: "Tema 6: Árboles de búsqueda y maps"
-description: "BSTs para búsquedas logarítmicas y el  contenedor asociativo map<K, V>."
+description: "BSTs para búsquedas logarítmicas y el potente contenedor asociativo map<K, V>."
 readTime: "10 min"
 order: 6
 ---
@@ -26,7 +26,6 @@ Queda claro: si la búsqueda es la operación predominante, necesitamos una estr
 Un **BST** (*Binary Search Tree*) es un `BinTree<T>` que cumple una regla estructural adicional en cada nodo:
 
 > **Invariante BST:** Todos los valores del **subárbol izquierdo** son **estrictamente menores** que el nodo, y todos los del **subárbol derecho** son **estrictamente mayores**.
-
 
 :::graph
 ```json
@@ -58,13 +57,13 @@ Gracias al invariante, el recorrido **inorden** (*izquierdo → raíz → derech
 
 ## 6.3 Búsqueda en un BST
 
-La búsqueda es la operación más directa y eficiente. En cada paso **descartamos la mitad del árbol** sin siquiera explorarla:
+La búsqueda es la operación más directa y eficiente. A cada paso **descartamos la mitad del árbol** sin ni explorarla:
 
 ```cpp
-bool bst_buscar(const BinTree<int>& a, int x) {
+bool bst_search(const BinTree<int>& a, int x) {
     if (a.empty()) return false;
     if (x == a.value()) return true;
-    return bst_buscar(a.value() < x ? a.right() : a.left(), x);
+    return bst_search(a.value() < x ? a.left() : a.right(), x);
 }
 ```
 
@@ -83,15 +82,15 @@ El valor mínimo es siempre el nodo más a la izquierda (bajamos todo el camino 
 
 ```cpp
 int bst_min(const BinTree<int>& a) {
-    assert(!a.empty());
+    assert(!bst.empty());
     if (a.left().empty()) return a.value();
     return bst_min(a.left());
 }
 
 int bst_max(const BinTree<int>& a) {
-    assert(!a.empty());
+    assert(!bst.empty());
     if (a.right().empty()) return a.value();
-    return bst_max(a.right());
+    return bst_min(a.right());
 }
 ```
 
@@ -99,20 +98,20 @@ int bst_max(const BinTree<int>& a) {
 
 ## 6.4 Inserción en un BST
 
-Como `BinTree<T>` es **immutable**, no podemos modificar el árbol existente. La inserción **reconstruye el camino** desde la raíz hasta el punto de inserción, reutilizando los subárboles que no cambian:
+Como `BinTree<T>` es **inmutable**, no podemos modificar el árbol existente. La inserción **reconstruye el camino** desde la raíz hasta el punto de inserción, reutilizando los subárboles que no cambian:
 
 ```cpp
-BinTree<int> bst_insertar(const BinTree<int>& a, int x) {
+BinTree<int> bst_insert(const BinTree<int>& a, int x) {
     if (a.empty())
         return BinTree<int>(x);          // Caso base: aquí va el nuevo nodo
     if (x == a.value()) return a;        // Ya existe, no insertamos duplicado
     if (x < a.value())
         return BinTree<int>(a.value(),
-                            bst_insertar(a.left(), x),  // Reconstruimos rama izq
-                            a.right());                 // Reutilizamos rama derecha
+                            bst_insert(a.left(), x),  // Reconstruimos rama izq
+                            a.right());               // Reutilizamos rama derecha
     return BinTree<int>(a.value(),
                         a.left(),
-                        bst_insertar(a.right(), x));    // Reutilizamos rama izq
+                        bst_insert(a.right(), x));    // Reutilizamos rama izq
 }
 ```
 
@@ -120,7 +119,7 @@ BinTree<int> bst_insertar(const BinTree<int>& a, int x) {
 :::
 
 :::info
-Fijaos que los subárboles que **no estamos atravesando** se reutilizan directamente sin copiarlos. Gracias a la inmutabilidad funcinal de `BinTree`, el compilador se encarga de optimizar la compartición de memoria (estructura persistente).
+Fijaos que los subárboles que **no estamos atravesando** se reutilizan directamente sin copiarlos. Gracias a la inmutabilidad funcional de `BinTree`, el compilador se encarga de optimizar la compartición de memoria (estructura persistente).
 :::
 
 ---
@@ -134,8 +133,8 @@ La STL de C++ ofrece el contenedor **`map<K, V>`**, un diccionario implementado 
 using namespace std;
 
 map<string, int> m;
-m["uno"]  = 1;
-m["diez"] = 10;
+m["un"]  = 1;
+m["deu"] = 10;
 ```
 
 Internamente, cada elemento es un **`pair<K, V>`** con los campos `first` (clave) y `second` (valor).
@@ -151,9 +150,9 @@ Usar `m["clave"]` en un `map` `const` es **error de compilación** porque no pue
 ### `find`: la búsqueda segura
 
 ```cpp
-map<string, int> m = {{"uno", 1}, {"diez", 10}};
+map<string, int> m = {{"un", 1}, {"deu", 10}};
 
-auto it = m.find("diez");
+auto it = m.find("deu");
 if (it != m.end()) {
     cout << "Valor asociado: " << it->second << endl; // 10
 }
@@ -161,12 +160,14 @@ if (it != m.end()) {
 
 `find` devuelve un **iterador** apuntando al par `{clave, valor}` si lo encuentra, o a `m.end()` si no está. Coste: $\mathcal{O}(\log n)$.
 
-### `insert`: añadir sin sobrescribir
+### `insert`: añadir sin sobreescribir
 
 ```cpp
-m.insert({"veinte", 20});
-m.insert({"veinte", -20}); // ¡NO sustituye si ya existe!
+m.insert({20, "twenty"});
+m.insert({20, "minus twenty"}); // ¡NO sustituye si ya existe!
 ```
+
+El tipo de retorno de `insert` es `pair<iterator, bool>`: el iterador al elemento y `true` si se ha insertado (`false` si ya existía).
 
 ---
 
@@ -174,7 +175,7 @@ m.insert({"veinte", -20}); // ¡NO sustituye si ya existe!
 
 Uno de los usos estrella del `map` es acumular y contar. El operador `[]` hace todo el trabajo:
 
-1. Si la clave **no existe** → la crea con valor `0`, entonces hace `++`.
+1. Si la clave **no existe** → la crea con valor `0`, luego hace `++`.
 2. Si la clave **existe** → recupera el valor actual y hace `++`.
 
 ### Ejemplo 1: Frecuencia de palabras
@@ -188,7 +189,7 @@ int main() {
     map<string, int> word_count;
     string word;
     while (cin >> word) {
-        word_count[word]++;  // <-- ¡Pura magia!
+        word_count[word]++;  // <-- ¡magia pura!
     }
     for (auto it = word_count.begin(); it != word_count.end(); ++it) {
         cout << it->first << ": " << it->second << endl;
@@ -205,6 +206,9 @@ while (cin >> word) {
     by_length[word.size()].push_back(word);
 }
 ```
+
+:::oopviz{simulation="racional_class"}
+:::
 
 ---
 
@@ -243,12 +247,12 @@ Un **`set<T>`** es un `map` donde solo existe la clave, sin valor asociado. Se u
 #include <set>
 using namespace std;
 
-set<string> vocabulario;
-string palabra;
-while (cin >> palabra) {
-    vocabulario.insert(palabra);
+set<string> vocabulari;
+string paraula;
+while (cin >> paraula) {
+    vocabulari.insert(paraula);
 }
-cout << "Palabras únicas: " << vocabulario.size() << endl;
+cout << "Palabras únicas: " << vocabulari.size() << endl;
 ```
 
 :::tip
@@ -262,8 +266,8 @@ Si necesitas claves **repetidas** (multiset o multimap), C++ ofrece `multiset<T>
 | Situación | Contenedor recomendado |
 |:---|:---|
 | Búsqueda frecuente en datos ordenados | `map<K,V>` o `set<T>` |
-| Sin orden, búsqueda a máxima velocidad | `unordered_map<K,V>` ($\mathcal{O}(1)$ amortizado) |
+| Sin orden, búsqueda máxima velocidad | `unordered_map<K,V>` ($\mathcal{O}(1)$ amortizado) |
 | Acceso por índice numérico | `vector<T>` |
 | Inserción/borrado frecuente en medio | `list<T>` |
 | Colección de elementos únicos | `set<T>` |
-| Acumulador clave → contador/lista | `map<K, vector<T>>` |
+| Acumulador clave→contador/lista | `map<K, vector<T>>` |

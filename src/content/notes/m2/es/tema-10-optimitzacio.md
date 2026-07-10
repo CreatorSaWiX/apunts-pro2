@@ -27,14 +27,14 @@ Sea $(a,b)$ un punto crítico de $f \in \mathcal{C}^2$. Analizamos el determinan
 1. **$\Delta > 0$**: Hay un extremo.
    - Si $\frac{\partial^2 f}{\partial x^2}(a,b) > 0 \implies$ **Mínimo Relativo**.
    - Si $\frac{\partial^2 f}{\partial x^2}(a,b) < 0 \implies$ **Máximo Relativo**.
-2. **$\Delta < 0$**: El punto es un **Punto de Silla** (la función crece en alguna dirección y decrece en otra).
+2. **$\Delta < 0$**: El punto es un **Punto de Silla** (la función crece en una dirección y decrece en otra).
 3. **$\Delta = 0$**: El criterio **no decide**. Hay que analizar el comportamiento alrededor del punto.
  
 ::three{type="vis_extrems_hessiana"}
  
 Si la función es un polinomio de grado 2 (como $f(x,y) = x^2 + 2xy + 3y^2$), puedes completar cuadrados para ver si es una suma de cuadrados positivos (mínimo) o negativos (máximo). ¡Es mucho más rápido que calcular la Hessiana!
 
-> **Cuando $\Delta = 0$**: Prueba estudiar $f$ sobre rectas que pasen por el punto (ej. $y = 0$ o $y = x$). Otra herramienta muy potente es **completar cuadrados**: si puedes escribir $f(x,y) - f(a,b)$ como una forma que es siempre positiva (o siempre negativa), tienes un mínimo (o máximo) global sin necesidad de la Hessiana.
+> **Cuando $\Delta = 0$**: Prueba a estudiar $f$ sobre rectas que pasen por el punto (e.g. $y = 0$ o $y = x$). Otra herramienta muy potente es **completar cuadrados**: si puedes escribir $f(x,y) - f(a,b)$ como una forma que es siempre positiva (o siempre negativa), tienes un mínimo (o máximo) global sin necesidad de la Hessiana.
 
 ---
 
@@ -66,9 +66,12 @@ Resolver $\nabla f = \lambda \nabla g$ puede ser algebraicamente pesado. Tres es
 
 2. **Aprovecha simetrías**: Si las ecuaciones para $x$ y para $y$ son casi idénticas, prueba $x = \pm y$ como candidato. Muchos ejercicios de examen están construidos con esta simetría oculta.
 
-3. **Sustitución directa en lugar de Lagrange**: Si la restricción es una recta (ej. $y = 1 - x$) o permite aislar fácilmente una variable, sustitúyela directamente en $f$ y convierte el problema en una función de **una sola variable**. Es más rápido y seguro.
+3. **Sustitución directa en lugar de Lagrange**: Si la restricción es una recta (e.g. $y = 1 - x$) o permite aislar fácilmente una variable, sustitúyela directamente a $f$ y convierte el problema en una función de **una sola variable**. Es más rápido y seguro.
 
-> **Sustitución parcial para circunferencias**: Si la restricción es $x^2 + y^2 = R^2$ y la función $f$ contiene el término $x^2 + y^2$, puedes sustituirlo directamente por $R^2$ y reducir $f$ a una expresión mucho más sencilla antes de derivar.
+4. **Combinación de múltiples restricciones**: Cuando tengas dos o más restricciones, no apliques Lagrange directamente sobre todas (el sistema de $\lambda, \mu, \ldots$ puede ser enorme). Intenta usar la restricción más sencilla para simplificar la difícil **antes** de derivar. 
+   > *Ejemplo*: Si tienes $x^2+y^2=1$ y otra ecuación con el término $x^2+y^2$, sustitúyelo por $1$ inmediatamente. Esto a menudo reduce el problema a una sola restricción o elimina variables.
+
+5. **Sustitución parcial para circunferencias**: Si la restricción es $x^2 + y^2 = R^2$ y la función $f$ contiene el término $x^2 + y^2$, puedes sustituirlo directamente por $R^2$ y reducir $f$ a una expresión mucho más sencilla antes de derivar.
 
 ---
 
@@ -86,7 +89,7 @@ Para encontrarlos, no basta con mirar el interior; hace falta un rastreo exhaust
 
 3.  **Vértices y Puntos de Ruptura**:
 
-    > Si el dominio es un polígono (triángulo, cuadrado...), **Lagrange no detecta los vértices automáticamente** porque la frontera no es derivable en esos puntos. Tienes que evaluar $f$ en cada vértice manualmente. A menudo el máximo o mínimo absoluto se encuentra precisamente en una esquina.
+    > Si el dominio es un polígono (triángulo, cuadrado...), **Lagrange no detecta los vértices automáticamente** porque la frontera no es derivable en aquellos puntos. Tienes que evaluar $f$ en cada vértice manualmente. A menudo el máximo o mínimo absoluto se encuentra precisamente en una esquina.
 
 ::three{type="vis_optimitzacio_compacte"}
 
@@ -98,7 +101,7 @@ Una vez tienes todos los candidatos, el valor más grande es el **máximo absolu
 
 ## 4. Problema Modelo: Estrategia Completa
 
-Con toda la teoría a mano, apliquémosla de arriba a abajo. Queremos los extremos absolutos de $f(x,y) = x^2 + y^2 - 2x$ en el disco cerrado $D = \{(x,y) : x^2 + y^2 \leq 4\}$.
+Con toda la teoría a mano, apliquémosla de arriba abajo. Queremos los extremos absolutos de $f(x,y) = x^2 + y^2 - 2x$ en el disco cerrado $D = \{(x,y) : x^2 + y^2 \leq 4\}$.
 
 ### Paso 1: Interior — Puntos Críticos Libres
 Calculamos $\nabla f = (2x - 2,\ 2y)$ e igualamos a cero:

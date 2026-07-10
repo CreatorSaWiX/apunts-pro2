@@ -1,24 +1,20 @@
 ---
 title: "Tema 10: Implementación de listas"
 description: "Nodos doblemente enlazados, centinelas e iteradores."
-order: 11
 readTime: "20 min"
-subject: "pro2"
+order: 11
 draft: false
-isNew: true
+isUpdated: 1
 ---
 
-## 1. Estructura interna: Doble enlace y Centinelas
+## 1. Estructura interna: doble enlace y centinelas
 
 A diferencia del vector, una lista no guarda los elementos juntos en memoria. Cada elemento está en un **Nodo** (o `Item`) independiente que sabe quién tiene delante y quién tiene detrás.
 
-### Nodos Centinela (`iteminf` y `itemsup`)
+### Nodos centinela (`iteminf` e `itemsup`)
 Esta implementación utiliza dos nodos especiales que **siempre existen**, aunque la lista esté vacía:
 - **`iteminf`**: El nodo "ficticio" inicial. Su `next` apunta al primer elemento real.
 - **`itemsup`**: El nodo "ficticio" final. Su `prev` apunta al último elemento real.
-
-**Ventaja**: No tenemos que comprobar nunca si un puntero es `nullptr` al hacer inserciones o borrados, simplificando mucho el código.
-- **Truco para los ejercicios**: Como los centinelas siempre están ahí, el primer elemento real es `iteminf.next` y el último es `itemsup.prev`. Puedes acceder a ellos directamente para hacer operaciones como `swapFirstLast`.
 
 ```cpp
 template <typename T>
@@ -34,30 +30,53 @@ public:
 };
 ```
 
-## 2. El motor: Insertar y Borrar en $\Theta(1)$
+## 2. El motor: insertar y borrar en $\Theta(1)$
 
-La lista es la estructura ideal para insertar/borrar en cualquier punto si ya tenemos la posición. Solo hay que "recoser" los punteros.
+La lista es la estructura ideal para insertar/borrar en cualquier punto si ya tenemos la posición. Solo hace falta "recoser" los punteros.
 
-### Insertar un elemento (`insertItem`)
-1. Creamos el nuevo nodo.
-2. Lo conectamos con su siguiente y anterior.
-3. Actualizamos los punteros de los vecinos para que apunten al nuevo nodo.
+### Insertar un elemento por puntero de nodo (`insertItem(punteroPrevio, punteroNodo)`)
 
-```cpp
-void insertItem(Item *pitemprev, const T &value) {
-    Item *pitem = new Item;
-    pitem->value = value;
-    
-    pitem->next = pitemprev->next;
-    pitem->next->prev = pitem;
-    pitem->prev = pitemprev;
-    pitemprev->next = pitem;
-    _size++;
-}
-```
+1. Conectamos el nuevo nodo con su siguiente y anterior respectivos.
+2. Actualizamos los punteros de los vecinos (`pitemprev` y `pitemprev->next`) para que recosan el enlace con el nodo introducido.
 
-::algoviz{algorithm="list_insert"}
+::algoviz{algorithm="list_insert_node"}
 
+### Insertar un elemento por valor (`insertItem(punteroPrevio, valor)`)
+
+1. Creamos el nuevo nodo `Item` con `new`.
+2. Rellenamos el valor del dato del nodo.
+3. Llamamos a la función anterior `insertItem` para recoser el nodo instanciado.
+
+::algoviz{algorithm="list_insert_value"}
+
+### Extraer un elemento (`extractItem(punteroNodo)`)
+
+1. El nodo siguiente pasa a apuntar directamente al anterior.
+2. El nodo anterior pasa a apuntar directamente al siguiente.
+3. Restamos 1 al tamaño de la lista.
+
+::algoviz{algorithm="list_extract_item"}
+
+### Eliminar un elemento de memoria (`removeItem(punteroNodo)`)
+
+1. Llamamos a `extractItem` para desconectar de forma segura el nodo.
+2. Liberamos la memoria del nodo utilizando `delete`.
+
+::algoviz{algorithm="list_remove_item"}
+
+### Vaciar toda la lista (`removeItem()`)
+
+1. Mientras el tamaño sea mayor que 0.
+2. Vamos extrayendo y borrando siempre el primer elemento de la lista (`iteminf.next`).
+
+::algoviz{algorithm="list_remove_all"}
+
+### Copiar nodos de otra lista (`copyItems(lista_original)`)
+
+1. Iteramos la lista original al revés (desde el último nodo hacia el primero).
+2. Por cada nodo original, llamamos a `insertItem` delante de todo (`&iteminf`, haciendo un efecto _push_front_). Al añadir los elementos al revés siempre por delante, el orden final de la copia es el original.
+
+::algoviz{algorithm="list_copy_items"}
 ### Cómo mover nodos (la regla de los 4 punteros)
 En muchos ejercicios (como `moveToEnd` o `moveSecondToLast`), el Juez prohíbe intercambiar los `.value`. Tienes que mover el nodo físicamente:
 1. **Desconectar**: Une el vecino anterior con el siguiente (`p->prev->next = p->next` y `p->next->prev = p->prev`).
@@ -85,13 +104,11 @@ public:
 };
 ```
 
-> **Iteradores Circulares**: Si un ejercicio pide que la lista sea circular, el `operator++` del último nodo no debe ir a `end()`, sino a `begin()`. En nuestra implementación con centinelas, esto significa saltar de `itemsup` a `iteminf.next`.
-
 ::linkedlistviz
 
 ## 4. Gestión de memoria: La Regla de los Tres
 
-Como gestionamos nodos con `new`, debemos ser muy cuidadosos:
+Como gestionamos nodos con `new`, tenemos que ser muy cuidadosos:
 1. **Destructor**: Debe borrar TODOS los nodos (usando `removeItem` en bucle).
 2. **Constructor de copia**: Debe crear nodos nuevos y copiar los valores.
 3. **Operador de asignación**: Limpiar la lista actual y copiar la nueva.
@@ -107,13 +124,13 @@ Como gestionamos nodos con `new`, debemos ser muy cuidadosos:
 | **Acceso aleatorio `[i]`** | $\Theta(1)$ | $\Theta(n)$ (hay que recorrer) |
 | **Insertar al final** | $\mathcal{O}(1)$ amortizado | $\Theta(1)$ |
 | **Insertar al principio** | $\Theta(n)$ | $\Theta(1)$ |
-| **Insertar en el medio (con it)** | $\Theta(n)$ | $\Theta(1)$ |
-| **Memoria** | Bloque contiguo (más rápido por la CPU) | Nodos dispersos (más overhead) |
+| **Insertar al medio (con it)** | $\Theta(n)$ | $\Theta(1)$ |
+| **Memoria** | Bloque contiguo (más rápido para la CPU) | Nodos dispersos (más overhead) |
 
 ## Operaciones con Iteradores
 
 | Operación | Código | Explicación |
 | :--- | :--- | :--- |
 | **Insertar** | `it = l.insert(it, val)` | Inserta **antes** de `it`. |
-| **Borrar** | `it = l.erase(it)` | Borra `it` y retorna el **siguiente**. |
+| **Borrar** | `it = l.erase(it)` | Borra `it` y devuelve el **siguiente**. |
 | **Recorrer** | `for(auto it=l.begin(); it!=l.end(); ++it)` | El patrón estándar. |

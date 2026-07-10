@@ -1,13 +1,13 @@
 ---
 title: "Tema 1: Conceptos básicos de grafos"
 description: "Introducción a la teoría de grafos: vértices, aristas, grados y representaciones."
-order: 1
 readTime: "15 Min"
+order: 1
 ---
 
 ¡Bienvenidos al mundo de los **Grafos**! 🕸️
 
-En FM, quizás estamos acostumbrados a notaciones pesadas. Aquí la cosa cambia. La Teoría de Grafos es **visual**, es **tangible** y es la base de todo: desde cómo Instagram te sugiere amigos hasta cómo Google Maps encuentra el camino más rápido a casa.
+En FM, quizás estemos acostumbrados a notaciones pesadas. Aquí la cosa cambia. La Teoría de Grafos es **visual**, es **tangible** y es la base de todo: desde cómo Instagram te sugiere amigos hasta cómo Google Maps encuentra el camino más rápido a casa.
 
 ## 1. ¿Qué es, realmente, un grafo?
 
@@ -16,7 +16,7 @@ Un grafo es simplemente un conjunto de **puntos** conectados por **líneas**.
 *   Los puntos se llaman **vértices** ($V$).
 *   Las líneas se llaman **aristas** ($A$).
 
-Prueba a mover los vértices de aquí abajo. ¿Ves cómo las conexiones se mantienen aunque los muevas? Esta es la esencia de un grafo: no importa *dónde* están dibujados los puntos, sino *cómo* están conectados.
+Prueba a mover los vértices de aquí abajo. ¿Ves cómo las conexiones se mantienen aunque los muevas? Esa es la esencia de un grafo: no importa *dónde* están dibujados los puntos, sino *cómo* están conectados.
 
 :::graph
 ```json
@@ -37,7 +37,7 @@ Prueba a mover los vértices de aquí abajo. ¿Ves cómo las conexiones se manti
 ```
 :::
 
-Un grafo $G$ es una pareja $(V, A)$ donde $V$ es el conjunto de vértices (no vacío) y $A$ es el conjunto de aristas.
+Un grafo $G$ es un par $(V, A)$ donde $V$ es el conjunto de vértices (no vacío) y $A$ es el conjunto de aristas.
 
 - **Orden ($n$)**: El número de vértices, $n = |V|$.
 - **Tamaño ($m$)**: El número de aristas, $m = |A|$.
@@ -47,7 +47,7 @@ Un grafo $G$ es una pareja $(V, A)$ donde $V$ es el conjunto de vértices (no va
 Cuando dos vértices están unidos por una arista, decimos que son **adyacentes** (o vecinos). 
 
 *   Si $u$ y $v$ están conectados, escribimos: $u \sim v$
-*   La arista que nos une decimos que es **incidente** en nosotros.
+*   La arista que los une decimos que es **incidente** en ellos.
 
 :::graph
 ```json
@@ -87,17 +87,17 @@ $$
 *   $1$ si hay arista (conexión).
 *   $0$ si no la hay.
 
-Vemos que como las amistades son mutuas, la matriz es **simétrica**. Y la diagonal todo ceros, porque nadie es amigo de sí mismo (no hay lazos).
+Vemos que como las amistades son mutuas, la matriz es **simétrica**. Y la diagonal son todo ceros, porque nadie es amigo de sí mismo (no hay lazos).
 
 :::tip{title="Grados en la Matriz"}
-La suma numérica de los valores de una fila $i$ (o columna) es **exactamente el grado** de aquel vértice.
+La suma numérica de los valores de una fila $i$ (o columna) es **exactamente el grado** de ese vértice.
 $$ \sum_{j=1}^n (M_A)_{ij} = g(v_i) $$
 *Si en el examen te dicen: "Tenemos una matriz de adyacencia donde cada fila suma 5", te están diciendo que estamos ante un grafo **5-regular**.*
 :::
 
 ## 4. Grados y el "lema de los apretones de manos"
 
-El **grado** de un vértice $g(v)$ es el número de aristas que inciden en él. O sea, el número de amigos que tiene.
+El **grado** de un vértice $g(v)$ es el número de aristas que lo tocan. O sea, el número de amigos que tiene.
 
 :::graph
 ```json
@@ -121,7 +121,7 @@ En el grafo de arriba, el vértice central tiene grado 3. Los otros, grado 1.
 
 **Si sumamos los grados de TODOS los vértices, ¿qué nos da?**
 
-Imaginemos una fiesta. Cada vez que dos personas se dan la mano (una arista), hay **dos** manos implicadas. Si al final contamos cuántas manos ha dado cada uno y lo sumamos todo, estaremos contando **el doble** de los apretones reales. Este es el **lema de los apretones de manos**:
+Imaginemos una fiesta. Cada vez que dos personas se dan la mano (una arista), hay **dos** manos implicadas. Si al final contamos cuántas manos ha dado cada uno y lo sumamos todo, estaremos contando **el doble** de los apretones reales. Esto es el **lema de los apretones de manos**:
 
 $$
 \sum g(v) = 2m
@@ -129,9 +129,9 @@ $$
 
 > **Secuencia de grados**:
 > Es simplemente hacer una lista con los grados de todos los vértices, ordenada generalmente de mayor a menor.
-> Ej: Un grafo "triángulo con una cola colgando" tiene lista de grados $S = (3, 2, 2, 1)$.
+> Ex: Un grafo "triángulo con una cola colgando" tiene lista de grados $S = (3, 2, 2, 1)$.
 
-Como $2|A|$ siempre es un número PAR, la suma de los grados debe ser par. Esto significa que es **imposible** que haya un número impar de gente con un número impar de amigos.
+Como $2|A|$ siempre es un número PAR, la suma de los grados tiene que ser par. Esto significa que es **imposible** que haya un número impar de gente con un número impar de amigos.
 
 :::tip{title="Havel-Hakimi: Comprobar la secuencia de grados"}
 El Lema de los apretones de manos es necesario (suma par), pero no suficiente para garantizar que un grafo existe. Para saber si una secuencia es **gráfica**, usamos el algoritmo de **Havel-Hakimi**:
@@ -181,7 +181,7 @@ Dos grafos son **isomorfos** si tienen la misma estructura interna, aunque tenga
 :::
 ::::
 
-**¿Son el mismo grafo?** La respuesta es **sí**. Son isomorfos. Porque podemos encontrar un **diccionario de traducción** (una bijección) que convierte uno en el otro sin romper ninguna conexión.
+**¿Son el mismo grafo?** La respuesta es **sí**. Son isomorfos. Porque podemos encontrar un **diccionario de traducción** (una biyección) que convierte uno en el otro sin romper ninguna conexión.
 
 **El diccionario**:
 *   $1 \to A$
@@ -190,7 +190,7 @@ Dos grafos son **isomorfos** si tienen la misma estructura interna, aunque tenga
 *   $4 \to B$
 *   $5 \to D$
 
-Comprobamos: en el primer grafo **1** toca a **2**. En el segundo, ¿la traducción de 1 (**A**) toca a la traducción de 2 (**C**)? Sí. Y así con todos.
+Comprobemos: en el primer grafo **1** toca **2**. En el segundo, ¿la traducción de 1 (**A**) toca la traducción de 2 (**C**)? Sí. Y así con todos.
 
 Un isomorfismo es simplemente **reetiquetar** los vértices. Si cambiando los nombres de los vértices de un grafo puedo obtener exactamente el otro, son isomorfos. No importa cómo dibuje (la forma visual engaña), importa quién está conectado con quién.
 
@@ -261,7 +261,7 @@ A continuación se detallan los grafos fundamentales que se utilizan continuamen
 :::::
 
 :::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-2 bg-slate-900/20 text-center"}
-#### Bip. com. ($K_{3,2}$)
+#### Bip. comp. ($K_{3,2}$)
 
 :::graph{height=130 transparentBg=true}
 ```json
@@ -271,7 +271,7 @@ A continuación se detallan los grafos fundamentales que se utilizan continuamen
 :::::
 
 :::::grid{cols=1 class="border border-slate-700/50 rounded-xl p-2 bg-slate-900/20 text-center"}
-#### $r$-Partido
+#### $r$-Partito
 
 :::graph{height=130 transparentBg=true}
 ```json
@@ -311,10 +311,10 @@ A continuación se detallan los grafos fundamentales que se utilizan continuamen
 | **Completo** | $K_n$ | El conjunto de aristas $A$ contiene absolutamente todos los pares posibles. | $\frac{n(n-1)}{2}$ | $n-1$ |
 | **$r$-Regular** | - | La totalidad de los integrantes fuerzan un grado paramétrico idéntico. | $\frac{rn}{2}$ | $r$ |
 | **Bipartito** | - | $V = V_1 \cup V_2$ con $V_1 \cap V_2 = \emptyset$. Exige ausencia de ciclos de longitud impar internamente. | $\le \frac{n^2}{4}$ | Limitados |
-| **Bip. Completo** | $K_{r,s}$ | Máxima existencia teórica de vínculos cruzados incondicionales entre ambas facciones formales. | $r \cdot s$ | $r$ y $s$ |
+| **Bip. Completo** | $K_{r,s}$ | Máxima existencia teórica de enlaces cruzados incondicionales entre ambas facciones formales. | $r \cdot s$ | $r$ y $s$ |
 | **Estrella** | $K_{1,s}$ | El caso particular clásico del bipartito completo previo asimétrico donde un extremo de la partición vale uno. | $s$ | $1$ y $s$ |
 | **Rueda** | $W_n$ | Composición pura formativa por subgrafo $C_{n-1}$ unido con un vértice de tipo nexo exterior. | $2(n-1)$ | $3$ y $n-1$ |
-| **$r$-Partido** | $G(V_1 \dots V_r)$ | Partición de $V$ en $r$ conjuntos estables $V_i$ tales que no hay aristas entre vértices del mismo grupo. | - | Limitados |
+| **$r$-Partito** | $G(V_1 \dots V_r)$ | Partición de $V$ en $r$ conjuntos estables $V_i$ tales que no hay aristas entre vértices del mismo grupo. | - | Limitados |
 
 ## 7. Subgrafos
 
@@ -322,11 +322,14 @@ Antes de entrar en detalles, entendamos la diferencia entre estar "entero" y que
 
 :::::grid{cols=2 class="gap-4"}
 
+
+
 :::graph{height=120}
 ```json
 { "nodes": [ { "id": 1 }, { "id": 2 }, { "id": 3 }, { "id": 4 } ], "links": [ { "source": 1, "target": 2 }, { "source": 1, "target": 3 }, { "source": 1, "target": 4 }, { "source": 2, "target": 3 }, { "source": 2, "target": 4 }, { "source": 3, "target": 4 } ] }
 ```
 :::
+
 
 :::graph{height=120}
 ```json
@@ -354,7 +357,7 @@ Mantenemos **TODOS los vértices**, pero borramos algunas aristas.
 }
 ```
 :::
-<div class="text-xs text-center text-slate-400 mt-2">Original era un triángulo. El vértice 3 (rojo) sigue ahí, solo.</div>
+<div class="text-xs text-center text-slate-400 mt-2">Original era un triángulo. El vértice 3 (rojo) sigue allí, solo.</div>
 ::::
 
 ::::grid{cols=1 class="h-full border border-slate-700/50 rounded-xl p-3 bg-slate-900/20 hover:bg-slate-900/40 transition-all !my-0"}
@@ -376,7 +379,7 @@ Elegimos un "equipo" de vértices $S$ y nos quedamos con **TODAS** sus aristas i
 
 ## 8. El grafo complementario ($G^c$)
 
-Imaginad el universo paralelo del grafo. Es el **negativo** de la foto. Hay grafos que son **autocomplementarios**: son idénticos a su "negativo" ($G \cong G^c$). El pentágono ($C_5$) es uno de ellos.
+Imaginad el universo paralelo del grafo. Es el **negativo** de la foto. Hay grafos que son **autocomplementarios**: son idénticos a su "negativo" ($G \cong G^c$). El pentágono ($C_5$) es uno.
 
 :::::grid{cols=2 class="gap-4"}
 
@@ -432,7 +435,7 @@ No intentes dibujar el complementario si en el examen te piden números. El orde
 
 ### Grafo reunión ($G \cup G'$)
 Es la unión disjunta de dos grafos. Simplemente los dibujamos uno al lado del otro.
-- **Vértices y Aristas**: $V_{total} = V \cup V'$ y $A_{total} = A \cup A'$.
+- **Vértice y Aristas**: $V_{total} = V \cup V'$ y $A_{total} = A \cup A'$.
 - Si $V \cap V' = \emptyset$ (no comparten nodos), el orden total es exactamente $n + n'$.
 
 **Ejemplo**: $C_3 \cup C_3$
@@ -501,7 +504,7 @@ $$ \text{Diámetro}(G \times H) = \text{Diámetro}(G) + \text{Diámetro}(H) $$
 :::
 
 ### Producto coronal ($G \circ H$)
-Se construye tomando una copia de $G$ y $n_G$ copias de $H$, y conectando cada vértice $i$ de $G$ con **todos** los vértices de su copia correspondiente de $H$.
+Se construye cogiendo una copia de $G$ y $n_G$ copias de $H$, y conectando cada vértice $i$ de $G$ con **todos** los vértices de su copia correspondiente de $H$.
 - **Orden**: $n_{G \circ H} = n_G(1 + n_H)$
 - **Grado de un vértice $v \in G$**: $g_{original}(v) + n_H$
 - **Tamaño**: $m_{G \circ H} = m_G + n_G(m_H + n_H)$

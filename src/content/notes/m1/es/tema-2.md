@@ -1,6 +1,7 @@
 ---
 title: "Tema 2: Recorridos, conexión y DFS"
 description: "Caminos, vértices de corte, distancias y el algoritmo de Búsqueda en Profundidad."
+readTime: "12 Min"
 order: 2
 ---
 
@@ -8,39 +9,39 @@ order: 2
 
 *   **Recorrido**: Viajar de un vértice a otro mediante aristas (puedes repetir lugares como quieras).
 *   **Camino**: Un recorrido donde **no repetimos ningún vértice** (tampoco ninguna arista).
-*   **Ciclo**: Un camino cerrado (inicio = final) de longitud $\ge 3$. Un grafo sin ciclos se denomina **grafo acíclico**.
+*   **Ciclo**: Un camino cerrado (inicio = final) de longitud $\ge 3$. Un grafo sin ciclos se llama **grafo acíclico**.
 *   **Longitud**: Es exactamente el número de aristas que cruzamos, no los vértices. El viaje de un vértice a sí mismo (sin moverse) tiene longitud 0.
 
 ## 2. Cortes y puentes
 
-Un grafo es **conexo** si siempre hay algún camino entre cualquier pareja de vértices. Si alguno no llega, se fragmenta en **componentes conexos** separados. Cualquier grafo conexo de tamaño real exige como mínimo el uso estricto de $n - 1$ aristas (si tenemos un grafo conexo de 5 vértices, entonces tiene exactamente 4 aristas).
+Un grafo es **conexo** si siempre hay algún camino entre cualquier par de vértices. Si alguno no llega, se fragmenta en **componentes conexas** separadas. Cualquier grafo conexo de tamaño real exige como mínimo el uso estricto de $n - 1$ aristas (si tenemos un grafo conexo de 5 vértices, entonces tiene exactamente 4 aristas).
 
-*   **Vértice de corte**: Si borramos este solo vértice, cortamos tantas conexiones que el grafo se divide instantáneamente en MÁS componentes conexos.
-*   **Arista puente**: Si borramos esta arista en solitario, rompemos el grafo en **exactamente 2** componentes conexos.
+*   **Vértice de corte**: Si borramos este único vértice, cortamos tantas conexiones que el grafo se divide instantáneamente en MÁS componentes conexas.
+*   **Arista puente**: Si borramos esta arista en solitario, rompemos el grafo en **exactamente 2** componentes conexas.
 
 :::graph
 ```json
 {
   "nodes": [
-    { "id": "1" }, { "id": "2" }, { "id": "Corte", "color": "#ef4444" },
+    { "id": "1" }, { "id": "2" }, { "id": "Tall", "color": "#ef4444" },
     { "id": "4", "color": "#3b82f6" }, { "id": "5" }
   ],
   "links": [
-    { "source": "1", "target": "2" }, { "source": "2", "target": "Corte" }, { "source": "1", "target": "Corte" },
-    { "source": "Corte", "target": "4", "color": "#facc15", "width": 3, "label": "Puente" },
+    { "source": "1", "target": "2" }, { "source": "2", "target": "Tall" }, { "source": "1", "target": "Tall" },
+    { "source": "Tall", "target": "4", "color": "#facc15", "width": 3, "label": "Puente" },
     { "source": "4", "target": "5" }
   ]
 }
 ```
 :::
-<div class="text-xs text-center text-slate-400 mt-2 mb-4">El vértice de <b>Corte</b> es vital. La arista amarilla es exclusivamente un <b>Puente</b>.</div>
+<div class="text-xs text-center text-slate-400 mt-2 mb-4">El vértice de <b>Corte</b> (rojo) es vital. La arista amarilla es exclusivamente un <b>Puente</b>.</div>
 
 :::tip{title="La falacia de aristas y vértices"}
-"¿Un grafo conexo con vértices de corte siempre tiene alguna arista puente?" **FALSO**. Contraejemplo: el **grafo mariposa** (dos triángulos unidos por un solo vértice). El vértice central es de corte, pero ninguna arista es puente porque todas forman parte de un ciclo. En cambio, el **recíproco sí es cierto**: si una arista es puente, sus extremos son vértices de corte (excepto si algún extremo tiene grado 1, es decir, es una hoja).
+"¿Un grafo conexo con vértices de corte siempre tiene alguna arista puente"? **FALSO**. Contraejemplo: el **grafo mariposa** (dos triángulos unidos por un solo vértice). El vértice central es de corte, pero ninguna arista es puente porque todas forman parte de un ciclo. En cambio, el **recíproco sí que es cierto**: si una arista es puente, sus extremos son vértices de corte (excepto si algún extremo tiene grado 1, es decir, es una hoja).
 :::
 
 ## 3. Métricas de distancia
-Sean dos vértices que viven en un mismo componente conexo $u$ y $v$:
+Sean dos vértices que viven en una misma componente conexa $u$ y $v$:
 *   **Distancia $d(u,v)$**: El valor *mínimo* referente a la longitud de toda la variedad de caminos para ir de $u$ a $v$. Si no hay camino posible, se considera $\infty$.
 
 A nivel global de grafo tenemos 4 definiciones clave a evaluar dependiendo de esta $d$:
@@ -49,7 +50,7 @@ A nivel global de grafo tenemos 4 definiciones clave a evaluar dependiendo de es
 3.  **Radio $r(G)$**: Si buscamos el punto más eficiente del mapa... La menor excentricidad disponible obtenida por algún vértice se llama radio.
 4.  **Centro del Grafo**: Cualquiera y todos los vértices donde hayan calculado tener de forma milagrosa justamente la excentricidad exactamente igual a dicho **radio**.
 
-**Ejemplo:** Consideramos el camino $a - b - c - d$:
+**Ejemplo:** Consideremos el camino $a - b - c - d$:
 
 | | $d(\cdot, a)$ | $d(\cdot, b)$ | $d(\cdot, c)$ | $d(\cdot, d)$ | **Excentricidad** |
 |:-:|:-:|:-:|:-:|:-:|:-:|
@@ -66,20 +67,20 @@ A nivel global de grafo tenemos 4 definiciones clave a evaluar dependiendo de es
 
 ## 4. DFS: Búsqueda en profundidad (Depth-First Search)
 
-El algoritmo de demostración oficial **DFS** permite encontrar absolutamente todo el componente conexo al cual pertenece un inicio dado $v$. Descubre las profundidades antes de mirar por los lados contiguos y se basa nativamente en emplear una especie de **pila (LIFO)**. 
+El algoritmo de demostración oficial **DFS** permite encontrar absolutamente toda la componente conexa a la que pertenece un inicio dado $v$. Descubre las profundidades antes de mirar por los lados contiguos y se basa nativamente en emplear una especie de **pila (LIFO)**. 
 
-En cada visita se intenta añadir un solo adyacente fresco de quien seguir hundiéndose (push). Solo si nos quedamos acorralados (todos los vecinos revisados), hace marcha atrás deshaciendo desde la propia pila para explorar por donde vinimos (pop).
+En cada visita se intenta añadir un solo adyacente fresco del que seguir hundiéndose (push). Solo si nos quedamos acorralados (todos los vecinos revisados), da marcha atrás deshaciendo desde la propia pila para explorar por dónde vinimos (pop).
 
 :::algoviz{algorithm="dfs"}
 :::
 
 ## 5. BFS: Búsqueda en anchura (Breadth-First Search)
 
-Mientras que el DFS baja en picado "cayendo", el **BFS** se propaga radialmente por capas. En el ordenador necesita puramente estructurar memoria temporal alrededor de una **cola (FIFO)**.
+Mientras que el DFS cae en picado, el **BFS** se propaga radialmente por capas. En el ordenador necesita puramente estructurar memoria temporal alrededor de una **cola (FIFO)**.
 
-Si tenemos un array `D` que nos guarda cuántos pasos llevamos hechos:
+Si tenemos un array `D` que nos guarda cuántos pasos llevamos dados:
 1. Poner el nodo de origen ($v$) a distancia `0` dentro de `D`. `D[v] = 0`.
-2. Encuelas y añades el $v$ a la lista de Visitado ($W$).
+2. Encolas y añades el $v$ a la lista de Visitados ($W$).
 3. Cuando extraes el primero de la cola (llamado $x$), todos los nuevos adyacentes inexplorados ($y$) tomarán estrictamente como distancia oficial el valor **$D[y] = D[x] + 1$**. ¡Y tú avanzas a otro barrio!
 
 > Sea el grafo simple $G = (V,A)$ y su vértice $v \in V$. El vector resultante $D$ obtenido manualmente durante **las rutinas puras del algoritmo BFS** garantiza convertirse en el almacenamiento real de la **distancia mínima de caminos del vértice original $v$ hacia cualquier otro** ubicado en toda la raíz de nodos conectados.
@@ -88,10 +89,10 @@ Si tenemos un array `D` que nos guarda cuántos pasos llevamos hechos:
 :::
 
 :::tip{title="Truco de Examen: Ejecutar Recorridos en Papel"}
-A menudo pedirán listar explícitamente y de memoria sobre "el orden de adición de vértices al árbol generador BFS/DFS priorizando estrictamente con el orden numérico pequeño de frontera". Es clave no fallar ni liarse:
-*   **Aristas Generadoras:** ¡La tubería maestra o *arista de descubrimiento* proviene únicamente desde qué vértice anterior has conquistado de primeras al otro desconocido! Y nunca entre adyacentes descubiertos desde un mismo fondo.
-*   **Orden BFS Papel:** Listad los de distancia 1 (ordenados de menor id a mayor), poned las ramitas, haced de origen uno a uno y añadid los de distancia 2. ¡No saltéis ramas!
-*   **Orden DFS Papel:** Sigue la línea sin cerrar hasta el último rincón menor posible. Una vez cortado el paso sin ruta (todos los vecinos actuales visitados), deshacer atrás y buscar rutas vírgenes paralelas descartadas como recurso.
+A menudo pedirán listar de forma explícita y de memoria sobre "el orden de adición de vértices al árbol generador BFS/DFS priorizando estrictamente con orden numérico pequeño de frontera". Es clave no fallar ni liarse:
+*   **Aristas Generadoras:** ¡La tubería maestra o *arista de descubrimiento* proviene únicamente desde qué vértice anterior has conquistado de primera al otro desconocido! Y nunca entre adyacentes descubiertos desde unos mismos fondos.
+*   **Orden BFS Papel:** Listad los de distancia 1 (ordenados de menor id a mayor), poned las ramitas, haced de origen uno a uno y añadid los de distancia 2. ¡No os saltéis ramas!
+*   **Orden DFS Papel:** Sigue la línea sin cerrar hasta el último rincón menor posible. Una vez cortado el paso sin ruta (todos los vecinos actuales visitados), deshace detrás y busca rutas vírgenes paralelas descartadas como recurso.
 :::
 
 ---

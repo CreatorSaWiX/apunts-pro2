@@ -1,6 +1,7 @@
 ---
 title: "Tema 4: Árboles y árboles generadores"
 description: "La estructura estrella. Caracterización y la secuencia de Prüfer."
+readTime: "20 Min"
 order: 4
 ---
 
@@ -9,7 +10,7 @@ Un árbol es la estructura preferida de la informática para representar jerarqu
 ## 1. Conceptos básicos
 
 *   **Árbol**: Todo grafo conexo y acíclico.
-*   **Bosque**: Grafo acíclico formado por uno o más árboles (componentes conexos independientes).
+*   **Bosque**: Grafo acíclico formado por uno o más árboles (componentes conexas independientes).
 *   **Hoja**: Todo vértice en un bosque que tenga grado 1.
 
 :::::grid{cols=2 gap=4}
@@ -18,13 +19,13 @@ Un árbol es la estructura preferida de la informática para representar jerarqu
 :::graph{height=260}
 {
   "nodes": [
-    { "id": "Raiz", "color": "#facc15", "label": "Raíz" }, { "id": "A" }, { "id": "B" },
+    { "id": "Raíz", "color": "#facc15" }, { "id": "A" }, { "id": "B" },
     { "id": "Hoja1", "color": "#10b981", "label": "Hoja" }, { "id": "C" },
     { "id": "Hoja2", "color": "#10b981", "label": "Hoja" },
     { "id": "Hoja3", "color": "#10b981", "label": "Hoja" }
   ],
   "links": [
-    { "source": "Raiz", "target": "A" }, { "source": "Raiz", "target": "B" },
+    { "source": "Raíz", "target": "A" }, { "source": "Raíz", "target": "B" },
     { "source": "A", "target": "Hoja1" }, { "source": "A", "target": "C" },
     { "source": "C", "target": "Hoja2" }, { "source": "B", "target": "Hoja3" }
   ]
@@ -46,7 +47,7 @@ Un árbol es la estructura preferida de la informática para representar jerarqu
   ]
 }
 :::
-<div class="text-center text-sm mt-1 mb-4"><b class="text-sky-400">Ejemplo de Bosque</b><br/>No hay ciclos, pero tiene 2 componentes conexos separados.</div>
+<div class="text-center text-sm mt-1 mb-4"><b class="text-sky-400">Ejemplo de Bosque</b><br/>No hay ciclos, pero tiene 2 componentes conexas separadas.</div>
 
 ::::
 
@@ -77,16 +78,16 @@ Un grafo $G$ de orden $n$ y tamaño $m$ es un árbol si cumple **dos** de estas 
 <details>
 <summary><b>Ver la demostración</b></summary>
 
-1. ($\implies$) Si $G$ es un árbol, entonces es acíclico por definición. Demostramos que $m = n-1$ por inducción sobre $n$:
+1. ($\implies$) Si $G$ es un árbol, entonces es acíclico por definición. Demostremos que $m = n-1$ por inducción sobre $n$:
     
     **Caso base ($n=1$):** Un nodo y 0 aristas. $m = 0 = 1-1$. Correcto.
    
    **Paso inductivo:** 
-    * **H.I.:** Supongamos que la fórmula $m=n-1$ es cierta para todos los árboles de $n=k$ vértices.
+    * **H.I.:** Suponemos que la fórmula $m=n-1$ es cierta para todos los árboles de $n=k$ vértices.
     * **T.I.:** Un árbol de $n=k+1$ nodos tiene al menos una hoja (vértice de grado 1). Si la eliminamos junto con su arista, obtenemos un nuevo árbol de $n=k$ nodos. Por hipótesis de inducción, este tiene $m = k-1$ aristas. Al restaurar la hoja y la arista original, tenemos $m = (k-1) + 1 = k = (k+1)-1$.
 
-2. ($\impliedby$) Si $G$ es acíclico y $m = n-1$, tenemos que demostrar que es conexo (y por tanto un árbol):
-    * Supongamos que $G$ tiene $k$ componentes conexas $C_1, C_2, \dots, C_k$. Como el grafo es acíclic, cada componente también lo es y, por ser conexa, cada $C_i$ es un árbol.
+2. ($\impliedby$) Si $G$ es acíclico y $m = n-1$, hemos de demostrar que es conexo (y por tanto un árbol):
+    * Supongamos que $G$ tiene $k$ componentes conexas $C_1, C_2, \dots, C_k$. Como el grafo es acíclico, cada componente también lo es y, por ser conexa, cada $C_i$ es un árbol.
     * Para cada componente $C_i$, sabemos que $m_i = n_i - 1$.
     * Sumando todas las aristas: $m = \sum_{i=1}^k m_i = \sum_{i=1}^k (n_i - 1) = \sum n_i - \sum 1 = n - k$.
     * Como se nos dice que $m = n - 1$, entonces $n - k = n - 1 \implies \mathbf{k = 1}$.
@@ -95,7 +96,7 @@ Un grafo $G$ de orden $n$ y tamaño $m$ es un árbol si cumple **dos** de estas 
 :::
 
 Otras caracterizaciones:
-*   Existe un **único camino** entre cualquier pareja de vértices.
+*   Existe un **único camino** entre cualquier par de vértices.
 *   Es acíclico, pero si añadimos cualquier arista nueva, se crea exactamente un ciclo.
 
 ### Tip de examen:
@@ -153,7 +154,7 @@ Podemos obtener árboles generadores recorriendo el grafo de dos maneras princip
   ]
 }
 :::
-<div class="text-center text-sm"><strong>BFS (Amplitud)</strong><br/>Genera estructuras "panzudas" (estrellas).</div>
+<div class="text-center text-sm"><strong>BFS (Anchura)</strong><br/>Genera estructuras "barrigudas" (estrellas).</div>
 ::::
 
 :::::
@@ -170,11 +171,11 @@ Como vemos en el dibujo superior, un mismo grafo puede generar árboles generado
 *   **Teorema de Cayley**: Existen exactamente $n^{n-2}$ árboles diferentes.
 
 ### Secuencia de Prüfer
-Es una bijección que permite codificar un árbol etiquetado de $n$ vértices en una secuencia de longitud $n-2$.
+Es una biyección que permite codificar un árbol etiquetado de $n$ vértices en una secuencia de longitud $n-2$.
 
 **Algoritmo de codificación:**
 1.  Busca la hoja con la etiqueta más pequeña.
-2.  Apunta a su vecino en la secuencia.
+2.  Apunta su vecino en la secuencia.
 3.  Elimina la hoja.
 4.  Repite hasta que solo queden 2 vértices.
 

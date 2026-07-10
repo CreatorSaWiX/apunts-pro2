@@ -20,7 +20,7 @@ $$
 A = \begin{pmatrix} 
 a_{11} & a_{12} & \dots & a_{1n} \\ 
 a_{21} & a_{22} & \dots & a_{2n} \\ 
-vdots & \vdots & \ddots & \vdots \\ 
+\vdots & \vdots & \ddots & \vdots \\ 
 a_{m1} & a_{m2} & \dots & a_{mn} 
 \end{pmatrix} \in \mathcal{M}_{m \times n}(\mathbb{K})
 $$
@@ -62,7 +62,7 @@ $$
 | :--- | :--- | :--- |
 | **Definición** | $A \cdot A^{-1} = I$ : Solo si la matriz tiene $\det(A) \neq 0$. | $\begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix} \begin{pmatrix} \frac{1}{2} & 0 \\ 0 & \frac{1}{2} \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$ |
 | **Prod. invertible** | $(AB)^{-1} = B^{-1} A^{-1}$ : Se invierte el orden de los factores. | $(2I \cdot 3I)^{-1} = \frac{1}{3}I \cdot \frac{1}{2}I = \frac{1}{6}I$ |
-| **Transpuesta** | $(A^t)^{-1} = (A^{-1})^t$ : Trasponer e invertir conmutan. | $\left(\begin{pmatrix} 2 & 0 \\ 0 & 3 \end{pmatrix}^t\right)^{-1} = \begin{pmatrix} 1/2 & 0 \\ 0 & 1/3 \end{pmatrix}$ |
+| **Transpuesta** | $(A^t)^{-1} = (A^{-1})^t$ : Transponer e invertir conmutan. | $\left(\begin{pmatrix} 2 & 0 \\ 0 & 3 \end{pmatrix}^t\right)^{-1} = \begin{pmatrix} 1/2 & 0 \\ 0 & 1/3 \end{pmatrix}$ |
 | **Doble inversa** | $(A^{-1})^{-1} = A$ : Invertir dos veces anula la operación. | $\left(\begin{pmatrix} 5 \end{pmatrix}^{-1}\right)^{-1} = \begin{pmatrix} 1/5 \end{pmatrix}^{-1} = \begin{pmatrix} 5 \end{pmatrix}$ |
 
 ### Transformaciones elementales por filas
@@ -81,7 +81,7 @@ $$
 > Esto se expresa matricialmente como $B = EA$ donde $E = \begin{pmatrix} 1 & 0 \\ -3 & 1 \end{pmatrix}$.
 
 ### Matrices escalonadas y rango
-Decimos que una matriz es **escalonada** cuando tiene estructura de escala descendente:
+Decimos que una matriz es **escalonada** cuando tiene estructura de escalera descendente:
 
 $$
 \begin{pmatrix} 
@@ -102,11 +102,11 @@ $$
 ### Condición de invertibilidad
 Para saber si una matriz cuadrada $A$ de orden $n$ tiene inversa, utilizamos el rango:
 
-> **$A$ es invertible $\iff \text{rang}(A) = n$**
+> **$A$ es invertible $\iff \text{rango}(A) = n$**
 > Esto implica que su forma escalonada reducida es la **Identidad ($I_n$)**.
 
 ### Método de Gauss-Jordan
-Para encontrar la inversa, "pegamos" la identidad a la derecha y operamos hasta que la identidad quede a la izquierda:
+Para encontrar la inversa, "enganchamos" la identidad a la derecha y operamos hasta que la identidad quede a la izquierda:
 
 $$ (A \mid I_n) \xrightarrow{\text{Operaciones por filas}} (I_n \mid A^{-1}) $$
 
@@ -163,11 +163,11 @@ Decimos que dos sistemas son equivalentes si tienen la **misma solución general
 Son sistemas donde toda la columna de términos independientes es cero.
 - **Siempre son compatibles**: Tienen como mínimo la **solución trivial** $(0, \dots, 0)$.
 - **Discusión por rango**:
-    - $\text{rang}(A) = n \implies$ **SCD** (solo la trivial).
-    - $\text{rang}(A) < n \implies$ **SCI** (tiene soluciones no triviales).
+    - $\text{rango}(A) = n \implies$ **SCD** (solo la trivial).
+    - $\text{rango}(A) < n \implies$ **SCI** (tiene soluciones no triviales).
 
 ### Resolución de sistemas escalonados
-En un sistema escalonado compatible con $r = \text{rang}$ y $n = \text{incógnitas}$:
+En un sistema escalonado compatible con $r = \text{rango}$ y $n = \text{incógnitas}$:
 - **Variables principales**: Corresponden a los pivotes (hay $r$).
 - **Variables libres**: El resto ($n - r$), que se convierten en parámetros $\lambda, \mu, \dots$
 
@@ -180,9 +180,9 @@ $$ \begin{cases} x = 5 - 2\lambda \\ y = \lambda \end{cases} \implies (x, y) = (
 
 ### Discusión (Teorema de Rouché-Frobenius)
 
-Este teorema permite clasificar un sistema de ecuaciones comparando el rango de la matriz de coeficientes ($A$) y el del ampliada ($A \mid b$). 
+Este teorema permite clasificar un sistema de ecuaciones comparando el rango de la matriz de coeficientes ($A$) y el de la ampliada ($A \mid b$). 
 
-Sea **$r = \text{rang}(A)$**, **$r' = \text{rang}(A \mid b)$** y **$n$** el número de incógnitas:
+Sea **$r = \text{rango}(A)$**, **$r' = \text{rango}(A \mid b)$** y **$n$** el número de incógnitas:
 
 | Condición de Rangos | Tipo de Sistema | Soluciones | Observación en Gauss |
 | :--- | :--- | :--- | :--- |
@@ -199,20 +199,20 @@ Sea **$r = \text{rang}(A)$**, **$r' = \text{rang}(A \mid b)$** y **$n$** el núm
 La eliminación gaussiana es el algoritmo sistemático para resolver SEL. Sigue este camino:
 
 1. **Matriz ampliada**: Transforma el sistema a la matriz $(A \mid b)$.
-2. **Triangularización**: Haz ceros bajo los pivotes para obtener una matriz escalonada.
+2. **Triangularización**: Haz ceros debajo de los pivotes para obtener una matriz escalonada.
 3. **Discusión**: Aplica el **Tma. de Rouché-Frobenius** para clasificar el sistema.
-4. **Sustitución hacia atrás**: Si es compatible, calcula las incógnitas de abajo a arriba (desde la última fila).
+4. **Sustitución hacia atrás**: Si es compatible, calcula las incógnitas de abajo arriba (desde la última fila).
 
 > **Ejemplo paso a paso**: Resolvemos $\begin{cases} x + 2y = 3 \\ 2x + 4y = 6 \end{cases}$
 > 1. **Ampliada**: $\left(\begin{array}{cc|c} 1 & 2 & 3 \\ 2 & 4 & 6 \end{array}\right) \xrightarrow{F_2 - 2F_1} \left(\begin{array}{cc|c} \mathbf{1} & 2 & 3 \\ 0 & 0 & 0 \end{array}\right)$
-> 2. **Discusión**: $\text{rang}(A) = 1$, $\text{rang}(A|b) = 1$, $n = 2$. Como $1 = 1 < 2$, es un **SCI**.
+> 2. **Discusión**: $\text{rango}(A) = 1$, $\text{rango}(A|b) = 1$, $n = 2$. Como $1 = 1 < 2$, es un **SCI**.
 > 3. **Solución**: $x + 2y = 3 \implies x = 3 - 2\lambda, y = \lambda$.
 
 ---
 
 ## 3. Determinantes y aplicaciones
 
-El determinante es un escalar que resume las propiedades clave de una matriz cuadrada: inversibilidad, rango y valores propios.
+El determinante es un escalar que resume las propiedades clave de una matriz cuadrada: invertibilidad, rango y valores propios.
 El determinante es un valor escalar que nos indica si una matriz cuadrada es invertible ($\det \neq 0$).
 
 ### Métodos de cálculo
@@ -238,12 +238,12 @@ El determinante es un valor escalar que nos indica si una matriz cuadrada es inv
 | Operación | Regla del determinante | Nota |
 | :--- | :--- | :--- |
 | **Producto ($AB$)** | $\det(AB) = \det(A) \cdot \det(B)$ | El determinante del producto es el producto de los dets. |
-| **Transpuesta ($A^t$)** | $\det(A^t) = \det(A)$ | El determinante no varía al trasponer. |
+| **Transpuesta ($A^t$)** | $\det(A^t) = \det(A)$ | El determinante no varía al transponer. |
 | **Inversa ($A^{-1}$)** | $\det(A^{-1}) = \frac{1}{\det(A)}$ | Solo si $\det(A) \neq 0$. |
 | **Suma ($A+B$)** | **NO hay regla general** | $\det(A+B) \neq \det(A) + \det(B)$ casi siempre. |
 
-> **Truco de la suma constante**: Si todas las filas suman el mismo valor $S$, sumando todas las columnas a la primera ($C_1 \to C_1 + C_2 + \dots$) podremos sacar el factor $S$ fuera del determinante.
-> En general, **$\det(A + B) \neq \det(A) + \det(B)$**. Los determinantes "se llevan bien" con el producto, pero no con la suma.
+> **Truco de la suma constante**: Si todas las filas suman el mismo valor $S$, sumando todas las columnas a la primera ($C_1 \to C_1 + C_2 + \dots$) y podremos sacar el factor $S$ fuera del determinante.
+> En general, **$\det(A + B) \neq \det(A) + \det(B)$**. Los determinantes "se portan bien" con el producto, pero no con la suma.
 
 
 ### Aplicaciones: Invertibilidad y valores propios

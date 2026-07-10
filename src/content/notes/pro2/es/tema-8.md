@@ -15,7 +15,7 @@ Para entender los punteros, primero debemos saber dónde se almacenan los datos.
 | :--- | :--- | :--- |
 | **Gestión** | Automática (por el ordenador). | Manual (por el programador). |
 | **Velocidad** | Muy rápida. | Más lenta. |
-| **Tamaño** | Limitada y fija. | Muy grande (memoria RAM disponible). |
+| **Tamaño** | Limitado y fijo. | Muy grande (memoria RAM disponible). |
 | **Ciclo de vida** | Ligado a las llaves `{}` (stack frames). | Decidimos cuándo nacen (`new`) y mueren (`delete`). |
 
 **Ejemplo de scope (Pila)**:
@@ -25,9 +25,9 @@ int f(int a, int b) {
     if (b > n) {
         int m = 2; // Nace aquí
         a = b;
-    } // m muere aquí automáticamente
+    } // m Muere aquí automáticamente
     return a;
-} // n y a mueren aquí
+} // n y a Mueren aquí
 ```
 
 ## 2. ¿Qué es un puntero?
@@ -38,14 +38,14 @@ Un **puntero** es una variable que, en lugar de almacenar un valor (como un `int
 | :--- | :--- | :--- | :--- |
 | **`&`** | Dirección de | Obtiene la dirección de memoria de una variable. | `p = &x;` |
 | **`*`** | Desreferencia | Accede al contenido de la dirección que guarda el puntero. | `cout << *p;` |
-| **`->`** | Flecha | Acceso a miembro vía puntero. Equivalente a `(*p).membre`. | `pp->first = "b";` |
+| **`->`** | Flecha | Acceso a miembro vía puntero. Equivalente a `(*p).miembro`. | `pp->first = "b";` |
 
 ### Trampas de declaración y sintaxis
 
-- **Declaración múltiple**: El asterisco `*` debe ponerse por cada variable.
+- **Declaración múltiple**: El asterisco `*` se debe poner por cada variable.
   ```cpp
-  int *pb, *pc; // Dos punteros
-  int* pb, pc;  // ¡pb es puntero, pc es un ENTERO normal! (Error típico)
+  int *pb, *pc; // Dos punteros que apuntan a enteros
+  int* pb, pc;  // ¡pb es puntero, pc es un entero normal! (Error típico)
   ```
 - **Puntero a elementos de contenedores**:
   ```cpp
@@ -99,12 +99,12 @@ p = new int[100]; // ERROR: ¡Se ha perdido la dirección del primer vector! Fug
 
 ## 4. Aliasing y asignación
 
-El **aliasing** ocurre cuando dos o más punteros apuntan a la misma dirección de memoria. Modificar el valor a través de un puntero afecta a todos los otros "alias".
+El **aliasing** ocurre cuando dos o más punteros apuntan a la misma dirección de memoria. Modificar el valor a través de un puntero afecta a todos los demás "alias".
 
 ```cpp
 int x = 10;
 int* p1 = &x;
-int* p2 = p1; // Aliasing: p2 apunta donde apunta p1
+int* p2 = p1; // Aliasing: p2 apunta a donde apunta p1
 
 *p2 = 20;
 cout << x; // ¡Imprimirá 20!
@@ -184,7 +184,7 @@ En una pila enlazada, solo tenemos un puntero a la cima (`ptopitem`). Cada vez q
 
 ::stackviz
 
-> **Ejercicio `swap2Topmost()`**: Para intercambiar los dos primeros nodos sin tocar los `.value`, debes:
+> **Ejercicio `swap2Topmost()`**: Para intercambiar los dos primeros nodos sin tocar los `.value`, tienes que:
 > 1. Guardar el segundo nodo en un puntero auxiliar: `Item *p2 = ptopitem->next;`
 > 2. Reenlazar: `ptopitem->next = p2->next;`
 > 3. Hacer que el nuevo primero sea el que era segundo: `p2->next = ptopitem;`
@@ -198,7 +198,7 @@ En una cola, necesitamos dos punteros: `first` (para sacar) y `last` (para añad
 > **Ejercicio `operator[]`**: Como una cola enlazada no es un vector, para encontrar el elemento `i` tienes que hacer un bucle `for` que avance el puntero `p = p->next` exactamente `i` veces empezando desde `first`.
 
 ### 7.3 Cómo borrar nodos por el medio
-Para borrar un nodo (como en `removeFirstOccurrence`), necesitas "saltártelo":
+Para borrar un nodo (como en `removeFirstOccurrence` - Juez: X87185), necesitas "saltártelo":
 1. Encontrar el nodo **anterior** al que quieres borrar (`ant`).
 2. Hacer el salto: `ant->next = ant->next->next;`
 3. Liberar la memoria: `delete p_a_borrar;`
@@ -208,7 +208,7 @@ Para borrar un nodo (como en `removeFirstOccurrence`), necesitas "saltártelo":
 ---
 
 ## Checklist para el Juez (Punteros)
-- [ ] **¿Has puesto `nullptr`?** Comprueba siempre si un puntero es nulo antes de hacer `p->next`.
-- [ ] **¿Has hecho `delete`?** Cada `new` debe tener su `delete` para evitar Memory Leaks.
-- [ ] **Casos vacíos**: ¿Qué hace tu código si la pila/cola está vacía? ¿Y si tiene solo 1 elemento?
-- [ ] **Auto-asignación**: En el uso de `operator=`, ¿has comprobado `if (this != &s)`?
+- **¿Has puesto `nullptr`?** Comprueba siempre si un puntero es nulo antes de hacer `p->next`.
+- **¿Has hecho `delete`?** Cada `new` debe tener su `delete` para evitar Memory Leaks.
+- **Casos vacíos**: ¿Qué hace tu código si la pila/cola está vacía? ¿Y si tiene solo 1 elemento?
+- **Autoasignación**: En el uso de `operator=`, ¿has comprobado `if (this != &s)`?

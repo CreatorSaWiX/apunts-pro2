@@ -27,6 +27,8 @@ const personalNotes = defineCollection({
         // Busquem rutes tipus /es o \es o /es/ 
         if (dPath.includes('/es') || dPath.includes('\\es') || dPath === 'es') {
             lang = 'es';
+        } else if (dPath.includes('/en') || dPath.includes('\\en') || dPath === 'en') {
+            lang = 'en';
         }
 
         return {

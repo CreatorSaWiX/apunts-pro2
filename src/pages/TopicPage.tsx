@@ -43,7 +43,7 @@ const TopicPage: React.FC = () => {
 
 
     const sortedTopics = [...allPersonalNotes]
-        .filter(t => t.subject === topic?.subject)
+        .filter(t => t.subject === topic?.subject && t.lang === 'ca')
         .filter(t => {
             const tIsLab = t.slug.includes('-lab-');
             const isMatch = isLab ? tIsLab : !tIsLab;
@@ -53,7 +53,11 @@ const TopicPage: React.FC = () => {
             if ((t as any).draft) return false;
             return true;
         })
-        .sort((a, b) => a.order - b.order);
+        .sort((a, b) => a.order - b.order)
+        .map(caTopic => {
+            const localized = allPersonalNotes.find(n => n.slug === caTopic.slug && n.lang === preferredLang);
+            return localized && !(localized as any).draft ? localized : caTopic;
+        });
 
     const currentIndex = sortedTopics.findIndex(t => t.slug === id);
     const prevTopic = currentIndex > 0 ? sortedTopics[currentIndex - 1] : undefined;

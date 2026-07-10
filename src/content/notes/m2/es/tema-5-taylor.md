@@ -1,6 +1,6 @@
 ---
 title: "Tema 5: Polinomio de Taylor"
-description: "Aproximación de funciones mediante polinomios, cálculo del error (resto de Lagrange) e estudio local."
+description: "Aproximación de funciones mediante polinomios, cálculo del error (resto de Lagrange) y estudio local."
 order: 5
 readTime: "25 min"
 subject: "m2"

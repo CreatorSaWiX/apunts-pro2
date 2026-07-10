@@ -18,7 +18,7 @@ Una función es derivable en un punto si podemos medir su cambio instantáneo de
 Este valor $f'(a)$ se llama la **derivada** de $f$ en $a$.
 
 ### Interpretación Geométrica
-Geométricamente, la derivada $f'(a)$ nos da la **pendiente** (la inclinación) de la recta tangente a la gráfica justo en el punto $(a, f(a))$.
+Geométricamente, la derivada $f'(a)$ nos da la **pendiente** (la inclinación) de la recta tangente a la gráfica justo en el punto $(a, f(a))$. 
 
 La ecuación de esta recta tangente es:
 $$y = f(a) + f'(a)(x - a)$$
@@ -27,8 +27,8 @@ $$y = f(a) + f'(a)(x - a)$$
 
 ### Derivabilidad y Continuidad
 Hay una relación jerárquica muy importante entre estos dos conceptos:
-1. Si una función es derivable en un punto, entonces es **obligatoriamente continua** en ese punto.
-2. Al revés **no es cierto**: hay funciones continuas que no son derivables (por ejemplo, si tienen un "pico" o un ángulo brusco).
+1. Si una función es derivable en un punto, entonces es **obligatoriamente continua** en aquel punto.
+2. El revés **no es cierto**: hay funciones continuas que no son derivables (por ejemplo, si tienen un "pico" o un ángulo brusco).
 
 ---
 
@@ -38,7 +38,7 @@ Cuando tenemos funciones tipo $f(x) = u(x)^{v(x)}$ (donde tanto la base como el 
 
 1. Aplicamos logaritmos: $\ln f(x) = v(x) \ln u(x)$
 2. Derivamos a ambos lados (regla de la cadena): $\frac{f'(x)}{f(x)} = v'(x) \ln u(x) + v(x) \frac{u'(x)}{u(x)}$
-3. Despejamos $f'(x)$:
+3. Aislamos $f'(x)$:
 $$f'(x) = u(x)^{v(x)} \left( v'(x) \ln u(x) + v(x) \frac{u'(x)}{u(x)} \right)$$
 
 ::mafs{type="derivacio_logaritmica"}
@@ -78,7 +78,7 @@ Podemos saber si una función sube o baja mirando el signo de su primera derivad
 Para encontrar **máximos y mínimos relativos**:
 1. Buscamos puntos donde $f'(a) = 0$ (puntos críticos).
 2. Miramos la segunda derivada:
-   - $f''(a) > 0 \implies$ **Mínimo** (forma de cuenco).
+   - $f''(a) > 0 \implies$ **Mínimo** (forma de bol).
    - $f''(a) < 0 \implies$ **Máximo** (forma de paraguas).
 
 ### Regla de l'Hôpital
