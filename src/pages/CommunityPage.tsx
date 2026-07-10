@@ -14,6 +14,7 @@ import PostDetailModal from '../components/community/PostDetailModal';
 import Spinner from '../components/ui/Spinner';
 import { useSettings } from '../contexts/SettingsContext';
 import { SUBJECTS } from '../config/subjects';
+import { useTranslation } from 'react-i18next';
 
 import LiquidDropdown from '../components/ui/glass/LiquidDropdown';
 import { LiquidToolbar, LiquidToolbarButton } from '../components/ui/glass/LiquidToolbar';
@@ -69,6 +70,7 @@ const mockMythicPost: CommunityPost = {
 const CommunityPage = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [posts, setPosts] = useState<CommunityPost[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
@@ -110,7 +112,7 @@ const CommunityPage = () => {
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
-    const heroWords = ["el curs.", "el semestre.", "la carrera."];
+    const heroWords = [t('hero.word1', "el curs."), t('hero.word2', "el semestre."), t('hero.word3', "la carrera.")];
     const [heroWordIndex, setHeroWordIndex] = useState(0);
 
     useEffect(() => {
@@ -250,13 +252,13 @@ const CommunityPage = () => {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
                                 className="text-white drop-shadow-2xl"
-                            >Superem</motion.span>
+                            >{t('hero.superem', 'Superem')}</motion.span>
                             <motion.span 
                                 initial={{ opacity: 0, x: -50 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                                 className="text-slate-300 drop-shadow-xl"
-                            >junts</motion.span>
+                            >{t('hero.junts', 'junts')}</motion.span>
                             
                             {/* Dynamic Word container */}
                             <motion.div 
@@ -285,7 +287,7 @@ const CommunityPage = () => {
                             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
                             className="text-slate-400 text-base md:text-lg font-medium max-w-xl mb-8 leading-relaxed"
                         >
-                            Comparteix els teus recursos, troba els millors apunts i ajuda als teus companys. Perquè aquí l'èxit és col·lectiu i <span className="text-white font-bold">no deixem a ningú enrere</span>.
+                            {t('hero.subtitle', "Comparteix els teus recursos, troba els millors apunts i ajuda als teus companys. Perquè aquí l'èxit és col·lectiu i ")}<span className="text-white font-bold">{t('hero.nobodyBehind', 'no deixem a ningú enrere')}</span>.
                         </motion.p>
                         
                         <motion.div
@@ -299,7 +301,7 @@ const CommunityPage = () => {
                             >
                                 <div className="absolute inset-0 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out opacity-0 group-hover:opacity-100" />
                                 <Plus size={20} className="transition-transform group-hover:rotate-90 duration-300 relative z-10" />
-                                <span className="relative z-10">Pujar Recurs</span>
+                                <span className="relative z-10">{t('hero.uploadResource', 'Pujar Recurs')}</span>
                             </button>
                         </motion.div>
                     </div>
@@ -385,8 +387,8 @@ const CommunityPage = () => {
                         active={activeSubject !== 'all'}
                     >
                         <BookOpen size={16} />
-                        <span className="hidden sm:inline">Assignatures</span>
-                        <span className="sm:hidden">Assig.</span>
+                        <span className="hidden sm:inline">{t('community.subjects', 'Assignatures')}</span>
+                        <span className="sm:hidden">{t('community.subjectsShort', 'Assig.')}</span>
                         {activeSubject !== 'all' && <span className="ml-1 text-[10px] bg-black/20 text-current px-1.5 py-0.5 rounded-md uppercase">{activeSubject}</span>}
                     </LiquidToolbarButton>
                     
@@ -399,8 +401,8 @@ const CommunityPage = () => {
                             active={activeRank !== null}
                         >
                             <Sparkles size={16} />
-                            <span className="hidden sm:inline">Raresa</span>
-                            <span className="sm:hidden">Rar.</span>
+                            <span className="hidden sm:inline">{t('community.rarity', 'Raresa')}</span>
+                            <span className="sm:hidden">{t('community.rarityShort', 'Rar.')}</span>
                             {activeRank !== null && <span className="ml-1 text-[10px] bg-primary/20 text-current px-1.5 py-0.5 rounded-md uppercase">Lv.{activeRank}</span>}
                         </LiquidToolbarButton>
 
@@ -415,7 +417,7 @@ const CommunityPage = () => {
                                         onClick={() => { setActiveRank(null); setShowRarityFilter(false); }}
                                         className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors ${activeRank === null ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
                                     >
-                                        Qualsevol raresa
+                                        {t('community.anyRarity', 'Qualsevol raresa')}
                                     </button>
                                     {[0, 1, 2, 3, 4].map(rank => (
                                         <button
@@ -442,7 +444,7 @@ const CommunityPage = () => {
                                 else setIsSearchOpen(true);
                             }}
                             className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isSearchOpen || searchQuery ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
-                            title="Buscar"
+                            title={t('community.search', 'Buscar')}
                         >
                             <Search size={18} />
                         </button>
@@ -451,7 +453,7 @@ const CommunityPage = () => {
                             <input 
                                 autoFocus={isSearchOpen}
                                 type="text"
-                                placeholder="Cerca apunts..."
+                                placeholder={t('community.searchPlaceholder', 'Cerca apunts...')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none pl-2 pr-8 placeholder:text-slate-600"
@@ -502,8 +504,8 @@ const CommunityPage = () => {
                                         </div>
                                     </div>
                                     
-                                    <h3 className="font-bold text-3xl text-white mb-3 tracking-tight relative z-10">Sense connexió</h3>
-                                    <p className="text-slate-400 max-w-sm text-sm leading-relaxed relative z-10">Actualment estàs offline. Per consultar els recursos de la comunitat o pujar-ne un de nou cal que et connectis a Internet.</p>
+                                    <h3 className="font-bold text-3xl text-white mb-3 tracking-tight relative z-10">{t('community.offlineTitle', 'Sense connexió')}</h3>
+                                    <p className="text-slate-400 max-w-sm text-sm leading-relaxed relative z-10">{t('community.offlineSubtitle', 'Actualment estàs offline. Per consultar els recursos de la comunitat o pujar-ne un de nou cal que et connectis a Internet.')}</p>
                                 </div>
                             </motion.div>
                         ) : posts.length === 0 ? (
@@ -521,8 +523,8 @@ const CommunityPage = () => {
                                         <FileTextIcon size={36} className="text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
                                     </div>
                                     
-                                    <h3 className="font-bold text-3xl text-white mb-3 tracking-tight relative z-10">Encara no hi ha apunts</h3>
-                                    <p className="text-slate-400 mb-10 max-w-sm text-sm leading-relaxed relative z-10">No hi ha cap recurs compartit per a aquesta matèria. Sigues el primer en aportar valor a la comunitat i destacar.</p>
+                                    <h3 className="font-bold text-3xl text-white mb-3 tracking-tight relative z-10">{t('community.emptyTitle', 'Encara no hi ha apunts')}</h3>
+                                    <p className="text-slate-400 mb-10 max-w-sm text-sm leading-relaxed relative z-10">{t('community.emptySubtitle', 'No hi ha cap recurs compartit per a aquesta matèria. Sigues el primer en aportar valor a la comunitat i destacar.')}</p>
                                     
                                     <button
                                         onClick={handleUploadClick}
@@ -530,7 +532,7 @@ const CommunityPage = () => {
                                     >
                                         <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/50 to-transparent -translate-x-full animate-[shine_3s_infinite]" />
                                         <Plus size={20} className="text-black" />
-                                        Pujar el primer recurs
+                                        {t('community.uploadFirst', 'Pujar el primer recurs')}
                                     </button>
                                 </div>
                             </motion.div>

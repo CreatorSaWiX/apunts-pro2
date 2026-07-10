@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Github, Heart, X, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useLanguage } from '../../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { db } from '../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import Spinner from '../ui/Spinner';
@@ -15,7 +15,8 @@ interface Contributor {
 }
 
 export const AboutSection = () => {
-    const { preferredLang } = useLanguage();
+    const { t, i18n } = useTranslation();
+    
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [contributors, setContributors] = useState<Contributor[]>([]);
     const [isLoadingContributors, setIsLoadingContributors] = useState(false);
@@ -37,7 +38,7 @@ export const AboutSection = () => {
                     fetched.push({
                         uid,
                         username: data.username || "Usuari",
-                        role: data.role || (preferredLang === 'es' ? "Colaborador" : "Col·laborador"),
+                        role: data.role || t('settings.contributor', 'Col·laborador'),
                         avatar: data.avatar || ""
                     });
                 }
@@ -49,8 +50,8 @@ export const AboutSection = () => {
 
     return (
         <div id="about" className="flex flex-col gap-10 w-full pt-4 pb-24">
-            <h2 className="text-2xl font-bold text-white w-full border-b border-white/10 pb-4">Quant a</h2>
-            <p className="text-slate-400 text-sm font-medium -mt-6">Informació sobre el projecte i les persones que el fan possible.</p>
+            <h2 className="text-2xl font-bold text-white w-full border-b border-white/10 pb-4">{t('settings.about', 'Quant a')}</h2>
+            <p className="text-slate-400 text-sm font-medium -mt-6">{t('settings.aboutDescription', 'Informació sobre el projecte i les persones que el fan possible.')}</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <a
@@ -61,8 +62,8 @@ export const AboutSection = () => {
                 >
                     <div className="z-10">
                         <Github size={32} className="text-white mb-4" />
-                        <h3 className="text-2xl font-black text-white tracking-tight">Repositori</h3>
-                        <p className="text-slate-400 text-sm font-medium mt-1">Codi obert a GitHub</p>
+                        <h3 className="text-2xl font-black text-white tracking-tight">{t('settings.repository', 'Repositori')}</h3>
+                        <p className="text-slate-400 text-sm font-medium mt-1">{t('settings.openSource', 'Codi obert a GitHub')}</p>
                     </div>
                     <div className="absolute right-0 bottom-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500 transform translate-x-1/4 translate-y-1/4">
                         <Github size={120} />
@@ -75,8 +76,8 @@ export const AboutSection = () => {
                 >
                     <div className="z-10">
                         <Heart size={32} className="text-rose-400 mb-4" />
-                        <h3 className="text-2xl font-black text-white tracking-tight">Contribuïdors</h3>
-                        <p className="text-slate-400 text-sm font-medium mt-1">L'equip darrere el projecte</p>
+                        <h3 className="text-2xl font-black text-white tracking-tight">{t('settings.contributors', 'Contribuïdors')}</h3>
+                        <p className="text-slate-400 text-sm font-medium mt-1">{t('settings.teamBehind', 'L\'equip darrere el projecte')}</p>
                     </div>
                     <div className="absolute right-0 bottom-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500 transform translate-x-1/4 translate-y-1/4 text-rose-500">
                         <Heart size={120} />
@@ -119,9 +120,9 @@ export const AboutSection = () => {
                                 </div>
                                 <div>
                                     <h2 className="text-3xl font-black tracking-tight text-white leading-none">
-                                        {preferredLang === 'es' ? 'Colaboradores' : 'Contribuïdors'}
+                                        {t('settings.contributors', 'Contribuïdors')}
                                     </h2>
-                                    <p className="text-slate-400 font-medium mt-1">L'equip de desenvolupament</p>
+                                    <p className="text-slate-400 font-medium mt-1">{t('settings.devTeam', 'L\'equip de desenvolupament')}</p>
                                 </div>
                             </div>
 

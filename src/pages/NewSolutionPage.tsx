@@ -7,21 +7,26 @@ import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { Suspense, lazy } from 'react';
 import Spinner from '../components/ui/Spinner';
+import { useTranslation } from 'react-i18next';
 
 const CodeEditor = lazy(() => import('../components/ui/CodeEditor'));
 
-const CodeEditorSkeleton = () => (
-    <div className="w-full h-full bg-slate-900/50 animate-pulse rounded-2xl border border-white/10 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4 text-slate-500">
-            <Spinner />
-            <span className="text-sm font-medium">Carregant editor...</span>
+const CodeEditorSkeleton = () => {
+    const { t } = useTranslation();
+    return (
+        <div className="w-full h-full bg-slate-900/50 animate-pulse rounded-2xl border border-white/10 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4 text-slate-500">
+                <Spinner />
+                <span className="text-sm font-medium">{t('newSolution.loadingEditor', 'Carregant editor...')}</span>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 const NewSolutionPage = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
 
     // Form State
@@ -53,7 +58,7 @@ const NewSolutionPage = () => {
             navigate(`/tema/${topicId}/solucionaris`);
         } catch (error) {
             console.error("Error adding document: ", error);
-            alert("Error al guardar la solució. Comprova la consola.");
+            alert(t('newSolution.saveError', "Error al guardar la solució. Comprova la consola."));
         } finally {
             setIsLoading(false);
         }
@@ -63,9 +68,9 @@ const NewSolutionPage = () => {
         return (
             <div className="min-h-screen flex items-center justify-center pt-20 px-4">
                 <div className="text-center">
-                    <p className="text-slate-400 mb-4">Necessites iniciar sessió per pujar solucions.</p>
+                    <p className="text-slate-400 mb-4">{t('newSolution.loginRequired', 'Necessites iniciar sessió per pujar solucions.')}</p>
                     <Link to="/login" className="px-6 py-2 bg-sky-500 rounded-lg text-white font-medium hover:bg-sky-400 transition-colors">
-                        Iniciar Sessió
+                        {t('newSolution.login', 'Iniciar Sessió')}
                     </Link>
                 </div>
             </div>
@@ -79,7 +84,7 @@ const NewSolutionPage = () => {
                 <Link to="/" className="p-2 rounded-full bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/5">
                     <ArrowLeft size={20} />
                 </Link>
-                <h1 className="text-2xl font-bold text-white">Nova Solució</h1>
+                <h1 className="text-2xl font-bold text-white">{t('newSolution.title', 'Nova Solució')}</h1>
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -92,19 +97,19 @@ const NewSolutionPage = () => {
 
                     <h2 className="text-lg font-medium text-white border-b border-white/5 pb-4 flex items-center gap-2">
                         <Info size={18} className="text-sky-400" />
-                        Informació del Problema
+                        {t('newSolution.problemInfo', 'Informació del Problema')}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Tema</label>
+                            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">{t('newSolution.topicLabel', 'Tema')}</label>
                             <select
                                 value={topicId}
                                 onChange={(e) => setTopicId(e.target.value)}
                                 className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all appearance-none"
                                 required
                             >
-                                <option value="" disabled>Selecciona un tema</option>
+                                <option value="" disabled>{t('newSolution.selectTopic', 'Selecciona un tema')}</option>
                                 {allPersonalNotes.sort((a, b) => a.order - b.order).map(t => (
                                     <option key={t.slug} value={t.slug}>{t.title}</option>
                                 ))}
@@ -112,12 +117,12 @@ const NewSolutionPage = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">ID Problema</label>
+                            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">{t('newSolution.problemIdLabel', 'ID Problema')}</label>
                             <input
                                 type="text"
                                 value={problemId}
                                 onChange={(e) => setProblemId(e.target.value)}
-                                placeholder="ex: P37500"
+                                placeholder={t('newSolution.problemIdPlaceholder', 'ex: P37500')}
                                 className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-mono"
                                 required
                             />
@@ -125,12 +130,12 @@ const NewSolutionPage = () => {
                     </div>
 
                     <div className="space-y-2 hidden md:block">
-                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Títol del Problema</label>
+                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">{t('newSolution.problemTitleLabel', 'Títol del Problema')}</label>
                         <input
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="ex: Primers nombres"
+                            placeholder={t('newSolution.problemTitlePlaceholder', 'ex: Primers nombres')}
                             className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all"
                             required
                         />
@@ -141,7 +146,7 @@ const NewSolutionPage = () => {
                 <div className="bg-[#1e1e1e] border border-white/5 rounded-2xl p-6 md:p-8 space-y-6 relative overflow-hidden">
                     <h2 className="text-lg font-medium text-white border-b border-white/5 pb-4 flex items-center gap-2">
                         <Code size={18} className="text-emerald-400" />
-                        Codi C++
+                        {t('newSolution.codeLabel', 'Codi C++')}
                     </h2>
 
                     <div className="relative h-96">
@@ -161,8 +166,8 @@ const NewSolutionPage = () => {
                 <div className="bg-[#1e1e1e] border border-white/5 rounded-2xl p-6 md:p-8 space-y-6 relative overflow-hidden">
                     <h2 className="text-lg font-medium text-white border-b border-white/5 pb-4 flex items-center gap-2">
                         <FileText size={18} className="text-indigo-400" />
-                        Enunciat (HTML)
-                        <span className="text-xs font-normal text-slate-500 ml-auto uppercase tracking-wider bg-white/5 px-2 py-1 rounded">Opcional</span>
+                        {t('newSolution.statementLabel', 'Enunciat (HTML)')}
+                        <span className="text-xs font-normal text-slate-500 ml-auto uppercase tracking-wider bg-white/5 px-2 py-1 rounded">{t('newSolution.optional', 'Opcional')}</span>
                     </h2>
 
                     <div className="relative">
@@ -170,7 +175,7 @@ const NewSolutionPage = () => {
                             value={statement}
                             onChange={(e) => setStatement(e.target.value)}
                             className="w-full h-40 bg-slate-950/50 border border-white/10 rounded-xl p-4 text-sm font-mono text-slate-300 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all resize-none leading-relaxed"
-                            placeholder="<p>Descripció del problema...</p>"
+                            placeholder={t('newSolution.statementPlaceholder', '<p>Descripció del problema...</p>')}
                             spellCheck={false}
                         />
                     </div>
@@ -184,11 +189,11 @@ const NewSolutionPage = () => {
                         className="px-8 py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-200 transition-colors shadow-lg shadow-white/5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isLoading ? (
-                            'Pujant...'
+                            t('newSolution.uploading', 'Pujant...')
                         ) : (
                             <>
                                 <Save size={18} />
-                                Publicar Solució
+                                {t('newSolution.publish', 'Publicar Solució')}
                             </>
                         )}
                     </button>

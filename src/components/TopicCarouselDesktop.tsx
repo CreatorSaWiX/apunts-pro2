@@ -1,6 +1,6 @@
-﻿import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
 import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
@@ -67,7 +67,8 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const navigate = useNavigate();
     const { subject: contextSubject } = useSubject();
     const subject = (subjectOverride || contextSubject || '').toLowerCase();
-    const { preferredLang } = useLanguage();
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
     const [activeIndex, setActiveIndex] = useState(0);
     const scrollRef = useRef<HTMLDivElement>(null);
     const requestRef = useRef<number>(0);
@@ -372,7 +373,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-linear-to-r from-rose-500/90 to-pink-500/90 border border-rose-300/30 shadow-[0_0_20px_rgba(244,63,94,0.4)] backdrop-blur-md">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_5px_white]" />
                                                 <span className="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider drop-shadow-sm">
-                                                    {preferredLang === 'es' ? 'Nuevo' : 'Nou'}
+                                                    {t('topics.new', 'Nou')}
                                                 </span>
                                             </div>
                                         </div>
@@ -384,7 +385,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-linear-to-r from-emerald-500/90 to-teal-500/90 border border-emerald-300/30 shadow-[0_0_20px_rgba(16,185,129,0.4)] backdrop-blur-md">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_5px_white]" />
                                                 <span className="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider drop-shadow-sm">
-                                                    {preferredLang === 'es' ? 'Actualizado' : 'Actualitzat'}
+                                                    {t('topics.updated', 'Actualitzat')}
                                                 </span>
                                             </div>
                                         </div>
@@ -449,7 +450,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                                 onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
                                                 className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-3.5 py-2 md:px-4 md:py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0 text-[13px] md:text-sm"
                                             >
-                                                <span>Explorar tema</span>
+                                                <span>{t('topics.explore', 'Explorar tema')}</span>
                                                 <ArrowRight size={16} className="group-hover/btn:translate-x-1 group-hover/btn:scale-110 transition-all duration-300" />
                                             </Link>
 
@@ -472,7 +473,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                                 <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">
                                                     {subject === 'pro2' ? <Terminal size={12} /> : <Calculator size={12} />}
                                                 </div>
-                                                <span>{subject === 'm1' ? 'Solucionaris M1' : subject === 'm2' ? 'Solucionaris M2' : (subject === 'pro2' && (topic.slug === 'pro2-tema-1' || topic.slug === 'pro2-tema-2' || topic.slug === 'pro2-tema-9') ? 'Solucionaris Lab' : 'Solucionaris Jutge')}</span>
+                                                <span>{subject === 'm1' ? t('topics.solutions.m1', 'Solucionaris M1') : subject === 'm2' ? t('topics.solutions.m2', 'Solucionaris M2') : (subject === 'pro2' && (topic.slug === 'pro2-tema-1' || topic.slug === 'pro2-tema-2' || topic.slug === 'pro2-tema-9') ? t('topics.solutions.lab', 'Solucionaris Lab') : t('topics.solutions.jutge', 'Solucionaris Jutge'))}</span>
                                             </Link>
                                         </div>
                                     </div>

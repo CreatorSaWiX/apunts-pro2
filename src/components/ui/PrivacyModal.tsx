@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from './Modal';
 import { Shield } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface PrivacyModalProps {
     isOpen: boolean;
@@ -8,13 +9,14 @@ interface PrivacyModalProps {
 }
 
 const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
+    const { t } = useTranslation();
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="3xl" overlayVariant="transparent">
             <Modal.Header>
                 <div className="px-2 pt-2">
-                    <h2 className="text-2xl font-serif text-slate-100 tracking-tight">Política de Privacitat i Tractament de Dades</h2>
+                    <h2 className="text-2xl font-serif text-slate-100 tracking-tight">{t('privacy.title', 'Política de Privacitat i Tractament de Dades')}</h2>
                     <p className="text-sm text-slate-400 font-medium tracking-wide uppercase mt-2">
-                        Normativa aplicable: Reglament General de Protecció de Dades (RGPD)
+                        {t('privacy.subtitle', 'Normativa aplicable: Reglament General de Protecció de Dades (RGPD)')}
                     </p>
                 </div>
             </Modal.Header>
@@ -27,38 +29,36 @@ const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
                         prose-strong:text-slate-200 prose-strong:font-semibold">
 
                         <p className="lead text-base text-slate-300 italic mb-8 border-l-2 border-slate-700 pl-4">
-                            L'equip de desenvolupament reconeix la importància fonamental de la privacitat i la protecció de les dades personals.
-                            Aquesta política estableix els principis pels quals ens regim en el tractament de la informació, garantint la màxima
-                            transparència i respecte pels drets dels nostres usuaris.
+                            {t('privacy.intro', "L'equip de desenvolupament reconeix la importància fonamental de la privacitat i la protecció de les dades personals. Aquesta política estableix els principis pels quals ens regim en el tractament de la informació, garantint la màxima transparència i respecte pels drets dels nostres usuaris.")}
                         </p>
 
-                        <h3 className="text-lg mt-8 mb-4 border-b border-slate-800 pb-2">1. Naturalesa del Tractament</h3>
+                        <h3 className="text-lg mt-8 mb-4 border-b border-slate-800 pb-2">{t('privacy.nature.title', '1. Naturalesa del Tractament')}</h3>
                         <p>
-                            Les dades recopilades a través d'aquesta plataforma tenen com a objectiu exclusiu la millora contínua de l'experiència educativa i la interacció amb l'assistent d'Intel·ligència Artificial. Tota informació és tractada sota els principis de licitud, lleialtat, transparència i minimització de dades, de conformitat amb l'Article 5 del RGPD.
+                            {t('privacy.nature.content', "Les dades recopilades a través d'aquesta plataforma tenen com a objectiu exclusiu la millora contínua de l'experiència educativa i la interacció amb l'assistent d'Intel·ligència Artificial. Tota informació és tractada sota els principis de licitud, lleialtat, transparència i minimització de dades, de conformitat amb l'Article 5 del RGPD.")}
                         </p>
 
-                        <h3 className="text-lg mt-8 mb-4 border-b border-slate-800 pb-2">2. Dades Recopilades</h3>
+                        <h3 className="text-lg mt-8 mb-4 border-b border-slate-800 pb-2">{t('privacy.data.title', '2. Dades Recopilades')}</h3>
                         <p>
-                            Durant l'ús de la plataforma, ens limitem a recopilar estrictament les següents dades essencials:
+                            {t('privacy.data.content', "Durant l'ús de la plataforma, ens limitem a recopilar estrictament les següents dades essencials:")}
                         </p>
                         <ul className="list-disc pl-5 mb-4 text-sm text-slate-300 space-y-2 marker:text-slate-600">
-                            <li><strong>Informació d'Identitat:</strong> Nom, correu electrònic institucional i identificador exclusiu assignat pel sistema d'autenticació.</li>
-                            <li><strong>Interaccions Cognitives:</strong> Historial de converses amb l'assistent virtual per tal de proveir un context de memòria acurat.</li>
-                            <li><strong>Mètriques de Sistema:</strong> Dades analítiques anonimitzades (processades en remot) destinades a comprendre els patrons d'ús i avaluar el rendiment tècnic de l'aplicació.</li>
+                            <li><strong>{t('privacy.data.id', "Informació d'Identitat:")}</strong> {t('privacy.data.idDesc', "Nom, correu electrònic institucional i identificador exclusiu assignat pel sistema d'autenticació.")}</li>
+                            <li><strong>{t('privacy.data.interactions', "Interaccions Cognitives:")}</strong> {t('privacy.data.interactionsDesc', "Historial de converses amb l'assistent virtual per tal de proveir un context de memòria acurat.")}</li>
+                            <li><strong>{t('privacy.data.metrics', "Mètriques de Sistema:")}</strong> {t('privacy.data.metricsDesc', "Dades analítiques anonimitzades (processades en remot) destinades a comprendre els patrons d'ús i avaluar el rendiment tècnic de l'aplicació.")}</li>
                         </ul>
 
-                        <h3 className="text-lg mt-8 mb-4 border-b border-slate-800 pb-2">3. Exercici de Drets (Drets ARCO)</h3>
+                        <h3 className="text-lg mt-8 mb-4 border-b border-slate-800 pb-2">{t('privacy.rights.title', '3. Exercici de Drets (Drets ARCO)')}</h3>
                         <p>
-                            En virtut de la legislació vigent, vostè posseeix la facultat d'exercir en qualsevol moment el seu dret a l'oblit. La plataforma integra eines d'autonomia per a l'usuari; concretament, des de la secció de <em>Configuració</em>, vostè pot executar l'esborrat permanent i irreversible de la totalitat del seu compte i de tots els registres vinculats, sense requerir intervenció administrativa per la nostra part.
+                            {t('privacy.rights.content', "En virtut de la legislació vigent, vostè posseeix la facultat d'exercir en qualsevol moment el seu dret a l'oblit. La plataforma integra eines d'autonomia per a l'usuari; concretament, des de la secció de Configuració, vostè pot executar l'esborrat permanent i irreversible de la totalitat del seu compte i de tots els registres vinculats, sense requerir intervenció administrativa per la nostra part.")}
                         </p>
 
-                        <h3 className="text-lg mt-8 mb-4 border-b border-slate-800 pb-2">4. Seguretat i Integritat</h3>
+                        <h3 className="text-lg mt-8 mb-4 border-b border-slate-800 pb-2">{t('privacy.security.title', '4. Seguretat i Integritat')}</h3>
                         <p>
-                            La integritat de les seves dades està avalada per l'arquitectura de seguretat de Firebase (Google Cloud Platform), la qual disposa de certificacions internacionals d'encriptació tant en trànsit com en repòs. Tanmateix, s'adverteix explícitament a l'usuari que s'abstingui de divulgar dades d'alt nivell de confidencialitat (com ara credencials bancàries o informació mèdica) durant les consultes amb l'assistent d'Intel·ligència Artificial.
+                            {t('privacy.security.content', "La integritat de les seves dades està avalada per l'arquitectura de seguretat de Firebase (Google Cloud Platform), la qual disposa de certificacions internacionals d'encriptació tant en trànsit com en repòs. Tanmateix, s'adverteix explícitament a l'usuari que s'abstingui de divulgar dades d'alt nivell de confidencialitat (com ara credencials bancàries o informació mèdica) durant les consultes amb l'assistent d'Intel·ligència Artificial.")}
                         </p>
 
                         <div className="mt-12 pt-6 border-t border-white/5 flex items-center justify-between text-xs text-slate-500">
-                            <span>Darrera revisió: Juliol 2026</span>
+                            <span>{t('privacy.footer.date', 'Darrera revisió: Juliol 2026')}</span>
                             <span>Apunts PRO2</span>
                         </div>
                     </div>

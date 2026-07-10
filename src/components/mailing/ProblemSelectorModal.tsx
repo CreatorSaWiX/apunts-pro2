@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Layers, ChevronRight, Hash } from 'lucide-react';
 import { courseStructure } from '../../content/data/courseStructure';
 import Modal from '../ui/Modal';
+import { useTranslation } from 'react-i18next';
 
 interface Problem {
     id: string;
@@ -17,6 +18,7 @@ interface ProblemSelectorModalProps {
 }
 
 const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onClose, onSelect }) => {
+    const { t } = useTranslation();
     const [search, setSearch] = useState('');
     const [selectedTopicId, setSelectedTopicId] = useState<string>(courseStructure[0]?.id || '');
     const [results, setResults] = useState<Problem[]>([]);
@@ -75,8 +77,8 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
             <Modal.Layout className="flex-col">
                 <Modal.Header>
                     <div className="flex flex-col">
-                        <span className="text-xl font-bold text-white tracking-tight">Seleccionar Exercici</span>
-                        <span className="text-xs text-slate-400 mt-1">Vincula un problema al teu missatge</span>
+                        <span className="text-xl font-bold text-white tracking-tight">{t('mailing.problemSelector.title', 'Seleccionar Exercici')}</span>
+                        <span className="text-xs text-slate-400 mt-1">{t('mailing.problemSelector.subtitle', 'Vincula un problema al teu missatge')}</span>
                     </div>
                 </Modal.Header>
 
@@ -88,7 +90,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Buscar per codi (P37500) o títol..."
+                            placeholder={t('mailing.problemSelector.searchPlaceholder', "Buscar per codi (P37500) o títol...")}
                             className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
                             autoFocus
                         />
@@ -149,7 +151,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-2 opacity-50 pt-10">
                             <Hash size={48} />
-                            <p>No s'han trobat exercicis</p>
+                            <p>{t('mailing.problemSelector.notFound', "No s'han trobat exercicis")}</p>
                         </div>
                     )}
                 </Modal.Body>

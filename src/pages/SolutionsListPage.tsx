@@ -5,12 +5,13 @@ import { ArrowLeft, Search, Check, Code2, ExternalLink, FileText, X } from 'luci
 import { useSolutions } from '../hooks/useSolutions';
 import { courseStructure } from '../content/data/courseStructure';
 import NotebookLayout from '../components/layout/NotebookLayout';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const SolutionsListPage = () => {
     const { id: topicId } = useParams();
     const [searchQuery, setSearchQuery] = useState('');
-    const { preferredLang } = useLanguage();
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
     
     const [availablePdfs, setAvailablePdfs] = useState<{ ca: boolean; es: boolean }>({ ca: false, es: false });
     const [isPdfMenuOpen, setIsPdfMenuOpen] = useState(false);
@@ -91,9 +92,9 @@ const SolutionsListPage = () => {
                 <div className="w-16 h-16 bg-slate-800/50 rounded-2xl flex items-center justify-center mb-6 border border-white/5">
                     <Code2 size={32} className="text-slate-500" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-2">Tema no trobat o buit</h2>
+                <h2 className="text-2xl font-bold text-white mb-2">{t('solutionsList.topicNotFound', 'Tema no trobat o buit')}</h2>
                 <Link to="/" className="mt-4 px-6 py-2.5 bg-indigo-500 text-white rounded-xl font-medium hover:bg-indigo-400 transition-colors">
-                    Tornar a l'inici
+                    {t('common.backToHome', "Tornar a l'inici")}
                 </Link>
             </div>
         );
@@ -109,16 +110,16 @@ const SolutionsListPage = () => {
                 className="mb-12 relative"
             >
                 <Link to="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors group">
-                    <ArrowLeft size={16} /> <span className="font-medium">Tornar a l'Inici</span>
+                    <ArrowLeft size={16} /> <span className="font-medium">{t('common.backToHome', "Tornar a l'Inici")}</span>
                 </Link>
 
                 <div className="flex flex-col md:flex-row md:items-stretch justify-between gap-8 mb-8 relative">
                     <div className="flex-1 min-w-0">
                         <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
-                            {(preferredLang === 'es' && topicDefinition?.title_es) ? topicDefinition.title_es : (topicDefinition?.title || 'Llista de Problemes')}
+                            {(preferredLang === 'es' && topicDefinition?.title_es) ? topicDefinition.title_es : (topicDefinition?.title || t('solutionsList.title', 'Llista de Problemes'))}
                         </h1>
                         <p className="text-slate-400 text-lg max-w-4xl leading-relaxed opacity-70 font-medium">
-                            {(preferredLang === 'es' && topicDefinition?.description_es) ? topicDefinition.description_es : (topicDefinition?.description || `Col·lecció d'exercicis del tema ${topicId}.`)}
+                            {(preferredLang === 'es' && topicDefinition?.description_es) ? topicDefinition.description_es : (topicDefinition?.description || t('solutionsList.description', { defaultValue: `Col·lecció d'exercicis del tema {{topicId}}.`, topicId }))}
                         </p>
                     </div>
 
@@ -143,7 +144,7 @@ const SolutionsListPage = () => {
                                         className="absolute right-0 top-full mt-3 w-56 bg-[#0b1221]/90 backdrop-blur-xl border border-red-500/20 rounded-2xl shadow-[0_20px_50px_-12px_rgba(239,68,68,0.3)] z-50 overflow-hidden"
                                     >
                                         <div className="p-4 border-b border-red-500/10 flex justify-between items-center">
-                                            <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">Idioma Solucionari</span>
+                                            <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">{t('solutionsList.pdfLanguage', 'Idioma Solucionari')}</span>
                                             <button onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
                                                 <X size={16} />
                                             </button>
@@ -160,7 +161,7 @@ const SolutionsListPage = () => {
                                                     <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
                                                         <span className="text-xs font-bold text-red-400">CA</span>
                                                     </div>
-                                                    <span>Català</span>
+                                                    <span>{t('common.languages.ca', 'Català')}</span>
                                                 </a>
                                             )}
                                             {availablePdfs.es && topicId && (
@@ -174,7 +175,7 @@ const SolutionsListPage = () => {
                                                     <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
                                                         <span className="text-xs font-bold text-red-400">ES</span>
                                                     </div>
-                                                    <span>Español</span>
+                                                    <span>{t('common.languages.es', 'Español')}</span>
                                                 </a>
                                             )}
                                         </div>
@@ -188,7 +189,7 @@ const SolutionsListPage = () => {
                             <Search size={18} className="text-slate-500 mr-3" />
                             <input
                                 type="text"
-                                placeholder="Buscar ID (P12345)..."
+                                placeholder={t('solutionsList.searchPlaceholder', 'Buscar ID (P12345)...')}
                                 className="bg-transparent border-none outline-none text-white w-full text-sm"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -253,7 +254,7 @@ const SolutionsListPage = () => {
                                                             className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition-all shadow-sm flex items-center gap-1.5 hover:-translate-y-0.5
                                                                 ${isSolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-400' : 'bg-slate-800 text-slate-400 border-white/10 hover:bg-slate-700 hover:text-white'}
                                                             `}
-                                                            title="Obrir problema al Jutge"
+                                                            title={t('solutionsList.openJutge', "Obrir problema al Jutge")}
                                                         >
                                                             {problemId}
                                                             <ExternalLink size={14} className="opacity-70" />
@@ -271,11 +272,11 @@ const SolutionsListPage = () => {
                                             })()}
                                             {isSolved ? (
                                                 <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1.5 rounded-full border border-emerald-500/20 shadow-sm backdrop-blur-md">
-                                                    <Check size={12} strokeWidth={3} /> Fet
+                                                    <Check size={12} strokeWidth={3} /> {t('common.status.done', 'Fet')}
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-800/50 px-2.5 py-1.5 rounded-full border border-white/5">
-                                                    Pendent
+                                                    {t('common.status.pending', 'Pendent')}
                                                 </div>
                                             )}
                                         </div>
@@ -286,7 +287,7 @@ const SolutionsListPage = () => {
 
                                         <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center text-xs">
                                             <span className={`${isSolved ? 'text-emerald-400/80' : 'text-slate-600'} group-hover:text-white transition-colors`}>
-                                                {isSolved ? 'Veure solució' : 'Llegir enunciat'}
+                                                {isSolved ? t('solutionsList.viewSolution', 'Veure solució') : t('solutionsList.readStatement', 'Llegir enunciat')}
                                             </span>
                                             {isSolved && <ArrowLeft size={12} className="rotate-180 text-emerald-500 group-hover:translate-x-1 transition-transform" />}
                                         </div>
@@ -309,7 +310,7 @@ const SolutionsListPage = () => {
                         </motion.div>
                     )) : (
                         <div className="col-span-full text-center py-20 text-slate-500">
-                            <p>No hi ha problemes definits per a aquest tema.</p>
+                            <p>{t('solutionsList.noProblemsDefined', 'No hi ha problemes definits per a aquest tema.')}</p>
                         </div>
                     )}
                 </div>

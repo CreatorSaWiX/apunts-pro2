@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Modal } from '../../ui/Modal';
 import { specializations, type SpecializationData } from '../../../data/curriculum';
 import { Briefcase, BookOpen, Star, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SpecializationModalProps {
     isOpen: boolean;
@@ -55,6 +56,7 @@ const themeColorMap = {
 };
 
 export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen, onClose, currentSpecId, onSelect }) => {
+    const { t } = useTranslation();
     const [previewSpecId, setPreviewSpecId] = useState<string | null>(null);
 
     const activeSpecId = previewSpecId || currentSpecId || specializations[0].id;
@@ -79,8 +81,8 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                 {/* Left Column: List */}
                 <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0">
                     <div className="mb-6 shrink-0">
-                        <h3 className="text-2xl font-bold text-white mb-2">Mencions</h3>
-                        <p className="text-sm text-slate-400">Tria el teu camí cap a l'excel·lència professional.</p>
+                        <h3 className="text-2xl font-bold text-white mb-2">{t('planner.roadmapSpecialization.specializationsTitle', 'Mencions')}</h3>
+                        <p className="text-sm text-slate-400">{t('planner.roadmapSpecialization.chooseYourPath', 'Tria el teu camí cap a l\'excel·lència professional.')}</p>
                     </div>
 
                     <div className="flex-1 flex flex-col gap-3 relative min-h-0">
@@ -146,7 +148,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                 <div>
                                     <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
                                         <Star size={16} className={theme.text} />
-                                        Per què triar-la?
+                                        {t('planner.roadmapSpecialization.whyChooseIt', 'Per què triar-la?')}
                                     </h4>
                                     <p className="text-sm text-slate-400 leading-relaxed">
                                         {activeSpec.whyChoose}
@@ -157,7 +159,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                 <div>
                                     <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
                                         <BookOpen size={16} className={theme.text} />
-                                        Obligatòries
+                                        {t('planner.roadmapSpecialization.mandatory', 'Obligatòries')}
                                     </h4>
                                     <div className="flex flex-wrap gap-2">
                                         {activeSpec.mandatory.map(sub => (
@@ -174,7 +176,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                 <div>
                                     <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
                                         <Briefcase size={16} className={theme.text} />
-                                        Sortides Professionals
+                                        {t('planner.roadmapSpecialization.careerPaths', 'Sortides Professionals')}
                                     </h4>
                                     <ul className="space-y-3">
                                         {activeSpec.roles.map(role => (
@@ -189,7 +191,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                 <div>
                                     <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
                                         <Star size={16} className={theme.text} />
-                                        Beneficis Clau
+                                        {t('planner.roadmapSpecialization.keyBenefits', 'Beneficis Clau')}
                                     </h4>
                                     <ul className="space-y-3">
                                         {activeSpec.benefits.map(benefit => (
@@ -215,7 +217,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                             className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all ${currentSpecId === activeSpec.id ? 'bg-white/10 text-white cursor-default opacity-50' : `bg-white text-black hover:scale-105 active:scale-95 ${theme.shadow}`}`}
                             disabled={currentSpecId === activeSpec.id}
                         >
-                            {currentSpecId === activeSpec.id ? 'Ja Seleccionada' : 'Seleccionar Especialitat'}
+                            {currentSpecId === activeSpec.id ? t('planner.roadmapSpecialization.alreadySelected', 'Ja Seleccionada') : t('planner.roadmapSpecialization.selectSpecialization', 'Seleccionar Especialitat')}
                             {currentSpecId !== activeSpec.id && <ArrowRight size={18} />}
                         </button>
                     </div>

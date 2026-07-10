@@ -7,6 +7,7 @@ import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { Calendar, Flag, Play, X, Check, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { DateTimePicker } from './DateTimePicker';
+import { useTranslation } from 'react-i18next';
 
 interface TaskCardProps {
     task: Task;
@@ -25,6 +26,7 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
+    const { t } = useTranslation();
     const { updateTask, subjects, deleteTask } = useTasks();
     const subject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
 
@@ -176,7 +178,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
         const timeLeft = end - now;
         let timeText = '';
         if (timeLeft < 0) {
-            timeText = 'Caducat';
+            timeText = t('common.expired', 'Caducat');
             color = 'bg-[#FF453A] shadow-[0_0_12px_rgba(255,69,58,1)]';
             percentage = 100;
         } else {
@@ -190,7 +192,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
             if (h > 0) parts.push(`${h}h`);
             if (m > 0 || parts.length === 0) parts.push(`${m}min`);
 
-            timeText = `Queden ${parts.join(' ')}`;
+            timeText = `${t('common.remaining', 'Queden')} ${parts.join(' ')}`;
         }
 
         const deadlineText = format(new Date(task.dueDate), "d MMM yyyy, HH:mm");
@@ -283,14 +285,14 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                     setIsEditing(false);
                                 }}
                                 className="flex items-center justify-center p-1.5 rounded-md text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
-                                title="Cancel·lar"
+                                title={t('common.cancel', 'Cancel·lar')}
                             >
                                 <X size={16} strokeWidth={2.5} />
                             </button>
                             <button
                                 onClick={(e) => { e.stopPropagation(); handleSave(); }}
                                 className="flex items-center justify-center p-1.5 rounded-md text-emerald-400 hover:text-white hover:bg-emerald-500 transition-colors"
-                                title="Guardar"
+                                title={t('common.save', 'Guardar')}
                             >
                                 <Check size={16} strokeWidth={2.5} />
                             </button>
@@ -308,9 +310,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                     editPriority === 'MEDIUM' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' :
                                         'text-slate-400 bg-slate-500/10 border-slate-500/20'
                                     }`}
+                                title={t('planner.boardView.priority', 'Priority')}
                             >
                                 <Flag size={12} className={editPriority === 'HIGH' ? 'fill-current' : ''} />
-                                <span className="hidden sm:inline font-medium">Priority</span>
+                                <span className="hidden sm:inline font-medium">{t('planner.boardView.priority', 'Priority')}</span>
                             </button>
 
                             <div className="relative">

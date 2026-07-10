@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { LayoutGrid, Calendar, CalendarDays, Route } from 'lucide-react';
 import { useSettings, type PlannerViewMode } from '../../contexts/SettingsContext';

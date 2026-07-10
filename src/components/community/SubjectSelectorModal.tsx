@@ -4,6 +4,7 @@ import { Search, Check } from 'lucide-react';
 import { SUBJECTS } from '../../config/subjects';
 import { useSettings } from '../../contexts/SettingsContext';
 import { tailwindColors } from '../../contexts/SubjectContext';
+import { useTranslation } from 'react-i18next';
 
 interface SubjectSelectorModalProps {
     isOpen: boolean;
@@ -15,6 +16,7 @@ interface SubjectSelectorModalProps {
 }
 
 const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll = false, allowNone = false }: SubjectSelectorModalProps) => {
+    const { t } = useTranslation();
     const [search, setSearch] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
     const { customSubjectColors } = useSettings();
@@ -47,7 +49,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Cerca per acrònim o nom sencer..."
+                    placeholder={t('community.subjectSelector.searchPlaceholder', "Cerca per acrònim o nom sencer...")}
                     className="flex-1 bg-transparent border-none text-white placeholder:text-slate-500 focus:outline-none focus:ring-0 text-base"
                 />
             </Modal.Header>
@@ -63,8 +65,8 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                                 <span className="text-[10px] font-black text-white">ALL</span>
                                             </div>
                                             <div className="text-left">
-                                                <div className="font-bold text-white">Descobrir Tot</div>
-                                                <div className="text-xs text-slate-500">Mostra tot el contingut de la comunitat</div>
+                                                <div className="font-bold text-white">{t('community.subjectSelector.discoverAll', 'Descobrir Tot')}</div>
+                                                <div className="text-xs text-slate-500">{t('community.subjectSelector.discoverAllDesc', 'Mostra tot el contingut de la comunitat')}</div>
                                             </div>
                                         </div>
                                         {selectedId === 'all' && <Check size={18} className="text-white" />}
@@ -82,8 +84,8 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                                 <div className="w-2.5 h-2.5 rounded-full bg-slate-500 relative z-10" />
                                             </div>
                                             <div className="text-left">
-                                                <div className={`font-bold transition-colors ${!selectedId || selectedId === '' ? 'text-white' : 'text-slate-300'}`}>Sense assignatura</div>
-                                                <div className="text-xs text-slate-500">Publicació general de la comunitat</div>
+                                                <div className={`font-bold transition-colors ${!selectedId || selectedId === '' ? 'text-white' : 'text-slate-300'}`}>{t('community.subjectSelector.noSubject', 'Sense assignatura')}</div>
+                                                <div className="text-xs text-slate-500">{t('community.subjectSelector.noSubjectDesc', 'Publicació general de la comunitat')}</div>
                                             </div>
                                         </div>
                                         {(!selectedId || selectedId === '') && <Check size={18} className="text-white" />}
@@ -92,7 +94,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
 
                                 {filteredSubjects.length === 0 ? (
                                     <div className="py-12 text-center text-slate-500 text-sm font-medium">
-                                        No s'ha trobat cap assignatura.
+                                        {t('community.subjectSelector.notFound', "No s'ha trobat cap assignatura.")}
                                     </div>
                                 ) : (
                                     filteredSubjects.map(subject => {

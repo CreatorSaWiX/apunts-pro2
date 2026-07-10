@@ -17,6 +17,8 @@ import TaskCard from './TaskCard';
 import type { Task, TaskStatus } from '../../../types/tasks';
 import { createPortal } from 'react-dom';
 import { Plus, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { v4 as uuidv4 } from 'uuid';
 
 const defaultColumns = [
     { id: 'TODO', title: 'TO DO', color: 'indigo-400' },
@@ -28,6 +30,7 @@ const PRESET_COLORS = ['indigo-400', 'fuchsia-400', 'emerald-400', 'amber-400', 
 
 
 const BoardView: React.FC = () => {
+    const { t } = useTranslation();
     const { filteredTasks: tasks, tasks: allTasks, updateTask, addTask, deleteTask } = useTasks();
     const [localTasks, setLocalTasks] = useState(tasks);
 
@@ -47,7 +50,7 @@ const BoardView: React.FC = () => {
     });
 
     const [isAddingColumn, setIsAddingColumn] = useState(false);
-    const [newColumnName, setNewColumnName] = useState('');
+    const [newColumnTitle, setNewColumnTitle] = useState('');
     const [newColumnColor, setNewColumnColor] = useState(PRESET_COLORS[0]);
 
     // O(1) Pre-càlcul: agrupem les tasques per columna per evitar iterar `localTasks` a cada columna de la pissarra.
@@ -69,12 +72,10 @@ const BoardView: React.FC = () => {
     }, [columns]);
 
     const handleAddColumn = () => {
-        if (newColumnName.trim()) {
-            const id = newColumnName.trim().toUpperCase().replace(/\s+/g, '_');
-            if (!columns.find(c => c.id === id)) {
-                setColumns([...columns, { id, title: newColumnName.trim(), color: newColumnColor }]);
-            }
-            setNewColumnName('');
+        if (newColumnTitle.trim()) {
+            const id = uuidv4();
+            setColumns([...columns, { id, title: newColumnTitle.trim(), color: newColumnColor }]);
+            setNewColumnTitle('');
             setNewColumnColor(PRESET_COLORS[0]);
             setIsAddingColumn(false);
         }
@@ -237,23 +238,12 @@ const BoardView: React.FC = () => {
                             <div className="bg-white/5 group-hover:bg-white/10 group-hover:scale-110 group-hover:text-white p-2.5 rounded-full transition-all duration-300">
                                 <Plus size={20} strokeWidth={2.5} />
                             </div>
-                            <span className="text-sm font-semibold tracking-wide transition-colors group-hover:text-white/80">Afegeix llista</span>
+                            <span className="text-sm font-semibold tracking-wide transition-colors group-hover:text-white/80">{t('planner.boardView.addList', 'Afegeix llista')}</span>
                         </button>
                     ) : (
-                        <div className="bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] p-4 rounded-[20px] flex flex-col gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)]">
-                            <div className="flex items-center gap-3 bg-white/[0.03] p-2 rounded-xl border border-white/[0.04]">
-                                <div className={`w-3 h-3 rounded-full bg-${newColumnColor} shadow-[0_0_12px_currentColor] text-${newColumnColor} shrink-0`} />
-                                <input
-                                    autoFocus
-                                    value={newColumnName}
-                                    onChange={(e) => setNewColumnName(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') handleAddColumn();
-                                        if (e.key === 'Escape') setIsAddingColumn(false);
-                                    }}
-                                    placeholder="Nom de la llista..."
-                                    className="bg-transparent text-slate-200 text-[13px] font-medium flex-1 focus:outline-none placeholder:text-slate-500 tracking-wide"
-                                />
+                        <div className="bg-[#13131A]/40 backdrop-blur-xl rounded-2xl p-3 border border-white/10 w-[350px] shadow-2xl flex flex-col gap-2">
+                            <div className="flex items-center justify-between px-1">
+                                <span className="text-xs font-semibold tracking-widest text-white/50 uppercase">{t('planner.boardView.addList', 'Afegeix llista')}</span>
                                 <button onClick={() => setIsAddingColumn(false)} className="text-slate-500 hover:text-white transition-colors p-1"><X size={16} strokeWidth={2.5}/></button>
                             </div>
                             
@@ -266,8 +256,18 @@ const BoardView: React.FC = () => {
                                     />
                                 ))}
                             </div>
-
-                            <button onClick={handleAddColumn} className="mt-1 bg-white/5 hover:bg-white/10 text-white text-[12px] font-semibold tracking-wide py-2.5 rounded-xl transition-colors border border-white/5 hover:border-white/10 w-full shadow-sm">CREAR LLISTA</button>
+                            <input
+                                autoFocus
+                                value={newColumnTitle}
+                                onChange={(e) => setNewColumnTitle(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleAddColumn();
+                                    if (e.key === 'Escape') setIsAddingColumn(false);
+                                }}
+                                placeholder={t('planner.boardView.listName', 'Nom de la llista...')}
+                                className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-white/20 transition-colors"
+                            />
+                            <button onClick={handleAddColumn} className="mt-1 bg-white/5 hover:bg-white/10 text-white text-[12px] font-semibold tracking-wide py-2.5 rounded-xl transition-colors border border-white/5 hover:border-white/10 w-full shadow-sm">{t('planner.boardView.createList', 'CREAR LLISTA')}</button>
                         </div>
                     )}
                 </div>

@@ -1,6 +1,8 @@
 import { AlertCircle, Trash2 } from 'lucide-react';
 import Modal from './Modal';
 
+import { useTranslation } from 'react-i18next';
+
 interface ConfirmModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -16,12 +18,18 @@ const ConfirmModal = ({
     isOpen,
     onClose,
     onConfirm,
-    title = "Estàs segur?",
-    message = "Aquesta acció no es pot desfer.",
-    confirmText = "Confirmar",
-    cancelText = "Cancel·lar",
+    title,
+    message,
+    confirmText,
+    cancelText,
     isDestructive = false
 }: ConfirmModalProps) => {
+    const { t } = useTranslation();
+    const finalTitle = title || t('common.confirmModal.title', 'Estàs segur?');
+    const finalMessage = message || t('common.confirmModal.message', 'Aquesta acció no es pot desfer.');
+    const finalConfirmText = confirmText || t('common.confirmModal.confirm', 'Confirmar');
+    const finalCancelText = cancelText || t('common.confirmModal.cancel', 'Cancel·lar');
+
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="sm" hideCloseButton>
             <Modal.Layout className="flex-col">
@@ -33,9 +41,9 @@ const ConfirmModal = ({
                         </div>
 
                         <div className="space-y-2">
-                            <h3 className="text-xl font-bold text-white">{title}</h3>
+                            <h3 className="text-xl font-bold text-white">{finalTitle}</h3>
                             <p className="text-sm text-slate-400 leading-relaxed">
-                                {message}
+                                {finalMessage}
                             </p>
                         </div>
 
@@ -44,7 +52,7 @@ const ConfirmModal = ({
                                 onClick={onClose}
                                 className="flex-1 px-4 py-2.5 bg-slate-800/50 hover:bg-slate-700 text-slate-300 rounded-xl font-medium transition-colors border border-white/5"
                             >
-                                {cancelText}
+                                {finalCancelText}
                             </button>
                             <button
                                 onClick={() => {
@@ -56,7 +64,7 @@ const ConfirmModal = ({
                                     : 'bg-sky-500 hover:bg-sky-600 shadow-sky-500/20'
                                     }`}
                             >
-                                {confirmText}
+                                {finalConfirmText}
                             </button>
                         </div>
                     </div>

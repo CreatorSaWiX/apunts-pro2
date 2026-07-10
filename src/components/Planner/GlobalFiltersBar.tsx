@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check, Folder, Flag, Calendar } from 'lucide-react';
 import { useTasks, type DateRangeFilter } from '../../contexts/TasksContext';
 import type { TaskPriority } from '../../types/tasks';
+import { useTranslation } from 'react-i18next';
 
 const GlobalFiltersBar: React.FC = () => {
+    const { t } = useTranslation();
     const { subjects, filters, setFilters, clearFilters, tasks } = useTasks();
     const [openFilter, setOpenFilter] = useState<'SUBJECTS' | 'PRIORITY' | 'DATERANGE' | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -40,7 +42,7 @@ const GlobalFiltersBar: React.FC = () => {
                 onClick={clearFilters}
                 className={`shrink-0 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${activeFilterCount === 0 ? 'bg-white/10 text-white border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.15)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-white/10 hover:text-slate-300'}`}
             >
-                Totes
+                {t('planner.filters.all', 'Totes')}
             </button>
 
             <div className="w-px h-6 bg-white/[0.1] mx-1 shrink-0"></div>
@@ -53,7 +55,7 @@ const GlobalFiltersBar: React.FC = () => {
                         className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${filters.subjects.length > 0 ? 'bg-indigo-400/10 text-indigo-300 border-indigo-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'SUBJECTS' ? 'border-white/20 bg-white/5 text-white' : ''}`}
                     >
                         <Folder size={12} strokeWidth={2.5} />
-                        Assignatures {filters.subjects.length > 0 && `(${filters.subjects.length})`}
+                        {t('planner.filters.subjects', 'Assignatures')} {filters.subjects.length > 0 && `(${filters.subjects.length})`}
                         <ChevronDown size={12} strokeWidth={3} className={`transition-transform duration-300 ${openFilter === 'SUBJECTS' ? 'rotate-180' : ''}`} />
                     </button>
 
@@ -95,7 +97,7 @@ const GlobalFiltersBar: React.FC = () => {
                     className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${filters.priorities.length > 0 ? 'bg-amber-400/10 text-amber-300 border-amber-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'PRIORITY' ? 'border-white/20 bg-white/5 text-white' : ''}`}
                 >
                     <Flag size={12} strokeWidth={2.5} />
-                    Prioritat {filters.priorities.length > 0 && `(${filters.priorities.length})`}
+                    {t('planner.filters.priority', 'Prioritat')} {filters.priorities.length > 0 && `(${filters.priorities.length})`}
                     <ChevronDown size={12} strokeWidth={3} className={`transition-transform duration-300 ${openFilter === 'PRIORITY' ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -110,7 +112,11 @@ const GlobalFiltersBar: React.FC = () => {
                         >
                             {(['HIGH', 'MEDIUM', 'LOW'] as TaskPriority[]).map(p => {
                                 const isActive = filters.priorities.includes(p);
-                                const labels: Record<string, string> = { HIGH: 'Alta', MEDIUM: 'Mitjana', LOW: 'Baixa' };
+                                const labels: Record<string, string> = { 
+                                    HIGH: t('planner.filters.priorities.high', 'Alta'), 
+                                    MEDIUM: t('planner.filters.priorities.medium', 'Mitjana'), 
+                                    LOW: t('planner.filters.priorities.low', 'Baixa') 
+                                };
                                 const colors: Record<string, string> = { HIGH: 'red', MEDIUM: 'amber', LOW: 'slate' };
                                 const color = colors[p];
                                 return (
@@ -139,7 +145,7 @@ const GlobalFiltersBar: React.FC = () => {
                     className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${filters.dateRange !== 'ALL' ? 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'DATERANGE' ? 'border-white/20 bg-white/5 text-white' : ''}`}
                 >
                     <Calendar size={12} strokeWidth={2.5} />
-                    Data Límit {filters.dateRange !== 'ALL' && '(1)'}
+                    {t('planner.filters.deadline', 'Data Límit')} {filters.dateRange !== 'ALL' && '(1)'}
                     <ChevronDown size={12} strokeWidth={3} className={`transition-transform duration-300 ${openFilter === 'DATERANGE' ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -154,7 +160,13 @@ const GlobalFiltersBar: React.FC = () => {
                         >
                             {(['ALL', 'TODAY', 'THIS_WEEK', 'THIS_MONTH', 'THIS_TERM'] as DateRangeFilter[]).map(range => {
                                 const isActive = filters.dateRange === range;
-                                const labels: Record<string, string> = { ALL: 'Totes les dates', TODAY: 'Avui', THIS_WEEK: 'Aquesta setmana', THIS_MONTH: 'Aquest mes', THIS_TERM: 'Aquest quatrimestre' };
+                                const labels: Record<string, string> = { 
+                                    ALL: t('planner.filters.dateRanges.all', 'Totes les dates'), 
+                                    TODAY: t('planner.filters.dateRanges.today', 'Avui'), 
+                                    THIS_WEEK: t('planner.filters.dateRanges.thisWeek', 'Aquesta setmana'), 
+                                    THIS_MONTH: t('planner.filters.dateRanges.thisMonth', 'Aquest mes'), 
+                                    THIS_TERM: t('planner.filters.dateRanges.thisTerm', 'Aquest quatrimestre') 
+                                };
                                 return (
                                     <button
                                         key={range}

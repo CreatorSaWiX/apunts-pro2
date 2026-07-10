@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const InputField = ({ label, value, onChange, placeholder, type = "text", subLabel = "" }: any) => (
     <div className="space-y-2 w-full">

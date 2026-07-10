@@ -13,6 +13,7 @@ import SubjectHoursWidget from './Widgets/SubjectHoursWidget';
 import SubjectEvaluationWidget from './Widgets/SubjectEvaluationWidget';
 import SubjectCompetenciesWidget from './Widgets/SubjectCompetenciesWidget';
 import AIStreamingIndicator from '../../AIStreamingIndicator';
+import { useTranslation } from 'react-i18next';
 
 interface RoadmapAIPromptBarProps {
     isOpen: boolean;
@@ -29,6 +30,7 @@ interface Message {
 }
 
 const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose }) => {
+    const { t } = useTranslation();
     const [prompt, setPrompt] = useState('');
     const { nodes, addSubjectNode } = useRoadmap();
     const { aiSettings } = useSettings();
@@ -51,9 +53,9 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const suggestions = [
-        "Què haig de fer si vull ser hardware engineer?",
-        "Afegeix IA al meu roadmap",
-        "Com s'avalua EDA?"
+        t('planner.roadmapAI.suggestions.hardware', "Què haig de fer si vull ser hardware engineer?"),
+        t('planner.roadmapAI.suggestions.addAI', "Afegeix IA al meu roadmap"),
+        t('planner.roadmapAI.suggestions.evalEDA', "Com s'avalua EDA?")
     ];
 
     const onDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
@@ -223,7 +225,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                                                     thoughtText={thoughtText}
                                                                     renderAvatar={(size, color) => <Sparkles size={size} className={color} />}
                                                                 />
-                                                                {streamPhase === 'connecting' && <span className="text-xs text-slate-400 font-medium ml-1.5 animate-pulse">Connectant i analitzant el teu roadmap...</span>}
+                                                                {streamPhase === 'connecting' && <span className="text-xs text-slate-400 font-medium ml-1.5 animate-pulse">{t('planner.roadmapAI.connecting', 'Connectant i analitzant el teu roadmap...')}</span>}
                                                             </div>
                                                         ) : (
                                                             <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-transparent prose-pre:p-0 prose-pre:border-none prose-a:text-sky-400 hover:prose-a:text-sky-300 text-[15px] prose-strong:text-white prose-strong:font-bold prose-ul:my-3 prose-li:my-1 [&_.katex]:text-lg [&_.katex-display]:my-4 [&_.katex-display]:py-3 [&_.katex-display]:overflow-x-auto custom-scrollbar [&_.katex-display]:bg-black/20 [&_.katex-display]:rounded-2xl [&_.katex-display]:border [&_.katex-display]:border-white/5 [&_.katex-display]:shadow-inner">
@@ -258,7 +260,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                                         {msg.changes.map((change, idx) => (
                                                             <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wide shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
                                                                 <CheckCircle2 size={12} />
-                                                                {change.type === 'add' ? 'Afegit' : 'Eliminat'} {change.subject}
+                                                                {change.type === 'add' ? t('planner.roadmapAI.added', 'Afegit') : t('planner.roadmapAI.removed', 'Eliminat')} {change.subject}
                                                             </div>
                                                         ))}
                                                     </div>
@@ -354,7 +356,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                         {/* Actions Left */}
                                         <div className="flex items-center pb-1.5 pl-1 gap-1">
                                             <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf" onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
-                                            <button onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors" title="Adjuntar imatge o PDF">
+                                            <button onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors" title={t('planner.roadmapAI.attachTooltip', 'Adjuntar imatge o PDF')}>
                                                 <Plus size={20} />
                                             </button>
 
@@ -367,7 +369,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                             onChange={(e) => setPrompt(e.target.value)}
                                             onKeyDown={handleKeyDown}
                                             disabled={isGenerating}
-                                            placeholder={`Escriu un missatge a ${aiSettings?.identity?.name || 'Roadmap AI'}...`}
+                                            placeholder={t('planner.roadmapAI.placeholder', 'Escriu un missatge a {{name}}...', { name: aiSettings?.identity?.name || 'Roadmap AI' })}
                                             className="flex-1 max-h-[120px] min-h-[44px] py-[12px] bg-transparent text-[15px] leading-relaxed text-white placeholder:text-slate-500 focus:outline-none resize-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                                             rows={1}
                                         />

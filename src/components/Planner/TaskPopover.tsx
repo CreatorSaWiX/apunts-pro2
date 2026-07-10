@@ -4,6 +4,7 @@ import { useTasks } from '../../contexts/TasksContext';
 import { Flag, Bookmark } from 'lucide-react';
 import type { TaskPriority } from '../../types/tasks';
 import LiquidPanel from '../ui/glass/LiquidPanel';
+import { useTranslation } from 'react-i18next';
 
 export interface TaskPopoverEventDetail {
     x: number;
@@ -12,6 +13,7 @@ export interface TaskPopoverEventDetail {
 }
 
 const TaskPopover: React.FC = () => {
+    const { t } = useTranslation();
     const { tasks, updateTask, subjects } = useTasks();
     const [isOpen, setIsOpen] = useState(false);
     const [taskId, setTaskId] = useState<string | null>(null);
@@ -102,7 +104,7 @@ const TaskPopover: React.FC = () => {
                         <input 
                             value={task.title}
                             onChange={(e) => updateTask(task.id, { title: e.target.value })}
-                            placeholder="Títol..."
+                            placeholder={t('planner.popover.titlePlaceholder', "Títol...")}
                             className="text-[13px] font-bold bg-transparent border-none outline-none text-white w-full placeholder:text-white/30"
                             autoFocus
                         />
@@ -112,7 +114,7 @@ const TaskPopover: React.FC = () => {
                         {/* Assignatura */}
                         <div className="px-2 pt-1 pb-1 flex items-center gap-2 text-[9px] font-bold tracking-widest uppercase text-slate-500">
                             <Bookmark size={10} />
-                            <span>Assignatura</span>
+                            <span>{t('planner.popover.subject', 'Assignatura')}</span>
                         </div>
                         <div className="px-1 mb-2 relative">
                             <button
@@ -126,7 +128,7 @@ const TaskPopover: React.FC = () => {
                                     }`}
                             >
                                 <span className="font-semibold text-[10px] tracking-wider uppercase">
-                                    {task.subjectId ? subjects.find(sub => sub.id === task.subjectId)?.name : 'Sense Assignatura'}
+                                    {task.subjectId ? subjects.find(sub => sub.id === task.subjectId)?.name : t('planner.popover.noSubject', 'Sense Assignatura')}
                                 </span>
                             </button>
 
@@ -136,7 +138,7 @@ const TaskPopover: React.FC = () => {
                                         autoFocus
                                         value={subjectSearchQuery}
                                         onChange={(e) => setSubjectSearchQuery(e.target.value)}
-                                        placeholder="Cerca assignatura..."
+                                        placeholder={t('planner.popover.searchSubject', "Cerca assignatura...")}
                                         className="bg-white/5 border border-white/10 text-slate-200 text-[10px] px-2 py-1.5 rounded focus:outline-none focus:border-white/20 placeholder:text-slate-500 mb-1"
                                     />
                                     <div className="flex flex-col gap-1 max-h-[120px] overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full">
@@ -148,7 +150,7 @@ const TaskPopover: React.FC = () => {
                                                     : 'text-slate-400 hover:bg-white/5'
                                             }`}
                                         >
-                                            Cap assignatura
+                                            {t('planner.popover.noneSubject', 'Cap assignatura')}
                                         </button>
                                         {filteredSubjects.map(subject => {
                                             const isSelected = task.subjectId === subject.id;
@@ -177,7 +179,7 @@ const TaskPopover: React.FC = () => {
                         {/* Prioritat */}
                         <div className="px-2 pt-1 pb-1 flex items-center gap-2 text-[9px] font-bold tracking-widest uppercase text-slate-500">
                             <Flag size={10} />
-                            <span>Prioritat</span>
+                            <span>{t('planner.filters.priority', 'Prioritat')}</span>
                         </div>
                         <div className="flex bg-white/[0.02] p-0.5 rounded-lg border border-white/[0.03] mx-1 mb-1">
                             {(['LOW', 'MEDIUM', 'HIGH'] as TaskPriority[]).map((p) => {
@@ -195,7 +197,7 @@ const TaskPopover: React.FC = () => {
                                             isSelected ? colors[p] : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                         }`}
                                     >
-                                        {p === 'LOW' ? 'BAIX' : p === 'MEDIUM' ? 'MIG' : 'ALT'}
+                                        {p === 'LOW' ? t('planner.popover.priorityLow', 'BAIX') : p === 'MEDIUM' ? t('planner.popover.priorityMedium', 'MIG') : t('planner.popover.priorityHigh', 'ALT')}
                                     </button>
                                 );
                             })}

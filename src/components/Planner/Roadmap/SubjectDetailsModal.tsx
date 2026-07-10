@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, ExternalLink, Users, Clock, Target, CheckSquare, Layers, Activity, Book, Key } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
 import DOMPurify from 'dompurify';
+import { useTranslation } from 'react-i18next';
 
 interface SubjectDetailsModalProps {
     isOpen: boolean;
@@ -24,6 +25,7 @@ const TAB_ICONS: Record<string, React.ReactNode> = {
 };
 
 const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClose, subjectId }) => {
+    const { t } = useTranslation();
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState<string>('');
@@ -104,9 +106,9 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                         ) : !data ? (
                             <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
                                 <BookOpen size={48} className="text-slate-600 mb-4" />
-                                <h3 className="text-xl font-bold text-slate-300 mb-2">Informació no disponible</h3>
-                                <p className="text-slate-500 max-w-md">No s'han pogut descarregar les dades de la FIB per aquesta assignatura. És possible que no estigui disponible al pla d'estudis actual.</p>
-                                <button onClick={onClose} className="mt-6 px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors font-medium">Tancar</button>
+                                <h3 className="text-xl font-bold text-slate-300 mb-2">{t('planner.roadmapSubjectDetails.infoNotAvailable', 'Informació no disponible')}</h3>
+                                <p className="text-slate-500 max-w-md">{t('planner.roadmapSubjectDetails.infoNotAvailableDesc', 'No s\'han pogut descarregar les dades de la FIB per aquesta assignatura. És possible que no estigui disponible al pla d\'estudis actual.')}</p>
+                                <button onClick={onClose} className="mt-6 px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors font-medium">{t('planner.roadmapSubjectDetails.close', 'Tancar')}</button>
                             </div>
                         ) : (
                             <>
@@ -129,7 +131,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                         </h2>
                                         {data.web && (
                                             <a href={data.web} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-sky-400 hover:text-sky-300 transition-colors">
-                                                <span>FIB Oficial</span>
+                                                <span>{t('planner.roadmapSubjectDetails.officialFib', 'FIB Oficial')}</span>
                                                 <ExternalLink size={10} />
                                             </a>
                                         )}
@@ -138,18 +140,18 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                     {/* Quick Stats Grid */}
                                     <div className="px-6 py-2 grid grid-cols-2 gap-3 mb-6">
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-0.5">Crèdits</span>
+                                            <span className="text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-0.5">{t('planner.roadmapSubjectDetails.credits', 'Crèdits')}</span>
                                             <span className="text-xl font-bold text-slate-200">{data.credits || '—'}</span>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-0.5">Tipus</span>
-                                            <span className="text-sm font-semibold text-emerald-400 truncate">{data.type || 'Obligatòria'}</span>
+                                            <span className="text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-0.5">{t('planner.roadmapSubjectDetails.type', 'Tipus')}</span>
+                                            <span className="text-sm font-semibold text-emerald-400 truncate">{data.type || t('planner.roadmapSubjectDetails.mandatory', 'Obligatòria')}</span>
                                         </div>
                                     </div>
 
                                     {/* Tabs List */}
                                     <div className="flex-1 overflow-y-auto custom-scrollbar px-3 pb-6 flex flex-col gap-1">
-                                        <h3 className="text-[10px] uppercase tracking-[0.2em] text-slate-600 font-bold px-3 py-2 mt-2 mb-1">Seccions</h3>
+                                        <h3 className="text-[10px] uppercase tracking-[0.2em] text-slate-600 font-bold px-3 py-2 mt-2 mb-1">{t('planner.roadmapSubjectDetails.sections', 'Seccions')}</h3>
                                         {[
                                             ...(data.professors?.length > 0 ? ['Professorat'] : []),
                                             ...(data.hours?.length > 0 ? ['Hores setmanals'] : []),
@@ -176,7 +178,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                     <div className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-sky-400' : 'text-slate-500 group-hover:text-slate-400'}`}>
                                                         {TAB_ICONS[title] || <BookOpen size={16} />}
                                                     </div>
-                                                    <span className={`relative z-10 text-sm tracking-wide ${isActive ? 'font-bold' : 'font-medium'}`}>{title}</span>
+                                                    <span className={`relative z-10 text-sm tracking-wide ${isActive ? 'font-bold' : 'font-medium'}`}>{t(`planner.roadmapSubjectDetails.tabs.${title}`, title)}</span>
                                                 </button>
                                             );
                                         })}
@@ -188,7 +190,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                     {/* Top Area for Summary/Requirements */}
                                     <div className="p-8 pb-4 shrink-0 border-b border-white/5">
                                         <h1 className="text-3xl font-bold text-white mb-4 tracking-tight flex items-center gap-3">
-                                            {activeTab}
+                                            {t(`planner.roadmapSubjectDetails.tabs.${activeTab}`, activeTab)}
                                             <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
                                         </h1>
                                         {data.summary && activeTab === data.sections[0]?.title && (
@@ -239,7 +241,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                 <div key={i} className={`p-6 bg-[#0a0f1c]/80 border ${act.isEvaluative ? 'border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] bg-amber-500/[0.02]' : 'border-white/5 shadow-xl'} rounded-3xl relative overflow-hidden group hover:bg-[#0f172a] transition-all duration-300`}>
                                                                     {act.isEvaluative && (
                                                                         <div className="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 text-[10px] font-black uppercase tracking-widest rounded-bl-2xl border-l border-b border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
-                                                                            Acte Avaluatiu
+                                                                            {t('planner.roadmapSubjectDetails.evaluativeAct', 'Acte Avaluatiu')}
                                                                         </div>
                                                                     )}
 
@@ -247,7 +249,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                         <h3 className={`text-xl font-bold tracking-tight leading-tight ${act.isEvaluative ? 'text-amber-400' : 'text-white'}`}>{act.title}</h3>
                                                                         {act.week !== null && (
                                                                             <div className="shrink-0 px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-[11px] text-sky-400 font-mono font-bold tracking-wider">
-                                                                                Setmana {act.week}
+                                                                                {t('planner.roadmapSubjectDetails.week', 'Setmana {{week}}', { week: act.week })}
                                                                             </div>
                                                                         )}
                                                                     </div>
@@ -258,7 +260,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
 
                                                                     {act.objectives?.length > 0 && (
                                                                         <div className="mb-6">
-                                                                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block mb-2">Objectius relacionats</span>
+                                                                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block mb-2">{t('planner.roadmapSubjectDetails.relatedObjectives', 'Objectius relacionats')}</span>
                                                                             <div className="flex flex-wrap gap-2">
                                                                                 {act.objectives.map((obj: string, j: number) => (
                                                                                     <span key={j} className="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-black bg-sky-500/10 text-sky-400 border border-sky-500/30">
@@ -337,7 +339,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                                 >
                                                                                     {hour.value}
                                                                                 </motion.span>
-                                                                                <span className="text-[10px] text-slate-500 font-bold tracking-widest mt-1">HORES</span>
+                                                                                <span className="text-[10px] text-slate-500 font-bold tracking-widest mt-1">{t('planner.roadmapSubjectDetails.hours', 'HORES')}</span>
                                                                             </div>
                                                                         </div>
                                                                         <h4 className="text-sm font-bold text-slate-200 text-center">{hour.type}</h4>

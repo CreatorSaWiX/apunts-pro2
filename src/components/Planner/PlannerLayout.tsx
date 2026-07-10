@@ -4,6 +4,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import NavigationPill from '../ui/NavigationPill';
 import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles, Route } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { RoadmapProvider } from '../../contexts/RoadmapContext';
 import Spinner from '../ui/Spinner';
 import AIPromptBar from './AIPromptBar';
@@ -60,6 +61,7 @@ const AIParticles = () => {
 };
 
 const PlannerLayout: React.FC = () => {
+    const { t } = useTranslation();
     const { isLoading, error, subjects, filters, tasks } = useTasks();
     const { defaultPlannerView } = useSettings();
     const [activeTab, setActiveTab] = useState<ViewMode>(defaultPlannerView || 'board');
@@ -95,7 +97,7 @@ const PlannerLayout: React.FC = () => {
     if (error) {
         return (
             <div className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-xl m-4">
-                Error carregant les tasques: {error}
+                {t('planner.errorLoading', 'Error carregant les tasques')}: {error}
             </div>
         );
     }
@@ -116,10 +118,10 @@ const PlannerLayout: React.FC = () => {
                 <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-50">
                     <NavigationPill>
                         {[
-                            { id: 'board', label: 'Board', icon: LayoutDashboard },
-                            { id: 'calendar', label: 'Calendar', icon: Calendar },
-                            { id: 'gantt', label: 'Timeline', icon: GanttChartSquare },
-                            { id: 'roadmap', label: 'Roadmap', icon: Route }
+                            { id: 'board', label: t('planner.board', 'Tauler'), icon: LayoutDashboard },
+                            { id: 'calendar', label: t('planner.calendar', 'Calendari'), icon: Calendar },
+                            { id: 'gantt', label: t('planner.timeline', 'Timeline'), icon: GanttChartSquare },
+                            { id: 'roadmap', label: t('planner.roadmap', 'Roadmap'), icon: Route }
                         ].map((tab) => {
                             const Icon = tab.icon;
                             const isActive = activeTab === tab.id;

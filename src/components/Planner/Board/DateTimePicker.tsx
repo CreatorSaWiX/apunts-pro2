@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, isToday, setHours, setMinutes } from 'date-fns';
-import { es, ca } from 'date-fns/locale';
+import { es, ca, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 interface DateTimePickerProps {
     value: string;
@@ -14,8 +14,9 @@ interface DateTimePickerProps {
 }
 
 export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange, placeholder = "Selecciona data", icon }) => {
-    const { preferredLang } = useLanguage();
-    const locale = preferredLang === 'es' ? es : ca;
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
+    const locale = preferredLang === 'es' ? es : preferredLang === 'en' ? enUS : ca;
     
     const [isOpen, setIsOpen] = useState(false);
     const [coords, setCoords] = useState({ top: 0, left: 0 });
@@ -214,7 +215,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                         <div className="pt-4 border-t border-white/10 flex items-center justify-between">
                             <div className="flex items-center gap-2 text-slate-400">
                                 <Clock size={16} />
-                                <span className="text-[13px] font-medium tracking-wide">Hora</span>
+                                <span className="text-[13px] font-medium tracking-wide">{t('planner.time', 'Hora')}</span>
                             </div>
                             
                             <div className="flex items-center gap-3">

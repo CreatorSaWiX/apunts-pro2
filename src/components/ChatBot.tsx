@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, ArrowUp, Plus, Clock, UploadCloud, Pencil, Trash2, Check, LogIn, Brain } from 'lucide-react';
+import { Bot, X, ArrowUp, Plus, Clock, UploadCloud, Pencil, Trash2, Check, LogIn } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -12,6 +12,7 @@ import { useLocation } from 'react-router-dom';
 import bgImage from '../assets/bg.webp';
 import AIStreamingIndicator from './AIStreamingIndicator';
 import type { StreamPhase } from './AIStreamingIndicator';
+import { useTranslation } from 'react-i18next';
 
 interface Message { role: 'user' | 'model'; content: string; attachmentName?: string; attachmentType?: 'image' | 'pdf'; addedMemories?: string[]; }
 interface ChatMeta { id: string; title: string; updatedAt: number; }
@@ -62,11 +63,13 @@ const SendButton = ({
         }
     }, [lastSentTime, cooldownMs]);
 
+    const { t } = useTranslation();
+
     return (
         <button
             onClick={onClick}
             disabled={disabled || cooldown > 0}
-            title={cooldown > 0 ? `Espera ${cooldown}s` : 'Enviar'}
+            title={cooldown > 0 ? t('chat.wait', 'Espera {{cooldown}}s', { cooldown }) : t('common.send', 'Enviar')}
             className={`shrink-0 rounded-full transition-all mb-0.5 mr-1 flex items-center justify-center
                 ${cooldown > 0
                 ? 'w-9 h-9 bg-white/10 text-slate-500 cursor-not-allowed text-xs font-mono font-semibold'
@@ -83,6 +86,7 @@ const SendButton = ({
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
   const { aiSettings, setAiSettings } = useSettings();
+  const { t } = useTranslation();
   const aiName = aiSettings?.identity?.name;
   
   const renderAIAvatar = (iconSize: number, iconClass: string) => {
@@ -99,7 +103,7 @@ export const ChatBot: React.FC = () => {
   const [isResizing, setIsResizing] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentChatId, setCurrentChatId] = useState('');
-  const [currentChatTitle, setCurrentChatTitle] = useState('Nou Xat');
+  const [currentChatTitle, setCurrentChatTitle] = useState(t('chat.newChat', 'Nou Xat'));
   const [chatList, setChatList] = useState<ChatMeta[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
@@ -127,8 +131,8 @@ export const ChatBot: React.FC = () => {
     const { collection, getDocs, orderBy, query } = await import('firebase/firestore');
     const q = query(collection(db, 'users', user.id, 'chats'), orderBy('updatedAt', 'desc'));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, title: d.data().title || 'Conversa', updatedAt: d.data().updatedAt || 0 }));
-  }, [user]);
+    return snap.docs.map(d => ({ id: d.id, title: d.data().title || t('chat.conversation', 'Conversa'), updatedAt: d.data().updatedAt || 0 }));
+  }, [user, t]);
 
   const saveChat = useCallback(async (id: string, history: Message[], title: string) => {
     if (!user || !id) return;
@@ -144,9 +148,9 @@ export const ChatBot: React.FC = () => {
     const snap = await getDoc(doc(db, 'users', user.id, 'chats', id));
     if (snap.exists()) {
       setMessages(snap.data().history || []);
-      setCurrentChatTitle(snap.data().title || 'Conversa');
+      setCurrentChatTitle(snap.data().title || t('chat.conversation', 'Conversa'));
     }
-  }, [user]);
+  }, [user, t]);
 
   // ── Init on open ──────────────────────────────────────────────────────────
   // Init on open — reset scroll flag
@@ -158,7 +162,7 @@ export const ChatBot: React.FC = () => {
         const id = newId();
         setCurrentChatId(id);
         setMessages([]);
-        setCurrentChatTitle('Nou Xat');
+        setCurrentChatTitle(t('chat.newChat', 'Nou Xat'));
         setChatList([]);
       } else {
         setChatList(list);
@@ -175,10 +179,10 @@ export const ChatBot: React.FC = () => {
     const id = newId();
     setCurrentChatId(id);
     setMessages([]);
-    setCurrentChatTitle('Nou Xat');
+    setCurrentChatTitle(t('chat.newChat', 'Nou Xat'));
     setInput('');
     setShowHistory(false);
-  }, [messages, currentChatId, currentChatTitle, saveChat]);
+  }, [messages, currentChatId, currentChatTitle, saveChat, t]);
 
   const switchChat = useCallback(async (id: string) => {
     if (messages.length > 0 && currentChatId) await saveChat(currentChatId, messages, currentChatTitle);
@@ -238,8 +242,8 @@ export const ChatBot: React.FC = () => {
   // ── File handling ─────────────────────────────────────────────────────────
 
   const processFile = useCallback((file: File) => {
-    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') { alert("Només s'accepten imatges i PDFs."); return; }
-    if (file.size > 5 * 1024 * 1024) { alert("L'arxiu és massa gran. Màxim 5MB."); return; }
+    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') { alert(t('chat.errors.invalidFileType', "Només s'accepten imatges i PDFs.")); return; }
+    if (file.size > 5 * 1024 * 1024) { alert(t('chat.errors.fileTooLarge', "L'arxiu és massa gran. Màxim 5MB.")); return; }
     const reader = new FileReader();
     reader.onload = (e) => {
       const b64 = (e.target?.result as string).split(',')[1];
@@ -336,13 +340,13 @@ export const ChatBot: React.FC = () => {
 
       if (!res.ok) {
         // Non-SSE error response (auth, validation, etc.)
-        const errorData = await res.json().catch(() => ({ error: 'Error desconegut' }));
+        const errorData = await res.json().catch(() => ({ error: t('chat.errors.unknown', 'Error desconegut') }));
         throw new Error(errorData.error || 'Error');
       }
 
       // ── Parse SSE stream ─────────────────────────────────────────────
       const reader = res.body?.getReader();
-      if (!reader) throw new Error('El navegador no suporta streaming');
+      if (!reader) throw new Error(t('chat.errors.streamingNotSupported', 'El navegador no suporta streaming'));
 
       const decoder = new TextDecoder();
       let sseBuffer = '';
@@ -401,7 +405,7 @@ export const ChatBot: React.FC = () => {
                 break;
 
               case 'error':
-                throw new Error(parsed.message || 'Error del servidor');
+                throw new Error(parsed.message || t('chat.errors.serverError', 'Error del servidor'));
 
               case 'done':
                 // Handled after the loop
@@ -415,7 +419,7 @@ export const ChatBot: React.FC = () => {
       }
 
       // ── Consolidate final message ───────────────────────────────────
-      const finalText = fullReplyText || streamingText || 'Sense resposta.';
+      const finalText = fullReplyText || streamingText || t('chat.noResponse', 'Sense resposta.');
       const final = [...newMessages, { role: 'model' as const, content: finalText, addedMemories: metadata.memories_to_add }];
       setMessages(final);
       setStreamingText('');
@@ -489,9 +493,8 @@ export const ChatBot: React.FC = () => {
                   </div>
                   <div>
                     <h2 className="text-slate-100 font-semibold text-lg mb-2">{aiName}</h2>
-                    <p className="text-slate-400 text-sm leading-relaxed">
-                      L'assistent d'IA és exclusiu per als membres registrats<br />
-                      Inicia sessió per accedir a l'historial i al xat
+                    <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-wrap">
+                      {t('chat.loginRequired', "L'assistent d'IA és exclusiu per als membres registrats\nInicia sessió per accedir a l'historial i al xat")}
                     </p>
                   </div>
                   <a
@@ -499,7 +502,7 @@ export const ChatBot: React.FC = () => {
                     className="flex items-center gap-2 px-6 py-3 bg-white text-black font-medium rounded-2xl hover:bg-slate-100 transition-colors shadow-lg"
                   >
                     <LogIn size={18} />
-                    Inicia sessió
+                    {t('chat.login', 'Inicia sessió')}
                   </a>
                 </div>
               </div>
@@ -511,7 +514,7 @@ export const ChatBot: React.FC = () => {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   className="absolute inset-0 z-[3000] bg-slate-950/80 backdrop-blur-sm border-2 border-dashed border-slate-500 m-4 rounded-3xl flex flex-col items-center justify-center">
                   <UploadCloud size={48} className="text-slate-400 mb-4" />
-                  <p className="text-xl font-medium text-slate-300">Deixa anar per adjuntar</p>
+                  <p className="text-xl font-medium text-slate-300">{t('chat.dropToAttach', 'Deixa anar per adjuntar')}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -525,12 +528,12 @@ export const ChatBot: React.FC = () => {
                   className="absolute inset-0 z-[20] flex flex-col bg-[#020617]/90 backdrop-blur-2xl"
                 >
                   <div className="shrink-0 h-16 px-5 border-b border-white/5 flex items-center justify-between">
-                    <span className="text-sm font-medium text-slate-200">Historial de converses</span>
+                    <span className="text-sm font-medium text-slate-200">{t('chat.history', 'Historial de converses')}</span>
                     <button onClick={() => setShowHistory(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"><X size={18} /></button>
                   </div>
                   <div className="flex-1 overflow-y-auto custom-scrollbar py-3 px-3 space-y-1">
                     {chatList.length === 0 && (
-                      <p className="text-slate-500 text-sm text-center mt-10">Sense converses desades</p>
+                      <p className="text-slate-500 text-sm text-center mt-10">{t('chat.noSavedChats', 'Sense converses desades')}</p>
                     )}
                     {chatList.map(chat => (
                       <div
@@ -569,7 +572,7 @@ export const ChatBot: React.FC = () => {
                       onClick={startNewChat}
                       className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-colors flex items-center justify-center gap-2"
                     >
-                      <Plus size={16} /> Nova conversa
+                      <Plus size={16} /> {t('chat.newConversation', 'Nova conversa')}
                     </button>
                   </div>
                 </motion.div>
@@ -621,7 +624,7 @@ export const ChatBot: React.FC = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="inline-flex -mt-1 mb-1 px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-[11px] font-medium text-slate-400 tracking-wide select-none"
                           >
-                            Memòria actualitzada
+                            {t('chat.memoryUpdated', 'Memòria actualitzada')}
                           </motion.div>
                         )}
                       </div>
@@ -691,14 +694,14 @@ export const ChatBot: React.FC = () => {
                 <div className="flex items-end gap-2">
                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf"
                     onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
-                  <button onClick={() => fileInputRef.current?.click()} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-0.5 ml-1" title="Adjuntar imatge o PDF">
+                  <button onClick={() => fileInputRef.current?.click()} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-0.5 ml-1" title={t('chat.attachFile', 'Adjuntar imatge o PDF')}>
                     <Plus size={20} />
                   </button>
                   <textarea
                     ref={textareaRef} value={input}
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-                    placeholder={`Escriu a ${aiName}...`}
+                    placeholder={t('chat.placeholder', 'Escriu a {{aiName}}...', { aiName })}
                     className="flex-1 bg-transparent px-1 py-2.5 text-[15px] text-slate-200 placeholder-slate-400 focus:outline-none resize-none min-h-[44px] max-h-[250px] custom-scrollbar"
                     rows={1}
                   />
@@ -713,7 +716,7 @@ export const ChatBot: React.FC = () => {
               </div>
               <div className="text-center mt-2.5 mb-0.5 pointer-events-auto">
                 <p className="text-[10px] text-slate-500/60 font-medium tracking-wide">
-                  L'IA pot cometre errors. No comparteixis dades sensibles ni personals.
+                  {t('chat.warning', "L'IA pot cometre errors. No comparteixis dades sensibles ni personals.")}
                 </p>
               </div>
             </div>

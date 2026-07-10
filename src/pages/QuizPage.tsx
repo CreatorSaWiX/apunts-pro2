@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle, XCircle, Clock, AlertTriangle, RefreshCw, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,6 +9,7 @@ import { EditorView } from '@codemirror/view';
 import { cpp } from '@codemirror/lang-cpp';
 import { allPersonalNotes } from 'content-collections';
 import AIStreamingIndicator from '../components/AIStreamingIndicator';
+import { useTranslation } from 'react-i18next';
 
 const renderInlineCode = (text: string) => {
     if (!text.includes('`')) return text;
@@ -74,6 +75,7 @@ const QuizTimer = React.memo(({
 
 const QuizPage: React.FC = () => {
     const { id: topicId } = useParams();
+    const { t } = useTranslation();
 
     const [quiz, setQuiz] = useState<any>(null);
     const [isGenerating, setIsGenerating] = useState(true);
@@ -114,7 +116,7 @@ const QuizPage: React.FC = () => {
 
             try {
                 setAiPhase('thinking');
-                setAiThought('Llegint apunts i generant test (10 min, 10 preguntes)...');
+                setAiThought(t('quiz.generating', 'Llegint apunts i generant test (10 min, 10 preguntes)...'));
                 const response = await fetch('/api/generate-quiz', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -153,7 +155,7 @@ const QuizPage: React.FC = () => {
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
     const [isFinished, setIsFinished] = useState(false);
-    const timeLeftRef = React.useRef(0);
+    const timeLeftRef = useRef(0);
     const [initialTimeLeft, setInitialTimeLeft] = useState(0);
 
     // Update times when quiz loads
@@ -207,7 +209,7 @@ const QuizPage: React.FC = () => {
     const finishQuiz = useCallback(async () => {
         setIsFinished(true);
         if (!quiz) return;
-        const finalScore = quiz.questions.reduce((acc, q) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
+        const finalScore = Object.values(quiz.questions).reduce((acc: number, q: any) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
         if (finalScore === quiz.questions.length) {
             const confetti = (await import('canvas-confetti')).default;
             confetti({
@@ -276,10 +278,10 @@ const QuizPage: React.FC = () => {
                 ) : (
                     <>
                         <AlertTriangle size={48} className="text-amber-500 mb-4 mx-auto" />
-                        <h1 className="text-2xl font-bold text-white mb-2">Sense dades</h1>
-                        <p className="text-slate-400 mb-8">No hem pogut trobar el test ni generar-ne un de nou.</p>
+                        <h1 className="text-2xl font-bold text-white mb-2">{t('quiz.noDataTitle', 'Sense dades')}</h1>
+                        <p className="text-slate-400 mb-8">{t('quiz.noDataDesc', 'No hem pogut trobar el test ni generar-ne un de nou.')}</p>
                         <Link to="/" className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors inline-block">
-                            Tornar a l'inici
+                            {t('quiz.backHome', "Tornar a l'inici")}
                         </Link>
                     </>
                 )}
@@ -289,10 +291,7 @@ const QuizPage: React.FC = () => {
 
     const currentQ = quiz.questions[currentQuestionIdx];
 
-    // MEMOIZED PRE-HIGHLIGHTING TO AVOID SYNCHRONOUS DOM-FREEZES
-    // Migrated fully to CodeMirror below, eliminating the need for string manipulation and manual DOM freezing in React.
-
-    const score = quiz.questions.reduce((acc, q) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
+    const score = Object.values(quiz.questions).reduce((acc: number, q: any) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
 
     return (
         <div className="h-screen pt-8 md:pt-10 pb-6 px-4 max-w-4xl mx-auto flex flex-col relative z-10 overflow-hidden overflow-x-hidden">
@@ -302,7 +301,7 @@ const QuizPage: React.FC = () => {
                     to="/"
                     className="flex items-center gap-2 text-slate-400 hover:text-white transition-all text-sm font-medium group"
                 >
-                    <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Tornar a temes
+                    <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> {t('quiz.backTopics', 'Tornar a temes')}
                 </Link>
 
                 {!isFinished && (
@@ -336,7 +335,7 @@ const QuizPage: React.FC = () => {
                                 transition={{ delay: 0.2 }}
                             >
                                 <Trophy className={`mx-auto mb-4 ${score === quiz.questions.length ? 'text-amber-400' : 'text-slate-500'}`} size={56} />
-                                <h2 className="text-3xl xl:text-4xl font-black text-white mb-3 tracking-tight">Cicle Finalitzat</h2>
+                                <h2 className="text-3xl xl:text-4xl font-black text-white mb-3 tracking-tight">{t('quiz.finishedTitle', 'Cicle Finalitzat')}</h2>
 
                                 <div className="flex items-center justify-center gap-4 mb-4">
                                     <div className="text-5xl xl:text-6xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
@@ -344,21 +343,21 @@ const QuizPage: React.FC = () => {
                                     </div>
                                     <div className="h-12 w-px bg-white/10" />
                                     <div className="text-left">
-                                        <p className="text-slate-400 text-xs xl:text-sm uppercase tracking-widest font-bold">Puntuació</p>
+                                        <p className="text-slate-400 text-xs xl:text-sm uppercase tracking-widest font-bold">{t('quiz.score', 'Puntuació')}</p>
                                         <p className="text-white font-mono text-lg xl:text-xl">{score} / {quiz.questions.length}</p>
                                     </div>
                                 </div>
 
                                 <p className="text-slate-300 text-base max-w-lg mx-auto leading-relaxed">
                                     {score === quiz.questions.length
-                                        ? "Perfecte. Has demostrat un domini absolut de la matèria. Estàs preparat per a qualsevol repte tècnic d'alt nivell."
-                                        : "Analitza els teus errors per millorar la teva tècnica en C++."}
+                                        ? t('quiz.perfectScore', "Perfecte. Has demostrat un domini absolut de la matèria. Estàs preparat per a qualsevol repte tècnic d'alt nivell.")
+                                        : t('quiz.improveScore', "Analitza els teus errors per millorar la teva tècnica en C++.")}
                                 </p>
                             </motion.div>
                         </div>
 
                         <div className="space-y-4 xl:space-y-6 relative z-10">
-                            {quiz.questions.map((q, i) => {
+                            {Object.values(quiz.questions).map((q: any, i: number) => {
                                 const userAnswer = selectedAnswers[q.id];
                                 const isCorrect = userAnswer === q.correctOptionId;
 
@@ -379,20 +378,20 @@ const QuizPage: React.FC = () => {
 
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                                                     <div className={`p-3 rounded-xl text-xs font-medium border ${isCorrect ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300' : 'bg-red-500/10 border-red-500/20 text-red-300'}`}>
-                                                        <span className="uppercase opacity-50 block mb-1">La teva resposta</span>
-                                                        <span className="">{renderInlineCode(q.options.find(o => o.id === userAnswer)?.text || 'No contestada')}</span>
+                                                        <span className="uppercase opacity-50 block mb-1">{t('quiz.yourAnswer', 'La teva resposta')}</span>
+                                                        <span className="">{renderInlineCode(q.options.find((o: any) => o.id === userAnswer)?.text || t('quiz.notAnswered', 'No contestada'))}</span>
                                                     </div>
                                                     {!isCorrect && (
                                                         <div className="p-3 rounded-xl text-xs font-medium border bg-emerald-500/10 border-emerald-500/20 text-emerald-300">
-                                                            <span className="uppercase opacity-50 block mb-1">Resposta Correcta</span>
-                                                            <span className="">{renderInlineCode(q.options.find(o => o.id === q.correctOptionId)?.text || '')}</span>
+                                                            <span className="uppercase opacity-50 block mb-1">{t('quiz.correctAnswer', 'Resposta Correcta')}</span>
+                                                            <span className="">{renderInlineCode(q.options.find((o: any) => o.id === q.correctOptionId)?.text || '')}</span>
                                                         </div>
                                                     )}
                                                 </div>
 
                                                 <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
                                                     <p className="text-xs xl:text-sm text-slate-300 leading-relaxed italic">
-                                                        <span className="font-bold text-primary not-italic mr-2">Deep-dive:</span>
+                                                        <span className="font-bold text-primary not-italic mr-2">{t('quiz.deepDive', 'Deep-dive:')}</span>
                                                         {renderInlineCode(q.explanation)}
                                                     </p>
                                                 </div>
@@ -408,7 +407,7 @@ const QuizPage: React.FC = () => {
                                 onClick={() => window.location.reload()}
                                 className="flex items-center gap-2 px-8 py-3 bg-white text-slate-950 font-bold rounded-2xl hover:bg-slate-200 transition-colors shadow-xl"
                             >
-                                <RefreshCw size={18} /> Reintentar Test
+                                <RefreshCw size={18} /> {t('quiz.retry', 'Reintentar Test')}
                             </button>
                         </div>
                     </motion.div>
@@ -418,7 +417,7 @@ const QuizPage: React.FC = () => {
                 <div className="flex flex-col flex-1 min-h-0">
                     {/* Animated Progress Track */}
                     <div className="flex gap-2 mb-4 xl:mb-6 px-1 shrink-0">
-                        {quiz.questions.map((q, i) => (
+                        {Object.values(quiz.questions).map((q: any, i: number) => (
                             <div
                                 key={q.id}
                                 className="h-1.5 flex-1 relative rounded-full bg-white/5 overflow-hidden"
@@ -452,21 +451,6 @@ const QuizPage: React.FC = () => {
                             transition={{ duration: 0.3, ease: "easeOut" }}
                             className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-t-[2.5rem] rounded-b-2xl p-6 xl:p-10 shadow-2xl mb-4 xl:mb-6 flex-1 flex flex-col min-h-0"
                         >
-                            {/* Question Header */}
-                            {/* <div className="hidden sm:flex items-center justify-between mb-4 xl:mb-6 shrink-0">
-                                <span className="bg-primary/10 text-primary px-3 py-1.5 rounded-full text-[10px] xl:text-xs font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(14,165,233,0.15)] flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                    Progrés: {currentQuestionIdx + 1}/{quiz.questions.length}
-                                </span>
-                                <div className="flex gap-1.5">
-                                    {['A', 'B', 'C', 'D'].map((l, i) => (
-                                        <div key={l} className={`w-6 h-6 rounded border flex items-center justify-center text-[10px] xl:text-xs font-bold transition-colors ${selectedAnswers[currentQ.id] ? (i === currentQ.options.findIndex(o => o.id === selectedAnswers[currentQ.id]) ? 'bg-primary border-primary text-white shadow-[0_0_10px_rgba(14,165,233,0.3)]' : 'border-white/10 text-white/20') : 'border-white/10 text-white/40'}`}>
-                                            {l}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div> */}
-
                             {/* Question Content Wrapper - Scrollable if extremely long, else flex content */}
                             <div className="flex flex-col flex-1 min-h-0 overflow-y-auto overflow-x-hidden pr-2 pb-2 custom-scrollbar">
                                 <h2 className="text-xl xl:text-2xl text-white font-bold leading-tight mb-4 xl:mb-6 shrink-0">
@@ -513,7 +497,7 @@ const QuizPage: React.FC = () => {
                                 )}
 
                                 <div className="grid grid-cols-1 gap-3 mt-auto shrink-0">
-                                    {currentQ.options.map((opt, i) => {
+                                    {currentQ.options.map((opt: any, i: number) => {
                                         const isSelected = selectedAnswers[currentQ.id] === opt.id;
                                         const letters = ['A', 'B', 'C', 'D'];
                                         return (
@@ -558,7 +542,7 @@ const QuizPage: React.FC = () => {
                             disabled={currentQuestionIdx === 0}
                             className="flex items-center gap-2 px-6 py-3.5 xl:py-4 rounded-2xl border border-white/10 bg-slate-900/50 hover:bg-slate-800 text-slate-400 hover:text-white disabled:opacity-0 disabled:pointer-events-none transition-all font-bold text-sm shadow-lg hover:shadow-xl"
                         >
-                            <ChevronLeft size={18} /> <span className="hidden sm:inline">Anterior</span>
+                            <ChevronLeft size={18} /> <span className="hidden sm:inline">{t('quiz.prev', 'Anterior')}</span>
                         </button>
 
                         <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent via-white/10 to-transparent hidden md:block" />
@@ -575,7 +559,7 @@ const QuizPage: React.FC = () => {
                                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                             )}
 
-                            <span className="relative z-10">{currentQuestionIdx === quiz.questions.length - 1 ? 'Avaluar' : 'Següent'}</span>
+                            <span className="relative z-10">{currentQuestionIdx === quiz.questions.length - 1 ? t('quiz.evaluate', 'Avaluar') : t('quiz.next', 'Següent')}</span>
                             {currentQuestionIdx !== quiz.questions.length - 1 && <ChevronRight size={18} className="relative z-10" />}
 
                             {/* Keyboard hint */}

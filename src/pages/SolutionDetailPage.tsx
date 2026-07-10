@@ -8,17 +8,21 @@ import { useAuth } from '../contexts/AuthContext';
 import { courseStructure } from '../content/data/courseStructure';
 import { Suspense, lazy } from 'react';
 import CommentsSection from '../components/comments/CommentsSection';
+import { useTranslation } from 'react-i18next';
 
 const CodeEditor = lazy(() => import('../components/ui/CodeEditor'));
 
-const CodeEditorSkeleton = () => (
-    <div className="w-full h-[600px] bg-slate-900/50 animate-pulse rounded-2xl border border-white/10 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4 text-slate-500">
-            <Spinner />
-            <span className="text-sm font-medium">Carregant editor...</span>
+const CodeEditorSkeleton = () => {
+    const { t } = useTranslation();
+    return (
+        <div className="w-full h-[600px] bg-slate-900/50 animate-pulse rounded-2xl border border-white/10 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4 text-slate-500">
+                <Spinner />
+                <span className="text-sm font-medium">{t('solutionDetail.loadingEditor', 'Carregant editor...')}</span>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
@@ -26,6 +30,7 @@ import Spinner from '../components/ui/Spinner';
 import DOMPurify from 'dompurify';
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();
+    const { t } = useTranslation();
     const [lang, setLang] = useState('ca');
     const { solution, loading, setSolution } = useSolution(topicId || '', problemId || '', lang);
     const { solutions } = useSolutions(topicId || '');
@@ -118,7 +123,7 @@ const SolutionDetailPage = () => {
             setIsEditing(false);
         } catch (error) {
             console.error("Error saving solution:", error);
-            alert("Error al guardar la solució. Comprova la consola.");
+            alert(t('solutionDetail.saveError', "Error al guardar la solució. Comprova la consola."));
         }
     };
 
@@ -136,7 +141,7 @@ const SolutionDetailPage = () => {
         <div className="min-h-screen flex items-center justify-center pt-24 pb-20 px-4">
             <div className="flex flex-col items-center gap-4">
                 <Spinner size="lg" variant="sky" />
-                <p className="text-slate-400 text-sm">Carregant solució...</p>
+                <p className="text-slate-400 text-sm">{t('solutionDetail.loadingSolution', 'Carregant solució...')}</p>
             </div>
         </div>
     );
@@ -144,9 +149,9 @@ const SolutionDetailPage = () => {
     if (!solution) return (
         <div className="min-h-screen flex items-center justify-center pt-24 pb-20 px-4">
             <div className="text-center">
-                <h2 className="text-xl font-bold text-white mb-2">Solució no trobada</h2>
+                <h2 className="text-xl font-bold text-white mb-2">{t('solutionDetail.notFound', 'Solució no trobada')}</h2>
                 <Link to={`/tema/${topicId}/solucionaris`} className="text-slate-400 hover:text-white transition-colors">
-                    Tornar a la llista
+                    {t('solutionDetail.backToList', 'Tornar a la llista')}
                 </Link>
             </div>
         </div>
@@ -166,7 +171,7 @@ const SolutionDetailPage = () => {
                     <Link
                         to={`/tema/${topicId}/solucionaris`}
                         className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white transition-all border border-white/5 hover:border-white/20"
-                        title="Tornar a la llista"
+                        title={t('solutionDetail.backToList', 'Tornar a la llista')}
                     >
                         <ArrowLeft size={18} />
                     </Link>
@@ -174,7 +179,7 @@ const SolutionDetailPage = () => {
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
                             {jutgeUrl ? (
-                                <a href={jutgeUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-emerald-400 hover:text-emerald-300 hover:underline font-bold tracking-tight text-lg flex items-center gap-1.5" title="Obrir problema al Jutge">
+                                <a href={jutgeUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-emerald-400 hover:text-emerald-300 hover:underline font-bold tracking-tight text-lg flex items-center gap-1.5" title={t('solutionDetail.openJutge', 'Obrir problema al Jutge')}>
                                     {solution.id}
                                     <ExternalLink size={16} className="opacity-70" />
                                 </a>
@@ -203,21 +208,21 @@ const SolutionDetailPage = () => {
                             {isSolved && (
                                 <div className="hidden sm:flex items-center gap-1 ml-2 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
                                     <CheckCircle size={10} className="fill-current" />
-                                    <span>Acceptat</span>
+                                    <span>{t('solutionDetail.accepted', 'Acceptat')}</span>
                                 </div>
                             )}
                         </div>
                         {/* Author Info */}
                         <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
-                            <span className="text-slate-500 mr-0.5">Autor:</span>
+                            <span className="text-slate-500 mr-0.5">{t('solutionDetail.author', 'Autor:')}</span>
                             {solution.authorId ? (
                                 <Link to={`/profile/${solution.authorId}`} className="flex items-center gap-2 hover:text-sky-400 transition-colors">
                                     {authorData?.avatar && <img src={authorData.avatar} className="w-5 h-5 rounded-full bg-slate-800 object-cover" loading="lazy" />}
-                                    {authorData?.username || solution.author || 'Anònim'}
+                                    {authorData?.username || solution.author || t('solutionDetail.anonymous', 'Anònim')}
                                 </Link>
                             ) : (
                                 <span className="flex items-center gap-2 text-slate-400 cursor-default">
-                                    {solution.author || 'Anònim'}
+                                    {solution.author || t('solutionDetail.anonymous', 'Anònim')}
                                 </span>
                             )}
                         </div>
@@ -232,10 +237,10 @@ const SolutionDetailPage = () => {
                             ? 'bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white hover:border-white/10'
                             : 'bg-transparent text-slate-800 border-transparent cursor-not-allowed hidden sm:flex'
                             }`}
-                        title={prevSolution ? `Anterior: ${prevSolution.title}` : undefined}
+                        title={prevSolution ? `${t('solutionDetail.prevTooltip', 'Anterior:')} ${prevSolution.title}` : undefined}
                     >
                         <ChevronLeft size={18} />
-                        <span className="text-sm font-medium hidden lg:inline">Anterior</span>
+                        <span className="text-sm font-medium hidden lg:inline">{t('solutionDetail.prev', 'Anterior')}</span>
                     </Link>
                     <Link
                         to={nextSolution ? `/tema/${topicId}/solucionaris/${nextSolution.id}` : '#'}
@@ -243,9 +248,9 @@ const SolutionDetailPage = () => {
                             ? 'bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white hover:border-white/10'
                             : 'bg-transparent text-slate-800 border-transparent cursor-not-allowed hidden sm:flex'
                             }`}
-                        title={nextSolution ? `Següent: ${nextSolution.title}` : undefined}
+                        title={nextSolution ? `${t('solutionDetail.nextTooltip', 'Següent:')} ${nextSolution.title}` : undefined}
                     >
-                        <span className="text-sm font-medium hidden lg:inline">Següent</span>
+                        <span className="text-sm font-medium hidden lg:inline">{t('solutionDetail.next', 'Següent')}</span>
                         <ChevronRight size={18} />
                     </Link>
                 </div>
@@ -265,7 +270,7 @@ const SolutionDetailPage = () => {
                         <div className="px-5 py-3 bg-white/5 border-b border-white/5 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <FileText size={16} className="text-indigo-400" />
-                                <span className="text-sm font-medium text-slate-200">Enunciat</span>
+                                <span className="text-sm font-medium text-slate-200">{t('solutionDetail.statement', 'Enunciat')}</span>
                             </div>
 
                             {/* LANGUAGE SELECTOR */}
@@ -291,7 +296,7 @@ const SolutionDetailPage = () => {
                             {solution.statement ? (
                                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(solution.statement) }} className="jutge-content space-y-4" />
                             ) : (
-                                <p className="italic text-slate-500">Enunciat no disponible.</p>
+                                <p className="italic text-slate-500">{t('solutionDetail.statementNotAvailable', 'Enunciat no disponible.')}</p>
                             )}
                         </div>
                     </div>
@@ -319,7 +324,7 @@ const SolutionDetailPage = () => {
                                     <div className="px-5 py-3 bg-white/[0.03] border-b border-white/[0.06] flex items-center justify-between shrink-0">
                                         <div className="flex items-center gap-3">
                                             {jutgeUrl ? (
-                                                <a href={jutgeUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-slate-400 hover:text-sky-400 hover:underline transition-colors flex items-center gap-1.5" title="Obrir a jutge.org">
+                                                <a href={jutgeUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-slate-400 hover:text-sky-400 hover:underline transition-colors flex items-center gap-1.5" title={t('solutionDetail.openJutgeSite', 'Obrir a jutge.org')}>
                                                     {solution.id}.cpp
                                                     <Edit size={13} className="opacity-0" /> {/* Spacer */}
                                                 </a>
@@ -332,7 +337,7 @@ const SolutionDetailPage = () => {
                                             <button
                                                 onClick={() => setIsEditing(false)}
                                                 className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                                                title="Cancel·lar"
+                                                title={t('solutionDetail.cancel', 'Cancel·lar')}
                                             >
                                                 <X size={16} />
                                             </button>
@@ -340,7 +345,7 @@ const SolutionDetailPage = () => {
                                                 onClick={handleSave}
                                                 className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
                                             >
-                                                <Save size={14} /> Guardar
+                                                <Save size={14} /> {t('solutionDetail.save', 'Guardar')}
                                             </button>
                                         </div>
                                     </div>
@@ -369,7 +374,7 @@ const SolutionDetailPage = () => {
                                                     onClick={() => setIsEditing(true)}
                                                     className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
                                                 >
-                                                    <Edit size={14} /> Editar
+                                                    <Edit size={14} /> {t('solutionDetail.edit', 'Editar')}
                                                 </button>
                                             )}
                                         </div>

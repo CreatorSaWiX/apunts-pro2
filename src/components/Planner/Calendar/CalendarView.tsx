@@ -19,10 +19,12 @@ import WeeklyGrid from './WeeklyGrid';
 import YearlyGrid from './YearlyGrid';
 import TaskCard from '../Board/TaskCard';
 import UnscheduledDrawer from '../UnscheduledDrawer';
+import { useTranslation } from 'react-i18next';
 
 type CalendarMode = 'month' | 'week' | 'year';
 
 const CalendarView: React.FC = () => {
+    const { t } = useTranslation();
     const { tasks, updateTask, addTask } = useTasks();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [mode, setMode] = useState<CalendarMode>('week');
@@ -138,7 +140,7 @@ const CalendarView: React.FC = () => {
                                             transition={{ type: "spring", stiffness: 450, damping: 30 }}
                                         />
                                     )}
-                                    <span className="relative z-10">{m === 'week' ? 'Setm' : m === 'month' ? 'Mes' : 'Any'}</span>
+                                    <span className="relative z-10">{m === 'week' ? t('planner.calendarView.week', 'Setm') : m === 'month' ? t('planner.calendarView.month', 'Mes') : t('planner.calendarView.year', 'Any')}</span>
                                 </button>
                             ))}
                         </div>

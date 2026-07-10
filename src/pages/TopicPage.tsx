@@ -3,7 +3,7 @@ import { useParams, Navigate, Link } from 'react-router-dom';
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { allPersonalNotes } from 'content-collections';
 
-import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 import { ArrowLeft, ArrowRight, FileText, X } from 'lucide-react';
 import { MarkdownRenderer } from "../markdown/MarkdownRenderer";
@@ -11,7 +11,8 @@ import { MarkdownRenderer } from "../markdown/MarkdownRenderer";
 
 const TopicPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const { preferredLang } = useLanguage();
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
     
     // PDF Download state
     const [availablePdfs, setAvailablePdfs] = useState<{ ca: boolean; es: boolean }>({ ca: false, es: false });
@@ -129,7 +130,7 @@ const TopicPage: React.FC = () => {
                                         className="absolute right-0 top-full mt-2 w-48 bg-[#0b1221] border border-red-500/20 rounded-xl shadow-[0_10px_40px_-10px_rgba(239,68,68,0.2)] overflow-hidden"
                                     >
                                         <div className="p-2 border-b border-red-500/10 flex justify-between items-center text-[10px] text-red-400/70 font-bold uppercase tracking-widest">
-                                            Idioma
+                                            {t('topic.pdfLanguage', 'Idioma')}
                                             <button onClick={() => setIsPdfMenuOpen(false)} className="hover:text-red-300 p-1 rounded-md hover:bg-red-500/10 transition-colors">
                                                 <X size={12} />
                                             </button>
@@ -196,7 +197,7 @@ const TopicPage: React.FC = () => {
                             <div className="relative z-10">
                                 <div
                                     className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                    <ArrowLeft size={12} /> Anterior
+                                    <ArrowLeft size={12} /> {t('common.previous', 'Anterior')}
                                 </div>
                                 <div
                                     className="text-xl font-bold text-slate-200 group-hover:text-white transition-colors">
@@ -216,7 +217,7 @@ const TopicPage: React.FC = () => {
                             <div className="relative z-10">
                                 <div
                                     className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-end gap-2">
-                                    Següent <ArrowRight size={12} />
+                                    {t('common.next', 'Següent')} <ArrowRight size={12} />
                                 </div>
                                 <div
                                     className="text-xl font-bold text-slate-200 group-hover:text-white transition-colors">

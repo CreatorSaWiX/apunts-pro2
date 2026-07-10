@@ -3,6 +3,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { Archive, X, Flag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Task, TaskPriority } from '../../types/tasks';
+import { useTranslation } from 'react-i18next';
 
 interface UnscheduledDrawerProps {
     tasks: Task[];
@@ -41,6 +42,7 @@ const DraggableMiniTask: React.FC<{ task: Task }> = ({ task }) => {
 };
 
 const UnscheduledDrawer: React.FC<UnscheduledDrawerProps> = ({ tasks }) => {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
 
     if (tasks.length === 0) return null;
@@ -60,7 +62,7 @@ const UnscheduledDrawer: React.FC<UnscheduledDrawerProps> = ({ tasks }) => {
                         </div>
                     </div>
                     <span className="text-sm font-bold text-slate-300 group-hover:text-white transition-colors hidden sm:block">
-                        Backlog
+                        {t('planner.unscheduled.backlog', 'Backlog')}
                     </span>
                 </button>
             </div>
@@ -78,7 +80,7 @@ const UnscheduledDrawer: React.FC<UnscheduledDrawerProps> = ({ tasks }) => {
                         <div className="flex items-center justify-between p-4 border-b border-white/5 bg-white/[0.02]">
                             <div className="flex items-center gap-2">
                                 <Archive size={16} className="text-slate-400" />
-                                <span className="font-extrabold text-xs tracking-widest text-slate-300 uppercase">Per planificar</span>
+                                <span className="font-extrabold text-xs tracking-widest text-slate-300 uppercase">{t('planner.unscheduled.toPlan', 'Per planificar')}</span>
                             </div>
                             <button 
                                 onClick={() => setIsOpen(false)}

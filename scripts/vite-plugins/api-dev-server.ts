@@ -330,7 +330,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
 
                   for (const modelName of MODELS) {
                     try {
-                      const supportsThinking = THINKING_MODELS.has(modelName);
+                      // // const supportsThinking = THINKING_MODELS.has(modelName);
                       // @ts-ignore - explicitly suppressing unused var error in extracted script
 
                       const streamConfig: any = {

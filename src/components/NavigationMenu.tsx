@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { X, BookOpen, ChevronRight } from 'lucide-react';
 import { allPersonalNotes } from 'content-collections';
 import { motion } from 'framer-motion';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 interface NavigationMenuProps {
     isMenuOpen: boolean;
@@ -13,7 +13,8 @@ interface NavigationMenuProps {
 }
 
 const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOpen, subject, theme }) => {
-    const { preferredLang } = useLanguage();
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
     
     const safeSubject = (subject || '').toLowerCase();
     
@@ -49,7 +50,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                    <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2">Temari del Curs</div>
+                    <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2">{t('navigation.courseSyllabus', 'Temari del Curs')}</div>
                     {[...allPersonalNotes]
                         .filter(note => {
                             if ((note as any).subject !== safeSubject || note.slug.includes('-lab-')) return false;
@@ -88,7 +89,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
 
                     {[...allPersonalNotes].some(n => (n as any).subject === safeSubject && n.slug.includes('-lab-')) && (
                         <>
-                            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2 mt-8">Laboratoris</div>
+                            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2 mt-8">{t('navigation.labs', 'Laboratoris')}</div>
                             {[...allPersonalNotes]
                                 .filter(note => {
                                     if ((note as any).subject !== safeSubject || !note.slug.includes('-lab-')) return false;
@@ -123,7 +124,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                 </div>
 
                 <div className="p-4 border-t border-white/5 text-center text-xs text-slate-600">
-                    Fet amb ❤️ per a la FIB
+                    {t('navigation.madeWithLove', 'Fet amb ❤️ per a la FIB')}
                 </div>
             </motion.div>
         </>

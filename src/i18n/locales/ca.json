@@ -1,0 +1,706 @@
+{
+  "navigation": {
+    "courseSyllabus": "Temari del Curs",
+    "labs": "Laboratoris",
+    "madeWithLove": "Fet amb ❤️ per a la FIB"
+  },
+  "settings": {
+    "contributor": "Col·laborador",
+    "title": "Ajustaments",
+    "subtitle": "Configuració de portada",
+    "subject": "Assignatura",
+    "language": "Idioma",
+    "languageDesc": "L'idioma principal de l'aplicació.",
+    "links": "Enllaços",
+    "sourceCode": "Codi Font",
+    "contributors": "Contribuïdors",
+    "about": "Quant a",
+    "aboutDescription": "Informació sobre el projecte i les persones que el fan possible.",
+    "repository": "Repositori",
+    "openSource": "Codi obert a GitHub",
+    "teamBehind": "L'equip darrere el projecte",
+    "devTeam": "L'equip de desenvolupament",
+    "subjects": {
+      "title": "Assignatures",
+      "subtitle": "Gestiona les teves assignatures a l'Inici. Pots personalitzar el color de cadascuna.",
+      "searchPlaceholder": "Cerca i afegeix assignatures...",
+      "minError": "Has de deixar com a mínim una assignatura a l'Inici.",
+      "maxError": "Pots tenir un màxim de 6 assignatures a l'Inici.",
+      "noResults": "No s'han trobat resultats",
+      "empty": "Cap assignatura afegida actualment.",
+      "previewTitle": "Vista Prèvia del Navbar",
+      "previewSubtitle": "Així es veurà el teu menú principal.",
+      "addPreview": "Afegeix assignatures per veure el navbar",
+      "colorOf": "Color de",
+      "reset": "Restablir per defecte"
+    },
+    "offline": {
+      "title": "Emmagatzematge Offline",
+      "subtitle": "Gestiona quines dades es guarden al dispositiu per accedir-hi sense internet.",
+      "local": "Emmagatzematge Local",
+      "localSub": "Total ocupat per l'aplicació al teu dispositiu.",
+      "appShell": "App Shell (JS/CSS/HTML)",
+      "metadata": "IndexedDB / Metadades",
+      "autoSync": "Actualització automàtica",
+      "download": "Descarregar",
+      "delete": "Eliminar",
+      "noInternet": "No pots descarregar contingut sense connexió a internet.",
+      "empty": "No hi ha materials disponibles per descarregar actualment.",
+      "pdfsDesc": "Tota la col·lecció de PDFs del grau.",
+      "resourcesDesc": "Material i recursos per a",
+      "filesAvailable": "arxius disponibles"
+    },
+    "ai": {
+      "title": "Assistent IA",
+      "subtitle": "Configura la personalitat i el comportament del teu copilot. Aquesta funcionalitat està inspirat en",
+      "identity": "Identitat (Qui soc)",
+      "change": "Canviar",
+      "name": "Nom de la IA",
+      "pronouns": "Pronoms",
+      "howToCallYou": "Com vols que et digui?",
+      "useUsername": "Usar nom d'usuari",
+      "vibe": "Personalitat (Vibe)",
+      "vibePlaceholder": "Defineix el to general, l'estil de conversa i com et farà sentir la IA...",
+      "soul": "Ànima (Regles de comportament)",
+      "rules": "Regles (Rules)",
+      "boundaries": "Límits (Boundaries)",
+      "customDirectives": "Directrius Personalitzades",
+      "managedByAi": "Això ho gestiona l'IA autònomament",
+      "forceEdit": "Forçar Modificació",
+      "longTermMemory": "Memòria a Llarg Termini",
+      "memoryDesc": "Aquests són els detalls que la IA ha aprendut sobre tu per personalitzar la teva experiència.",
+      "noMemories": "La IA encara no té memòries guardades.",
+      "deleteMemory": "Esborrar memòria",
+      "modifying": "Modificant",
+      "soulChangeDesc": "Aquests canvis seran apresos immediatament i passaran a formar part de l'ànima de l'assistent.",
+      "saveToSoul": "Desar a l'ànima",
+      "soulPlaceholder": "Escriu aquí les instruccions..."
+    },
+    "privacy": {
+      "title": "Privacitat i Condicions",
+      "subtitle": "Revisa la política de tractament de les teves dades.",
+      "readDocs": "Llegir documentació"
+    },
+    "deleteAcc": {
+      "title": "Eliminar compte",
+      "subtitle": "Esborra de forma permanent el teu compte i totes les teves dades associades.",
+      "button": "Eliminar el meu compte",
+      "deleting": "Esborrant...",
+      "errorRecentLogin": "Per motius de seguretat, necessites tancar la sessió i tornar a entrar per poder esborrar el teu compte.",
+      "errorGeneric": "Hi ha hagut un error esborrant el compte.",
+      "confirmTitle": "Esborrar compte",
+      "confirmMessage": "Estàs totalment segur? Aquesta acció esborrarà el teu compte, tots els xats, tasques i apunts de forma irreversible.",
+      "confirmYes": "Sí, esborrar",
+      "confirmNo": "Cancel·lar"
+    }
+  },
+  "common": {
+    "back": "Tornar",
+    "languages": {
+      "ca": "Català",
+      "es": "Español",
+      "en": "English"
+    },
+    "confirmModal": {
+      "title": "Estàs segur?",
+      "message": "Aquesta acció no es pot desfer.",
+      "confirm": "Confirmar",
+      "cancel": "Cancel·lar"
+    },
+    "expired": "Caducat",
+    "remaining": "Queden",
+    "save": "Guardar",
+    "cancel": "Cancel·lar",
+    "fileUploader": {
+      "dragFiles": "Arrossega arxius per adjuntar",
+      "supportedTypes": "Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {{max}}MB per arxiu)",
+      "uploading": "Preparant i pujant a la xarxa...",
+      "uploadFailed": "Error de pujada",
+      "uploadSuccess": "Arxiu pujat!"
+    }
+  },
+  "topics": {
+    "topic": "Tema",
+    "new": "Nou",
+    "updated": "Actualitzat",
+    "explore": "Explorar tema",
+    "solutions": {
+      "m1": "Solucionaris M1",
+      "m2": "Solucionaris M2",
+      "lab": "Solucionaris Lab",
+      "jutge": "Solucionaris Jutge"
+    }
+  },
+  "planner": {
+    "time": "Hora",
+    "previewTitle": "Vista del Planificador",
+    "previewSubtitle": "Tria la vista per defecte a la pestanya Planificador.",
+    "board": "Tauler",
+    "calendar": "Calendari",
+    "timeline": "Timeline",
+    "roadmap": "Roadmap",
+    "ai": {
+      "errorFiles": "Només es permeten imatges o PDFs.",
+      "errorSize": "L'arxiu és massa gran. Màxim 5MB.",
+      "errorUnknown": "Error desconegut",
+      "errorGenerate": "Error al generar tasques",
+      "errorStreaming": "El navegador no suporta streaming",
+      "attach": "Adjuntar imatge o PDF",
+      "placeholder": "Escriu què necessites planificar..."
+    },
+    "filters": {
+      "all": "Totes",
+      "subjects": "Assignatures",
+      "priority": "Prioritat",
+      "priorities": {
+        "high": "Alta",
+        "medium": "Mitjana",
+        "low": "Baixa"
+      },
+      "deadline": "Data Límit",
+      "dateRanges": {
+        "all": "Totes les dates",
+        "today": "Avui",
+        "thisWeek": "Aquesta setmana",
+        "thisMonth": "Aquest mes",
+        "thisTerm": "Aquest quatrimestre"
+      }
+    },
+    "contextMenu": {
+      "copySuffix": " (Còpia)",
+      "changePriority": "Canviar Prioritat",
+      "duplicate": "Duplicar",
+      "delete": "Eliminar"
+    },
+    "popover": {
+      "titlePlaceholder": "Títol...",
+      "subject": "Assignatura",
+      "noSubject": "Sense Assignatura",
+      "searchSubject": "Cerca assignatura...",
+      "noneSubject": "Cap assignatura",
+      "priorityLow": "BAIX",
+      "priorityMedium": "MIG",
+      "priorityHigh": "ALT"
+    },
+    "unscheduled": {
+      "backlog": "Backlog",
+      "toPlan": "Per planificar"
+    },
+    "boardView": {
+      "colorTitle": "Fes clic per canviar el color",
+      "clearConfirm": "Segur que vols eliminar TOTES les tasques d'aquesta llista?",
+      "clearList": "Buidar llista",
+      "deleteList": "Eliminar llista",
+      "addTask": "Afegir tasca",
+      "doubleClickToAdd": "Fes doble clic per afegir",
+      "newTaskTitle": "Títol de la tasca...",
+      "cancel": "Cancel·lar",
+      "create": "Crear",
+      "noSubject": "Sense assignatura",
+      "subject": "Assignatura",
+      "startDate": "Data inici",
+      "dueDate": "Data límit",
+      "doubleClickHint": "Doble clic per afegir tasca",
+      "addList": "Afegeix llista",
+      "createList": "CREAR LLISTA",
+      "listName": "Nom de la llista...",
+      "priority": "Priority"
+    },
+    "calendarView": {
+      "week": "Setm",
+      "month": "Mes",
+      "year": "Any"
+    },
+    "roadmapExperienceSelector": {
+      "addBlock": "Afegir Bloc",
+      "configureSubtitle": "Configura estades, pràctiques o projectes per al teu roadmap.",
+      "mobility": "Mobilitat",
+      "internationalStays": "Estades Internacionals",
+      "internship": "Pràctiques",
+      "companyExperience": "Experiència en Empresa",
+      "internationalStayTitle": "Estada internacional",
+      "internationalStayDesc": "Afegeix el teu intercanvi Erasmus+, SICUE o altres programes internacionals.",
+      "universityDest": "Universitat / Destí",
+      "searchPlaceholder": "Cerca per nom o país...",
+      "officialWeb": "Lloc Web Oficial",
+      "downloadDoc": "Descarrega Documentació",
+      "program": "Programa",
+      "creditsEcts": "Crèdits (ECTS)",
+      "internshipTitle": "Pràctiques empresa",
+      "internshipDesc": "Afegeix pràctiques curriculars o extracurriculars al teu expedient.",
+      "company": "Empresa",
+      "companyPlaceholder": "Ex: Google, inLab FIB, etc.",
+      "role": "Rol / Posició",
+      "rolePlaceholder": "Ex: Software Engineer Intern",
+      "recognitionCredits": "Crèdits Reconeixement (ECTS)",
+      "addToRoadmap": "Afegeix al Roadmap",
+      "noResultsFound": "Cap resultat trobat"
+    },
+    "roadmapSpecialization": {
+      "specializationsTitle": "Mencions",
+      "chooseYourPath": "Tria el teu camí cap a l'excel·lència professional.",
+      "whyChooseIt": "Per què triar-la?",
+      "mandatory": "Obligatòries",
+      "careerPaths": "Sortides Professionals",
+      "keyBenefits": "Beneficis Clau",
+      "alreadySelected": "Ja Seleccionada",
+      "selectSpecialization": "Seleccionar Especialitat"
+    },
+    "roadmapValidations": {
+      "title": "Convalidacions",
+      "subtitle": "Afegeix crèdits a la teva motxilla a través de cicles formatius o activitats extraescolars.",
+      "otherActivities": "Altres Activitats",
+      "universityActivities": "Activitats Universitàries",
+      "activityExamples": "Game Jams, Esports, Idiomes",
+      "cfgs": "Cicles Formatius (CFGS)",
+      "cfgsDisclaimer": "En aplicar aquesta convalidació, les següents assignatures s'afegiran directament al teu expedient. Es substituirà qualsevol CFGS que ja tinguessis convalidat prèviament.",
+      "creditsObtained": "Crèdits Obtinguts",
+      "recognizedModules": "Mòduls Reconeixements",
+      "validatedSubjects": "Assignatures Convalidades",
+      "customDisclaimer": "Afegeix manualment els crèdits reconeguts per activitats extracadèmiques com l'esport, idiomes o representació estudiantil. Aquests s'afegiran com a optatives superades.",
+      "recommendedLimit": "Límit Recomanat",
+      "maxEcts": "6 ECTS màxim per l'itinerari",
+      "officialSuggestions": "Suggeriments Oficials FIB",
+      "activityName": "Nom de l'activitat",
+      "creditsEcts": "Crèdits ECTS",
+      "selectCycle": "Selecciona un cicle",
+      "selectCycleDesc": "Tria un Cicle Formatiu per veure quines assignatures se't convalidaran automàticament.",
+      "alreadySelected": "Ja Seleccionada",
+      "applyCredits": "Aplicar {{credits}} ECTS",
+      "addToRecord": "Afegir a l'expedient"
+    },
+    "roadmapSubjectSearch": {
+      "searchSubject": "Buscar Assignatura",
+      "searchPlaceholder": "Busca per nom o codi...",
+      "nothingFound": "No hem trobat res",
+      "tryAnotherWord": "Intenta buscar amb una altra paraula o canvia de filtre.",
+      "plusMore": "+{{count}} més",
+      "transversal": "Transversal",
+      "rec": "Rec",
+      "categories": {
+        "all": "Totes",
+        "complementary": "Complementàries",
+        "computing": "Computació",
+        "softwareEngineering": "Enginyeria del Software",
+        "computerEngineering": "Enginyeria de Computadors",
+        "informationSystems": "Sistemes d'Informació",
+        "informationTechnologies": "Tecnologies de la Informació",
+        "transversals": "Transversals"
+      }
+    },
+    "roadmapSubjectDetails": {
+      "infoNotAvailable": "Informació no disponible",
+      "infoNotAvailableDesc": "No s'han pogut descarregar les dades de la FIB per aquesta assignatura. És possible que no estigui disponible al pla d'estudis actual.",
+      "close": "Tancar",
+      "officialFib": "FIB Oficial",
+      "credits": "Crèdits",
+      "type": "Tipus",
+      "mandatory": "Obligatòria",
+      "sections": "Seccions",
+      "evaluativeAct": "Acte Avaluatiu",
+      "week": "Setmana {{week}}",
+      "relatedObjectives": "Objectius relacionats",
+      "hours": "HORES",
+      "tabs": {
+        "Professorat": "Professorat",
+        "Hores setmanals": "Hores setmanals",
+        "Competències": "Competències",
+        "Objectius": "Objectius",
+        "Continguts": "Continguts",
+        "Activitats": "Activitats",
+        "Metodologia docent": "Metodologia docent",
+        "Mètode d'avaluació": "Mètode d'avaluació",
+        "Bibliografia": "Bibliografia",
+        "Capacitats prèvies": "Capacitats prèvies"
+      }
+    },
+    "roadmapSubjectContextMenu": {
+      "badgeMobility": "MOBILITAT",
+      "badgeInternship": "PRÀCTIQUES",
+      "badgeTfg": "TFG",
+      "badgeTfm": "TFM",
+      "destination": "Destí",
+      "program": "Programa",
+      "company": "Empresa",
+      "role": "Rol",
+      "information": "Informació",
+      "inProgress": "En Curs",
+      "recognized": "Reconeguda",
+      "passed": "Aprovada",
+      "finalGrade": "Nota Final",
+      "exactGradePlaceholder": "Nota exacta (ex: 8.4)",
+      "failed": "Suspesa",
+      "retake": "Tornar a matricular",
+      "delete": "Eliminar"
+    },
+    "roadmapSubjectNode": {
+      "tags": {
+        "mobility": "MOBILITAT",
+        "internship": "PRÀCTIQUES",
+        "tfg": "TFG",
+        "tfm": "TFM",
+        "activities": "ACTIVITATS",
+        "cfgs": "CFGS"
+      },
+      "attempt": "INTENT"
+    },
+    "roadmapAI": {
+      "suggestions": {
+        "hardware": "Què haig de fer si vull ser hardware engineer?",
+        "addAI": "Afegeix IA al meu roadmap",
+        "evalEDA": "Com s'avalua EDA?"
+      },
+      "connecting": "Connectant i analitzant el teu roadmap...",
+      "added": "Afegit",
+      "removed": "Eliminat",
+      "placeholder": "Escriu un missatge a {{name}}...",
+      "attachTooltip": "Adjuntar imatge o PDF"
+    }
+  },
+  "nav": {
+    "home": "Inici",
+    "community": "Comunitat",
+    "planner": "Planificador",
+    "settings": "Configuració",
+    "profile": "El meu perfil",
+    "login": "Iniciar Sessió"
+  },
+  "hero": {
+    "newVersion": "Hi ha una nova versió",
+    "lastUpdate": "Última actualització:",
+    "superem": "Superem",
+    "junts": "junts",
+    "word1": "el curs.",
+    "word2": "el semestre.",
+    "word3": "la carrera.",
+    "subtitle": "Comparteix els teus recursos, troba els millors apunts i ajuda als teus companys. Perquè aquí l'èxit és col·lectiu i ",
+    "nobodyBehind": "no deixem a ningú enrere",
+    "uploadResource": "Pujar Recurs"
+  },
+  "topic": {
+    "test": "Test",
+    "solutions": "Solucionari",
+    "backToHome": "Tornar a Inici",
+    "openInGithub": "Obrir a GitHub",
+    "downloadPDF": "Descarregar PDF",
+    "readTime": "minuts de lectura"
+  },
+  "solutions": {
+    "title": "Solucionaris de",
+    "subtitle": "Selecciona un problema per veure'n la solució"
+  },
+  "community": {
+    "subjects": "Assignatures",
+    "subjectsShort": "Assig.",
+    "rarity": "Raresa",
+    "rarityShort": "Rar.",
+    "anyRarity": "Qualsevol raresa",
+    "search": "Buscar",
+    "searchPlaceholder": "Cerca apunts...",
+    "offlineTitle": "Sense connexió",
+    "offlineSubtitle": "Actualment estàs offline. Per consultar els recursos de la comunitat o pujar-ne un de nou cal que et connectis a Internet.",
+    "emptyTitle": "Encara no hi ha apunts",
+    "emptySubtitle": "No hi ha cap recurs compartit per a aquesta matèria. Sigues el primer en aportar valor a la comunitat i destacar.",
+    "uploadFirst": "Pujar el primer recurs",
+    "createPost": {
+      "title": "Nou recurs",
+      "waitLimit": "Espera un moment abans de publicar de nou.",
+      "publishError": "Error al publicar. Torna-ho a provar.",
+      "previewPlaceholder": "Comença a escriure per veure com queda...",
+      "noSubject": "Sense assignatura",
+      "noteModePlaceholder": "Títol de l'apunt... Comença a escriure aquí",
+      "standardPlaceholder": "Comparteix coneixement...",
+      "addGif": "Afegir GIF",
+      "addEmote": "Afegir Emote personalitzat",
+      "noteModeTitle": "Mode Apunt Extens (Notion style)",
+      "extendedNote": "Apunt Extens",
+      "publishBtn": "Publicar",
+      "livePreview": "Live Preview",
+      "livePreviewDesc": "Així es veurà el teu apunt a la Comunitat"
+    },
+    "postDetail": {
+      "actionNote": "Ha creat un apunt extens",
+      "actionQuestion": "Ha preguntat un dubte",
+      "actionResource": "Ha compartit un recurs",
+      "like": "M'agrada",
+      "deleteTooltip": "Eliminar publicació",
+      "deleteConfirm": "Segur que vols eliminar aquesta publicació? Aquesta acció no es pot desfer.",
+      "deleteError": "Error en eliminar la publicació.",
+      "attachmentsTitle": "Fitxers Adjunts i Interacció",
+      "commentsTitle": "Comentaris"
+    },
+    "subjectSelector": {
+      "searchPlaceholder": "Cerca per acrònim o nom sencer...",
+      "discoverAll": "Descobrir Tot",
+      "discoverAllDesc": "Mostra tot el contingut de la comunitat",
+      "noSubject": "Sense assignatura",
+      "noSubjectDesc": "Publicació general de la comunitat",
+      "notFound": "No s'ha trobat cap assignatura."
+    }
+  },
+  "auth": {
+    "login": {
+      "invalidCreds": "Credencials incorrectes. Torna-ho a provar.",
+      "errorLogin": "Hi ha hagut un error en iniciar sessió: ",
+      "enterEmail": "Introdueix el teu correu electrònic.",
+      "errorReset": "No s'ha pogut enviar el correu. Comprova que l'adreça sigui correcta.",
+      "title": "Iniciar Sessió",
+      "subtitle": "Entén les bases tecnològiques del món digital.",
+      "email": "Correu Electrònic",
+      "password": "Contrasenya",
+      "forgotPassword": "Has oblidat la contrasenya?",
+      "submit": "Accedir al compte",
+      "noAccount": "No tens un compte encara? ",
+      "registerNow": "Registra't ara",
+      "recoverTitle": "Recuperar",
+      "recoverSubtitle": "T'enviarem un enllaç per restablir la teva contrasenya.",
+      "sendLink": "Enviar Enllaç",
+      "emailSent": "Correu Enviat!",
+      "emailSentDesc1": "T'hem enviat un correu a ",
+      "emailSentDesc2": " amb instruccions per restablir la teva contrasenya.",
+      "backToLogin": "Tornar a Iniciar Sessió"
+    },
+    "register": {
+      "emailInUse": "Aquest correu electrònic ja està registrat.",
+      "weakPassword": "La contrasenya ha de tenir almenys 6 caràcters.",
+      "invalidEmail": "El correu electrònic no és vàlid.",
+      "errorRegister": "Error al registrar-se. Verifica les dades introduïdes.",
+      "title": "Crear compte",
+      "subtitle": "Accedeix a l'arquitectura del coneixement.",
+      "username": "Nom d'usuari",
+      "submit": "Crear compte ara",
+      "acceptTerms": "En registrar-vos, accepteu la nostra ",
+      "privacyPolicy": "Política de Privacitat",
+      "hasAccount": "Ja tens un compte? ",
+      "login": "Iniciar sessió"
+    }
+  },
+  "profile": {
+    "edit": {
+      "title": "Editar Perfil",
+      "username": "Nom d'usuari",
+      "avatarBanner": "Avatar & Banner",
+      "avatarUrl": "URL de l'Avatar",
+      "bannerUrl": "URL del Banner",
+      "webIdentity": "Identitat web",
+      "bioPlaceholder": "La teva biografia / rol curt...",
+      "cancel": "Cancel·lar",
+      "save": "Desar canvis"
+    },
+    "defaultUser": "Usuari",
+    "contact": "Contactar",
+    "stats": {
+      "solutions": "SOLUCIONARIS",
+      "rankScale": "Escala de Rangs",
+      "currentLevel": "NIVELL ACTUAL",
+      "noLink": "Sense vincular",
+      "portfolio": "PORTFOLI"
+    },
+    "inbox": {
+      "privateMailbox": "Bústia Privada",
+      "pendingMessages": "Tens {{count}} missatges pendents",
+      "allRead": "Tot llegit."
+    },
+    "notifications": {
+      "title": "Notificacions",
+      "unread": "{{count}} novetats sense llegir",
+      "upToDate": "Estàs al dia."
+    },
+    "posts": {
+      "title": "Publicacions",
+      "noPosts": "Aquest usuari encara no ha publicat res."
+    }
+  },
+  "privacy": {
+    "title": "Política de Privacitat i Tractament de Dades",
+    "subtitle": "Normativa aplicable: Reglament General de Protecció de Dades (RGPD)",
+    "intro": "L'equip de desenvolupament reconeix la importància fonamental de la privacitat i la protecció de les dades personals. Aquesta política estableix els principis pels quals ens regim en el tractament de la informació, garantint la màxima transparència i respecte pels drets dels nostres usuaris.",
+    "nature": {
+      "title": "1. Naturalesa del Tractament",
+      "content": "Les dades recopilades a través d'aquesta plataforma tenen com a objectiu exclusiu la millora contínua de l'experiència educativa i la interacció amb l'assistent d'Intel·ligència Artificial. Tota informació és tractada sota els principis de licitud, lleialtat, transparència i minimització de dades, de conformitat amb l'Article 5 del RGPD."
+    },
+    "data": {
+      "title": "2. Dades Recopilades",
+      "content": "Durant l'ús de la plataforma, ens limitem a recopilar estrictament les següents dades essencials:",
+      "id": "Informació d'Identitat:",
+      "idDesc": "Nom, correu electrònic institucional i identificador exclusiu assignat pel sistema d'autenticació.",
+      "interactions": "Interaccions Cognitives:",
+      "interactionsDesc": "Historial de converses amb l'assistent virtual per tal de proveir un context de memòria acurat.",
+      "metrics": "Mètriques de Sistema:",
+      "metricsDesc": "Dades analítiques anonimitzades (processades en remot) destinades a comprendre els patrons d'ús i avaluar el rendiment tècnic de l'aplicació."
+    },
+    "rights": {
+      "title": "3. Exercici de Drets (Drets ARCO)",
+      "content": "En virtut de la legislació vigent, vostè posseeix la facultat d'exercir en qualsevol moment el seu dret a l'oblit. La plataforma integra eines d'autonomia per a l'usuari; concretament, des de la secció de Configuració, vostè pot executar l'esborrat permanent i irreversible de la totalitat del seu compte i de tots els registres vinculats, sense requerir intervenció administrativa per la nostra part."
+    },
+    "security": {
+      "title": "4. Seguretat i Integritat",
+      "content": "La integritat de les seves dades està avalada per l'arquitectura de seguretat de Firebase (Google Cloud Platform), la qual disposa de certificacions internacionals d'encriptació tant en trànsit com en repòs. Tanmateix, s'adverteix explícitament a l'usuari que s'abstingui de divulgar dades d'alt nivell de confidencialitat (com ara credencials bancàries o informació mèdica) durant les consultes amb l'assistent d'Intel·ligència Artificial."
+    },
+    "footer": {
+      "date": "Darrera revisió: Juliol 2026"
+    }
+  },
+  "mailing": {
+    "compose": {
+      "title": "Redactar missatge",
+      "sendingTo": "Enviant a",
+      "subject": "Assumpte",
+      "subjectPlaceholder": "[P12345] Dubte d'aquest exercici",
+      "linkExercise": "Vincular exercici",
+      "linkedExercise": "Exercici Vinculat",
+      "messageBody": "Missatge",
+      "addCode": "Afegeix Codi",
+      "bodyPlaceholder": "Escriu el teu missatge aquí... (Pots fer servir ```cpp per afegir codi)",
+      "sending": "Enviant missatge...",
+      "send": "Enviar missatge",
+      "errNoSubject": "Si us plau, introdueix un assumpte per al missatge.",
+      "errEmptyBody": "El missatge no pot estar buit.",
+      "errNotLoggedIn": "Has d'iniciar sessió per enviar missatges.",
+      "errSendFailed": "Error en enviar el missatge. Torna-ho a provar.",
+      "errAvatar": "No s'ha pogut verificar la foto del receptor"
+    },
+    "mailbox": {
+      "title": "Bústia",
+      "inbox": "Rebuts",
+      "sent": "Enviats",
+      "emptyInbox": "No tens missatges rebuts",
+      "emptySent": "No tens missatges enviats",
+      "user": "Usuari",
+      "now": "Ara",
+      "to": "A: {{name}}",
+      "back": "Torna",
+      "sentTo": "Enviat a: {{name}}",
+      "receivedOn": "Rebut el {{date}}",
+      "sentOn": "Enviat el {{date}}",
+      "viewExercise": "Veure Exercici {{id}}",
+      "reply": "Respondre al missatge",
+      "sendNew": "Enviar nou missatge",
+      "selectToRead": "Selecciona un missatge per llegir-lo"
+    },
+    "problemSelector": {
+      "title": "Seleccionar Exercici",
+      "subtitle": "Vincula un problema al teu missatge",
+      "searchPlaceholder": "Buscar per codi (P37500) o títol...",
+      "notFound": "No s'han trobat exercicis"
+    }
+  },
+  "notifications": {
+    "inbox": {
+      "title": "Activitat",
+      "filters": {
+        "all": "Totes",
+        "mentions": "Mencions",
+        "likes": "Likes",
+        "comments": "Comentaris"
+      },
+      "markAllRead": "Marcar tot com llegit",
+      "empty": "No hi ha res a mostrar aquí",
+      "now": "Ara",
+      "mentioned": "T'ha mencionat a ",
+      "likedPost": "Li ha agradat la teva publicació ",
+      "repliedPost": "Ha respost a la teva publicació ",
+      "repliedComment": "Ha respost al teu comentari a ",
+      "reactedComment": "Ha reaccionat al teu comentari a "
+    }
+  },
+  "notebook": {
+    "ca": "Català",
+    "es": "Catalán",
+    "en": "Catalan"
+  },
+  "quiz": {
+    "generating": "Llegint apunts i generant test (10 min, 10 preguntes)...",
+    "noDataTitle": "Sense dades",
+    "noDataDesc": "No hem pogut trobar el test ni generar-ne un de nou.",
+    "backHome": "Tornar a l'inici",
+    "backTopics": "Tornar a temes",
+    "finishedTitle": "Cicle Finalitzat",
+    "score": "Puntuació",
+    "perfectScore": "Perfecte. Has demostrat un domini absolut de la matèria. Estàs preparat per a qualsevol repte tècnic d'alt nivell.",
+    "improveScore": "Analitza els teus errors per millorar la teva tècnica en C++.",
+    "yourAnswer": "La teva resposta",
+    "notAnswered": "No contestada",
+    "correctAnswer": "Resposta Correcta",
+    "deepDive": "Deep-dive:",
+    "retry": "Reintentar Test",
+    "prev": "Anterior",
+    "next": "Següent",
+    "evaluate": "Avaluar"
+  },
+  "solutionDetail": {
+    "loadingEditor": "Carregant editor...",
+    "saveError": "Error al guardar la solució. Comprova la consola.",
+    "loadingSolution": "Carregant solució...",
+    "notFound": "Solució no trobada",
+    "backToList": "Tornar a la llista",
+    "openJutge": "Obrir problema al Jutge",
+    "accepted": "Acceptat",
+    "author": "Autor:",
+    "anonymous": "Anònim",
+    "prevTooltip": "Anterior:",
+    "prev": "Anterior",
+    "nextTooltip": "Següent:",
+    "next": "Següent",
+    "statement": "Enunciat",
+    "statementNotAvailable": "Enunciat no disponible.",
+    "openJutgeSite": "Obrir a jutge.org",
+    "cancel": "Cancel·lar",
+    "save": "Guardar",
+    "edit": "Editar"
+  },
+  "solutionsList": {
+    "topicNotFound": "Tema no trobat o buit",
+    "title": "Llista de Problemes",
+    "description": "Col·lecció d'exercicis del tema {{topicId}}.",
+    "pdfLanguage": "Idioma Solucionari",
+    "searchPlaceholder": "Buscar ID (P12345)...",
+    "openJutge": "Obrir problema al Jutge",
+    "viewSolution": "Veure solució",
+    "readStatement": "Llegir enunciat",
+    "noProblemsDefined": "No hi ha problemes definits per a aquest tema."
+  },
+  "newSolution": {
+    "loadingEditor": "Carregant editor...",
+    "loginRequired": "Necessites iniciar sessió per pujar solucions.",
+    "login": "Iniciar Sessió",
+    "title": "Nova Solució",
+    "problemInfo": "Informació del Problema",
+    "topicLabel": "Tema",
+    "selectTopic": "Selecciona un tema",
+    "problemIdLabel": "ID Problema",
+    "problemIdPlaceholder": "ex: P37500",
+    "problemTitleLabel": "Títol del Problema",
+    "problemTitlePlaceholder": "ex: Primers nombres",
+    "codeLabel": "Codi C++",
+    "statementLabel": "Enunciat (HTML)",
+    "optional": "Opcional",
+    "statementPlaceholder": "<p>Descripció del problema...</p>",
+    "uploading": "Pujant...",
+    "publish": "Publicar Solució",
+    "saveError": "Error al guardar la solució. Comprova la consola."
+  },
+  "chat": {
+    "wait": "Espera {{cooldown}}s",
+    "newChat": "Nou Xat",
+    "conversation": "Conversa",
+    "errors": {
+      "invalidFileType": "Només s'accepten imatges i PDFs.",
+      "fileTooLarge": "L'arxiu és massa gran. Màxim 5MB.",
+      "unknown": "Error desconegut",
+      "streamingNotSupported": "El navegador no suporta streaming",
+      "serverError": "Error del servidor"
+    },
+    "noResponse": "Sense resposta.",
+    "memoryUpdated": "Memòria actualitzada",
+    "loginRequired": "L'assistent d'IA és exclusiu per als membres registrats\nInicia sessió per accedir a l'historial i al xat",
+    "login": "Inicia sessió",
+    "dropToAttach": "Deixa anar per adjuntar",
+    "history": "Historial de converses",
+    "noSavedChats": "Sense converses desades",
+    "newConversation": "Nova conversa",
+    "placeholder": "Escriu a {{aiName}}...",
+    "attachFile": "Adjuntar imatge o PDF",
+    "warning": "L'IA pot cometre errors. No comparteixis dades sensibles ni personals."
+  }
+}

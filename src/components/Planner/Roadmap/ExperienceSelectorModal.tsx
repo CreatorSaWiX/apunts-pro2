@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Briefcase, ChevronRight, Search, ExternalLink } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import Modal from '../../ui/Modal';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     isOpen: boolean;
@@ -252,6 +253,7 @@ const PremiumCombobox = ({ label, value, onChange, placeholder, options }: any) 
 
 
 const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
+    const { t } = useTranslation();
     const { addExperienceNode } = useRoadmap();
     const [selectedType, setSelectedType] = useState<ExpType>('mobility');
     const [details, setDetails] = useState<any>({});
@@ -289,24 +291,24 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Modal.Sidebar>
                     <Modal.Header>
                         <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-                            Afegir Bloc
+                            {t('planner.roadmapExperienceSelector.addBlock', 'Afegir Bloc')}
                         </h2>
-                        <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">Configura estades, pràctiques o projectes per al teu roadmap.</p>
+                        <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">{t('planner.roadmapExperienceSelector.configureSubtitle', 'Configura estades, pràctiques o projectes per al teu roadmap.')}</p>
                     </Modal.Header>
                     
                     <div className="flex-1 px-4 py-2 flex flex-col gap-1 overflow-y-auto custom-scrollbar">
                                 <SidebarItem 
                                     icon={Globe} 
-                                    title="Mobilitat" 
-                                    subtitle="Estades Internacionals"
+                                    title={t('planner.roadmapExperienceSelector.mobility', 'Mobilitat')} 
+                                    subtitle={t('planner.roadmapExperienceSelector.internationalStays', 'Estades Internacionals')}
                                     active={selectedType === 'mobility'} 
                                     onClick={() => handleTabChange('mobility')} 
                                     colorClass="bg-amber-500/10 text-amber-400"
                                 />
                                 <SidebarItem 
                                     icon={Briefcase} 
-                                    title="Pràctiques" 
-                                    subtitle="Experiència en Empresa"
+                                    title={t('planner.roadmapExperienceSelector.internship', 'Pràctiques')} 
+                                    subtitle={t('planner.roadmapExperienceSelector.companyExperience', 'Experiència en Empresa')}
                                     active={selectedType === 'internship'} 
                                     onClick={() => handleTabChange('internship')} 
                                     colorClass="bg-teal-500/10 text-teal-400"
@@ -331,15 +333,15 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                         {selectedType === 'mobility' && (
                                             <>
                                                 <div className="mb-10">
-                                                    <h3 className="text-3xl font-black text-white tracking-tight mb-2">Estada internacional</h3>
-                                                    <p className="text-slate-400 text-sm">Afegeix el teu intercanvi Erasmus+, SICUE o altres programes internacionals.</p>
+                                                    <h3 className="text-3xl font-black text-white tracking-tight mb-2">{t('planner.roadmapExperienceSelector.internationalStayTitle', 'Estada internacional')}</h3>
+                                                    <p className="text-slate-400 text-sm">{t('planner.roadmapExperienceSelector.internationalStayDesc', 'Afegeix el teu intercanvi Erasmus+, SICUE o altres programes internacionals.')}</p>
                                                 </div>
 
                                                 <div className="space-y-6 flex-1">
                                                     <div>
                                                         <PremiumCombobox
-                                                            label="Universitat / Destí"
-                                                            placeholder="Cerca per nom o país..."
+                                                            label={t('planner.roadmapExperienceSelector.universityDest', 'Universitat / Destí')}
+                                                            placeholder={t('planner.roadmapExperienceSelector.searchPlaceholder', 'Cerca per nom o país...')}
                                                             options={universities}
                                                             value={details.destination || ''}
                                                             onChange={(val: string, program?: string) => {
@@ -357,12 +359,12 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                                                 <div className="flex gap-4 mt-3 ml-1">
                                                                     {selectedUni.webLink && (
                                                                         <a href={selectedUni.webLink} target="_blank" rel="noopener noreferrer" className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1.5 font-bold transition-colors">
-                                                                            <ExternalLink size={12} /> Lloc Web Oficial
+                                                                            <ExternalLink size={12} /> {t('planner.roadmapExperienceSelector.officialWeb', 'Lloc Web Oficial')}
                                                                         </a>
                                                                     )}
                                                                     {selectedUni.docLink && (
                                                                         <a href={selectedUni.docLink} target="_blank" rel="noopener noreferrer" className="text-[11px] text-purple-400 hover:text-purple-300 flex items-center gap-1.5 font-bold transition-colors">
-                                                                            <ExternalLink size={12} /> Descarrega Documentació
+                                                                            <ExternalLink size={12} /> {t('planner.roadmapExperienceSelector.downloadDoc', 'Descarrega Documentació')}
                                                                         </a>
                                                                     )}
                                                                 </div>
@@ -372,13 +374,13 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                                     
                                                     <div className="grid grid-cols-2 gap-6">
                                                         <PremiumSelect 
-                                                            label="Programa" 
+                                                            label={t('planner.roadmapExperienceSelector.program', 'Programa')}
                                                             options={['Erasmus+', 'SICUE', 'Amèrica Llatina', 'UNITECH', 'Doble Titulació', "Mobilitat fora d'Europa"]}
                                                             value={details.program || 'Erasmus+'}
                                                             onChange={(e: any) => setDetails({...details, program: e.target.value})}
                                                         />
                                                         <PremiumInput 
-                                                            label="Crèdits (ECTS)" 
+                                                            label={t('planner.roadmapExperienceSelector.creditsEcts', 'Crèdits (ECTS)')}
                                                             type="number"
                                                             placeholder="30"
                                                             value={details.credits || ''}
@@ -392,27 +394,27 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                         {selectedType === 'internship' && (
                                             <>
                                                 <div className="mb-10">
-                                                    <h3 className="text-3xl font-black text-white tracking-tight mb-2">Pràctiques empresa</h3>
-                                                    <p className="text-slate-400 text-sm">Afegeix pràctiques curriculars o extracurriculars al teu expedient.</p>
+                                                    <h3 className="text-3xl font-black text-white tracking-tight mb-2">{t('planner.roadmapExperienceSelector.internshipTitle', 'Pràctiques empresa')}</h3>
+                                                    <p className="text-slate-400 text-sm">{t('planner.roadmapExperienceSelector.internshipDesc', 'Afegeix pràctiques curriculars o extracurriculars al teu expedient.')}</p>
                                                 </div>
 
                                                 <div className="space-y-6 flex-1">
                                                     <PremiumInput 
-                                                        label="Empresa" 
-                                                        placeholder="Ex: Google, inLab FIB, etc."
+                                                        label={t('planner.roadmapExperienceSelector.company', 'Empresa')} 
+                                                        placeholder={t('planner.roadmapExperienceSelector.companyPlaceholder', 'Ex: Google, inLab FIB, etc.')}
                                                         value={details.company || ''}
                                                         onChange={(e: any) => setDetails({...details, company: e.target.value})}
                                                     />
                                                     
                                                     <PremiumInput 
-                                                        label="Rol / Posició" 
-                                                        placeholder="Ex: Software Engineer Intern"
+                                                        label={t('planner.roadmapExperienceSelector.role', 'Rol / Posició')} 
+                                                        placeholder={t('planner.roadmapExperienceSelector.rolePlaceholder', 'Ex: Software Engineer Intern')}
                                                         value={details.role || ''}
                                                         onChange={(e: any) => setDetails({...details, role: e.target.value})}
                                                     />
 
                                                     <PremiumInput 
-                                                        label="Crèdits Reconeixement (ECTS)" 
+                                                        label={t('planner.roadmapExperienceSelector.recognitionCredits', 'Crèdits Reconeixement (ECTS)')} 
                                                         type="number"
                                                         placeholder="12"
                                                         value={details.credits || ''}
@@ -428,7 +430,7 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                                 onClick={handleAdd}
                                                 className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white text-slate-900 rounded-2xl font-bold hover:bg-slate-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98]"
                                             >
-                                                <span>Afegeix al Roadmap</span>
+                                                <span>{t('planner.roadmapExperienceSelector.addToRoadmap', 'Afegeix al Roadmap')}</span>
                                                 <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                                 
                                                 {/* Button Glow */}

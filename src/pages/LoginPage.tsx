@@ -6,8 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AuthCanvasBackground } from '../components/ui/AuthCanvasBackground';
 import { PremiumInput } from '../components/ui/PremiumInput';
 import Spinner from '../components/ui/Spinner';
+import { useTranslation } from 'react-i18next';
 
 const LoginPage = () => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -27,9 +29,9 @@ const LoginPage = () => {
         } catch (err: any) {
             console.error(err);
             if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-                setError('Credencials incorrectes. Torna-ho a provar.');
+                setError(t('auth.login.invalidCreds', 'Credencials incorrectes. Torna-ho a provar.'));
             } else {
-                setError('Hi ha hagut un error en iniciar sessió: ' + err.code);
+                setError(t('auth.login.errorLogin', 'Hi ha hagut un error en iniciar sessió: ') + err.code);
             }
         } finally {
             setIsLoading(false);
@@ -39,7 +41,7 @@ const LoginPage = () => {
     const handleResetPassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email) {
-            setError('Introdueix el teu correu electrònic.');
+            setError(t('auth.login.enterEmail', 'Introdueix el teu correu electrònic.'));
             return;
         }
         setError('');
@@ -50,7 +52,7 @@ const LoginPage = () => {
             setView('success');
         } catch (err: any) {
             console.error(err);
-            setError("No s'ha pogut enviar el correu. Comprova que l'adreça sigui correcta.");
+            setError(t('auth.login.errorReset', "No s'ha pogut enviar el correu. Comprova que l'adreça sigui correcta."));
         } finally {
             setIsLoading(false);
         }
@@ -70,7 +72,8 @@ const LoginPage = () => {
         }
     };
 
-    const fadeInUp = {
+    // eslint-disable-next-line
+const _fadeInUp = {
         hidden: { opacity: 0, y: 30 },
         show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: customEasing } }
     };
@@ -108,8 +111,8 @@ const LoginPage = () => {
                                     className="relative z-10 w-full"
                                 >
                                     <div className="text-center mb-10">
-                                        <h2 className="text-3xl font-bold text-white mb-3">Iniciar Sessió</h2>
-                                        <p className="text-slate-400 text-sm font-light">Entén les bases tecnològiques del món digital.</p>
+                                        <h2 className="text-3xl font-bold text-white mb-3">{t('auth.login.title', 'Iniciar Sessió')}</h2>
+                                        <p className="text-slate-400 text-sm font-light">{t('auth.login.subtitle', 'Entén les bases tecnològiques del món digital.')}</p>
                                     </div>
 
                                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -117,7 +120,7 @@ const LoginPage = () => {
                                             <PremiumInput
                                                 id="email"
                                                 type="email"
-                                                label="Correu Electrònic"
+                                                label={t('auth.login.email', 'Correu Electrònic')}
                                                 icon={Mail}
                                                 theme="sky"
                                                 value={email}
@@ -130,7 +133,7 @@ const LoginPage = () => {
                                             <PremiumInput
                                                 id="password"
                                                 type="password"
-                                                label="Contrasenya"
+                                                label={t('auth.login.password', 'Contrasenya')}
                                                 icon={Lock}
                                                 theme="sky"
                                                 value={password}
@@ -138,7 +141,7 @@ const LoginPage = () => {
                                                 required
                                             />
                                             <div className="flex justify-end pr-2">
-                                                <button type="button" onClick={() => { setView('forgot-password'); setError(''); }} className="text-[11px] font-semibold text-sky-400 hover:text-sky-300 transition-colors">Has oblidat la contrasenya?</button>
+                                                <button type="button" onClick={() => { setView('forgot-password'); setError(''); }} className="text-[11px] font-semibold text-sky-400 hover:text-sky-300 transition-colors">{t('auth.login.forgotPassword', 'Has oblidat la contrasenya?')}</button>
                                             </div>
                                         </div>
 
@@ -175,7 +178,7 @@ const LoginPage = () => {
                                                             </motion.div>
                                                         ) : (
                                                             <motion.div key="text" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} transition={{ duration: 0.3 }} className="flex items-center gap-2">
-                                                                <span>Accedir al compte</span>
+                                                                <span>{t('auth.login.submit', 'Accedir al compte')}</span>
                                                                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-500" />
                                                             </motion.div>
                                                         )}
@@ -186,9 +189,9 @@ const LoginPage = () => {
                                     </form>
 
                                     <div className="mt-8 text-center text-sm font-medium text-slate-500">
-                                        No tens un compte encara?{' '}
+                                        {t('auth.login.noAccount', 'No tens un compte encara? ')}
                                         <Link to="/register" className="text-white hover:text-sky-400 transition-colors inline-flex items-center gap-1 group relative">
-                                            Registra't ara
+                                            {t('auth.login.registerNow', "Registra't ara")}
                                             <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-sky-400 transition-all group-hover:w-full"></span>
                                         </Link>
                                     </div>
@@ -209,8 +212,8 @@ const LoginPage = () => {
                                     </button>
                                     
                                     <div className="text-center mb-10 mt-4">
-                                        <h2 className="text-3xl font-bold text-white mb-3">Recuperar</h2>
-                                        <p className="text-slate-400 text-sm font-light">T'enviarem un enllaç per restablir la teva contrasenya.</p>
+                                        <h2 className="text-3xl font-bold text-white mb-3">{t('auth.login.recoverTitle', 'Recuperar')}</h2>
+                                        <p className="text-slate-400 text-sm font-light">{t('auth.login.recoverSubtitle', "T'enviarem un enllaç per restablir la teva contrasenya.")}</p>
                                     </div>
 
                                     <form onSubmit={handleResetPassword} className="space-y-6">
@@ -218,7 +221,7 @@ const LoginPage = () => {
                                             <PremiumInput
                                                 id="reset-email"
                                                 type="email"
-                                                label="Correu Electrònic"
+                                                label={t('auth.login.email', 'Correu Electrònic')}
                                                 icon={Mail}
                                                 theme="sky"
                                                 value={email}
@@ -260,7 +263,7 @@ const LoginPage = () => {
                                                             </motion.div>
                                                         ) : (
                                                             <motion.div key="text" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} transition={{ duration: 0.3 }} className="flex items-center gap-2">
-                                                                <span>Enviar Enllaç</span>
+                                                                <span>{t('auth.login.sendLink', 'Enviar Enllaç')}</span>
                                                                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-500" />
                                                             </motion.div>
                                                         )}
@@ -289,16 +292,16 @@ const LoginPage = () => {
                                     >
                                         <CheckCircle2 size={40} className="text-emerald-400" />
                                     </motion.div>
-                                    <h2 className="text-2xl font-bold text-white mb-3">Correu Enviat!</h2>
+                                    <h2 className="text-2xl font-bold text-white mb-3">{t('auth.login.emailSent', 'Correu Enviat!')}</h2>
                                     <p className="text-slate-400 text-sm font-light mb-8 max-w-[280px]">
-                                        T'hem enviat un correu a <span className="text-white font-medium">{email}</span> amb instruccions per restablir la teva contrasenya.
+                                        {t('auth.login.emailSentDesc1', "T'hem enviat un correu a ")}<span className="text-white font-medium">{email}</span>{t('auth.login.emailSentDesc2', ' amb instruccions per restablir la teva contrasenya.')}
                                     </p>
                                     <button 
                                         onClick={() => { setView('login'); setPassword(''); }}
                                         className="text-sky-400 font-semibold hover:text-sky-300 transition-colors flex items-center gap-2 group"
                                     >
                                         <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                                        Tornar a Iniciar Sessió
+                                        {t('auth.login.backToLogin', 'Tornar a Iniciar Sessió')}
                                     </button>
                                 </motion.div>
                             )}

@@ -7,10 +7,11 @@ import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { ca } from 'date-fns/locale';
+import { ca, es, enUS } from 'date-fns/locale';
 import Modal from '../ui/Modal';
 import NavigationPill from '../ui/NavigationPill';
 import Spinner from '../ui/Spinner';
+import { useTranslation } from 'react-i18next';
 
 interface Notification {
     id: string;
@@ -28,6 +29,8 @@ interface Notification {
 }
 
 const InboxModal = ({ isOpen, onClose }: any) => {
+    const { t, i18n } = useTranslation();
+    const dateLocale = i18n.language === 'es' ? es : i18n.language === 'en' ? enUS : ca;
     const { user } = useAuth();
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -119,7 +122,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
         <Modal isOpen={isOpen} onClose={onClose} size="2xl">
             <Modal.Header>
                 <div className="relative flex items-center justify-between w-full">
-                    <span className="text-xl font-bold text-white tracking-tight shrink-0 z-20">Activitat</span>
+                    <span className="text-xl font-bold text-white tracking-tight shrink-0 z-20">{t('notifications.inbox.title', 'Activitat')}</span>
                     
                     <div className="flex-1 flex justify-center px-2 sm:px-4 sm:absolute sm:left-1/2 sm:-translate-x-1/2 z-10">
                         <NavigationPill className="!p-1 flex gap-1 overflow-x-auto custom-scrollbar max-w-[200px] sm:max-w-[400px]">
@@ -138,7 +141,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                                             <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
                                         </motion.div>
                                     )}
-                                    <span className="relative z-10">{f === 'all' ? 'Totes' : f === 'mentions' ? 'Mencions' : f === 'likes' ? 'Likes' : 'Comentaris'}</span>
+                                    <span className="relative z-10">{f === 'all' ? t('notifications.inbox.filters.all', 'Totes') : f === 'mentions' ? t('notifications.inbox.filters.mentions', 'Mencions') : f === 'likes' ? t('notifications.inbox.filters.likes', 'Likes') : t('notifications.inbox.filters.comments', 'Comentaris')}</span>
                                 </button>
                             ))}
                         </NavigationPill>
@@ -150,7 +153,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                                 onClick={markAllAsRead}
                                 className="hidden sm:block text-xs font-bold text-indigo-400 hover:text-indigo-300 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-lg transition-colors"
                             >
-                                Marcar tot com llegit
+                                {t('notifications.inbox.markAllRead', 'Marcar tot com llegit')}
                             </button>
                         )}
                     </div>
@@ -168,7 +171,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                     ) : groupedNotifications.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-3">
                             <Bell size={48} className="opacity-20" />
-                            <p>No hi ha res a mostrar aquí</p>
+                            <p>{t('notifications.inbox.empty', 'No hi ha res a mostrar aquí')}</p>
                         </div>
                     ) : (
                         <div className="space-y-2">
@@ -217,22 +220,22 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                                             )}
                                         </div>
                                         <span className="text-[10px] text-slate-500 whitespace-nowrap">
-                                            {notification.createdAt?.toDate ? formatDistanceToNow(notification.createdAt.toDate(), { locale: ca }) : 'Ara'}
+                                            {notification.createdAt?.toDate ? formatDistanceToNow(notification.createdAt.toDate(), { locale: dateLocale }) : t('notifications.inbox.now', 'Ara')}
                                         </span>
                                     </div>
 
                                     <p className="text-sm text-slate-400 leading-relaxed line-clamp-2">
                                         {notification.type === 'mention' ? (
-                                            <>T'ha mencionat a <span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
+                                            <>{t('notifications.inbox.mentioned', "T'ha mencionat a ")}<span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
                                         ) : isPostNotification ? (
                                             isLikeOrReaction 
-                                                ? <>Li ha agradat la teva publicació <span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
-                                                : <>Ha respost a la teva publicació <span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
+                                                ? <>{t('notifications.inbox.likedPost', "Li ha agradat la teva publicació ")}<span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
+                                                : <>{t('notifications.inbox.repliedPost', "Ha respost a la teva publicació ")}<span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
                                         ) : (
                                             !isLikeOrReaction ? (
-                                                <>Ha respost al teu comentari a <span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
+                                                <>{t('notifications.inbox.repliedComment', "Ha respost al teu comentari a ")}<span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
                                             ) : (
-                                                <>Ha reaccionat al teu comentari a <span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
+                                                <>{t('notifications.inbox.reactedComment', "Ha reaccionat al teu comentari a ")}<span className="text-indigo-400 font-medium">{notification.resourceTitle}</span></>
                                             )
                                         )}
                                     </p>

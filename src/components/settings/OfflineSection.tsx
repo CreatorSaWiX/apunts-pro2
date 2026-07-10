@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Download, Check, Trash2, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings } from '../../contexts/SettingsContext';
 import subjectsData from '../../data/subjects.json';
+import { useTranslation } from 'react-i18next';
 import { tailwindColors } from '../../contexts/SubjectContext';
 
 const CORE_APP_SIZE = 3 * 1024 * 1024; // 3 MB
 
 export const OfflineSection = () => {
+    const { t } = useTranslation();
     const { offlineStorage, setOfflineStorage, customSubjectColors } = useSettings();
     const [storageEstimate, setStorageEstimate] = useState<{ quota: number; usage: number } | null>(null);
     const [isProcessing, setIsProcessing] = useState<Record<string, boolean>>({});
@@ -83,7 +85,7 @@ export const OfflineSection = () => {
 
     const handleDownload = async (category: string) => {
         if (!navigator.onLine) {
-            alert("No pots descarregar contingut sense connexió a internet.");
+            alert(t('settings.offline.noInternet', 'No pots descarregar contingut sense connexió a internet.'));
             return;
         }
         setIsProcessing(prev => ({ ...prev, [category]: true }));
@@ -129,7 +131,7 @@ export const OfflineSection = () => {
 
     const formatBytes = (bytes: number) => {
         if (bytes === 0) return '0 B';
-        if (!bytes) return 'Desconegut';
+        if (!bytes) return t('settings.offline.unknown', 'Desconegut');
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -149,8 +151,8 @@ export const OfflineSection = () => {
             if (key === 'pdfs') {
                 return {
                     id: 'pdfs',
-                    title: 'Apunts en PDF',
-                    desc: 'Tota la col·lecció de PDFs del grau.',
+                    title: t('settings.offline.pdfsTitle', 'Apunts en PDF'),
+                    desc: t('settings.offline.pdfsDesc', 'Tota la col·lecció de PDFs del grau.'),
                     color: 'bg-rose-500',
                     colorText: 'text-rose-500',
                     hexColor: '#f43f5e',
@@ -163,8 +165,8 @@ export const OfflineSection = () => {
 
                 return {
                     id: key,
-                    title: `Recursos ${subject?.name || key.toUpperCase()}`,
-                    desc: subject?.description || `Material i recursos per a ${key.toUpperCase()}.`,
+                    title: `${t('settings.offline.resourcesTitle', 'Recursos')} ${subject?.name || key.toUpperCase()}`,
+                    desc: subject?.description || `${t('settings.offline.resourcesDesc', 'Material i recursos per a')} ${key.toUpperCase()}.`,
                     color: `bg-${finalColor}-500`,
                     colorText: `text-${finalColor}-500`,
                     hexColor: tailwindColors[finalColor]?.primary || '#0ea5e9',
@@ -177,17 +179,17 @@ export const OfflineSection = () => {
         <div id="offline-storage" className="flex flex-col items-start gap-8 w-full pt-4 pb-12">
             <div className="w-full border-b border-white/10 pb-6">
                 <div className="flex items-center gap-3 mb-2">
-                    <h2 className="text-2xl font-bold text-white">Emmagatzematge Offline</h2>
+                    <h2 className="text-2xl font-bold text-white">{t('settings.offline.title', 'Emmagatzematge Offline')}</h2>
                 </div>
-                <p className="text-slate-400 text-sm font-medium">Gestiona quines dades es guarden al dispositiu per accedir-hi sense internet.</p>
+                <p className="text-slate-400 text-sm font-medium">{t('settings.offline.subtitle', 'Gestiona quines dades es guarden al dispositiu per accedir-hi sense internet.')}</p>
             </div>
 
             <div className="w-full">
                 <div className="bg-white/[0.02] border border-white/5 rounded-[24px] p-8 flex flex-col gap-8 mb-8 relative overflow-hidden">
                     <div className="flex justify-between items-end">
                         <div>
-                            <h3 className="text-white font-bold text-xl mb-1">Emmagatzematge Local</h3>
-                            <p className="text-sm text-slate-400">Total ocupat per l'aplicació al teu dispositiu.</p>
+                            <h3 className="text-white font-bold text-xl mb-1">{t('settings.offline.local', 'Emmagatzematge Local')}</h3>
+                            <p className="text-sm text-slate-400">{t('settings.offline.localSub', "Total ocupat per l'aplicació al teu dispositiu.")}</p>
                         </div>
                         <div className="text-right">
                             <span className="text-3xl font-black text-white">{formatBytes(currentUsage)}</span>
@@ -213,7 +215,7 @@ export const OfflineSection = () => {
                         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-medium mt-2">
                             <div className="flex items-center gap-2">
                                 <div className="w-2.5 h-2.5 rounded-full bg-slate-500" />
-                                <span className="text-slate-400">App Shell (JS/CSS/HTML) <span className="text-slate-500 ml-1">({formatBytes(CORE_APP_SIZE)})</span></span>
+                                <span className="text-slate-400">{t('settings.offline.appShell', 'App Shell (JS/CSS/HTML)')} <span className="text-slate-500 ml-1">({formatBytes(CORE_APP_SIZE)})</span></span>
                             </div>
                             {availableCategories.map(cat => {
                                 if (!isDownloaded[cat.id]) return null;
@@ -227,7 +229,7 @@ export const OfflineSection = () => {
                             {otherPercentage > 0 && (
                                 <div className="flex items-center gap-2">
                                     <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
-                                    <span className="text-slate-400">IndexedDB / Metadades <span className="text-slate-500 ml-1">({formatBytes(otherUsage)})</span></span>
+                                    <span className="text-slate-400">{t('settings.offline.metadata', 'IndexedDB / Metadades')} <span className="text-slate-500 ml-1">({formatBytes(otherUsage)})</span></span>
                                 </div>
                             )}
                         </div>
@@ -274,7 +276,7 @@ export const OfflineSection = () => {
                                                 )}
                                                 {expandedCategory === cat.id ? <ChevronUp size={16} className="text-slate-500 shrink-0" /> : <ChevronDown size={16} className="text-slate-500 shrink-0" />}
                                             </div>
-                                            <p className="text-slate-400 text-sm truncate">{cat.filesCount} arxius disponibles</p>
+                                            <p className="text-slate-400 text-sm truncate">{cat.filesCount} {t('settings.offline.filesAvailable', 'arxius disponibles')}</p>
                                         </div>
                                     </div>
 
@@ -288,7 +290,7 @@ export const OfflineSection = () => {
                                                     className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 text-slate-300 font-bold text-sm transition-all disabled:opacity-50"
                                                 >
                                                     {processing ? <div className="w-4 h-4 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" /> : <Trash2 size={16} />}
-                                                    Eliminar
+                                                    {t('settings.offline.delete', 'Eliminar')}
                                                 </button>
                                             ) : (
                                                 <button
@@ -297,7 +299,7 @@ export const OfflineSection = () => {
                                                     className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-white text-slate-900 font-bold text-sm transition-all disabled:opacity-50"
                                                 >
                                                     {processing ? <div className="w-4 h-4 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" /> : <Download size={16} />}
-                                                    Descarregar
+                                                    {t('settings.offline.download', 'Descarregar')}
                                                 </button>
                                             )}
                                         </div>
@@ -306,7 +308,7 @@ export const OfflineSection = () => {
 
                                         {/* Auto-Sync Toggle */}
                                         <div className="flex items-center gap-3">
-                                            <span className="text-xs font-bold text-slate-400 hidden sm:block">Actualització automàtica</span>
+                                            <span className="text-xs font-bold text-slate-400 hidden sm:block">{t('settings.offline.autoSync', 'Actualització automàtica')}</span>
                                             <button
                                                 onClick={() => handleToggleSync(cat.id, !isSyncEnabled)}
                                                 className={`relative w-11 h-6 rounded-full transition-colors duration-300 outline-none flex-shrink-0 ${isSyncEnabled ? 'bg-emerald-500' : 'bg-slate-700'}`}
@@ -355,7 +357,7 @@ export const OfflineSection = () => {
 
                     {availableCategories.length === 0 && (
                         <div className="p-8 text-center text-slate-500 bg-white/[0.02] rounded-2xl border border-white/5">
-                            No hi ha materials disponibles per descarregar actualment.
+                            {t('settings.offline.empty', 'No hi ha materials disponibles per descarregar actualment.')}
                         </div>
                     )}
                 </div>

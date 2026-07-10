@@ -8,6 +8,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import ProblemSelectorModal from './ProblemSelectorModal';
 import Spinner from '../ui/Spinner';
 import Modal from '../ui/Modal';
+import { useTranslation } from 'react-i18next';
+
 interface ComposeMessageModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -23,6 +25,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
     receiverName,
     initialSubject = ''
 }) => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [subject, setSubject] = useState(initialSubject);
     const [body, setBody] = useState('');
@@ -46,17 +49,17 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
         e.preventDefault();
 
         if (!subject.trim()) {
-            setError('Si us plau, introdueix un assumpte per al missatge.');
+            setError(t('mailing.compose.errNoSubject', 'Si us plau, introdueix un assumpte per al missatge.'));
             return;
         }
 
         if (!body.trim()) {
-            setError('El missatge no pot estar buit.');
+            setError(t('mailing.compose.errEmptyBody', 'El missatge no pot estar buit.'));
             return;
         }
 
         if (!user) {
-            setError('Has d\'iniciar sessió per enviar missatges.');
+            setError(t('mailing.compose.errNotLoggedIn', "Has d'iniciar sessió per enviar missatges."));
             return;
         }
 
@@ -74,7 +77,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                     receiverAvatar = docSnap.data().avatar;
                 }
             } catch (err) {
-                console.error("No s'ha pogut verificar la foto del receptor", err);
+                console.error(t('mailing.compose.errAvatar', "No s'ha pogut verificar la foto del receptor"), err);
             }
 
             await addDoc(collection(db, 'messages'), {
@@ -98,7 +101,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
             setSelectedProblem(null);
         } catch (err) {
             console.error(err);
-            setError('Error en enviar el missatge. Torna-ho a provar.');
+            setError(t('mailing.compose.errSendFailed', 'Error en enviar el missatge. Torna-ho a provar.'));
         } finally {
             setIsLoading(false);
         }
@@ -110,22 +113,22 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
         <Modal isOpen={isOpen} onClose={onClose} size="xl" overlayVariant="transparent">
             <Modal.Header>
                 <div className="flex flex-col">
-                    <span className="text-xl font-bold text-white tracking-tight">Redactar missatge</span>
-                    <span className="text-xs text-slate-400 mt-1">Enviant a <span className="text-white font-medium">{receiverName}</span></span>
+                    <span className="text-xl font-bold text-white tracking-tight">{t('mailing.compose.title', 'Redactar missatge')}</span>
+                    <span className="text-xs text-slate-400 mt-1">{t('mailing.compose.sendingTo', 'Enviant a')} <span className="text-white font-medium">{receiverName}</span></span>
                 </div>
             </Modal.Header>
             <Modal.Body>
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Assumpte</label>
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t('mailing.compose.subject', 'Assumpte')}</label>
                             <button
                                 type="button"
                                 onClick={() => setIsProblemSelectorOpen(true)}
                                 className="text-xs flex items-center gap-1.5 text-sky-400 hover:text-sky-300 transition-colors px-2 py-1 rounded-md hover:bg-sky-500/10"
                             >
                                 <FileCode size={14} />
-                                Vincular exercici
+                                {t('mailing.compose.linkExercise', 'Vincular exercici')}
                             </button>
                         </div>
 
@@ -136,7 +139,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                                     setSubject(e.target.value);
                                     if (error) setError('');
                                 }}
-                                placeholder="[P12345] Dubte d'aquest exercici"
+                                placeholder={t('mailing.compose.subjectPlaceholder', "[P12345] Dubte d'aquest exercici")}
                             />
                         </div>
 
@@ -150,7 +153,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                                     <FileCode size={16} className="text-sky-400" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-sky-100">Exercici Vinculat</div>
+                                    <div className="font-medium text-sky-100">{t('mailing.compose.linkedExercise', 'Exercici Vinculat')}</div>
                                     <div className="text-xs text-sky-400 truncate">{selectedProblem.id} - {selectedProblem.title}</div>
                                 </div>
                                 <button
@@ -167,10 +170,10 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                     <div className="space-y-3">
                         <div className="flex justify-between items-center">
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                                Missatge
+                                {t('mailing.compose.messageBody', 'Missatge')}
                             </label>
                             <button type="button" className="text-xs text-sky-400 flex items-center gap-1 hover:text-sky-300 transition-colors" onClick={() => setBody(prev => prev + '\n```cpp\n// El teu codi aquí\n```\n')}>
-                                <Code size={14} /> Afegeix Codi
+                                <Code size={14} /> {t('mailing.compose.addCode', 'Afegeix Codi')}
                             </button>
                         </div>
                         <Modal.Textarea
@@ -180,7 +183,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                                 if (error) setError('');
                             }}
                             className="min-h-[200px]"
-                            placeholder="Escriu el teu missatge aquí... (Pots fer servir ```cpp per afegir codi)"
+                            placeholder={t('mailing.compose.bodyPlaceholder', "Escriu el teu missatge aquí... (Pots fer servir ```cpp per afegir codi)")}
                         />
                     </div>
 
@@ -198,7 +201,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                             className="w-full py-3"
                         >
                             {isLoading ? <Spinner size="sm" variant="white" glow={false} /> : <Send size={18} />}
-                            {isLoading ? 'Enviant missatge...' : 'Enviar missatge'}
+                            {isLoading ? t('mailing.compose.sending', 'Enviant missatge...') : t('mailing.compose.send', 'Enviar missatge')}
                         </Modal.Button>
                     </div>
                 </form>

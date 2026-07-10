@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { User, LogOut, Upload, Globe, Edit2, X, Save, Mail, Send, Bell, Info } from 'lucide-react';
+import { User, LogOut, Upload, Globe, Edit2, Save, Mail, Send, Bell, Info } from 'lucide-react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
-import { doc, getDoc, setDoc, collection, query, where, onSnapshot, getDocs, orderBy } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, onSnapshot, getDocs } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { updateProfile } from 'firebase/auth';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
@@ -18,9 +18,11 @@ import FileUploader, { type Attachment } from '../components/ui/FileUploader';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
 import PostDetailModal from '../components/community/PostDetailModal';
+import { useTranslation } from 'react-i18next';
 
 // --- Edit Profile Modal Component ---
 const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
+    const { t } = useTranslation();
     const [username, setUsername] = useState(user?.username || '');
     const [portfolio, setPortfolio] = useState(user?.portfolio || '');
     const [avatar, setAvatar] = useState(user?.avatar || '');
@@ -66,22 +68,22 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="lg" overlayVariant="transparent">
-            <Modal.Header title="Editar Perfil" className="pb-4" />
+            <Modal.Header title={t('profile.edit.title', 'Editar Perfil')} className="pb-4" />
             <Modal.Body>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Nom d'usuari</label>
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.username', "Nom d'usuari")}</label>
                         <div className="relative w-full">
                             <Modal.Input value={username} onChange={(e) => setUsername(e.target.value)} />
                         </div>
                     </div>
 
                     <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Avatar & Banner</label>
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.avatarBanner', 'Avatar & Banner')}</label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center gap-2">
-                                    <Modal.Input value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="URL de l'Avatar" />
+                                    <Modal.Input value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder={t('profile.edit.avatarUrl', "URL de l'Avatar")} />
                                     <button type="button" onClick={() => setActiveUploader(activeUploader === 'avatar' ? null : 'avatar')} className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0">
                                         <Upload size={18} />
                                     </button>
@@ -97,7 +99,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
 
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center gap-2">
-                                    <Modal.Input value={banner} onChange={(e) => setBanner(e.target.value)} placeholder="URL del Banner" />
+                                    <Modal.Input value={banner} onChange={(e) => setBanner(e.target.value)} placeholder={t('profile.edit.bannerUrl', "URL del Banner")} />
                                     <button type="button" onClick={() => setActiveUploader(activeUploader === 'banner' ? null : 'banner')} className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0">
                                         <Upload size={18} />
                                     </button>
@@ -114,21 +116,21 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                     </div>
 
                     <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">Identitat web</label>
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.webIdentity', 'Identitat web')}</label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
                             <div className="relative w-full">
                                 <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                                 <Modal.Input value={portfolio} onChange={(e) => setPortfolio(e.target.value)} placeholder="https://portfolio.com" className="pl-11" />
                             </div>
-                            <Modal.Input value={bio} onChange={(e) => setBio(e.target.value)} placeholder="La teva biografia / rol curt..." />
+                            <Modal.Input value={bio} onChange={(e) => setBio(e.target.value)} placeholder={t('profile.edit.bioPlaceholder', "La teva biografia / rol curt...")} />
                         </div>
                     </div>
 
                     <div className="pt-6 flex justify-end gap-3 border-t border-white/5">
-                        <Modal.Button type="button" onClick={onClose} variant="secondary">Cancel·lar</Modal.Button>
+                        <Modal.Button type="button" onClick={onClose} variant="secondary">{t('profile.edit.cancel', 'Cancel·lar')}</Modal.Button>
                         <Modal.Button type="submit" disabled={isLoading} variant="primary">
                             {isLoading ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={18} />}
-                            Desar canvis
+                            {t('profile.edit.save', 'Desar canvis')}
                         </Modal.Button>
                     </div>
                 </form>
@@ -140,6 +142,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
 
 // --- Main Profile Component ---
 const ProfilePage = () => {
+    const { t } = useTranslation();
     const { uid } = useParams();
     const { user: authUser, logout, isLoading: authLoading } = useAuth();
 
@@ -214,7 +217,7 @@ const ProfilePage = () => {
                     setExtendedUser(authUser);
                 } else {
                     setExtendedUser({
-                        username: 'Usuari',
+                        username: t('profile.defaultUser', 'Usuari'),
                         avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${userIdToFetch}`,
                         id: userIdToFetch
                     });
@@ -313,15 +316,15 @@ const ProfilePage = () => {
                 </div>
 
                 <div className="absolute bottom-0 left-0 w-full px-4 md:px-8 max-w-[1100px] left-1/2 -translate-x-1/2 flex items-end gap-5 md:gap-8 translate-y-1/3 z-20">
-                    <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: 0.1 }} className="relative shrink-0">
+                    <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="relative shrink-0">
                         <div className="w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-[1.5rem] md:rounded-[2rem] p-1 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/20">
                             <img src={avatarUrl} alt={extendedUser?.username} className="w-full h-full rounded-[1.2rem] md:rounded-[1.7rem] object-cover bg-[#111]" />
                         </div>
                     </motion.div>
 
-                    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.2 }} className="pb-2 md:pb-4 flex-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4 relative z-20">
+                    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="pb-2 md:pb-4 flex-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4 relative z-20">
                         <div>
-                            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-1 drop-shadow-lg line-clamp-1">{extendedUser?.username || 'Usuari'}</h1>
+                            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-1 drop-shadow-lg line-clamp-1">{extendedUser?.username || t('profile.defaultUser', 'Usuari')}</h1>
                             <p className="text-sm md:text-base text-slate-300 font-medium tracking-wide max-w-xl line-clamp-2">{extendedUser?.bio || 'Creative Developer'}</p>
                         </div>
                         
@@ -329,7 +332,7 @@ const ProfilePage = () => {
                             {isOwnProfile ? (
                                 <>
                                     <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 px-4 py-2.5 rounded-xl text-white transition-all font-semibold shadow-lg text-sm">
-                                        <Edit2 size={15} /> <span>Editar Perfil</span>
+                                        <Edit2 size={15} /> <span>{t('profile.edit.title', 'Editar Perfil')}</span>
                                     </button>
                                     <button onClick={logout} className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 shadow-lg">
                                         <LogOut size={16} strokeWidth={2.5} />
@@ -337,7 +340,7 @@ const ProfilePage = () => {
                                 </>
                             ) : (
                                 <button onClick={() => { if (!authUser) return window.location.href = '/login'; setIsComposeOpen(true); }} className="flex items-center gap-2 bg-white hover:bg-slate-200 text-black px-5 py-2.5 rounded-xl transition-all font-bold shadow-lg text-sm">
-                                    <Send size={16} strokeWidth={2.5} /> <span>Contactar</span>
+                                    <Send size={16} strokeWidth={2.5} /> <span>{t('profile.contact', 'Contactar')}</span>
                                 </button>
                             )}
                         </div>
@@ -352,7 +355,7 @@ const ProfilePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-4 md:mb-5">
                         
                         {/* Solucionaris Card */}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.3 }} className="h-full">
+                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
                             <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group">
                                 <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 mb-6 group-hover:text-white group-hover:border-white/20 transition-all">
                                     <Upload size={20} strokeWidth={2} />
@@ -363,14 +366,14 @@ const ProfilePage = () => {
                                     </span>
                                     <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                         <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
-                                        SOLUCIONARIS
+                                        {t('profile.stats.solutions', 'SOLUCIONARIS')}
                                     </span>
                                 </div>
                             </div>
                         </motion.div>
 
                         {/* Rank Card (Wider) */}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.4 }} className="h-full md:col-span-1 relative z-50">
+                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full md:col-span-1 relative z-50">
                             <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group relative overflow-visible">
                                 <div className="flex justify-between items-start w-full relative z-40 mb-6">
                                     <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all">
@@ -382,7 +385,7 @@ const ProfilePage = () => {
                                         </div>
                                         {/* Rank Tooltip */}
                                         <div className="absolute right-0 top-full mt-2 w-64 p-5 bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all duration-300 origin-top-right translate-y-2 group-hover/info:translate-y-0 z-50 pointer-events-none">
-                                            <h4 className="font-bold text-white mb-4 tracking-tight text-xs uppercase">Escala de Rangs</h4>
+                                            <h4 className="font-bold text-white mb-4 tracking-tight text-xs uppercase">{t('profile.stats.rankScale', 'Escala de Rangs')}</h4>
                                             <ul className="space-y-2.5 text-[11px] font-semibold">
                                                 <li className="flex justify-between items-center"><span className="text-orange-500">Bronze</span> <span className="text-slate-500 tabular-nums">0+</span></li>
                                                 <li className="flex justify-between items-center"><span className="text-slate-300">Silver</span> <span className="text-slate-500 tabular-nums">5+</span></li>
@@ -419,14 +422,14 @@ const ProfilePage = () => {
                                     </div>
                                     <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                         <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
-                                        NIVELL ACTUAL
+                                        {t('profile.stats.currentLevel', 'NIVELL ACTUAL')}
                                     </span>
                                 </div>
                             </div>
                         </motion.div>
 
                         {/* Portfolio Card */}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.5 }} className="h-full">
+                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
                             <div className={`premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group ${extendedUser?.portfolio ? 'premium-bento-hover cursor-pointer' : 'opacity-60'}`}>
                                 {extendedUser?.portfolio && (
                                     <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="absolute inset-0 z-10" />
@@ -436,11 +439,11 @@ const ProfilePage = () => {
                                 </div>
                                 <div className="relative z-20 pointer-events-none">
                                     <span className="block text-xl md:text-2xl font-bold tracking-tight text-white mb-2 truncate">
-                                        {extendedUser?.portfolio ? displayUrl(extendedUser.portfolio) : 'Sense vincular'}
+                                        {extendedUser?.portfolio ? displayUrl(extendedUser.portfolio) : t('profile.stats.noLink', 'Sense vincular')}
                                     </span>
                                     <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                         <div className={`h-px bg-slate-700 transition-all ${extendedUser?.portfolio ? 'w-4 group-hover:w-8 group-hover:bg-white/50' : 'w-4'}`} />
-                                        PORTFOLI
+                                        {t('profile.stats.portfolio', 'PORTFOLI')}
                                     </span>
                                 </div>
                             </div>
@@ -452,7 +455,7 @@ const ProfilePage = () => {
                 {/* Mailing & Notifications Row */}
                 {isOwnProfile && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-                        <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.6 }} onClick={() => setIsMailboxOpen(true)} className="text-left outline-none">
+                        <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} onClick={() => setIsMailboxOpen(true)} className="text-left outline-none">
                             <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
                                 <div className="relative">
                                     <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
@@ -465,15 +468,15 @@ const ProfilePage = () => {
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">Bústia Privada</h3>
+                                    <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">{t('profile.inbox.privateMailbox', 'Bústia Privada')}</h3>
                                     <p className="text-sm text-slate-500 truncate">
-                                        {unreadCount > 0 ? `Tens ${unreadCount} missatges pendents` : 'Tot llegit.'}
+                                        {unreadCount > 0 ? t('profile.inbox.pendingMessages', 'Tens {{count}} missatges pendents', { count: unreadCount }) : t('profile.inbox.allRead', 'Tot llegit.')}
                                     </p>
                                 </div>
                             </div>
                         </motion.button>
 
-                        <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: 0.7 }} onClick={() => setIsInboxOpen(true)} className="text-left outline-none">
+                        <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} onClick={() => setIsInboxOpen(true)} className="text-left outline-none">
                             <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
                                 <div className="relative">
                                     <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
@@ -486,9 +489,9 @@ const ProfilePage = () => {
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">Notificacions</h3>
+                                    <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">{t('profile.notifications.title', 'Notificacions')}</h3>
                                     <p className="text-sm text-slate-500 truncate">
-                                        {unreadNotificationsCount > 0 ? `${unreadNotificationsCount} novetats sense llegir` : 'Estàs al dia.'}
+                                        {unreadNotificationsCount > 0 ? t('profile.notifications.unread', '{{count}} novetats sense llegir', { count: unreadNotificationsCount }) : t('profile.notifications.upToDate', 'Estàs al dia.')}
                                     </p>
                                 </div>
                             </div>
@@ -501,7 +504,7 @@ const ProfilePage = () => {
             <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-4 md:mt-8 pb-32 relative z-30">
                 <div className="mb-8 border-b border-white/5 pb-4">
                     <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
-                        Publicacions
+                        {t('profile.posts.title', 'Publicacions')}
                         <span className="bg-white/10 text-white text-xs py-1 px-2.5 rounded-full font-bold">
                             {userPosts.length}
                         </span>
@@ -516,7 +519,6 @@ const ProfilePage = () => {
                     <motion.div 
                         initial={{ opacity: 0, y: 20 }} 
                         animate={{ opacity: 1, y: 0 }} 
-                        transition={{ duration: 0.5, delay: 0.8 }}
                         className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6"
                     >
                         {userPosts.map(post => (
@@ -527,7 +529,7 @@ const ProfilePage = () => {
                     </motion.div>
                 ) : (
                     <div className="text-center py-20">
-                        <p className="text-slate-500 font-medium">Aquest usuari encara no ha publicat res.</p>
+                        <p className="text-slate-500 font-medium">{t('profile.posts.noPosts', 'Aquest usuari encara no ha publicat res.')}</p>
                     </div>
                 )}
             </div>

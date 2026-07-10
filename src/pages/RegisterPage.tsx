@@ -7,8 +7,10 @@ import { AuthCanvasBackground } from '../components/ui/AuthCanvasBackground';
 import { PremiumInput } from '../components/ui/PremiumInput';
 import Spinner from '../components/ui/Spinner';
 import PrivacyModal from '../components/ui/PrivacyModal';
+import { useTranslation } from 'react-i18next';
 
 const RegisterPage = () => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -29,15 +31,15 @@ const RegisterPage = () => {
         } catch (err: any) {
             console.error(err);
             if (err.code === 'auth/email-already-in-use') {
-                setError('Aquest correu electrònic ja està registrat.');
+                setError(t('auth.register.emailInUse', 'Aquest correu electrònic ja està registrat.'));
             } else if (err.code === 'auth/weak-password') {
-                setError('La contrasenya ha de tenir almenys 6 caràcters.');
+                setError(t('auth.register.weakPassword', 'La contrasenya ha de tenir almenys 6 caràcters.'));
             } else if (err.code === 'auth/invalid-email') {
-                setError('El correu electrònic no és vàlid.');
+                setError(t('auth.register.invalidEmail', 'El correu electrònic no és vàlid.'));
             } else if (err.message) {
                 setError(err.message);
             } else {
-                setError('Error al registrar-se. Verifica les dades introduïdes.');
+                setError(t('auth.register.errorRegister', 'Error al registrar-se. Verifica les dades introduïdes.'));
             }
         } finally {
             setIsLoading(false);
@@ -85,8 +87,8 @@ const RegisterPage = () => {
                             <div className="absolute top-0 left-[-100%] w-[200%] h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-30deg] animate-pulse opacity-50" />
                         </div>
                         <motion.div variants={fadeInUp} className="text-center mb-10">
-                            <h2 className="text-3xl font-bold text-white mb-3">Crear compte</h2>
-                            <p className="text-slate-400 text-sm font-light">Accedeix a l'arquitectura del coneixement.</p>
+                            <h2 className="text-3xl font-bold text-white mb-3">{t('auth.register.title', 'Crear compte')}</h2>
+                            <p className="text-slate-400 text-sm font-light">{t('auth.register.subtitle', "Accedeix a l'arquitectura del coneixement.")}</p>
                         </motion.div>
 
                         <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
@@ -95,7 +97,7 @@ const RegisterPage = () => {
                                 <PremiumInput
                                     id="username"
                                     type="text"
-                                    label="Nom d'usuari"
+                                    label={t('auth.register.username', "Nom d'usuari")}
                                     icon={User}
                                     theme="emerald"
                                     value={username}
@@ -109,7 +111,7 @@ const RegisterPage = () => {
                                 <PremiumInput
                                     id="email"
                                     type="email"
-                                    label="Correu Electrònic"
+                                    label={t('auth.login.email', 'Correu Electrònic')}
                                     icon={Mail}
                                     theme="emerald"
                                     value={email}
@@ -123,7 +125,7 @@ const RegisterPage = () => {
                                 <PremiumInput
                                     id="password"
                                     type="password"
-                                    label="Contrasenya"
+                                    label={t('auth.login.password', 'Contrasenya')}
                                     icon={Lock}
                                     theme="emerald"
                                     value={password}
@@ -180,7 +182,7 @@ const RegisterPage = () => {
                                                     transition={{ duration: 0.3 }}
                                                     className="flex items-center gap-2"
                                                 >
-                                                    <span>Crear compte ara</span>
+                                                    <span>{t('auth.register.submit', 'Crear compte ara')}</span>
                                                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-500" />
                                                 </motion.div>
                                             )}
@@ -191,22 +193,22 @@ const RegisterPage = () => {
 
                             <motion.div variants={fadeInUp} className="text-center mt-4">
                                 <p className="text-[11px] text-slate-500 font-medium leading-relaxed max-w-xs mx-auto">
-                                    En registrar-vos, accepteu la nostra{' '}
+                                    {t('auth.register.acceptTerms', 'En registrar-vos, accepteu la nostra ')}
                                     <button 
                                         type="button" 
                                         onClick={() => setIsPrivacyOpen(true)}
                                         className="text-slate-300 hover:text-emerald-400 underline decoration-slate-600 hover:decoration-emerald-400/50 underline-offset-2 transition-all"
                                     >
-                                        Política de Privacitat
+                                        {t('auth.register.privacyPolicy', 'Política de Privacitat')}
                                     </button>
                                 </p>
                             </motion.div>
                         </form>
 
                         <motion.div variants={fadeInUp} className="mt-8 text-center text-sm font-medium text-slate-500">
-                            Ja tens un compte?{' '}
+                            {t('auth.register.hasAccount', 'Ja tens un compte? ')}
                             <Link to="/login" className="text-white hover:text-emerald-400 transition-colors inline-flex items-center gap-1 group relative">
-                                Iniciar sessió
+                                {t('auth.register.login', 'Iniciar sessió')}
                                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-emerald-400 transition-all group-hover:w-full"></span>
                             </Link>
                         </motion.div>

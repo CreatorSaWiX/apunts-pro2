@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Clock, XCircle, RefreshCw, X, BookOpen, Edit2, Trash2, Globe, Building2, Briefcase } from 'lucide-react';
 import type { SubjectNodeData, SubjectStatus } from '../../../contexts/RoadmapContext';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
+import { useTranslation } from 'react-i18next';
 
 interface SubjectContextMenuProps {
     isOpen: boolean;
@@ -14,15 +15,16 @@ interface SubjectContextMenuProps {
 }
 
 const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose, nodeId, nodeData, position, onOpenDetails }) => {
+    const { t } = useTranslation();
     const { updateNodeStatus, updateNodeGrade, removeNode } = useRoadmap();
 
     if (!isOpen || !nodeId || !nodeData || !position) return null;
 
     const getBadgeInfo = () => {
-        if (nodeData.type === 'mobility') return { text: 'MOBILITAT', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
-        if (nodeData.type === 'internship') return { text: 'PRÀCTIQUES', color: 'text-teal-400 bg-teal-500/10 border-teal-500/20' };
-        if (nodeData.type === 'tfg') return { text: 'TFG', color: 'text-purple-400 bg-purple-500/10 border-purple-500/20' };
-        if (nodeData.type === 'tfm') return { text: 'TFM', color: 'text-purple-400 bg-purple-500/10 border-purple-500/20' };
+        if (nodeData.type === 'mobility') return { text: t('planner.roadmapSubjectContextMenu.badgeMobility', 'MOBILITAT'), color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
+        if (nodeData.type === 'internship') return { text: t('planner.roadmapSubjectContextMenu.badgeInternship', 'PRÀCTIQUES'), color: 'text-teal-400 bg-teal-500/10 border-teal-500/20' };
+        if (nodeData.type === 'tfg') return { text: t('planner.roadmapSubjectContextMenu.badgeTfg', 'TFG'), color: 'text-purple-400 bg-purple-500/10 border-purple-500/20' };
+        if (nodeData.type === 'tfm') return { text: t('planner.roadmapSubjectContextMenu.badgeTfm', 'TFM'), color: 'text-purple-400 bg-purple-500/10 border-purple-500/20' };
         if (nodeData.type === 'specialization') return { text: nodeId, color: 'text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20' };
         if (nodeData.type === 'optional') return { text: nodeId, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
         return { text: nodeId, color: 'text-sky-400 bg-sky-500/10 border-sky-500/20' };
@@ -81,11 +83,11 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                     {nodeData.type === 'mobility' && (
                                         <>
                                             <div className="flex flex-col gap-0.5">
-                                                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider flex items-center gap-1.5"><Globe size={12} /> Destí</span>
+                                                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider flex items-center gap-1.5"><Globe size={12} /> {t('planner.roadmapSubjectContextMenu.destination', 'Destí')}</span>
                                                 <span className="text-sm text-white">{nodeData.details?.destination || '-'}</span>
                                             </div>
                                             <div className="flex flex-col gap-0.5">
-                                                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider flex items-center gap-1.5"><BookOpen size={12} /> Programa</span>
+                                                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider flex items-center gap-1.5"><BookOpen size={12} /> {t('planner.roadmapSubjectContextMenu.program', 'Programa')}</span>
                                                 <span className="text-sm text-white">{nodeData.details?.program || '-'}</span>
                                             </div>
                                         </>
@@ -93,11 +95,11 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                     {nodeData.type === 'internship' && (
                                         <>
                                             <div className="flex flex-col gap-0.5">
-                                                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider flex items-center gap-1.5"><Building2 size={12} /> Empresa</span>
+                                                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider flex items-center gap-1.5"><Building2 size={12} /> {t('planner.roadmapSubjectContextMenu.company', 'Empresa')}</span>
                                                 <span className="text-sm text-white">{nodeData.details?.company || '-'}</span>
                                             </div>
                                             <div className="flex flex-col gap-0.5">
-                                                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider flex items-center gap-1.5"><Briefcase size={12} /> Rol</span>
+                                                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider flex items-center gap-1.5"><Briefcase size={12} /> {t('planner.roadmapSubjectContextMenu.role', 'Rol')}</span>
                                                 <span className="text-sm text-white">{nodeData.details?.role || '-'}</span>
                                             </div>
                                         </>
@@ -116,7 +118,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                     <div className="p-1 rounded-full bg-white/5 group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
                                         <BookOpen size={14} />
                                     </div>
-                                    <span className="relative z-10">Informació</span>
+                                    <span className="relative z-10">{t('planner.roadmapSubjectContextMenu.information', 'Informació')}</span>
                                 </button>
                             )}
 
@@ -130,7 +132,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                             >
                                 {nodeData.status === 'in_progress' && <div className="absolute inset-0 bg-gradient-to-r from-sky-500/0 via-sky-500/10 to-sky-500/0 -translate-x-full animate-[shimmer_2s_infinite]" />}
                                 <Clock size={16} className={nodeData.status === 'in_progress' ? 'text-sky-400' : 'text-slate-400 group-hover:text-white'} />
-                                <span className="relative z-10">En Curs</span>
+                                <span className="relative z-10">{t('planner.roadmapSubjectContextMenu.inProgress', 'En Curs')}</span>
                             </button>
 
                             <button
@@ -143,7 +145,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                             >
                                 <CheckCircle size={16} className={nodeData.status === 'passed' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-emerald-400'} />
                                 <span className="relative z-10">
-                                    {['mobility', 'internship'].includes(nodeData.type) ? 'Reconeguda' : 'Aprovada'}
+                                    {['mobility', 'internship'].includes(nodeData.type) ? t('planner.roadmapSubjectContextMenu.recognized', 'Reconeguda') : t('planner.roadmapSubjectContextMenu.passed', 'Aprovada')}
                                 </span>
                             </button>
 
@@ -156,7 +158,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                         className="w-full flex flex-col gap-2 pt-3 pb-1 border-t border-white/5 overflow-hidden"
                                     >
                                         <div className="flex items-center justify-between px-2">
-                                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Nota Final</span>
+                                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{t('planner.roadmapSubjectContextMenu.finalGrade', 'Nota Final')}</span>
                                             <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
                                                 {nodeData.grade !== null && nodeData.grade !== undefined ? nodeData.grade.toFixed(1) : '-.--'}
                                             </span>
@@ -176,7 +178,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                             <input
                                                 type="number"
                                                 min="5" max="10" step="0.1"
-                                                placeholder="Nota exacta (ex: 8.4)"
+                                                placeholder={t('planner.roadmapSubjectContextMenu.exactGradePlaceholder', 'Nota exacta (ex: 8.4)')}
                                                 value={nodeData.grade || ''}
                                                 onChange={(e) => {
                                                     const val = parseFloat(e.target.value);
@@ -208,7 +210,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                                 `}
                                     >
                                         <XCircle size={16} className={nodeData.status === 'failed' ? 'text-red-400' : 'text-slate-400 group-hover:text-red-400'} />
-                                        <span className="relative z-10">Suspesa</span>
+                                        <span className="relative z-10">{t('planner.roadmapSubjectContextMenu.failed', 'Suspesa')}</span>
                                     </button>
 
                                     {nodeData.status === 'failed' && (
@@ -219,7 +221,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                             className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-sm hover:bg-amber-500 text-amber-500 hover:text-amber-950 transition-all border border-amber-500/30 font-bold group shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]"
                                         >
                                             <RefreshCw size={14} className="group-hover:animate-spin-slow" />
-                                            Tornar a matricular
+                                            {t('planner.roadmapSubjectContextMenu.retake', 'Tornar a matricular')}
                                         </motion.button>
                                     )}
                                 </>
@@ -234,7 +236,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative hover:bg-white/5 text-red-400 hover:text-red-300 border border-transparent"
                                 >
                                     <Trash2 size={16} className="text-red-400 group-hover:text-red-300" />
-                                    <span className="relative z-10">Eliminar</span>
+                                    <span className="relative z-10">{t('planner.roadmapSubjectContextMenu.delete', 'Eliminar')}</span>
                                 </button>
                             )}
                         </div>

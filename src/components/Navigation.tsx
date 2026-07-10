@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Users, Home, LogIn, CalendarDays, Settings } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-// import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import NavigationPill from './ui/NavigationPill';
 
 const LazyNavigationMenu = lazy(() => import('./NavigationMenu'));
@@ -96,7 +96,7 @@ const Navigation: React.FC = () => {
     const [unreadCount, setUnreadCount] = useState(0);
     const location = useLocation();
     const { user } = useAuth();
-    // const { preferredLang, setPreferredLang } = useLanguage();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (!user) {
@@ -157,25 +157,25 @@ const Navigation: React.FC = () => {
                             <NavLinkItem 
                                 to="/" 
                                 icon={Home} 
-                                label="Inici" 
+                                label={t('nav.home', 'Inici')} 
                                 isActive={location.pathname === '/'} 
                             />
                             <NavLinkItem 
                                 to="/comunitat" 
                                 icon={Users} 
-                                label="Comunitat" 
+                                label={t('nav.community', 'Comunitat')} 
                                 isActive={location.pathname === '/comunitat'} 
                             />
                             <NavLinkItem 
                                 to="/planner" 
                                 icon={CalendarDays} 
-                                label="Planificador" 
+                                label={t('nav.planner', 'Planificador')} 
                                 isActive={location.pathname === '/planner'} 
                             />
                             <NavLinkItem 
                                 to="/settings" 
                                 icon={Settings} 
-                                label="Configuració" 
+                                label={t('nav.settings', 'Configuració')} 
                                 isActive={location.pathname === '/settings'} 
                             />
 
@@ -184,7 +184,7 @@ const Navigation: React.FC = () => {
                             {user ? (
                                 <NavLinkItem
                                     to="/profile"
-                                    label="El meu perfil"
+                                    label={t('nav.profile', 'El meu perfil')}
                                     isActive={location.pathname === '/profile'}
                                     text={user.username}
                                     className={`h-11 md:h-10 pl-1.5 pr-4 md:pl-1.5 md:pr-4 transition-all duration-300 ${location.pathname === '/profile' ? 'w-auto' : 'w-auto'}`}
@@ -213,7 +213,7 @@ const Navigation: React.FC = () => {
                                 <NavLinkItem
                                     to="/login"
                                     icon={LogIn}
-                                    label="Iniciar Sessió"
+                                    label={t('nav.login', 'Iniciar Sessió')}
                                     isActive={location.pathname === '/login'}
                                 />
                             )}

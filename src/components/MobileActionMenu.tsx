@@ -2,7 +2,7 @@ import React, { useState, useTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Github, Heart } from 'lucide-react';
 import { useSubject } from '../contexts/SubjectContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
@@ -20,7 +20,8 @@ export const MobileActionMenu: React.FC<{
     setIsOpen: (val: boolean) => void;
 }> = ({ isOpen, setIsOpen }) => {
     const { subject, setSubject } = useSubject();
-    const { preferredLang, setPreferredLang } = useLanguage();
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
     const [, startTransition] = useTransition();
     const safeSubject = (subject || '').toLowerCase();
 
@@ -43,7 +44,7 @@ export const MobileActionMenu: React.FC<{
                     fetched.push({
                         uid,
                         username: data.username || "Usuari",
-                        role: data.role || (preferredLang === 'es' ? "Colaborador" : "Col·laborador"),
+                        role: data.role || t('settings.contributor', 'Col·laborador'),
                         avatar: data.avatar || ""
                     });
                 }
@@ -105,10 +106,10 @@ export const MobileActionMenu: React.FC<{
                             </button>
 
                             <h2 className="text-2xl font-bold text-white mb-1 tracking-tight">
-                                {preferredLang === 'es' ? 'Ajustes' : 'Ajustaments'}
+                                {t('settings.title', 'Ajustaments')}
                             </h2>
                             <p className="text-sm text-slate-400 mb-6">
-                                {preferredLang === 'es' ? 'Configuración de portada' : 'Configuració de portada'}
+                                {t('settings.subtitle', 'Configuració de portada')}
                             </p>
 
                             {!showContributors ? (
@@ -116,7 +117,7 @@ export const MobileActionMenu: React.FC<{
                                     {/* Subject Switcher */}
                                     <div className="space-y-3">
                                         <label className="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-3">
-                                            {preferredLang === 'es' ? 'Asignatura' : 'Assignatura'}
+                                            {t('settings.subject', 'Assignatura')}
                                         </label>
                                         <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
                                             {(['pro2', 'm1', 'm2'] as const).map((sub) => (
@@ -147,13 +148,13 @@ export const MobileActionMenu: React.FC<{
                                     {/* Language Switcher */}
                                     <div className="space-y-3">
                                         <label className="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-3">
-                                            {preferredLang === 'es' ? 'Idioma' : 'Idioma'}
+                                            {t('settings.language', 'Idioma')}
                                         </label>
-                                        <div className="grid grid-cols-2 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
-                                            {(['ca', 'es'] as const).map((lang) => (
+                                        <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
+                                            {(['ca', 'es', 'en'] as const).map((lang) => (
                                                 <button
                                                     key={lang}
-                                                    onClick={() => setPreferredLang(lang)}
+                                                    onClick={() => i18n.changeLanguage(lang)}
                                                     className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${preferredLang === lang
                                                         ? 'text-slate-950'
                                                         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
@@ -174,24 +175,24 @@ export const MobileActionMenu: React.FC<{
 
                                     <div className="pt-6 border-t border-white/5 space-y-3">
                                         <label className="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-3">
-                                            {preferredLang === 'es' ? 'Enlaces' : 'Enllaços'}
+                                            {t('settings.links', 'Enllaços')}
                                         </label>
                                         <a href="https://github.com/CreatorSaWiX/apunts-pro2" target="_blank" rel="noopener noreferrer"
                                             className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 transition-colors">
                                             <Github size={18} />
-                                            <span className="text-sm font-medium">{preferredLang === 'es' ? 'Código Fuente' : 'Codi Font'}</span>
+                                            <span className="text-sm font-medium">{t('settings.sourceCode', 'Codi Font')}</span>
                                         </a>
                                         <button onClick={handleContributorsClick}
                                             className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-rose-500/10 text-slate-300 hover:text-rose-400 transition-colors">
                                             <Heart size={18} />
-                                            <span className="text-sm font-medium">{preferredLang === 'es' ? 'Colaboradores' : 'Contribuidors'}</span>
+                                            <span className="text-sm font-medium">{t('settings.contributors', 'Contribuidors')}</span>
                                         </button>
                                     </div>
                                 </div>
                             ) : (
                                 <div className="flex-1 flex flex-col">
                                     <button onClick={() => setShowContributors(false)} className="text-sm text-slate-400 hover:text-white mb-4 flex items-center gap-1">
-                                        ← {preferredLang === 'es' ? 'Volver' : 'Tornar'}
+                                        ← {t('common.back', 'Tornar')}
                                     </button>
 
                                     <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">

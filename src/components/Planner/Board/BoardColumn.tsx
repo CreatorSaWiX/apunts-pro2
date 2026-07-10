@@ -7,6 +7,7 @@ import { useTasks } from '../../../contexts/TasksContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Calendar, Flag, Play, Trash2, X, Check } from 'lucide-react';
 import { DateTimePicker } from './DateTimePicker';
+import { useTranslation } from 'react-i18next';
 
 interface BoardColumnProps {
     column: { id: string; title: string; color?: string };
@@ -22,6 +23,7 @@ const toLocalDatetime = (d: Date) => {
 };
 
 const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onUpdateColumn, onDeleteColumn }) => {
+    const { t } = useTranslation();
     const { subjects, deleteTask } = useTasks();
     const taskIds = useMemo(() => tasks.map(t => t.id), [tasks]);
     const [isDrafting, setIsDrafting] = useState(false);
@@ -147,7 +149,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                     <div 
                         onClick={toggleColorPicker}
                         className={`w-2.5 h-2.5 rounded-full ${theme.bg} ${theme.text} shadow-[0_0_8px_currentColor] cursor-pointer hover:scale-150 hover:shadow-[0_0_12px_currentColor] transition-all`}
-                        title="Fes clic per canviar el color"
+                        title={t('planner.boardView.colorTitle', "Fes clic per canviar el color")}
                     ></div>
                     <AnimatePresence>
                     {showColorPicker && (
@@ -220,26 +222,26 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                     <button
                         onClick={(e) => { 
                             e.stopPropagation(); 
-                            if (tasks.length > 0 && window.confirm('Segur que vols eliminar TOTES les tasques d\'aquesta llista?')) {
+                            if (tasks.length > 0 && window.confirm(t('planner.boardView.clearConfirm', "Segur que vols eliminar TOTES les tasques d'aquesta llista?"))) {
                                 tasks.forEach(t => deleteTask(t.id));
                             }
                         }}
                         className="text-slate-500 hover:text-amber-400 transition-all duration-200 pointer-events-auto p-1"
-                        title="Buidar llista"
+                        title={t('planner.boardView.clearList', "Buidar llista")}
                     >
                         <Trash2 size={14} />
                     </button>
                     <button
                         onClick={(e) => { e.stopPropagation(); onDeleteColumn?.(); }}
                         className="text-slate-500 hover:text-red-400 transition-all duration-200 pointer-events-auto p-1"
-                        title="Eliminar llista"
+                        title={t('planner.boardView.deleteList', "Eliminar llista")}
                     >
                         <X size={16} />
                     </button>
                     <button
                         onClick={(e) => { e.stopPropagation(); startDrafting(); }}
                         className="text-slate-500 hover:text-white transition-all duration-200 pointer-events-auto p-1"
-                        title="Afegir tasca"
+                        title={t('planner.boardView.addTask', "Afegir tasca")}
                     >
                         <Plus size={16} strokeWidth={2.5} />
                     </button>
@@ -256,7 +258,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                             onDoubleClick={(e) => { e.stopPropagation(); startDrafting(); }}
                             className="flex flex-col items-center justify-center h-28 text-center cursor-pointer group rounded-xl mx-1 hover:bg-white/[0.02] transition-colors border border-dashed border-white/[0.05] hover:border-white/[0.1]"
                         >
-                            <p className="text-xs font-semibold tracking-wide text-slate-500 group-hover:text-slate-400 transition-colors pointer-events-none">Fes doble clic per afegir</p>
+                            <p className="text-xs font-semibold tracking-wide text-slate-500 group-hover:text-slate-400 transition-colors pointer-events-none">{t('planner.boardView.doubleClickToAdd', "Fes doble clic per afegir")}</p>
                         </div>
                     ) : (
                         tasks.map(task => (
@@ -286,20 +288,20 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                         setIsDrafting(false);
                                     }
                                 }}
-                                placeholder="Títol de la tasca..."
+                                placeholder={t('planner.boardView.newTaskTitle', "Títol de la tasca...")}
                                 className="bg-transparent text-[13px] font-medium text-slate-200 p-1 focus:outline-none flex-1 placeholder:text-slate-600"
                             />
                             <button
                                 onClick={() => { setDraftTitle(''); setIsDrafting(false); }}
                                 className="flex items-center justify-center p-1.5 rounded-md text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
-                                title="Cancel·lar"
+                                title={t('planner.boardView.cancel', "Cancel·lar")}
                             >
                                 <X size={16} strokeWidth={2.5} />
                             </button>
                             <button
                                 onClick={submitDraft}
                                 className="flex items-center justify-center p-1.5 rounded-md text-emerald-400 hover:text-white hover:bg-emerald-500 transition-colors"
-                                title="Crear"
+                                title={t('planner.boardView.create', "Crear")}
                             >
                                 <Check size={16} strokeWidth={2.5} />
                             </button>
@@ -331,7 +333,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                         }`}
                                     >
                                         <span className="font-semibold text-[10px] tracking-wider uppercase">
-                                            {draftSubjectId ? subjects.find(sub => sub.id === draftSubjectId)?.name : 'Assignatura'}
+                                            {draftSubjectId ? subjects.find(sub => sub.id === draftSubjectId)?.name : t('planner.boardView.subject', 'Assignatura')}
                                         </span>
                                     </button>
                                 )}
@@ -358,7 +360,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                                 onClick={(e) => { e.preventDefault(); setDraftSubjectId(null); setShowSubjectPicker(false); }}
                                                 className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors ${!draftSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                             >
-                                                Sense assignatura
+                                                {t('planner.boardView.noSubject', 'Sense assignatura')}
                                             </button>
                                             {filteredSubjects.map(s => (
                                                 <button
@@ -379,14 +381,14 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                             <DateTimePicker
                                 value={draftStartDate}
                                 onChange={setDraftStartDate}
-                                placeholder="Data inici"
+                                placeholder={t('planner.boardView.startDate', "Data inici")}
                                 icon={<Play size={12} className="text-emerald-400" />}
                             />
 
                             <DateTimePicker
                                 value={draftDueDate}
                                 onChange={setDraftDueDate}
-                                placeholder="Data límit"
+                                placeholder={t('planner.boardView.dueDate', "Data límit")}
                                 icon={<Calendar size={12} className="text-indigo-400" />}
                             />
                         </div>
@@ -399,7 +401,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                     <div
                         onDoubleClick={(e) => { e.stopPropagation(); startDrafting(); }}
                         className="flex-1 min-h-[60px] cursor-pointer rounded-[32px] opacity-0 hover:opacity-100 hover:bg-white/[0.03] flex items-center justify-center transition-all mt-2 border border-transparent hover:border-white/5"
-                        title="Doble clic per afegir tasca"
+                        title={t('planner.boardView.doubleClickHint', "Doble clic per afegir tasca")}
                     >
                         <Plus size={20} className="text-slate-500" />
                     </div>

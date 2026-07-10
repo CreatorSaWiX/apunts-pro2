@@ -1,0 +1,701 @@
+{
+  "navigation": {
+    "courseSyllabus": "Course Syllabus",
+    "labs": "Laboratories",
+    "madeWithLove": "Made with ❤️ for FIB"
+  },
+  "settings": {
+    "contributor": "Contributor",
+    "title": "Settings",
+    "subtitle": "Cover configuration",
+    "subject": "Subject",
+    "language": "Language",
+    "languageDesc": "The main language of the application.",
+    "links": "Links",
+    "sourceCode": "Source Code",
+    "contributors": "Contributors",
+    "about": "About",
+    "aboutDescription": "Information about the project and the people who make it possible.",
+    "repository": "Repository",
+    "openSource": "Open source on GitHub",
+    "teamBehind": "The team behind the project",
+    "devTeam": "The development team",
+    "subjects": {
+      "title": "Subjects",
+      "subtitle": "Manage your home subjects. You can customize the color of each one.",
+      "searchPlaceholder": "Search and add subjects...",
+      "minError": "You must leave at least one subject on Home.",
+      "maxError": "You can have a maximum of 6 subjects on Home.",
+      "noResults": "No results found",
+      "empty": "No subjects added currently.",
+      "previewTitle": "Navbar Preview",
+      "previewSubtitle": "This is how your main menu will look.",
+      "addPreview": "Add subjects to see the navbar",
+      "colorOf": "Color of",
+      "reset": "Reset to default"
+    },
+    "offline": {
+      "title": "Offline Storage",
+      "subtitle": "Manage what data is saved on the device for offline access.",
+      "local": "Local Storage",
+      "localSub": "Total space used by the app on your device.",
+      "appShell": "App Shell (JS/CSS/HTML)",
+      "metadata": "IndexedDB / Metadata",
+      "autoSync": "Auto-sync",
+      "download": "Download",
+      "delete": "Delete",
+      "noInternet": "You cannot download content without an internet connection.",
+      "empty": "There are no materials available to download currently.",
+      "pdfsDesc": "The entire collection of degree PDFs.",
+      "resourcesDesc": "Material and resources for",
+      "filesAvailable": "files available"
+    },
+    "ai": {
+      "title": "AI Assistant",
+      "subtitle": "Configure the personality and behavior of your copilot. This feature is inspired by",
+      "identity": "Identity (Who am I)",
+      "change": "Change",
+      "name": "AI Name",
+      "pronouns": "Pronouns",
+      "howToCallYou": "How should I call you?",
+      "useUsername": "Use username",
+      "vibe": "Personality (Vibe)",
+      "vibePlaceholder": "Define the overall tone, conversational style, and how the AI will make you feel...",
+      "soul": "Soul (Behavior Rules)",
+      "rules": "Rules",
+      "boundaries": "Boundaries",
+      "customDirectives": "Custom Directives",
+      "managedByAi": "Managed autonomously by the AI",
+      "forceEdit": "Force Edit",
+      "longTermMemory": "Long Term Memory",
+      "memoryDesc": "These are the details the AI has learned about you to personalize your experience.",
+      "noMemories": "The AI does not have any saved memories yet.",
+      "deleteMemory": "Delete memory",
+      "modifying": "Modifying",
+      "soulChangeDesc": "These changes will be learned immediately and become part of the assistant's soul.",
+      "saveToSoul": "Save to soul",
+      "soulPlaceholder": "Write instructions here..."
+    },
+    "privacy": {
+      "title": "Privacy and Terms",
+      "subtitle": "Review the data processing policy.",
+      "readDocs": "Read documentation"
+    },
+    "deleteAcc": {
+      "title": "Delete account",
+      "subtitle": "Permanently delete your account and all associated data.",
+      "button": "Delete my account",
+      "deleting": "Deleting...",
+      "errorRecentLogin": "For security reasons, you need to log out and log back in to delete your account.",
+      "errorGeneric": "There was an error deleting the account.",
+      "confirmTitle": "Delete account",
+      "confirmMessage": "Are you absolutely sure? This action will irreversibly delete your account, all chats, tasks, and notes.",
+      "confirmYes": "Yes, delete",
+      "confirmNo": "Cancel"
+    }
+  },
+  "common": {
+    "back": "Back",
+    "languages": {
+      "ca": "Català",
+      "es": "Español",
+      "en": "English"
+    },
+    "confirmModal": {
+      "title": "Are you sure?",
+      "message": "This action cannot be undone.",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    },
+    "expired": "Expired",
+    "remaining": "Remaining",
+    "save": "Save",
+    "cancel": "Cancel",
+    "fileUploader": {
+      "dragFiles": "Drag files to attach",
+      "supportedTypes": "Code, PDFs, Videos, 3D, Images, ZIP (Max {{max}}MB per file)",
+      "uploading": "Preparing and uploading to the network...",
+      "uploadFailed": "Upload failed",
+      "uploadSuccess": "File uploaded!"
+    }
+  },
+  "topics": {
+    "topic": "Topic",
+    "new": "New",
+    "updated": "Updated",
+    "explore": "Explore topic",
+    "solutions": {
+      "m1": "M1 Solutions",
+      "m2": "M2 Solutions",
+      "lab": "Lab Solutions",
+      "jutge": "Jutge Solutions"
+    }
+  },
+  "planner": {
+    "time": "Time",
+    "previewTitle": "Planner View",
+    "previewSubtitle": "Choose the default view for the Planner tab.",
+    "board": "Board",
+    "calendar": "Calendar",
+    "timeline": "Timeline",
+    "roadmap": "Roadmap",
+    "ai": {
+      "errorFiles": "Only images or PDFs are allowed.",
+      "errorSize": "The file is too large. Maximum 5MB.",
+      "errorUnknown": "Unknown error",
+      "errorGenerate": "Error generating tasks",
+      "errorStreaming": "The browser does not support streaming",
+      "attach": "Attach image or PDF",
+      "placeholder": "Write what you need to plan..."
+    },
+    "filters": {
+      "all": "All",
+      "subjects": "Subjects",
+      "priority": "Priority",
+      "priorities": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "deadline": "Deadline",
+      "dateRanges": {
+        "all": "All dates",
+        "today": "Today",
+        "thisWeek": "This week",
+        "thisMonth": "This month",
+        "thisTerm": "This term"
+      }
+    },
+    "contextMenu": {
+      "copySuffix": " (Copy)",
+      "changePriority": "Change Priority",
+      "duplicate": "Duplicate",
+      "delete": "Delete"
+    },
+    "popover": {
+      "titlePlaceholder": "Title...",
+      "subject": "Subject",
+      "noSubject": "No Subject",
+      "searchSubject": "Search subject...",
+      "noneSubject": "None subject",
+      "priorityLow": "LOW",
+      "priorityMedium": "MED",
+      "priorityHigh": "HIGH"
+    },
+    "unscheduled": {
+      "backlog": "Backlog",
+      "toPlan": "To plan"
+    },
+    "boardView": {
+      "colorTitle": "Click to change color",
+      "clearConfirm": "Are you sure you want to delete ALL tasks in this list?",
+      "clearList": "Clear list",
+      "deleteList": "Delete list",
+      "addTask": "Add task",
+      "doubleClickToAdd": "Double click to add",
+      "newTaskTitle": "Task title...",
+      "cancel": "Cancel",
+      "create": "Create",
+      "noSubject": "No subject",
+      "subject": "Subject",
+      "startDate": "Start date",
+      "dueDate": "Due date",
+      "doubleClickHint": "Double click to add task",
+      "addList": "Add list",
+      "createList": "CREATE LIST",
+      "listName": "List name...",
+      "priority": "Priority"
+    },
+    "calendarView": {
+      "week": "Wk",
+      "month": "Mth",
+      "year": "Yr"
+    },
+    "roadmapExperienceSelector": {
+      "addBlock": "Add Block",
+      "configureSubtitle": "Configure stays, internships, or projects for your roadmap.",
+      "mobility": "Mobility",
+      "internationalStays": "International Stays",
+      "internship": "Internship",
+      "companyExperience": "Company Experience",
+      "internationalStayTitle": "International stay",
+      "internationalStayDesc": "Add your Erasmus+, SICUE, or other international exchange programs.",
+      "universityDest": "University / Destination",
+      "searchPlaceholder": "Search by name or country...",
+      "officialWeb": "Official Website",
+      "downloadDoc": "Download Documentation",
+      "program": "Program",
+      "creditsEcts": "Credits (ECTS)",
+      "internshipTitle": "Company internship",
+      "internshipDesc": "Add curricular or extracurricular internships to your record.",
+      "company": "Company",
+      "companyPlaceholder": "Ex: Google, inLab FIB, etc.",
+      "role": "Role / Position",
+      "rolePlaceholder": "Ex: Software Engineer Intern",
+      "recognitionCredits": "Recognition Credits (ECTS)",
+      "addToRoadmap": "Add to Roadmap",
+      "noResultsFound": "No results found"
+    },
+    "roadmapSpecialization": {
+      "specializationsTitle": "Specializations",
+      "chooseYourPath": "Choose your path to professional excellence.",
+      "whyChooseIt": "Why choose it?",
+      "mandatory": "Mandatory",
+      "careerPaths": "Career Paths",
+      "keyBenefits": "Key Benefits",
+      "alreadySelected": "Already Selected",
+      "selectSpecialization": "Select Specialization"
+    },
+    "roadmapValidations": {
+      "title": "Validations",
+      "subtitle": "Add credits to your backpack through vocational training cycles or extracurricular activities.",
+      "otherActivities": "Other Activities",
+      "universityActivities": "University Activities",
+      "activityExamples": "Game Jams, Sports, Languages",
+      "cfgs": "Vocational Training Cycles (CFGS)",
+      "cfgsDisclaimer": "By applying this validation, the following subjects will be added directly to your record. Any previously validated CFGS will be replaced.",
+      "creditsObtained": "Credits Obtained",
+      "recognizedModules": "Recognized Modules",
+      "validatedSubjects": "Validated Subjects",
+      "customDisclaimer": "Manually add credits recognized for extracurricular activities such as sports, languages, or student representation. These will be added as passed electives.",
+      "recommendedLimit": "Recommended Limit",
+      "maxEcts": "6 ECTS max per itinerary",
+      "officialSuggestions": "Official FIB Suggestions",
+      "activityName": "Activity name",
+      "creditsEcts": "ECTS Credits",
+      "selectCycle": "Select a cycle",
+      "selectCycleDesc": "Choose a Vocational Training Cycle to see which subjects will be automatically validated.",
+      "alreadySelected": "Already Selected",
+      "applyCredits": "Apply {{credits}} ECTS",
+      "addToRecord": "Add to record"
+    },
+    "roadmapSubjectSearch": {
+      "searchSubject": "Search Subject",
+      "searchPlaceholder": "Search by name or code...",
+      "nothingFound": "Nothing found",
+      "tryAnotherWord": "Try searching with another word or change the filter.",
+      "plusMore": "+{{count}} more",
+      "transversal": "Transversal",
+      "rec": "Rec",
+      "categories": {
+        "all": "All",
+        "complementary": "Complementary",
+        "computing": "Computing",
+        "softwareEngineering": "Software Engineering",
+        "computerEngineering": "Computer Engineering",
+        "informationSystems": "Information Systems",
+        "informationTechnologies": "Information Technologies",
+        "transversals": "Transversals"
+      }
+    },
+    "roadmapSubjectDetails": {
+      "infoNotAvailable": "Information not available",
+      "infoNotAvailableDesc": "Could not download FIB data for this subject. It might not be available in the current curriculum.",
+      "close": "Close",
+      "officialFib": "Official FIB",
+      "credits": "Credits",
+      "type": "Type",
+      "mandatory": "Mandatory",
+      "sections": "Sections",
+      "evaluativeAct": "Evaluative Act",
+      "week": "Week {{week}}",
+      "relatedObjectives": "Related objectives",
+      "hours": "HOURS",
+      "tabs": {
+        "Professorat": "Teaching Staff",
+        "Hores setmanals": "Weekly Hours",
+        "Competències": "Competencies",
+        "Objectius": "Objectives",
+        "Continguts": "Contents",
+        "Activitats": "Activities",
+        "Metodologia docent": "Teaching Methodology",
+        "Mètode d'avaluació": "Evaluation Method",
+        "Bibliografia": "Bibliography",
+        "Capacitats prèvies": "Previous Capabilities"
+      }
+    },
+    "roadmapSubjectContextMenu": {
+      "badgeMobility": "MOBILITY",
+      "badgeInternship": "INTERNSHIP",
+      "badgeTfg": "TFG",
+      "badgeTfm": "TFM",
+      "destination": "Destination",
+      "program": "Program",
+      "company": "Company",
+      "role": "Role",
+      "information": "Information",
+      "inProgress": "In Progress",
+      "recognized": "Recognized",
+      "passed": "Passed",
+      "finalGrade": "Final Grade",
+      "exactGradePlaceholder": "Exact grade (e.g., 8.4)",
+      "failed": "Failed",
+      "retake": "Retake",
+      "delete": "Delete"
+    },
+    "roadmapSubjectNode": {
+      "tags": {
+        "mobility": "MOBILITY",
+        "internship": "INTERNSHIP",
+        "tfg": "TFG",
+        "tfm": "TFM",
+        "activities": "ACTIVITIES",
+        "cfgs": "CFGS"
+      },
+      "attempt": "ATTEMPT"
+    },
+    "roadmapAI": {
+      "suggestions": {
+        "hardware": "What should I do if I want to be a hardware engineer?",
+        "addAI": "Add AI to my roadmap",
+        "evalEDA": "How is EDA evaluated?"
+      },
+      "connecting": "Connecting and analyzing your roadmap...",
+      "added": "Added",
+      "removed": "Removed",
+      "placeholder": "Write a message to {{name}}...",
+      "attachTooltip": "Attach image or PDF"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "community": "Community",
+    "planner": "Planner",
+    "settings": "Settings",
+    "profile": "My profile",
+    "login": "Log In"
+  },
+  "hero": {
+    "newVersion": "There is a new version",
+    "lastUpdate": "Last update:",
+    "superem": "Let's pass",
+    "junts": "together",
+    "word1": "the course.",
+    "word2": "the semester.",
+    "word3": "the degree.",
+    "subtitle": "Share your resources, find the best notes and help your peers. Because here success is collective and ",
+    "nobodyBehind": "no one is left behind",
+    "uploadResource": "Upload Resource"
+  },
+  "topic": {
+    "test": "Test",
+    "solutions": "Solutions",
+    "backToHome": "Back to Home",
+    "openInGithub": "Open in GitHub",
+    "downloadPDF": "Download PDF",
+    "readTime": "minute read"
+  },
+  "solutions": {
+    "title": "Solutions for",
+    "subtitle": "Select a problem to view its solution"
+  },
+  "community": {
+    "subjects": "Subjects",
+    "subjectsShort": "Subj.",
+    "rarity": "Rarity",
+    "rarityShort": "Rar.",
+    "anyRarity": "Any rarity",
+    "search": "Search",
+    "searchPlaceholder": "Search notes...",
+    "offlineTitle": "Offline",
+    "offlineSubtitle": "You are currently offline. To view community resources or upload a new one, you need to connect to the Internet.",
+    "emptyTitle": "No notes yet",
+    "emptySubtitle": "There are no resources shared for this subject. Be the first to provide value to the community and stand out.",
+    "uploadFirst": "Upload the first resource",
+    "createPost": {
+      "title": "New resource",
+      "waitLimit": "Wait a moment before posting again.",
+      "publishError": "Error publishing. Please try again.",
+      "previewPlaceholder": "Start typing to see how it looks...",
+      "noSubject": "No subject",
+      "noteModePlaceholder": "Note title... Start typing here",
+      "standardPlaceholder": "Share knowledge...",
+      "addGif": "Add GIF",
+      "addEmote": "Add custom Emote",
+      "noteModeTitle": "Extended Note Mode (Notion style)",
+      "extendedNote": "Extended Note",
+      "publishBtn": "Publish",
+      "livePreview": "Live Preview",
+      "livePreviewDesc": "This is how your note will look in the Community"
+    },
+    "postDetail": {
+      "actionNote": "Created an extended note",
+      "actionQuestion": "Asked a question",
+      "actionResource": "Shared a resource",
+      "like": "Like",
+      "deleteTooltip": "Delete post",
+      "deleteConfirm": "Are you sure you want to delete this post? This action cannot be undone.",
+      "deleteError": "Error deleting the post.",
+      "attachmentsTitle": "Attachments and Interaction",
+      "commentsTitle": "Comments"
+    },
+    "subjectSelector": {
+      "searchPlaceholder": "Search by acronym or full name...",
+      "discoverAll": "Discover All",
+      "discoverAllDesc": "Shows all community content",
+      "noSubject": "No subject",
+      "noSubjectDesc": "General community post",
+      "notFound": "No subject found."
+    }
+  },
+  "auth": {
+    "login": {
+      "invalidCreds": "Invalid credentials. Try again.",
+      "errorLogin": "There was an error logging in: ",
+      "enterEmail": "Enter your email.",
+      "errorReset": "Could not send the email. Check that the address is correct.",
+      "title": "Log In",
+      "subtitle": "Understand the technological bases of the digital world.",
+      "email": "Email",
+      "password": "Password",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Access account",
+      "noAccount": "Don't have an account yet? ",
+      "registerNow": "Register now",
+      "recoverTitle": "Recover",
+      "recoverSubtitle": "We will send you a link to reset your password.",
+      "sendLink": "Send Link",
+      "emailSent": "Email Sent!",
+      "emailSentDesc1": "We have sent an email to ",
+      "emailSentDesc2": " with instructions to reset your password.",
+      "backToLogin": "Back to Login"
+    },
+    "register": {
+      "emailInUse": "This email is already registered.",
+      "weakPassword": "The password must be at least 6 characters long.",
+      "invalidEmail": "The email is not valid.",
+      "errorRegister": "Error registering. Check the data entered.",
+      "title": "Create account",
+      "subtitle": "Access the architecture of knowledge.",
+      "username": "Username",
+      "submit": "Create account now",
+      "acceptTerms": "By registering, you accept our ",
+      "privacyPolicy": "Privacy Policy",
+      "hasAccount": "Already have an account? ",
+      "login": "Log in"
+    }
+  },
+  "profile": {
+    "edit": {
+      "title": "Edit Profile",
+      "username": "Username",
+      "avatarBanner": "Avatar & Banner",
+      "avatarUrl": "Avatar URL",
+      "bannerUrl": "Banner URL",
+      "webIdentity": "Web Identity",
+      "bioPlaceholder": "Your bio / short role...",
+      "cancel": "Cancel",
+      "save": "Save changes"
+    },
+    "defaultUser": "User",
+    "contact": "Contact",
+    "stats": {
+      "solutions": "SOLUTIONS",
+      "rankScale": "Rank Scale",
+      "currentLevel": "CURRENT LEVEL",
+      "noLink": "Unlinked",
+      "portfolio": "PORTFOLIO"
+    },
+    "inbox": {
+      "privateMailbox": "Private Mailbox",
+      "pendingMessages": "You have {{count}} pending messages",
+      "allRead": "All read."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "unread": "{{count}} unread updates",
+      "upToDate": "You are up to date."
+    },
+    "posts": {
+      "title": "Posts",
+      "noPosts": "This user hasn't posted anything yet."
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy and Data Processing",
+    "subtitle": "Applicable regulations: General Data Protection Regulation (GDPR)",
+    "intro": "The development team recognizes the fundamental importance of privacy and the protection of personal data. This policy establishes the principles by which we govern the processing of information, ensuring maximum transparency and respect for the rights of our users.",
+    "nature": {
+      "title": "1. Nature of Processing",
+      "content": "The data collected through this platform is exclusively aimed at continuously improving the educational experience and interaction with the Artificial Intelligence assistant. All information is processed under the principles of lawfulness, fairness, transparency, and data minimization, in accordance with Article 5 of the GDPR."
+    },
+    "data": {
+      "title": "2. Data Collected",
+      "content": "During the use of the platform, we strictly limit the collection to the following essential data:",
+      "id": "Identity Information:",
+      "idDesc": "Name, institutional email, and unique identifier assigned by the authentication system.",
+      "interactions": "Cognitive Interactions:",
+      "interactionsDesc": "History of conversations with the virtual assistant in order to provide accurate memory context.",
+      "metrics": "System Metrics:",
+      "metricsDesc": "Anonymized analytical data (processed remotely) intended to understand usage patterns and evaluate the technical performance of the application."
+    },
+    "rights": {
+      "title": "3. Exercise of Rights (ARCO Rights)",
+      "content": "Under current legislation, you have the right to exercise your right to be forgotten at any time. The platform integrates user autonomy tools; specifically, from the Settings section, you can execute the permanent and irreversible deletion of your entire account and all linked records, without requiring administrative intervention on our part."
+    },
+    "security": {
+      "title": "4. Security and Integrity",
+      "content": "The integrity of your data is guaranteed by the security architecture of Firebase (Google Cloud Platform), which has international certifications for encryption both in transit and at rest. However, the user is explicitly advised to refrain from disclosing highly confidential data (such as bank credentials or medical information) during consultations with the Artificial Intelligence assistant."
+    },
+    "footer": {
+      "date": "Last revision: July 2026"
+    }
+  },
+  "mailing": {
+    "compose": {
+      "title": "Compose message",
+      "sendingTo": "Sending to",
+      "subject": "Subject",
+      "subjectPlaceholder": "[P12345] Question about this problem",
+      "linkExercise": "Link exercise",
+      "linkedExercise": "Linked Exercise",
+      "messageBody": "Message",
+      "addCode": "Add Code",
+      "bodyPlaceholder": "Write your message here... (You can use ```cpp to add code)",
+      "sending": "Sending message...",
+      "send": "Send message",
+      "errNoSubject": "Please enter a subject for the message.",
+      "errEmptyBody": "The message cannot be empty.",
+      "errNotLoggedIn": "You must be logged in to send messages.",
+      "errSendFailed": "Error sending the message. Please try again.",
+      "errAvatar": "Could not verify the recipient's photo"
+    },
+    "mailbox": {
+      "title": "Mailbox",
+      "inbox": "Inbox",
+      "sent": "Sent",
+      "emptyInbox": "You have no received messages",
+      "emptySent": "You have no sent messages",
+      "user": "User",
+      "now": "Now",
+      "to": "To: {{name}}",
+      "back": "Back",
+      "sentTo": "Sent to: {{name}}",
+      "receivedOn": "Received on {{date}}",
+      "sentOn": "Sent on {{date}}",
+      "viewExercise": "View Exercise {{id}}",
+      "reply": "Reply to message",
+      "sendNew": "Send new message",
+      "selectToRead": "Select a message to read"
+    },
+    "problemSelector": {
+      "title": "Select Exercise",
+      "subtitle": "Link a problem to your message",
+      "searchPlaceholder": "Search by code (P37500) o title...",
+      "notFound": "No exercises found"
+    }
+  },
+  "notifications": {
+    "inbox": {
+      "title": "Activity",
+      "filters": {
+        "all": "All",
+        "mentions": "Mentions",
+        "likes": "Likes",
+        "comments": "Comments"
+      },
+      "markAllRead": "Mark all as read",
+      "empty": "There's nothing to show here",
+      "now": "Now",
+      "mentioned": "Mentioned you in ",
+      "likedPost": "Liked your post ",
+      "repliedPost": "Replied to your post ",
+      "repliedComment": "Replied to your comment in ",
+      "reactedComment": "Reacted to your comment in "
+    }
+  },
+  "quiz": {
+    "generating": "Reading notes and generating quiz (10 min, 10 questions)...",
+    "noDataTitle": "No data",
+    "noDataDesc": "We couldn't find the quiz or generate a new one.",
+    "backHome": "Back to Home",
+    "backTopics": "Back to topics",
+    "finishedTitle": "Cycle Finished",
+    "score": "Score",
+    "perfectScore": "Perfect. You have demonstrated absolute mastery of the subject. You are ready for any high-level technical challenge.",
+    "improveScore": "Analyze your mistakes to improve your C++ technique.",
+    "yourAnswer": "Your answer",
+    "notAnswered": "Not answered",
+    "correctAnswer": "Correct Answer",
+    "deepDive": "Deep-dive:",
+    "retry": "Retry Quiz",
+    "prev": "Previous",
+    "next": "Next",
+    "evaluate": "Evaluate"
+  },
+  "solutionDetail": {
+    "loadingEditor": "Loading editor...",
+    "saveError": "Error saving the solution. Check the console.",
+    "loadingSolution": "Loading solution...",
+    "notFound": "Solution not found",
+    "backToList": "Back to list",
+    "openJutge": "Open problem in Jutge",
+    "accepted": "Accepted",
+    "author": "Author:",
+    "anonymous": "Anonymous",
+    "prevTooltip": "Previous:",
+    "prev": "Previous",
+    "nextTooltip": "Next:",
+    "next": "Next",
+    "statement": "Statement",
+    "statementNotAvailable": "Statement not available.",
+    "openJutgeSite": "Open in jutge.org",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit"
+  },
+  "solutionsList": {
+    "topicNotFound": "Topic not found or empty",
+    "title": "Problem List",
+    "description": "Collection of exercises for topic {{topicId}}.",
+    "pdfLanguage": "Solution Language",
+    "searchPlaceholder": "Search ID (P12345)...",
+    "openJutge": "Open problem in Jutge",
+    "viewSolution": "View solution",
+    "readStatement": "Read statement",
+    "noProblemsDefined": "No problems defined for this topic."
+  },
+  "newSolution": {
+    "loadingEditor": "Loading editor...",
+    "loginRequired": "You need to log in to upload solutions.",
+    "login": "Log In",
+    "title": "New Solution",
+    "problemInfo": "Problem Information",
+    "topicLabel": "Topic",
+    "selectTopic": "Select a topic",
+    "problemIdLabel": "Problem ID",
+    "problemIdPlaceholder": "ex: P37500",
+    "problemTitleLabel": "Problem Title",
+    "problemTitlePlaceholder": "ex: Prime numbers",
+    "codeLabel": "C++ Code",
+    "statementLabel": "Statement (HTML)",
+    "optional": "Optional",
+    "statementPlaceholder": "<p>Problem description...</p>",
+    "uploading": "Uploading...",
+    "publish": "Publish Solution",
+    "saveError": "Error saving the solution. Check the console."
+  },
+  "chat": {
+    "wait": "Wait {{cooldown}}s",
+    "newChat": "New Chat",
+    "conversation": "Conversation",
+    "errors": {
+      "invalidFileType": "Only images and PDFs are accepted.",
+      "fileTooLarge": "File is too large. Maximum 5MB.",
+      "unknown": "Unknown error",
+      "streamingNotSupported": "Browser does not support streaming",
+      "serverError": "Server error"
+    },
+    "noResponse": "No response.",
+    "memoryUpdated": "Memory updated",
+    "loginRequired": "The AI assistant is exclusive for registered members\nLog in to access history and chat",
+    "login": "Log in",
+    "dropToAttach": "Drop to attach",
+    "history": "Chat history",
+    "noSavedChats": "No saved chats",
+    "newConversation": "New conversation",
+    "placeholder": "Message {{aiName}}...",
+    "attachFile": "Attach image or PDF",
+    "warning": "AI can make mistakes. Do not share sensitive or personal data."
+  }
+}

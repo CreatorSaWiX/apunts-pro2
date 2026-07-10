@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { RefreshCw, GitCommitVertical } from 'lucide-react';
 import { useSubject } from '../contexts/SubjectContext';
-// import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 // import { Link } from 'react-router-dom';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -44,7 +44,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
     const { subject: contextSubject, theme } = useSubject();
     const subject = subjectOverride || contextSubject;
     const isMobile = useIsMobile();
-    // const { preferredLang } = useLanguage();
+    const { t } = useTranslation();
 
 
 
@@ -83,7 +83,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
                         </span>
                         <span className="text-[10px] uppercase tracking-widest text-red-400 font-semibold group-hover:text-red-300 transition-colors">
-                            Hi ha una nova versió
+                            {t('hero.newVersion', 'Hi ha una nova versió')}
                         </span>
                         <RefreshCw size={12} className="text-red-400 group-hover:text-red-300 group-hover:rotate-180 transition-all duration-500 ease-out" />
                     </motion.button>
@@ -108,7 +108,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                             </span>
-                            <span>Última actualització: <span className="text-white ml-0.5">{currentData.updated}</span></span>
+                            <span>{t('hero.lastUpdate', 'Última actualització:')} <span className="text-white ml-0.5">{currentData.updated}</span></span>
                         </div>
                     </motion.div>
                 )}

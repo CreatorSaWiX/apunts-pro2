@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, FileText, LayoutList, CheckCircle2, X } from
 import type { Solution } from '../../content/data/solutions';
 import type { TopicDefinition } from '../../content/data/courseStructure';
 import { MarkdownRenderer } from '../../markdown/MarkdownRenderer';
+import { useTranslation } from 'react-i18next';
 
 interface NotebookLayoutProps {
     topic: TopicDefinition;
@@ -13,6 +14,7 @@ interface NotebookLayoutProps {
 }
 
 const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
+    const { t } = useTranslation();
     // 1. Sidebar selection state
     const STORAGE_KEY = `notebook-last-problem-${topic.id}`;
     const [selectedProblemId, _setSelectedProblemId] = useState<string | null>(() => {
@@ -68,7 +70,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
     if (loading && solutions.length === 0) {
         return (
             <div className="min-h-screen pt-24 pb-20 px-4 flex items-center justify-center">
-                <div className="text-slate-500 animate-pulse">Carregant exercicis...</div>
+                <div className="text-slate-500 animate-pulse">{t('notebook.loading', 'Carregant exercicis...')}</div>
             </div>
         );
     }
@@ -136,7 +138,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                         className="absolute right-0 top-full mt-3 w-56 bg-[#0b1221]/90 backdrop-blur-xl border border-red-500/20 rounded-2xl shadow-[0_20px_50px_-12px_rgba(239,68,68,0.3)] z-50 overflow-hidden"
                                     >
                                         <div className="p-4 border-b border-red-500/10 flex justify-between items-center">
-                                            <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">Idioma Solucionari</span>
+                                            <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">{t('notebook.pdfLanguage', 'Idioma Solucionari')}</span>
                                             <button onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
                                                 <X size={16} />
                                             </button>
@@ -153,7 +155,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                                     <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
                                                         <span className="text-xs font-bold text-red-400">CA</span>
                                                     </div>
-                                                    <span>Català</span>
+                                                    <span>{t('notebook.ca', 'Català')}</span>
                                                 </a>
                                             )}
                                             {availablePdfs.es && (
@@ -167,7 +169,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                                     <div className="w-4 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
                                                         <span className="text-xs font-bold text-red-400">ES</span>
                                                     </div>
-                                                    <span>Español</span>
+                                                    <span>{t('notebook.es', 'Español')}</span>
                                                 </a>
                                             )}
                                         </div>
@@ -192,7 +194,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                     <div className="p-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
                         <div className="flex items-center gap-2 text-slate-200 font-medium">
                             <LayoutList size={18} />
-                            <span>Exercicis</span>
+                            <span>{t('notebook.exercises', 'Exercicis')}</span>
                         </div>
                         <span className="text-xs text-slate-500 font-mono bg-black/20 px-2 py-0.5 rounded">
                             {topic.problems.length}
@@ -280,7 +282,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                                     <div className="flex items-center gap-3 text-slate-500 bg-slate-900/50 border border-white/5 p-4 rounded-xl">
                                                         <FileText size={20} className="opacity-50" />
                                                         <p className="italic text-sm m-0">
-                                                            L'enunciat no està disponible actualment.
+                                                            {t('notebook.noStatement', "L'enunciat no està disponible actualment.")}
                                                         </p>
                                                     </div>
                                                 )}
@@ -310,7 +312,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                                                 ) : (
                                                                     <div className="flex gap-3 text-slate-500 items-center justify-center p-8 bg-black/20 rounded-xl border border-white/5">
                                                                         <CheckCircle2 size={18} className="opacity-40" />
-                                                                        <span className="italic text-sm">Aquesta solució encara està buida.</span>
+                                                                        <span className="italic text-sm">{t('notebook.emptySolution', 'Aquesta solució encara està buida.')}</span>
                                                                     </div>
                                                                 )}
                                                             </div>
@@ -320,7 +322,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                             ) : (
                                                 <div className="flex flex-col items-center justify-center py-16 text-slate-500 bg-slate-900/40 rounded-2xl border border-dashed border-white/10">
                                                     <FileText size={48} className="mb-4 opacity-20" />
-                                                    <p className="text-sm">Encara no hi ha una proposta de resolució penjada.</p>
+                                                    <p className="text-sm">{t('notebook.noSolution', 'Encara no hi ha una proposta de resolució penjada.')}</p>
                                                 </div>
                                             )}
                                         </div>
@@ -334,7 +336,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                         >
                                             <ChevronLeft size={18} />
-                                            <span className="hidden sm:inline font-medium">Anterior</span>
+                                            <span className="hidden sm:inline font-medium">{t('notebook.prev', 'Anterior')}</span>
                                         </button>
 
                                         <span className="text-xs text-slate-500 font-mono">
@@ -346,14 +348,14 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                             disabled={currentIndex === topic.problems.length - 1}
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                         >
-                                            <span className="hidden sm:inline font-medium">Següent</span>
+                                            <span className="hidden sm:inline font-medium">{t('notebook.next', 'Següent')}</span>
                                             <ChevronRight size={18} />
                                         </button>
                                     </div>
                                 </>
                             ) : (
                                 <div className="flex items-center justify-center h-full text-slate-500 min-h-[400px]">
-                                    <p>Selecciona un exercici per començar</p>
+                                    <p>{t('notebook.selectToStart', 'Selecciona un exercici per començar')}</p>
                                 </div>
                             )}
                         </motion.div>

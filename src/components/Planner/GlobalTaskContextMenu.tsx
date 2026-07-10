@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
 import { Copy, Trash2, Flag } from 'lucide-react';
 import type { Task, TaskPriority } from '../../types/tasks';
+import { useTranslation } from 'react-i18next';
 
 export interface ContextMenuEventDetail {
     x: number;
@@ -11,6 +12,7 @@ export interface ContextMenuEventDetail {
 }
 
 const GlobalTaskContextMenu: React.FC = () => {
+    const { t } = useTranslation();
     const { updateTask, deleteTask, addTask } = useTasks();
     const [isOpen, setIsOpen] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -73,7 +75,7 @@ const GlobalTaskContextMenu: React.FC = () => {
             } else if (e.key === 'Alt' || e.key === 'Option') {
                 e.preventDefault();
                 addTask({
-                    title: `${task.title} (Còpia)`,
+                    title: `${task.title}${t('planner.contextMenu.copySuffix', ' (Còpia)')}`,
                     ...(task.description ? { description: task.description } : {}),
                     status: task.status,
                     priority: task.priority,
@@ -101,7 +103,7 @@ const GlobalTaskContextMenu: React.FC = () => {
         e.stopPropagation();
         if (!task) return;
         addTask({
-            title: `${task.title} (Còpia)`,
+            title: `${task.title}${t('planner.contextMenu.copySuffix', ' (Còpia)')}`,
             ...(task.description ? { description: task.description } : {}),
             status: task.status,
             priority: task.priority,
@@ -153,7 +155,7 @@ const GlobalTaskContextMenu: React.FC = () => {
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
                     >
                         <Flag size={14} className={task.priority === 'HIGH' ? 'text-red-400' : task.priority === 'MEDIUM' ? 'text-amber-400' : 'text-slate-400'} />
-                        <span>Canviar Prioritat</span>
+                        <span>{t('planner.contextMenu.changePriority', 'Canviar Prioritat')}</span>
                     </button>
                     
                     <button 
@@ -161,7 +163,7 @@ const GlobalTaskContextMenu: React.FC = () => {
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-slate-300 hover:bg-white/5 hover:text-white transition-colors group"
                     >
                         <Copy size={14} className="text-slate-400 group-hover:text-white transition-colors" />
-                        <span>Duplicar</span>
+                        <span>{t('planner.contextMenu.duplicate', 'Duplicar')}</span>
                     </button>
                     
                     <div className="h-px bg-white/5 my-1 mx-1" />
@@ -171,7 +173,7 @@ const GlobalTaskContextMenu: React.FC = () => {
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors group"
                     >
                         <Trash2 size={14} />
-                        <span>Eliminar</span>
+                        <span>{t('planner.contextMenu.delete', 'Eliminar')}</span>
                     </button>
                 </motion.div>
             )}

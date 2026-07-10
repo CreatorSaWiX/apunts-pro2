@@ -8,7 +8,7 @@ import SubjectSearchModal from './SubjectSearchModal';
 import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import Spinner from '../../ui/Spinner';
-import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, Redo2, X, Type, StickyNote, MoreHorizontal, CalendarDays, BookOpen } from 'lucide-react';
+import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, Redo2, X, Type, StickyNote, MoreHorizontal, CalendarDays } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
 import { SpecializationModal } from './SpecializationModal';

@@ -10,6 +10,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment, setDoc, serverTimestamp } from 'firebase/firestore';
 import DOMPurify from 'dompurify';
+import { useTranslation } from 'react-i18next';
 
 interface PostDetailModalProps {
     post: CommunityPost | null;
@@ -18,6 +19,7 @@ interface PostDetailModalProps {
 }
 
 const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     if (!post) return null;
 
@@ -102,7 +104,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
     };
 
     const handleDelete = async () => {
-        if (!confirm('Segur que vols eliminar aquesta publicació? Aquesta acció no es pot desfer.')) return;
+        if (!confirm(t('community.postDetail.deleteConfirm', 'Segur que vols eliminar aquesta publicació? Aquesta acció no es pot desfer.'))) return;
         try {
             // Eliminar respostes de la subcol·lecció primer
             const repliesRef = collection(db, 'community_posts', post.id, 'replies');
@@ -113,7 +115,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
             onClose();
         } catch (err) {
             console.error(err);
-            alert("Error en eliminar la publicació.");
+            alert(t('community.postDetail.deleteError', "Error en eliminar la publicació."));
         }
     };
 
@@ -142,7 +144,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                 <img src={post.userAvatar} alt={post.username} className="w-10 h-10 rounded-full object-cover bg-slate-800" loading="lazy" />
                                 <div>
                                     <h3 className="font-bold text-slate-100">{post.username}</h3>
-                                    <p className="text-xs text-slate-500 font-medium">{post.isNote ? 'Ha creat un apunt extens' : (post.type === 'question' ? 'Ha preguntat un dubte' : 'Ha compartit un recurs')}</p>
+                                    <p className="text-xs text-slate-500 font-medium">{post.isNote ? t('community.postDetail.actionNote', 'Ha creat un apunt extens') : (post.type === 'question' ? t('community.postDetail.actionQuestion', 'Ha preguntat un dubte') : t('community.postDetail.actionResource', 'Ha compartit un recurs'))}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
@@ -154,7 +156,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                     <motion.div animate={{ scale: hasLiked ? [1, 1.3, 1] : 1 }} transition={{ duration: 0.3 }}>
                                         <Heart size={18} fill={hasLiked ? 'currentColor' : 'none'} />
                                     </motion.div>
-                                    <span className="text-sm font-bold hidden sm:inline">{likeCount > 0 ? likeCount : 'M\'agrada'}</span>
+                                    <span className="text-sm font-bold hidden sm:inline">{likeCount > 0 ? likeCount : t('community.postDetail.like', "M'agrada")}</span>
                                 </motion.button>
                                 <button className="p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors">
                                     <Share2 size={18} />
@@ -163,7 +165,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                     <button 
                                         onClick={handleDelete}
                                         className="p-2.5 rounded-full bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors"
-                                        title="Eliminar publicació"
+                                        title={t('community.postDetail.deleteTooltip', "Eliminar publicació")}
                                     >
                                         <Trash2 size={18} />
                                     </button>
@@ -213,7 +215,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                 {/* Files / Documents with Viewers */}
                                 {post.attachments && post.attachments.filter(a => !a.type.startsWith('image/')).length > 0 && (
                                     <div className="mb-12">
-                                        <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Fitxers Adjunts i Interacció</h4>
+                                        <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">{t('community.postDetail.attachmentsTitle', 'Fitxers Adjunts i Interacció')}</h4>
                                         <div className="flex flex-col gap-8">
                                             {post.attachments.filter(a => !a.type.startsWith('image/')).map((file, i) => (
                                                 <FileViewerRenderer 
@@ -236,7 +238,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                                             <MessageSquare size={20} />
                                         </div>
-                                        <h3 className="text-xl font-bold text-white">Comentaris</h3>
+                                        <h3 className="text-xl font-bold text-white">{t('community.postDetail.commentsTitle', 'Comentaris')}</h3>
                                     </div>
                                     <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
                                 </div>

@@ -4,8 +4,10 @@ import type { NodeProps, Node } from '@xyflow/react';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
 import { motion } from 'framer-motion';
 import Tilt from 'react-parallax-tilt';
+import { useTranslation } from 'react-i18next';
 
 const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) => {
+    const { t } = useTranslation();
 
     // Hexagonal / Sci-Fi styles
     const getStatusStyles = () => {
@@ -97,12 +99,12 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
     };
 
     const getBottomTag = () => {
-        if (data.type === 'mobility') return 'MOBILITAT';
-        if (data.type === 'internship') return 'PRÀCTIQUES';
-        if (data.type === 'tfg') return 'TFG';
-        if (data.type === 'tfm') return 'TFM';
-        if (id.startsWith('VALIDATION_')) return 'ACTIVITATS';
-        if (id.startsWith('CFGS_')) return 'CFGS';
+        if (data.type === 'mobility') return t('planner.roadmapSubjectNode.tags.mobility', 'MOBILITAT');
+        if (data.type === 'internship') return t('planner.roadmapSubjectNode.tags.internship', 'PRÀCTIQUES');
+        if (data.type === 'tfg') return t('planner.roadmapSubjectNode.tags.tfg', 'TFG');
+        if (data.type === 'tfm') return t('planner.roadmapSubjectNode.tags.tfm', 'TFM');
+        if (id.startsWith('VALIDATION_')) return t('planner.roadmapSubjectNode.tags.activities', 'ACTIVITATS');
+        if (id.startsWith('CFGS_')) return t('planner.roadmapSubjectNode.tags.cfgs', 'CFGS');
         return id;
     };
 
@@ -162,7 +164,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             {/* ATTEMPTS BADGE */}
             {data.attempts > 1 && data.status !== 'passed' && (
                 <div className="absolute -top-2 -right-2 bg-amber-500 text-amber-950 text-[9px] font-black px-1.5 py-0.5 rounded-sm shadow-[0_0_10px_rgba(245,158,11,0.6)] border border-amber-300 z-20 flex items-center gap-1 transform rotate-3">
-                    <span className="animate-pulse">⚠️</span> INTENT {data.attempts}
+                    <span className="animate-pulse">⚠️</span> {t('planner.roadmapSubjectNode.attempt', 'INTENT')} {data.attempts}
                 </div>
             )}
 

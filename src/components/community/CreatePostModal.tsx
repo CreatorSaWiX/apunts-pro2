@@ -15,6 +15,7 @@ import type { CommunityPost } from '../../types/community';
 import RichTextEditor from '../ui/RichTextEditor';
 import { useSettings } from '../../contexts/SettingsContext';
 import { tailwindColors } from '../../contexts/SubjectContext';
+import { useTranslation } from 'react-i18next';
 
 const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
 const CUSTOM_EMOTES = Object.values(emojiModules) as string[];
@@ -25,6 +26,7 @@ interface CreatePostModalProps {
 }
 
 const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [content, setContent] = useState('');
     const [subject, setSubject] = useState<SubjectType>('');
@@ -63,7 +65,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
         const lastPost = localStorage.getItem(`last_post_${user.id}`);
         const now = Date.now();
         if (lastPost && now - parseInt(lastPost) < 30000) { 
-            setError("Espera un moment abans de publicar de nou.");
+            setError(t('community.createPost.waitLimit', 'Espera un moment abans de publicar de nou.'));
             setTimeout(() => setError(null), 5000);
             return;
         }
@@ -91,7 +93,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             onClose();
         } catch (err) {
             console.error(err);
-            setError("Error al publicar. Torna-ho a provar.");
+            setError(t('community.createPost.publishError', 'Error al publicar. Torna-ho a provar.'));
         } finally {
             setLoading(false);
         }
@@ -123,7 +125,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             userId: user.id,
             username: user.username,
             userAvatar: user.avatar || '',
-            content: debouncedContent.trim() || 'Comença a escriure per veure com queda...',
+            content: debouncedContent.trim() || t('community.createPost.previewPlaceholder', 'Comença a escriure per veure com queda...'),
             subject: subject,
             type: 'resource',
             attachments: attachments,
@@ -145,7 +147,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                         <div className="flex-1 flex flex-col relative z-10 w-full md:w-3/5">
                             
                             <Modal.Header className="!px-8 !py-6 !border-none !bg-transparent">
-                                <h2 className="text-2xl font-bold text-white tracking-tight">Nou recurs</h2>
+                                <h2 className="text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
                             </Modal.Header>
 
                             {/* Content Area */}
@@ -165,7 +167,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                                 boxShadow: `0 0 10px rgba(${tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary_rgb || '14, 165, 233'}, 0.8)`
                                             } : { backgroundColor: '#64748b' }} 
                                         />
-                                        {activeSubject ? activeSubject.label : 'Sense assignatura'}
+                                        {activeSubject ? activeSubject.label : t('community.createPost.noSubject', 'Sense assignatura')}
                                         <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors ml-1" />
                                     </button>
                                 </div>
@@ -176,7 +178,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                         <RichTextEditor 
                                             content={content} 
                                             onChange={setContent} 
-                                            placeholder="Títol de l'apunt... Comença a escriure aquí"
+                                            placeholder={t('community.createPost.noteModePlaceholder', "Títol de l'apunt... Comença a escriure aquí")}
                                             editorRef={setEditorInstance}
                                         />
                                     ) : (
@@ -184,7 +186,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                             ref={textareaRef}
                                             value={content}
                                             onChange={(e) => setContent(e.target.value)}
-                                            placeholder="Comparteix coneixement..."
+                                            placeholder={t('community.createPost.standardPlaceholder', "Comparteix coneixement...")}
                                             className="w-full h-full bg-transparent text-white placeholder:text-slate-600 text-xl font-medium resize-none outline-none overflow-hidden"
                                         />
                                     )}
@@ -238,7 +240,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                             type="button"
                                             onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); }}
                                             className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
-                                            title="Afegir GIF"
+                                            title={t('community.createPost.addGif', 'Afegir GIF')}
                                         >
                                             <ImageIcon size={20} />
                                         </button>
@@ -257,7 +259,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                             type="button"
                                             onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); }}
                                             className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
-                                            title="Afegir Emote personalitzat"
+                                            title={t('community.createPost.addEmote', 'Afegir Emote personalitzat')}
                                         >
                                             <Smile size={20} />
                                         </button>
@@ -293,10 +295,10 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                         type="button"
                                         onClick={() => setIsNoteMode(!isNoteMode)}
                                         className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all ${isNoteMode ? 'bg-white/10 text-white border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]' : 'bg-white/5 text-slate-400 hover:text-white border-white/10 hover:bg-white/10'}`}
-                                        title="Mode Apunt Extens (Notion style)"
+                                        title={t('community.createPost.noteModeTitle', 'Mode Apunt Extens (Notion style)')}
                                     >
                                         <FileText size={14} />
-                                        <span className="hidden sm:inline">Apunt Extens</span>
+                                        <span className="hidden sm:inline">{t('community.createPost.extendedNote', 'Apunt Extens')}</span>
                                     </button>
                                 </div>
 
@@ -306,7 +308,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                     className="px-8 py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                                 >
                                     {loading && <Spinner size="sm" variant="primary" />}
-                                    Publicar
+                                    {t('community.createPost.publishBtn', 'Publicar')}
                                 </button>
                             </div>
                         </div>
@@ -320,7 +322,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                             <div className="flex items-center justify-between px-8 py-6 relative z-10">
                                 <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    Live Preview
+                                    {t('community.createPost.livePreview', 'Live Preview')}
                                 </div>
                             </div>
 
@@ -330,7 +332,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                 </div>
                                 
                                 <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-[250px]">
-                                    Així es veurà el teu apunt a la Comunitat
+                                    {t('community.createPost.livePreviewDesc', 'Així es veurà el teu apunt a la Comunitat')}
                                 </p>
                             </div>
                         </div>

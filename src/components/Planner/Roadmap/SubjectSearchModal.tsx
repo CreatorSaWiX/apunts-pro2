@@ -5,27 +5,30 @@ import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { specializations } from '../../../data/curriculum';
 import { motion } from 'framer-motion';
 import Modal from '../../ui/Modal';
+import { useTranslation } from 'react-i18next';
 
 interface SubjectSearchModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-const CATEGORIES = [
-    { id: 'all', label: 'Totes' },
-    { id: 'comp', label: 'Complementàries', icon: <Zap size={14} className="text-amber-400" /> },
-    { id: 'C', label: 'Computació' },
-    { id: 'ES', label: 'Enginyeria del Software' },
-    { id: 'EC', label: 'Enginyeria de Computadors' },
-    { id: 'SI', label: 'Sistemes d\'Informació' },
-    { id: 'TI', label: 'Tecnologies de la Informació' },
-    { id: 'altres', label: 'Transversals' }
-];
-
 const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose }) => {
+    const { t } = useTranslation();
     const { nodes, addSubjectNode } = useRoadmap();
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilter, setActiveFilter] = useState('all');
+
+    const CATEGORIES = useMemo(() => [
+        { id: 'all', label: t('planner.roadmapSubjectSearch.categories.all', 'Totes') },
+        { id: 'comp', label: t('planner.roadmapSubjectSearch.categories.complementary', 'Complementàries'), icon: <Zap size={14} className="text-amber-400" /> },
+        { id: 'C', label: t('planner.roadmapSubjectSearch.categories.computing', 'Computació') },
+        { id: 'ES', label: t('planner.roadmapSubjectSearch.categories.softwareEngineering', 'Enginyeria del Software') },
+        { id: 'EC', label: t('planner.roadmapSubjectSearch.categories.computerEngineering', 'Enginyeria de Computadors') },
+        { id: 'SI', label: t('planner.roadmapSubjectSearch.categories.informationSystems', 'Sistemes d\'Informació') },
+        { id: 'TI', label: t('planner.roadmapSubjectSearch.categories.informationTechnologies', 'Tecnologies de la Informació') },
+        { id: 'altres', label: t('planner.roadmapSubjectSearch.categories.transversals', 'Transversals') }
+    ], [t]);
+
     const inputRef = useRef<HTMLInputElement>(null);
 
     // Determine current specialization to highlight its complementary subjects
@@ -104,7 +107,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
 
                 <Modal.Header>
                     <div className="flex flex-col">
-                        <span className="text-xl font-bold text-white tracking-tight">Buscar Assignatura</span>
+                        <span className="text-xl font-bold text-white tracking-tight">{t('planner.roadmapSubjectSearch.searchSubject', 'Buscar Assignatura')}</span>
                     </div>
                 </Modal.Header>
 
@@ -115,7 +118,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                         <input
                             ref={inputRef}
                             type="text"
-                            placeholder="Busca per nom o codi..."
+                            placeholder={t('planner.roadmapSubjectSearch.searchPlaceholder', 'Busca per nom o codi...')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
@@ -167,8 +170,8 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                                                 <Search size={32} className="text-sky-400/80" />
                                             </div>
                                         </div>
-                                        <h3 className="text-2xl font-bold text-white mb-2">No hem trobat res</h3>
-                                        <p className="text-lg text-slate-400">Intenta buscar amb una altra paraula o canvia de filtre.</p>
+                                        <h3 className="text-2xl font-bold text-white mb-2">{t('planner.roadmapSubjectSearch.nothingFound', 'No hem trobat res')}</h3>
+                                        <p className="text-lg text-slate-400">{t('planner.roadmapSubjectSearch.tryAnotherWord', 'Intenta buscar amb una altra paraula o canvia de filtre.')}</p>
                                     </motion.div>
                                 ) : (
                                     <motion.div 
@@ -211,7 +214,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                                                                 </span>
                                                                 {isComplementary && (
                                                                     <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 text-[10px] font-bold uppercase tracking-widest border border-amber-500/20 flex items-center gap-1">
-                                                                        <Zap size={10} /> Rec
+                                                                        <Zap size={10} /> {t('planner.roadmapSubjectSearch.rec', 'Rec')}
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -233,14 +236,14 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                                                                 ))}
                                                                 {subject.specs.length > 3 && (
                                                                     <span className="text-[10px] font-bold text-slate-500 bg-slate-800/30 px-2 py-1 rounded-md">
-                                                                        +{subject.specs.length - 3} més
+                                                                        {t('planner.roadmapSubjectSearch.plusMore', '+{{count}} més', { count: subject.specs.length - 3 })}
                                                                     </span>
                                                                 )}
                                                             </div>
                                                         ) : (
                                                             <div className="flex flex-wrap gap-2 mt-auto">
                                                                 <span className="text-[10px] font-bold text-slate-500 bg-slate-800/30 px-2 py-1 rounded-md border border-white/5">
-                                                                    Transversal
+                                                                    {t('planner.roadmapSubjectSearch.transversal', 'Transversal')}
                                                                 </span>
                                                             </div>
                                                         )}

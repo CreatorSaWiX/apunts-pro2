@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, StopCircle, Plus, X } from 'lucide-react';
+import { ArrowUp, StopCircle, Plus, X } from 'lucide-react';
 import { useTasks } from '../../contexts/TasksContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import AIStreamingIndicator, { type StreamPhase } from '../AIStreamingIndicator';
 
 interface AIPromptBarProps {
@@ -11,6 +12,7 @@ interface AIPromptBarProps {
 }
 
 const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
+    const { t } = useTranslation();
     const [prompt, setPrompt] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
     const [streamPhase, setStreamPhase] = useState<StreamPhase>('idle');
@@ -26,11 +28,11 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
 
     const processFile = (file: File) => {
         if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
-            setError('Només es permeten imatges o PDFs.');
+            setError(t('planner.ai.errorFiles', 'Només es permeten imatges o PDFs.'));
             return;
         }
         if (file.size > 5 * 1024 * 1024) {
-            setError("L'arxiu és massa gran. Màxim 5MB.");
+            setError(t('planner.ai.errorSize', "L'arxiu és massa gran. Màxim 5MB."));
             return;
         }
         setError(null);
@@ -109,12 +111,12 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
             });
 
             if (!response.ok) {
-                const data = await response.json().catch(() => ({ error: 'Error desconegut' }));
-                throw new Error(data.error || 'Error al generar tasques');
+                const data = await response.json().catch(() => ({ error: t('planner.ai.errorUnknown', 'Error desconegut') }));
+                throw new Error(data.error || t('planner.ai.errorGenerate', 'Error al generar tasques'));
             }
 
             const reader = response.body?.getReader();
-            if (!reader) throw new Error('El navegador no suporta streaming');
+            if (!reader) throw new Error(t('planner.ai.errorStreaming', 'El navegador no suporta streaming'));
 
             const decoder = new TextDecoder();
             let sseBuffer = '';
@@ -288,7 +290,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
 
                                 {/* File Input */}
                                 <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf" onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
-                                <button onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-1.5 ml-1" title="Adjuntar imatge o PDF">
+                                <button onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-1.5 ml-1" title={t('planner.ai.attach', "Adjuntar imatge o PDF")}>
                                     <Plus size={20} />
                                 </button>
 
@@ -307,7 +309,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                                             onChange={(e) => setPrompt(e.target.value)}
                                             onKeyDown={handleKeyDown}
                                             disabled={isGenerating}
-                                            placeholder="Escriu què necessites planificar..."
+                                            placeholder={t('planner.ai.placeholder', "Escriu què necessites planificar...")}
                                             className="w-full max-h-[200px] bg-transparent text-[15px] leading-relaxed text-white placeholder:text-slate-500 focus:outline-none resize-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                                             rows={1}
                                         />

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { Search, Command, ChevronRight, X } from 'lucide-react';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -6,8 +6,10 @@ import { tailwindColors } from '../../contexts/SubjectContext';
 import subjectsData from '../../data/subjects.json';
 import NavigationPill from '../ui/NavigationPill';
 import { Modal } from '../ui/Modal';
+import { useTranslation } from 'react-i18next';
 
 export const SubjectsSection = () => {
+    const { t } = useTranslation();
     const { homeSubjects, setHomeSubjects, customSubjectColors, setCustomSubjectColors } = useSettings();
     const [searchQuery, setSearchQuery] = useState('');
     const [isCommandOpen, setIsCommandOpen] = useState(false);
@@ -41,14 +43,14 @@ export const SubjectsSection = () => {
     const toggleSubject = (subjectId: string) => {
         if (homeSubjects.includes(subjectId)) {
             if (homeSubjects.length <= 1) {
-                setSubjectError("Has de deixar com a mínim una assignatura a l'Inici.");
+                setSubjectError(t('settings.subjects.minError', "Has de deixar com a mínim una assignatura a l'Inici."));
                 return;
             }
             setSubjectError(null);
             setHomeSubjects(homeSubjects.filter(id => id !== subjectId));
         } else {
             if (homeSubjects.length >= 6) {
-                setSubjectError("Pots tenir un màxim de 6 assignatures a l'Inici.");
+                setSubjectError(t('settings.subjects.maxError', "Pots tenir un màxim de 6 assignatures a l'Inici."));
                 return;
             }
             setSubjectError(null);
@@ -59,8 +61,8 @@ export const SubjectsSection = () => {
     return (
         <div id="subjects" className="flex flex-col gap-6 w-full pt-6 pb-12">
             <div className="w-full">
-                <h2 className="text-2xl font-bold text-white mb-1">Assignatures</h2>
-                <p className="text-slate-400 text-sm font-medium">Gestiona les teves assignatures a l'Inici. Pots personalitzar el color de cadascuna.</p>
+                <h2 className="text-2xl font-bold text-white mb-1">{t('settings.subjects.title', 'Assignatures')}</h2>
+                <p className="text-slate-400 text-sm font-medium">{t('settings.subjects.subtitle', "Gestiona les teves assignatures a l'Inici. Pots personalitzar el color de cadascuna.")}</p>
             </div>
 
             {/* Premium Command Palette */}
@@ -71,7 +73,7 @@ export const SubjectsSection = () => {
                     <Search size={20} className={`ml-4 mr-3 ${isCommandOpen ? 'text-white' : 'text-slate-500'} transition-colors duration-300`} />
                     <input
                         type="text"
-                        placeholder="Cerca i afegeix assignatures..."
+                        placeholder={t('settings.subjects.searchPlaceholder', "Cerca i afegeix assignatures...")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onFocus={() => setIsCommandOpen(true)}
@@ -104,7 +106,7 @@ export const SubjectsSection = () => {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     if (homeSubjects.length >= 6) {
-                                                        setSubjectError("Pots tenir un màxim de 6 assignatures a l'Inici.");
+                                                        setSubjectError(t('settings.subjects.maxError', "Pots tenir un màxim de 6 assignatures a l'Inici."));
                                                         setSearchQuery('');
                                                         setIsCommandOpen(false);
                                                         return;
@@ -126,7 +128,7 @@ export const SubjectsSection = () => {
                                     })}
                                 </div>
                             ) : (
-                                <div className="p-6 text-center text-slate-500 font-medium">No s'han trobat resultats</div>
+                                <div className="p-6 text-center text-slate-500 font-medium">{t('settings.subjects.noResults', "No s'han trobat resultats")}</div>
                             )}
                         </motion.div>
                     )}
@@ -195,7 +197,7 @@ export const SubjectsSection = () => {
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="text-slate-600 text-sm font-medium italic mt-2"
                     >
-                        Cap assignatura afegida actualment.
+                        {t('settings.subjects.empty', "Cap assignatura afegida actualment.")}
                     </motion.div>
                 )}
 
@@ -215,8 +217,8 @@ export const SubjectsSection = () => {
             <div className="w-full mt-2 flex flex-col gap-4 bg-white/[0.02] border border-white/5 p-6 rounded-2xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="flex flex-col gap-1">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Vista Prèvia del Navbar</span>
-                    <span className="text-[13px] text-slate-400">Així es veurà el teu menú principal.</span>
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t('settings.subjects.previewTitle', 'Vista Prèvia del Navbar')}</span>
+                    <span className="text-[13px] text-slate-400">{t('settings.subjects.previewSubtitle', 'Així es veurà el teu menú principal.')}</span>
                 </div>
 
                 <div className="flex items-center mt-2 relative z-10 w-full h-[72px] bg-[#0a0d16] rounded-xl border border-white/5 px-4 shadow-inner overflow-x-auto custom-scrollbar">
@@ -262,7 +264,7 @@ export const SubjectsSection = () => {
                             </AnimatePresence>
                         </NavigationPill>
                     ) : (
-                        <span className="text-slate-600 text-sm italic w-full text-center">Afegeix assignatures per veure el navbar</span>
+                        <span className="text-slate-600 text-sm italic w-full text-center">{t('settings.subjects.addPreview', 'Afegeix assignatures per veure el navbar')}</span>
                     )}
                 </div>
             </div>
@@ -276,7 +278,7 @@ export const SubjectsSection = () => {
                 {editingSubjectColor && (
                     <div className="p-8">
                         <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-2xl font-black text-white">Color de {editingSubjectColor}</h3>
+                            <h3 className="text-2xl font-black text-white">{t('settings.subjects.colorOf', 'Color de')} {editingSubjectColor}</h3>
                         </div>
 
                         <div className="grid grid-cols-5 gap-4">
@@ -315,7 +317,7 @@ export const SubjectsSection = () => {
                                 }}
                                 className="text-xs font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wider outline-none"
                             >
-                                Restablir per defecte
+                                {t('settings.subjects.reset', 'Restablir per defecte')}
                             </button>
                         </div>
                     </div>

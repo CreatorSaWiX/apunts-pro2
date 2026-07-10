@@ -1,0 +1,706 @@
+{
+  "navigation": {
+    "courseSyllabus": "Temario del Curso",
+    "labs": "Laboratorios",
+    "madeWithLove": "Hecho con ❤️ para la FIB"
+  },
+  "settings": {
+    "contributor": "Colaborador",
+    "title": "Ajustes",
+    "subtitle": "Configuración de portada",
+    "subject": "Asignatura",
+    "language": "Idioma",
+    "languageDesc": "El idioma principal de la aplicación.",
+    "links": "Enlaces",
+    "sourceCode": "Código Fuente",
+    "contributors": "Colaboradores",
+    "about": "Acerca de",
+    "aboutDescription": "Información sobre el proyecto y las personas que lo hacen posible.",
+    "repository": "Repositorio",
+    "openSource": "Código abierto en GitHub",
+    "teamBehind": "El equipo detrás del proyecto",
+    "devTeam": "El equipo de desarrollo",
+    "subjects": {
+      "title": "Asignaturas",
+      "subtitle": "Gestiona tus asignaturas en Inicio. Puedes personalizar el color de cada una.",
+      "searchPlaceholder": "Busca y añade asignaturas...",
+      "minError": "Debes dejar al menos una asignatura en Inicio.",
+      "maxError": "Puedes tener un máximo de 6 asignaturas en Inicio.",
+      "noResults": "No se encontraron resultados",
+      "empty": "Ninguna asignatura añadida actualmente.",
+      "previewTitle": "Vista Previa del Navbar",
+      "previewSubtitle": "Así se verá tu menú principal.",
+      "addPreview": "Añade asignaturas para ver el navbar",
+      "colorOf": "Color de",
+      "reset": "Restablecer por defecto"
+    },
+    "offline": {
+      "title": "Almacenamiento Offline",
+      "subtitle": "Gestiona qué datos se guardan en el dispositivo para acceder sin internet.",
+      "local": "Almacenamiento Local",
+      "localSub": "Total ocupado por la aplicación en tu dispositivo.",
+      "appShell": "App Shell (JS/CSS/HTML)",
+      "metadata": "IndexedDB / Metadatos",
+      "autoSync": "Actualización automática",
+      "download": "Descargar",
+      "delete": "Eliminar",
+      "noInternet": "No puedes descargar contenido sin conexión a internet.",
+      "empty": "No hay materiales disponibles para descargar actualmente.",
+      "pdfsDesc": "Toda la colección de PDFs del grado.",
+      "resourcesDesc": "Material y recursos para",
+      "filesAvailable": "archivos disponibles"
+    },
+    "ai": {
+      "title": "Asistente IA",
+      "subtitle": "Configura la personalidad y el comportamiento de tu copiloto. Esta funcionalidad está inspirada en",
+      "identity": "Identidad (Quién soy)",
+      "change": "Cambiar",
+      "name": "Nombre de la IA",
+      "pronouns": "Pronombres",
+      "howToCallYou": "¿Cómo quieres que te llame?",
+      "useUsername": "Usar nombre de usuario",
+      "vibe": "Personalidad (Vibe)",
+      "vibePlaceholder": "Define el tono general, el estilo de conversación y cómo te hará sentir la IA...",
+      "soul": "Alma (Reglas de comportamiento)",
+      "rules": "Reglas (Rules)",
+      "boundaries": "Límites (Boundaries)",
+      "customDirectives": "Directrices Personalizadas",
+      "managedByAi": "Esto lo gestiona la IA autónomamente",
+      "forceEdit": "Forzar Modificación",
+      "longTermMemory": "Memoria a Largo Plazo",
+      "memoryDesc": "Estos son los detalles que la IA ha aprendido sobre ti para personalizar tu experiencia.",
+      "noMemories": "La IA todavía no tiene memorias guardadas.",
+      "deleteMemory": "Borrar memoria",
+      "modifying": "Modificando",
+      "soulChangeDesc": "Estos cambios serán aprendidos inmediatamente y pasarán a formar parte del alma del asistente.",
+      "saveToSoul": "Guardar en el alma",
+      "soulPlaceholder": "Escribe aquí las instrucciones..."
+    },
+    "privacy": {
+      "title": "Privacidad y Condiciones",
+      "subtitle": "Revisa la política de tratamiento de tus datos.",
+      "readDocs": "Leer documentación"
+    },
+    "deleteAcc": {
+      "title": "Eliminar cuenta",
+      "subtitle": "Borra de forma permanente tu cuenta y todos tus datos asociados.",
+      "button": "Eliminar mi cuenta",
+      "deleting": "Borrando...",
+      "errorRecentLogin": "Por motivos de seguridad, necesitas cerrar sesión y volver a entrar para poder borrar tu cuenta.",
+      "errorGeneric": "Ha habido un error borrando la cuenta.",
+      "confirmTitle": "Borrar cuenta",
+      "confirmMessage": "¿Estás totalmente seguro? Esta acción borrará tu cuenta, todos los chats, tareas y apuntes de forma irreversible.",
+      "confirmYes": "Sí, borrar",
+      "confirmNo": "Cancelar"
+    }
+  },
+  "common": {
+    "back": "Volver",
+    "languages": {
+      "ca": "Català",
+      "es": "Español",
+      "en": "English"
+    },
+    "confirmModal": {
+      "title": "¿Estás seguro?",
+      "message": "Esta acción no se puede deshacer.",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar"
+    },
+    "expired": "Caducado",
+    "remaining": "Faltan",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "fileUploader": {
+      "dragFiles": "Arrastra archivos para adjuntar",
+      "supportedTypes": "Código, PDFs, Vídeos, 3D, Imágenes, ZIP (Máximo {{max}}MB por archivo)",
+      "uploading": "Preparando y subiendo a la red...",
+      "uploadFailed": "Error de subida",
+      "uploadSuccess": "¡Archivo subido!"
+    }
+  },
+  "topics": {
+    "topic": "Tema",
+    "new": "Nuevo",
+    "updated": "Actualizado",
+    "explore": "Explorar tema",
+    "solutions": {
+      "m1": "Solucionarios M1",
+      "m2": "Solucionarios M2",
+      "lab": "Solucionarios Lab",
+      "jutge": "Solucionarios Jutge"
+    }
+  },
+  "planner": {
+    "time": "Hora",
+    "previewTitle": "Vista del Planificador",
+    "previewSubtitle": "Elige la vista por defecto en la pestaña Planificador.",
+    "board": "Tablero",
+    "calendar": "Calendario",
+    "timeline": "Línea de tiempo",
+    "roadmap": "Roadmap",
+    "ai": {
+      "errorFiles": "Solo se permiten imágenes o PDFs.",
+      "errorSize": "El archivo es demasiado grande. Máximo 5MB.",
+      "errorUnknown": "Error desconocido",
+      "errorGenerate": "Error al generar tareas",
+      "errorStreaming": "El navegador no soporta streaming",
+      "attach": "Adjuntar imagen o PDF",
+      "placeholder": "Escribe qué necesitas planificar..."
+    },
+    "filters": {
+      "all": "Todas",
+      "subjects": "Asignaturas",
+      "priority": "Prioridad",
+      "priorities": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja"
+      },
+      "deadline": "Fecha Límite",
+      "dateRanges": {
+        "all": "Todas las fechas",
+        "today": "Hoy",
+        "thisWeek": "Esta semana",
+        "thisMonth": "Este mes",
+        "thisTerm": "Este cuatrimestre"
+      }
+    },
+    "contextMenu": {
+      "copySuffix": " (Copia)",
+      "changePriority": "Cambiar Prioridad",
+      "duplicate": "Duplicar",
+      "delete": "Eliminar"
+    },
+    "popover": {
+      "titlePlaceholder": "Título...",
+      "subject": "Asignatura",
+      "noSubject": "Sin Asignatura",
+      "searchSubject": "Buscar asignatura...",
+      "noneSubject": "Ninguna asignatura",
+      "priorityLow": "BAJO",
+      "priorityMedium": "MEDIO",
+      "priorityHigh": "ALTO"
+    },
+    "unscheduled": {
+      "backlog": "Backlog",
+      "toPlan": "Por planificar"
+    },
+    "boardView": {
+      "colorTitle": "Haz clic para cambiar el color",
+      "clearConfirm": "¿Seguro que quieres eliminar TODAS las tareas de esta lista?",
+      "clearList": "Vaciar lista",
+      "deleteList": "Eliminar lista",
+      "addTask": "Añadir tarea",
+      "doubleClickToAdd": "Haz doble clic para añadir",
+      "newTaskTitle": "Título de la tarea...",
+      "cancel": "Cancelar",
+      "create": "Crear",
+      "noSubject": "Sin asignatura",
+      "subject": "Asignatura",
+      "startDate": "Fecha inicio",
+      "dueDate": "Fecha límite",
+      "doubleClickHint": "Doble clic para añadir tarea",
+      "addList": "Añadir lista",
+      "createList": "CREAR LISTA",
+      "listName": "Nombre de la lista...",
+      "priority": "Prioridad"
+    },
+    "calendarView": {
+      "week": "Sem",
+      "month": "Mes",
+      "year": "Año"
+    },
+    "roadmapExperienceSelector": {
+      "addBlock": "Añadir Bloque",
+      "configureSubtitle": "Configura estancias, prácticas o proyectos para tu roadmap.",
+      "mobility": "Movilidad",
+      "internationalStays": "Estancias Internacionales",
+      "internship": "Prácticas",
+      "companyExperience": "Experiencia en Empresa",
+      "internationalStayTitle": "Estancia internacional",
+      "internationalStayDesc": "Añade tu intercambio Erasmus+, SICUE u otros programas internacionales.",
+      "universityDest": "Universidad / Destino",
+      "searchPlaceholder": "Busca por nombre o país...",
+      "officialWeb": "Sitio Web Oficial",
+      "downloadDoc": "Descargar Documentación",
+      "program": "Programa",
+      "creditsEcts": "Créditos (ECTS)",
+      "internshipTitle": "Prácticas empresa",
+      "internshipDesc": "Añade prácticas curriculares o extracurriculares a tu expediente.",
+      "company": "Empresa",
+      "companyPlaceholder": "Ej: Google, inLab FIB, etc.",
+      "role": "Rol / Posición",
+      "rolePlaceholder": "Ej: Software Engineer Intern",
+      "recognitionCredits": "Créditos Reconocimiento (ECTS)",
+      "addToRoadmap": "Añadir al Roadmap",
+      "noResultsFound": "Ningún resultado encontrado"
+    },
+    "roadmapSpecialization": {
+      "specializationsTitle": "Menciones",
+      "chooseYourPath": "Elige tu camino hacia la excelencia profesional.",
+      "whyChooseIt": "¿Por qué elegirla?",
+      "mandatory": "Obligatorias",
+      "careerPaths": "Salidas Profesionales",
+      "keyBenefits": "Beneficios Clave",
+      "alreadySelected": "Ya Seleccionada",
+      "selectSpecialization": "Seleccionar Especialidad"
+    },
+    "roadmapValidations": {
+      "title": "Convalidaciones",
+      "subtitle": "Añade créditos a tu mochila a través de ciclos formativos o actividades extraescolares.",
+      "otherActivities": "Otras Actividades",
+      "universityActivities": "Actividades Universitarias",
+      "activityExamples": "Game Jams, Deportes, Idiomas",
+      "cfgs": "Ciclos Formativos (CFGS)",
+      "cfgsDisclaimer": "Al aplicar esta convalidación, las siguientes asignaturas se añadirán directamente a tu expediente. Se sustituirá cualquier CFGS que ya tuvieras convalidado previamente.",
+      "creditsObtained": "Créditos Obtenidos",
+      "recognizedModules": "Módulos Reconocimientos",
+      "validatedSubjects": "Asignaturas Convalidadas",
+      "customDisclaimer": "Añade manualmente los créditos reconocidos por actividades extracadémicas como el deporte, idiomas o representación estudiantil. Estos se añadirán como optativas superadas.",
+      "recommendedLimit": "Límite Recomendado",
+      "maxEcts": "6 ECTS máximo por itinerario",
+      "officialSuggestions": "Sugerencias Oficiales FIB",
+      "activityName": "Nombre de la actividad",
+      "creditsEcts": "Créditos ECTS",
+      "selectCycle": "Selecciona un ciclo",
+      "selectCycleDesc": "Elige un Ciclo Formativo para ver qué asignaturas se te convalidarán automáticamente.",
+      "alreadySelected": "Ya Seleccionada",
+      "applyCredits": "Aplicar {{credits}} ECTS",
+      "addToRecord": "Añadir al expediente"
+    },
+    "roadmapSubjectSearch": {
+      "searchSubject": "Buscar Asignatura",
+      "searchPlaceholder": "Busca por nombre o código...",
+      "nothingFound": "No hemos encontrado nada",
+      "tryAnotherWord": "Intenta buscar con otra palabra o cambia de filtro.",
+      "plusMore": "+{{count}} más",
+      "transversal": "Transversal",
+      "rec": "Rec",
+      "categories": {
+        "all": "Todas",
+        "complementary": "Complementarias",
+        "computing": "Computación",
+        "softwareEngineering": "Ingeniería del Software",
+        "computerEngineering": "Ingeniería de Computadores",
+        "informationSystems": "Sistemas de Información",
+        "informationTechnologies": "Tecnologías de la Información",
+        "transversals": "Transversales"
+      }
+    },
+    "roadmapSubjectDetails": {
+      "infoNotAvailable": "Información no disponible",
+      "infoNotAvailableDesc": "No se han podido descargar los datos de la FIB para esta asignatura. Es posible que no esté disponible en el plan de estudios actual.",
+      "close": "Cerrar",
+      "officialFib": "FIB Oficial",
+      "credits": "Créditos",
+      "type": "Tipo",
+      "mandatory": "Obligatoria",
+      "sections": "Secciones",
+      "evaluativeAct": "Acto Evaluativo",
+      "week": "Semana {{week}}",
+      "relatedObjectives": "Objetivos relacionados",
+      "hours": "HORAS",
+      "tabs": {
+        "Professorat": "Profesorado",
+        "Hores setmanals": "Horas semanales",
+        "Competències": "Competencias",
+        "Objectius": "Objetivos",
+        "Continguts": "Contenidos",
+        "Activitats": "Actividades",
+        "Metodologia docent": "Metodología docente",
+        "Mètode d'avaluació": "Método de evaluación",
+        "Bibliografia": "Bibliografía",
+        "Capacitats prèvies": "Capacidades previas"
+      }
+    },
+    "roadmapSubjectContextMenu": {
+      "badgeMobility": "MOVILIDAD",
+      "badgeInternship": "PRÁCTICAS",
+      "badgeTfg": "TFG",
+      "badgeTfm": "TFM",
+      "destination": "Destino",
+      "program": "Programa",
+      "company": "Empresa",
+      "role": "Rol",
+      "information": "Información",
+      "inProgress": "En Curso",
+      "recognized": "Reconocida",
+      "passed": "Aprobada",
+      "finalGrade": "Nota Final",
+      "exactGradePlaceholder": "Nota exacta (ej: 8.4)",
+      "failed": "Suspendida",
+      "retake": "Volver a matricular",
+      "delete": "Eliminar"
+    },
+    "roadmapSubjectNode": {
+      "tags": {
+        "mobility": "MOVILIDAD",
+        "internship": "PRÁCTICAS",
+        "tfg": "TFG",
+        "tfm": "TFM",
+        "activities": "ACTIVIDADES",
+        "cfgs": "CFGS"
+      },
+      "attempt": "INTENTO"
+    },
+    "roadmapAI": {
+      "suggestions": {
+        "hardware": "¿Qué debo hacer si quiero ser hardware engineer?",
+        "addAI": "Añade IA a mi roadmap",
+        "evalEDA": "¿Cómo se evalúa EDA?"
+      },
+      "connecting": "Conectando y analizando tu roadmap...",
+      "added": "Añadido",
+      "removed": "Eliminado",
+      "placeholder": "Escribe un mensaje a {{name}}...",
+      "attachTooltip": "Adjuntar imagen o PDF"
+    }
+  },
+  "nav": {
+    "home": "Inicio",
+    "community": "Comunidad",
+    "planner": "Planificador",
+    "settings": "Configuración",
+    "profile": "Mi perfil",
+    "login": "Iniciar Sesión"
+  },
+  "hero": {
+    "newVersion": "Hay una nueva versión",
+    "lastUpdate": "Última actualización:",
+    "superem": "Superemos",
+    "junts": "juntos",
+    "word1": "el curso.",
+    "word2": "el semestre.",
+    "word3": "la carrera.",
+    "subtitle": "Comparte tus recursos, encuentra los mejores apuntes y ayuda a tus compañeros. Porque aquí el éxito es colectivo y ",
+    "nobodyBehind": "no dejamos a nadie atrás",
+    "uploadResource": "Subir Recurso"
+  },
+  "topic": {
+    "test": "Test",
+    "solutions": "Solucionarios",
+    "backToHome": "Volver a Inicio",
+    "openInGithub": "Abrir en GitHub",
+    "downloadPDF": "Descargar PDF",
+    "readTime": "minutos de lectura"
+  },
+  "solutions": {
+    "title": "Solucionarios de",
+    "subtitle": "Selecciona un problema para ver la solución"
+  },
+  "community": {
+    "subjects": "Asignaturas",
+    "subjectsShort": "Asig.",
+    "rarity": "Rareza",
+    "rarityShort": "Rar.",
+    "anyRarity": "Cualquier rareza",
+    "search": "Buscar",
+    "searchPlaceholder": "Busca apuntes...",
+    "offlineTitle": "Sin conexión",
+    "offlineSubtitle": "Actualmente estás offline. Para consultar los recursos de la comunidad o subir uno nuevo debes conectarte a Internet.",
+    "emptyTitle": "Aún no hay apuntes",
+    "emptySubtitle": "No hay ningún recurso compartido para esta asignatura. Sé el primero en aportar valor a la comunidad y destacar.",
+    "uploadFirst": "Subir el primer recurso",
+    "createPost": {
+      "title": "Nuevo recurso",
+      "waitLimit": "Espera un momento antes de publicar de nuevo.",
+      "publishError": "Error al publicar. Vuelve a intentarlo.",
+      "previewPlaceholder": "Empieza a escribir para ver cómo queda...",
+      "noSubject": "Sin asignatura",
+      "noteModePlaceholder": "Título del apunte... Empieza a escribir aquí",
+      "standardPlaceholder": "Comparte conocimiento...",
+      "addGif": "Añadir GIF",
+      "addEmote": "Añadir Emote personalizado",
+      "noteModeTitle": "Modo Apunte Extenso (Notion style)",
+      "extendedNote": "Apunte Extenso",
+      "publishBtn": "Publicar",
+      "livePreview": "Live Preview",
+      "livePreviewDesc": "Así se verá tu apunte en la Comunidad"
+    },
+    "postDetail": {
+      "actionNote": "Ha creado un apunte extenso",
+      "actionQuestion": "Ha preguntado una duda",
+      "actionResource": "Ha compartido un recurso",
+      "like": "Me gusta",
+      "deleteTooltip": "Eliminar publicación",
+      "deleteConfirm": "¿Seguro que quieres eliminar esta publicación? Esta acción no se puede deshacer.",
+      "deleteError": "Error al eliminar la publicación.",
+      "attachmentsTitle": "Archivos Adjuntos e Interacción",
+      "commentsTitle": "Comentarios"
+    },
+    "subjectSelector": {
+      "searchPlaceholder": "Busca por acrónimo o nombre completo...",
+      "discoverAll": "Descubrir Todo",
+      "discoverAllDesc": "Muestra todo el contenido de la comunidad",
+      "noSubject": "Sin asignatura",
+      "noSubjectDesc": "Publicación general de la comunidad",
+      "notFound": "No se ha encontrado ninguna asignatura."
+    }
+  },
+  "auth": {
+    "login": {
+      "invalidCreds": "Credenciales incorrectas. Vuelve a intentarlo.",
+      "errorLogin": "Hubo un error al iniciar sesión: ",
+      "enterEmail": "Introduce tu correo electrónico.",
+      "errorReset": "No se pudo enviar el correo. Comprueba que la dirección sea correcta.",
+      "title": "Iniciar Sesión",
+      "subtitle": "Entiende las bases tecnológicas del mundo digital.",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "forgotPassword": "¿Has olvidado la contraseña?",
+      "submit": "Acceder al cuenta",
+      "noAccount": "¿No tienes cuenta todavía? ",
+      "registerNow": "Regístrate ahora",
+      "recoverTitle": "Recuperar",
+      "recoverSubtitle": "Te enviaremos un enlace para restablecer tu contraseña.",
+      "sendLink": "Enviar Enlace",
+      "emailSent": "¡Correo Enviado!",
+      "emailSentDesc1": "Te hemos enviado un correo a ",
+      "emailSentDesc2": " con instrucciones para restablecer tu contraseña.",
+      "backToLogin": "Volver a Iniciar Sesión"
+    },
+    "register": {
+      "emailInUse": "Este correo electrónico ya está registrado.",
+      "weakPassword": "La contraseña debe tener al menos 6 caracteres.",
+      "invalidEmail": "El correo electrónico no es válido.",
+      "errorRegister": "Error al registrarse. Verifica los datos introducidos.",
+      "title": "Crear cuenta",
+      "subtitle": "Accede a la arquitectura del conocimiento.",
+      "username": "Nombre de usuario",
+      "submit": "Crear cuenta ahora",
+      "acceptTerms": "Al registrarse, acepta nuestra ",
+      "privacyPolicy": "Política de Privacidad",
+      "hasAccount": "¿Ya tienes cuenta? ",
+      "login": "Iniciar sesión"
+    }
+  },
+  "profile": {
+    "edit": {
+      "title": "Editar Perfil",
+      "username": "Nombre de usuario",
+      "avatarBanner": "Avatar & Banner",
+      "avatarUrl": "URL del Avatar",
+      "bannerUrl": "URL del Banner",
+      "webIdentity": "Identidad web",
+      "bioPlaceholder": "Tu biografía / rol corto...",
+      "cancel": "Cancelar",
+      "save": "Guardar cambios"
+    },
+    "defaultUser": "Usuario",
+    "contact": "Contactar",
+    "stats": {
+      "solutions": "SOLUCIONARIOS",
+      "rankScale": "Escala de Rangos",
+      "currentLevel": "NIVEL ACTUAL",
+      "noLink": "Sin vincular",
+      "portfolio": "PORTFOLIO"
+    },
+    "inbox": {
+      "privateMailbox": "Buzón Privado",
+      "pendingMessages": "Tienes {{count}} mensajes pendientes",
+      "allRead": "Todo leído."
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "unread": "{{count}} novedades sin leer",
+      "upToDate": "Estás al día."
+    },
+    "posts": {
+      "title": "Publicaciones",
+      "noPosts": "Este usuario aún no ha publicado nada."
+    }
+  },
+  "privacy": {
+    "title": "Política de Privacidad y Tratamiento de Datos",
+    "subtitle": "Normativa aplicable: Reglamento General de Protección de Datos (RGPD)",
+    "intro": "El equipo de desarrollo reconoce la importancia fundamental de la privacidad y la protección de los datos personales. Esta política establece los principios por los que nos regimos en el tratamiento de la información, garantizando la máxima transparencia y respeto por los derechos de nuestros usuarios.",
+    "nature": {
+      "title": "1. Naturaleza del Tratamiento",
+      "content": "Los datos recopilados a través de esta plataforma tienen como objetivo exclusivo la mejora continua de la experiencia educativa y la interacción con el asistente de Inteligencia Artificial. Toda información es tratada bajo los principios de licitud, lealtad, transparencia y minimización de datos, de conformidad con el Artículo 5 del RGPD."
+    },
+    "data": {
+      "title": "2. Datos Recopilados",
+      "content": "Durante el uso de la plataforma, nos limitamos a recopilar estrictamente los siguientes datos esenciales:",
+      "id": "Información de Identidad:",
+      "idDesc": "Nombre, correo electrónico institucional e identificador exclusivo asignado por el sistema de autenticación.",
+      "interactions": "Interacciones Cognitivas:",
+      "interactionsDesc": "Historial de conversaciones con el asistente virtual con el fin de proporcionar un contexto de memoria preciso.",
+      "metrics": "Métricas de Sistema:",
+      "metricsDesc": "Datos analíticos anonimizados (procesados en remoto) destinados a comprender los patrones de uso y evaluar el rendimiento técnico de la aplicación."
+    },
+    "rights": {
+      "title": "3. Ejercicio de Derechos (Derechos ARCO)",
+      "content": "En virtud de la legislación vigente, usted posee la facultad de ejercer en cualquier momento su derecho al olvido. La plataforma integra herramientas de autonomía para el usuario; concretamente, desde la sección de Configuración, usted puede ejecutar el borrado permanente e irreversible de la totalidad de su cuenta y de todos los registros vinculados, sin requerir intervención administrativa por nuestra parte."
+    },
+    "security": {
+      "title": "4. Seguridad e Integridad",
+      "content": "La integridad de sus datos está avalada por la arquitectura de seguridad de Firebase (Google Cloud Platform), la cual dispone de certificaciones internacionales de encriptación tanto en tránsito como en reposo. Sin embargo, se advierte explícitamente al usuario que se abstenga de divulgar datos de alto nivel de confidencialidad (como credenciales bancarias o información médica) durante las consultas con el asistente de Inteligencia Artificial."
+    },
+    "footer": {
+      "date": "Última revisión: Julio 2026"
+    }
+  },
+  "mailing": {
+    "compose": {
+      "title": "Redactar mensaje",
+      "sendingTo": "Enviando a",
+      "subject": "Asunto",
+      "subjectPlaceholder": "[P12345] Duda de este ejercicio",
+      "linkExercise": "Vincular ejercicio",
+      "linkedExercise": "Ejercicio Vinculado",
+      "messageBody": "Mensaje",
+      "addCode": "Añadir Código",
+      "bodyPlaceholder": "Escribe tu mensaje aquí... (Puedes usar ```cpp para añadir código)",
+      "sending": "Enviando mensaje...",
+      "send": "Enviar mensaje",
+      "errNoSubject": "Por favor, introduce un asunto para el mensaje.",
+      "errEmptyBody": "El mensaje no puede estar vacío.",
+      "errNotLoggedIn": "Debes iniciar sesión para enviar mensajes.",
+      "errSendFailed": "Error al enviar el mensaje. Vuelve a intentarlo.",
+      "errAvatar": "No se ha podido verificar la foto del receptor"
+    },
+    "mailbox": {
+      "title": "Buzón",
+      "inbox": "Recibidos",
+      "sent": "Enviados",
+      "emptyInbox": "No tienes mensajes recibidos",
+      "emptySent": "No tienes mensajes enviados",
+      "user": "Usuario",
+      "now": "Ahora",
+      "to": "Para: {{name}}",
+      "back": "Atrás",
+      "sentTo": "Enviado a: {{name}}",
+      "receivedOn": "Recibido el {{date}}",
+      "sentOn": "Enviado el {{date}}",
+      "viewExercise": "Ver Ejercicio {{id}}",
+      "reply": "Responder al mensaje",
+      "sendNew": "Enviar nuevo mensaje",
+      "selectToRead": "Selecciona un mensaje para leerlo"
+    },
+    "problemSelector": {
+      "title": "Seleccionar Ejercicio",
+      "subtitle": "Vincula un problema a tu mensaje",
+      "searchPlaceholder": "Buscar por código (P37500) o título...",
+      "notFound": "No se han encontrado ejercicios"
+    }
+  },
+  "notifications": {
+    "inbox": {
+      "title": "Actividad",
+      "filters": {
+        "all": "Todas",
+        "mentions": "Menciones",
+        "likes": "Me gusta",
+        "comments": "Comentarios"
+      },
+      "markAllRead": "Marcar todo como leído",
+      "empty": "No hay nada que mostrar aquí",
+      "now": "Ahora",
+      "mentioned": "Te ha mencionado en ",
+      "likedPost": "Le ha gustado tu publicación ",
+      "repliedPost": "Ha respondido a tu publicación ",
+      "repliedComment": "Ha respondido a tu comentario en ",
+      "reactedComment": "Ha reaccionado a tu comentario en "
+    }
+  },
+  "notebook": {
+    "ca": "Español",
+    "es": "Español",
+    "en": "Spanish"
+  },
+  "quiz": {
+    "generating": "Leyendo apuntes y generando test (10 min, 10 preguntas)...",
+    "noDataTitle": "Sin datos",
+    "noDataDesc": "No hemos podido encontrar el test ni generar uno nuevo.",
+    "backHome": "Volver al inicio",
+    "backTopics": "Volver a temas",
+    "finishedTitle": "Ciclo Finalizado",
+    "score": "Puntuación",
+    "perfectScore": "Perfecto. Has demostrado un dominio absoluto de la materia. Estás preparado para cualquier reto técnico de alto nivel.",
+    "improveScore": "Analiza tus errores para mejorar tu técnica en C++.",
+    "yourAnswer": "Tu respuesta",
+    "notAnswered": "No contestada",
+    "correctAnswer": "Respuesta Correcta",
+    "deepDive": "Deep-dive:",
+    "retry": "Reintentar Test",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "evaluate": "Evaluar"
+  },
+  "solutionDetail": {
+    "loadingEditor": "Cargando editor...",
+    "saveError": "Error al guardar la solución. Comprueba la consola.",
+    "loadingSolution": "Cargando solución...",
+    "notFound": "Solución no encontrada",
+    "backToList": "Volver a la lista",
+    "openJutge": "Abrir problema en el Jutge",
+    "accepted": "Aceptado",
+    "author": "Autor:",
+    "anonymous": "Anónimo",
+    "prevTooltip": "Anterior:",
+    "prev": "Anterior",
+    "nextTooltip": "Siguiente:",
+    "next": "Siguiente",
+    "statement": "Enunciado",
+    "statementNotAvailable": "Enunciado no disponible.",
+    "openJutgeSite": "Abrir en jutge.org",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar"
+  },
+  "solutionsList": {
+    "topicNotFound": "Tema no encontrado o vacío",
+    "title": "Lista de Problemas",
+    "description": "Colección de ejercicios del tema {{topicId}}.",
+    "pdfLanguage": "Idioma Solucionario",
+    "searchPlaceholder": "Buscar ID (P12345)...",
+    "openJutge": "Abrir problema en el Jutge",
+    "viewSolution": "Ver solución",
+    "readStatement": "Leer enunciado",
+    "noProblemsDefined": "No hay problemas definidos para este tema."
+  },
+  "newSolution": {
+    "loadingEditor": "Cargando editor...",
+    "loginRequired": "Necesitas iniciar sesión para subir soluciones.",
+    "login": "Iniciar Sesión",
+    "title": "Nueva Solución",
+    "problemInfo": "Información del Problema",
+    "topicLabel": "Tema",
+    "selectTopic": "Selecciona un tema",
+    "problemIdLabel": "ID Problema",
+    "problemIdPlaceholder": "ej: P37500",
+    "problemTitleLabel": "Título del Problema",
+    "problemTitlePlaceholder": "ej: Primeros números",
+    "codeLabel": "Código C++",
+    "statementLabel": "Enunciado (HTML)",
+    "optional": "Opcional",
+    "statementPlaceholder": "<p>Descripción del problema...</p>",
+    "uploading": "Subiendo...",
+    "publish": "Publicar Solución",
+    "saveError": "Error al guardar la solución. Comprueba la consola."
+  },
+  "chat": {
+    "wait": "Espera {{cooldown}}s",
+    "newChat": "Nuevo Chat",
+    "conversation": "Conversación",
+    "errors": {
+      "invalidFileType": "Solo se aceptan imágenes y PDFs.",
+      "fileTooLarge": "El archivo es demasiado grande. Máximo 5MB.",
+      "unknown": "Error desconocido",
+      "streamingNotSupported": "El navegador no soporta streaming",
+      "serverError": "Error del servidor"
+    },
+    "noResponse": "Sin respuesta.",
+    "memoryUpdated": "Memoria actualizada",
+    "loginRequired": "El asistente de IA es exclusivo para miembros registrados\nInicia sesión para acceder al historial y al chat",
+    "login": "Inicia sesión",
+    "dropToAttach": "Suelta para adjuntar",
+    "history": "Historial de conversaciones",
+    "noSavedChats": "Sin conversaciones guardadas",
+    "newConversation": "Nueva conversación",
+    "placeholder": "Escribe a {{aiName}}...",
+    "attachFile": "Adjuntar imagen o PDF",
+    "warning": "La IA puede cometer errores. No compartas datos sensibles ni personales."
+  }
+}

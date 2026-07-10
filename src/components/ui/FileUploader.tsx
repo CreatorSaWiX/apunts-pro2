@@ -4,6 +4,7 @@ import { UploadCloud } from 'lucide-react';
 
 import Spinner from '../ui/Spinner';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export interface Attachment {
     url: string;
@@ -22,7 +23,8 @@ interface FileUploaderProps {
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
-const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default' }: FileUploaderProps) => {
+const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', maxSizeMB = 50, acceptedTypes = ['*/*'] }: FileUploaderProps & { maxSizeMB?: number, acceptedTypes?: string[] }) => {
+    const { t } = useTranslation();
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
 
@@ -168,8 +170,8 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default' }: F
                     {variant === 'default' && (
                         <>
                             <UploadCloud className="mx-auto mb-2 text-slate-400" size={24} />
-                            <p className="text-sm font-bold text-slate-300">Arrossega arxius per adjuntar</p>
-                            <p className="text-xs text-slate-500 mt-1">Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {MAX_FILE_SIZE_MB}MB per arxiu)</p>
+                            <p className="text-sm font-bold text-slate-300">{t('common.fileUploader.dragFiles', 'Arrossega arxius per adjuntar')}</p>
+                            <p className="text-xs text-slate-500 mt-1">{t('common.fileUploader.supportedTypes', 'Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {{max}}MB per arxiu)', { max: maxSizeMB })}</p>
                         </>
                     )}
                 </div>
@@ -184,7 +186,7 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default' }: F
                         className={`flex flex-col items-center justify-center ${variant === 'avatar' ? 'absolute inset-0 bg-black/60 z-20' : 'p-6 bg-white/5 border border-white/10 rounded-2xl'}`}
                     >
                         <Spinner size={variant === 'avatar' ? 'sm' : 'lg'} variant="primary" className={variant === 'avatar' ? '' : 'mb-3'} />
-                        {variant !== 'avatar' && <p className="text-sm font-bold text-white">Preparant i pujant a la xarxa...</p>}
+                        {variant !== 'avatar' && <p className="text-sm font-bold text-white">{t('common.fileUploader.uploading', 'Preparant i pujant a la xarxa...')}</p>}
                         {variant !== 'avatar' && (
                             <div className="w-48 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden relative">
                                 <motion.div 

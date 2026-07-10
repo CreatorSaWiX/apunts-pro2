@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
 import { ArrowRight, Book, Terminal, Calculator, RefreshCw, Sparkles } from 'lucide-react';
 import { motion, MotionConfig, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
 
-const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, scrollX, itemWidth }: any) => {
+const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, scrollX, itemWidth, t }: any) => {
     const trackRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [pointerDownX, setPointerDownX] = useState<number | null>(null);
@@ -113,7 +113,7 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
                             style={{ left: tooltipTextX }}
                         >
                             <div className="bg-slate-900/95 backdrop-blur-xl border border-white/20 text-white text-[10px] uppercase font-bold px-3 py-1.5 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.8)] whitespace-nowrap">
-                                Tema {safeDisplayIndex + 1}
+                                {t('topics.topic', 'Tema')} {safeDisplayIndex + 1}
                             </div>
                             <div className="w-1.5 h-1.5 bg-slate-900/95 border-b border-r border-white/20 rotate-45 -mt-[1px] z-[-1]" />
                         </motion.div>
@@ -126,7 +126,7 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
 
 const CarouselCard = React.memo(({
     topic, index, activeIndex, itemWidth, scrollX,
-    subject, preferredLang, navigate, markAsSeen, isInteractive, seenNewTopics, seenVersions, onCardClick
+    subject, navigate, markAsSeen, isInteractive, seenNewTopics, seenVersions, onCardClick, t
 }: any) => {
     
     // Smooth Scale & Opacity Transforms optimized for Horizontal Snap (App Store Style)
@@ -194,7 +194,7 @@ const CarouselCard = React.memo(({
                                 <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-lg backdrop-blur-md ${isTopicNew ? 'bg-linear-to-r from-rose-500/90 to-pink-500/90 border-rose-300/30 shadow-rose-500/40' : 'bg-linear-to-r from-emerald-500/90 to-teal-500/90 border-emerald-300/30 shadow-emerald-500/40'}`}>
                                     <Sparkles size={10} className="text-white animate-pulse" />
                                     <span className="text-[9px] font-extrabold text-white uppercase tracking-wider drop-shadow-sm">
-                                        {isTopicNew ? (preferredLang === 'es' ? 'Nuevo' : 'Nou') : (preferredLang === 'es' ? 'Actualizado' : 'Actualitzat')}
+                                        {isTopicNew ? t('topics.new', 'Nou') : t('topics.updated', 'Actualitzat')}
                                     </span>
                                 </div>
                             </div>
@@ -223,7 +223,7 @@ const CarouselCard = React.memo(({
                                     onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
                                     className="group/btn relative overflow-hidden flex items-center justify-between text-white font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-5 py-4 rounded-xl shadow-[0_12px_24px_rgba(var(--primary-rgb),0.25)] transition-all duration-300 active:scale-95"
                                 >
-                                    <span className="relative z-10 text-[15px] tracking-wide">Explorar tema</span>
+                                    <span className="relative z-10 text-[15px] tracking-wide">{t('topics.explore', 'Explorar tema')}</span>
                                     <div className="relative z-10 bg-white/20 p-1.5 rounded-lg group-hover/btn:bg-white/30 transition-colors">
                                         <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
                                     </div>
@@ -243,7 +243,7 @@ const CarouselCard = React.memo(({
                                         onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
                                         className="flex-1 text-slate-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-all bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner"
                                     >
-                                        {subject === 'pro2' ? <Terminal size={14} /> : <Calculator size={14} />} Solucionaris
+                                        {subject === 'pro2' ? <Terminal size={14} /> : <Calculator size={14} />} {t('topic.solutions', 'Solucionaris')}
                                     </Link>
                                 </div>
                             </div>
@@ -265,7 +265,8 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
     const navigate = useNavigate();
     const { subject: contextSubject } = useSubject();
     const subject = (subjectOverride || contextSubject || '').toLowerCase();
-    const { preferredLang } = useLanguage();
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
     
     const [activeIndex, setActiveIndex] = useState(0);
     const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
@@ -418,13 +419,13 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
                             itemWidth={itemWidth}
                             scrollX={scrollX}
                             subject={subject}
-                            preferredLang={preferredLang}
                             navigate={navigate}
                             markAsSeen={markAsSeen}
                             isInteractive={isInteractive}
                             seenNewTopics={seenNewTopics}
                             seenVersions={seenVersions}
                             onCardClick={scrollToCard}
+                            t={t}
                         />
                     ))}
                 </div>
@@ -436,6 +437,7 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
                     scrollToCard={scrollToCard}
                     scrollX={scrollX}
                     itemWidth={itemWidth}
+                    t={t}
                 />
             </div>
         </MotionConfig>

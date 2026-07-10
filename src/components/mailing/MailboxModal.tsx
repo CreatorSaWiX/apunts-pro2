@@ -11,6 +11,7 @@ import CodeBlock from '../ui/CodeBlock';
 import Modal from '../ui/Modal';
 import NavigationPill from '../ui/NavigationPill';
 import Spinner from '../ui/Spinner';
+import { useTranslation } from 'react-i18next';
 
 interface Message {
     id: string;
@@ -29,6 +30,7 @@ interface Message {
 }
 
 const MailboxModal = ({ isOpen, onClose }: any) => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -97,7 +99,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                     
                     msgs = msgs.map(m => ({
                         ...m,
-                        receiverAvatar: m.receiverAvatar || (fetchedAvatars[m.receiverId] || `https://api.dicebear.com/7.x/initials/svg?seed=${m.receiverName || 'U'}`)
+                        receiverAvatar: m.receiverAvatar || (fetchedAvatars[m.receiverId] || `https://api.dicebear.com/7.x/initials/svg?seed=${m.receiverName || t('mailing.mailbox.user', 'Usuari')}`)
                     }));
                 }
             }
@@ -157,7 +159,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                     <Modal.Header>
                         <div className="flex flex-col gap-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-xl font-bold text-white tracking-tight">Bústia</span>
+                                <span className="text-xl font-bold text-white tracking-tight">{t('mailing.mailbox.title', 'Bústia')}</span>
                             </div>
                             
                             <NavigationPill className="w-full flex !p-1.5">
@@ -175,7 +177,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                             <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
                                         </motion.div>
                                     )}
-                                    <span className="relative z-10">Rebuts</span>
+                                    <span className="relative z-10">{t('mailing.mailbox.inbox', 'Rebuts')}</span>
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('sent')}
@@ -191,7 +193,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                             <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
                                         </motion.div>
                                     )}
-                                    <span className="relative z-10">Enviats</span>
+                                    <span className="relative z-10">{t('mailing.mailbox.sent', 'Enviats')}</span>
                                 </button>
                             </NavigationPill>
                         </div>
@@ -205,7 +207,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                         ) : messages.length === 0 ? (
                             <div className="flex flex-col items-center justify-center flex-1 text-slate-500 gap-2 min-h-[300px]">
                                 <Mail size={32} className="opacity-20" />
-                                <span className="text-sm">No tens missatges {activeTab === 'inbox' ? 'rebuts' : 'enviats'}</span>
+                                <span className="text-sm">{activeTab === 'inbox' ? t('mailing.mailbox.emptyInbox', 'No tens missatges rebuts') : t('mailing.mailbox.emptySent', 'No tens missatges enviats')}</span>
                             </div>
                         ) : (
                             <div className="flex flex-col p-3 gap-2">
@@ -243,10 +245,10 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                             )}
                                             <div className="flex-1 min-w-0">
                                                 <div className={`text-sm font-medium truncate ${showUnread ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}>
-                                                    {activeTab === 'sent' ? `A: ${displayName}` : displayName}
+                                                    {activeTab === 'sent' ? t('mailing.mailbox.to', 'A: {{name}}', { name: displayName }) : displayName}
                                                 </div>
                                                 <div className="text-[10px] text-slate-500">
-                                                    {msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Ara'}
+                                                    {msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : t('mailing.mailbox.now', 'Ara')}
                                                 </div>
                                             </div>
                                         </div>
@@ -271,7 +273,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                 <button onClick={() => setSelectedMessage(null)} className="p-2 hover:bg-white/5 rounded-lg text-slate-400">
                                     <Reply className="rotate-180" size={20} />
                                 </button>
-                                <span className="font-medium text-white">Torna</span>
+                                <span className="font-medium text-white">{t('mailing.mailbox.back', 'Torna')}</span>
                             </div>
 
                             <motion.div
@@ -305,7 +307,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                                     />
                                                 ) : (
                                                     <img
-                                                        src={receiverProfile?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${selectedMessage.receiverName || 'U'}`}
+                                                        src={receiverProfile?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${selectedMessage.receiverName || t('mailing.mailbox.user', 'Usuari')}`}
                                                         className="w-12 h-12 rounded-full bg-slate-800 ring-2 ring-slate-800 group-hover/profile:ring-sky-500 transition-all object-cover"
                                                         alt=""
                                                     />
@@ -313,11 +315,11 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                             </div>
                                             <div>
                                                 <div className="text-base font-bold text-white flex items-center gap-2 group-hover/profile:text-sky-400 transition-colors">
-                                                    {activeTab === 'inbox' ? selectedMessage.senderName : `Enviat a: ${selectedMessage.receiverName || 'Usuari'}`}
+                                                    {activeTab === 'inbox' ? selectedMessage.senderName : t('mailing.mailbox.sentTo', 'Enviat a: {{name}}', { name: selectedMessage.receiverName || t('mailing.mailbox.user', 'Usuari') })}
                                                     <ExternalLink size={12} className="opacity-0 group-hover/profile:opacity-100 transition-opacity text-slate-500" />
                                                 </div>
                                                 <div className="text-sm text-slate-500 mt-0.5 flex items-center gap-2">
-                                                    <span>{activeTab === 'inbox' ? 'Rebut' : 'Enviat'} el {selectedMessage.createdAt?.toDate().toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'short' })}</span>
+                                                    <span>{activeTab === 'inbox' ? t('mailing.mailbox.receivedOn', 'Rebut el {{date}}', { date: selectedMessage.createdAt?.toDate().toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'short' }) }) : t('mailing.mailbox.sentOn', 'Enviat el {{date}}', { date: selectedMessage.createdAt?.toDate().toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'short' }) })}</span>
                                                 </div>
                                             </div>
                                         </Link>
@@ -336,7 +338,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <ExternalLink size={16} />
-                                                <span>Veure Exercici {selectedMessage.relatedProblemId}</span>
+                                                <span>{t('mailing.mailbox.viewExercise', 'Veure Exercici {{id}}', { id: selectedMessage.relatedProblemId })}</span>
                                                 <ChevronRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                                             </Link>
                                         )}
@@ -346,9 +348,9 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                             className="flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 rounded-xl text-sm font-bold text-white transition-all shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 transform hover:-translate-y-0.5"
                                         >
                                             {activeTab === 'inbox' ? (
-                                                <><Reply size={18} /> Respondre al missatge</>
+                                                <><Reply size={18} /> {t('mailing.mailbox.reply', 'Respondre al missatge')}</>
                                             ) : (
-                                                <><Send size={18} /> Enviar nou missatge</>
+                                                <><Send size={18} /> {t('mailing.mailbox.sendNew', 'Enviar nou missatge')}</>
                                             )}
                                         </button>
                                     </div>
@@ -361,7 +363,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                             <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center">
                                 <Mail size={48} />
                             </div>
-                            <p className="text-lg font-medium">Selecciona un missatge per llegir-lo</p>
+                            <p className="text-lg font-medium">{t('mailing.mailbox.selectToRead', 'Selecciona un missatge per llegir-lo')}</p>
                         </div>
                     )}
                 </div>
@@ -372,7 +374,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                         isOpen={isReplyOpen}
                         onClose={() => setIsReplyOpen(false)}
                         receiverId={activeTab === 'inbox' ? selectedMessage.senderId : selectedMessage.receiverId}
-                        receiverName={activeTab === 'inbox' ? selectedMessage.senderName : (selectedMessage.receiverName || 'Usuari')}
+                        receiverName={activeTab === 'inbox' ? selectedMessage.senderName : (selectedMessage.receiverName || t('mailing.mailbox.user', 'Usuari'))}
                         initialSubject={selectedMessage.subject.toUpperCase().startsWith('RE:') ? selectedMessage.subject : `RE: ${selectedMessage.subject}`}
                     />
                 )}

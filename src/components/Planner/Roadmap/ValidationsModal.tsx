@@ -4,6 +4,7 @@ import { Modal } from '../../ui/Modal';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { CFGS_DEGREES } from '../../../data/cfgs';
 import { GraduationCap, Sparkles, BookOpen, Layers, Plus, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ValidationsModalProps {
     isOpen: boolean;
@@ -21,6 +22,7 @@ const FIB_ACTIVITIES = [
 ];
 
 export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) => {
+    const { t } = useTranslation();
     const { nodes, addCFGSValidations, addCustomValidation } = useRoadmap();
     const [activeTab, setActiveTab] = useState<Tab>('cfgs');
     
@@ -90,15 +92,15 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                 {/* Left Column: Sidebar List */}
                 <div className="w-full md:w-[360px] border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0 shrink-0">
                     <div className="mb-8 shrink-0">
-                        <h3 className="text-2xl font-bold text-white mb-2">Convalidacions</h3>
-                        <p className="text-sm text-slate-400">Afegeix crèdits a la teva motxilla a través de cicles formatius o activitats extraescolars.</p>
+                        <h3 className="text-2xl font-bold text-white mb-2">{t('planner.roadmapValidations.title', 'Convalidacions')}</h3>
+                        <p className="text-sm text-slate-400">{t('planner.roadmapValidations.subtitle', 'Afegeix crèdits a la teva motxilla a través de cicles formatius o activitats extraescolars.')}</p>
                     </div>
 
                     <div className="flex-1 flex flex-col gap-6 relative min-h-0">
                         
                         {/* Custom Activities Tab */}
                         <div>
-                            <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 pl-2">Altres Activitats</h4>
+                            <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 pl-2">{t('planner.roadmapValidations.otherActivities', 'Altres Activitats')}</h4>
                             <div className="relative shrink-0">
                                 {activeTab === 'custom' && (
                                     <motion.div
@@ -114,9 +116,9 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                     <div className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${activeTab === 'custom' ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
                                     <div className="flex flex-col min-w-0">
                                         <span className={`transition-colors duration-300 font-bold ${activeTab === 'custom' ? 'text-white' : 'text-slate-400'}`}>
-                                            Activitats Universitàries
+                                            {t('planner.roadmapValidations.universityActivities', 'Activitats Universitàries')}
                                         </span>
-                                        <span className="text-xs text-slate-500 truncate mt-0.5">Game Jams, Esports, Idiomes</span>
+                                        <span className="text-xs text-slate-500 truncate mt-0.5">{t('planner.roadmapValidations.activityExamples', 'Game Jams, Esports, Idiomes')}</span>
                                     </div>
                                 </button>
                             </div>
@@ -124,7 +126,7 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
 
                         {/* CFGS List */}
                         <div>
-                            <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 pl-2">Cicles Formatius (CFGS)</h4>
+                            <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 pl-2">{t('planner.roadmapValidations.cfgs', 'Cicles Formatius (CFGS)')}</h4>
                             <div className="flex flex-col gap-2">
                                 {CFGS_DEGREES.map(cfgs => {
                                     const isSelected = activeTab === 'cfgs' && selectedId === cfgs.id;
@@ -184,17 +186,17 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                     <div className="mb-6">
                                         <h2 className="text-3xl font-black text-white tracking-tight mb-4 leading-tight">{selectedCFGS.title}</h2>
                                         <p className="text-sm text-slate-300 leading-relaxed max-w-2xl">
-                                            En aplicar aquesta convalidació, les següents assignatures s'afegiran directament al teu expedient. Es substituirà qualsevol CFGS que ja tinguessis convalidat prèviament.
+                                            {t('planner.roadmapValidations.cfgsDisclaimer', 'En aplicar aquesta convalidació, les següents assignatures s\'afegiran directament al teu expedient. Es substituirà qualsevol CFGS que ja tinguessis convalidat prèviament.')}
                                         </p>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4 mb-8 shrink-0 max-w-sm">
                                         <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Crèdits Obtinguts</div>
+                                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{t('planner.roadmapValidations.creditsObtained', 'Crèdits Obtinguts')}</div>
                                             <div className="text-2xl font-black text-white">+{totalCFGSCredits} <span className="text-sm text-white/50">ECTS</span></div>
                                         </div>
                                         <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mòduls Reconeixements</div>
+                                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{t('planner.roadmapValidations.recognizedModules', 'Mòduls Reconeixements')}</div>
                                             <div className="text-2xl font-black text-white">{selectedCFGS.modules.length}</div>
                                         </div>
                                     </div>
@@ -202,7 +204,7 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                     <div>
                                         <h4 className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider mb-4 opacity-80">
                                             <Layers size={14} className="text-white/70" />
-                                            Assignatures Convalidades
+                                            {t('planner.roadmapValidations.validatedSubjects', 'Assignatures Convalidades')}
                                         </h4>
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pb-4">
                                             {selectedCFGS.modules.map((mod, idx) => (
@@ -226,24 +228,24 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                     className="flex flex-col h-full"
                                 >
                                     <div className="mb-8">
-                                        <h2 className="text-3xl font-black text-white tracking-tight mb-4">Activitats Universitàries</h2>
+                                        <h2 className="text-3xl font-black text-white tracking-tight mb-4">{t('planner.roadmapValidations.universityActivities', 'Activitats Universitàries')}</h2>
                                         <p className="text-sm text-slate-300 leading-relaxed max-w-2xl mb-6">
-                                            Afegeix manualment els crèdits reconeguts per activitats extracadèmiques com l'esport, idiomes o representació estudiantil. Aquests s'afegiran com a optatives superades.
+                                            {t('planner.roadmapValidations.customDisclaimer', 'Afegeix manualment els crèdits reconeguts per activitats extracadèmiques com l\'esport, idiomes o representació estudiantil. Aquests s\'afegiran com a optatives superades.')}
                                         </p>
                                         <div className="inline-flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
                                             <div className="w-8 h-8 rounded-lg flex items-center justify-center border border-white/30">
                                                 <Sparkles size={14} className="text-white" />
                                             </div>
                                             <div>
-                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Límit Recomanat</div>
-                                                <div className="text-sm font-bold text-white">6 ECTS màxim per l'itinerari</div>
+                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.recommendedLimit', 'Límit Recomanat')}</div>
+                                                <div className="text-sm font-bold text-white">{t('planner.roadmapValidations.maxEcts', '6 ECTS màxim per l\'itinerari')}</div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="space-y-8">
                                         <div>
-                                            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Suggeriments Oficials FIB</h4>
+                                            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">{t('planner.roadmapValidations.officialSuggestions', 'Suggeriments Oficials FIB')}</h4>
                                             <div className="flex flex-wrap gap-2">
                                                 {FIB_ACTIVITIES.map((act, i) => (
                                                     <button
@@ -263,7 +265,7 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nom de l'activitat</label>
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.activityName', 'Nom de l\'activitat')}</label>
                                                 <input 
                                                     type="text"
                                                     value={customName}
@@ -274,7 +276,7 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Crèdits ECTS</label>
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.creditsEcts', 'Crèdits ECTS')}</label>
                                                 <div className="relative">
                                                     <input 
                                                         type="number"
@@ -305,9 +307,9 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                     <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
                                         <GraduationCap size={24} className="text-slate-500" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-2">Selecciona un cicle</h3>
+                                    <h3 className="text-xl font-bold text-white mb-2">{t('planner.roadmapValidations.selectCycle', 'Selecciona un cicle')}</h3>
                                     <p className="text-sm text-slate-400 max-w-xs">
-                                        Tria un Cicle Formatiu per veure quines assignatures se't convalidaran automàticament.
+                                        {t('planner.roadmapValidations.selectCycleDesc', 'Tria un Cicle Formatiu per veure quines assignatures se\'t convalidaran automàticament.')}
                                     </p>
                                 </motion.div>
                             )}
@@ -322,7 +324,7 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                 disabled={(activeTab === 'custom' && (!customName || !customCredits)) || isCurrentlyApplied}
                                 className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all disabled:cursor-not-allowed ${isCurrentlyApplied ? 'bg-white/10 text-white opacity-50 shadow-none' : 'bg-white text-black hover:scale-105 active:scale-95 disabled:opacity-50 shadow-[0_0_15px_rgba(255,255,255,0.2)]'}`}
                             >
-                                {activeTab === 'cfgs' ? (isCurrentlyApplied ? 'Ja Seleccionada' : `Aplicar ${totalCFGSCredits} ECTS`) : "Afegir a l'expedient"}
+                                {activeTab === 'cfgs' ? (isCurrentlyApplied ? t('planner.roadmapValidations.alreadySelected', 'Ja Seleccionada') : t('planner.roadmapValidations.applyCredits', 'Aplicar {{credits}} ECTS', { credits: totalCFGSCredits })) : t('planner.roadmapValidations.addToRecord', 'Afegir a l\'expedient')}
                                 {!isCurrentlyApplied && (activeTab === 'custom' ? <Plus size={18} /> : <ArrowRight size={18} />)}
                             </button>
                         </div>
