@@ -89,7 +89,12 @@ const HomePage = () => {
                                     <motion.div
                                         layoutId="active-pill"
                                         className="absolute inset-0 rounded-full border border-white/[0.15] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_15px_rgba(var(--primary-rgb),0.5)] z-[-1]"
-                                        style={{ background: 'linear-gradient(to right, var(--primary), var(--accent))' }}
+                                        style={{ 
+                                            background: 'linear-gradient(to right, var(--primary), var(--accent))',
+                                            borderRadius: 9999,
+                                            WebkitTransform: 'translateZ(0)',
+                                            transform: 'translateZ(0)'
+                                        }}
                                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                     >
                                         <div className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />

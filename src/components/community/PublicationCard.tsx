@@ -20,16 +20,7 @@ const MODEL_EXTENSIONS = ['gltf', 'glb', 'obj'];
 const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => {
     const { user } = useAuth();
     const [isHovered, setIsHovered] = useState(false);
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [imageLoaded, setImageLoaded] = useState(false);
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        setMousePosition({
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
-        });
-    };
     
     const firstAttachment = post.attachments?.[0];
     const imageAttachment = post.attachments?.find(a => a.type.startsWith('image/'));
@@ -147,7 +138,6 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
             className="flex flex-col gap-2 group cursor-pointer"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            onMouseMove={handleMouseMove}
         >
             <Tilt
                 tiltEnable={!isHeroMode}
@@ -161,12 +151,9 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                 {(post.rank || 0) > 1 && (
                     <div className={`absolute inset-0 bg-linear-to-br ${rankStyles.glow} opacity-30 group-hover:opacity-60 transition-opacity duration-500 z-0 pointer-events-none`} />
                 )}
-                {/* Spotlight Overlay */}
+                {/* Spotlight Overlay - Static Performant CSS Glow */}
                 <div 
-                    className="pointer-events-none absolute -inset-px rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 mix-blend-overlay"
-                    style={{
-                        background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.3), transparent 40%)`
-                    }}
+                    className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_0%,transparent_70%)]"
                 />
                 {isVideo && isHovered && firstAttachment ? (
                     <video 

@@ -20,6 +20,11 @@ const LiquidPanel = React.forwardRef<HTMLDivElement, LiquidPanelProps>(
             <div 
                 ref={ref}
                 className={`${baseStyle} ${backgroundStyle} ${className}`}
+                style={{ 
+                    WebkitBackdropFilter: 'blur(64px) saturate(1.5)', 
+                    WebkitTransform: 'translateZ(0)',
+                    transform: 'translateZ(0)'
+                }}
                 {...props}
             >
                 {children}

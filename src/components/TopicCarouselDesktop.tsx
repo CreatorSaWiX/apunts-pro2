@@ -42,7 +42,12 @@ const SpotlightCard = React.memo(({
 
     return (
         <div
-            className={`group/card relative border border-white/10 overflow-hidden ${className}`}
+            className={`group/card relative border border-white/10 overflow-hidden transform-gpu ${className}`}
+            style={{
+                WebkitMaskImage: '-webkit-radial-gradient(white, black)',
+                WebkitTransform: 'translateZ(0)',
+                transform: 'translateZ(0)'
+            }}
             onMouseMove={handleMouseMove}
             {...props}
         >

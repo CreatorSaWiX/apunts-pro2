@@ -165,7 +165,14 @@ const CarouselCard = React.memo(({
                 }}
             >
                 {/* Premium Glassmorphism Background */}
-                <div className={`absolute inset-0 rounded-[32px] overflow-hidden border transition-all duration-700 ${isActive ? 'bg-slate-900/80 border-primary/30 shadow-[0_20px_50px_rgba(var(--primary-rgb),0.2)] ring-1 ring-primary/20 backdrop-blur-xl' : 'bg-slate-900/40 border-white/5 shadow-none backdrop-blur-md cursor-pointer'}`}>
+                <div 
+                    className={`absolute inset-0 rounded-[32px] overflow-hidden transform-gpu border transition-all duration-700 ${isActive ? 'bg-slate-900/80 border-primary/30 shadow-[0_20px_50px_rgba(var(--primary-rgb),0.2)] ring-1 ring-primary/20 backdrop-blur-xl' : 'bg-slate-900/40 border-white/5 shadow-none backdrop-blur-md cursor-pointer'}`}
+                    style={{
+                        WebkitMaskImage: '-webkit-radial-gradient(white, black)',
+                        WebkitTransform: 'translateZ(0)',
+                        transform: 'translateZ(0)'
+                    }}
+                >
                     
                     {/* Glowing Accent Orb */}
                     <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full blur-3xl pointer-events-none transition-all duration-700 delay-100 ${isActive ? 'bg-primary/20 opacity-100 scale-100' : 'bg-transparent opacity-0 scale-50'}`} />

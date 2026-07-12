@@ -8,7 +8,7 @@ import { useSubject } from '../../contexts/SubjectContext';
 const ParticleNetwork = () => {
     const { theme } = useSubject();
     const ref = useRef<THREE.Points>(null);
-    
+
     const positions = useMemo(() => {
         const count = 3000;
         const positions = new Float32Array(count * 3);
@@ -57,10 +57,10 @@ const CommunityHero3D = () => {
         const timer = setTimeout(() => setMounted(true), 500);
         return () => clearTimeout(timer);
     }, []);
-    
+
     return (
-        <div 
-            className={`absolute inset-0 top-0 left-0 w-full h-[600px] overflow-hidden pointer-events-none -z-10 mix-blend-screen transition-opacity duration-1000 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+        <div
+            className={`absolute inset-0 top-0 left-0 w-full h-[600px] overflow-hidden pointer-events-none -z-10 transition-opacity duration-1000 ${mounted ? 'opacity-100' : 'opacity-0'}`}
             style={{ maskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)' }}
         >
             {mounted && (

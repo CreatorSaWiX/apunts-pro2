@@ -6,25 +6,28 @@ interface LiquidToolbarProps {
     children: React.ReactNode;
     className?: string;
     delay?: number;
+    position?: 'bottom' | 'sticky';
 }
 
-export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, className = '', delay = 0.5 }) => {
+export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, className = '', delay = 0.5, position = 'bottom' }) => {
     const [isReady, setIsReady] = React.useState(false);
+
+    const isSticky = position === 'sticky';
 
     return (
         <motion.div
-            initial={{ y: 250 }}
-            animate={{ y: 0 }}
+            initial={isSticky ? { y: -50, opacity: 0 } : { y: 250 }}
+            animate={isSticky ? { y: 0, opacity: 1 } : { y: 0 }}
             transition={{ delay, type: "spring", stiffness: 200, damping: 20 }}
             onAnimationComplete={() => setIsReady(true)}
-            className={`fixed bottom-6 sm:bottom-10 inset-x-0 z-50 flex justify-center pointer-events-none ${isReady ? '!transform-none' : ''}`}
+            className={`${isSticky ? 'sticky top-24 z-40 mb-8' : 'fixed bottom-6 sm:bottom-10 inset-x-0 z-50'} flex justify-center pointer-events-none ${isReady ? '!transform-none' : ''}`}
         >
             <motion.div 
                 layout
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 className={`relative flex items-center pointer-events-auto ${className}`}
             >
-                <motion.div layout className="absolute inset-0 pointer-events-none">
+                <motion.div layout className="absolute inset-0 pointer-events-none" style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}>
                     <LiquidPanel className="w-full h-full !rounded-full">{null}</LiquidPanel>
                 </motion.div>
                 <div className="relative flex items-center gap-1 p-2 overflow-visible">
