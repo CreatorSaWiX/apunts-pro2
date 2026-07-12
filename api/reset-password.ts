@@ -7,7 +7,6 @@ export const config = {
 };
 
 const CORS_HEADERS: Record<string, string> = {
-    'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
     'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization',
@@ -45,7 +44,7 @@ export async function POST(req: Request): Promise<Response> {
     }
 
     try {
-        const { email, lang = 'ca' } = await req.json();
+        const { email, lang = 'ca' } = (await req.json()) as any;
 
         if (!email) {
             return jsonResponse({ error: "Falta l'email." }, 400);

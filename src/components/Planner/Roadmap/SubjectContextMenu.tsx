@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Clock, XCircle, RefreshCw, X, BookOpen, Edit2, Trash2, Globe, Building2, Briefcase } from 'lucide-react';
 import type { SubjectNodeData, SubjectStatus } from '../../../contexts/RoadmapContext';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
@@ -72,7 +72,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                     {nodeData.credits} ECTS
                                 </span>
                             </div>
-                            <button onClick={onClose} className="absolute top-3 right-3 text-slate-500 hover:text-white transition-colors p-1.5 bg-white/5 rounded-full hover:bg-white/10">
+                            <button type="button" aria-label={t('common.close', 'Tancar')} onClick={onClose} className="absolute top-3 right-3 text-slate-500 hover:text-white transition-colors p-1.5 bg-white/5 rounded-full hover:bg-white/10">
                                 <X size={12} />
                             </button>
                         </div>
@@ -108,7 +108,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                             )}
 
                             {!['mobility', 'internship', 'tfg', 'tfm'].includes(nodeData.type) && (
-                                <button
+                                <button type="button"
                                     onClick={() => {
                                         if (onOpenDetails) onOpenDetails();
                                         onClose();
@@ -122,7 +122,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                 </button>
                             )}
 
-                            <button
+                            <button type="button"
                                 disabled={nodeData.status === 'locked'}
                                 onClick={() => handleStatusChange('in_progress')}
                                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
@@ -135,7 +135,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                 <span className="relative z-10">{t('planner.roadmapSubjectContextMenu.inProgress', 'En Curs')}</span>
                             </button>
 
-                            <button
+                            <button type="button"
                                 disabled={nodeData.status === 'locked'}
                                 onClick={() => handleStatusChange('passed')}
                                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
@@ -152,10 +152,11 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                             <AnimatePresence>
                                 {nodeData.status === 'passed' && !['mobility', 'internship'].includes(nodeData.type) && (
                                     <motion.div
-                                        initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                                        animate={{ height: 'auto', opacity: 1, marginTop: 8 }}
-                                        exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                                        className="w-full flex flex-col gap-2 pt-3 pb-1 border-t border-white/5 overflow-hidden"
+                                        layout
+                                        initial={{ opacity: 0, y: -5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -5 }}
+                                        className="w-full flex flex-col gap-2 pt-3 pb-1 border-t border-white/5 overflow-hidden mt-2"
                                     >
                                         <div className="flex items-center justify-between px-2">
                                             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{t('planner.roadmapSubjectContextMenu.finalGrade', 'Nota Final')}</span>
@@ -165,7 +166,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                         </div>
                                         <div className="grid grid-cols-4 gap-1.5 mt-1">
                                             {[5.0, 7.0, 9.0, 10.0].map(g => (
-                                                <button
+                                                <button type="button"
                                                     key={g}
                                                     onClick={() => updateNodeGrade(nodeId, g)}
                                                     className={`py-1.5 rounded-xl text-xs font-bold transition-all border ${nodeData.grade === g ? 'bg-emerald-500 text-emerald-950 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-black/40 text-slate-300 border-white/5 hover:border-emerald-500/30 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
@@ -201,7 +202,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
 
                             {!['mobility', 'internship'].includes(nodeData.type) && (
                                 <>
-                                    <button
+                                    <button type="button"
                                         disabled={nodeData.status === 'locked'}
                                         onClick={() => handleStatusChange('failed')}
                                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
@@ -215,10 +216,12 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
 
                                     {nodeData.status === 'failed' && (
                                         <motion.button
-                                            initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                                            animate={{ height: 'auto', opacity: 1, marginTop: 8 }}
+                                            layout
+                                            initial={{ opacity: 0, y: -5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -5 }}
                                             onClick={() => handleStatusChange('retaking')}
-                                            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-sm hover:bg-amber-500 text-amber-500 hover:text-amber-950 transition-all border border-amber-500/30 font-bold group shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]"
+                                            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-sm hover:bg-amber-500 text-amber-500 hover:text-amber-950 transition-all border border-amber-500/30 font-bold group shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)] mt-2"
                                         >
                                             <RefreshCw size={14} className="group-hover:animate-spin-slow" />
                                             {t('planner.roadmapSubjectContextMenu.retake', 'Tornar a matricular')}
@@ -228,7 +231,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                             )}
 
                             {nodeData.type !== 'obligatory' && nodeData.type !== 'basic' && nodeData.type !== 'tfg' && nodeData.type !== 'tfm' && (
-                                <button
+                                <button type="button"
                                     onClick={() => {
                                         removeNode(nodeId);
                                         onClose();

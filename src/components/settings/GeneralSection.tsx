@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 export const GeneralSection = () => {
@@ -14,7 +14,7 @@ export const GeneralSection = () => {
                 </div>
 
                 <div className="flex bg-white/[0.03] p-1.5 rounded-2xl border border-white/10 w-full sm:w-auto relative flex-wrap sm:flex-nowrap gap-1">
-                    <button
+                    <button type="button"
                         onClick={() => i18n.changeLanguage('ca')}
                         className="relative flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 outline-none z-10 group"
                     >
@@ -25,7 +25,7 @@ export const GeneralSection = () => {
                         <span className={`relative z-10 text-sm font-semibold transition-colors duration-300 ${preferredLang === 'ca' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}>{t('common.languages.ca', 'Català')}</span>
                     </button>
 
-                    <button
+                    <button type="button"
                         onClick={() => i18n.changeLanguage('es')}
                         className="relative flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 outline-none z-10 group"
                     >
@@ -36,7 +36,7 @@ export const GeneralSection = () => {
                         <span className={`relative z-10 text-sm font-semibold transition-colors duration-300 ${preferredLang === 'es' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}>{t('common.languages.es', 'Español')}</span>
                     </button>
 
-                    <button
+                    <button type="button"
                         onClick={() => i18n.changeLanguage('en')}
                         className="relative flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 outline-none z-10 group"
                     >

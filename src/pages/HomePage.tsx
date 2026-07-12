@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import { useSettings } from '../contexts/SettingsContext';
 import Hero from '../components/Hero';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import TopicCarousel from '../components/TopicCarousel';
 import NavigationPill from '../components/ui/NavigationPill';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -80,7 +80,7 @@ const HomePage = () => {
                     {displaySubjects.map(subj => {
                         const isActive = subject.toUpperCase() === subj.toUpperCase();
                         return (
-                            <button
+                            <button type="button"
                                 key={subj}
                                 onClick={() => handleSubjectChange(subj)}
                                 className={`relative px-4 md:px-5 h-9 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-[13px] font-black tracking-widest transition-all duration-300 z-10 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}

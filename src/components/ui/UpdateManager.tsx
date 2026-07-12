@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+
 
 export const UpdateManager = () => {
     // Inicialitzem el PWA de forma silenciosa.
@@ -31,23 +30,36 @@ export const UpdateManager = () => {
     // si l'usuari està inactiu (permet forçar updates globals ràpids).
     useEffect(() => {
         const currentVersion = localStorage.getItem('app-version') || '1.0.0';
-        const docRef = doc(db, 'app', 'metadata');
-        
-        const unsubscribe = onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                if (data.latestVersion && data.latestVersion !== currentVersion) {
-                    localStorage.setItem('app-version', data.latestVersion);
-                    // Si detectem un update crític via Firebase, recarreguem directament
-                    // en lloc de demanar a l'usuari. Això es pot fer de nit o en segon pla.
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                }
+        let unsubscribe = () => {};
+
+        const setupListener = async () => {
+            try {
+                const { db } = await import('../../lib/firebase');
+                const { doc, onSnapshot } = await import('firebase/firestore');
+                
+                const docRef = doc(db, 'app', 'metadata');
+                
+                unsubscribe = onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data.latestVersion && data.latestVersion !== currentVersion) {
+                            localStorage.setItem('app-version', data.latestVersion);
+                            // Si detectem un update crític via Firebase, recarreguem directament
+                            // en lloc de demanar a l'usuari. Això es pot fer de nit o en segon pla.
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        }
+                    }
+                }, () => {
+                    // Silently ignore permissions error when user is not logged in yet
+                });
+            } catch (e) {
+                console.error("Failed to load firestore in UpdateManager", e);
             }
-        }, (error) => {
-            // Silently ignore permissions error when user is not logged in yet
-        });
+        };
+
+        setupListener();
 
         return () => unsubscribe();
     }, []);

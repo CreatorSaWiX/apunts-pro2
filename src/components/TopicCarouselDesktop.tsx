@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
 import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
-import { motion, useMotionTemplate, useMotionValue, MotionConfig } from 'framer-motion';
+import { m as motion, useMotionTemplate, useMotionValue, MotionConfig } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 const SpotlightCard = React.memo(({
@@ -296,7 +296,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             <div className="w-full flex-1 flex flex-col justify-center relative group/carousel">
                 {/* Desktop Navigation Arrows */}
                 {activeIndex > 0 && (
-                    <button
+                    <button type="button"
                         onClick={handlePrev}
                         className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100"
                         aria-label="Previous topic"
@@ -306,7 +306,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 )}
 
                 {activeIndex < sortedTopics.length - 1 && (
-                    <button
+                    <button type="button"
                         onClick={handleNext}
                         className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100"
                         aria-label="Next topic"
@@ -487,7 +487,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 {/* Elegant Pagination Indicators */}
                 <div className="absolute bottom-[calc(1.5rem+env(safe-area-inset-bottom))] md:bottom-6 left-0 right-0 flex justify-center gap-2 z-50">
                     {sortedTopics.map((_, i) => (
-                        <button
+                        <button type="button"
                             key={i}
                             onClick={() => scrollTo(i)}
                             className="group p-2 cursor-pointer focus:outline-none"

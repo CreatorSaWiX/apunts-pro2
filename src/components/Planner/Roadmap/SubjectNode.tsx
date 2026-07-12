@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import type { NodeProps, Node } from '@xyflow/react';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import Tilt from 'react-parallax-tilt';
 import { useTranslation } from 'react-i18next';
 

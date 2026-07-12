@@ -272,8 +272,8 @@ const VisTaylorComportament = () => {
             </Mafs>
             <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="flex justify-center gap-4 mb-3">
-                    <button onClick={() => setN(2)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 2 ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 2 (Parell)</button>
-                    <button onClick={() => setN(3)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 3 ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 3 (Senar)</button>
+                    <button type="button" onClick={() => setN(2)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 2 ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 2 (Parell)</button>
+                    <button type="button" onClick={() => setN(3)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 3 ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 3 (Senar)</button>
                 </div>
                 <p className="text-xs text-slate-400 text-center italic">
                     {n === 2
@@ -441,7 +441,7 @@ const VisTaylorMaclaurin = () => {
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {configs.map((c, i) => (
-                    <button key={i} onClick={() => setMode(i)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === i ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-700'}`}>{c.label}</button>
+                    <button type="button" key={i} onClick={() => setMode(i)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === i ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-700'}`}>{c.label}</button>
                 ))}
             </div>
             <Mafs viewBox={{ x: configs[mode].view.x as [number, number], y: configs[mode].view.y as [number, number] }} pan={false} preserveAspectRatio={false}>
@@ -834,13 +834,13 @@ const VisPropietatsLineals = () => {
             {/* Control Panel */}
             <div className="p-4 bg-slate-900/80 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
-                    <button 
+                    <button type="button" 
                         onClick={() => setIsLinear(true)}
                         className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${isLinear ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
                     >
                         Lineal
                     </button>
-                    <button 
+                    <button type="button" 
                         onClick={() => setIsLinear(false)}
                         className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${!isLinear ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/20' : 'text-slate-500 hover:text-slate-300'}`}
                     >
@@ -1455,8 +1455,8 @@ const VisRiemannSums = () => {
             <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex gap-2">
-                        <button onClick={() => setType('lower')} className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase ${type === 'lower' ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>Inferiors</button>
-                        <button onClick={() => setType('upper')} className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase ${type === 'upper' ? 'bg-red-500 text-white' : 'bg-slate-700 text-slate-400'}`}>Superiors</button>
+                        <button type="button" onClick={() => setType('lower')} className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase ${type === 'lower' ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>Inferiors</button>
+                        <button type="button" onClick={() => setType('upper')} className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase ${type === 'upper' ? 'bg-red-500 text-white' : 'bg-slate-700 text-slate-400'}`}>Superiors</button>
                     </div>
                     <div className="flex items-center gap-3 flex-1 px-4">
                         <span className="text-[10px] text-slate-400 uppercase font-bold w-12">Parts: {n}</span>
@@ -1477,8 +1477,8 @@ const VisParitatIntegrals = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-4 flex gap-4 bg-slate-800/50 border-b border-white/10 justify-center">
-                <button onClick={() => setMode('even')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'even' ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Parella</button>
-                <button onClick={() => setMode('odd')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'odd' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Imparella</button>
+                <button type="button" onClick={() => setMode('even')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'even' ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Parella</button>
+                <button type="button" onClick={() => setMode('odd')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'odd' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Imparella</button>
             </div>
             <Mafs viewBox={{ x: [-4, 4], y: [-2, 2] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />
@@ -1625,13 +1625,13 @@ const VisCotaError = () => {
         <div className="w-full flex flex-col">
             {/* 1. Curvature Mode Selection */}
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-center gap-3">
-                <button
+                <button type="button"
                     onClick={() => setMode('low')}
                     className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${mode === 'low' ? 'bg-blue-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400'}`}
                 >
                     Baixa Curvatura
                 </button>
-                <button
+                <button type="button"
                     onClick={() => setMode('high')}
                     className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${mode === 'high' ? 'bg-red-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400'}`}
                 >
@@ -1836,13 +1836,13 @@ const VisBolaInteractiva = () => {
                     <span className="text-xs font-mono text-blue-400 w-8">{r.toFixed(1)}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-black/30 p-1 rounded-lg">
-                    <button
+                    <button type="button"
                         onClick={() => setIsClosed(false)}
                         className={`px-3 py-1 rounded text-[10px] font-bold transition ${!isClosed ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
                     >
                         OBERTA
                     </button>
-                    <button
+                    <button type="button"
                         onClick={() => setIsClosed(true)}
                         className={`px-3 py-1 rounded text-[10px] font-bold transition ${isClosed ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
                     >
@@ -1902,7 +1902,7 @@ const VisExPissarraTopologia = () => {
                 </div>
                 <div className="flex gap-1 bg-black/20 p-1 rounded-lg">
                     {['set', 'int', 'fr', 'adh'].map((v) => (
-                        <button key={v} onClick={() => setView(v as any)} className={`px-2 py-1 rounded text-[9px] font-black transition uppercase ${view === v ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-500 hover:text-white'}`}>
+                        <button type="button" key={v} onClick={() => setView(v as any)} className={`px-2 py-1 rounded text-[9px] font-black transition uppercase ${view === v ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-500 hover:text-white'}`}>
                             {v === 'set' ? 'Conjunt A' : v === 'int' ? 'A° (Int)' : v === 'fr' ? 'Fr (Front)' : ' \u0304A (Adh)'}
                         </button>
                     ))}
@@ -2103,7 +2103,7 @@ const VisCheatSheetConiques = () => {
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {['ellipse', 'hiperbola', 'hiperbola_equilatera', 'parabola', 'rectes', 'diamant', 'quadrat'].map((m) => (
-                    <button key={m} onClick={() => setMode(m as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === m ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:bg-slate-700'}`}>
+                    <button type="button" key={m} onClick={() => setMode(m as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === m ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:bg-slate-700'}`}>
                         {m === 'ellipse' ? 'El·lipse' : 
                          m === 'hiperbola' ? 'Hipèrbola' : 
                          m === 'hiperbola_equilatera' ? 'H. Equilàtera' :
@@ -2139,7 +2139,7 @@ const VisClassificacioConjunts = () => {
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {['obert', 'tancat', 'acotat', 'compacte'].map((t) => (
-                    <button key={t} onClick={() => setType(t as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-black transition-all ${type === t ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'text-slate-500 hover:bg-slate-700'}`}>{t}</button>
+                    <button type="button" key={t} onClick={() => setType(t as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-black transition-all ${type === t ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'text-slate-500 hover:bg-slate-700'}`}>{t}</button>
                 ))}
             </div>
 
@@ -3057,9 +3057,9 @@ const VisM1T6Ex6_3 = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex justify-center gap-2 bg-slate-900/40 border-b border-white/5">
-                <button onClick={() => setOp('sum')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sum' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 + v2</button>
-                <button onClick={() => setOp('sub1')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sub1' ? 'bg-green-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 - v3</button>
-                <button onClick={() => setOp('sub2')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sub2' ? 'bg-orange-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v2 - v4</button>
+                <button type="button" onClick={() => setOp('sum')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sum' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 + v2</button>
+                <button type="button" onClick={() => setOp('sub1')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sub1' ? 'bg-green-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 - v3</button>
+                <button type="button" onClick={() => setOp('sub2')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sub2' ? 'bg-orange-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v2 - v4</button>
             </div>
             <Mafs viewBox={{ x: [-8, 5], y: [-10, 8] }} pan={true} zoom={true}>
                 <Coordinates.Cartesian subdivisions={5} />
@@ -3127,10 +3127,10 @@ const VisAxiomesSuma = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
-                <button onClick={() => setAxiom('e2')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e2' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e2 Commutativa</button>
-                <button onClick={() => setAxiom('e1')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e1' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e1 Associativa</button>
-                <button onClick={() => setAxiom('e3')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e3' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e3 Neutre</button>
-                <button onClick={() => setAxiom('e4')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e4' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e4 Oposat</button>
+                <button type="button" onClick={() => setAxiom('e2')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e2' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e2 Commutativa</button>
+                <button type="button" onClick={() => setAxiom('e1')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e1' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e1 Associativa</button>
+                <button type="button" onClick={() => setAxiom('e3')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e3' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e3 Neutre</button>
+                <button type="button" onClick={() => setAxiom('e4')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e4' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e4 Oposat</button>
             </div>
 
             <div className="flex-1 relative overflow-hidden">
@@ -3208,10 +3208,10 @@ const VisAxiomesProducte = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
-                <button onClick={() => setAxiom('e6')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e6' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e6 Distr u+v</button>
-                <button onClick={() => setAxiom('e7')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e7' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e7 Distr λ+μ</button>
-                <button onClick={() => setAxiom('e5')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e5' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e5 Pseudo-assoc</button>
-                <button onClick={() => setAxiom('e8')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e8' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e8 Neutre K</button>
+                <button type="button" onClick={() => setAxiom('e6')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e6' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e6 Distr u+v</button>
+                <button type="button" onClick={() => setAxiom('e7')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e7' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e7 Distr λ+μ</button>
+                <button type="button" onClick={() => setAxiom('e5')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e5' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e5 Pseudo-assoc</button>
+                <button type="button" onClick={() => setAxiom('e8')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e8' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e8 Neutre K</button>
             </div>
 
             <div className="flex-1 relative overflow-hidden">
@@ -3290,10 +3290,10 @@ const VisExemplesEspais = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
-                <button onClick={() => setView('polys')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'polys' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Polinomis</button>
-                <button onClick={() => setView('matrius')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'matrius' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Matrius</button>
-                <button onClick={() => setView('trivial')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'trivial' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Espai Trivial</button>
-                <button onClick={() => setView('propietats')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'propietats' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Propietats</button>
+                <button type="button" onClick={() => setView('polys')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'polys' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Polinomis</button>
+                <button type="button" onClick={() => setView('matrius')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'matrius' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Matrius</button>
+                <button type="button" onClick={() => setView('trivial')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'trivial' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Espai Trivial</button>
+                <button type="button" onClick={() => setView('propietats')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'propietats' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Propietats</button>
             </div>
 
             <div className="relative flex-1 overflow-hidden bg-slate-950/40">
@@ -3373,9 +3373,9 @@ const VisExemplesEspais = () => {
                                         className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
                                     />
                                     <div className="flex justify-between text-[7px] text-slate-600 font-bold">
-                                        <button onClick={() => setScalarProp(-1)} className="hover:text-white transition-colors">-1</button>
-                                        <button onClick={() => setScalarProp(0)} className="hover:text-white transition-colors">0</button>
-                                        <button onClick={() => setScalarProp(1)} className="hover:text-white transition-colors">1</button>
+                                        <button type="button" onClick={() => setScalarProp(-1)} className="hover:text-white transition-colors">-1</button>
+                                        <button type="button" onClick={() => setScalarProp(0)} className="hover:text-white transition-colors">0</button>
+                                        <button type="button" onClick={() => setScalarProp(1)} className="hover:text-white transition-colors">1</button>
                                     </div>
                                 </div>
                                 <div className="pt-2 border-t border-white/5 space-y-1.5">
@@ -3435,8 +3435,8 @@ const VisSEVIntro = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex justify-center gap-2 bg-slate-900/60 border-b border-white/5">
-                <button onClick={() => setMode('sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'sev' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Recta SEV (y = x)</button>
-                <button onClick={() => setMode('non_sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'non_sev' ? 'bg-rose-600 text-white shadow-[0_0_10px_rgba(225,29,72,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>No és SEV (y = x + 1)</button>
+                <button type="button" onClick={() => setMode('sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'sev' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Recta SEV (y = x)</button>
+                <button type="button" onClick={() => setMode('non_sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'non_sev' ? 'bg-rose-600 text-white shadow-[0_0_10px_rgba(225,29,72,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>No és SEV (y = x + 1)</button>
             </div>
 
             <div className="flex-1 relative overflow-hidden bg-slate-950/40">
@@ -3527,7 +3527,7 @@ const VisOperacionsSEV = () => {
                     { id: 'suma', label: 'Suma', color: 'bg-indigo-600' },
                     { id: 'directa', label: 'Suma Directa', color: 'bg-amber-600' }
                 ].map((t) => (
-                    <button
+                    <button type="button"
                         key={t.id}
                         onClick={() => setTab(t.id as any)}
                         className={`px-3 py-1.5 rounded text-[9px] font-black uppercase transition-all whitespace-nowrap ${tab === t.id ? `${t.color} text-white shadow-lg` : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}`}
@@ -3718,7 +3718,7 @@ const VisIndependenciaLineal = () => {
                             <input type="range" min="-2" max="2" step="0.1" value={l2} onChange={(e) => setL2(parseFloat(e.target.value))} className="w-full accent-red-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
                         </div>
 
-                        <button
+                        <button type="button"
                             onClick={() => setShowSpan(!showSpan)}
                             className={`w-full py-2 rounded-lg text-[9px] font-bold uppercase transition-all border ${showSpan ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-transparent border-slate-700 text-slate-400 hover:border-indigo-500 hover:text-indigo-400'}`}
                         >
@@ -3959,7 +3959,7 @@ const VisCanviBase = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <button
+                            <button type="button"
                                 onClick={() => setShowGrid(!showGrid)}
                                 className={`w-full py-2 rounded-lg text-[9px] font-bold uppercase transition-all border ${showGrid ? 'bg-blue-600 border-blue-500 text-white' : 'bg-transparent border-slate-700 text-slate-400 hover:border-blue-500 hover:text-blue-400'}`}
                             >
@@ -4019,7 +4019,7 @@ const VisAntiimatgeSubespais = () => {
                         <span className="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">Imatge</span>
                     </div>
                     {!isCompatible && (
-                        <button 
+                        <button type="button" 
                             onClick={snapToImage}
                             className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-black uppercase rounded-lg shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
                         >
@@ -4133,13 +4133,13 @@ const VisClassificacioAplicacions = () => {
         <div className="flex flex-col h-full bg-slate-950 overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
             <div className="p-4 bg-slate-900/80 border-b border-white/10 flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
-                    <button 
+                    <button type="button" 
                         onClick={() => setMode('injective')} 
                         className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${mode === 'injective' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                     >
                         Bijectiva
                     </button>
-                    <button 
+                    <button type="button" 
                         onClick={() => setMode('singular')} 
                         className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${mode === 'singular' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                     >
@@ -4245,7 +4245,7 @@ const VisEndomorfismeNilpotent = () => {
                 </div>
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
                     {[0, 1, 2].map((s) => (
-                        <button
+                        <button type="button"
                             key={s}
                             onClick={() => setStep(s)}
                             className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${step === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
@@ -4524,7 +4524,7 @@ const VisCanviBaseSandvitx = () => {
                 </div>
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
                     {steps.map((_, s) => (
-                        <button
+                        <button type="button"
                             key={s}
                             onClick={() => setStep(s)}
                             className={`px-3 py-1.5 text-[9px] font-black uppercase rounded-lg transition-all ${step === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
@@ -4626,10 +4626,10 @@ const VisTransformacionsGeometricas = () => {
             {/* Control Header */}
             <div className="p-6 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
-                    <button onClick={() => setType('rot')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'rot' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Rotació</button>
-                    <button onClick={() => setType('ref')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'ref' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Reflexió</button>
-                    <button onClick={() => setType('proj')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'proj' ? 'bg-amber-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Projecció</button>
-                    <button onClick={() => setType('esc')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'esc' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Escalat</button>
+                    <button type="button" onClick={() => setType('rot')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'rot' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Rotació</button>
+                    <button type="button" onClick={() => setType('ref')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'ref' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Reflexió</button>
+                    <button type="button" onClick={() => setType('proj')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'proj' ? 'bg-amber-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Projecció</button>
+                    <button type="button" onClick={() => setType('esc')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'esc' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Escalat</button>
                 </div>
 
                 <div className="flex gap-8 min-w-[200px]">

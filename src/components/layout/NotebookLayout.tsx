@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, FileText, LayoutList, CheckCircle2, X } from 'lucide-react';
 import type { Solution } from '../../content/data/solutions';
 import type { TopicDefinition } from '../../content/data/courseStructure';
@@ -120,7 +120,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                     {/* PDF Large Square Button - Right Aligned */}
                     {(availablePdfs.ca || availablePdfs.es) && (
                         <div className="relative shrink-0 self-center md:self-stretch flex items-center">
-                            <button
+                            <button type="button"
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
                                 className="flex flex-col items-center justify-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl border transition-all select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-[100px] h-full max-h-[100px]"
                             >
@@ -139,7 +139,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                     >
                                         <div className="p-4 border-b border-red-500/10 flex justify-between items-center">
                                             <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">{t('notebook.pdfLanguage', 'Idioma Solucionari')}</span>
-                                            <button onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                                            <button type="button" onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
                                                 <X size={16} />
                                             </button>
                                         </div>
@@ -212,7 +212,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                             const isSolved = !!s;
 
                             return (
-                                <button
+                                <button type="button"
                                     key={pId}
                                     onClick={() => {
                                         setSelectedProblemId(pId);
@@ -330,7 +330,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
 
                                     {/* Footer Navigation */}
                                     <div className="p-4 border-t border-white/5 bg-slate-900/80 backdrop-blur-md flex justify-between items-center shrink-0">
-                                        <button
+                                        <button type="button"
                                             onClick={handlePrev}
                                             disabled={currentIndex === 0}
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -343,7 +343,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                             {currentIndex + 1} / {topic.problems.length}
                                         </span>
 
-                                        <button
+                                        <button type="button"
                                             onClick={handleNext}
                                             disabled={currentIndex === topic.problems.length - 1}
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"

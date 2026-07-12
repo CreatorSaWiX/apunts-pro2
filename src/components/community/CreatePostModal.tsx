@@ -218,7 +218,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                                             <span className="text-xs text-slate-500">{(att.size / 1024 / 1024).toFixed(2)} MB</span>
                                                         </div>
                                                     </div>
-                                                    <button 
+                                                    <button type="button" 
                                                         onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
                                                         className="text-slate-500 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100"
                                                     >
@@ -302,7 +302,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                     </button>
                                 </div>
 
-                                <button
+                                <button type="button"
                                     onClick={handleSend}
                                     disabled={loading || (!content.trim() && attachments.length === 0)}
                                     className="px-8 py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]"

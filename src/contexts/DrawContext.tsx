@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, type ReactNode, useMemo, useCallback } from 'react';
 
 export interface Stroke {
     id: string;
@@ -30,17 +30,17 @@ export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [strokes, setStrokes] = useState<Stroke[]>([]);
     const [undoneStrokes, setUndoneStrokes] = useState<Stroke[]>([]);
 
-    const addStroke = (stroke: Stroke) => {
+    const addStroke = useCallback((stroke: Stroke) => {
         setStrokes((prev) => [...prev, stroke]);
         setUndoneStrokes([]);
-    };
+    }, []);
 
-    const clearStrokes = () => {
+    const clearStrokes = useCallback(() => {
         setStrokes([]);
         setUndoneStrokes([]);
-    };
+    }, []);
 
-    const undoStroke = () => {
+    const undoStroke = useCallback(() => {
         setStrokes((prev) => {
             if (prev.length === 0) return prev;
             const newStrokes = [...prev];
@@ -50,9 +50,9 @@ export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
             return newStrokes;
         });
-    };
+    }, []);
 
-    const redoStroke = () => {
+    const redoStroke = useCallback(() => {
         setUndoneStrokes((prev) => {
             if (prev.length === 0) return prev;
             const newUndone = [...prev];
@@ -62,25 +62,25 @@ export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
             return newUndone;
         });
-    };
+    }, []);
+
+    const contextValue = useMemo(() => ({
+        isDrawMode,
+        setIsDrawMode,
+        currentColor,
+        setCurrentColor,
+        strokes,
+        setStrokes,
+        addStroke,
+        clearStrokes,
+        undoStroke,
+        redoStroke,
+        canUndo: strokes.length > 0,
+        canRedo: undoneStrokes.length > 0
+    }), [isDrawMode, currentColor, strokes, undoneStrokes, addStroke, clearStrokes, undoStroke, redoStroke]);
 
     return (
-        <DrawContext.Provider
-            value={{
-                isDrawMode,
-                setIsDrawMode,
-                currentColor,
-                setCurrentColor,
-                strokes,
-                setStrokes,
-                addStroke,
-                clearStrokes,
-                undoStroke,
-                redoStroke,
-                canUndo: strokes.length > 0,
-                canRedo: undoneStrokes.length > 0
-            }}
-        >
+        <DrawContext.Provider value={contextValue}>
             {children}
         </DrawContext.Provider>
     );

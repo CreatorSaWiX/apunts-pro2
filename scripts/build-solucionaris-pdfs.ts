@@ -43,9 +43,9 @@ function preprocessMarkdownForPDF(content: string) {
     md = md.replace(/::videoviz\{.*?\}/g, '\n*[Vídeo disponible a la web]*\n');
     md = md.replace(/::mafs\{.*?\}/g, '\n*[Gràfic interactiu disponible a la web]*\n');
 
-    md = md.replace(/:::tip(?:\{title="(.*?)"\})?([\s\S]*?):::/g, (match, title, body) => {
+    md = md.replace(/:::tip(?:\{title="(.*?)"\})?([\s\S]*?):::/g, (_match, title, body) => {
         const t = title ? `**${title}**` : `**Nota Principal**`;
-        return `\n> ${t}\n>\n${body.trim().split('\n').map(l => `> ${l}`).join('\n')}\n`;
+        return `\n> ${t}\n>\n${body.trim().split('\n').map((l: string) => `> ${l}`).join('\n')}\n`;
     });
 
     md = md.replace(/::::?grid.*?\n/g, '\n');

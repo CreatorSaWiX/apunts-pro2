@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -80,7 +80,7 @@ export const Modal = ({
                         
                         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent z-50 pointer-events-none" />
                         {!hideCloseButton && (
-                            <button 
+                            <button type="button" 
                                 onClick={onClose}
                                 className="absolute top-4 right-4 z-[60] p-2 bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 rounded-full transition-all duration-300 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
                             >
@@ -161,7 +161,7 @@ const ModalButton = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttribut
     }
 
     return (
-        <button
+        <button type="button"
             ref={ref}
             className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:hover:transform-none disabled:cursor-not-allowed ${variantStyles} ${className}`}
             {...props}

@@ -13,6 +13,7 @@ const PdfViewer = ({ url, filename }: PdfViewerProps) => {
             <iframe 
                 src={`${url}#toolbar=0&navpanes=0&scrollbar=0`} 
                 className="w-full h-[calc(100%-36px)]"
+                sandbox="allow-scripts allow-popups"
                 title={filename}
             />
         </div>

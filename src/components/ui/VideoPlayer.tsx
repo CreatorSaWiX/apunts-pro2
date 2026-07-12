@@ -81,14 +81,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
                         {/* Controls Overlay */}
                         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4 md:p-6 justify-between pointer-events-none">
                             <div className="flex items-center gap-3 pointer-events-auto">
-                                <button 
+                                <button type="button" 
                                     onClick={togglePlay}
                                     className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110 active:scale-95"
                                     title={isPlaying ? "Pausar" : "Reproduir"}
                                 >
                                     {isPlaying ? <Pause size={18} /> : <Play size={18} fill="white" />}
                                 </button>
-                                <button 
+                                <button type="button" 
                                     onClick={handleRestart}
                                     className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110 active:scale-95"
                                     title="Reiniciar"
@@ -100,7 +100,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
                                 </div>
                             </div>
 
-                            <button 
+                            <button type="button" 
                                 onClick={handleFullscreen}
                                 className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110 active:scale-95 pointer-events-auto"
                                 title="Pantalla completa"

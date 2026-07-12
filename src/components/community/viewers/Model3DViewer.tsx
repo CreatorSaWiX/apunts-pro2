@@ -27,7 +27,7 @@ const Model3DViewer = ({ url, filename }: Model3DViewerProps) => {
                 <span className="text-xs text-slate-400 ml-1">({filename})</span>
             </div>
 
-            <button className="absolute bottom-4 right-4 z-10 p-2 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10">
+            <button type="button" className="absolute bottom-4 right-4 z-10 p-2 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10">
                 <Maximize2 size={16} />
             </button>
 

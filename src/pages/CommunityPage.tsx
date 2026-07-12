@@ -5,7 +5,7 @@ import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, FileText as FileTextIcon, BookOpen, Sparkles, X } from 'lucide-react';
 import CommunityHero3D from '../components/community/CommunityHero3D';
 import SubjectSelectorModal from '../components/community/SubjectSelectorModal';
@@ -223,7 +223,7 @@ const CommunityPage = () => {
         setLastVisible(snapshot.docs[snapshot.docs.length - 1] || null);
         setHasMore(snapshot.docs.length === currentLimit);
         setLoadingMore(false);
-    }, [loadingMore, hasMore, lastVisible, activeSubject, activeRank, debouncedSearch]);
+    }, [loadingMore, hasMore, lastVisible, activeSubject, activeRank, debouncedSearch, isOffline]);
 
     const lastPostRef = useCallback((node: HTMLDivElement | null) => {
         if (loading || loadingMore) return;
@@ -295,7 +295,7 @@ const CommunityPage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
                         >
-                            <button
+                            <button type="button"
                                 onClick={handleUploadClick}
                                 className="group relative px-8 py-4 bg-[var(--glass-bg)] backdrop-blur-3xl backdrop-saturate-150 border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),0_0_40px_rgba(255,255,255,0.05)] text-white font-bold text-lg rounded-full flex items-center gap-3 transition-all duration-500 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] active:scale-95 hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] overflow-hidden"
                             >
@@ -413,14 +413,14 @@ const CommunityPage = () => {
                                     className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 origin-bottom z-50 w-44"
                                     panelClassName="p-2 flex flex-col gap-1"
                                 >
-                                    <button 
+                                    <button type="button" 
                                         onClick={() => { setActiveRank(null); setShowRarityFilter(false); }}
                                         className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors ${activeRank === null ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
                                     >
                                         {t('community.anyRarity', 'Qualsevol raresa')}
                                     </button>
                                     {[0, 1, 2, 3, 4].map(rank => (
-                                        <button
+                                        <button type="button"
                                             key={rank}
                                             onClick={() => { setActiveRank(rank); setShowRarityFilter(false); }}
                                             className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors flex items-center justify-between group ${activeRank === rank ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
@@ -438,7 +438,7 @@ const CommunityPage = () => {
 
                     {/* Buscar */}
                     <div key="buscar" className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-[180px] sm:w-[280px] ml-1' : 'w-10 ml-0'}`}>
-                        <button 
+                        <button type="button" 
                             onClick={() => {
                                 if (isSearchOpen && !searchQuery) setIsSearchOpen(false);
                                 else setIsSearchOpen(true);
@@ -459,7 +459,7 @@ const CommunityPage = () => {
                                 className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none pl-2 pr-8 placeholder:text-slate-600"
                             />
                             {(searchQuery || isSearchOpen) && (
-                                <button 
+                                <button type="button" 
                                     onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
                                     className="absolute right-2 p-1 text-slate-500 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors z-10"
                                 >
@@ -526,7 +526,7 @@ const CommunityPage = () => {
                                     <h3 className="font-bold text-3xl text-white mb-3 tracking-tight relative z-10">{t('community.emptyTitle', 'Encara no hi ha apunts')}</h3>
                                     <p className="text-slate-400 mb-10 max-w-sm text-sm leading-relaxed relative z-10">{t('community.emptySubtitle', 'No hi ha cap recurs compartit per a aquesta matèria. Sigues el primer en aportar valor a la comunitat i destacar.')}</p>
                                     
-                                    <button
+                                    <button type="button"
                                         onClick={handleUploadClick}
                                         className="relative px-8 py-3.5 bg-white text-black hover:bg-slate-200 font-bold rounded-2xl transition-all hover:-translate-y-1 flex items-center gap-2 shadow-[0_10px_40px_rgba(255,255,255,0.2)] hover:shadow-[0_15px_50px_rgba(255,255,255,0.3)] z-10 overflow-hidden"
                                     >

@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
+import { m as motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { RefreshCw, GitCommitVertical } from 'lucide-react';
 import { useSubject } from '../contexts/SubjectContext';
 import { useTranslation } from 'react-i18next';
@@ -137,9 +137,9 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                             >
                             <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
                                 <span className="inline-block mr-4">
-                                    {"APUNTS".split("").map((char, index) => (
+                                    {"APUNTS".split("").map((char, i) => (
                                         <motion.span
-                                            key={`static-${index}`}
+                                            key={`static-${char}-${i}`}
                                             variants={letterVariants}
                                             className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
                                         >
@@ -149,9 +149,9 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                                 </span>
 
                                 <span className="inline-block">
-                                    {theme.label.split("").map((char, index) => (
+                                    {theme.label.split("").map((char, i) => (
                                         <motion.span
-                                            key={`dynamic-${subject}-${index}`}
+                                            key={`dynamic-${subject}-${char}-${i}`}
                                             variants={letterVariants}
                                             className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
                                         >

@@ -13,7 +13,7 @@ interface SSLParticlesProps {
   isHovered?: boolean;
 }
 
-export const SSLParticles: React.FC<SSLParticlesProps> = ({ isHovered = false }) => {
+const SSLParticles: React.FC<SSLParticlesProps> = ({ isHovered = false }) => {
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {

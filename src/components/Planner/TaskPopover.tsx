@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
 import { Flag, Bookmark } from 'lucide-react';
 import type { TaskPriority } from '../../types/tasks';
@@ -117,7 +117,7 @@ const TaskPopover: React.FC = () => {
                             <span>{t('planner.popover.subject', 'Assignatura')}</span>
                         </div>
                         <div className="px-1 mb-2 relative">
-                            <button
+                            <button type="button"
                                 onClick={() => setShowSubjectPicker(!showSubjectPicker)}
                                 className={`w-full flex items-center justify-between gap-1.5 px-2 py-1.5 rounded-md transition-colors border ${task.subjectId
                                         ? (() => {
@@ -142,7 +142,7 @@ const TaskPopover: React.FC = () => {
                                         className="bg-white/5 border border-white/10 text-slate-200 text-[10px] px-2 py-1.5 rounded focus:outline-none focus:border-white/20 placeholder:text-slate-500 mb-1"
                                     />
                                     <div className="flex flex-col gap-1 max-h-[120px] overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-                                        <button
+                                        <button type="button"
                                             onClick={() => { updateTask(task.id, { subjectId: undefined }); setShowSubjectPicker(false); }}
                                             className={`text-left px-2 py-1.5 rounded text-[10px] font-medium transition-colors ${
                                                 !task.subjectId 
@@ -155,7 +155,7 @@ const TaskPopover: React.FC = () => {
                                         {filteredSubjects.map(subject => {
                                             const isSelected = task.subjectId === subject.id;
                                             return (
-                                                <button
+                                                <button type="button"
                                                     key={subject.id}
                                                     onClick={() => { updateTask(task.id, { subjectId: subject.id }); setShowSubjectPicker(false); }}
                                                     className={`text-left flex items-center gap-2 px-2 py-1.5 rounded text-[10px] font-medium transition-all ${
@@ -190,7 +190,7 @@ const TaskPopover: React.FC = () => {
                                 };
                                 const isSelected = task.priority === p;
                                 return (
-                                    <button
+                                    <button type="button"
                                         key={p}
                                         onClick={() => updateTask(task.id, { priority: p })}
                                         className={`flex-1 py-1.5 rounded text-[9px] font-bold tracking-wider transition-all ${

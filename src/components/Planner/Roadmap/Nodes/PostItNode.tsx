@@ -87,11 +87,11 @@ const PostItNode = ({ id, data, selected }: NodeProps<import('@xyflow/react').No
                             title="Mida de lletra"
                         />
                     </div>
-                    <button onClick={toggleBold} className={`p-1.5 rounded transition-colors ${data.fontWeight === 'bold' ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-slate-300'}`} title="Toggle Bold"><Bold size={14} /></button>
+                    <button type="button" onClick={toggleBold} className={`p-1.5 rounded transition-colors ${data.fontWeight === 'bold' ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-slate-300'}`} title="Toggle Bold"><Bold size={14} /></button>
                 </div>
                 <div className="flex items-center gap-1 px-2 border-r border-white/10">
                     {COLORS.map(c => (
-                        <button
+                        <button type="button"
                             key={c}
                             onClick={() => updateNodeData(id, { color: c })}
                             className={`w-5 h-5 rounded-full border-2 transition-all ${data.color === c ? 'border-white scale-110' : 'border-black/10 hover:scale-110'}`}
@@ -100,8 +100,8 @@ const PostItNode = ({ id, data, selected }: NodeProps<import('@xyflow/react').No
                     ))}
                 </div>
                 <div className="flex items-center gap-1 pl-2">
-                    <button onClick={() => duplicateAnnotation(id)} className="p-1.5 hover:bg-white/10 rounded text-slate-300 hover:text-white transition-colors" title="Duplicar"><Copy size={14} /></button>
-                    <button onClick={() => removeNode(id)} className="p-1.5 hover:bg-red-500/20 rounded text-slate-300 hover:text-red-400 transition-colors" title="Delete"><Trash2 size={14} /></button>
+                    <button type="button" onClick={() => duplicateAnnotation(id)} className="p-1.5 hover:bg-white/10 rounded text-slate-300 hover:text-white transition-colors" title="Duplicar"><Copy size={14} /></button>
+                    <button type="button" onClick={() => removeNode(id)} className="p-1.5 hover:bg-red-500/20 rounded text-slate-300 hover:text-red-400 transition-colors" title="Delete"><Trash2 size={14} /></button>
                 </div>
             </NodeToolbar>
 

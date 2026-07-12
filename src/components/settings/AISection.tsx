@@ -76,7 +76,7 @@ export const AISection = () => {
                             <div className="space-y-2 w-full">
                                 <div className="flex items-baseline justify-between">
                                     <label className="text-sm font-semibold text-slate-200">{t('settings.ai.howToCallYou', 'Com vols que et digui?')}</label>
-                                    <button
+                                    <button type="button"
                                         onClick={() => setAiSettings({ ...aiSettings, userContext: { memories: aiSettings.userContext?.memories || [], ...aiSettings.userContext, userPreferredName: user?.username || 'Estudiant' } })}
                                         className="text-[10px] uppercase font-bold text-slate-400 hover:text-white transition-colors"
                                     >
@@ -129,7 +129,7 @@ export const AISection = () => {
                                     {/* Overlay center button */}
                                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0d16]/40 group-hover:bg-[#0a0d16]/60 transition-colors z-10">
                                         <p className="text-[11px] text-slate-300 font-bold uppercase tracking-wider mb-3 drop-shadow-md">{t('settings.ai.managedByAi', "Això ho gestiona l'IA autònomament")}</p>
-                                        <button
+                                        <button type="button"
                                             onClick={() => setEditingSoulField(field.id as any)}
                                             className="px-5 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold rounded-xl text-xs transition-all backdrop-blur-md"
                                         >
@@ -164,7 +164,7 @@ export const AISection = () => {
                                 {aiSettings.userContext.memories.map((mem, idx) => (
                                     <div key={idx} className="flex items-start justify-between gap-4 p-4 bg-white/[0.03] border border-white/5 rounded-xl hover:border-white/10 transition-colors group">
                                         <span className="text-sm text-slate-300 font-medium leading-relaxed">{mem}</span>
-                                        <button
+                                        <button type="button"
                                             onClick={() => {
                                                 const newMems = [...(aiSettings.userContext?.memories || [])];
                                                 newMems.splice(idx, 1);
@@ -217,7 +217,7 @@ export const AISection = () => {
                     </div>
 
                     <div className="mt-8 flex justify-end">
-                        <button
+                        <button type="button"
                             onClick={() => setEditingSoulField(null)}
                             className="bg-sky-500 hover:bg-sky-400 text-white font-bold py-3.5 px-10 rounded-2xl transition-colors text-base flex justify-center items-center gap-2"
                         >

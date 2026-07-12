@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
+import { m as motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { allPersonalNotes } from 'content-collections';
 
 import { useTranslation } from 'react-i18next';
@@ -116,7 +116,7 @@ const TopicPage: React.FC = () => {
                     {/* PDF Download Button UI - Absolute Floating */}
                     {(availablePdfs.ca || availablePdfs.es) && (
                         <div className="absolute top-0 right-0 z-20">
-                            <button 
+                            <button type="button" 
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
                                 className="flex flex-col items-center justify-center gap-1 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl border transition-all select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-lg shadow-red-950/10 group min-w-[60px]"
                             >
@@ -135,7 +135,7 @@ const TopicPage: React.FC = () => {
                                     >
                                         <div className="p-2 border-b border-red-500/10 flex justify-between items-center text-[10px] text-red-400/70 font-bold uppercase tracking-widest">
                                             {t('topic.pdfLanguage', 'Idioma')}
-                                            <button onClick={() => setIsPdfMenuOpen(false)} className="hover:text-red-300 p-1 rounded-md hover:bg-red-500/10 transition-colors">
+                                            <button type="button" onClick={() => setIsPdfMenuOpen(false)} className="hover:text-red-300 p-1 rounded-md hover:bg-red-500/10 transition-colors">
                                                 <X size={12} />
                                             </button>
                                         </div>

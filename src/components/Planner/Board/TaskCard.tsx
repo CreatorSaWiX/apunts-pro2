@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
-import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
+import { m as motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { Calendar, Flag, Play, X, Check, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { DateTimePicker } from './DateTimePicker';
@@ -274,7 +274,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                 }}
                                 className="bg-transparent text-sm font-medium text-white p-1 focus:outline-none flex-1 border-b border-indigo-500/50"
                             />
-                            <button
+                            <button type="button"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setEditTitle(task.title);
@@ -289,7 +289,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                             >
                                 <X size={16} strokeWidth={2.5} />
                             </button>
-                            <button
+                            <button type="button"
                                 onClick={(e) => { e.stopPropagation(); handleSave(); }}
                                 className="flex items-center justify-center p-1.5 rounded-md text-emerald-400 hover:text-white hover:bg-emerald-500 transition-colors"
                                 title={t('common.save', 'Guardar')}
@@ -299,7 +299,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 text-xs">
-                            <button
+                            <button type="button"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -318,7 +318,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
 
                             <div className="relative">
                                 {subjects && subjects.length > 0 && (
-                                    <button
+                                    <button type="button"
                                         onClick={toggleSubjectPicker}
                                         className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${editSubjectId
                                             ? (() => {
@@ -348,14 +348,14 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                                 onKeyDown={(e) => e.stopPropagation()}
                                             />
                                             <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                                                <button
+                                                <button type="button"
                                                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(null); setShowSubjectPicker(false); }}
                                                     className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                                 >
                                                     Sense assignatura
                                                 </button>
                                                 {filteredSubjects.map(s => (
-                                                    <button
+                                                    <button type="button"
                                                         key={s.id}
                                                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(s.id); setShowSubjectPicker(false); }}
                                                         className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
@@ -391,7 +391,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                             <h4 className="text-[13px] font-semibold text-white/90 flex-1 leading-snug tracking-wide">
                                 {task.title}
                             </h4>
-                            <button
+                            <button type="button"
                                 onClick={(e) => { e.stopPropagation(); deleteTask(task.id); }}
                                 className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-500 hover:text-red-400 p-1 pointer-events-auto"
                                 title="Eliminar tasca"
@@ -404,7 +404,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
 
                         <div className="flex items-center gap-1.5 mt-1 pointer-events-auto relative z-10" onPointerDown={(e) => e.stopPropagation()}>
                             {/* Priority Toggle Pill */}
-                            <button
+                            <button type="button"
                                 onClick={togglePriority}
                                 className={`flex items-center justify-center w-5 h-5 rounded-md border transition-colors ${getPriorityStyle(task.priority)}`}
                                 title={`Priority: ${task.priority}`}
@@ -413,7 +413,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                             </button>
 
                             {/* Date Display Pill */}
-                            <button className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-semibold tracking-widest uppercase border transition-colors ${task.dueDate ? 'bg-white/[0.03] text-slate-300 border-white/[0.05] hover:bg-white/[0.08]' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/5'}`}>
+                            <button type="button" className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-semibold tracking-widest uppercase border transition-colors ${task.dueDate ? 'bg-white/[0.03] text-slate-300 border-white/[0.05] hover:bg-white/[0.08]' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/5'}`}>
                                 <Calendar size={10} />
                                 {task.dueDate ? format(new Date(task.dueDate), 'MMM d') : 'No date'}
                             </button>

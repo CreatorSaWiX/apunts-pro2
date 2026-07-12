@@ -89,7 +89,7 @@ const GifPicker = ({ onSelect, onClose }: GifPickerProps) => {
                     />
                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 </div>
-                <button
+                <button type="button"
                     onClick={onClose}
                     className="p-1.5 text-slate-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 >
@@ -122,7 +122,7 @@ const GifPicker = ({ onSelect, onClose }: GifPickerProps) => {
                         {gifs.length > 0 ? (
                             <div className="grid grid-cols-2 gap-2">
                                 {gifs.map(gif => (
-                                    <button
+                                    <button type="button"
                                         key={gif.id}
                                         onClick={() => onSelect(gif.url)}
                                         className="relative aspect-video bg-slate-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-sky-500 transition-all group"

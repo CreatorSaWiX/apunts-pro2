@@ -125,7 +125,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                         </span>
                         {user?.id === comment.userId && (
                             <div className="opacity-0 group-hover/comment:opacity-100 transition-opacity ml-auto">
-                                <button
+                                <button type="button"
                                     onClick={() => onDelete?.(comment.id)}
                                     className="p-1 text-slate-500 hover:text-red-400 transition-colors"
                                 >
@@ -169,7 +169,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                     {/* Reactions & Actions Row */}
                     <div className="flex flex-wrap items-center gap-3 mt-2">
                         {/* Simple Reply Button (Text) */}
-                        <button
+                        <button type="button"
                             onClick={() => onReply(comment)}
                             className="text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors"
                         >
@@ -178,7 +178,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
 
                         {/* Render existing reactions as badges */}
                         {Object.entries(reactionCounts).map(([emoji, users]) => (
-                            <button
+                            <button type="button"
                                 key={emoji}
                                 onClick={() => user && onReact(comment.id, emoji)}
                                 onMouseEnter={() => setShowReactorTooltip(emoji)}
@@ -210,7 +210,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
 
                         {/* Add Reaction Button (Smile Icon) */}
                         <div className="relative">
-                            <button
+                            <button type="button"
                                 onClick={handleTogglePicker}
                                 className={`text-slate-500 hover:text-sky-400 transition-opacity ${showPicker ? 'opacity-100 text-sky-400' : 'opacity-0 group-hover/comment:opacity-100'}`}
                                 title="Afegir reacció"
@@ -234,7 +234,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                                     >
                                         {/* Custom Emotes */}
                                         {CUSTOM_EMOTES.map(emoji => (
-                                            <button
+                                            <button type="button"
                                                 key={emoji}
                                                 onClick={() => {
                                                     if (user) onReact(comment.id, emoji);
@@ -258,7 +258,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
             {comment.replies && comment.replies.length > 0 && (
                 <div className="ml-12 mt-2">
                     {!areRepliesVisible ? (
-                        <button
+                        <button type="button"
                             onClick={() => setAreRepliesVisible(true)}
                             className="flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors group"
                         >
@@ -280,7 +280,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                                 />
                             ))}
 
-                            <button
+                            <button type="button"
                                 onClick={() => setAreRepliesVisible(false)}
                                 className="flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors mt-3 group"
                             >

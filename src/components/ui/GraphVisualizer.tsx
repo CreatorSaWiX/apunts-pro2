@@ -1,6 +1,6 @@
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-import ForceGraph2D from 'react-force-graph-2d';
+import React, { useRef, useState, useEffect, useCallback, lazy, Suspense } from 'react';
+const ForceGraph2D = lazy(() => import('react-force-graph-2d'));
 import { useSubject } from '../../contexts/SubjectContext';
 import { RotateCcw } from 'lucide-react';
 import { useInView } from 'framer-motion';
@@ -299,7 +299,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                 {/* Controls */}
                 {showControls && (
                     <div className={`absolute bottom-2 right-2 z-10 flex gap-2 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'} pointer-events-none`}>
-                        <button
+                        <button type="button"
                             onClick={handleReset}
                             className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 hover:border-slate-600 transition-colors pointer-events-auto"
                             title="Reset View"
@@ -329,30 +329,32 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                 )}
 
                 {(hasMounted && dimensions.width > 0) && (
-                    <ForceGraph2D
-                        ref={fgRef}
-                        width={dimensions.width}
-                        height={dimensions.height}
-                        graphData={graphData}
-                        nodeRelSize={6} // Increased size
-                        nodeColor={getNodeColor}
-                        nodeCanvasObjectMode={getNodeCanvasObjectMode}
-                        nodeCanvasObject={drawNode}
-                        onNodeHover={handleNodeHover}
-                        nodeLabel="label"
-                        linkColor={getLinkColor}
-                        linkCurvature={getLinkCurvature}
-                        linkDirectionalParticles={2}
-                        linkDirectionalParticleSpeed={0.005}
-                        linkDirectionalParticleWidth={2}
-                        linkDirectionalArrowLength={6}
-                        linkDirectionalArrowRelPos={1}
-                        backgroundColor="rgba(0,0,0,0)"
-                        linkWidth={2.5} // Thicker connections
-                        d3VelocityDecay={0.15} // Slightly more floaty
-                        cooldownTicks={100}
-                        onEngineStop={handleEngineStop}
-                    />
+                    <Suspense fallback={null}>
+                        <ForceGraph2D
+                            ref={fgRef}
+                            width={dimensions.width}
+                            height={dimensions.height}
+                            graphData={graphData}
+                            nodeRelSize={6} // Increased size
+                            nodeColor={getNodeColor}
+                            nodeCanvasObjectMode={getNodeCanvasObjectMode}
+                            nodeCanvasObject={drawNode}
+                            onNodeHover={handleNodeHover}
+                            nodeLabel="label"
+                            linkColor={getLinkColor}
+                            linkCurvature={getLinkCurvature}
+                            linkDirectionalParticles={2}
+                            linkDirectionalParticleSpeed={0.005}
+                            linkDirectionalParticleWidth={2}
+                            linkDirectionalArrowLength={6}
+                            linkDirectionalArrowRelPos={1}
+                            backgroundColor="rgba(0,0,0,0)"
+                            linkWidth={2.5} // Thicker connections
+                            d3VelocityDecay={0.15} // Slightly more floaty
+                            cooldownTicks={100}
+                            onEngineStop={handleEngineStop}
+                        />
+                    </Suspense>
                 )}
             </div>
         </InteractionLock>

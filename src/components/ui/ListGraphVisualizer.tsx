@@ -113,7 +113,7 @@ export default function ListGraphVisualizer() {
                 />
 
                 <div className="grid grid-cols-2 gap-2 mt-2">
-                    <button
+                    <button type="button"
                         onClick={handlePushFront}
                         className="h-10 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-[10px] tracking-wide rounded-lg flex items-center justify-center gap-1 transition-all active:scale-[0.98] border border-emerald-500/20"
                         title="Insereix al principi"
@@ -121,7 +121,7 @@ export default function ListGraphVisualizer() {
                         <Plus size={14} /> p_front
                     </button>
 
-                    <button
+                    <button type="button"
                         onClick={handlePushBack}
                         className="h-10 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-[10px] tracking-wide rounded-lg flex items-center justify-center gap-1 transition-all active:scale-[0.98] border border-emerald-500/20"
                         title="Insereix al final"
@@ -129,7 +129,7 @@ export default function ListGraphVisualizer() {
                         <Plus size={14} /> p_back
                     </button>
 
-                    <button
+                    <button type="button"
                         onClick={handlePopFront}
                         className="h-10 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-[10px] tracking-wide rounded-lg flex items-center justify-center gap-1 transition-all active:scale-[0.98] border border-rose-500/20"
                         title="Extreu del principi"
@@ -137,7 +137,7 @@ export default function ListGraphVisualizer() {
                         <Minus size={14} /> pop_front
                     </button>
 
-                    <button
+                    <button type="button"
                         onClick={handlePopBack}
                         className="h-10 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-[10px] tracking-wide rounded-lg flex items-center justify-center gap-1 transition-all active:scale-[0.98] border border-rose-500/20"
                         title="Extreu del final"

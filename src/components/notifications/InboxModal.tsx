@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 
 import { Bell, Heart, MessageCircle, AtSign } from 'lucide-react';
 import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
@@ -127,7 +127,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                     <div className="flex-1 flex justify-center px-2 sm:px-4 sm:absolute sm:left-1/2 sm:-translate-x-1/2 z-10">
                         <NavigationPill className="!p-1 flex gap-1 overflow-x-auto custom-scrollbar max-w-[200px] sm:max-w-[400px]">
                             {(['all', 'mentions', 'likes', 'comments'] as const).map(f => (
-                                <button
+                                <button type="button"
                                     key={f}
                                     onClick={() => setFilter(f)}
                                     className={`relative px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 ${filter === f ? 'text-white' : 'text-slate-400 hover:text-white'}`}
@@ -149,7 +149,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
 
                     <div className="shrink-0 z-20">
                         {notifications.some(n => !n.read) && (
-                            <button
+                            <button type="button"
                                 onClick={markAllAsRead}
                                 className="hidden sm:block text-xs font-bold text-indigo-400 hover:text-indigo-300 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-lg transition-colors"
                             >

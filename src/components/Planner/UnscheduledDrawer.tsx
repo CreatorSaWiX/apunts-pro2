@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { Archive, X, Flag } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import type { Task, TaskPriority } from '../../types/tasks';
 import { useTranslation } from 'react-i18next';
 
@@ -51,7 +51,7 @@ const UnscheduledDrawer: React.FC<UnscheduledDrawerProps> = ({ tasks }) => {
         <>
             {/* Floating Button */}
             <div className="absolute bottom-6 left-6 z-50">
-                <button
+                <button type="button"
                     onClick={() => setIsOpen(true)}
                     className="group relative flex items-center gap-3 px-5 py-3 rounded-full bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition-all hover:scale-105 active:scale-95"
                 >
@@ -82,7 +82,7 @@ const UnscheduledDrawer: React.FC<UnscheduledDrawerProps> = ({ tasks }) => {
                                 <Archive size={16} className="text-slate-400" />
                                 <span className="font-extrabold text-xs tracking-widest text-slate-300 uppercase">{t('planner.unscheduled.toPlan', 'Per planificar')}</span>
                             </div>
-                            <button 
+                            <button type="button" 
                                 onClick={() => setIsOpen(false)}
                                 className="p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
                             >

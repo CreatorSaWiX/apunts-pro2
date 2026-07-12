@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 
 export async function getProblemInfo(id: string, reqLang: string | null) {
-    let cleanId = id.replace(/[^a-zA-Z0-9_]/g, '');
+    const cleanId = id.replace(/[^a-zA-Z0-9_]/g, '');
     let statementHtml = '';
     let title = cleanId;
     let source = 'scraping';

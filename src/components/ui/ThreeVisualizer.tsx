@@ -475,7 +475,7 @@ const VisSuperficiesBasiques3D = () => {
             <Html position={[-8, 6, 0]}>
                 <div className="flex flex-col gap-2 bg-black/60 backdrop-blur-md p-3 rounded-xl border border-white/10 w-40">
                     {['pla', 'esfera', 'cilindre', 'paraboloide'].map((m) => (
-                        <button
+                        <button type="button"
                             key={m}
                             onClick={() => setMode(m)}
                             className={`px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold transition-all ${mode === m ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
@@ -1253,7 +1253,7 @@ const VisExtremsHessiana = () => {
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
                     {(Object.keys(config) as Array<keyof typeof config>).map((k) => (
-                        <button
+                        <button type="button"
                             key={k}
                             onClick={() => setTipus(k)}
                             className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${tipus === k ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
@@ -1429,7 +1429,7 @@ const VisOptimitzacioCompacte = () => {
                 </div>
 
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
-                    <button
+                    <button type="button"
                         onClick={() => setShowCandidates(!showCandidates)}
                         className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${showCandidates ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                     >
@@ -1624,7 +1624,7 @@ const VisTaylorGrauN = () => {
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
                     {([0, 1, 2] as const).map((g) => (
-                        <button
+                        <button type="button"
                             key={g}
                             onClick={() => setGrau(g)}
                             className={`px-5 py-2 rounded-lg text-xs font-black transition-all ${grau === g ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
@@ -1868,7 +1868,7 @@ const VisRegularitatHibrida = () => {
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
                     {(['C0', 'C1', 'C2', 'Cinf'] as const).map((c) => (
-                        <button
+                        <button type="button"
                             key={c}
                             onClick={() => setClasse(c)}
                             className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${classe === c ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
@@ -2144,8 +2144,8 @@ const VisDerivadesParcialsHibrida = () => {
             <div className={`${isFullScreen ? 'absolute top-0 left-0 right-0 z-20 h-[14dvh] landscape:h-[20dvh] px-2 py-1 bg-black/60 backdrop-blur-md border-b border-white/5 flex flex-wrap justify-start items-center gap-x-4 gap-y-0.5 pr-16' : 'p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4'}`}>
                 <div className="flex gap-3 items-center">
                     <div className="flex bg-black/40 p-0.5 rounded border border-white/5">
-                        <button onClick={() => setMode('x')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition-all ${mode === 'x' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>X</button>
-                        <button onClick={() => setMode('y')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition-all ${mode === 'y' ? 'bg-rose-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>Y</button>
+                        <button type="button" onClick={() => setMode('x')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition-all ${mode === 'x' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>X</button>
+                        <button type="button" onClick={() => setMode('y')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition-all ${mode === 'y' ? 'bg-rose-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>Y</button>
                     </div>
                 </div>
                 <div className={`${isFullScreen ? 'px-1.5 py-0 text-[10px]' : 'px-3 py-1 text-xs md:text-sm'} bg-black/30 rounded-full border border-white/5 font-mono text-white whitespace-nowrap`}>
@@ -2454,9 +2454,9 @@ const VisRnDimensionality = () => {
 
                 {/* Mode Selector */}
                 <div className="flex bg-black/40 p-1 rounded-lg border border-white/5">
-                    <button onClick={() => setMode('single')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'single' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Vector</button>
-                    <button onClick={() => setMode('sum')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'sum' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Suma</button>
-                    <button onClick={() => setMode('product')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'product' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Producte</button>
+                    <button type="button" onClick={() => setMode('single')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'single' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Vector</button>
+                    <button type="button" onClick={() => setMode('sum')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'sum' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Suma</button>
+                    <button type="button" onClick={() => setMode('product')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'product' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Producte</button>
                 </div>
 
                 <div className="hidden lg:block text-[10px] font-mono text-slate-400 bg-black/20 px-3 py-1 rounded-full border border-white/5">
@@ -2537,7 +2537,7 @@ const VisTransformacionsHibrida = () => {
                         { id: 'proj', label: 'Projecció', color: 'bg-amber-600' },
                         { id: 'esc', label: 'Escalat', color: 'bg-emerald-600' }
                     ].map((btn) => (
-                        <button
+                        <button type="button"
                             key={btn.id}
                             onClick={() => setType(btn.id as any)}
                             className={`px-3 py-1.5 text-[9px] font-black uppercase rounded-lg transition-all ${type === btn.id ? `${btn.color} text-white shadow-lg` : 'text-slate-500 hover:text-slate-300'}`}
@@ -2567,7 +2567,7 @@ const VisTransformacionsHibrida = () => {
                     {(type === 'rot' || type === 'ref' || type === 'proj') && (
                         <div className="flex bg-black/40 p-1 rounded-lg border border-white/5 h-fit self-end">
                             {(['x', 'y', 'z'] as const).map((a) => (
-                                <button
+                                <button type="button"
                                     key={a}
                                     onClick={() => setAxis(a)}
                                     className={`w-6 h-6 flex items-center justify-center text-[9px] font-black uppercase rounded transition-all ${axis === a ? 'bg-slate-700 text-white' : 'text-slate-600 hover:text-slate-400'}`}
@@ -2579,7 +2579,7 @@ const VisTransformacionsHibrida = () => {
                     )}
                 </div>
 
-                <button
+                <button type="button"
                     onClick={() => setShowWireframe(!showWireframe)}
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all ${showWireframe ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300' : 'bg-slate-800/50 border-white/5 text-slate-500'}`}
                 >

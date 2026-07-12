@@ -1246,8 +1246,8 @@ export const algorithms: Record<string, Algorithm> = {
         },
         generateSteps: () => {
             const steps: AlgoStep[] = [];
-            let hl: Record<number, string> = {};
-            let labels: Record<number, string> = {
+            const hl: Record<number, string> = {};
+            const labels: Record<number, string> = {
                 1: "1 (50)", 2: "2 (40)", 3: "3 (30)", 4: "4 (10)", 5: "5 (20)", 6: "6"
             };
             const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
@@ -1312,7 +1312,7 @@ export const algorithms: Record<string, Algorithm> = {
         generateSteps: () => {
             const steps: AlgoStep[] = [];
             let hl: Record<number, string> = {};
-            let labels: Record<number, string> = {
+            const labels: Record<number, string> = {
                 1: "1 (50)", 2: "2 (40)", 3: "3 (45)", 4: "4 (10)", 5: "5 (20)", 6: "6 (30)"
             };
             const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {
@@ -1396,8 +1396,8 @@ export const algorithms: Record<string, Algorithm> = {
         },
         generateSteps: () => {
             const steps: AlgoStep[] = [];
-            let hl: Record<number, string> = {};
-            let labels: Record<number, string> = {
+            const hl: Record<number, string> = {};
+            const labels: Record<number, string> = {
                 1: "50", 2: "20", 3: "30", 4: "80", 5: "10", 6: "90"
             };
             const addStep = (line: number, desc: string, vars: Record<string, string> = {}) => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 interface AccordionProps {
@@ -31,7 +31,7 @@ const Accordion: React.FC<AccordionProps> = ({
 
   return (
     <div className="my-4 overflow-hidden rounded-xl border border-white/5 bg-white/[0.02] transition-colors hover:bg-white/[0.04]">
-      <button
+      <button type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between p-5 text-left"
       >
@@ -54,11 +54,12 @@ const Accordion: React.FC<AccordionProps> = ({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            layout
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ 
-                height: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
+                y: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
                 opacity: { duration: 0.25, ease: "linear" }
             }}
           >

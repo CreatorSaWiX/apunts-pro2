@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { Mail, Reply, ExternalLink, ChevronRight, Send } from 'lucide-react';
 import { collection, query, where, getDocs, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
@@ -163,7 +163,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                             </div>
                             
                             <NavigationPill className="w-full flex !p-1.5">
-                                <button
+                                <button type="button"
                                     onClick={() => setActiveTab('inbox')}
                                     className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition-all duration-300 ${activeTab === 'inbox' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                                 >
@@ -179,7 +179,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                     )}
                                     <span className="relative z-10">{t('mailing.mailbox.inbox', 'Rebuts')}</span>
                                 </button>
-                                <button
+                                <button type="button"
                                     onClick={() => setActiveTab('sent')}
                                     className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition-all duration-300 ${activeTab === 'sent' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                                 >
@@ -270,7 +270,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                         <>
                             {/* Mobile Back Button */}
                             <div className="md:hidden p-4 border-b border-white/5 flex items-center gap-2">
-                                <button onClick={() => setSelectedMessage(null)} className="p-2 hover:bg-white/5 rounded-lg text-slate-400">
+                                <button type="button" onClick={() => setSelectedMessage(null)} className="p-2 hover:bg-white/5 rounded-lg text-slate-400">
                                     <Reply className="rotate-180" size={20} />
                                 </button>
                                 <span className="font-medium text-white">{t('mailing.mailbox.back', 'Torna')}</span>
@@ -343,7 +343,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                             </Link>
                                         )}
 
-                                        <button
+                                        <button type="button"
                                             onClick={() => setIsReplyOpen(true)}
                                             className="flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 rounded-xl text-sm font-bold text-white transition-all shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 transform hover:-translate-y-0.5"
                                         >

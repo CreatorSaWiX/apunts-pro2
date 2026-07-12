@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, isToday, setHours, setMinutes } from 'date-fns';
 import { es, ca, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, X, ChevronUp, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 interface DateTimePickerProps {
@@ -128,7 +128,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
 
     return (
         <>
-            <button
+            <button type="button"
                 ref={triggerRef}
                 onClick={handleOpen}
                 className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${
@@ -169,13 +169,13 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                     >
                         {/* Header: Month / Year */}
                         <div className="flex items-center justify-between">
-                            <button onClick={prevMonth} className="p-1.5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
+                            <button type="button" onClick={prevMonth} className="p-1.5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
                                 <ChevronLeft size={16} />
                             </button>
                             <span className="text-[14px] font-bold text-white capitalize tracking-wide">
                                 {format(viewDate, 'MMMM yyyy', { locale })}
                             </span>
-                            <button onClick={nextMonth} className="p-1.5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
+                            <button type="button" onClick={nextMonth} className="p-1.5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
                                 <ChevronRight size={16} />
                             </button>
                         </div>
@@ -194,7 +194,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                                     const isTodayDate = isToday(day);
 
                                     return (
-                                        <button
+                                        <button type="button"
                                             key={day.toISOString()}
                                             onClick={() => handleDayClick(day)}
                                             className={`
@@ -221,13 +221,13 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                             <div className="flex items-center gap-3">
                                 {/* Hours Control */}
                                 <div className="flex flex-col items-center gap-1 group">
-                                    <button onClick={() => incrementTime('hours', 1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
+                                    <button type="button" onClick={() => incrementTime('hours', 1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
                                         <ChevronUp size={14} strokeWidth={3} />
                                     </button>
                                     <div className="w-10 h-8 flex items-center justify-center bg-slate-800/80 rounded-lg border border-white/5 shadow-inner text-[15px] font-black text-white">
                                         {currentDate.getHours().toString().padStart(2, '0')}
                                     </div>
-                                    <button onClick={() => incrementTime('hours', -1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
+                                    <button type="button" onClick={() => incrementTime('hours', -1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
                                         <ChevronDown size={14} strokeWidth={3} />
                                     </button>
                                 </div>
@@ -236,13 +236,13 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                                 
                                 {/* Minutes Control */}
                                 <div className="flex flex-col items-center gap-1 group">
-                                    <button onClick={() => incrementTime('minutes', 1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
+                                    <button type="button" onClick={() => incrementTime('minutes', 1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
                                         <ChevronUp size={14} strokeWidth={3} />
                                     </button>
                                     <div className="w-10 h-8 flex items-center justify-center bg-slate-800/80 rounded-lg border border-white/5 shadow-inner text-[15px] font-black text-white">
                                         {currentDate.getMinutes().toString().padStart(2, '0')}
                                     </div>
-                                    <button onClick={() => incrementTime('minutes', -1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
+                                    <button type="button" onClick={() => incrementTime('minutes', -1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
                                         <ChevronDown size={14} strokeWidth={3} />
                                     </button>
                                 </div>

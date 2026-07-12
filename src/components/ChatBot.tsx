@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Bot, X, ArrowUp, Plus, Clock, UploadCloud, Pencil, Trash2, Check, LogIn } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -14,7 +14,7 @@ import AIStreamingIndicator from './AIStreamingIndicator';
 import type { StreamPhase } from './AIStreamingIndicator';
 import { useTranslation } from 'react-i18next';
 
-interface Message { role: 'user' | 'model'; content: string; attachmentName?: string; attachmentType?: 'image' | 'pdf'; addedMemories?: string[]; }
+interface Message { id?: string; role: 'user' | 'model'; content: string; attachmentName?: string; attachmentType?: 'image' | 'pdf'; addedMemories?: string[]; }
 interface ChatMeta { id: string; title: string; updatedAt: number; }
 
 const newId = () => `chat_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
@@ -66,7 +66,7 @@ const SendButton = ({
     const { t } = useTranslation();
 
     return (
-        <button
+        <button type="button"
             onClick={onClick}
             disabled={disabled || cooldown > 0}
             title={cooldown > 0 ? t('chat.wait', 'Espera {{cooldown}}s', { cooldown }) : t('common.send', 'Enviar')}
@@ -127,8 +127,10 @@ export const ChatBot: React.FC = () => {
 
   const fetchChatList = useCallback(async (): Promise<ChatMeta[]> => {
     if (!user) return [];
-    const { db } = await import('../lib/firebase');
-    const { collection, getDocs, orderBy, query } = await import('firebase/firestore');
+    const [{ db }, { collection, getDocs, orderBy, query }] = await Promise.all([
+      import('../lib/firebase'),
+      import('firebase/firestore')
+    ]);
     const q = query(collection(db, 'users', user.id, 'chats'), orderBy('updatedAt', 'desc'));
     const snap = await getDocs(q);
     return snap.docs.map(d => ({ id: d.id, title: d.data().title || t('chat.conversation', 'Conversa'), updatedAt: d.data().updatedAt || 0 }));
@@ -136,15 +138,19 @@ export const ChatBot: React.FC = () => {
 
   const saveChat = useCallback(async (id: string, history: Message[], title: string) => {
     if (!user || !id) return;
-    const { db } = await import('../lib/firebase');
-    const { doc, setDoc } = await import('firebase/firestore');
+    const [{ db }, { doc, setDoc }] = await Promise.all([
+      import('../lib/firebase'),
+      import('firebase/firestore')
+    ]);
     await setDoc(doc(db, 'users', user.id, 'chats', id), { history, title, updatedAt: Date.now() });
   }, [user]);
 
   const loadChat = useCallback(async (id: string) => {
     if (!user) return;
-    const { db } = await import('../lib/firebase');
-    const { doc, getDoc } = await import('firebase/firestore');
+    const [{ db }, { doc, getDoc }] = await Promise.all([
+      import('../lib/firebase'),
+      import('firebase/firestore')
+    ]);
     const snap = await getDoc(doc(db, 'users', user.id, 'chats', id));
     if (snap.exists()) {
       setMessages(snap.data().history || []);
@@ -170,7 +176,7 @@ export const ChatBot: React.FC = () => {
         loadChat(list[0].id);
       }
     });
-  }, [isOpen, user]);
+  }, [isOpen, user, fetchChatList, t, loadChat]);
 
   // ── Actions ───────────────────────────────────────────────────────────────
 
@@ -193,8 +199,10 @@ export const ChatBot: React.FC = () => {
 
   const deleteChat = useCallback(async (id: string) => {
     if (!user) return;
-    const { db } = await import('../lib/firebase');
-    const { doc, deleteDoc } = await import('firebase/firestore');
+    const [{ db }, { doc, deleteDoc }] = await Promise.all([
+      import('../lib/firebase'),
+      import('firebase/firestore')
+    ]);
     await deleteDoc(doc(db, 'users', user.id, 'chats', id));
     const newList = chatList.filter(c => c.id !== id);
     setChatList(newList);
@@ -206,8 +214,10 @@ export const ChatBot: React.FC = () => {
 
   const renameChat = useCallback(async (id: string, title: string) => {
     if (!user || !title.trim()) return;
-    const { db } = await import('../lib/firebase');
-    const { doc, updateDoc } = await import('firebase/firestore');
+    const [{ db }, { doc, updateDoc }] = await Promise.all([
+      import('../lib/firebase'),
+      import('firebase/firestore')
+    ]);
     await updateDoc(doc(db, 'users', user.id, 'chats', id), { title: title.trim() });
     setChatList(prev => prev.map(c => c.id === id ? { ...c, title: title.trim() } : c));
     if (id === currentChatId) setCurrentChatTitle(title.trim());
@@ -250,7 +260,7 @@ export const ChatBot: React.FC = () => {
       setAttachedFile({ data: b64, mimeType: file.type, name: file.name });
     };
     reader.readAsDataURL(file);
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -468,7 +478,8 @@ export const ChatBot: React.FC = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ x: '100%', opacity: 0.5 }} animate={{ x: 0, opacity: 1, width: `${sidebarWidth}px` }} exit={{ x: '100%', opacity: 0 }}
+            initial={{ x: '100%', opacity: 0.5 }} animate={{ x: 0, opacity: 1 }} exit={{ x: '100%', opacity: 0 }}
+            style={{ width: `${sidebarWidth}px` }}
             transition={{ type: isResizing ? 'tween' : 'spring', damping: 30, stiffness: 300, duration: isResizing ? 0 : undefined }}
             className="fixed top-0 right-0 h-screen border-l border-white/5 shadow-2xl flex flex-col z-[2000] overflow-hidden max-w-full isolate"
           >
@@ -484,7 +495,7 @@ export const ChatBot: React.FC = () => {
                 {/* Mini header */}
                 <div className="shrink-0 h-16 px-4 border-b border-white/5 flex items-center justify-between bg-[#020617]/50 backdrop-blur-xl">
                   <span className="text-sm font-medium text-slate-300 ml-2">{aiName}</span>
-                  <button onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"><X size={18} /></button>
+                  <button type="button" onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"><X size={18} /></button>
                 </div>
                 {/* Login content */}
                 <div className="flex-1 flex flex-col items-center justify-center gap-6 px-8 text-center">
@@ -529,7 +540,7 @@ export const ChatBot: React.FC = () => {
                 >
                   <div className="shrink-0 h-16 px-5 border-b border-white/5 flex items-center justify-between">
                     <span className="text-sm font-medium text-slate-200">{t('chat.history', 'Historial de converses')}</span>
-                    <button onClick={() => setShowHistory(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"><X size={18} /></button>
+                    <button type="button" onClick={() => setShowHistory(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"><X size={18} /></button>
                   </div>
                   <div className="flex-1 overflow-y-auto custom-scrollbar py-3 px-3 space-y-1">
                     {chatList.length === 0 && (
@@ -558,17 +569,17 @@ export const ChatBot: React.FC = () => {
                         </span>
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" onClick={e => e.stopPropagation()}>
                           {editingId === chat.id ? (
-                            <button onClick={() => renameChat(chat.id, editingTitle)} className="p-1 text-green-400 hover:text-green-300 rounded transition-colors"><Check size={14} /></button>
+                            <button type="button" onClick={() => renameChat(chat.id, editingTitle)} className="p-1 text-green-400 hover:text-green-300 rounded transition-colors"><Check size={14} /></button>
                           ) : (
-                            <button onClick={() => { setEditingId(chat.id); setEditingTitle(chat.title); }} className="p-1 text-slate-500 hover:text-slate-300 rounded transition-colors"><Pencil size={14} /></button>
+                            <button type="button" onClick={() => { setEditingId(chat.id); setEditingTitle(chat.title); }} className="p-1 text-slate-500 hover:text-slate-300 rounded transition-colors"><Pencil size={14} /></button>
                           )}
-                          <button onClick={() => deleteChat(chat.id)} className="p-1 text-slate-500 hover:text-red-400 rounded transition-colors"><Trash2 size={14} /></button>
+                          <button type="button" onClick={() => deleteChat(chat.id)} className="p-1 text-slate-500 hover:text-red-400 rounded transition-colors"><Trash2 size={14} /></button>
                         </div>
                       </div>
                     ))}
                   </div>
                   <div className="shrink-0 p-4 border-t border-white/5">
-                    <button
+                    <button type="button"
                       onClick={startNewChat}
                       className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-colors flex items-center justify-center gap-2"
                     >
@@ -593,7 +604,7 @@ export const ChatBot: React.FC = () => {
                 </div>
               )}
               {messages.map((msg, idx) => (
-                <div key={idx} className={`flex w-full items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div key={msg.id || `msg-${idx}-${msg.content.substring(0,10)}`} className={`flex w-full items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.role === 'model' && (
                     <div className="w-6 h-6 rounded-md bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0 mt-1 overflow-hidden">
                       {renderAIAvatar(14, "text-slate-400")}
@@ -668,9 +679,9 @@ export const ChatBot: React.FC = () => {
             <div className="absolute top-0 left-0 w-full h-16 px-4 border-b border-white/5 flex justify-between items-center bg-[#020617]/50 backdrop-blur-xl z-10">
               <div className="text-sm font-medium text-slate-300 truncate max-w-[55%] ml-2">{currentChatTitle}</div>
               <div className="flex items-center gap-1">
-                <button onClick={startNewChat} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Nova conversa"><Plus size={18} /></button>
-                <button onClick={() => { fetchChatList().then(setChatList); setShowHistory(true); }} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Historial"><Clock size={18} /></button>
-                <button onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors ml-1"><X size={18} /></button>
+                <button type="button" onClick={startNewChat} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Nova conversa"><Plus size={18} /></button>
+                <button type="button" onClick={() => { fetchChatList().then(setChatList); setShowHistory(true); }} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Historial"><Clock size={18} /></button>
+                <button type="button" onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors ml-1"><X size={18} /></button>
               </div>
             </div>
 
@@ -679,14 +690,14 @@ export const ChatBot: React.FC = () => {
               <div className="pointer-events-auto relative flex flex-col gap-2 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-2 transition-all duration-300 focus-within:bg-white/10 focus-within:border-white/20 shadow-lg ring-1 ring-black/20">
                 <AnimatePresence>
                   {attachedFile && (
-                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="px-2 pt-2">
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="px-2 pt-2">
                       <div className="relative inline-block border border-white/10 rounded-xl bg-slate-900/50 p-1 mt-2 ml-2">
                         {attachedFile.mimeType.startsWith('image/') ? (
                           <img src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`} alt="preview" className="h-16 object-contain rounded-lg" loading="lazy" />
                         ) : (
                           <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg"><span className="text-xs font-bold text-slate-300">PDF</span></div>
                         )}
-                        <button onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20"><X size={14} /></button>
+                        <button type="button" onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20"><X size={14} /></button>
                       </div>
                     </motion.div>
                   )}
@@ -694,7 +705,7 @@ export const ChatBot: React.FC = () => {
                 <div className="flex items-end gap-2">
                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf"
                     onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
-                  <button onClick={() => fileInputRef.current?.click()} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-0.5 ml-1" title={t('chat.attachFile', 'Adjuntar imatge o PDF')}>
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-0.5 ml-1" title={t('chat.attachFile', 'Adjuntar imatge o PDF')}>
                     <Plus size={20} />
                   </button>
                   <textarea

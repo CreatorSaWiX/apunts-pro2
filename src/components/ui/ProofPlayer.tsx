@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, RotateCcw, Info } from 'lucide-react';
 import { proofs } from '../../content/data/proofs';
 import GraphVisualizer from './GraphVisualizer';
@@ -34,9 +34,9 @@ export default function ProofPlayer(props: any) {
             <div className="relative flex-1 bg-slate-950/50 overflow-hidden border-b md:border-b-0 md:border-r border-white/5">
                 <div className="absolute inset-x-0 top-0 h-1 bg-white/5">
                     <motion.div
-                        className="h-full bg-sky-500"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progress}%` }}
+                        className="h-full bg-sky-500 w-full origin-left"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: progress / 100 }}
                     />
                 </div>
 
@@ -102,7 +102,7 @@ export default function ProofPlayer(props: any) {
 
                 {/* Controls */}
                 <div className="p-4 bg-black/20 border-t border-white/5 flex items-center justify-between">
-                    <button
+                    <button type="button"
                         onClick={reset}
                         className="p-2 text-slate-500 hover:text-white transition-colors"
                         title="Reiniciar"
@@ -111,14 +111,14 @@ export default function ProofPlayer(props: any) {
                     </button>
 
                     <div className="flex items-center gap-2">
-                        <button
+                        <button type="button"
                             onClick={prev}
                             disabled={currentStep === 0}
                             className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white disabled:opacity-20 hover:bg-white/10 transition-all border border-white/10"
                         >
                             <ChevronLeft size={20} />
                         </button>
-                        <button
+                        <button type="button"
                             onClick={next}
                             disabled={currentStep === proof.steps.length - 1}
                             className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all border ${currentStep === proof.steps.length - 1

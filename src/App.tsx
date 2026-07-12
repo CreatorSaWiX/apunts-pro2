@@ -6,7 +6,7 @@ import Background from './components/Background';
 // import FeedbackModal from './components/FeedbackModal';
 import HomePage from './pages/HomePage';
 import PageTransition from './components/ui/PageTransition';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, LazyMotion, domAnimation } from 'framer-motion';
 import { AppProviders } from './contexts/AppProviders';
 import Spinner from './components/ui/Spinner';
 import { Analytics } from "@vercel/analytics/react";
@@ -32,7 +32,8 @@ function App() {
 
   return (
     <AppProviders>
-      <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
+      <LazyMotion features={domAnimation}>
+        <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
         <Background />
         {/* <PerformanceMonitor /> */}
         <Navigation />
@@ -65,7 +66,8 @@ function App() {
         {import.meta.env.PROD && <Analytics />}
         <UpdateManager />
         {showChatBot && <ChatBot />}
-      </div>
+        </div>
+      </LazyMotion>
     </AppProviders>
   );
 }

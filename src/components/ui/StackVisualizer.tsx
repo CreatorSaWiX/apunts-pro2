@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus } from 'lucide-react';
 
 const MAX_CAPACITY = 5;
@@ -108,7 +108,7 @@ export default function StackVisualizer() {
                             placeholder="Val"
                             className="w-16 bg-slate-900/40 border border-slate-800 rounded-lg px-2 text-center text-sky-200 focus:outline-none focus:border-sky-500/50 transition-colors"
                         />
-                        <button
+                        <button type="button"
                             onClick={handlePush}
                             className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-emerald-500/20"
                         >
@@ -116,7 +116,7 @@ export default function StackVisualizer() {
                         </button>
                     </div>
 
-                    <button
+                    <button type="button"
                         onClick={handlePop}
                         className="w-full h-10 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-rose-500/20"
                     >

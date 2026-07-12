@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Settings2, Sparkles, Bot, Database } from 'lucide-react';
 import { RoadmapProvider } from '../contexts/RoadmapContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -71,7 +71,7 @@ const SettingsContent = () => {
                             {availableTabs.map(tab => {
                                 const isActive = activeTab === tab.id;
                                 return (
-                                    <button
+                                    <button type="button"
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
                                         className={`shrink-0 group relative flex items-center px-4 py-3 transition-all duration-300 outline-none text-left rounded-xl`}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, FileText, ChevronLeft, ChevronRight, CheckCircle, Edit, Save, X, ExternalLink } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { useSolution, useSolutions } from '../hooks/useSolutions';
 import CodeBlock from '../components/ui/CodeBlock';
 import { useAuth } from '../contexts/AuthContext';
@@ -217,7 +217,7 @@ const SolutionDetailPage = () => {
                             <span className="text-slate-500 mr-0.5">{t('solutionDetail.author', 'Autor:')}</span>
                             {solution.authorId ? (
                                 <Link to={`/profile/${solution.authorId}`} className="flex items-center gap-2 hover:text-sky-400 transition-colors">
-                                    {authorData?.avatar && <img src={authorData.avatar} className="w-5 h-5 rounded-full bg-slate-800 object-cover" loading="lazy" />}
+                                    {authorData?.avatar && <img src={authorData.avatar} className="w-5 h-5 rounded-full bg-slate-800 object-cover" loading="lazy" alt="Avatar de l'autor" />}
                                     {authorData?.username || solution.author || t('solutionDetail.anonymous', 'Anònim')}
                                 </Link>
                             ) : (
@@ -279,7 +279,7 @@ const SolutionDetailPage = () => {
                                     ? solution.availableLanguages
                                     : ['ca', 'es', 'en']
                                 ).map((l) => (
-                                    <button
+                                    <button type="button"
                                         key={l}
                                         onClick={() => setLang(l)}
                                         className={`px-2 py-1 rounded-md transition-all ${lang === l
@@ -334,14 +334,14 @@ const SolutionDetailPage = () => {
                                             <span className="text-xs font-medium text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">C++</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button
+                                            <button type="button"
                                                 onClick={() => setIsEditing(false)}
                                                 className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                                                 title={t('solutionDetail.cancel', 'Cancel·lar')}
                                             >
                                                 <X size={16} />
                                             </button>
-                                            <button
+                                            <button type="button"
                                                 onClick={handleSave}
                                                 className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
                                             >
@@ -370,7 +370,7 @@ const SolutionDetailPage = () => {
                                     headerActions={
                                         <div className="flex items-center gap-2">
                                             {user && (user.role === 'moderador' || user.role === 'editor') && (
-                                                <button
+                                                <button type="button"
                                                     onClick={() => setIsEditing(true)}
                                                     className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
                                                 >

@@ -1,6 +1,5 @@
 import React from 'react';
 import Modal from './Modal';
-import { Shield } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface PrivacyModalProps {

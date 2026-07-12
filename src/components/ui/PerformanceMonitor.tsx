@@ -86,7 +86,7 @@ export const PerformanceMonitor = () => {
 
     if (!isOpen) {
         return (
-            <button
+            <button type="button"
                 onClick={() => setIsOpen(true)}
                 className="fixed bottom-4 right-4 z-[9999] bg-slate-900/80 backdrop-blur-md p-2 rounded-lg border border-white/10 text-emerald-400 hover:bg-slate-800 transition-all shadow-lg"
             >
@@ -104,7 +104,7 @@ export const PerformanceMonitor = () => {
                     <span>PERF MONITOR</span>
                 </div>
                 <div className="flex gap-1">
-                    <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-white">
+                    <button type="button" onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-white">
                         <Minimize2 size={12} />
                     </button>
                 </div>

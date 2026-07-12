@@ -135,7 +135,7 @@ const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks }) => {
         setBaseDate(startOfMonth(currentDate));
         
         // Use a short timeout to ensure DOM has painted the 21 months
-        setTimeout(() => {
+        const timer = setTimeout(() => {
             if (scrollContainerRef.current) {
                 const centerMonthId = `month-${format(startOfMonth(currentDate), 'yyyy-MM')}`;
                 const centerMonthEl = document.getElementById(centerMonthId);
@@ -143,7 +143,8 @@ const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks }) => {
                     scrollContainerRef.current.scrollTop = centerMonthEl.offsetTop - 60; // leave some space at top
                 }
             }
-        }, 0);
+        }, 50);
+        return () => clearTimeout(timer);
     }, [currentDate]);
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {

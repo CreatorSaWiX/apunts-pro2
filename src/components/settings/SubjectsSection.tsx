@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, Reorder } from 'framer-motion';
+import { m as motion, AnimatePresence, Reorder } from 'framer-motion';
 import { Search, Command, ChevronRight, X } from 'lucide-react';
 import { useSettings } from '../../contexts/SettingsContext';
 import { tailwindColors } from '../../contexts/SubjectContext';
@@ -101,7 +101,7 @@ export const SubjectsSection = () => {
                                         const defaultColor = subject.colorToken ? subject.colorToken.split('-')[0] : 'sky';
                                         const colorFamily = customSubjectColors[subject.name] || defaultColor;
                                         return (
-                                            <button
+                                            <button type="button"
                                                 key={subject.id}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -164,7 +164,7 @@ export const SubjectsSection = () => {
                                     className="cursor-grab active:cursor-grabbing outline-none"
                                 >
                                     <div className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/20 hover:bg-white/[0.05] transition-all duration-300 shadow-sm pointer-events-auto">
-                                        <button
+                                        <button type="button"
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();
@@ -179,7 +179,7 @@ export const SubjectsSection = () => {
                                             <span className="font-bold text-sm text-slate-200 transition-colors duration-300 pointer-events-none">{subject.name}</span>
                                         </button>
                                         <div className="w-px h-3 bg-white/10 mx-1 pointer-events-none" />
-                                        <button
+                                        <button type="button"
                                             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleSubject(subject.name); }}
                                             className="text-slate-500 hover:text-rose-400 transition-colors duration-300 outline-none cursor-pointer"
                                         >
@@ -285,7 +285,7 @@ export const SubjectsSection = () => {
                             {Object.keys(tailwindColors).map(colorKey => {
                                 const isSelected = (customSubjectColors[editingSubjectColor] || subjectsData.find(s => s.name === editingSubjectColor)?.colorToken?.split('-')[0] || 'sky') === colorKey;
                                 return (
-                                    <button
+                                    <button type="button"
                                         key={colorKey}
                                         onClick={() => {
                                             setCustomSubjectColors(prev => ({ ...prev, [editingSubjectColor]: colorKey }));
@@ -308,7 +308,7 @@ export const SubjectsSection = () => {
                             })}
                         </div>
                         <div className="mt-8 pt-6 border-t border-white/5 flex justify-end">
-                            <button
+                            <button type="button"
                                 onClick={() => {
                                     const newColors = { ...customSubjectColors };
                                     delete newColors[editingSubjectColor];

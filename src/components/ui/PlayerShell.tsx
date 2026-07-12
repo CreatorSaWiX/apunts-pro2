@@ -60,7 +60,7 @@ export function PlayerShell({
                 }`}
             >
                 {/* Fullscreen Toggle */}
-                <button
+                <button type="button"
                     onClick={() => setIsFullscreen(!isFullscreen)}
                     className="absolute top-2 right-2 md:top-3 md:right-3 z-50 p-2 text-slate-400 hover:text-white bg-[#1a212e]/80 hover:bg-[#232c3d]/90 backdrop-blur-md rounded-lg transition-all border border-white/10 shadow-lg active:scale-95"
                     title={isFullscreen ? "Minimitza (Esc)" : "Pantalla completa"}
@@ -72,7 +72,7 @@ export function PlayerShell({
                 {tabs.length > 0 && (
                     <div className="flex lg:hidden border-b border-white/5 bg-[#0a0d14]">
                         {tabs.map((tab) => (
-                            <button
+                            <button type="button"
                                 key={tab.id}
                                 onClick={() => onTabChange(tab.id)}
                                 className={`flex-1 py-3 text-[11px] flex justify-center items-center gap-2 font-bold font-mono tracking-widest transition-colors ${activeTab === tab.id ? 'text-emerald-400 bg-emerald-500/5 border-b-2 border-emerald-400' : 'text-slate-500 hover:text-slate-400'}`}

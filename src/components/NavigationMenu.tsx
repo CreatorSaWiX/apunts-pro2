@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { X, BookOpen, ChevronRight } from 'lucide-react';
 import { allPersonalNotes } from 'content-collections';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 interface NavigationMenuProps {
@@ -41,7 +41,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                         <BookOpen size={24} className="text-accent" />
                         Apunts {theme.label}
                     </h3>
-                    <button
+                    <button type="button"
                         onClick={() => setIsMenuOpen(false)}
                         className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors"
                     >

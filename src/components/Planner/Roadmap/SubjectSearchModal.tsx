@@ -3,7 +3,7 @@ import { Search, Plus, Zap } from 'lucide-react';
 import subjectsData from '../../../data/subjects.json';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { specializations } from '../../../data/curriculum';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import Modal from '../../ui/Modal';
 import { useTranslation } from 'react-i18next';
 
@@ -79,7 +79,8 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
         if (isOpen) {
             setSearchQuery('');
             setActiveFilter(currentSpec ? 'comp' : 'all');
-            setTimeout(() => inputRef.current?.focus(), 100);
+            const timer = setTimeout(() => inputRef.current?.focus(), 100);
+            return () => clearTimeout(timer);
         }
     }, [isOpen, currentSpec]);
 
@@ -132,7 +133,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                         {visibleCategories.map(cat => {
                             const isActive = activeFilter === cat.id;
                             return (
-                                <button
+                                <button type="button"
                                     key={cat.id}
                                     onClick={() => setActiveFilter(cat.id)}
                                     className={`relative px-4 py-2 text-sm font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-2 rounded-full ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}

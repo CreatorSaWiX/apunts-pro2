@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { LayoutGrid, Calendar, CalendarDays, Route } from 'lucide-react';
 import { useSettings, type PlannerViewMode } from '../../contexts/SettingsContext';
 
@@ -22,7 +22,7 @@ export const PlannerSection = () => {
                 {plannerViews.map(view => {
                     const isActive = defaultPlannerView === view.id;
                     return (
-                        <button
+                        <button type="button"
                             key={view.id}
                             onClick={() => setDefaultPlannerView(view.id)}
                             className={`relative group flex items-center justify-center gap-3 px-6 py-4 rounded-xl transition-all duration-300 border outline-none flex-1 sm:flex-none ${isActive ? 'bg-white/10 border-white/20' : 'bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]'}`}

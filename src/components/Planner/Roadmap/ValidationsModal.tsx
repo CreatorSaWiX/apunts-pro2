@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Modal } from '../../ui/Modal';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { CFGS_DEGREES } from '../../../data/cfgs';
@@ -21,7 +21,7 @@ const FIB_ACTIVITIES = [
     { name: "Projecte ECTS", credits: 1 }
 ];
 
-export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) => {
+const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
     const { nodes, addCFGSValidations, addCustomValidation } = useRoadmap();
     const [activeTab, setActiveTab] = useState<Tab>('cfgs');
@@ -109,7 +109,7 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                     />
                                 )}
-                                <button
+                                <button type="button"
                                     onClick={() => setActiveTab('custom')}
                                     className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group ${activeTab === 'custom' ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'}`}
                                 >
@@ -141,7 +141,7 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                                 />
                                             )}
-                                            <button
+                                            <button type="button"
                                                 onClick={() => { setActiveTab('cfgs'); setSelectedId(cfgs.id); }}
                                                 className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group pr-4 ${isSelected ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'}`}
                                             >
@@ -248,7 +248,7 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                                             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">{t('planner.roadmapValidations.officialSuggestions', 'Suggeriments Oficials FIB')}</h4>
                                             <div className="flex flex-wrap gap-2">
                                                 {FIB_ACTIVITIES.map((act, i) => (
-                                                    <button
+                                                    <button type="button"
                                                         key={i}
                                                         onClick={() => {
                                                             setCustomName(act.name);
@@ -319,7 +319,7 @@ export const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onCl
                     {/* Footer Actions */}
                     {(activeTab === 'cfgs' && selectedId) || (activeTab === 'custom') ? (
                         <div className="pt-4 border-t border-white/10 flex justify-end shrink-0 pl-2">
-                            <button
+                            <button type="button"
                                 onClick={activeTab === 'cfgs' ? handleApplyCFGS : handleApplyCustom}
                                 disabled={(activeTab === 'custom' && (!customName || !customCredits)) || isCurrentlyApplied}
                                 className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all disabled:cursor-not-allowed ${isCurrentlyApplied ? 'bg-white/10 text-white opacity-50 shadow-none' : 'bg-white text-black hover:scale-105 active:scale-95 disabled:opacity-50 shadow-[0_0_15px_rgba(255,255,255,0.2)]'}`}

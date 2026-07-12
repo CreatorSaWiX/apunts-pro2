@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import TaskCard from './TaskCard';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Plus, Calendar, Flag, Play, Trash2, X, Check } from 'lucide-react';
 import { DateTimePicker } from './DateTimePicker';
 import { useTranslation } from 'react-i18next';
@@ -171,7 +171,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                             {COLUMN_COLORS.map(c => {
                                 const t = getColumnTheme({ id: column.id, color: c });
                                 return (
-                                    <button
+                                    <button type="button"
                                         key={c}
                                         onClick={(e) => {
                                             e.stopPropagation();
@@ -219,7 +219,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                     <span className="text-[11px] font-medium text-slate-500 bg-white/[0.03] px-2 py-0.5 rounded-md ml-1">{tasks.length}</span>
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover/col:opacity-100 transition-opacity">
-                    <button
+                    <button type="button"
                         onClick={(e) => { 
                             e.stopPropagation(); 
                             if (tasks.length > 0 && window.confirm(t('planner.boardView.clearConfirm', "Segur que vols eliminar TOTES les tasques d'aquesta llista?"))) {
@@ -231,14 +231,14 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                     >
                         <Trash2 size={14} />
                     </button>
-                    <button
+                    <button type="button"
                         onClick={(e) => { e.stopPropagation(); onDeleteColumn?.(); }}
                         className="text-slate-500 hover:text-red-400 transition-all duration-200 pointer-events-auto p-1"
                         title={t('planner.boardView.deleteList', "Eliminar llista")}
                     >
                         <X size={16} />
                     </button>
-                    <button
+                    <button type="button"
                         onClick={(e) => { e.stopPropagation(); startDrafting(); }}
                         className="text-slate-500 hover:text-white transition-all duration-200 pointer-events-auto p-1"
                         title={t('planner.boardView.addTask', "Afegir tasca")}
@@ -291,14 +291,14 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                 placeholder={t('planner.boardView.newTaskTitle', "Títol de la tasca...")}
                                 className="bg-transparent text-[13px] font-medium text-slate-200 p-1 focus:outline-none flex-1 placeholder:text-slate-600"
                             />
-                            <button
+                            <button type="button"
                                 onClick={() => { setDraftTitle(''); setIsDrafting(false); }}
                                 className="flex items-center justify-center p-1.5 rounded-md text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
                                 title={t('planner.boardView.cancel', "Cancel·lar")}
                             >
                                 <X size={16} strokeWidth={2.5} />
                             </button>
-                            <button
+                            <button type="button"
                                 onClick={submitDraft}
                                 className="flex items-center justify-center p-1.5 rounded-md text-emerald-400 hover:text-white hover:bg-emerald-500 transition-colors"
                                 title={t('planner.boardView.create', "Crear")}
@@ -308,7 +308,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 text-xs">
-                            <button
+                            <button type="button"
                                 onClick={cyclePriority}
                                 className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${draftPriority === 'HIGH' ? 'text-red-400 bg-red-500/10 border-red-500/20' :
                                     draftPriority === 'MEDIUM' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' :
@@ -321,7 +321,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
 
                             <div className="relative">
                                 {subjects && subjects.length > 0 && (
-                                    <button
+                                    <button type="button"
                                         onClick={toggleSubjectPicker}
                                         className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${
                                             draftSubjectId 
@@ -356,14 +356,14 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                                             onClick={(e) => e.stopPropagation()}
                                         />
                                         <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                                            <button 
+                                            <button type="button" 
                                                 onClick={(e) => { e.preventDefault(); setDraftSubjectId(null); setShowSubjectPicker(false); }}
                                                 className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors ${!draftSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                             >
                                                 {t('planner.boardView.noSubject', 'Sense assignatura')}
                                             </button>
                                             {filteredSubjects.map(s => (
-                                                <button
+                                                <button type="button"
                                                     key={s.id}
                                                     onClick={(e) => { e.preventDefault(); setDraftSubjectId(s.id); setShowSubjectPicker(false); }}
                                                     className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${draftSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}

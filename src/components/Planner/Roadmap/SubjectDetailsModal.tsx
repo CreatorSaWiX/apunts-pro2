@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, ExternalLink, Users, Clock, Target, CheckSquare, Layers, Activity, Book, Key } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
 import DOMPurify from 'dompurify';
@@ -108,7 +108,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                 <BookOpen size={48} className="text-slate-600 mb-4" />
                                 <h3 className="text-xl font-bold text-slate-300 mb-2">{t('planner.roadmapSubjectDetails.infoNotAvailable', 'Informació no disponible')}</h3>
                                 <p className="text-slate-500 max-w-md">{t('planner.roadmapSubjectDetails.infoNotAvailableDesc', 'No s\'han pogut descarregar les dades de la FIB per aquesta assignatura. És possible que no estigui disponible al pla d\'estudis actual.')}</p>
-                                <button onClick={onClose} className="mt-6 px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors font-medium">{t('planner.roadmapSubjectDetails.close', 'Tancar')}</button>
+                                <button type="button" onClick={onClose} className="mt-6 px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors font-medium">{t('planner.roadmapSubjectDetails.close', 'Tancar')}</button>
                             </div>
                         ) : (
                             <>
@@ -116,7 +116,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                 <div className="w-80 border-r border-white/5 bg-black/20 shrink-0 relative flex flex-col backdrop-blur-sm z-10">
                                     {/* Close Button Top Left */}
                                     <div className="p-6 pb-2">
-                                        <button
+                                        <button type="button"
                                             onClick={onClose}
                                             className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-all hover:scale-110 text-slate-400 hover:text-white group flex items-center justify-center border border-white/10 hover:border-white/20"
                                         >
@@ -160,7 +160,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                         ].map((title: string) => {
                                             const isActive = activeTab === title;
                                             return (
-                                                <button
+                                                <button type="button"
                                                     key={title}
                                                     onClick={() => setActiveTab(title)}
                                                     className={`w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-300 group overflow-hidden ${isActive

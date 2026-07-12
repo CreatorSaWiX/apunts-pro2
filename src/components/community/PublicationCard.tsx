@@ -197,7 +197,7 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
 
                 {/* Top Right Actions (Like Button) */}
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                    <button 
+                    <button type="button" 
                         onClick={handleLike}
                         className={`h-8 px-2.5 rounded-full flex items-center justify-center gap-1.5 backdrop-blur-md border border-white/20 transition-all active:scale-90 ${hasLiked ? 'bg-rose-500/20 text-rose-500 border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]' : 'bg-black/50 text-white hover:bg-black/70'}`}
                     >

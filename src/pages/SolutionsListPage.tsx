@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, Check, Code2, ExternalLink, FileText, X } from 'lucide-react';
 import { useSolutions } from '../hooks/useSolutions';
 import { courseStructure } from '../content/data/courseStructure';
@@ -126,7 +126,7 @@ const SolutionsListPage = () => {
                     {/* PDF Large Square Button - Right Aligned */}
                     {(availablePdfs.ca || availablePdfs.es) && (
                         <div className="relative shrink-0 self-center md:self-stretch flex items-center">
-                            <button 
+                            <button type="button" 
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
                                 className="flex flex-col items-center justify-center gap-2 px-8 py-6 text-xs font-black uppercase tracking-[0.2em] rounded-2xl border transition-all select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-[120px] h-full max-h-[120px]"
                             >
@@ -145,7 +145,7 @@ const SolutionsListPage = () => {
                                     >
                                         <div className="p-4 border-b border-red-500/10 flex justify-between items-center">
                                             <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">{t('solutionsList.pdfLanguage', 'Idioma Solucionari')}</span>
-                                            <button onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                                            <button type="button" onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
                                                 <X size={16} />
                                             </button>
                                         </div>
@@ -246,7 +246,7 @@ const SolutionsListPage = () => {
                                                 
                                                 if (jutgeUrl) {
                                                     return (
-                                                        <button 
+                                                        <button type="button" 
                                                             onClick={(e) => {
                                                                 e.preventDefault(); 
                                                                 window.open(jutgeUrl, '_blank', 'noopener,noreferrer');

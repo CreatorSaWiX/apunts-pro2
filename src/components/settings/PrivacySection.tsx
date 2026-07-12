@@ -14,7 +14,7 @@ export const PrivacySection = () => {
                     <p className="text-slate-400 text-sm font-medium">{t('settings.privacy.subtitle', 'Revisa la política de tractament de les teves dades.')}</p>
                 </div>
 
-                <button
+                <button type="button"
                     onClick={() => setIsPrivacyOpen(true)}
                     className="flex items-center justify-center gap-2 px-6 py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-medium rounded-xl transition-colors border border-white/10 whitespace-nowrap"
                 >

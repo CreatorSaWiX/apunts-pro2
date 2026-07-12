@@ -139,7 +139,7 @@ export default function BinTreeVisualizer() {
                 }`}
             >
                 {/* Fullscreen Toggle */}
-                <button
+                <button type="button"
                     onClick={() => setIsFullscreen(!isFullscreen)}
                     className="absolute top-4 right-4 md:top-6 md:right-6 z-50 p-2 text-slate-400 hover:text-white bg-[#1a212e]/80 hover:bg-[#232c3d]/90 backdrop-blur-md rounded-lg transition-all border border-white/10 shadow-lg active:scale-95"
                     title={isFullscreen ? "Minimitza (Esc)" : "Pantalla completa"}
@@ -156,13 +156,13 @@ export default function BinTreeVisualizer() {
                             <h3 className="text-emerald-400 text-[10px] font-bold tracking-widest uppercase">CONSTRUCTORS (CREACIÓ)</h3>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <button onClick={handleEmptyConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition-all">
+                            <button type="button" onClick={handleEmptyConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition-all">
                                 BinTree()
                             </button>
-                            <button onClick={handleSingleConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition-all">
+                            <button type="button" onClick={handleSingleConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition-all">
                                 BinTree(x)
                             </button>
-                            <button onClick={handleComplexConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition-all">
+                            <button type="button" onClick={handleComplexConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition-all">
                                 BinTree(x, left, right)
                             </button>
                         </div>
@@ -174,16 +174,16 @@ export default function BinTreeVisualizer() {
                             <h3 className="text-sky-400 text-[10px] font-bold tracking-widest uppercase">MÈTODES DE CONSULTA ("LLEGIR")</h3>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
-                            <button onClick={handleCallEmpty} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition-all">
+                            <button type="button" onClick={handleCallEmpty} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition-all">
                                 t.empty()
                             </button>
-                            <button onClick={handleCallValue} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition-all">
+                            <button type="button" onClick={handleCallValue} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition-all">
                                 t.value()
                             </button>
-                            <button onClick={handleCallLeft} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition-all">
+                            <button type="button" onClick={handleCallLeft} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition-all">
                                 t.left()
                             </button>
-                            <button onClick={handleCallRight} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition-all">
+                            <button type="button" onClick={handleCallRight} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition-all">
                                 t.right()
                             </button>
                         </div>

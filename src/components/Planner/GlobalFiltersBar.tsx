@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check, Folder, Flag, Calendar } from 'lucide-react';
 import { useTasks, type DateRangeFilter } from '../../contexts/TasksContext';
 import type { TaskPriority } from '../../types/tasks';
@@ -38,7 +38,7 @@ const GlobalFiltersBar: React.FC = () => {
         <div ref={containerRef} className="absolute top-20 md:top-24 left-6 right-6 z-40 flex items-center justify-center gap-3 flex-wrap">
             
             {/* Clear All / Totes */}
-            <button
+            <button type="button"
                 onClick={clearFilters}
                 className={`shrink-0 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${activeFilterCount === 0 ? 'bg-white/10 text-white border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.15)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-white/10 hover:text-slate-300'}`}
             >
@@ -50,7 +50,7 @@ const GlobalFiltersBar: React.FC = () => {
             {/* Subjects Dropdown */}
             {usedSubjects.length > 0 && (
                 <div className="relative shrink-0">
-                    <button
+                    <button type="button"
                         onClick={() => toggleFilter('SUBJECTS')}
                         className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${filters.subjects.length > 0 ? 'bg-indigo-400/10 text-indigo-300 border-indigo-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'SUBJECTS' ? 'border-white/20 bg-white/5 text-white' : ''}`}
                     >
@@ -71,7 +71,7 @@ const GlobalFiltersBar: React.FC = () => {
                                 {usedSubjects.map(subject => {
                                     const isActive = filters.subjects.includes(subject.id);
                                     return (
-                                        <button
+                                        <button type="button"
                                             key={subject.id}
                                             onClick={() => setFilters(prev => ({ ...prev, subjects: isActive ? prev.subjects.filter(id => id !== subject.id) : [...prev.subjects, subject.id] }))}
                                             className="flex items-center justify-between w-full px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors text-left"
@@ -92,7 +92,7 @@ const GlobalFiltersBar: React.FC = () => {
 
             {/* Priorities Dropdown */}
             <div className="relative shrink-0">
-                <button
+                <button type="button"
                     onClick={() => toggleFilter('PRIORITY')}
                     className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${filters.priorities.length > 0 ? 'bg-amber-400/10 text-amber-300 border-amber-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'PRIORITY' ? 'border-white/20 bg-white/5 text-white' : ''}`}
                 >
@@ -120,7 +120,7 @@ const GlobalFiltersBar: React.FC = () => {
                                 const colors: Record<string, string> = { HIGH: 'red', MEDIUM: 'amber', LOW: 'slate' };
                                 const color = colors[p];
                                 return (
-                                    <button
+                                    <button type="button"
                                         key={p}
                                         onClick={() => setFilters(prev => ({ ...prev, priorities: isActive ? prev.priorities.filter(x => x !== p) : [...prev.priorities, p] }))}
                                         className="flex items-center justify-between w-full px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors text-left"
@@ -140,7 +140,7 @@ const GlobalFiltersBar: React.FC = () => {
 
             {/* Date Range Dropdown */}
             <div className="relative shrink-0">
-                <button
+                <button type="button"
                     onClick={() => toggleFilter('DATERANGE')}
                     className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${filters.dateRange !== 'ALL' ? 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'DATERANGE' ? 'border-white/20 bg-white/5 text-white' : ''}`}
                 >
@@ -168,7 +168,7 @@ const GlobalFiltersBar: React.FC = () => {
                                     THIS_TERM: t('planner.filters.dateRanges.thisTerm', 'Aquest quatrimestre') 
                                 };
                                 return (
-                                    <button
+                                    <button type="button"
                                         key={range}
                                         onClick={() => setFilters(prev => ({ ...prev, dateRange: range }))}
                                         className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors text-left ${isActive ? 'bg-white/5' : ''}`}

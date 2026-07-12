@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Modal } from '../../ui/Modal';
 import { specializations, type SpecializationData } from '../../../data/curriculum';
 import { Briefcase, BookOpen, Star, ArrowRight } from 'lucide-react';
@@ -106,7 +106,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                         />
                                     )}
 
-                                    <button
+                                    <button type="button"
                                         onClick={() => setPreviewSpecId(spec.id)}
                                         className="w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group hover:bg-white/5"
                                     >
@@ -209,7 +209,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
 
                     {/* Fixed Action Button */}
                     <div className="pt-4 border-t border-white/10 flex justify-end shrink-0 pl-2">
-                        <button
+                        <button type="button"
                             onClick={() => {
                                 onSelect(activeSpec.id);
                                 onClose();

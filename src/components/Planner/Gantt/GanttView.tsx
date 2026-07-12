@@ -252,7 +252,7 @@ const GanttView: React.FC = () => {
 
             {/* Floating Zoom Controls */}
             <div className="absolute bottom-6 right-6 z-40 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl flex items-center gap-4">
-                <button 
+                <button type="button" 
                     onClick={() => {
                         flushSync(() => {
                             setBaseDate(new Date(now.getTime()));

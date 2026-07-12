@@ -15,13 +15,14 @@ export const useAltKey = () => {
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('keyup', handleKeyUp);
         
+        const handleBlur = () => setIsAltPressed(false);
         // Also listen for blur to reset state when window loses focus
-        window.addEventListener('blur', () => setIsAltPressed(false));
+        window.addEventListener('blur', handleBlur);
 
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('keyup', handleKeyUp);
-            window.removeEventListener('blur', () => setIsAltPressed(false));
+            window.removeEventListener('blur', handleBlur);
         };
     }, []);
 

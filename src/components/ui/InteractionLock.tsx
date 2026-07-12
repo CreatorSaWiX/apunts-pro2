@@ -17,103 +17,105 @@ interface InteractionLockProps {
     disabled?: boolean;
 }
 
+// Highly optimized GLSL-style particle field for the entry card
+const ParticlePortal = () => {
+    const textures = useLoader(THREE.TextureLoader, [p1, p2, p3]);
+
+    const pointsRef = useRef<THREE.Group>(null!);
+
+    // Generate positions once, split into 3 groups for different textures
+    const [particleGroups] = useState(() => {
+        const groups = [];
+        for (let g = 0; g < 3; g++) {
+            const pos = new Float32Array(20 * 3);
+            for (let i = 0; i < 20; i++) {
+                pos[i * 3] = (Math.random() - 0.5) * 8;
+                pos[i * 3 + 1] = (Math.random() - 0.5) * 8;
+                pos[i * 3 + 2] = (Math.random() - 0.5) * 4;
+            }
+            groups.push(pos);
+        }
+        return groups;
+    });
+
+    useFrame((state) => {
+        // Use performance.now to avoid THREE.Clock deprecation warnings in newer Three.js versions
+        const t = performance.now() / 1000;
+        if (pointsRef.current) {
+            // Group movement for all particle types
+            pointsRef.current.position.y = (t * 0.1) % 2;
+            pointsRef.current.rotation.z = Math.sin(t * 0.05) * 0.05;
+            // Parallax based on pointer
+            pointsRef.current.position.x += (state.pointer.x * 0.4 - pointsRef.current.position.x) * 0.05;
+        }
+    });
+
+    return (
+        <group ref={pointsRef}>
+            {particleGroups.map((pos, idx) => (
+                <Points key={idx} positions={pos} stride={3}>
+                    <PointMaterial
+                        transparent
+                        map={textures[idx]}
+                        size={0.7}
+                        sizeAttenuation={true}
+                        depthWrite={false}
+                        color={idx === 1 ? "#93c5fd" : "#818cf8"} // Slight color variation
+                        blending={THREE.AdditiveBlending}
+                        opacity={0.5}
+                    />
+                </Points>
+            ))}
+        </group>
+    );
+};
+
+// Portal background component with the new particles
+const PortalBackground = () => {
+    const [isVisible, setIsVisible] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => {
+            setIsVisible(entry.isIntersecting);
+        }, {
+            threshold: 0.01,
+            rootMargin: '100px' // Start loading slightly before it enters view
+        });
+
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-slate-900">
+            {isVisible ? (
+                <Canvas
+                    camera={{ position: [0, 0, 5], fov: 60 }}
+                    gl={{ antialias: false, powerPreference: "low-power" }}
+                    dpr={1}
+                >
+                    <React.Suspense fallback={null}>
+                        <ParticlePortal />
+                    </React.Suspense>
+                </Canvas>
+            ) : (
+                <div className="absolute inset-0 bg-slate-900 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.2),transparent_70%)] animate-pulse" />
+            )}
+            {/* Subtle overlay to bridge CSS and 3D */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/20 to-slate-950 pointer-events-none" />
+        </div>
+    );
+};
+
 export const InteractionLock: React.FC<InteractionLockProps> = ({ children, className = "", disabled = false }) => {
     const [isMobile, setIsMobile] = useState(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
 
-    // Highly optimized GLSL-style particle field for the entry card
-    const ParticlePortal = () => {
-        const textures = useLoader(THREE.TextureLoader, [p1, p2, p3]);
 
-        const pointsRef = useRef<THREE.Group>(null!);
-
-        // Generate positions once, split into 3 groups for different textures
-        const [particleGroups] = useState(() => {
-            const groups = [];
-            for (let g = 0; g < 3; g++) {
-                const pos = new Float32Array(20 * 3);
-                for (let i = 0; i < 20; i++) {
-                    pos[i * 3] = (Math.random() - 0.5) * 8;
-                    pos[i * 3 + 1] = (Math.random() - 0.5) * 8;
-                    pos[i * 3 + 2] = (Math.random() - 0.5) * 4;
-                }
-                groups.push(pos);
-            }
-            return groups;
-        });
-
-        useFrame((state) => {
-            // Use performance.now to avoid THREE.Clock deprecation warnings in newer Three.js versions
-            const t = performance.now() / 1000;
-            if (pointsRef.current) {
-                // Group movement for all particle types
-                pointsRef.current.position.y = (t * 0.1) % 2;
-                pointsRef.current.rotation.z = Math.sin(t * 0.05) * 0.05;
-                // Parallax based on pointer
-                pointsRef.current.position.x += (state.pointer.x * 0.4 - pointsRef.current.position.x) * 0.05;
-            }
-        });
-
-        return (
-            <group ref={pointsRef}>
-                {particleGroups.map((pos, idx) => (
-                    <Points key={idx} positions={pos} stride={3}>
-                        <PointMaterial
-                            transparent
-                            map={textures[idx]}
-                            size={0.7}
-                            sizeAttenuation={true}
-                            depthWrite={false}
-                            color={idx === 1 ? "#93c5fd" : "#818cf8"} // Slight color variation
-                            blending={THREE.AdditiveBlending}
-                            opacity={0.5}
-                        />
-                    </Points>
-                ))}
-            </group>
-        );
-    };
-
-    // Portal background component with the new particles
-    const PortalBackground = () => {
-        const [isVisible, setIsVisible] = useState(false);
-        const containerRef = useRef<HTMLDivElement>(null);
-
-        useEffect(() => {
-            const observer = new IntersectionObserver(([entry]) => {
-                setIsVisible(entry.isIntersecting);
-            }, {
-                threshold: 0.01,
-                rootMargin: '100px' // Start loading slightly before it enters view
-            });
-
-            if (containerRef.current) {
-                observer.observe(containerRef.current);
-            }
-
-            return () => observer.disconnect();
-        }, []);
-
-        return (
-            <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-slate-900">
-                {isVisible ? (
-                    <Canvas
-                        camera={{ position: [0, 0, 5], fov: 60 }}
-                        gl={{ antialias: false, powerPreference: "low-power" }}
-                        dpr={1}
-                    >
-                        <React.Suspense fallback={null}>
-                            <ParticlePortal />
-                        </React.Suspense>
-                    </Canvas>
-                ) : (
-                    <div className="absolute inset-0 bg-slate-900 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.2),transparent_70%)] animate-pulse" />
-                )}
-                {/* Subtle overlay to bridge CSS and 3D */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/20 to-slate-950 pointer-events-none" />
-            </div>
-        );
-    };
     const [resizeKey, setResizeKey] = useState(0);
     const [shouldMountChildren, setShouldMountChildren] = useState(false);
     const [isInViewport, setIsInViewport] = useState(false);
@@ -267,7 +269,7 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
                     >
                         {/* Floating Close Button - Premium Glassmorphism */}
                         <div className="absolute top-6 right-6 z-[2147483648]">
-                            <button
+                            <button type="button"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setIsFullScreen(false);

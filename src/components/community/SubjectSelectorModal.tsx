@@ -24,7 +24,8 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
     useEffect(() => {
         if (isOpen) {
             setSearch('');
-            setTimeout(() => inputRef.current?.focus(), 100);
+            const timer = setTimeout(() => inputRef.current?.focus(), 100);
+            return () => clearTimeout(timer);
         }
     }, [isOpen]);
 
@@ -56,7 +57,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
             
             <Modal.Body className="p-4 flex flex-col gap-2">
                                 {allowAll && (
-                                    <button
+                                    <button type="button"
                                         onClick={() => { onSelect('all'); onClose(); }}
                                         className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${selectedId === 'all' ? 'bg-white/10 border-white/20' : 'border-transparent hover:bg-white/5'}`}
                                     >
@@ -74,7 +75,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                 )}
 
                                 {allowNone && (
-                                    <button
+                                    <button type="button"
                                         onClick={() => { onSelect(''); onClose(); }}
                                         className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${!selectedId || selectedId === '' ? 'bg-white/10 border-white/20 shadow-inner' : 'border-transparent hover:bg-white/5'}`}
                                     >
@@ -102,7 +103,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                         const theme = tailwindColors[colorFamily] || tailwindColors['slate'];
                                         
                                         return (
-                                        <button
+                                        <button type="button"
                                             key={subject.id}
                                             onClick={() => { onSelect(subject.id); onClose(); }}
                                             className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${selectedId === subject.id ? 'bg-white/10 border-white/20 shadow-inner' : 'border-transparent hover:bg-white/5'}`}

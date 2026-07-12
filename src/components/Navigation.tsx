@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import { Link, useLocation } from 'react-router-dom';
 import { Users, Home, LogIn, CalendarDays, Settings } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m as motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import NavigationPill from './ui/NavigationPill';
@@ -73,9 +73,9 @@ const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, classNam
                     <AnimatePresence mode="popLayout">
                         {isActive && !text && Icon && (
                             <motion.span 
-                                initial={{ opacity: 0, maxWidth: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, maxWidth: 100, scale: 1 }}
-                                exit={{ opacity: 0, maxWidth: 0, scale: 0.8 }}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
                                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                 className="text-[13px] font-bold tracking-wide whitespace-nowrap overflow-hidden md:hidden shrink-0 block ml-2"
                             >
@@ -198,9 +198,9 @@ const Navigation: React.FC = () => {
                                     <AnimatePresence mode="popLayout">
                                         {location.pathname === '/profile' && (
                                             <motion.span 
-                                                initial={{ opacity: 0, width: 0, scale: 0.8 }}
-                                                animate={{ opacity: 1, width: "auto", scale: 1 }}
-                                                exit={{ opacity: 0, width: 0, scale: 0.8 }}
+                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.8 }}
                                                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
                                                 className="text-[13px] font-bold tracking-wide whitespace-nowrap overflow-hidden md:hidden ml-1"
                                             >

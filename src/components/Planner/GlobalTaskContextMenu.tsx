@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
 import { Copy, Trash2, Flag } from 'lucide-react';
 import type { Task, TaskPriority } from '../../types/tasks';
@@ -150,7 +150,7 @@ const GlobalTaskContextMenu: React.FC = () => {
                         <p className="text-[10px] font-bold tracking-widest uppercase text-slate-400 truncate">{task.title}</p>
                     </div>
 
-                    <button 
+                    <button type="button" 
                         onClick={handleCyclePriority}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
                     >
@@ -158,7 +158,7 @@ const GlobalTaskContextMenu: React.FC = () => {
                         <span>{t('planner.contextMenu.changePriority', 'Canviar Prioritat')}</span>
                     </button>
                     
-                    <button 
+                    <button type="button" 
                         onClick={handleDuplicate}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-slate-300 hover:bg-white/5 hover:text-white transition-colors group"
                     >
@@ -168,7 +168,7 @@ const GlobalTaskContextMenu: React.FC = () => {
                     
                     <div className="h-px bg-white/5 my-1 mx-1" />
                     
-                    <button 
+                    <button type="button" 
                         onClick={handleDelete}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors group"
                     >

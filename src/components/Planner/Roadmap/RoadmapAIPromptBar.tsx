@@ -3,7 +3,7 @@ import { useRoadmapAI } from '../../../hooks/useRoadmapAI';
 import { ArrowUp, Sparkles, StopCircle, CheckCircle2, Plus, X } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { useSettings } from '../../../contexts/SettingsContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -20,14 +20,7 @@ interface RoadmapAIPromptBarProps {
     onClose: () => void;
 }
 
-interface Message {
-    id: string;
-    role: 'user' | 'ai';
-    content: string;
-    changes?: { type: 'add' | 'remove'; subject: string }[];
-    attachmentName?: string;
-    attachmentType?: 'image' | 'pdf';
-}
+
 
 const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
@@ -36,7 +29,6 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const { aiSettings } = useSettings();
     const {
         messages,
-        setMessages,
         isGenerating,
         error,
         streamPhase,
@@ -45,7 +37,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
         setAttachedFile,
         processFile,
         handleGenerate: doGenerate
-    } = useRoadmapAI(aiSettings, nodes, addSubjectNode);
+    } = useRoadmapAI(aiSettings, nodes, (a: string, t: any) => addSubjectNode(a, t));
 
     const [isDragging, setIsDragging] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -257,8 +249,8 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                                 {/* Changes */}
                                                 {msg.changes && msg.changes.length > 0 && (
                                                     <div className="flex flex-wrap gap-2 mt-1">
-                                                        {msg.changes.map((change, idx) => (
-                                                            <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wide shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
+                                                        {msg.changes.map((change, i) => (
+                                                            <div key={`${change.subject}-${i}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wide shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
                                                                 <CheckCircle2 size={12} />
                                                                 {change.type === 'add' ? t('planner.roadmapAI.added', 'Afegit') : t('planner.roadmapAI.removed', 'Eliminat')} {change.subject}
                                                             </div>
@@ -276,8 +268,8 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                         {/* Error Message */}
                         {error && (
                             <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
+                                initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
                                 className="px-4 pb-2"
                             >
                                 <div className="text-red-400 text-xs font-medium bg-red-500/10 backdrop-blur-xl border border-red-500/20 px-3 py-2 rounded-lg shadow-lg">
@@ -298,9 +290,9 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                         exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
                                         className="flex flex-wrap justify-center gap-2 mb-4 px-4 w-full"
                                     >
-                                        {suggestions.map((s, i) => (
-                                            <button
-                                                key={i}
+                                        {suggestions.map((s) => (
+                                            <button type="button"
+                                                key={s}
                                                 onClick={() => { setPrompt(s); setTimeout(() => handleGenerate(), 50); }}
                                                 className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs text-slate-300 transition-colors backdrop-blur-md cursor-pointer whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
                                             >
@@ -336,14 +328,14 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
 
                                     <AnimatePresence>
                                         {attachedFile && (
-                                            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="px-4 pt-2">
+                                            <motion.div initial={{ opacity: 0, scale: 0.95, y: -10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: -10 }} className="px-4 pt-2">
                                                 <div className="relative inline-block border border-white/10 rounded-xl bg-slate-900/50 p-1 mt-2">
                                                     {attachedFile.mimeType.startsWith('image/') ? (
                                                         <img src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`} alt="preview" className="h-16 object-contain rounded-lg" loading="lazy" />
                                                     ) : (
                                                         <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg"><span className="text-xs font-bold text-slate-300">PDF</span></div>
                                                     )}
-                                                    <button onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20">
+                                                    <button type="button" onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20">
                                                         <X size={14} />
                                                     </button>
                                                 </div>
@@ -356,7 +348,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                         {/* Actions Left */}
                                         <div className="flex items-center pb-1.5 pl-1 gap-1">
                                             <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf" onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
-                                            <button onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors" title={t('planner.roadmapAI.attachTooltip', 'Adjuntar imatge o PDF')}>
+                                            <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors" title={t('planner.roadmapAI.attachTooltip', 'Adjuntar imatge o PDF')}>
                                                 <Plus size={20} />
                                             </button>
 
@@ -376,7 +368,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
 
                                         {/* Submit Button */}
                                         <div className="pr-2 pb-2 shrink-0">
-                                            <button
+                                            <button type="button"
                                                 onClick={handleGenerate}
                                                 disabled={(!prompt.trim() && !attachedFile) || isGenerating}
                                                 className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 

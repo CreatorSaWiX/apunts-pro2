@@ -12,22 +12,24 @@ interface RichTextEditorProps {
     editorRef?: (editor: any) => void;
 }
 
+const ToolbarButton = ({ onClick, isActive, disabled = false, icon: Icon, title }: any) => (
+    <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        className={`p-2 rounded-lg transition-colors ${isActive ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white hover:bg-white/10'} disabled:opacity-30`}
+        title={title}
+    >
+        <Icon size={16} />
+    </button>
+);
+
 const MenuBar = ({ editor }: { editor: any }) => {
     if (!editor) {
         return null;
     }
 
-    const ToolbarButton = ({ onClick, isActive, disabled = false, icon: Icon, title }: any) => (
-        <button
-            type="button"
-            onClick={onClick}
-            disabled={disabled}
-            className={`p-2 rounded-lg transition-colors ${isActive ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white hover:bg-white/10'} disabled:opacity-30`}
-            title={title}
-        >
-            <Icon size={16} />
-        </button>
-    );
+
 
     return (
         <div className="flex flex-wrap items-center gap-1 p-2 border-b border-white/10 bg-black/20">

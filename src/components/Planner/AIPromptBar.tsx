@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, StopCircle, Plus, X } from 'lucide-react';
 import { useTasks } from '../../contexts/TasksContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import AIStreamingIndicator, { type StreamPhase } from '../AIStreamingIndicator';
 
@@ -160,7 +160,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                                 setStreamPhase('writing'); 
                                 const actions = parsed.actions;
                                 if (actions && Array.isArray(actions) && actions.length > 0) {
-                                    for (const action of actions) {
+                                    await Promise.all(actions.map(async (action: any) => {
                                         if (action.type === 'CREATE' && action.task) {
                                             await addTask({
                                                 title: action.task.title || 'Tasca AI',
@@ -178,7 +178,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                                         } else if (action.type === 'DELETE' && action.taskId) {
                                             await deleteTask(action.taskId);
                                         }
-                                    }
+                                    }));
                                 }
                                 break;
                             case 'error':
@@ -258,14 +258,14 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
 
                             <AnimatePresence>
                                 {attachedFile && (
-                                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="px-4 pt-2">
+                                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="px-4 pt-2">
                                         <div className="relative inline-block border border-white/10 rounded-xl bg-slate-900/50 p-1 mt-2">
                                             {attachedFile.mimeType.startsWith('image/') ? (
                                                 <img src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`} alt="preview" className="h-16 object-contain rounded-lg" loading="lazy" />
                                             ) : (
                                                 <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg"><span className="text-xs font-bold text-slate-300">PDF</span></div>
                                             )}
-                                            <button onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20">
+                                            <button type="button" onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20">
                                                 <X size={14} />
                                             </button>
                                         </div>
@@ -276,8 +276,9 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                             {/* Error Message */}
                             {error && (
                                 <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
                                     className="px-4 pt-2 pb-1"
                                 >
                                     <div className="text-red-400 text-xs font-medium bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg">
@@ -290,7 +291,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
 
                                 {/* File Input */}
                                 <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf" onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
-                                <button onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-1.5 ml-1" title={t('planner.ai.attach', "Adjuntar imatge o PDF")}>
+                                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-1.5 ml-1" title={t('planner.ai.attach', "Adjuntar imatge o PDF")}>
                                     <Plus size={20} />
                                 </button>
 
@@ -318,7 +319,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
 
                                 {/* Submit / Stop Button */}
                                 <div className="pr-2 pb-2 shrink-0">
-                                    <button
+                                    <button type="button"
                                         onClick={isGenerating ? handleStop : handleGenerate}
                                         disabled={(!prompt.trim() && !attachedFile && !isGenerating)}
                                         className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 

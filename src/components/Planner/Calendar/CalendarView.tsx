@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { 
     DndContext, 
     DragOverlay, 
@@ -126,7 +126,7 @@ const CalendarView: React.FC = () => {
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
                         <div className="bg-slate-900/80 backdrop-blur-3xl p-1 rounded-full border border-white/10 flex shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
                             {(['week', 'month', 'year'] as CalendarMode[]).map((m) => (
-                                <button
+                                <button type="button"
                                     key={m}
                                     onClick={() => setMode(m)}
                                     className={`relative px-5 py-1.5 text-[10px] font-extrabold tracking-widest uppercase transition-all duration-300 rounded-full outline-none hover:scale-105 active:scale-95 ${

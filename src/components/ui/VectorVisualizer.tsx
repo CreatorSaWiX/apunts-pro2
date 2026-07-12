@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, Trash2 } from 'lucide-react';
 
 const MAX_VIZ_CAPACITY = 1024; // Un límit tècnic molt alt, només per evitar bloquejos reals de memòria.
@@ -107,7 +107,7 @@ export default function VectorVisualizer() {
             {/* Controls */}
             <div className="flex flex-col items-center gap-6 w-full max-w-sm">
                 <div className="flex items-center gap-3 w-full">
-                    <button
+                    <button type="button"
                         onClick={handlePush}
                         disabled={isReallocating}
                         className="flex-1 h-10 bg-blue-500/10 hover:bg-blue-500/20 disabled:opacity-30 text-blue-400 font-bold text-sm rounded-lg border border-blue-500/20 flex items-center justify-center gap-2 transition-all active:scale-95"
@@ -115,7 +115,7 @@ export default function VectorVisualizer() {
                         <Plus size={16} /> push_back()
                     </button>
                     
-                    <button
+                    <button type="button"
                         onClick={handlePop}
                         disabled={isReallocating || elements.length === 0}
                         className="flex-1 h-10 bg-rose-500/10 hover:bg-rose-500/20 disabled:opacity-30 text-rose-400 font-bold text-sm rounded-lg border border-rose-500/20 flex items-center justify-center gap-2 transition-all active:scale-95"
@@ -123,7 +123,7 @@ export default function VectorVisualizer() {
                         <Minus size={16} /> pop_back()
                     </button>
 
-                    <button
+                    <button type="button"
                         onClick={handleClear}
                         className="w-10 h-10 bg-slate-800/30 hover:bg-slate-800/50 text-slate-500 rounded-lg flex items-center justify-center transition-all border border-slate-800/50"
                     >

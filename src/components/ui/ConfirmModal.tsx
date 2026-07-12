@@ -48,13 +48,13 @@ const ConfirmModal = ({
                         </div>
 
                         <div className="flex gap-3 w-full mt-4">
-                            <button
+                            <button type="button"
                                 onClick={onClose}
                                 className="flex-1 px-4 py-2.5 bg-slate-800/50 hover:bg-slate-700 text-slate-300 rounded-xl font-medium transition-colors border border-white/5"
                             >
                                 {finalCancelText}
                             </button>
-                            <button
+                            <button type="button"
                                 onClick={() => {
                                     onConfirm();
                                     onClose();

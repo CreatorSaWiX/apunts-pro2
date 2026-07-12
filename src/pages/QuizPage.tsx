@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle, XCircle, Clock, AlertTriangle, RefreshCw, Trophy } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { quizzes } from '../content/data/quizzes';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
@@ -403,7 +403,7 @@ const QuizPage: React.FC = () => {
                         </div>
 
                         <div className="mt-10 flex justify-center">
-                            <button
+                            <button type="button"
                                 onClick={() => window.location.reload()}
                                 className="flex items-center gap-2 px-8 py-3 bg-white text-slate-950 font-bold rounded-2xl hover:bg-slate-200 transition-colors shadow-xl"
                             >
@@ -423,10 +423,10 @@ const QuizPage: React.FC = () => {
                                 className="h-1.5 flex-1 relative rounded-full bg-white/5 overflow-hidden"
                             >
                                 <motion.div
-                                    className={`absolute inset-0 rounded-full ${i <= currentQuestionIdx ? 'bg-primary' : ''}`}
+                                    className={`absolute inset-0 rounded-full origin-left ${i <= currentQuestionIdx ? 'bg-primary' : ''}`}
                                     initial={false}
                                     animate={{
-                                        width: i < currentQuestionIdx || (i === currentQuestionIdx && !!selectedAnswers[q.id]) ? '100%' : '0%',
+                                        scaleX: i < currentQuestionIdx || (i === currentQuestionIdx && !!selectedAnswers[q.id]) ? 1 : 0,
                                         opacity: i === currentQuestionIdx ? 1 : 0.6
                                     }}
                                     transition={{ duration: 0.5 }}
@@ -537,7 +537,7 @@ const QuizPage: React.FC = () => {
 
                     {/* Pro-Navigation Controls */}
                     <div className="flex items-center justify-between gap-4 shrink-0 px-2 xl:px-4">
-                        <button
+                        <button type="button"
                             onClick={handlePrev}
                             disabled={currentQuestionIdx === 0}
                             className="flex items-center gap-2 px-6 py-3.5 xl:py-4 rounded-2xl border border-white/10 bg-slate-900/50 hover:bg-slate-800 text-slate-400 hover:text-white disabled:opacity-0 disabled:pointer-events-none transition-all font-bold text-sm shadow-lg hover:shadow-xl"
@@ -547,7 +547,7 @@ const QuizPage: React.FC = () => {
 
                         <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent via-white/10 to-transparent hidden md:block" />
 
-                        <button
+                        <button type="button"
                             onClick={handleNext}
                             disabled={!selectedAnswers[currentQ.id]}
                             className={`flex items-center justify-center gap-2 px-8 xl:px-10 py-3.5 xl:py-4 rounded-2xl font-black uppercase tracking-widest text-xs xl:text-sm transition-all duration-300 relative overflow-hidden group ${selectedAnswers[currentQ.id]

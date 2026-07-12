@@ -147,7 +147,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                     const data = snap.data();
                     if (data.nodes && data.edges) {
                         // Migrate old nodes that don't have a semester or grade
-                        let migratedNodes = data.nodes.map((n: any) => ({
+                        const migratedNodes = data.nodes.map((n: any) => ({
                             ...n,
                             data: {
                                 ...n.data,
@@ -513,7 +513,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         setNodes(prev => {
             // Remove existing specialization nodes
-            let newNodes = prev.filter(n => n.data.type !== 'specialization');
+            const newNodes = prev.filter(n => n.data.type !== 'specialization');
 
             // Add new nodes
             spec.mandatory.forEach(acronym => {
@@ -604,14 +604,16 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         }
     }, [nodes, edges, itinerary, user]);
 
+    const contextValue = useMemo(() => ({
+        nodes, edges, itinerary, setItinerary,
+        onNodesChange, onEdgesChange, onConnect,
+        updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode,
+        setSpecialization,
+        isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes
+    }), [nodes, edges, itinerary, isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes, onNodesChange, onEdgesChange, onConnect, updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode, setSpecialization]);
+
     return (
-        <RoadmapContext.Provider value={{
-            nodes, edges, itinerary, setItinerary,
-            onNodesChange, onEdgesChange, onConnect,
-            updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode,
-            setSpecialization,
-            isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes
-        }}>
+        <RoadmapContext.Provider value={contextValue}>
             {children}
         </RoadmapContext.Provider>
     );

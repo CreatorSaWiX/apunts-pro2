@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, ArrowRight, Mail, CheckCircle2, ChevronLeft } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { AuthCanvasBackground } from '../components/ui/AuthCanvasBackground';
 import { PremiumInput } from '../components/ui/PremiumInput';
 import Spinner from '../components/ui/Spinner';
@@ -70,12 +70,6 @@ const LoginPage = () => {
                 delayChildren: 0.1
             }
         }
-    };
-
-    // eslint-disable-next-line
-const _fadeInUp = {
-        hidden: { opacity: 0, y: 30 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: customEasing } }
     };
 
     return (
@@ -148,9 +142,10 @@ const _fadeInUp = {
                                         <AnimatePresence>
                                             {error && (
                                                 <motion.div
-                                                    initial={{ opacity: 0, height: 0, y: -10 }}
-                                                    animate={{ opacity: 1, height: 'auto', y: 0 }}
-                                                    exit={{ opacity: 0, height: 0, y: -10 }}
+                                                    layout
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: -10 }}
                                                     className="overflow-hidden"
                                                 >
                                                     <div className="p-3 mt-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium">
@@ -207,7 +202,7 @@ const _fadeInUp = {
                                     transition={{ duration: 0.4, ease: customEasing }}
                                     className="relative z-10 w-full"
                                 >
-                                    <button onClick={() => { setView('login'); setError(''); }} className="absolute -top-4 -left-4 p-2 text-slate-400 hover:text-white transition-colors rounded-full hover:bg-white/5 z-20">
+                                    <button type="button" onClick={() => { setView('login'); setError(''); }} className="absolute -top-4 -left-4 p-2 text-slate-400 hover:text-white transition-colors rounded-full hover:bg-white/5 z-20">
                                         <ChevronLeft size={24} />
                                     </button>
                                     
@@ -233,9 +228,10 @@ const _fadeInUp = {
                                         <AnimatePresence>
                                             {error && (
                                                 <motion.div
-                                                    initial={{ opacity: 0, height: 0, y: -10 }}
-                                                    animate={{ opacity: 1, height: 'auto', y: 0 }}
-                                                    exit={{ opacity: 0, height: 0, y: -10 }}
+                                                    layout
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: -10 }}
                                                     className="overflow-hidden"
                                                 >
                                                     <div className="p-3 mt-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium">
@@ -296,7 +292,7 @@ const _fadeInUp = {
                                     <p className="text-slate-400 text-sm font-light mb-8 max-w-[280px]">
                                         {t('auth.login.emailSentDesc1', "T'hem enviat un correu a ")}<span className="text-white font-medium">{email}</span>{t('auth.login.emailSentDesc2', ' amb instruccions per restablir la teva contrasenya.')}
                                     </p>
-                                    <button 
+                                    <button type="button" 
                                         onClick={() => { setView('login'); setPassword(''); }}
                                         className="text-sky-400 font-semibold hover:text-sky-300 transition-colors flex items-center gap-2 group"
                                     >

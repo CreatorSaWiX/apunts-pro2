@@ -7,7 +7,7 @@ import { getRank } from '../utils/ranks';
 import { doc, getDoc, setDoc, collection, query, where, onSnapshot, getDocs } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { updateProfile } from 'firebase/auth';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
@@ -90,7 +90,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                                 </div>
                                 <AnimatePresence>
                                     {activeUploader === 'avatar' && (
-                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                                        <motion.div layout initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="overflow-hidden">
                                             <FileUploader maxFiles={1} onUploadComplete={(atts) => handleUploadComplete(atts, 'avatar')} />
                                         </motion.div>
                                     )}
@@ -106,7 +106,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                                 </div>
                                 <AnimatePresence>
                                     {activeUploader === 'banner' && (
-                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                                        <motion.div layout initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="overflow-hidden">
                                             <FileUploader maxFiles={1} onUploadComplete={(atts) => handleUploadComplete(atts, 'banner')} />
                                         </motion.div>
                                     )}
@@ -291,7 +291,7 @@ const ProfilePage = () => {
         try { return new URL(url).hostname; } catch { return url; }
     };
 
-    const spring = { type: "spring", stiffness: 100, damping: 20, mass: 1 };
+
     const bannerUrl = extendedUser?.banner || `https://picsum.photos/seed/${extendedUser?.username || 'Apunts'}/1920/1080`;
     const avatarUrl = extendedUser?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`;
 
@@ -331,15 +331,15 @@ const ProfilePage = () => {
                         <div className="flex items-center gap-3 shrink-0">
                             {isOwnProfile ? (
                                 <>
-                                    <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 px-4 py-2.5 rounded-xl text-white transition-all font-semibold shadow-lg text-sm">
+                                    <button type="button" onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 px-4 py-2.5 rounded-xl text-white transition-all font-semibold shadow-lg text-sm">
                                         <Edit2 size={15} /> <span>{t('profile.edit.title', 'Editar Perfil')}</span>
                                     </button>
-                                    <button onClick={logout} className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 shadow-lg">
+                                    <button type="button" onClick={logout} className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 shadow-lg">
                                         <LogOut size={16} strokeWidth={2.5} />
                                     </button>
                                 </>
                             ) : (
-                                <button onClick={() => { if (!authUser) return window.location.href = '/login'; setIsComposeOpen(true); }} className="flex items-center gap-2 bg-white hover:bg-slate-200 text-black px-5 py-2.5 rounded-xl transition-all font-bold shadow-lg text-sm">
+                                <button type="button" onClick={() => { if (!authUser) return window.location.href = '/login'; setIsComposeOpen(true); }} className="flex items-center gap-2 bg-white hover:bg-slate-200 text-black px-5 py-2.5 rounded-xl transition-all font-bold shadow-lg text-sm">
                                     <Send size={16} strokeWidth={2.5} /> <span>{t('profile.contact', 'Contactar')}</span>
                                 </button>
                             )}
@@ -522,8 +522,8 @@ const ProfilePage = () => {
                         className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6"
                     >
                         {userPosts.map(post => (
-                            <div key={post.id} className="break-inside-avoid">
-                                <PublicationCard post={post} onClick={() => setSelectedPost(post)} />
+                            <div key={post.id} className="break-inside-avoid" onClick={() => setSelectedPost(post)}>
+                                <PublicationCard post={post} />
                             </div>
                         ))}
                     </motion.div>

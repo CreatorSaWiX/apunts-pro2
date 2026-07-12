@@ -101,7 +101,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                 {search.trim() === '' && (
                     <div className="px-4 py-3 border-b border-white/[0.08] flex gap-2 overflow-x-auto custom-scrollbar bg-white/[0.02] shrink-0">
                         {courseStructure.map(topic => (
-                            <button
+                            <button type="button"
                                 key={topic.id}
                                 onClick={() => setSelectedTopicId(topic.id)}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border ${selectedTopicId === topic.id
@@ -120,7 +120,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                     {results.length > 0 ? (
                         <div className="grid grid-cols-1 gap-2">
                             {results.map((problem) => (
-                                <button
+                                <button type="button"
                                     key={problem.id}
                                     onClick={() => onSelect(problem)}
                                     className="w-full text-left p-4 rounded-xl bg-slate-800/30 hover:bg-sky-500/10 border border-white/5 hover:border-sky-500/30 transition-all group flex items-center justify-between"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, RotateCcw, ArrowRight } from 'lucide-react';
 
 type State = 'start' | 'bridged' | 'deleted';
@@ -65,7 +65,7 @@ export default function PointerVisualizer() {
 
                 {/* Nav Arrows */}
                 <div className="flex items-center gap-8">
-                    <button 
+                    <button type="button" 
                         onClick={prev}
                         disabled={stepIdx === 0}
                         className="p-3 border border-slate-800 rounded-full hover:border-slate-500 hover:text-slate-300 transition-all disabled:opacity-5 text-slate-600"
@@ -82,7 +82,7 @@ export default function PointerVisualizer() {
                         ))}
                     </div>
 
-                    <button 
+                    <button type="button" 
                         onClick={next}
                         disabled={stepIdx === steps.length - 1}
                         className="p-3 border border-slate-800 rounded-full hover:border-emerald-500 hover:text-emerald-500 transition-all disabled:opacity-5 text-slate-600"
@@ -92,7 +92,7 @@ export default function PointerVisualizer() {
                 </div>
 
                 {stepIdx > 0 && (
-                    <button 
+                    <button type="button" 
                         onClick={reset}
                         className="flex items-center gap-2 text-[9px] text-slate-700 hover:text-slate-400 transition-colors uppercase font-black tracking-[0.3em]"
                     >
@@ -124,20 +124,21 @@ function Node({ label, value, highlight }: any) {
 
 function Pointer({ to, active }: { to: 'next' | 'far', active?: boolean }) {
     return (
-        <div className="relative h-px flex items-center justify-end" style={{ width: to === 'far' ? '120px' : '48px' }}>
+        <motion.div layout className="relative h-px flex items-center justify-end" style={{ width: to === 'far' ? 120 : 48 }}>
             <motion.div 
+                layout
                 animate={{ 
-                    width: to === 'far' ? 120 : 48,
                     backgroundColor: active ? '#10b981' : '#1e293b'
                 }}
                 className="h-[1.5px] w-full"
             />
             <motion.div 
+                layout
                 animate={{ color: active ? '#10b981' : '#1e293b' }}
                 className="absolute right-[-6px] flex items-center"
             >
                 <ArrowRight size={14} strokeWidth={2.5} />
             </motion.div>
-        </div>
+        </motion.div>
     );
 }

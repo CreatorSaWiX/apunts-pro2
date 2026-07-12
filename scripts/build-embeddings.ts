@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+// import { GoogleGenAI } from '@google/genai';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -13,7 +13,7 @@ if (!apiKey) {
     process.exit(1);
 }
 
-const ai = new GoogleGenAI({ apiKey });
+// const ai = new GoogleGenAI({ apiKey });
 
 // Llegim el directori d'apunts (des de .content-collections)
 // Hem de fer import dinàmic pel fet d'estar compilat
@@ -50,7 +50,7 @@ function chunkText(text: string, maxLen: number = 800): string[] {
 async function buildEmbeddings() {
     console.log(`Iniciant generació d'embeddings per a ${allPersonalNotes.length} apunts...`);
     
-    let allChunks: ChunkData[] = [];
+    const allChunks: ChunkData[] = [];
 
     for (const note of allPersonalNotes) {
         const textChunks = chunkText(note.content, 1000);
@@ -69,6 +69,7 @@ async function buildEmbeddings() {
 
     // Obtenim embeddings de forma seqüencial per no petar l'API de Gemini (Rate Limit 429)
     // El model gratuït té límit de RPM (Requests Per Minute).
+    /* --- COMENTAT TEMPORALMENT PER A DESENVOLUPAMENT (EVITAR RATE LIMITS) ---
     for (let i = 0; i < allChunks.length; i++) {
         const chunk = allChunks[i];
         console.log(`Processant chunk ${i + 1} de ${allChunks.length}...`);
@@ -88,10 +89,16 @@ async function buildEmbeddings() {
         // Delay de 2.5 segons entre crides (~24 reqs per minut) per evitar 429 RESOURCE_EXHAUSTED
         await new Promise(r => setTimeout(r, 2500));
     }
+    -------------------------------------------------------------------------- */
 
     // Filtrem els que hagin fallat
     const successChunks = allChunks.filter(c => c.embedding && c.embedding.length > 0);
     console.log(`Guardant ${successChunks.length} embeddings amb èxit...`);
+
+    if (successChunks.length === 0) {
+        console.log("No s'ha generat cap embedding (bucle de generació comentat per a entorn de desenvolupament).");
+        return; // Retornem d'hora per no sobreescriure el fitxer amb un array buit
+    }
 
     // Ho desem a src/data/embeddings.json
     const dataDir = path.resolve(__dirname, '../src/data');

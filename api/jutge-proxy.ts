@@ -3,7 +3,6 @@ import { getProblemInfo } from '../src/lib/jutgeScraper.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Add CORS headers so we can access from the frontend in local development / prod
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
     res.setHeader(

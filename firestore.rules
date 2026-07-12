@@ -4,7 +4,7 @@ service cloud.firestore {
     
     // Funció per comprovar si l'usuari és moderador
     function isModerator() {
-      return request.auth != null && 
+      return request.auth.uid != null && 
         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'moderador' || 
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor');
     }
@@ -12,68 +12,68 @@ service cloud.firestore {
     // Usuaris
     match /users/{userId} {
       // Només els usuaris autenticats poden veure perfils individuals (evita descarregar l'objecte sencer i PII leak)
-      allow get: if request.auth != null;
+      allow get: if request.auth.uid == userId;
       allow list: if false;
-      allow update: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth.uid == userId;
       
       // Creació d'usuaris amb verificació segura del codi d'invitació via Firestore rules
-      allow create: if request.auth != null && request.auth.uid == userId
+      allow create: if request.auth.uid == userId
                     && (request.resource.data.role == 'invitat' || 
                         (request.resource.data.role == 'moderador' && exists(/databases/$(database)/documents/invites/$(request.resource.data.inviteCodeUsed)))
                        );
 
       // Historial de xat de l'assistent IA: cada usuari accedeix NOMÉS al seu propi
       match /chats/{chatId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read, write: if request.auth.uid == userId;
       }
 
       // Tasques i Roadmaps: cada usuari accedeix NOMÉS al seu propi
       match /tasks/{taskId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read, write: if request.auth.uid == userId;
       }
       match /roadmaps/{roadmapId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read, write: if request.auth.uid == userId;
       }
     }
 
     match /invites/{code} {
       // Permetem que el client pugui comprovar si el document amb ID={code} existeix,
       // però bloquegem "list" perquè no puguin descarregar tots els codis vàlids.
-      allow get: if true;
+      allow get: if request.auth.uid != null;
       allow list, write: if false;
     }
 
     // Missatges: permetre llegir els propis missatges, o enviar a qualsevol si estàs autenticat
     match /messages/{document=**} {
-      allow read, update, delete: if request.auth != null && resource.data.receiverId == request.auth.uid;
+      allow read, update, delete: if request.auth.uid != null && resource.data.receiverId == request.auth.uid;
       // Els loguejats poden enviar a tothom. Els anònims NOMÉS poden enviar missatges (Feedback) al teu UID directament.
-      allow create: if request.auth != null || request.resource.data.receiverId == 'jV5Y63M77PcqIcOUCpLz76GTYMI3';
+      allow create: if request.auth.uid != null || request.resource.data.receiverId == 'jV5Y63M77PcqIcOUCpLz76GTYMI3';
     }
 
     // Solucions i Notificacions: els moderadors fan i desfan la base, però tothom autenticat pot comentar
     match /solutions/{solutionId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
       allow write: if isModerator();
       
       // Subcol·lecció de comentaris oberta per a tots els autenticats
       match /comments/{commentId} {
-        allow read: if true;
-        allow create, update: if request.auth != null;
+        allow read: if request.auth.uid != null;
+        allow create, update: if request.auth.uid != null;
         // Només l'autor original o l'administrador pot esborrar els missatges
-        allow delete: if request.auth != null && (request.auth.uid == resource.data.userId || isModerator());
+        allow delete: if request.auth.uid != null && (request.auth.uid == resource.data.userId || isModerator());
       }
     }
 
     match /notifications/{document=**} {
-      allow read, update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isModerator());
-      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth.uid != null && (resource.data.userId == request.auth.uid || isModerator());
+      allow create: if request.auth.uid != null;
     }
 
     // Comunitat
     match /community_posts/{postId} {
-      allow read: if true;
-      allow create: if request.auth != null;
-      allow update: if request.auth != null && (
+      allow read: if request.auth.uid != null;
+      allow create: if request.auth.uid != null;
+      allow update: if request.auth.uid != null && (
         // Reaccions, reports i visualitzacions: qualsevol autenticat
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions', 'reports', 'views']) ||
         // Rank i Pin: només moderadors
@@ -81,24 +81,23 @@ service cloud.firestore {
         // Propi contingut: l'autor
         (request.auth.uid == resource.data.userId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content', 'subject', 'type']))
       );
-      allow delete: if request.auth != null && (request.auth.uid == resource.data.userId || isModerator());
+      allow delete: if request.auth.uid != null && (request.auth.uid == resource.data.userId || isModerator());
 
       match /replies/{replyId} {
-        allow read: if true;
-        allow create, update: if request.auth != null;
-        allow delete: if request.auth != null && (request.auth.uid == resource.data.userId || isModerator());
+        allow read: if request.auth.uid != null;
+        allow create, update: if request.auth.uid != null;
+        allow delete: if request.auth.uid != null && (request.auth.uid == resource.data.userId || isModerator());
       }
     }
 
     // Memòria de la IA
     match /ai_memory/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if request.auth.uid == userId;
     }
 
     // Fallback
     match /{document=**} {
-      allow read: if request.auth != null;
-      allow write: if false; 
+      allow read, write: if false; 
     }
   }
 }

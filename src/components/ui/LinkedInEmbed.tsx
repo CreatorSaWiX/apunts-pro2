@@ -75,6 +75,7 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
                         width={width}
                         frameBorder={0}
                         allowFullScreen
+                        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
                         title="LinkedIn embed"
                         className={`w-full block transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
                         onLoad={() => setIsLoaded(true)}

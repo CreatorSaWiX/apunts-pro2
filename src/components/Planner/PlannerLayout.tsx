@@ -3,7 +3,7 @@ import { useTasks } from '../../contexts/TasksContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import NavigationPill from '../ui/NavigationPill';
 import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles, Route } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { RoadmapProvider } from '../../contexts/RoadmapContext';
 import Spinner from '../ui/Spinner';
@@ -60,6 +60,12 @@ const AIParticles = () => {
     );
 };
 
+const FallbackSpinner = () => (
+    <div className="flex items-center justify-center w-full h-full min-h-[300px]">
+        <Spinner size="xl" variant="primary" className="opacity-50" />
+    </div>
+);
+
 const PlannerLayout: React.FC = () => {
     const { t } = useTranslation();
     const { isLoading, error, subjects, filters, tasks } = useTasks();
@@ -102,11 +108,7 @@ const PlannerLayout: React.FC = () => {
         );
     }
 
-    const FallbackSpinner = () => (
-        <div className="flex items-center justify-center w-full h-full min-h-[300px]">
-            <Spinner size="xl" variant="primary" className="opacity-50" />
-        </div>
-    );
+
 
     return (
         <RoadmapProvider>
@@ -126,7 +128,7 @@ const PlannerLayout: React.FC = () => {
                             const Icon = tab.icon;
                             const isActive = activeTab === tab.id;
                             return (
-                                <button
+                                <button type="button"
                                     key={tab.id}
                                     onClick={() => {
                                         if (activeTab === tab.id) return;
@@ -161,7 +163,7 @@ const PlannerLayout: React.FC = () => {
 
                         <div className="w-px h-6 bg-white/[0.1] mx-1"></div>
 
-                        <button
+                        <button type="button"
                             onClick={() => setIsAIModalOpen(true)}
                             className="group relative flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full transition-all duration-500 shrink-0 hover:scale-[1.05] active:scale-[0.95] overflow-hidden"
                             title="IA Planner"

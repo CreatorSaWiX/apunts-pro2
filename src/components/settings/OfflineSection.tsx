@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Download, Check, Trash2, FileText, ChevronDown, ChevronUp } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { useSettings } from '../../contexts/SettingsContext';
 import subjectsData from '../../data/subjects.json';
 import { useTranslation } from 'react-i18next';
@@ -284,7 +284,7 @@ export const OfflineSection = () => {
                                         {/* Action Buttons */}
                                         <div className="flex items-center gap-2 w-32 justify-end">
                                             {downloaded ? (
-                                                <button
+                                                <button type="button"
                                                     disabled={processing}
                                                     onClick={() => handleDelete(cat.id)}
                                                     className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 text-slate-300 font-bold text-sm transition-all disabled:opacity-50"
@@ -293,7 +293,7 @@ export const OfflineSection = () => {
                                                     {t('settings.offline.delete', 'Eliminar')}
                                                 </button>
                                             ) : (
-                                                <button
+                                                <button type="button"
                                                     disabled={processing || !isOnline}
                                                     onClick={() => handleDownload(cat.id)}
                                                     className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-white text-slate-900 font-bold text-sm transition-all disabled:opacity-50"
@@ -309,7 +309,7 @@ export const OfflineSection = () => {
                                         {/* Auto-Sync Toggle */}
                                         <div className="flex items-center gap-3">
                                             <span className="text-xs font-bold text-slate-400 hidden sm:block">{t('settings.offline.autoSync', 'Actualització automàtica')}</span>
-                                            <button
+                                            <button type="button"
                                                 onClick={() => handleToggleSync(cat.id, !isSyncEnabled)}
                                                 className={`relative w-11 h-6 rounded-full transition-colors duration-300 outline-none flex-shrink-0 ${isSyncEnabled ? 'bg-emerald-500' : 'bg-slate-700'}`}
                                                 title="Sincronització automàtica"
@@ -325,9 +325,10 @@ export const OfflineSection = () => {
                                 <AnimatePresence>
                                     {expandedCategory === cat.id && (
                                         <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
+                                            layout
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
                                             className="w-full overflow-hidden border-t border-white/5 mt-5"
                                         >
                                             <div className="pt-4 flex flex-col gap-2 max-h-64 overflow-y-auto custom-scrollbar pr-2">

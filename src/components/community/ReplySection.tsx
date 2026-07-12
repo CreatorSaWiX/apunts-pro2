@@ -93,8 +93,8 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
 
             // Send notifications to mentioned users
             const mentionedUsers = getMentionedUsers(content, user.id);
-            for (const mUser of mentionedUsers) {
-                if (mUser.id === postAuthorId) continue; // Skip if owner already notified
+            await Promise.all(mentionedUsers.map(async (mUser) => {
+                if (mUser.id === postAuthorId) return; // Skip if owner already notified
                 
                 await addDoc(collection(db, 'notifications'), {
                     userId: mUser.id,
@@ -108,7 +108,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                     read: false,
                     createdAt: serverTimestamp()
                 });
-            }
+            }));
 
             setTimeout(() => repliesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
         } catch (e) {
@@ -163,7 +163,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                         ))}
 
                         {hasMore && (
-                            <button 
+                            <button type="button" 
                                 onClick={() => setVisibleLimit(prev => prev + 10)}
                                 className="w-full py-2 text-[11px] font-bold text-slate-500 hover:text-primary transition-colors flex items-center justify-center gap-2"
                             >

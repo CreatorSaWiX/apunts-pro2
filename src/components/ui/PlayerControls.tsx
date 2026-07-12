@@ -52,22 +52,22 @@ export function PlayerControls({
 
                 {/* Controls Row */}
                 <div className="flex items-center justify-center gap-2 sm:gap-4 w-full">
-                    <button onClick={onReset} className="p-2 text-slate-400 hover:text-white rounded-xl transition-all active:scale-95">
+                    <button type="button" onClick={onReset} className="p-2 text-slate-400 hover:text-white rounded-xl transition-all active:scale-95">
                         <SkipBack size={16} className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
-                    <button onClick={onPrev} className="p-2 text-slate-400 hover:text-white rounded-xl transition-all active:scale-95">
+                    <button type="button" onClick={onPrev} className="p-2 text-slate-400 hover:text-white rounded-xl transition-all active:scale-95">
                         <ChevronLeft size={16} className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px]" />
                     </button>
-                    <button
+                    <button type="button"
                         onClick={onPlayPause}
                         className="p-3 bg-gradient-to-b from-emerald-400 to-emerald-600 text-slate-950 border border-emerald-400/50 rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)]"
                     >
                         {isPlaying ? <Pause size={18} className="fill-current w-[18px] h-[18px]" /> : <Play size={18} className="ml-0.5 fill-current w-[18px] h-[18px]" />}
                     </button>
-                    <button onClick={onNext} className="p-2 text-slate-400 hover:text-white rounded-xl transition-all active:scale-95">
+                    <button type="button" onClick={onNext} className="p-2 text-slate-400 hover:text-white rounded-xl transition-all active:scale-95">
                         <ChevronRight size={16} className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px]" />
                     </button>
-                    <button onClick={onFullEnd} className="p-2 text-slate-400 hover:text-white rounded-xl transition-all active:scale-95">
+                    <button type="button" onClick={onFullEnd} className="p-2 text-slate-400 hover:text-white rounded-xl transition-all active:scale-95">
                         <SkipForward size={14} className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                 </div>

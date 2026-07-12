@@ -1,10 +1,9 @@
 import React, { useState, useTransition } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Github, Heart } from 'lucide-react';
 import { useSubject } from '../contexts/SubjectContext';
 import { useTranslation } from 'react-i18next';
-import { db } from '../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+
 import { Link } from 'react-router-dom';
 import Spinner from './ui/Spinner';
 
@@ -35,21 +34,26 @@ export const MobileActionMenu: React.FC<{
         setIsLoadingContributors(true);
         const uids = ["jV5Y63M77PcqIcOUCpLz76GTYMI3", "tHrqAkSatrV6FVcgfdSErLjyXL12",
             "YU5QuXAZ47dslUX8ruyriHHPfh82", "3cQsRL8DFch3HEk0nHVV1dMQJZl2", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
-        const fetched: Contributor[] = [];
-        for (const uid of uids) {
-            try {
-                const userDoc = await getDoc(doc(db, "users", uid));
-                if (userDoc.exists()) {
-                    const data = userDoc.data();
-                    fetched.push({
-                        uid,
-                        username: data.username || "Usuari",
-                        role: data.role || t('settings.contributor', 'Col·laborador'),
-                        avatar: data.avatar || ""
-                    });
-                }
-            } catch (e) { console.error("Error loading contributors", e); }
-        }
+        const results = await Promise.all(
+            uids.map(async (uid) => {
+                try {
+                    const { db } = await import('../lib/firebase');
+                    const { doc, getDoc } = await import('firebase/firestore');
+                    const userDoc = await getDoc(doc(db, "users", uid));
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        return {
+                            uid,
+                            username: data.username || "Usuari",
+                            role: data.role || t('settings.contributor', 'Col·laborador'),
+                            avatar: data.avatar || ""
+                        };
+                    }
+                } catch (e) { console.error("Error", e); }
+                return null;
+            })
+        );
+        const fetched = results.filter(Boolean) as Contributor[];
         setContributors(fetched);
         setIsLoadingContributors(false);
     };
@@ -98,7 +102,7 @@ export const MobileActionMenu: React.FC<{
                             {/* Drag Handle (Mobile only) */}
                             <div className="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6 md:hidden touch-none" />
 
-                            <button
+                            <button type="button"
                                 onClick={() => setIsOpen(false)}
                                 className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors p-1.5 bg-white/5 rounded-full backdrop-blur-md hidden md:block"
                             >
@@ -121,7 +125,7 @@ export const MobileActionMenu: React.FC<{
                                         </label>
                                         <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
                                             {(['pro2', 'm1', 'm2'] as const).map((sub) => (
-                                                <button
+                                                <button type="button"
                                                     key={sub}
                                                     onClick={() => startTransition(() => setSubject(sub))}
                                                     className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${safeSubject === sub
@@ -152,7 +156,7 @@ export const MobileActionMenu: React.FC<{
                                         </label>
                                         <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
                                             {(['ca', 'es', 'en'] as const).map((lang) => (
-                                                <button
+                                                <button type="button"
                                                     key={lang}
                                                     onClick={() => i18n.changeLanguage(lang)}
                                                     className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${preferredLang === lang
@@ -182,7 +186,7 @@ export const MobileActionMenu: React.FC<{
                                             <Github size={18} />
                                             <span className="text-sm font-medium">{t('settings.sourceCode', 'Codi Font')}</span>
                                         </a>
-                                        <button onClick={handleContributorsClick}
+                                        <button type="button" onClick={handleContributorsClick}
                                             className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-rose-500/10 text-slate-300 hover:text-rose-400 transition-colors">
                                             <Heart size={18} />
                                             <span className="text-sm font-medium">{t('settings.contributors', 'Contribuidors')}</span>
@@ -191,7 +195,7 @@ export const MobileActionMenu: React.FC<{
                                 </div>
                             ) : (
                                 <div className="flex-1 flex flex-col">
-                                    <button onClick={() => setShowContributors(false)} className="text-sm text-slate-400 hover:text-white mb-4 flex items-center gap-1">
+                                    <button type="button" onClick={() => setShowContributors(false)} className="text-sm text-slate-400 hover:text-white mb-4 flex items-center gap-1">
                                         ← {t('common.back', 'Tornar')}
                                     </button>
 
@@ -206,7 +210,7 @@ export const MobileActionMenu: React.FC<{
                                                     <Link to={`/profile/${user.uid}`} onClick={() => setIsOpen(false)} key={i} className="flex flex-col gap-1 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10">
                                                         <div className="flex items-center gap-3">
                                                             <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center text-white text-xs">
-                                                                {user.avatar ? <img src={user.avatar} className="w-full h-full object-cover" loading="lazy" /> : user.username[0].toUpperCase()}
+                                                                {user.avatar ? <img src={user.avatar} className="w-full h-full object-cover" loading="lazy" alt={`${user.username} avatar`} /> : user.username[0].toUpperCase()}
                                                             </div>
                                                             <div>
                                                                 <div className="text-sm text-white font-medium">{user.username}</div>

@@ -86,7 +86,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
             comments.forEach(c => {
                 const node = byId[c.id];
                 if (c.replyTo) {
-                    let parentId = c.replyTo.id;
+                    const parentId = c.replyTo.id;
                     let rootId = parentId;
                     let depth = 0;
 
@@ -155,9 +155,8 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
 
             // Send notifications to mentioned users
             const mentionedUsers = getMentionedUsers(content, user.id);
-            for (const mUser of mentionedUsers) {
-                // Skip if owner already notified via reply
-                if (replyToObj && mUser.id === replyToObj.userId) continue;
+            await Promise.all(mentionedUsers.map(async (mUser) => {
+                if (replyToObj && mUser.id === replyToObj.userId) return;
                 
                 await addDoc(collection(db, 'notifications'), {
                     userId: mUser.id,
@@ -171,7 +170,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                     read: false,
                     createdAt: serverTimestamp()
                 });
-            }
+            }));
 
             scrollToBottom();
         } catch (error) {
@@ -321,7 +320,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                                 />
                             ))}
                             {comments.length >= visibleCount && (
-                                <button
+                                <button type="button"
                                     onClick={() => setVisibleCount(prev => prev + 20)}
                                     className="w-full py-2 text-xs font-semibold text-slate-500 hover:text-sky-400 hover:bg-white/5 rounded-lg transition-colors border border-dashed border-white/10"
                                 >

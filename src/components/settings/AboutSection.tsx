@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Github, Heart, X, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { db } from '../../lib/firebase';
@@ -15,7 +15,7 @@ interface Contributor {
 }
 
 export const AboutSection = () => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [contributors, setContributors] = useState<Contributor[]>([]);
@@ -28,22 +28,24 @@ export const AboutSection = () => {
         setIsLoadingContributors(true);
         const uids = ["jV5Y63M77PcqIcOUCpLz76GTYMI3", "tHrqAkSatrV6FVcgfdSErLjyXL12",
             "YU5QuXAZ47dslUX8ruyriHHPfh82", "3cQsRL8DFch3HEk0nHVV1dMQJZl2", "9Z17ChM52YVGsyrIp6gH3ymjEfZ2"];
-        const fetched: Contributor[] = [];
-
-        for (const uid of uids) {
-            try {
-                const userDoc = await getDoc(doc(db, "users", uid));
-                if (userDoc.exists()) {
-                    const data = userDoc.data();
-                    fetched.push({
-                        uid,
-                        username: data.username || "Usuari",
-                        role: data.role || t('settings.contributor', 'Col·laborador'),
-                        avatar: data.avatar || ""
-                    });
-                }
-            } catch (e) { console.error("Error carregant col·laboradors", e); }
-        }
+        const results = await Promise.all(
+            uids.map(async (uid) => {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", uid));
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        return {
+                            uid,
+                            username: data.username || "Usuari",
+                            role: data.role || t('settings.contributor', 'Col·laborador'),
+                            avatar: data.avatar || ""
+                        };
+                    }
+                } catch (e) { console.error("Error carregant col·laboradors", e); }
+                return null;
+            })
+        );
+        const fetched = results.filter(Boolean) as Contributor[];
         setContributors(fetched);
         setIsLoadingContributors(false);
     };
@@ -70,7 +72,7 @@ export const AboutSection = () => {
                     </div>
                 </a>
 
-                <button
+                <button type="button"
                     onClick={openContributors}
                     className="group relative text-left flex flex-col justify-between p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-rose-500/30 hover:bg-rose-500/10 transition-all duration-500 overflow-hidden outline-none h-48"
                 >
@@ -107,7 +109,7 @@ export const AboutSection = () => {
                             <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
                             <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
-                            <button
+                            <button type="button"
                                 onClick={() => setIsModalOpen(false)}
                                 className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors cursor-pointer z-20 outline-none bg-white/5 p-2 rounded-full"
                             >

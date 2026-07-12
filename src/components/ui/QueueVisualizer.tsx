@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus } from 'lucide-react';
 
 const MAX_CAPACITY = 5;
@@ -119,14 +119,14 @@ export default function QueueVisualizer() {
                         placeholder="Val"
                         className="w-16 h-10 bg-slate-900/40 border border-slate-800 rounded-lg px-2 text-center text-fuchsia-200 focus:outline-none focus:border-fuchsia-500/50 transition-colors"
                     />
-                    <button
+                    <button type="button"
                         onClick={handlePush}
                         className="h-10 px-4 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 text-fuchsia-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-fuchsia-500/20"
                     >
                         <Plus size={16} /> push( )
                     </button>
 
-                    <button
+                    <button type="button"
                         onClick={handlePop}
                         className="h-10 px-4 ml-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-rose-500/20"
                     >

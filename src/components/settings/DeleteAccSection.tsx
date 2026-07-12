@@ -36,7 +36,7 @@ export const DeleteAccSection = () => {
                 <p className="text-slate-400 text-sm font-medium">{t('settings.deleteAcc.subtitle', 'Esborra de forma permanent el teu compte i totes les teves dades associades.')}</p>
             </div>
 
-            <button
+            <button type="button"
                 onClick={() => setIsDeleteModalOpen(true)}
                 disabled={isDeleting}
                 className="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-medium rounded-xl transition-colors border border-red-500/20 whitespace-nowrap"

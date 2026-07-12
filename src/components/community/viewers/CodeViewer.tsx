@@ -102,7 +102,7 @@ const CodeViewer = ({ url, filename }: CodeViewerProps) => {
                     </div>
                     <span className="ml-2 text-xs font-mono text-slate-400">{filename}</span>
                 </div>
-                <button 
+                <button type="button" 
                     onClick={handleCopy}
                     className="p-1.5 rounded-md hover:bg-white/10 text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-medium"
                 >

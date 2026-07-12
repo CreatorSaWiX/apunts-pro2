@@ -231,7 +231,7 @@ const BoardView: React.FC = () => {
                 {/* Add Column UI */}
                 <div className="flex-shrink-0 w-[350px] h-full">
                     {!isAddingColumn ? (
-                        <button 
+                        <button type="button" 
                             onClick={() => setIsAddingColumn(true)}
                             className="group flex flex-col items-center justify-center gap-3 text-slate-500 bg-white/[0.01] hover:bg-white/[0.03] border border-dashed border-white/10 hover:border-white/20 rounded-[32px] w-full h-[100px] transition-all duration-300 backdrop-blur-md"
                         >
@@ -244,12 +244,12 @@ const BoardView: React.FC = () => {
                         <div className="bg-[#13131A]/40 backdrop-blur-xl rounded-2xl p-3 border border-white/10 w-[350px] shadow-2xl flex flex-col gap-2">
                             <div className="flex items-center justify-between px-1">
                                 <span className="text-xs font-semibold tracking-widest text-white/50 uppercase">{t('planner.boardView.addList', 'Afegeix llista')}</span>
-                                <button onClick={() => setIsAddingColumn(false)} className="text-slate-500 hover:text-white transition-colors p-1"><X size={16} strokeWidth={2.5}/></button>
+                                <button type="button" onClick={() => setIsAddingColumn(false)} className="text-slate-500 hover:text-white transition-colors p-1"><X size={16} strokeWidth={2.5}/></button>
                             </div>
                             
                             <div className="flex gap-3 items-center justify-center py-2 bg-white/[0.02] rounded-xl border border-white/[0.02]">
                                 {PRESET_COLORS.map(color => (
-                                    <button
+                                    <button type="button"
                                         key={color}
                                         onClick={() => setNewColumnColor(color)}
                                         className={`w-4 h-4 rounded-full transition-all duration-300 bg-${color} ${newColumnColor === color ? `scale-125 shadow-[0_0_12px_currentColor] text-${color} ring-2 ring-${color} ring-offset-2 ring-offset-[#13131A]` : 'opacity-50 hover:opacity-100 hover:scale-110'}`}
@@ -267,7 +267,7 @@ const BoardView: React.FC = () => {
                                 placeholder={t('planner.boardView.listName', 'Nom de la llista...')}
                                 className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-white/20 transition-colors"
                             />
-                            <button onClick={handleAddColumn} className="mt-1 bg-white/5 hover:bg-white/10 text-white text-[12px] font-semibold tracking-wide py-2.5 rounded-xl transition-colors border border-white/5 hover:border-white/10 w-full shadow-sm">{t('planner.boardView.createList', 'CREAR LLISTA')}</button>
+                            <button type="button" onClick={handleAddColumn} className="mt-1 bg-white/5 hover:bg-white/10 text-white text-[12px] font-semibold tracking-wide py-2.5 rounded-xl transition-colors border border-white/5 hover:border-white/10 w-full shadow-sm">{t('planner.boardView.createList', 'CREAR LLISTA')}</button>
                         </div>
                     )}
                 </div>

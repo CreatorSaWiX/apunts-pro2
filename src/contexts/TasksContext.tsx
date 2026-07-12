@@ -300,8 +300,12 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return () => window.removeEventListener('keydown', handleGlobalKeyDown);
     }, [undoDelete]);
 
+    const contextValue = useMemo(() => ({
+        tasks, filteredTasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks, subjects, filters, setFilters, clearFilters
+    }), [tasks, filteredTasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks, subjects, filters, clearFilters]);
+
     return (
-        <TasksContext.Provider value={{ tasks, filteredTasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks, subjects, filters, setFilters, clearFilters }}>
+        <TasksContext.Provider value={contextValue}>
             {children}
         </TasksContext.Provider>
     );

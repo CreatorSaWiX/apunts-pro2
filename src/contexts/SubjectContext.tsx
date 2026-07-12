@@ -85,8 +85,10 @@ export function SubjectProvider({ children }: { children: React.ReactNode }) {
 
     }, [theme]);
 
+    const contextValue = useMemo(() => ({ subject, setSubject, theme }), [subject, theme]);
+
     return (
-        <SubjectContext.Provider value={{ subject, setSubject, theme }}>
+        <SubjectContext.Provider value={contextValue}>
             {children}
         </SubjectContext.Provider>
     );

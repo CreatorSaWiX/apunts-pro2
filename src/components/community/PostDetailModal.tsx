@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { CommunityPost } from '../../types/community';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, Share2, MessageSquare, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -21,10 +21,8 @@ interface PostDetailModalProps {
 const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
     const { t } = useTranslation();
     const { user } = useAuth();
-    if (!post) return null;
-
-    const hasLiked = user && post.reactions?.[user.id]?.emoji === '❤️';
-    const likeCount = Object.values(post.reactions || {}).filter(r => r.emoji === '❤️').length;
+    const hasLiked = user && post?.reactions?.[user.id]?.emoji === '❤️';
+    const likeCount = Object.values(post?.reactions || {}).filter(r => r.emoji === '❤️').length;
 
     useEffect(() => {
         if (!post || !isOpen) return;
@@ -63,7 +61,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
     }, [post, isOpen, user]);
 
     const handleLike = async () => {
-        if (!user) return;
+        if (!user || !post) return;
         const postRef = doc(db, 'community_posts', post.id);
 
         try {
@@ -104,6 +102,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
     };
 
     const handleDelete = async () => {
+        if (!post) return;
         if (!confirm(t('community.postDetail.deleteConfirm', 'Segur que vols eliminar aquesta publicació? Aquesta acció no es pot desfer.'))) return;
         try {
             // Eliminar respostes de la subcol·lecció primer
@@ -118,6 +117,8 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
             alert(t('community.postDetail.deleteError', "Error en eliminar la publicació."));
         }
     };
+
+    if (!post) return null;
 
     return (
         <AnimatePresence>
@@ -158,11 +159,11 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                     </motion.div>
                                     <span className="text-sm font-bold hidden sm:inline">{likeCount > 0 ? likeCount : t('community.postDetail.like', "M'agrada")}</span>
                                 </motion.button>
-                                <button className="p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors">
+                                <button type="button" className="p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors">
                                     <Share2 size={18} />
                                 </button>
                                 {user?.id === post.userId && (
-                                    <button 
+                                    <button type="button" 
                                         onClick={handleDelete}
                                         className="p-2.5 rounded-full bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors"
                                         title={t('community.postDetail.deleteTooltip', "Eliminar publicació")}
@@ -171,7 +172,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                     </button>
                                 )}
                                 <div className="w-px h-6 bg-white/10 mx-1" />
-                                <button onClick={onClose} className="p-2.5 rounded-full hover:bg-rose-500/20 text-slate-400 hover:text-rose-500 transition-colors">
+                                <button type="button" onClick={onClose} className="p-2.5 rounded-full hover:bg-rose-500/20 text-slate-400 hover:text-rose-500 transition-colors">
                                     <X size={20} />
                                 </button>
                             </div>

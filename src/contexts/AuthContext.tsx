@@ -29,9 +29,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const initAuth = async () => {
             try {
-                const { auth, db } = await import('../lib/firebase');
-                const { onAuthStateChanged } = await import('firebase/auth');
-                const { doc, getDoc } = await import('firebase/firestore');
+                const [
+                    { auth, db },
+                    { onAuthStateChanged },
+                    { doc, getDoc }
+                ] = await Promise.all([
+                    import('../lib/firebase'),
+                    import('firebase/auth'),
+                    import('firebase/firestore')
+                ]);
 
                 unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
                     if (firebaseUser) {
@@ -80,15 +86,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const login = useCallback(async (email: string, password: string) => {
-        const { auth } = await import('../lib/firebase');
-        const { signInWithEmailAndPassword } = await import('firebase/auth');
+        const [{ auth }, { signInWithEmailAndPassword }] = await Promise.all([
+            import('../lib/firebase'),
+            import('firebase/auth')
+        ]);
         await signInWithEmailAndPassword(auth, email, password);
     }, []);
 
     const signup = useCallback(async (email: string, password: string, username: string) => {
-        const { auth, db } = await import('../lib/firebase');
-        const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
-        const { doc, setDoc } = await import('firebase/firestore');
+        const [
+            { auth, db },
+            { createUserWithEmailAndPassword, updateProfile },
+            { doc, setDoc }
+        ] = await Promise.all([
+            import('../lib/firebase'),
+            import('firebase/auth'),
+            import('firebase/firestore')
+        ]);
 
         // 1. Create User (Auth)
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -132,8 +146,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const logout = useCallback(async () => {
-        const { auth } = await import('../lib/firebase');
-        const { signOut } = await import('firebase/auth');
+        const [{ auth }, { signOut }] = await Promise.all([
+            import('../lib/firebase'),
+            import('firebase/auth')
+        ]);
         await signOut(auth);
     }, []);
 

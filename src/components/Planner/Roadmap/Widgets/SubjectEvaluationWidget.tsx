@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 
 interface EvaluationItem {
     acronym: string;
@@ -51,12 +51,12 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
                     return (
                         <motion.div
                             key={i}
-                            className={`h-full bg-gradient-to-r ${theme.gradient} relative group flex items-center justify-center border-r border-slate-900/50 last:border-r-0 transition-opacity duration-300 ${hoveredIndex !== null && hoveredIndex !== i ? 'opacity-30' : 'opacity-100'}`}
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${percentage}%` }}
+                            className={`h-full bg-gradient-to-r ${theme.gradient} relative group flex items-center justify-center border-r border-slate-900/50 last:border-r-0 transition-opacity duration-300 origin-left ${hoveredIndex !== null && hoveredIndex !== i ? 'opacity-30' : 'opacity-100'}`}
+                            style={{ width: `${percentage}%`, boxShadow: hoveredIndex === i ? `0 0 15px ${theme.shadow}` : 'none' }}
+                            initial={{ scaleX: 0 }}
+                            whileInView={{ scaleX: 1 }}
                             viewport={{ once: true }}
                             transition={{ duration: 1, ease: "easeOut", delay: i * 0.1 }}
-                            style={{ boxShadow: hoveredIndex === i ? `0 0 15px ${theme.shadow}` : 'none' }}
                             onMouseEnter={() => setHoveredIndex(i)}
                             onMouseLeave={() => setHoveredIndex(null)}
                         >

@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { UploadCloud } from 'lucide-react';
 
 import Spinner from '../ui/Spinner';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 export interface Attachment {
@@ -23,7 +23,7 @@ interface FileUploaderProps {
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
-const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', maxSizeMB = 50, acceptedTypes = ['*/*'] }: FileUploaderProps & { maxSizeMB?: number, acceptedTypes?: string[] }) => {
+const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', maxSizeMB = 50 }: FileUploaderProps & { maxSizeMB?: number }) => {
     const { t } = useTranslation();
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -180,19 +180,20 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', max
             <AnimatePresence>
                 {uploading && (
                     <motion.div 
-                        initial={{ opacity: 0, height: variant === 'avatar' ? '100%' : 0 }}
-                        animate={{ opacity: 1, height: variant === 'avatar' ? '100%' : 'auto' }}
-                        exit={{ opacity: 0, height: variant === 'avatar' ? '100%' : 0 }}
-                        className={`flex flex-col items-center justify-center ${variant === 'avatar' ? 'absolute inset-0 bg-black/60 z-20' : 'p-6 bg-white/5 border border-white/10 rounded-2xl'}`}
+                        layout
+                        initial={{ opacity: 0, y: variant === 'avatar' ? 0 : -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: variant === 'avatar' ? 0 : -10 }}
+                        className={`flex flex-col items-center justify-center ${variant === 'avatar' ? 'absolute inset-0 bg-black/60 z-20 h-full' : 'p-6 bg-white/5 border border-white/10 rounded-2xl w-full'}`}
                     >
                         <Spinner size={variant === 'avatar' ? 'sm' : 'lg'} variant="primary" className={variant === 'avatar' ? '' : 'mb-3'} />
                         {variant !== 'avatar' && <p className="text-sm font-bold text-white">{t('common.fileUploader.uploading', 'Preparant i pujant a la xarxa...')}</p>}
                         {variant !== 'avatar' && (
                             <div className="w-48 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden relative">
                                 <motion.div 
-                                    className="absolute left-0 top-0 bottom-0 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${progress}%` }}
+                                    className="absolute left-0 top-0 bottom-0 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)] origin-left w-full"
+                                    initial={{ scaleX: 0 }}
+                                    animate={{ scaleX: progress / 100 }}
                                     transition={{ ease: "linear" }}
                                 />
                             </div>

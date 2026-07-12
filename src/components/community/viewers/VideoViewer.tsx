@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 
 interface VideoViewerProps {
     url: string;
@@ -97,16 +97,16 @@ const VideoViewer = ({ url, filename }: VideoViewerProps) => {
 
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <button onClick={togglePlay} className="text-white hover:text-primary transition-colors">
+                        <button type="button" onClick={togglePlay} className="text-white hover:text-primary transition-colors">
                             {isPlaying ? <Pause size={20} /> : <Play size={20} />}
                         </button>
-                        <button onClick={toggleMute} className="text-white hover:text-primary transition-colors">
+                        <button type="button" onClick={toggleMute} className="text-white hover:text-primary transition-colors">
                             {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                         </button>
                         <span className="text-xs font-medium text-white/80">{filename}</span>
                     </div>
 
-                    <button onClick={toggleFullscreen} className="text-white hover:text-primary transition-colors">
+                    <button type="button" onClick={toggleFullscreen} className="text-white hover:text-primary transition-colors">
                         <Maximize size={20} />
                     </button>
                 </div>

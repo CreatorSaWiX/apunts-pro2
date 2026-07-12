@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Globe, Briefcase, ChevronRight, Search, ExternalLink } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import Modal from '../../ui/Modal';
@@ -28,7 +28,7 @@ const SidebarItem = ({
     colorClass: string
 }) => {
     return (
-        <button 
+        <button type="button" 
             onClick={onClick}
             className={`relative w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all duration-300 group overflow-hidden
                 ${active ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'}`}
@@ -426,7 +426,7 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
                                         {/* Action Button Footer */}
                                         <div className="pt-8 mt-auto flex justify-end">
-                                            <button 
+                                            <button type="button" 
                                                 onClick={handleAdd}
                                                 className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white text-slate-900 rounded-2xl font-bold hover:bg-slate-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98]"
                                             >

@@ -326,7 +326,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                       return { cleanText, keywords, memories_to_add };
                   }
 
-                  const THINKING_MODELS = new Set(['gemini-3.5-flash', 'gemini-2.5-flash']);
+                  // const THINKING_MODELS = new Set(['gemini-3.5-flash', 'gemini-2.5-flash']);
 
                   for (const modelName of MODELS) {
                     try {
