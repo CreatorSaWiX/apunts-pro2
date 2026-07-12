@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, MouseEvent } from 'react';
+import React, { useRef, useEffect, useState, type MouseEvent } from 'react';
 import { Maximize, RotateCcw, Play, Pause, Gauge } from 'lucide-react';
 
 interface VideoPlayerProps {
