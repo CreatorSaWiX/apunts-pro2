@@ -223,8 +223,6 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, [user]);
 
     const updateTask = useCallback(async (taskId: string, updates: Partial<Task>) => {
-        console.log("updateTask called for", taskId, "with updates:", updates);
-        
         // Optimistic update locally (SYNCHRONOUS to avoid flickering)
         setTasks(prev => prev.map(t => t.id === taskId ? { ...t, ...updates } : t));
                 try {

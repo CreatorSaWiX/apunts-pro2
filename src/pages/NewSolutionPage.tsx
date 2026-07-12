@@ -3,8 +3,6 @@ import { ArrowLeft, Save, Code, FileText, Layout, Info } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { allPersonalNotes } from 'content-collections';
-import { db } from '../lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { Suspense, lazy } from 'react';
 import Spinner from '../components/ui/Spinner';
 import { useTranslation } from 'react-i18next';
@@ -42,6 +40,9 @@ const NewSolutionPage = () => {
 
         try {
             if (!user) throw new Error('No user logged in');
+
+            const { db } = await import('../lib/firebase');
+            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
 
             await addDoc(collection(db, 'solutions'), {
                 topicId,

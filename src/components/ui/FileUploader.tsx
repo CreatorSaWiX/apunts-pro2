@@ -56,8 +56,6 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', max
         
         const { presignedUrl, publicUrl } = await res.json();
         
-        console.log("URL de pujada R2:", presignedUrl);
-        
         const uploadRes = await fetch(presignedUrl, {
             method: 'PUT',
             headers: {

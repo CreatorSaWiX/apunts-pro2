@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, query, orderBy, onSnapshot, where, limit, startAfter, getDocs, Timestamp } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, FileText as FileTextIcon, BookOpen, Sparkles, X } from 'lucide-react';
 import CommunityHero3D from '../components/community/CommunityHero3D';
-import SubjectSelectorModal from '../components/community/SubjectSelectorModal';
-import CreatePostModal from '../components/community/CreatePostModal';
-import PostDetailModal from '../components/community/PostDetailModal';
+import { lazy, Suspense } from 'react';
+
+const SubjectSelectorModal = lazy(() => import('../components/community/SubjectSelectorModal'));
+const CreatePostModal = lazy(() => import('../components/community/CreatePostModal'));
+const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
 import Spinner from '../components/ui/Spinner';
 import { useSettings } from '../contexts/SettingsContext';
 import { SUBJECTS } from '../config/subjects';
@@ -27,7 +27,7 @@ const mockEpicPost: CommunityPost = {
     content: 'Guia completa d\'Estructures de Dades. Arbres AVL i Grafs amb exemples en C++.',
     subject: 'pro2',
     type: 'resource',
-    createdAt: Timestamp.now(),
+    createdAt: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as any,
     reactions: {'user1': {userId: 'user1', username: 'Bob', emoji: '❤️'}, 'user2': {userId: 'user2', username: 'Alice', emoji: '❤️'}},
     rank: 2,
     isPinned: false,
@@ -43,7 +43,7 @@ const mockLegendaryPost: CommunityPost = {
     content: 'Resum interactiu de Fonaments d\'Ordinadors amb esquemes de circuits.',
     subject: 'm1',
     type: 'resource',
-    createdAt: Timestamp.now(),
+    createdAt: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as any,
     reactions: {'u1': {userId:'1',username:'',emoji:'❤️'},'u2':{userId:'2',username:'',emoji:'❤️'},'u3':{userId:'3',username:'',emoji:'❤️'},'u4':{userId:'4',username:'',emoji:'❤️'},'u5':{userId:'5',username:'',emoji:'❤️'}},
     rank: 3,
     isPinned: true,
@@ -59,7 +59,7 @@ const mockMythicPost: CommunityPost = {
     content: 'Projecte Final: Simulador de Processadors. Codi font sencer i documentació.',
     subject: 'm2',
     type: 'resource',
-    createdAt: Timestamp.now(),
+    createdAt: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as any,
     reactions: {'1':{userId:'1',username:'',emoji:'❤️'},'2':{userId:'2',username:'',emoji:'❤️'},'3':{userId:'3',username:'',emoji:'❤️'},'4':{userId:'4',username:'',emoji:'❤️'},'5':{userId:'5',username:'',emoji:'❤️'},'6':{userId:'6',username:'',emoji:'❤️'},'7':{userId:'7',username:'',emoji:'❤️'},'8':{userId:'8',username:'',emoji:'❤️'}},
     rank: 4,
     isPinned: true,
@@ -142,48 +142,58 @@ const CommunityPage = () => {
         setLoading(true);
         setHasMore(true);
         setPosts([]);
-        
-        const currentLimit = debouncedSearch ? 100 : POSTS_PER_PAGE;
-        
-        let q = query(
-            collection(db, 'community_posts'),
-            orderBy('isPinned', 'desc'),
-            orderBy('createdAt', 'desc'),
-            limit(currentLimit)
-        );
+        let unsubscribe = () => {};
 
-        if (activeSubject !== 'all') {
-            q = query(q, where('subject', '==', activeSubject));
-        }
-
-        if (activeRank !== null) {
-            q = query(q, where('rank', '==', activeRank));
-        }
-
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            let rawPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
+        const setup = async () => {
+            const { db } = await import('../lib/firebase');
+            const { collection, query, orderBy, onSnapshot, where, limit } = await import('firebase/firestore');
             
-            if (debouncedSearch.trim()) {
-                const lowerQ = debouncedSearch.toLowerCase();
-                rawPosts = rawPosts.filter(p => 
-                    p.content.toLowerCase().includes(lowerQ) || 
-                    (p.username && p.username.toLowerCase().includes(lowerQ)) ||
-                    (p.attachments && p.attachments.some(a => a.name.toLowerCase().includes(lowerQ)))
-                );
+            const currentLimit = debouncedSearch ? 100 : POSTS_PER_PAGE;
+            
+            let q = query(
+                collection(db, 'community_posts'),
+                orderBy('isPinned', 'desc'),
+                orderBy('createdAt', 'desc'),
+                limit(currentLimit)
+            );
+
+            if (activeSubject !== 'all') {
+                q = query(q, where('subject', '==', activeSubject));
             }
 
-            setPosts(rawPosts);
-            setLastVisible(snapshot.docs[snapshot.docs.length - 1] || null);
-            setHasMore(snapshot.docs.length === currentLimit);
-            setLoading(false);
-        });
+            if (activeRank !== null) {
+                q = query(q, where('rank', '==', activeRank));
+            }
 
+            unsubscribe = onSnapshot(q, (snapshot) => {
+                let rawPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
+                
+                if (debouncedSearch.trim()) {
+                    const lowerQ = debouncedSearch.toLowerCase();
+                    rawPosts = rawPosts.filter(p => 
+                        p.content.toLowerCase().includes(lowerQ) || 
+                        (p.username && p.username.toLowerCase().includes(lowerQ)) ||
+                        (p.attachments && p.attachments.some(a => a.name.toLowerCase().includes(lowerQ)))
+                    );
+                }
+
+                setPosts(rawPosts);
+                setLastVisible(snapshot.docs[snapshot.docs.length - 1] || null);
+                setHasMore(snapshot.docs.length === currentLimit);
+                setLoading(false);
+            });
+        };
+
+        setup();
         return () => unsubscribe();
     }, [activeSubject, activeRank, debouncedSearch, isOffline]);
 
     const loadMore = useCallback(async () => {
         if (loadingMore || !hasMore || !lastVisible || isOffline) return;
         setLoadingMore(true);
+
+        const { db } = await import('../lib/firebase');
+        const { collection, query, orderBy, getDocs, where, limit, startAfter } = await import('firebase/firestore');
 
         const currentLimit = debouncedSearch ? 100 : POSTS_PER_PAGE;
 
@@ -587,26 +597,32 @@ const CommunityPage = () => {
             </main>
 
             {/* Modals */}
-            <SubjectSelectorModal 
-                isOpen={showSubjectFilter}
-                onClose={() => setShowSubjectFilter(false)}
-                onSelect={(id) => { setActiveSubject(id); setShowSubjectFilter(false); }}
-                selectedId={activeSubject}
-                allowAll={true}
-            />
+            <Suspense fallback={null}>
+                {showSubjectFilter && (
+                    <SubjectSelectorModal 
+                        isOpen={showSubjectFilter}
+                        onClose={() => setShowSubjectFilter(false)}
+                        onSelect={(id) => { setActiveSubject(id); setShowSubjectFilter(false); }}
+                        selectedId={activeSubject}
+                        allowAll={true}
+                    />
+                )}
 
-            <CreatePostModal 
-                isOpen={isCreateOpen}
-                onClose={() => setIsCreateOpen(false)}
-            />
+                {isCreateOpen && (
+                    <CreatePostModal 
+                        isOpen={isCreateOpen}
+                        onClose={() => setIsCreateOpen(false)}
+                    />
+                )}
 
-            {selectedPost && (
-                <PostDetailModal 
-                    post={posts.find(p => p.id === selectedPost.id) || selectedPost}
-                    isOpen={!!selectedPost}
-                    onClose={() => setSelectedPost(null)}
-                />
-            )}
+                {selectedPost && (
+                    <PostDetailModal 
+                        post={posts.find(p => p.id === selectedPost.id) || selectedPost}
+                        isOpen={!!selectedPost}
+                        onClose={() => setSelectedPost(null)}
+                    />
+                )}
+            </Suspense>
         </div>
     );
 };

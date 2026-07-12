@@ -17,8 +17,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
             videoRef.current.muted = true;
             videoRef.current.play()
                 .then(() => setIsPlaying(true))
-                .catch(err => {
-                    console.log("Autoplay bloquejat o error:", err);
+                .catch(() => {
                     setIsPlaying(false);
                 });
         }

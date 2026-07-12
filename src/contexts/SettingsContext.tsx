@@ -148,11 +148,14 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     // Save to LocalStorage AND Firebase when they change, but ONLY if we have already loaded the initial settings from Firebase
     // to prevent overwriting Firebase with LocalStorage defaults on first render.
     useEffect(() => {
-        localStorage.setItem('app-settings-home-subjects', JSON.stringify(homeSubjects));
-        localStorage.setItem('app-settings-planner-view', defaultPlannerView);
-        localStorage.setItem('app-settings-subject-colors', JSON.stringify(customSubjectColors));
-        localStorage.setItem('app-settings-ai', JSON.stringify(aiSettings));
-        localStorage.setItem('app-settings-offline', JSON.stringify(offlineStorage));
+        // DEBOUNCE LOCAL STORAGE
+        const localTimeoutId = setTimeout(() => {
+            localStorage.setItem('app-settings-home-subjects', JSON.stringify(homeSubjects));
+            localStorage.setItem('app-settings-planner-view', defaultPlannerView);
+            localStorage.setItem('app-settings-subject-colors', JSON.stringify(customSubjectColors));
+            localStorage.setItem('app-settings-ai', JSON.stringify(aiSettings));
+            localStorage.setItem('app-settings-offline', JSON.stringify(offlineStorage));
+        }, 300);
 
         if (isSettingsLoaded && user) {
             // DEBOUNCE: Esperem 1 segon abans d'enviar-ho al servidor de Firebase
@@ -175,8 +178,13 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             }, 1000); // 1000 ms (1 segon) de rebot (debounce)
 
             // Si hi ha un altre canvi abans del segon, es cancel·la el timer anterior (com aturar la IRQ)
-            return () => clearTimeout(timeoutId);
+            return () => {
+                clearTimeout(timeoutId);
+                clearTimeout(localTimeoutId);
+            };
         }
+        
+        return () => clearTimeout(localTimeoutId);
     }, [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, isSettingsLoaded, user]);
 
     // MEMOITZACIÓ: Evitem fer un "new Struct" cada cop i mantenim el punter estable al Heap.

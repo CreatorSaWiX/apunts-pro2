@@ -4,9 +4,6 @@ import { User, LogOut, Upload, Globe, Edit2, Save, Mail, Send, Bell, Info } from
 import { useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
-import { doc, getDoc, setDoc, collection, query, where, onSnapshot, getDocs } from 'firebase/firestore';
-import { db, auth } from '../lib/firebase';
-import { updateProfile } from 'firebase/auth';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
@@ -209,6 +206,8 @@ const ProfilePage = () => {
         const fetchUserData = async () => {
             if (userIdToFetch) {
                 setIsFetchingUser(true);
+                const { db } = await import('../lib/firebase');
+                const { doc, getDoc } = await import('firebase/firestore');
                 const docRef = doc(db, 'users', userIdToFetch);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
@@ -233,6 +232,8 @@ const ProfilePage = () => {
         const fetchPosts = async () => {
             setIsFetchingPosts(true);
             try {
+                const { db } = await import('../lib/firebase');
+                const { collection, query, where, getDocs } = await import('firebase/firestore');
                 const q = query(collection(db, 'community_posts'), where('userId', '==', userIdToFetch));
                 const snapshot = await getDocs(q);
                 const posts: CommunityPost[] = [];
@@ -252,17 +253,28 @@ const ProfilePage = () => {
 
     useEffect(() => {
         if (!isOwnProfile || !authUser) return;
-        const qMsg = query(collection(db, 'messages'), where('receiverId', '==', authUser.id), where('read', '==', false));
-        const unsubscribeMsg = onSnapshot(qMsg, (snapshot) => setUnreadCount(snapshot.size));
+        let unsubscribeMsg = () => {};
+        let unsubscribeNotif = () => {};
 
-        const qNotif = query(collection(db, 'notifications'), where('userId', '==', authUser.id), where('read', '==', false));
-        const unsubscribeNotif = onSnapshot(qNotif, (snapshot) => setUnreadNotificationsCount(snapshot.size));
+        const setup = async () => {
+            const { db } = await import('../lib/firebase');
+            const { collection, query, where, onSnapshot } = await import('firebase/firestore');
+            const qMsg = query(collection(db, 'messages'), where('receiverId', '==', authUser.id), where('read', '==', false));
+            unsubscribeMsg = onSnapshot(qMsg, (snapshot) => setUnreadCount(snapshot.size));
 
+            const qNotif = query(collection(db, 'notifications'), where('userId', '==', authUser.id), where('read', '==', false));
+            unsubscribeNotif = onSnapshot(qNotif, (snapshot) => setUnreadNotificationsCount(snapshot.size));
+        };
+
+        setup();
         return () => { unsubscribeMsg(); unsubscribeNotif(); };
     }, [isOwnProfile, authUser]);
 
     const handleUpdateProfile = async (data: any) => {
         if (!authUser?.id) return;
+        const { db, auth } = await import('../lib/firebase');
+        const { doc, setDoc } = await import('firebase/firestore');
+        const { updateProfile } = await import('firebase/auth');
         const userRef = doc(db, 'users', authUser.id);
         try {
             await setDoc(userRef, data, { merge: true });

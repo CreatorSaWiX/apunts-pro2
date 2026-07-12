@@ -120,6 +120,7 @@ export const ChatBot: React.FC = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isInitialLoad = useRef(true);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const lastSentAt = useRef<number>(0);   // anti-bypass: useRef no és accessible des del DOM
   const COOLDOWN_MS = 15_000;             // 15 segons entre peticions
 
@@ -177,6 +178,13 @@ export const ChatBot: React.FC = () => {
       }
     });
   }, [isOpen, user, fetchChatList, t, loadChat]);
+
+  // Cleanup abort controller on unmount
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
 
   // ── Actions ───────────────────────────────────────────────────────────────
 
@@ -325,6 +333,10 @@ export const ChatBot: React.FC = () => {
     setThoughtText('');
     setStreamingText('');
 
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
       let pageText = '';
       try { pageText = (document.querySelector('main') || document.body).innerText.slice(0, 4000); } catch (_) { }
@@ -346,6 +358,7 @@ export const ChatBot: React.FC = () => {
           image: fileToSend ? { data: fileToSend.data, mimeType: fileToSend.mimeType } : undefined,
           aiSettings
         }),
+        signal: controller.signal
       });
 
       if (!res.ok) {
@@ -449,6 +462,7 @@ export const ChatBot: React.FC = () => {
         });
       }
     } catch (err: any) {
+      if (err.name === 'AbortError') return;
       setMessages(prev => [...prev, { role: 'model', content: `**Error:** ${err.message}` }]);
     } finally {
       setStreamPhase('idle');

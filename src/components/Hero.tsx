@@ -51,14 +51,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
     const {
         needRefresh: [needRefresh],
         updateServiceWorker,
-    } = useRegisterSW({
-        onRegistered(r) {
-            console.log('SW Registered:', r);
-        },
-        onRegisterError(error) {
-            console.log('SW Registration error:', error);
-        }
-    });
+    } = useRegisterSW();
 
     const safeSubject = (subject || '').toLowerCase();
     const currentData = APP_DATA[safeSubject] || { version: 'v1.0.0', updated: 'N/A' };

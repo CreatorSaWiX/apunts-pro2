@@ -214,7 +214,6 @@ export const useRoadmapAI = (
 
         } catch (err: any) {
             if (err.name === 'AbortError') {
-                console.log('Stream abortat correctament pel cleanup.');
                 return;
             }
             console.error(err);

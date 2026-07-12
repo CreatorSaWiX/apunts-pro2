@@ -127,7 +127,6 @@ export const useSolution = (topicId: string, problemId: string, lang: string = '
                     const docSnap = await getDoc(docRef);
                     if (docSnap.exists()) {
                         const data = docSnap.data();
-                        console.log("Firestore data found for", problemId, data);
                         foundSolution = {
                             id: data.problemId,
                             title: data.title,
@@ -137,7 +136,7 @@ export const useSolution = (topicId: string, problemId: string, lang: string = '
                             statement: data.statement || ''
                         };
                     } else {
-                        console.log("No Firestore document found for", problemId);
+                        // No Firestore document found, will try Jutge API
                     }
                 } catch (firestoreError) {
                     console.error("Error reading from Firestore:", firestoreError);

@@ -23,8 +23,6 @@ const CodeEditorSkeleton = () => {
         </div>
     );
 };
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
 import Spinner from '../components/ui/Spinner';
 import DOMPurify from 'dompurify';
@@ -52,6 +50,8 @@ const SolutionDetailPage = () => {
         const fetchAuthor = async () => {
             if (solution?.authorId) {
                 try {
+                    const { db } = await import('../lib/firebase');
+                    const { doc, getDoc } = await import('firebase/firestore');
                     const userDoc = await getDoc(doc(db, 'users', solution.authorId));
                     if (userDoc.exists()) {
                         setAuthorData(userDoc.data());
@@ -104,10 +104,11 @@ const SolutionDetailPage = () => {
                 statement: solution.statement || '' // Cache statement if available
             };
 
+            const { db } = await import('../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+
             // Save to Firestore (using problem ID as doc ID)
             await setDoc(doc(db, 'solutions', solution.id), solutionData, { merge: true });
-
-            console.log("Solution saved successfully!", canonicalTitle);
 
             // Update local state to reflect saved changes immediately
             if (setSolution) {
