@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import type { CommunityPost } from '../../types/community';
 import { Heart, Eye, FileCode2, Box, FileVideo, FileText, Archive } from 'lucide-react';
@@ -7,6 +7,7 @@ import { doc, updateDoc, deleteField, deleteDoc, setDoc, serverTimestamp } from 
 import Tilt from 'react-parallax-tilt';
 import { renderEmojis } from '../../lib/emojis';
 import DOMPurify from 'dompurify';
+import Spinner from '../ui/Spinner';
 
 interface PublicationCardProps {
     post: CommunityPost;
@@ -20,6 +21,7 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
     const { user } = useAuth();
     const [isHovered, setIsHovered] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -94,6 +96,9 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
         const truncated = textOnly.length > length ? textOnly.substring(0, length) + '...' : textOnly;
         return DOMPurify.sanitize(renderEmojis(truncated));
     };
+
+    const safeContentHero = useMemo(() => post.content ? getSafeContent(post.content, 150, post.isNote) : 'Discussió', [post.content, post.isNote]);
+    const safeContentTitle = useMemo(() => post.content ? getSafeContent(post.content, 150, post.isNote) : 'Sense descripció', [post.content, post.isNote]);
 
     const getRankStyles = (rank: number) => {
         switch(rank) {
@@ -172,21 +177,27 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                         className="w-full h-full object-cover transition-opacity duration-300 opacity-0 animate-[fadeIn_0.3s_ease-in-out_forwards]" 
                     />
                 ) : coverUrl ? (
-                    <img 
-                        src={coverUrl} 
-                        alt={post.content.substring(0, 20)} 
-                        className={`w-full h-full object-cover transition-transform duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''}`}
-                        loading="lazy"
-                    />
+                    <>
+                        {!imageLoaded && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-[#0F172A] z-10">
+                                <Spinner size="md" variant="primary" />
+                            </div>
+                        )}
+                        <img 
+                            src={coverUrl} 
+                            alt={post.content.substring(0, 20)} 
+                            className={`w-full h-full object-cover transition-all duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''} ${imageLoaded ? 'opacity-100 blur-none' : 'opacity-0 blur-sm'}`}
+                            loading="lazy"
+                            onLoad={() => setImageLoaded(true)}
+                        />
+                    </>
                 ) : (
                     <div className={`w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-white/10 to-white/5 p-6 text-center border border-white/5 relative overflow-hidden transition-transform duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''}`}>
                         <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-0" />
                         <span className="text-4xl font-black text-white/10 select-none absolute -bottom-4 -right-4">{post.subject}</span>
                         <p className="text-white font-bold text-lg leading-snug line-clamp-3 relative z-10"
                             dangerouslySetInnerHTML={{
-                                __html: post.content 
-                                    ? getSafeContent(post.content, 150, post.isNote)
-                                    : 'Discussió'
+                                __html: safeContentHero
                             }}
                         />
                     </div>
@@ -231,15 +242,13 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
             <div className="flex flex-col gap-1 px-1 mt-1">
                 <h3 className="text-slate-100 font-medium text-sm line-clamp-1 leading-snug group-hover:text-primary transition-colors"
                     dangerouslySetInnerHTML={{
-                        __html: post.content 
-                            ? getSafeContent(post.content, 150, post.isNote)
-                            : 'Sense descripció'
+                        __html: safeContentTitle
                     }}
                 />
                 
                 <div className="flex items-center justify-between mt-0.5">
                     <div className="flex items-center gap-1.5 min-w-0">
-                        <img src={post.userAvatar} alt={post.username} className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" loading="lazy" />
+                        <img src={post.userAvatar} alt={post.username} className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
                         <span className="text-[11px] text-slate-400 truncate group-hover:text-white transition-colors">
                             {post.username}
                         </span>

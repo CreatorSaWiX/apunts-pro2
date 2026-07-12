@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState } from 'react';
+import { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial, PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
@@ -50,16 +50,25 @@ const ParticleNetwork = () => {
 
 const CommunityHero3D = () => {
     const [dpr, setDpr] = useState(1.5);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        // Wait 500ms for the page transition to finish before initializing WebGL
+        const timer = setTimeout(() => setMounted(true), 500);
+        return () => clearTimeout(timer);
+    }, []);
     
     return (
         <div 
-            className="absolute inset-0 top-0 left-0 w-full h-[600px] overflow-hidden pointer-events-none -z-10 mix-blend-screen"
+            className={`absolute inset-0 top-0 left-0 w-full h-[600px] overflow-hidden pointer-events-none -z-10 mix-blend-screen transition-opacity duration-1000 ${mounted ? 'opacity-100' : 'opacity-0'}`}
             style={{ maskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)' }}
         >
-            <Canvas camera={{ position: [0, 0, 3], fov: 60 }} dpr={dpr}>
-                <PerformanceMonitor onIncline={() => setDpr(1.5)} onDecline={() => setDpr(1)} />
-                <ParticleNetwork />
-            </Canvas>
+            {mounted && (
+                <Canvas camera={{ position: [0, 0, 3], fov: 60 }} dpr={dpr}>
+                    <PerformanceMonitor onIncline={() => setDpr(1.5)} onDecline={() => setDpr(1)} />
+                    <ParticleNetwork />
+                </Canvas>
+            )}
         </div>
     );
 };

@@ -76,9 +76,9 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                     </div>
 
                     <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.avatarBanner', 'Avatar & Banner')}</label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                             <div className="flex flex-col gap-2">
+                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.avatar', 'Avatar')}</label>
                                 <div className="flex items-center gap-2">
                                     <Modal.Input value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder={t('profile.edit.avatarUrl', "URL de l'Avatar")} />
                                     <button type="button" onClick={() => setActiveUploader(activeUploader === 'avatar' ? null : 'avatar')} className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0">
@@ -95,6 +95,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                             </div>
 
                             <div className="flex flex-col gap-2">
+                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.banner', 'Banner')}</label>
                                 <div className="flex items-center gap-2">
                                     <Modal.Input value={banner} onChange={(e) => setBanner(e.target.value)} placeholder={t('profile.edit.bannerUrl', "URL del Banner")} />
                                     <button type="button" onClick={() => setActiveUploader(activeUploader === 'banner' ? null : 'banner')} className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0">
@@ -113,13 +114,18 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
                     </div>
 
                     <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.webIdentity', 'Identitat web')}</label>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
-                            <div className="relative w-full">
-                                <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                <Modal.Input value={portfolio} onChange={(e) => setPortfolio(e.target.value)} placeholder="https://portfolio.com" className="pl-11" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                            <div className="flex flex-col gap-2">
+                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.portfolio', 'Portfoli')}</label>
+                                <div className="relative w-full">
+                                    <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                                    <Modal.Input value={portfolio} onChange={(e) => setPortfolio(e.target.value)} placeholder="https://portfolio.com" className="pl-11" />
+                                </div>
                             </div>
-                            <Modal.Input value={bio} onChange={(e) => setBio(e.target.value)} placeholder={t('profile.edit.bioPlaceholder', "La teva biografia / rol curt...")} />
+                            <div className="flex flex-col gap-2">
+                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.bio', 'Biografia')}</label>
+                                <Modal.Input value={bio} onChange={(e) => setBio(e.target.value)} placeholder={t('profile.edit.bioPlaceholder', "La teva biografia / rol curt...")} />
+                            </div>
                         </div>
                     </div>
 

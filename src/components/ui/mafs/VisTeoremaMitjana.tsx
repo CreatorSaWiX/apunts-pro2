@@ -2,7 +2,7 @@ import React from 'react';
 import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon, MovablePoint, Line, Circle, Vector } from 'mafs';
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
-import { InteractionLock } from './InteractionLock';
+import { InteractionLock } from "../InteractionLock";
 
 type MafsVisualizerProps = {
     type: string;

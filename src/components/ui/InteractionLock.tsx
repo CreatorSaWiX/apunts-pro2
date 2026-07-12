@@ -217,7 +217,7 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
             >
                 {/* 1. DESKTOP VIEW: Auto-renders when visible in viewport (Lazy Load) */}
                 {!isMobile && !isFullScreen && !disabled && (
-                    <div className="w-full min-h-[500px] h-auto rounded-3xl overflow-hidden shadow-2xl border border-white/5 bg-slate-900/40 relative">
+                    <div className="w-full h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-white/5 bg-slate-900/40 relative">
                         {shouldMountChildren ? (
                             children
                         ) : (
