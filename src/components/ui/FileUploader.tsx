@@ -17,13 +17,15 @@ export interface Attachment {
 interface FileUploaderProps {
     onUploadComplete: (attachments: Attachment[]) => void;
     maxFiles?: number;
-    variant?: 'default' | 'avatar';
+    variant?: 'default' | 'avatar' | 'banner';
+    acceptType?: 'all' | 'images';
+    maxSizeMB?: number;
 }
 
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
-const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', maxSizeMB = 50 }: FileUploaderProps & { maxSizeMB?: number }) => {
+const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acceptType = 'all', maxSizeMB = 50 }: FileUploaderProps) => {
     const { t } = useTranslation();
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -141,7 +143,9 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', max
         onDropRejected,
         maxFiles,
         maxSize: MAX_FILE_SIZE_BYTES,
-        accept: {
+        accept: acceptType === 'images' ? {
+            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+        } : {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
             'application/pdf': ['.pdf'],
             'application/zip': ['.zip', '.rar'],
@@ -154,13 +158,15 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', max
         }   
     });
 
+    const isOverlayVariant = variant === 'avatar' || variant === 'banner';
+
     return (
-        <div className={`w-full ${variant === 'avatar' ? 'h-full' : 'mt-2'}`}>
+        <div className={`w-full ${isOverlayVariant ? 'h-full' : 'mt-2'}`}>
             {!uploading && (
                 <div 
                     {...getRootProps()} 
-                    className={variant === 'avatar' 
-                        ? 'absolute inset-0 cursor-pointer z-10 outline-none'
+                    className={isOverlayVariant 
+                        ? 'absolute inset-0 cursor-pointer z-10 outline-none rounded-[inherit]'
                         : `border border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all duration-300 ${isDragActive ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(14,165,233,0.2)]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`
                     }
                 >
@@ -179,14 +185,14 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', max
                 {uploading && (
                     <motion.div 
                         layout
-                        initial={{ opacity: 0, y: variant === 'avatar' ? 0 : -10 }}
+                        initial={{ opacity: 0, y: isOverlayVariant ? 0 : -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: variant === 'avatar' ? 0 : -10 }}
-                        className={`flex flex-col items-center justify-center ${variant === 'avatar' ? 'absolute inset-0 bg-black/60 z-20 h-full' : 'p-6 bg-white/5 border border-white/10 rounded-2xl w-full'}`}
+                        exit={{ opacity: 0, y: isOverlayVariant ? 0 : -10 }}
+                        className={`flex flex-col items-center justify-center ${isOverlayVariant ? 'absolute inset-0 bg-black/60 z-20 h-full rounded-[inherit]' : 'p-6 bg-white/5 border border-white/10 rounded-2xl w-full'}`}
                     >
-                        <Spinner size={variant === 'avatar' ? 'sm' : 'lg'} variant="primary" className={variant === 'avatar' ? '' : 'mb-3'} />
-                        {variant !== 'avatar' && <p className="text-sm font-bold text-white">{t('common.fileUploader.uploading', 'Preparant i pujant a la xarxa...')}</p>}
-                        {variant !== 'avatar' && (
+                        <Spinner size={isOverlayVariant ? 'sm' : 'lg'} variant="primary" className={isOverlayVariant ? '' : 'mb-3'} />
+                        {!isOverlayVariant && <p className="text-sm font-bold text-white">{t('common.fileUploader.uploading', 'Preparant i pujant a la xarxa...')}</p>}
+                        {!isOverlayVariant && (
                             <div className="w-48 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden relative">
                                 <motion.div 
                                     className="absolute left-0 top-0 bottom-0 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)] origin-left w-full"

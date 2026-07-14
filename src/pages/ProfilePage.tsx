@@ -17,131 +17,96 @@ import PublicationCard from '../components/community/PublicationCard';
 import PostDetailModal from '../components/community/PostDetailModal';
 import { useTranslation } from 'react-i18next';
 
-// --- Edit Profile Modal Component ---
-const EditProfileModal = ({ isOpen, onClose, user, onUpdate }: any) => {
+// --- Inline Editable Text Component ---
+const InlineEditableText = ({ 
+    value, 
+    onSave, 
+    className, 
+    placeholder, 
+    isEditable, 
+    multiline = false,
+    inputClassName = ''
+}: { 
+    value: string; 
+    onSave: (val: string) => Promise<void>; 
+    className?: string; 
+    placeholder?: string; 
+    isEditable: boolean;
+    multiline?: boolean;
+    inputClassName?: string;
+}) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [tempValue, setTempValue] = useState(value);
+    const [isSaving, setIsSaving] = useState(false);
     const { t } = useTranslation();
-    const [username, setUsername] = useState(user?.username || '');
-    const [portfolio, setPortfolio] = useState(user?.portfolio || '');
-    const [avatar, setAvatar] = useState(user?.avatar || '');
-    const [banner, setBanner] = useState(user?.banner || '');
-    const [bio, setBio] = useState(user?.bio || '');
-    const [isLoading, setIsLoading] = useState(false);
-    
-    const [activeUploader, setActiveUploader] = useState<'avatar' | 'banner' | null>(null);
 
     useEffect(() => {
-        if (user) {
-            setUsername(user.username);
-            setPortfolio(user.portfolio || '');
-            setAvatar(user.avatar || '');
-            setBanner(user.banner || '');
-            setBio(user.bio || '');
-        }
-    }, [user]);
+        setTempValue(value);
+    }, [value]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
-        try {
-            await onUpdate({ username, portfolio, avatar, banner, bio });
-            onClose();
-        } catch (error) {
-            console.error("Error updating profile:", error);
-        } finally {
-            setIsLoading(false);
+    const save = async () => {
+        if (tempValue !== value) {
+            setIsSaving(true);
+            await onSave(tempValue);
+            setIsSaving(false);
+        }
+        setIsEditing(false);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && !multiline) {
+            save();
+        } else if (e.key === 'Escape') {
+            setTempValue(value);
+            setIsEditing(false);
         }
     };
 
-    const handleUploadComplete = (attachments: Attachment[], type: 'avatar' | 'banner') => {
-        if (attachments.length > 0) {
-            if (type === 'avatar') {
-                setAvatar(attachments[0].url);
-            } else {
-                setBanner(attachments[0].url);
-            }
-        }
-        setActiveUploader(null);
-    };
+    if (!isEditable) {
+        return <span className={className}>{value || placeholder}</span>;
+    }
+
+    if (isEditing) {
+        return (
+            <div className="relative inline-block w-full max-w-full">
+                {multiline ? (
+                    <textarea 
+                        autoFocus
+                        value={tempValue}
+                        onChange={(e) => setTempValue(e.target.value)}
+                        onBlur={save}
+                        onKeyDown={handleKeyDown}
+                        className={`${className} bg-transparent border-none p-0 m-0 outline-none w-full resize-none focus:ring-0 ${inputClassName}`}
+                        rows={3}
+                        disabled={isSaving}
+                    />
+                ) : (
+                    <input 
+                        autoFocus
+                        value={tempValue}
+                        onChange={(e) => setTempValue(e.target.value)}
+                        onBlur={save}
+                        onKeyDown={handleKeyDown}
+                        className={`${className} bg-transparent border-none p-0 m-0 outline-none w-full focus:ring-0 ${inputClassName}`}
+                        disabled={isSaving}
+                    />
+                )}
+                {isSaving && <div className="absolute right-0 top-1/2 -translate-y-1/2"><Spinner size="sm" /></div>}
+            </div>
+        );
+    }
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="lg" overlayVariant="transparent">
-            <Modal.Header title={t('profile.edit.title', 'Editar Perfil')} className="pb-4" />
-            <Modal.Body>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.username', "Nom d'usuari")}</label>
-                        <div className="relative w-full">
-                            <Modal.Input value={username} onChange={(e) => setUsername(e.target.value)} />
-                        </div>
-                    </div>
-
-                    <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                            <div className="flex flex-col gap-2">
-                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.avatar', 'Avatar')}</label>
-                                <div className="flex items-center gap-2">
-                                    <Modal.Input value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder={t('profile.edit.avatarUrl', "URL de l'Avatar")} />
-                                    <button type="button" onClick={() => setActiveUploader(activeUploader === 'avatar' ? null : 'avatar')} className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0">
-                                        <Upload size={18} />
-                                    </button>
-                                </div>
-                                <AnimatePresence>
-                                    {activeUploader === 'avatar' && (
-                                        <motion.div layout initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="overflow-hidden">
-                                            <FileUploader maxFiles={1} onUploadComplete={(atts) => handleUploadComplete(atts, 'avatar')} />
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-
-                            <div className="flex flex-col gap-2">
-                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.banner', 'Banner')}</label>
-                                <div className="flex items-center gap-2">
-                                    <Modal.Input value={banner} onChange={(e) => setBanner(e.target.value)} placeholder={t('profile.edit.bannerUrl', "URL del Banner")} />
-                                    <button type="button" onClick={() => setActiveUploader(activeUploader === 'banner' ? null : 'banner')} className="p-3 bg-black/20 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] hover:bg-white/10 rounded-2xl border border-white/5 hover:border-white/20 transition-all text-slate-400 hover:text-white shrink-0">
-                                        <Upload size={18} />
-                                    </button>
-                                </div>
-                                <AnimatePresence>
-                                    {activeUploader === 'banner' && (
-                                        <motion.div layout initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="overflow-hidden">
-                                            <FileUploader maxFiles={1} onUploadComplete={(atts) => handleUploadComplete(atts, 'banner')} />
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-1.5 flex flex-col items-start w-full gap-2">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                            <div className="flex flex-col gap-2">
-                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.portfolio', 'Portfoli')}</label>
-                                <div className="relative w-full">
-                                    <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                    <Modal.Input value={portfolio} onChange={(e) => setPortfolio(e.target.value)} placeholder="https://portfolio.com" className="pl-11" />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('profile.edit.bio', 'Biografia')}</label>
-                                <Modal.Input value={bio} onChange={(e) => setBio(e.target.value)} placeholder={t('profile.edit.bioPlaceholder', "La teva biografia / rol curt...")} />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="pt-6 flex justify-end gap-3 border-t border-white/5">
-                        <Modal.Button type="button" onClick={onClose} variant="secondary">{t('profile.edit.cancel', 'Cancel·lar')}</Modal.Button>
-                        <Modal.Button type="submit" disabled={isLoading} variant="primary">
-                            {isLoading ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={18} />}
-                            {t('profile.edit.save', 'Desar canvis')}
-                        </Modal.Button>
-                    </div>
-                </form>
-            </Modal.Body>
-        </Modal>
+        <span 
+            onClick={() => setIsEditing(true)} 
+            className={`${className} cursor-text group/inline relative inline-flex items-center`}
+            title={t('common.clickToEdit', 'Fes clic per editar')}
+        >
+            <span className="line-clamp-2">{value || <span className="text-slate-500 italic">{placeholder}</span>}</span>
+            <Edit2 size={20} className="ml-3 opacity-0 group-hover/inline:opacity-40 hover:!opacity-100 transition-opacity text-white shrink-0 cursor-pointer" />
+        </span>
     );
 };
-
 
 // --- Main Profile Component ---
 const ProfilePage = () => {
@@ -153,7 +118,6 @@ const ProfilePage = () => {
     const isOwnProfile = !uid || (authUser && authUser.id === uid);
 
     const { solutions: userContributions } = useUserSolutions(userIdToFetch || '');
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const [isMailboxOpen, setIsMailboxOpen] = useState(false);
     const [isInboxOpen, setIsInboxOpen] = useState(false);
@@ -288,9 +252,15 @@ const ProfilePage = () => {
                 await updateProfile(auth.currentUser, { displayName: data.username, photoURL: data.avatar || auth.currentUser.photoURL });
             }
             setExtendedUser((prev: any) => ({ ...prev, ...data }));
-            if (data.username !== authUser.username) window.location.reload();
+            if (data.username !== authUser.username && data.username) window.location.reload();
         } catch (error) {
             console.error("Error updating profile:", error);
+        }
+    };
+
+    const handleImageUpload = async (attachments: Attachment[], field: 'avatar' | 'banner') => {
+        if (attachments.length > 0) {
+            await handleUpdateProfile({ [field]: attachments[0].url });
         }
     };
 
@@ -315,10 +285,9 @@ const ProfilePage = () => {
 
     return (
         <div className="min-h-screen w-full relative z-10 font-sans bg-transparent">
-            <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} user={extendedUser} onUpdate={handleUpdateProfile} />
 
             {/* HERO SECTION - Premium Bento Approach */}
-            <div className="relative w-full h-[280px] md:h-[320px] lg:h-[380px] mb-8">
+            <div className="relative w-full h-[280px] md:h-[320px] lg:h-[380px] mb-8 group/hero">
                 {/* Immersive background header with smooth mask. Native scroll listener handles overscroll scale. */}
                 <div 
                     ref={bannerRef}
@@ -333,29 +302,68 @@ const ProfilePage = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/60 to-transparent opacity-100" />
                 </div>
 
+                {isOwnProfile && (
+                    <div className="absolute top-20 right-4 z-30 opacity-0 group-hover/hero:opacity-100 transition-opacity duration-300 pointer-events-auto">
+                        <div className="relative overflow-hidden rounded-xl">
+                            <button type="button" className="flex items-center bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 p-2 text-white transition-all font-semibold shadow-lg text-sm cursor-pointer">
+                                <Upload size={16} /> 
+                            </button>
+                            <FileUploader 
+                                variant="avatar" 
+                                acceptType="images"
+                                maxFiles={1} 
+                                onUploadComplete={(atts) => handleImageUpload(atts, 'banner')} 
+                            />
+                        </div>
+                    </div>
+                )}
+
                 <div className="absolute bottom-0 left-0 w-full px-4 md:px-8 max-w-[1100px] left-1/2 -translate-x-1/2 flex items-end gap-5 md:gap-8 translate-y-1/3 z-20">
-                    <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="relative shrink-0">
-                        <div className="w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-[1.5rem] md:rounded-[2rem] p-1 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/20">
+                    <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="relative shrink-0 group/avatar">
+                        <div className="w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-[1.5rem] md:rounded-[2rem] p-1 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/20 relative overflow-hidden">
                             <img src={avatarUrl} alt={extendedUser?.username} className="w-full h-full rounded-[1.2rem] md:rounded-[1.7rem] object-cover bg-[#111]" />
+                            {isOwnProfile && (
+                                <div className="absolute inset-1 rounded-[1.2rem] md:rounded-[1.7rem] bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white cursor-pointer overflow-hidden z-10">
+                                    <Upload size={24} className="mb-1 relative z-20 pointer-events-none" />
+                                    <span className="text-xs font-bold tracking-widest uppercase text-center px-2 relative z-20 pointer-events-none">Canviar</span>
+                                    <div className="absolute inset-0 z-10">
+                                        <FileUploader 
+                                            variant="avatar" 
+                                            acceptType="images"
+                                            maxFiles={1} 
+                                            onUploadComplete={(atts) => handleImageUpload(atts, 'avatar')} 
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </motion.div>
 
                     <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="pb-2 md:pb-4 flex-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4 relative z-20">
                         <div>
-                            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-1 drop-shadow-lg line-clamp-1">{extendedUser?.username || t('profile.defaultUser', 'Usuari')}</h1>
-                            <p className="text-sm md:text-base text-slate-300 font-medium tracking-wide max-w-xl line-clamp-2">{extendedUser?.bio || 'Creative Developer'}</p>
+                            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-1 drop-shadow-lg">
+                                <InlineEditableText 
+                                    value={extendedUser?.username || t('profile.defaultUser', 'Usuari')}
+                                    onSave={async (val) => await handleUpdateProfile({ username: val })}
+                                    isEditable={isOwnProfile}
+                                />
+                            </h1>
+                            <div className="text-sm md:text-base text-slate-300 font-medium tracking-wide max-w-xl">
+                                <InlineEditableText 
+                                    value={extendedUser?.bio || ''}
+                                    placeholder={t('profile.edit.bioPlaceholder', "Creative Developer")}
+                                    onSave={async (val) => await handleUpdateProfile({ bio: val })}
+                                    isEditable={isOwnProfile}
+                                    multiline={true}
+                                />
+                            </div>
                         </div>
                         
                         <div className="flex items-center gap-3 shrink-0">
                             {isOwnProfile ? (
-                                <>
-                                    <button type="button" onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 px-4 py-2.5 rounded-xl text-white transition-all font-semibold shadow-lg text-sm">
-                                        <Edit2 size={15} /> <span>{t('profile.edit.title', 'Editar Perfil')}</span>
-                                    </button>
-                                    <button type="button" onClick={logout} className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 shadow-lg">
-                                        <LogOut size={16} strokeWidth={2.5} />
-                                    </button>
-                                </>
+                                <button type="button" onClick={logout} className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 shadow-lg">
+                                    <LogOut size={16} strokeWidth={2.5} />
+                                </button>
                             ) : (
                                 <button type="button" onClick={() => { if (!authUser) return window.location.href = '/login'; setIsComposeOpen(true); }} className="flex items-center gap-2 bg-white hover:bg-slate-200 text-black px-5 py-2.5 rounded-xl transition-all font-bold shadow-lg text-sm">
                                     <Send size={16} strokeWidth={2.5} /> <span>{t('profile.contact', 'Contactar')}</span>
@@ -448,18 +456,30 @@ const ProfilePage = () => {
 
                         {/* Portfolio Card */}
                         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
-                            <div className={`premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group ${extendedUser?.portfolio ? 'premium-bento-hover cursor-pointer' : 'opacity-60'}`}>
-                                {extendedUser?.portfolio && (
+                            <div className={`premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group ${(extendedUser?.portfolio && !isOwnProfile) ? 'premium-bento-hover cursor-pointer' : 'opacity-80 hover:opacity-100 transition-opacity'}`}>
+                                {extendedUser?.portfolio && !isOwnProfile && (
                                     <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="absolute inset-0 z-10" />
                                 )}
-                                <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 mb-6 group-hover:text-white group-hover:border-white/20 transition-all">
-                                    <Globe size={20} strokeWidth={2} />
+                                <div className="flex justify-between items-start w-full relative z-40 mb-6 pointer-events-none">
+                                    <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all">
+                                        <Globe size={20} strokeWidth={2} />
+                                    </div>
+                                    {extendedUser?.portfolio && (
+                                        <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors pointer-events-auto" title="Visitar Portfoli">
+                                            <Globe size={16} />
+                                        </a>
+                                    )}
                                 </div>
-                                <div className="relative z-20 pointer-events-none">
-                                    <span className="block text-xl md:text-2xl font-bold tracking-tight text-white mb-2 truncate">
-                                        {extendedUser?.portfolio ? displayUrl(extendedUser.portfolio) : t('profile.stats.noLink', 'Sense vincular')}
-                                    </span>
-                                    <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <div className="relative z-20 pointer-events-auto">
+                                    <InlineEditableText 
+                                        value={extendedUser?.portfolio || ''} 
+                                        onSave={async (val) => await handleUpdateProfile({ portfolio: val })} 
+                                        placeholder={t('profile.stats.noLink', 'Sense vincular')}
+                                        isEditable={isOwnProfile}
+                                        className="block text-xl md:text-2xl font-bold tracking-tight text-white mb-2 truncate"
+                                        inputClassName="text-base font-normal mt-2 mb-2"
+                                    />
+                                    <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2 pointer-events-none mt-2">
                                         <div className={`h-px bg-slate-700 transition-all ${extendedUser?.portfolio ? 'w-4 group-hover:w-8 group-hover:bg-white/50' : 'w-4'}`} />
                                         {t('profile.stats.portfolio', 'PORTFOLI')}
                                     </span>
