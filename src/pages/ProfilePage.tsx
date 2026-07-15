@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { User, LogOut, Upload, Globe, Edit2, Save, Mail, Send, Bell, Info } from 'lucide-react';
+import { User, LogOut, Upload, Globe, Edit2, Mail, Send, Bell, Info, ExternalLink } from 'lucide-react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
 import { getRank } from '../utils/ranks';
@@ -18,22 +18,24 @@ import PostDetailModal from '../components/community/PostDetailModal';
 import { useTranslation } from 'react-i18next';
 
 // --- Inline Editable Text Component ---
-const InlineEditableText = ({ 
-    value, 
-    onSave, 
-    className, 
-    placeholder, 
-    isEditable, 
+const InlineEditableText = ({
+    value,
+    onSave,
+    className,
+    placeholder,
+    isEditable,
     multiline = false,
-    inputClassName = ''
-}: { 
-    value: string; 
-    onSave: (val: string) => Promise<void>; 
-    className?: string; 
-    placeholder?: string; 
+    inputClassName = '',
+    externalLink
+}: {
+    value: string;
+    onSave: (val: string) => Promise<void>;
+    className?: string;
+    placeholder?: string;
     isEditable: boolean;
     multiline?: boolean;
     inputClassName?: string;
+    externalLink?: string;
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [tempValue, setTempValue] = useState(value);
@@ -70,7 +72,7 @@ const InlineEditableText = ({
         return (
             <div className="relative inline-block w-full max-w-full">
                 {multiline ? (
-                    <textarea 
+                    <textarea
                         autoFocus
                         value={tempValue}
                         onChange={(e) => setTempValue(e.target.value)}
@@ -81,7 +83,7 @@ const InlineEditableText = ({
                         disabled={isSaving}
                     />
                 ) : (
-                    <input 
+                    <input
                         autoFocus
                         value={tempValue}
                         onChange={(e) => setTempValue(e.target.value)}
@@ -97,13 +99,19 @@ const InlineEditableText = ({
     }
 
     return (
-        <span 
-            onClick={() => setIsEditing(true)} 
-            className={`${className} cursor-text group/inline relative inline-flex items-center`}
-            title={t('common.clickToEdit', 'Fes clic per editar')}
-        >
-            <span className="line-clamp-2">{value || <span className="text-slate-500 italic">{placeholder}</span>}</span>
-            <Edit2 size={20} className="ml-3 opacity-0 group-hover/inline:opacity-40 hover:!opacity-100 transition-opacity text-white shrink-0 cursor-pointer" />
+        <span className="inline-flex items-center gap-1.5">
+            <span
+                onClick={() => setIsEditing(true)}
+                className={`${className} cursor-text group/inline relative inline-flex items-center`}
+                title={t('common.clickToEdit', 'Fes clic per editar')}
+            >
+                <span className="line-clamp-2">{value || <span className="text-slate-500 italic">{placeholder}</span>}</span>
+            </span>
+            {externalLink && value && (
+                <a href={externalLink} target="_blank" rel="noreferrer" className="text-slate-500 hover:text-white transition-colors cursor-pointer" title="Visitar" onClick={(e) => e.stopPropagation()}>
+                    <ExternalLink size={14} strokeWidth={2.5} />
+                </a>
+            )}
         </span>
     );
 };
@@ -136,12 +144,12 @@ const ProfilePage = () => {
 
     useEffect(() => {
         let animationFrameId: number;
-        
+
         const render = () => {
             if (!bannerRef.current) return;
-            
+
             const y = window.scrollY;
-            
+
             if (y < 0) {
                 // Native Safari/iOS Overscroll
                 const bannerHeight = bannerRef.current.offsetHeight || 380;
@@ -165,7 +173,7 @@ const ProfilePage = () => {
 
         window.addEventListener('scroll', handleScroll, { passive: true });
         handleScroll(); // Initial check
-        
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
             cancelAnimationFrame(animationFrameId);
@@ -223,8 +231,8 @@ const ProfilePage = () => {
 
     useEffect(() => {
         if (!isOwnProfile || !authUser) return;
-        let unsubscribeMsg = () => {};
-        let unsubscribeNotif = () => {};
+        let unsubscribeMsg = () => { };
+        let unsubscribeNotif = () => { };
 
         const setup = async () => {
             const { db } = await import('../lib/firebase');
@@ -289,7 +297,7 @@ const ProfilePage = () => {
             {/* HERO SECTION - Premium Bento Approach */}
             <div className="relative w-full h-[280px] md:h-[320px] lg:h-[380px] mb-8 group/hero">
                 {/* Immersive background header with smooth mask. Native scroll listener handles overscroll scale. */}
-                <div 
+                <div
                     ref={bannerRef}
                     className="absolute inset-0 apple-mask-hero pointer-events-none select-none overflow-hidden"
                     style={{
@@ -306,13 +314,13 @@ const ProfilePage = () => {
                     <div className="absolute top-20 right-4 z-30 opacity-0 group-hover/hero:opacity-100 transition-opacity duration-300 pointer-events-auto">
                         <div className="relative overflow-hidden rounded-xl">
                             <button type="button" className="flex items-center bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 p-2 text-white transition-all font-semibold shadow-lg text-sm cursor-pointer">
-                                <Upload size={16} /> 
+                                <Upload size={16} />
                             </button>
-                            <FileUploader 
-                                variant="avatar" 
+                            <FileUploader
+                                variant="avatar"
                                 acceptType="images"
-                                maxFiles={1} 
-                                onUploadComplete={(atts) => handleImageUpload(atts, 'banner')} 
+                                maxFiles={1}
+                                onUploadComplete={(atts) => handleImageUpload(atts, 'banner')}
                             />
                         </div>
                     </div>
@@ -327,11 +335,11 @@ const ProfilePage = () => {
                                     <Upload size={24} className="mb-1 relative z-20 pointer-events-none" />
                                     <span className="text-xs font-bold tracking-widest uppercase text-center px-2 relative z-20 pointer-events-none">{t('common.change', 'Canviar')}</span>
                                     <div className="absolute inset-0 z-10">
-                                        <FileUploader 
-                                            variant="avatar" 
+                                        <FileUploader
+                                            variant="avatar"
                                             acceptType="images"
-                                            maxFiles={1} 
-                                            onUploadComplete={(atts) => handleImageUpload(atts, 'avatar')} 
+                                            maxFiles={1}
+                                            onUploadComplete={(atts) => handleImageUpload(atts, 'avatar')}
                                         />
                                     </div>
                                 </div>
@@ -340,30 +348,71 @@ const ProfilePage = () => {
                     </motion.div>
 
                     <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="pb-2 md:pb-4 flex-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4 relative z-20">
-                        <div>
-                            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-1 drop-shadow-lg">
-                                <InlineEditableText 
+                        <div className="flex flex-col relative z-20">
+                            <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-0.5 drop-shadow-sm">
+                                <InlineEditableText
                                     value={extendedUser?.username || t('profile.defaultUser', 'Usuari')}
                                     onSave={async (val) => await handleUpdateProfile({ username: val })}
                                     isEditable={isOwnProfile}
                                 />
                             </h1>
-                            <div className="text-sm md:text-base text-slate-300 font-medium tracking-wide max-w-xl">
-                                <InlineEditableText 
-                                    value={extendedUser?.bio || ''}
-                                    placeholder={t('profile.edit.bioPlaceholder', "Creative Developer")}
-                                    onSave={async (val) => await handleUpdateProfile({ bio: val })}
-                                    isEditable={isOwnProfile}
-                                    multiline={true}
-                                />
+                            <div className="flex flex-wrap items-center gap-2 mt-1">
+                                <div className="text-sm md:text-base text-slate-300 font-medium tracking-wide">
+                                    <InlineEditableText
+                                        value={extendedUser?.bio || ''}
+                                        placeholder={t('profile.edit.bioPlaceholder', "Creative Developer")}
+                                        onSave={async (val) => await handleUpdateProfile({ bio: val })}
+                                        isEditable={isOwnProfile}
+                                        multiline={false}
+                                    />
+                                </div>
+                                {(extendedUser?.portfolio || isOwnProfile) && (
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-1 h-1 rounded-full bg-slate-600 hidden sm:block" />
+                                        <div className="flex items-center text-sm font-medium text-slate-400 hover:text-white transition-colors cursor-pointer">
+                                            {extendedUser?.portfolio && !isOwnProfile ? (
+                                                <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="hover:underline flex items-center gap-1.5">
+                                                    {extendedUser.portfolio.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                                                    <ExternalLink size={14} strokeWidth={2.5} />
+                                                </a>
+                                            ) : (
+                                                <InlineEditableText
+                                                    value={extendedUser?.portfolio || ''}
+                                                    onSave={async (val) => await handleUpdateProfile({ portfolio: val })}
+                                                    placeholder={t('profile.stats.noLink', 'Afegeix portfoli')}
+                                                    isEditable={isOwnProfile}
+                                                    externalLink={extendedUser?.portfolio}
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-3 shrink-0">
                             {isOwnProfile ? (
-                                <button type="button" onClick={logout} className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 shadow-lg">
-                                    <LogOut size={16} strokeWidth={2.5} />
-                                </button>
+                                <>
+                                    <button type="button" onClick={() => setIsMailboxOpen(true)} className="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-all border border-white/10 shadow-lg" title={t('profile.inbox.privateMailbox', 'Bústia Privada')}>
+                                        <Mail size={16} strokeWidth={2.5} />
+                                        {unreadCount > 0 && (
+                                            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] font-bold text-white shadow-lg border border-[#0d0f17]">
+                                                {unreadCount}
+                                            </span>
+                                        )}
+                                    </button>
+                                    <button type="button" onClick={() => setIsInboxOpen(true)} className="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-all border border-white/10 shadow-lg" title={t('profile.notifications.title', 'Notificacions')}>
+                                        <Bell size={16} strokeWidth={2.5} />
+                                        {unreadNotificationsCount > 0 && (
+                                            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary rounded-full flex items-center justify-center text-[9px] font-bold text-white shadow-lg border border-[#0d0f17]">
+                                                {unreadNotificationsCount}
+                                            </span>
+                                        )}
+                                    </button>
+                                    <button type="button" onClick={logout} className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 shadow-lg" title={t('common.logout', 'Tancar sessió')}>
+                                        <LogOut size={16} strokeWidth={2.5} />
+                                    </button>
+                                </>
                             ) : (
                                 <button type="button" onClick={() => { if (!authUser) return window.location.href = '/login'; setIsComposeOpen(true); }} className="flex items-center gap-2 bg-white hover:bg-slate-200 text-black px-5 py-2.5 rounded-xl transition-all font-bold shadow-lg text-sm">
                                     <Send size={16} strokeWidth={2.5} /> <span>{t('profile.contact', 'Contactar')}</span>
@@ -374,189 +423,184 @@ const ProfilePage = () => {
                 </div>
             </div>
 
-            {/* BENTO GRID CONTENT */}
-            <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-24 md:mt-28 relative z-30 pb-32">
-                
-                {(extendedUser?.role === 'moderador' || extendedUser?.role === 'editor') && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-4 md:mb-5">
-                        
-                        {/* Solucionaris Card */}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
-                            <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group">
-                                <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 mb-6 group-hover:text-white group-hover:border-white/20 transition-all">
-                                    <Upload size={20} strokeWidth={2} />
-                                </div>
-                                <div>
-                                    <span className="block text-4xl md:text-5xl font-bold tracking-tight text-white mb-2 tabular-nums">
-                                        {userContributions.length}
-                                    </span>
-                                    <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                        <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
-                                        {t('profile.stats.solutions', 'SOLUCIONARIS')}
-                                    </span>
-                                </div>
-                            </div>
-                        </motion.div>
+            {/* ANTIC BENTO GRID DE CONTENIDORS (Comentat per a ús futur) */}
+            {false && (
+                <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-24 md:mt-28 relative z-30 pb-32">
 
-                        {/* Rank Card (Wider) */}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full md:col-span-1 relative z-50">
-                            <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group relative overflow-visible">
-                                <div className="flex justify-between items-start w-full relative z-40 mb-6">
-                                    <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all">
-                                        <User size={20} strokeWidth={2} />
+                    {(extendedUser?.role === 'moderador' || extendedUser?.role === 'editor') && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-4 md:mb-5">
+
+                            {/* Solucionaris Card */}
+                            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
+                                <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group">
+                                    <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 mb-6 group-hover:text-white group-hover:border-white/20 transition-all">
+                                        <Upload size={20} strokeWidth={2} />
                                     </div>
-                                    <div className="group/info cursor-help">
-                                        <div className="p-1.5 hover:bg-white/10 rounded-full transition-colors text-slate-500 group-hover/info:text-white">
-                                            <Info size={16} />
-                                        </div>
-                                        {/* Rank Tooltip */}
-                                        <div className="absolute right-0 top-full mt-2 w-64 p-5 bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all duration-300 origin-top-right translate-y-2 group-hover/info:translate-y-0 z-50 pointer-events-none">
-                                            <h4 className="font-bold text-white mb-4 tracking-tight text-xs uppercase">{t('profile.stats.rankScale', 'Escala de Rangs')}</h4>
-                                            <ul className="space-y-2.5 text-[11px] font-semibold">
-                                                <li className="flex justify-between items-center"><span className="text-orange-500">Bronze</span> <span className="text-slate-500 tabular-nums">0+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-slate-300">Silver</span> <span className="text-slate-500 tabular-nums">5+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-yellow-400">Gold</span> <span className="text-slate-500 tabular-nums">10+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-cyan-400">Platinum</span> <span className="text-slate-500 tabular-nums">15+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-blue-500">Diamond</span> <span className="text-slate-500 tabular-nums">20+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-purple-500">Champion</span> <span className="text-slate-500 tabular-nums">25+</span></li>
-                                                <li className="flex justify-between items-center"><span className="text-red-500">Grand Champion</span> <span className="text-slate-500 tabular-nums">35+</span></li>
-                                                <li className="flex justify-between items-center"><span className="ssl-platinum-rank text-transparent bg-clip-text font-black">SSL</span> <span className="text-slate-400 tabular-nums">50+</span></li>
-                                            </ul>
-                                        </div>
+                                    <div>
+                                        <span className="block text-4xl md:text-5xl font-bold tracking-tight text-white mb-2 tabular-nums">
+                                            {userContributions.length}
+                                        </span>
+                                        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                            <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
+                                            {t('profile.stats.solutions', 'SOLUCIONARIS')}
+                                        </span>
                                     </div>
                                 </div>
-                                <div className="relative z-20">
-                                    <div 
-                                        className={`flex items-baseline gap-2 mb-2 ${rank.color}`}
-                                        onMouseEnter={rank.name === 'SSL' ? () => setIsHoveringSSL(true) : undefined}
-                                        onMouseLeave={rank.name === 'SSL' ? () => setIsHoveringSSL(false) : undefined}
-                                    >
-                                        {rank.name === 'SSL' && <SSLParticles isHovered={isHoveringSSL} />}
-                                        <span className={`text-3xl md:text-4xl font-bold tracking-tight truncate ${rank.color.includes('bg-clip-text') ? rank.color : 'text-white'}`}>
-                                            {rank.name}
-                                        </span>
-                                        {rank.division && (
-                                            <div className="flex gap-1 ml-1">
-                                                {[1, 2, 3].map((bar) => {
-                                                    const isActive = bar <= (rank.division === 'I' ? 1 : rank.division === 'II' ? 2 : 3);
-                                                    return (
-                                                        <div key={bar} className={`h-4 w-1.5 rounded-[1px] skew-x-[-15deg] transition-all duration-300 ${isActive ? `bg-current shadow-[0_0_8px_currentColor] opacity-100` : 'bg-white/10'}`} />
-                                                    );
-                                                })}
+                            </motion.div>
+
+                            {/* Rank Card (Wider) */}
+                            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full md:col-span-1 relative z-50">
+                                <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group relative overflow-visible">
+                                    <div className="flex justify-between items-start w-full relative z-40 mb-6">
+                                        <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all">
+                                            <User size={20} strokeWidth={2} />
+                                        </div>
+                                        <div className="group/info cursor-help">
+                                            <div className="p-1.5 hover:bg-white/10 rounded-full transition-colors text-slate-500 group-hover/info:text-white">
+                                                <Info size={16} />
                                             </div>
+                                            {/* Rank Tooltip */}
+                                            <div className="absolute right-0 top-full mt-2 w-64 p-5 bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all duration-300 origin-top-right translate-y-2 group-hover/info:translate-y-0 z-50 pointer-events-none">
+                                                <h4 className="font-bold text-white mb-4 tracking-tight text-xs uppercase">{t('profile.stats.rankScale', 'Escala de Rangs')}</h4>
+                                                <ul className="space-y-2.5 text-[11px] font-semibold">
+                                                    <li className="flex justify-between items-center"><span className="text-orange-500">Bronze</span> <span className="text-slate-500 tabular-nums">0+</span></li>
+                                                    <li className="flex justify-between items-center"><span className="text-slate-300">Silver</span> <span className="text-slate-500 tabular-nums">5+</span></li>
+                                                    <li className="flex justify-between items-center"><span className="text-yellow-400">Gold</span> <span className="text-slate-500 tabular-nums">10+</span></li>
+                                                    <li className="flex justify-between items-center"><span className="text-cyan-400">Platinum</span> <span className="text-slate-500 tabular-nums">15+</span></li>
+                                                    <li className="flex justify-between items-center"><span className="text-blue-500">Diamond</span> <span className="text-slate-500 tabular-nums">20+</span></li>
+                                                    <li className="flex justify-between items-center"><span className="text-purple-500">Champion</span> <span className="text-slate-500 tabular-nums">25+</span></li>
+                                                    <li className="flex justify-between items-center"><span className="text-red-500">Grand Champion</span> <span className="text-slate-500 tabular-nums">35+</span></li>
+                                                    <li className="flex justify-between items-center"><span className="ssl-platinum-rank text-transparent bg-clip-text font-black">SSL</span> <span className="text-slate-400 tabular-nums">50+</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="relative z-20">
+                                        <div
+                                            className={`flex items-baseline gap-2 mb-2 ${rank.color}`}
+                                            onMouseEnter={rank.name === 'SSL' ? () => setIsHoveringSSL(true) : undefined}
+                                            onMouseLeave={rank.name === 'SSL' ? () => setIsHoveringSSL(false) : undefined}
+                                        >
+                                            {rank.name === 'SSL' && <SSLParticles isHovered={isHoveringSSL} />}
+                                            <span className={`text-3xl md:text-4xl font-bold tracking-tight truncate ${rank.color.includes('bg-clip-text') ? rank.color : 'text-white'}`}>
+                                                {rank.name}
+                                            </span>
+                                            {rank.division && (
+                                                <div className="flex gap-1 ml-1">
+                                                    {[1, 2, 3].map((bar) => {
+                                                        const isActive = bar <= (rank.division === 'I' ? 1 : rank.division === 'II' ? 2 : 3);
+                                                        return (
+                                                            <div key={bar} className={`h-4 w-1.5 rounded-[1px] skew-x-[-15deg] transition-all duration-300 ${isActive ? `bg-current shadow-[0_0_8px_currentColor] opacity-100` : 'bg-white/10'}`} />
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                            <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
+                                            {t('profile.stats.currentLevel', 'NIVELL ACTUAL')}
+                                        </span>
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            {/* Portfolio Card */}
+                            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
+                                <div className={`premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group ${(extendedUser?.portfolio && !isOwnProfile) ? 'premium-bento-hover cursor-pointer' : 'opacity-80 hover:opacity-100 transition-opacity'}`}>
+                                    {extendedUser?.portfolio && !isOwnProfile && (
+                                        <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="absolute inset-0 z-10" />
+                                    )}
+                                    <div className="flex justify-between items-start w-full relative z-40 mb-6 pointer-events-none">
+                                        <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all">
+                                            <Globe size={20} strokeWidth={2} />
+                                        </div>
+                                        {extendedUser?.portfolio && (
+                                            <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors pointer-events-auto" title="Visitar Portfoli">
+                                                <Globe size={16} />
+                                            </a>
                                         )}
                                     </div>
-                                    <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                        <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
-                                        {t('profile.stats.currentLevel', 'NIVELL ACTUAL')}
-                                    </span>
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Portfolio Card */}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
-                            <div className={`premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group ${(extendedUser?.portfolio && !isOwnProfile) ? 'premium-bento-hover cursor-pointer' : 'opacity-80 hover:opacity-100 transition-opacity'}`}>
-                                {extendedUser?.portfolio && !isOwnProfile && (
-                                    <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="absolute inset-0 z-10" />
-                                )}
-                                <div className="flex justify-between items-start w-full relative z-40 mb-6 pointer-events-none">
-                                    <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all">
-                                        <Globe size={20} strokeWidth={2} />
-                                    </div>
-                                    {extendedUser?.portfolio && (
-                                        <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors pointer-events-auto" title="Visitar Portfoli">
-                                            <Globe size={16} />
-                                        </a>
-                                    )}
-                                </div>
-                                <div className="relative z-20 pointer-events-auto">
-                                    <InlineEditableText 
-                                        value={extendedUser?.portfolio || ''} 
-                                        onSave={async (val) => await handleUpdateProfile({ portfolio: val })} 
-                                        placeholder={t('profile.stats.noLink', 'Sense vincular')}
-                                        isEditable={isOwnProfile}
-                                        className="block text-xl md:text-2xl font-bold tracking-tight text-white mb-2 truncate"
-                                        inputClassName="text-base font-normal mt-2 mb-2"
-                                    />
-                                    <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2 pointer-events-none mt-2">
-                                        <div className={`h-px bg-slate-700 transition-all ${extendedUser?.portfolio ? 'w-4 group-hover:w-8 group-hover:bg-white/50' : 'w-4'}`} />
-                                        {t('profile.stats.portfolio', 'PORTFOLI')}
-                                    </span>
-                                </div>
-                            </div>
-                        </motion.div>
-
-                    </div>
-                )}
-
-                {/* Mailing & Notifications Row */}
-                {isOwnProfile && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-                        <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} onClick={() => setIsMailboxOpen(true)} className="text-left outline-none">
-                            <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
-                                <div className="relative">
-                                    <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
-                                        <Mail size={20} strokeWidth={2} />
-                                    </div>
-                                    {unreadCount > 0 && (
-                                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[#0d0f17]">
-                                            {unreadCount}
+                                    <div className="relative z-20 pointer-events-auto">
+                                        <InlineEditableText
+                                            value={extendedUser?.portfolio || ''}
+                                            onSave={async (val) => await handleUpdateProfile({ portfolio: val })}
+                                            placeholder={t('profile.stats.noLink', 'Sense vincular')}
+                                            isEditable={isOwnProfile}
+                                            className="block text-xl md:text-2xl font-bold tracking-tight text-white mb-2 truncate"
+                                            inputClassName="text-base font-normal mt-2 mb-2"
+                                        />
+                                        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2 pointer-events-none mt-2">
+                                            <div className={`h-px bg-slate-700 transition-all ${extendedUser?.portfolio ? 'w-4 group-hover:w-8 group-hover:bg-white/50' : 'w-4'}`} />
+                                            {t('profile.stats.portfolio', 'PORTFOLI')}
                                         </span>
-                                    )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">{t('profile.inbox.privateMailbox', 'Bústia Privada')}</h3>
-                                    <p className="text-sm text-slate-500 truncate">
-                                        {unreadCount > 0 ? t('profile.inbox.pendingMessages', 'Tens {{count}} missatges pendents', { count: unreadCount }) : t('profile.inbox.allRead', 'Tot llegit.')}
-                                    </p>
-                                </div>
-                            </div>
-                        </motion.button>
-
-                        <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} onClick={() => setIsInboxOpen(true)} className="text-left outline-none">
-                            <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
-                                <div className="relative">
-                                    <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
-                                        <Bell size={20} strokeWidth={2} />
                                     </div>
-                                    {unreadNotificationsCount > 0 && (
-                                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[#0d0f17]">
-                                            {unreadNotificationsCount}
-                                        </span>
-                                    )}
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">{t('profile.notifications.title', 'Notificacions')}</h3>
-                                    <p className="text-sm text-slate-500 truncate">
-                                        {unreadNotificationsCount > 0 ? t('profile.notifications.unread', '{{count}} novetats sense llegir', { count: unreadNotificationsCount }) : t('profile.notifications.upToDate', 'Estàs al dia.')}
-                                    </p>
+                            </motion.div>
+
+                        </div>
+                    )}
+
+                    {/* Mailing & Notifications Row */}
+                    {isOwnProfile && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                            <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} onClick={() => setIsMailboxOpen(true)} className="text-left outline-none">
+                                <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
+                                    <div className="relative">
+                                        <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
+                                            <Mail size={20} strokeWidth={2} />
+                                        </div>
+                                        {unreadCount > 0 && (
+                                            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[#0d0f17]">
+                                                {unreadCount}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">{t('profile.inbox.privateMailbox', 'Bústia Privada')}</h3>
+                                        <p className="text-sm text-slate-500 truncate">
+                                            {unreadCount > 0 ? t('profile.inbox.pendingMessages', 'Tens {{count}} missatges pendents', { count: unreadCount }) : t('profile.inbox.allRead', 'Tot llegit.')}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.button>
-                    </div>
-                )}
-            </div>
+                            </motion.button>
+
+                            <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} onClick={() => setIsInboxOpen(true)} className="text-left outline-none">
+                                <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
+                                    <div className="relative">
+                                        <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
+                                            <Bell size={20} strokeWidth={2} />
+                                        </div>
+                                        {unreadNotificationsCount > 0 && (
+                                            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[#0d0f17]">
+                                                {unreadNotificationsCount}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">{t('profile.notifications.title', 'Notificacions')}</h3>
+                                        <p className="text-sm text-slate-500 truncate">
+                                            {unreadNotificationsCount > 0 ? t('profile.notifications.unread', '{{count}} novetats sense llegir', { count: unreadNotificationsCount }) : t('profile.notifications.upToDate', 'Estàs al dia.')}
+                                        </p>
+                                    </div>
+                                </div>
+                            </motion.button>
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* USER POSTS MASONRY GRID */}
-            <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-4 md:mt-8 pb-32 relative z-30">
-                <div className="mb-8 border-b border-white/5 pb-4">
-                    <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
-                        {t('profile.posts.title', 'Publicacions')}
-                        <span className="bg-white/10 text-white text-xs py-1 px-2.5 rounded-full font-bold">
-                            {userPosts.length}
-                        </span>
-                    </h2>
-                </div>
+            <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-8 md:mt-12 lg:mt-20 pb-32 relative z-30">
+                {/* Posts title section removed per user request */}
 
                 {isFetchingPosts ? (
                     <div className="flex justify-center items-center py-20">
                         <Spinner size="md" variant="primary" />
                     </div>
                 ) : userPosts.length > 0 ? (
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }} 
-                        animate={{ opacity: 1, y: 0 }} 
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6"
                     >
                         {userPosts.map(post => (
