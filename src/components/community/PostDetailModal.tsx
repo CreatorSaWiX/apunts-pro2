@@ -159,11 +159,11 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                     </motion.div>
                                     <span className="text-sm font-bold hidden sm:inline">{likeCount > 0 ? likeCount : t('community.postDetail.like', "M'agrada")}</span>
                                 </motion.button>
-                                <button type="button" className="p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors">
+                                <button type="button" aria-label="Desar" className="p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors">
                                     <Share2 size={18} />
                                 </button>
                                 {user?.id === post.userId && (
-                                    <button type="button" 
+                                    <button type="button" aria-label="Compartir"
                                         onClick={handleDelete}
                                         className="p-2.5 rounded-full bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors"
                                         title={t('community.postDetail.deleteTooltip', "Eliminar publicació")}
@@ -172,7 +172,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                     </button>
                                 )}
                                 <div className="w-px h-6 bg-white/10 mx-1" />
-                                <button type="button" onClick={onClose} className="p-2.5 rounded-full hover:bg-rose-500/20 text-slate-400 hover:text-rose-500 transition-colors">
+                                <button type="button" aria-label="Tancar" onClick={onClose} className="p-2.5 rounded-full hover:bg-rose-500/20 text-slate-400 hover:text-rose-500 transition-colors">
                                     <X size={20} />
                                 </button>
                             </div>

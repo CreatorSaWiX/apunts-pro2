@@ -270,7 +270,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                         <>
                             {/* Mobile Back Button */}
                             <div className="md:hidden p-4 border-b border-white/5 flex items-center gap-2">
-                                <button type="button" onClick={() => setSelectedMessage(null)} className="p-2 hover:bg-white/5 rounded-lg text-slate-400">
+                                <button type="button" aria-label="Tornar enrere" onClick={() => setSelectedMessage(null)} className="p-2 hover:bg-white/5 rounded-lg text-slate-400">
                                     <Reply className="rotate-180" size={20} />
                                 </button>
                                 <span className="font-medium text-white">{t('mailing.mailbox.back', 'Torna')}</span>

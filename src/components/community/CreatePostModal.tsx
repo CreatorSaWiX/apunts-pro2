@@ -218,7 +218,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                                             <span className="text-xs text-slate-500">{(att.size / 1024 / 1024).toFixed(2)} MB</span>
                                                         </div>
                                                     </div>
-                                                    <button type="button" 
+                                                    <button type="button" aria-label="Eliminar fitxer"
                                                         onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
                                                         className="text-slate-500 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100"
                                                     >
