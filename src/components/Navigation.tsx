@@ -190,7 +190,7 @@ const Navigation: React.FC = () => {
                                     className={`h-11 md:h-10 pl-1.5 pr-4 md:pl-1.5 md:pr-4 transition-all duration-300 ${location.pathname === '/profile' ? 'w-auto' : 'w-auto'}`}
                                 >
                                     <div className="relative flex items-center justify-center shrink-0">
-                                        <img src={user.avatar} alt={user.username} className={`rounded-full bg-slate-800 border-2 shadow-sm object-cover transition-all duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary shadow-[0_0_10px_rgba(56,189,248,0.5)] md:w-7 md:h-7 md:border-white/20' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`} loading="lazy" />
+                                        <img src={user.avatar} alt={user.username} loading="lazy" className={`rounded-full bg-slate-800 border-2 shadow-sm object-cover transition-all duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary shadow-[0_0_10px_rgba(56,189,248,0.5)] md:w-7 md:h-7 md:border-white/20' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`} />
                                         {unreadCount > 0 && (
                                             <span className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-3 md:h-3 bg-rose-500 rounded-full border-2 border-[#0F172A] shadow-sm animate-pulse" />
                                         )}

@@ -142,7 +142,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                         {/* Header Navbar */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 shrink-0 bg-[#0a0a0a]/80 backdrop-blur-xl z-10">
                             <div className="flex items-center gap-3">
-                                <img src={post.userAvatar} alt={post.username} className="w-10 h-10 rounded-full object-cover bg-slate-800" loading="lazy" />
+                                <img src={post.userAvatar} alt={post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800" />
                                 <div>
                                     <h3 className="font-bold text-slate-100">{post.username}</h3>
                                     <p className="text-xs text-slate-500 font-medium">{post.isNote ? t('community.postDetail.actionNote', 'Ha creat un apunt extens') : (post.type === 'question' ? t('community.postDetail.actionQuestion', 'Ha preguntat un dubte') : t('community.postDetail.actionResource', 'Ha compartit un recurs'))}</p>
@@ -189,7 +189,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                     className="w-full bg-[#050505] flex flex-col items-center justify-center border-b border-white/5 py-8 px-4"
                                 >
                                     {post.attachments.filter(a => a.type.startsWith('image/')).map((img, i) => (
-                                        <img key={i} src={img.url} alt="Cover" className="max-w-full max-h-[70vh] rounded-xl object-contain mb-6 last:mb-0 shadow-2xl" loading="lazy" />
+                                        <img key={i} src={img.url} alt="Cover" loading="lazy" className="max-w-full max-h-[70vh] rounded-xl object-contain mb-6 last:mb-0 shadow-2xl" />
                                     ))}
                                 </motion.div>
                             )}

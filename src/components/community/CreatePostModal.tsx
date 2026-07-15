@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { SUBJECTS, type SubjectType } from '../../config/subjects';
+import { SUBJECTS, getSubjectById, type SubjectType } from '../../config/subjects';
 import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, X, FileText } from 'lucide-react';
 
 import GifPicker from '../ui/GifPicker';
@@ -44,7 +44,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [editorInstance, setEditorInstance] = useState<any>(null);
 
-    const activeSubject = SUBJECTS.find(s => s.id === subject);
+    const activeSubject = getSubjectById(subject);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -206,9 +206,9 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                                     <div className="flex items-center gap-4 overflow-hidden">
                                                         <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-black/50 border border-white/5 flex items-center justify-center">
                                                             {att.thumbnailUrl ? (
-                                                                <img src={att.thumbnailUrl} alt={att.name} className="w-full h-full object-cover" />
+                                                                <img src={att.thumbnailUrl} alt={att.name} loading="lazy" className="w-full h-full object-cover" />
                                                             ) : att.type.startsWith('image/') ? (
-                                                                <img src={att.url} alt={att.name} className="w-full h-full object-cover" />
+                                                                <img src={att.url} alt={att.name} loading="lazy" className="w-full h-full object-cover" />
                                                             ) : (
                                                                 <Paperclip size={18} className="text-slate-400" />
                                                             )}
@@ -274,7 +274,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                                             onClick={() => handleEmojiSelect(emoji)}
                                                             className="p-1 rounded-xl hover:bg-white/10 transition-transform hover:scale-110"
                                                         >
-                                                            <img src={emoji} alt="emoji" className="w-8 h-8 object-contain" />
+                                                            <img src={emoji} alt="emoji" loading="lazy" className="w-8 h-8 object-contain" />
                                                         </button>
                                                     ))}
                                                 </div>

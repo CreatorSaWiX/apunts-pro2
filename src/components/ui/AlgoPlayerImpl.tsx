@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Code2, Database, LayoutTemplate, ChevronDown, ChevronUp } from 'lucide-react';
 import GraphVisualizer from './GraphVisualizer';
 import { algorithms } from '../../lib/algorithms';
@@ -35,16 +35,16 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
     }));
 
     useEffect(() => {
+        if (isPlaying && currentStep >= steps.length - 1) {
+            setIsPlaying(false);
+        }
+    }, [currentStep, isPlaying, steps.length]);
+
+    useEffect(() => {
         let timer: any;
         if (isPlaying) {
             timer = setInterval(() => {
-                setCurrentStep(prev => {
-                    if (prev >= steps.length - 1) {
-                        setIsPlaying(false);
-                        return prev;
-                    }
-                    return prev + 1;
-                });
+                setCurrentStep(prev => prev < steps.length - 1 ? prev + 1 : prev);
             }, speed);
         }
         return () => clearInterval(timer);
@@ -52,11 +52,11 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
 
     const step = steps[currentStep];
 
-    const handlePlayPause = () => setIsPlaying(!isPlaying);
-    const handleNext = () => React.startTransition(() => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1)));
-    const handlePrev = () => React.startTransition(() => setCurrentStep(prev => Math.max(prev - 1, 0)));
-    const handleReset = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(0); }); };
-    const handleFullEnd = () => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(steps.length - 1); }); };
+    const handlePlayPause = useCallback(() => setIsPlaying(p => !p), []);
+    const handleNext = useCallback(() => React.startTransition(() => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1))), [steps.length]);
+    const handlePrev = useCallback(() => React.startTransition(() => setCurrentStep(prev => Math.max(prev - 1, 0))), []);
+    const handleReset = useCallback(() => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(0); }); }, []);
+    const handleFullEnd = useCallback(() => { setIsPlaying(false); React.startTransition(() => { setCurrentStep(steps.length - 1); }); }, [steps.length]);
 
     // Update node colors and labels dynamically
     // We modify the stable nodes in-place to preserve their physics state (x, y)

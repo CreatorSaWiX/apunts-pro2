@@ -16,9 +16,9 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
         manifest: {
-          name: 'Apunts PRO2',
-          short_name: 'ApuntsPRO2',
-          description: 'Apunts i solucionaris de Programació 2 (FIB-UPC)',
+          name: 'Apunts',
+          short_name: 'Apunts',
+          description: 'Apunts, solucionaris i recursos d\'assignatures de la GEI FIB-UPC',
           theme_color: '#0f172a',
           background_color: '#0f172a',
           display: 'standalone',

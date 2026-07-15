@@ -89,7 +89,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
             >
                 {/* Avatar */}
                 <Link to={`/profile/${comment.userId}`} className="shrink-0 hover:opacity-80 transition-opacity">
-                    <img
+                    <img loading="lazy"
                         src={comment.userAvatar || `https://ui-avatars.com/api/?name=${comment.username}&background=random`}
                         alt={comment.username}
                         className={`${isReply ? 'w-8 h-8' : 'w-10 h-10'} rounded-full bg-slate-800 object-cover ring-2 ring-slate-900`}
@@ -139,11 +139,10 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                     <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap wrap-break-word">
                         {isGif(comment.content) ? (
                             <div className="mt-2 mb-2">
-                                <img
+                                <img loading="lazy"
                                     src={comment.content}
                                     alt="GIF"
                                     className="max-w-[250px] max-h-[250px] w-auto h-auto rounded-lg shadow-sm border border-white/5"
-                                    loading="lazy"
                                 />
                             </div>
                         ) : (
@@ -152,10 +151,9 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                                     remarkPlugins={[remarkGfm]}
                                     components={{
                                         img: ({ ...props }) => (
-                                            <img 
+                                            <img loading="lazy"
                                                 {...props} 
                                                 className="inline-block w-6 h-6 m-0 align-text-bottom object-contain" 
-                                                loading="lazy"
                                             />
                                         )
                                     }}
@@ -192,7 +190,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                                 `}
                             >
                                 {isCustomEmoji(emoji) ? (
-                                    <img src={emoji} alt="reaction" className="w-4 h-4 object-contain" />
+                                    <img src={emoji} alt="reaction" loading="lazy" className="w-4 h-4 object-contain" />
                                 ) : (
                                     <span>{emoji}</span>
                                 )}

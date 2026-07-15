@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { fetchJutgeProblem } from '../lib/jutge';
-import { allSolutions } from '../content/data/solutions';
+import { allSolutions, getSolutionsByTopic, getSolutionById } from '../content/data/solutions';
 import type { Solution } from '../content/data/solutions';
 
 export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
@@ -14,7 +14,7 @@ export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
             setLoading(true);
             try {
                 // 1. Get static solutions
-                let staticSolutions = allSolutions.find(t => t.topicId === topicId)?.solutions || [];
+                let staticSolutions = getSolutionsByTopic(topicId);
 
                 // Overlap global static solutions if problemIds are explicitly defined
                 if (problemIdsToCheck && problemIdsToCheck.length > 0) {
@@ -88,7 +88,7 @@ export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
             } catch (error) {
                 console.error("Error fetching solutions:", error);
                 // Fallback to static
-                const staticSolutions = allSolutions.find(t => t.topicId === topicId)?.solutions || [];
+                const staticSolutions = getSolutionsByTopic(topicId);
                 setSolutions(staticSolutions);
             } finally {
                 setLoading(false);
@@ -117,7 +117,7 @@ export const useSolution = (topicId: string, problemId: string, lang: string = '
 
                 let foundSolution: Solution | null = null;
                 // 1. Static
-                const staticData = allSolutions.find(t => t.topicId === topicId)?.solutions.find(s => s.id === problemId);
+                const staticData = getSolutionById(topicId, problemId);
                 if (staticData) foundSolution = staticData;
 
                 // 2. Firestore

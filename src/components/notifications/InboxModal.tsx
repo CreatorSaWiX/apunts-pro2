@@ -196,7 +196,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                                     }`}
                             >
                                 <div className="relative mt-1">
-                                    <img
+                                    <img loading="lazy"
                                         src={notification.fromUserAvatar || `https://ui-avatars.com/api/?name=${notification.fromUserName}&background=random`}
                                         alt=""
                                         className="w-10 h-10 rounded-full bg-slate-800 object-cover ring-2 ring-slate-900"

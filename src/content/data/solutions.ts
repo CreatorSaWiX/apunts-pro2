@@ -116,11 +116,27 @@ export const allSolutions: TopicSolutions[] = [
 
 ];
 
+let topicIndex: Record<string, Solution[]> | null = null;
+let solutionIndex: Record<string, Solution> | null = null;
+
+const buildIndices = () => {
+    if (topicIndex) return;
+    topicIndex = {};
+    solutionIndex = {};
+    for (const topic of allSolutions) {
+        topicIndex[topic.topicId] = topic.solutions;
+        for (const sol of topic.solutions) {
+            solutionIndex[`${topic.topicId}::${sol.id}`] = sol;
+        }
+    }
+};
+
 export const getSolutionsByTopic = (topicId: string) => {
-    return allSolutions.find(t => t.topicId === topicId)?.solutions || [];
+    buildIndices();
+    return topicIndex![topicId] || [];
 };
 
 export const getSolutionById = (topicId: string, problemId: string) => {
-    const topic = allSolutions.find(t => t.topicId === topicId);
-    return topic?.solutions.find(s => s.id === problemId);
+    buildIndices();
+    return solutionIndex![`${topicId}::${problemId}`] || undefined;
 };

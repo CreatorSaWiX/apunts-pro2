@@ -141,7 +141,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                     <>
                         {visibleReplies.map((reply) => (
                             <div key={reply.id} className="flex gap-3 group">
-                                <img 
+                                <img loading="lazy"
                                     src={reply.userAvatar} 
                                     alt={reply.username} 
                                     className="w-8 h-8 rounded-xl object-cover shrink-0"
@@ -199,7 +199,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                                                 onClick={() => handleEmojiSelect(emoji)}
                                                 className="p-1 rounded-lg hover:bg-slate-800 transition-transform hover:scale-110 flex items-center justify-center"
                                             >
-                                                <img src={emoji} alt="emoji" className="w-6 h-6 object-contain" />
+                                                <img src={emoji} alt="emoji" loading="lazy" className="w-6 h-6 object-contain" />
                                             </button>
                                         ))}
                                     </div>

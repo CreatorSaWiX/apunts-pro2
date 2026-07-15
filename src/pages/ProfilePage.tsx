@@ -115,7 +115,7 @@ const ProfilePage = () => {
     const { user: authUser, logout, isLoading: authLoading } = useAuth();
 
     const userIdToFetch = uid || authUser?.id;
-    const isOwnProfile = !uid || (authUser && authUser.id === uid);
+    const isOwnProfile = Boolean(!uid || (authUser && authUser.id === uid));
 
     const { solutions: userContributions } = useUserSolutions(userIdToFetch || '');
 
@@ -321,7 +321,7 @@ const ProfilePage = () => {
                 <div className="absolute bottom-0 left-0 w-full px-4 md:px-8 max-w-[1100px] left-1/2 -translate-x-1/2 flex items-end gap-5 md:gap-8 translate-y-1/3 z-20">
                     <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="relative shrink-0 group/avatar">
                         <div className="w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-[1.5rem] md:rounded-[2rem] p-1 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/20 relative overflow-hidden">
-                            <img src={avatarUrl} alt={extendedUser?.username} className="w-full h-full rounded-[1.2rem] md:rounded-[1.7rem] object-cover bg-[#111]" />
+                            <img src={avatarUrl} alt={extendedUser?.username} loading="lazy" className="w-full h-full rounded-[1.2rem] md:rounded-[1.7rem] object-cover bg-[#111]" />
                             {isOwnProfile && (
                                 <div className="absolute inset-1 rounded-[1.2rem] md:rounded-[1.7rem] bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white cursor-pointer overflow-hidden z-10">
                                     <Upload size={24} className="mb-1 relative z-20 pointer-events-none" />

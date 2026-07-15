@@ -170,7 +170,7 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                                 <Spinner size="md" variant="primary" />
                             </div>
                         )}
-                        <img 
+                        <img
                             src={coverUrl} 
                             alt={post.content.substring(0, 20)} 
                             className={`w-full h-full object-cover transition-all duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''} ${imageLoaded ? 'opacity-100 blur-none' : 'opacity-0 blur-sm'}`}
@@ -235,7 +235,7 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                 
                 <div className="flex items-center justify-between mt-0.5">
                     <div className="flex items-center gap-1.5 min-w-0">
-                        <img src={post.userAvatar} alt={post.username} className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
+                        <img src={post.userAvatar} alt={post.username} loading="lazy" className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
                         <span className="text-[11px] text-slate-400 truncate group-hover:text-white transition-colors">
                             {post.username}
                         </span>

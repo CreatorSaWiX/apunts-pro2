@@ -13,7 +13,7 @@ const CreatePostModal = lazy(() => import('../components/community/CreatePostMod
 const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
 import Spinner from '../components/ui/Spinner';
 import { useSettings } from '../contexts/SettingsContext';
-import { SUBJECTS } from '../config/subjects';
+import { SUBJECTS, getSubjectById } from '../config/subjects';
 import { useTranslation } from 'react-i18next';
 
 import LiquidDropdown from '../components/ui/glass/LiquidDropdown';
@@ -493,7 +493,7 @@ const CommunityPage = () => {
                                     size="2xl" 
                                     variant={
                                         activeSubject !== 'all' 
-                                            ? customSubjectColors[SUBJECTS.find(s => s.id === activeSubject)?.label || ''] || SUBJECTS.find(s => s.id === activeSubject)?.color || 'primary'
+                                            ? customSubjectColors[getSubjectById(activeSubject)?.label || ''] || getSubjectById(activeSubject)?.color || 'primary'
                                             : 'primary'
                                     } 
                                 />
@@ -587,7 +587,7 @@ const CommunityPage = () => {
                                 size="lg" 
                                 variant={
                                     activeSubject !== 'all' 
-                                        ? customSubjectColors[SUBJECTS.find(s => s.id === activeSubject)?.label || ''] || SUBJECTS.find(s => s.id === activeSubject)?.color || 'white'
+                                        ? customSubjectColors[getSubjectById(activeSubject)?.label || ''] || getSubjectById(activeSubject)?.color || 'white'
                                         : 'white'
                                 } 
                             />

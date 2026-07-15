@@ -232,7 +232,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                         <div className="flex items-center gap-3 mb-2">
                                             {((activeTab === 'inbox' ? msg.senderAvatar : msg.receiverAvatar)) ? (
                                                 <div className="relative w-8 h-8 rounded-full shadow-md shrink-0">
-                                                    <img 
+                                                    <img loading="lazy"
                                                         src={(activeTab === 'inbox' ? msg.senderAvatar : msg.receiverAvatar)!} 
                                                         className={`w-full h-full rounded-full object-cover border-2 transition-colors ${selectedMessage?.id === msg.id ? 'border-sky-500 shadow-lg shadow-sky-500/30' : 'border-transparent group-hover:border-white/10'}`}
                                                         alt="" 
@@ -300,13 +300,13 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                         >
                                             <div className="relative">
                                                 {activeTab === 'inbox' ? (
-                                                    <img
+                                                    <img loading="lazy"
                                                         src={selectedMessage.senderAvatar}
                                                         className="w-12 h-12 rounded-full bg-slate-800 ring-2 ring-slate-800 group-hover/profile:ring-sky-500 transition-all object-cover"
                                                         alt=""
                                                     />
                                                 ) : (
-                                                    <img
+                                                    <img loading="lazy"
                                                         src={receiverProfile?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${selectedMessage.receiverName || t('mailing.mailbox.user', 'Usuari')}`}
                                                         className="w-12 h-12 rounded-full bg-slate-800 ring-2 ring-slate-800 group-hover/profile:ring-sky-500 transition-all object-cover"
                                                         alt=""
