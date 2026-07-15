@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Settings2, Sparkles, Bot, Database } from 'lucide-react';
 import { RoadmapProvider } from '../contexts/RoadmapContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -15,16 +16,18 @@ import { OfflineSection } from '../components/settings/OfflineSection';
 
 type TabId = 'general' | 'offline' | 'ai' | 'about';
 
-const TABS: { id: TabId; label: string; icon: any }[] = [
-    { id: 'general', label: 'General', icon: Settings2 },
-    { id: 'offline', label: 'Emmagatzematge', icon: Database },
-    { id: 'ai', label: 'Assistent IA', icon: Bot },
-    { id: 'about', label: 'Quant a', icon: Sparkles },
-];
 
 const SettingsContent = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [activeTab, setActiveTab] = useState<TabId>('general');
+
+    const TABS: { id: TabId; label: string; icon: any }[] = [
+        { id: 'general', label: t('nav.general', 'General'), icon: Settings2 },
+        { id: 'offline', label: t('nav.offline', 'Emmagatzematge'), icon: Database },
+        { id: 'ai', label: t('nav.ai', 'Assistent IA'), icon: Bot },
+        { id: 'about', label: t('nav.about', 'Quant a'), icon: Sparkles },
+    ];
 
     const availableTabs = TABS.filter(tab => {
         if (tab.id === 'ai' && !user) return false;

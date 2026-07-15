@@ -95,6 +95,8 @@
     }
   },
   "common": {
+    "change": "Cambiar",
+    "clickToEdit": "Haz clic para editar",
     "back": "Volver",
     "languages": {
       "ca": "Català",
@@ -363,7 +365,11 @@
     "planner": "Planificador",
     "settings": "Configuración",
     "profile": "Mi perfil",
-    "login": "Iniciar Sesión"
+    "login": "Iniciar Sesión",
+    "general": "General",
+    "offline": "Almacenamiento",
+    "ai": "Asistente IA",
+    "about": "Acerca de"
   },
   "hero": {
     "newVersion": "Hay una nueva versión",
@@ -702,5 +708,122 @@
     "placeholder": "Escribe a {{aiName}}...",
     "attachFile": "Adjuntar imagen o PDF",
     "warning": "La IA puede cometer errores. No compartas datos sensibles ni personales."
+  },
+  "roadmapSubjectEvaluation": {
+    "title": "Distribución de Evaluación",
+    "percentTotal": "% del total"
+  },
+  "roadmapView": {
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar",
+    "fitView": "Ajustar vista",
+    "startingSystems": "Iniciando Sistemas...",
+    "averageGrade": "Media Ponderada",
+    "passedECTS": "Créditos Aprobados",
+    "plannedECTS": "Créditos Planificados",
+    "masterReady": "Master Ready",
+    "parsRequirements": "Requisitos PARS Alcanzados",
+    "addText": "Añadir Texto",
+    "addPostit": "Añadir Post-it",
+    "undo": "Deshacer",
+    "redo": "Rehacer",
+    "clearAll": "Limpiar todo",
+    "exit": "Salir",
+    "specialization": "Especialidad",
+    "specializationShort": "Espec.",
+    "elective": "Optativa",
+    "electiveShort": "Opt.",
+    "draw": "Dibujar",
+    "drawShort": "Dib.",
+    "more": "Más",
+    "addExperience": "Añadir Experiencia",
+    "validations": "Convalidaciones",
+    "schedulePlanner": "Planificador horarios",
+    "saving": "Guardando...",
+    "saveRoadmap": "Guardar Roadmap"
+  },
+  "curriculum": {
+    "specializations": {
+      "C": {
+        "name": "Computación",
+        "description": "Profundiza en los fundamentos matemáticos y algorítmicos de la informática. Domina la Inteligencia Artificial, el diseño de algoritmos avanzados y la optimización de sistemas complejos.",
+        "whyChoose": "Si te apasiona resolver problemas complejos, entender cómo funcionan los lenguajes por debajo y crear IA desde cero.",
+        "roles": [
+          "AI/ML Engineer",
+          "Algorithm Researcher",
+          "Data Scientist",
+          "Graphics Engineer"
+        ],
+        "benefits": [
+          "Gran demanda en sectores de IA",
+          "Base matemática sólida",
+          "Capacidad de resolver problemas inéditos"
+        ]
+      },
+      "EC": {
+        "name": "Ingeniería de Computadores",
+        "description": "Conecta el mundo del software con la electrónica. Diseña arquitecturas de microprocesadores, sistemas empotrados, IoT y aprende a exprimir al máximo el rendimiento del hardware.",
+        "whyChoose": "Si quieres entender cómo funciona realmente un ordenador y diseñar los dispositivos que conectarán el mundo del futuro.",
+        "roles": [
+          "Hardware Engineer",
+          "Embedded Systems Developer",
+          "IoT Architect",
+          "Systems Programmer"
+        ],
+        "benefits": [
+          "Muy práctico y tangible",
+          "Indispensable para robótica e IoT",
+          "Poca competencia de programadores puros"
+        ]
+      },
+      "ES": {
+        "name": "Ingeniería del Software",
+        "description": "Especialízate en el ciclo de vida completo de grandes sistemas de software. Aprende arquitectura, gestión de proyectos, aseguramiento de la calidad y metodologías ágiles.",
+        "whyChoose": "Si tu objetivo es liderar equipos, diseñar arquitecturas escalables y construir productos de software de gran impacto.",
+        "roles": [
+          "Software Architect",
+          "Full Stack Engineer",
+          "Project Manager",
+          "QA Lead"
+        ],
+        "benefits": [
+          "Alta versatilidad laboral",
+          "Preparación para roles de liderazgo",
+          "Dominio de metodologías profesionales"
+        ]
+      },
+      "SI": {
+        "name": "Sistemas de Información",
+        "description": "Alinea la tecnología con las estrategias de negocio. Aprende a diseñar, integrar y auditar sistemas de información empresariales complejos maximizando el valor corporativo.",
+        "whyChoose": "Si tienes visión de negocio y quieres ser el puente entre la dirección estratégica y la implementación tecnológica.",
+        "roles": [
+          "IT Consultant",
+          "Business Analyst",
+          "Data Engineer",
+          "ERP Specialist"
+        ],
+        "benefits": [
+          "Visión holística empresa-tecnología",
+          "Carrera en consultoría",
+          "Gestión de grandes volúmenes de datos corporativos"
+        ]
+      },
+      "TI": {
+        "name": "Tecnologías de la Información",
+        "description": "Domina el despliegue, configuración y mantenimiento de infraestructuras tecnológicas. Sé experto en redes, ciberseguridad, sistemas operativos e integración de servicios.",
+        "whyChoose": "Si disfrutas con el hacking ético, el diseño de redes de telecomunicaciones y la administración de grandes servidores cloud.",
+        "roles": [
+          "Cloud Architect",
+          "Cybersecurity Analyst",
+          "DevOps Engineer",
+          "Network Administrator"
+        ],
+        "benefits": [
+          "Demanda explosiva en ciberseguridad",
+          "Fundamental en la era del Cloud Computing",
+          "Perfil hiper-técnico e indispensable"
+        ]
+      }
+    }
   }
 }

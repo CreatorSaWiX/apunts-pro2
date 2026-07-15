@@ -325,7 +325,7 @@ const ProfilePage = () => {
                             {isOwnProfile && (
                                 <div className="absolute inset-1 rounded-[1.2rem] md:rounded-[1.7rem] bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white cursor-pointer overflow-hidden z-10">
                                     <Upload size={24} className="mb-1 relative z-20 pointer-events-none" />
-                                    <span className="text-xs font-bold tracking-widest uppercase text-center px-2 relative z-20 pointer-events-none">Canviar</span>
+                                    <span className="text-xs font-bold tracking-widest uppercase text-center px-2 relative z-20 pointer-events-none">{t('common.change', 'Canviar')}</span>
                                     <div className="absolute inset-0 z-10">
                                         <FileUploader 
                                             variant="avatar" 

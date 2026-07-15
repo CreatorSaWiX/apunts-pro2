@@ -1,21 +1,23 @@
 import { m as motion } from 'framer-motion';
 import { LayoutGrid, Calendar, CalendarDays, Route } from 'lucide-react';
 import { useSettings, type PlannerViewMode } from '../../contexts/SettingsContext';
+import { useTranslation } from 'react-i18next';
 
 export const PlannerSection = () => {
+    const { t } = useTranslation();
     const { defaultPlannerView, setDefaultPlannerView } = useSettings();
     const plannerViews: { id: PlannerViewMode, icon: any, label: string }[] = [
-        { id: 'board', icon: LayoutGrid, label: 'Tauler' },
-        { id: 'calendar', icon: Calendar, label: 'Calendari' },
-        { id: 'gantt', icon: CalendarDays, label: 'Timeline' },
-        { id: 'roadmap', icon: Route, label: 'Roadmap' },
+        { id: 'board', icon: LayoutGrid, label: t('planner.board', 'Tauler') },
+        { id: 'calendar', icon: Calendar, label: t('planner.calendar', 'Calendari') },
+        { id: 'gantt', icon: CalendarDays, label: t('planner.timeline', 'Timeline') },
+        { id: 'roadmap', icon: Route, label: t('planner.roadmap', 'Roadmap') },
     ];
 
     return (
         <div id="planner" className="flex flex-col items-start gap-6 w-full pt-6 pb-12 border-b border-white/5">
             <div className="w-full">
-                <h2 className="text-2xl font-bold text-white mb-1">Vista del Planificador</h2>
-                <p className="text-slate-400 text-sm font-medium">Tria la vista per defecte a la pestanya Planificador.</p>
+                <h2 className="text-2xl font-bold text-white mb-1">{t('planner.previewTitle', 'Vista del Planificador')}</h2>
+                <p className="text-slate-400 text-sm font-medium">{t('planner.previewSubtitle', 'Tria la vista per defecte a la pestanya Planificador.')}</p>
             </div>
 
             <div className="grid grid-cols-2 sm:flex flex-wrap gap-3 w-full">

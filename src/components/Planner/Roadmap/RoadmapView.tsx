@@ -11,6 +11,7 @@ import Spinner from '../../ui/Spinner';
 import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, Redo2, X, Type, StickyNote, MoreHorizontal, CalendarDays } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { m as motion, AnimatePresence, useIsPresent } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { SpecializationModal } from './SpecializationModal';
 import ExperienceSelectorModal from './ExperienceSelectorModal';
 import ValidationsModal from './ValidationsModal';
@@ -33,19 +34,20 @@ const nodeTypes = {
 
 // Custom Zoom Controls Component
 const CustomControls = () => {
+    const { t } = useTranslation();
     const { zoomIn, zoomOut, fitView } = useReactFlow();
     return (
         <Panel position="bottom-left" className="m-6 z-40 opacity-30 hover:opacity-100 transition-opacity duration-300">
             <LiquidPanel className="flex flex-col gap-2 p-2">
-                <button type="button" onClick={() => zoomIn({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Zoom In">
+                <button type="button" onClick={() => zoomIn({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title={t('roadmapView.zoomIn', 'Zoom In')}>
                     <ZoomIn size={18} strokeWidth={2.5} />
                 </button>
                 <div className="w-full h-px bg-white/5" />
-                <button type="button" onClick={() => zoomOut({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Zoom Out">
+                <button type="button" onClick={() => zoomOut({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title={t('roadmapView.zoomOut', 'Zoom Out')}>
                     <ZoomOut size={18} strokeWidth={2.5} />
                 </button>
                 <div className="w-full h-px bg-white/5" />
-                <button type="button" onClick={() => fitView({ padding: 0.2, duration: 800 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title="Fit View">
+                <button type="button" onClick={() => fitView({ padding: 0.2, duration: 800 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title={t('roadmapView.fitView', 'Fit View')}>
                     <Maximize size={18} strokeWidth={2.5} />
                 </button>
             </LiquidPanel>
@@ -60,6 +62,7 @@ interface RoadmapViewProps {
 }
 
 const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI = () => { } }) => {
+    const { t } = useTranslation();
     const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade, initialStrokes, addAnnotationNode } = useRoadmap();
     const { isDrawMode, setIsDrawMode, currentColor, setCurrentColor, clearStrokes, undoStroke, redoStroke, canUndo, canRedo, strokes, setStrokes } = useDrawContext();
     const reactFlowInstance = useReactFlow();
@@ -158,7 +161,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     <div className="absolute inset-0 bg-sky-500/20 blur-xl rounded-full" />
                     <Spinner size="xl" variant="sky" className="relative z-10" />
                 </div>
-                <span className="mt-6 text-sky-400/80 font-mono text-xs tracking-[0.3em] uppercase animate-pulse">Iniciant Sistemes...</span>
+                <span className="mt-6 text-sky-400/80 font-mono text-xs tracking-[0.3em] uppercase animate-pulse">{t('roadmapView.startingSystems', 'Iniciant Sistemes...')}</span>
             </div>
         );
     }
@@ -234,7 +237,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                 </span>
                             </div>
                             <div className="flex flex-col pr-6">
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">Mitjana Ponderada</span>
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">{t('roadmapView.averageGrade', 'Mitjana Ponderada')}</span>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-xl font-black text-white tracking-tight">{averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}</span>
                                     <span className="text-xs font-medium text-slate-500">/10</span>
@@ -260,7 +263,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                 <span className="text-[10px] font-bold text-sky-400 mt-0.5">{Math.round(percentage * 100)}%</span>
                             </div>
                             <div className="flex flex-col pr-6">
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">Crèdits Aprovats</span>
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">{t('roadmapView.passedECTS', 'Crèdits Aprovats')}</span>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-xl font-black text-white tracking-tight">{totalPassedECTS}</span>
                                     <span className="text-xs font-medium text-slate-500">/240</span>
@@ -286,7 +289,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                 <span className="text-[10px] font-bold text-violet-400 mt-0.5">{Math.round(plannedPercentage * 100)}%</span>
                             </div>
                             <div className="flex flex-col pr-6">
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">Crèdits Planificats</span>
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">{t('roadmapView.plannedECTS', 'Crèdits Planificats')}</span>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-xl font-black text-white tracking-tight">{totalPlannedECTS}</span>
                                     <span className="text-xs font-medium text-slate-500">/240</span>
@@ -307,8 +310,8 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                     <GraduationCap size={16} className="text-orange-400" />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-mono text-orange-400/80 uppercase tracking-widest">Master Ready</span>
-                                    <span className="text-xs font-bold text-orange-200">Requisits PARS Assolits</span>
+                                    <span className="text-[10px] font-mono text-orange-400/80 uppercase tracking-widest">{t('roadmapView.masterReady', 'Master Ready')}</span>
+                                    <span className="text-xs font-bold text-orange-200">{t('roadmapView.parsRequirements', 'Requisits PARS Assolits')}</span>
                                 </div>
                             </motion.div>
                         )}
@@ -337,11 +340,11 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                         <motion.div layout key="sep-1" className="w-px h-6 bg-white/10 mx-1" />,
 
-                        <LiquidToolbarButton key="add-text" onClick={() => handleAddAnnotation('text')} title="Afegir Text">
+                        <LiquidToolbarButton key="add-text" onClick={() => handleAddAnnotation('text')} title={t('roadmapView.addText', 'Afegir Text')}>
                             <Type size={16} />
                         </LiquidToolbarButton>,
 
-                        <LiquidToolbarButton key="add-postit" onClick={() => handleAddAnnotation('postit')} title="Afegir Post-it">
+                        <LiquidToolbarButton key="add-postit" onClick={() => handleAddAnnotation('postit')} title={t('roadmapView.addPostit', 'Afegir Post-it')}>
                             <StickyNote size={16} />
                         </LiquidToolbarButton>,
 
@@ -349,7 +352,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                         <LiquidToolbarButton key="undo"
                             onClick={undoStroke}
-                            title="Desfer"
+                            title={t('roadmapView.undo', 'Desfer')}
                             disabled={!canUndo}
                             className={!canUndo ? 'opacity-50 cursor-not-allowed' : ''}
                         >
@@ -358,14 +361,14 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                         <LiquidToolbarButton key="redo"
                             onClick={redoStroke}
-                            title="Refer"
+                            title={t('roadmapView.redo', 'Refer')}
                             disabled={!canRedo}
                             className={!canRedo ? 'opacity-50 cursor-not-allowed' : ''}
                         >
                             <Redo2 size={16} />
                         </LiquidToolbarButton>,
 
-                        <LiquidToolbarButton key="clear" onClick={clearStrokes} title="Netejar tot" className="hover:text-rose-400">
+                        <LiquidToolbarButton key="clear" onClick={clearStrokes} title={t('roadmapView.clearAll', 'Netejar tot')} className="hover:text-rose-400">
                             <Trash2 size={16} />
                         </LiquidToolbarButton>,
 
@@ -373,7 +376,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                         <LiquidToolbarButton key="exit-draw" onClick={() => setIsDrawMode(false)} className="text-white hover:text-slate-300">
                             <X size={16} />
-                            <span className="hidden sm:inline font-bold">Sortir</span>
+                            <span className="hidden sm:inline font-bold">{t('roadmapView.exit', 'Sortir')}</span>
                         </LiquidToolbarButton>
                     ] : [
                         /* Tria Especialitat */
@@ -383,10 +386,10 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                             >
                                 <GraduationCap size={16} />
                                 <span className="hidden sm:inline">
-                                    {currentSpec ? currentSpec.name : 'Especialitat'}
+                                    {currentSpec ? currentSpec.name : t('roadmapView.specialization', 'Especialitat')}
                                 </span>
                                 <span className="sm:hidden">
-                                    {currentSpec ? currentSpec.name.substring(0, 6) + '.' : 'Espec.'}
+                                    {currentSpec ? currentSpec.name.substring(0, 6) + '.' : t('roadmapView.specializationShort', 'Espec.')}
                                 </span>
                             </LiquidToolbarButton>
                         </motion.div>,
@@ -406,8 +409,8 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                             onClick={() => setIsSearchModalOpen(true)}
                         >
                             <Plus size={16} />
-                            <span className="hidden sm:inline">Optativa</span>
-                            <span className="sm:hidden">Opt.</span>
+                            <span className="hidden sm:inline">{t('roadmapView.elective', 'Optativa')}</span>
+                            <span className="sm:hidden">{t('roadmapView.electiveShort', 'Opt.')}</span>
                         </LiquidToolbarButton>,
 
                         <motion.div layout key="sep-5" className="w-px h-6 bg-white/10 mx-1" />,
@@ -417,8 +420,8 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                             onClick={() => setIsDrawMode(true)}
                         >
                             <Palette size={16} />
-                            <span className="hidden sm:inline font-medium">Dibuixar</span>
-                            <span className="sm:hidden font-medium">Dib.</span>
+                            <span className="hidden sm:inline font-medium">{t('roadmapView.draw', 'Dibuixar')}</span>
+                            <span className="sm:hidden font-medium">{t('roadmapView.drawShort', 'Dib.')}</span>
                         </LiquidToolbarButton>,
 
                         <motion.div layout key="sep-6" className="w-px h-6 bg-white/10 mx-1" />,
@@ -430,7 +433,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                 active={isMoreMenuOpen}
                             >
                                 <MoreHorizontal size={16} />
-                                <span className="hidden sm:inline font-medium">Més</span>
+                                <span className="hidden sm:inline font-medium">{t('roadmapView.more', 'Més')}</span>
                             </LiquidToolbarButton>
 
                             <AnimatePresence>
@@ -446,19 +449,19 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                                         <button type="button" onClick={() => { setIsExperienceModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
                                             <Sparkles size={16} className="text-white" />
-                                            Afegir Experiència
+                                            {t('roadmapView.addExperience', 'Afegir Experiència')}
                                         </button>
 
                                         <button type="button" onClick={() => { setIsValidationsModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
                                             <Award size={16} className="text-white" />
-                                            Convalidacions
+                                            {t('roadmapView.validations', 'Convalidacions')}
                                         </button>
 
                                         {/* <div className="h-px bg-white/10 my-1 relative z-10" /> */}
 
                                         <a href="https://www.fib.upc.edu/ca/graus/grau-en-enginyeria-informatica/horaris" target="_blank" rel="noopener noreferrer" onClick={() => setIsMoreMenuOpen(false)} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
                                             <CalendarDays size={16} className="text-white" />
-                                            Planificador horaris
+                                            {t('roadmapView.schedulePlanner', 'Planificador horaris')}
                                         </a>
                                         {/*                                         
                                         <a href="https://www.fib.upc.edu/ca/graus/grau-en-enginyeria-informatica/pla-destudis" target="_blank" rel="noopener noreferrer" onClick={() => setIsMoreMenuOpen(false)} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
@@ -475,7 +478,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                                         <button type="button" onClick={() => { handleSave(); setIsMoreMenuOpen(false); }} disabled={isSaving} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
                                             {isSaving ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={16} className="text-white" />}
-                                            {isSaving ? 'Guardant...' : 'Guardar Roadmap'}
+                                            {isSaving ? t('roadmapView.saving', 'Guardant...') : t('roadmapView.saveRoadmap', 'Guardar Roadmap')}
                                         </button>
                                     </motion.div>
                                 )}

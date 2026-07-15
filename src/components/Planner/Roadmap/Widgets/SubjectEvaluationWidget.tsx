@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { m as motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface EvaluationItem {
     acronym: string;
@@ -12,6 +13,7 @@ interface SubjectEvaluationWidgetProps {
 }
 
 const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataString }) => {
+    const { t } = useTranslation();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     let items: EvaluationItem[] = [];
 
@@ -39,7 +41,7 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
         <div className="my-8 flex flex-col gap-6 w-full bg-slate-900/30 p-6 rounded-3xl border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
             <h4 className="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
-                Distribució d'Avaluació
+                {t('roadmapSubjectEvaluation.title', "Distribució d'Avaluació")}
             </h4>
 
             {/* Stacked Bar */}
@@ -99,7 +101,7 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-sm font-bold text-white leading-tight">{item.name}</span>
-                                <span className="text-xs text-slate-400 font-medium mt-0.5">{item.weight}% del total</span>
+                                <span className="text-xs text-slate-400 font-medium mt-0.5">{item.weight}{t('roadmapSubjectEvaluation.percentTotal', '% del total')}</span>
                             </div>
                         </div>
                     );

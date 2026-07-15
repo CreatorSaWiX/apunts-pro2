@@ -95,6 +95,8 @@
     }
   },
   "common": {
+    "change": "Canviar",
+    "clickToEdit": "Fes clic per editar",
     "back": "Tornar",
     "languages": {
       "ca": "Català",
@@ -363,7 +365,11 @@
     "planner": "Planificador",
     "settings": "Configuració",
     "profile": "El meu perfil",
-    "login": "Iniciar Sessió"
+    "login": "Inicia Sessió",
+    "general": "General",
+    "offline": "Emmagatzematge",
+    "ai": "Assistent IA",
+    "about": "Quant a"
   },
   "hero": {
     "newVersion": "Hi ha una nova versió",
@@ -702,5 +708,122 @@
     "placeholder": "Escriu a {{aiName}}...",
     "attachFile": "Adjuntar imatge o PDF",
     "warning": "L'IA pot cometre errors. No comparteixis dades sensibles ni personals."
+  },
+  "roadmapSubjectEvaluation": {
+    "title": "Distribució d'Avaluació",
+    "percentTotal": "% del total"
+  },
+  "roadmapView": {
+    "zoomIn": "Apropar",
+    "zoomOut": "Allunyar",
+    "fitView": "Ajustar vista",
+    "startingSystems": "Iniciant Sistemes...",
+    "averageGrade": "Mitjana Ponderada",
+    "passedECTS": "Crèdits Aprovats",
+    "plannedECTS": "Crèdits Planificats",
+    "masterReady": "Master Ready",
+    "parsRequirements": "Requisits PARS Assolits",
+    "addText": "Afegir Text",
+    "addPostit": "Afegir Post-it",
+    "undo": "Desfer",
+    "redo": "Refer",
+    "clearAll": "Netejar tot",
+    "exit": "Sortir",
+    "specialization": "Especialitat",
+    "specializationShort": "Espec.",
+    "elective": "Optativa",
+    "electiveShort": "Opt.",
+    "draw": "Dibuixar",
+    "drawShort": "Dib.",
+    "more": "Més",
+    "addExperience": "Afegir Experiència",
+    "validations": "Convalidacions",
+    "schedulePlanner": "Planificador horaris",
+    "saving": "Guardant...",
+    "saveRoadmap": "Guardar Roadmap"
+  },
+  "curriculum": {
+    "specializations": {
+      "C": {
+        "name": "Computació",
+        "description": "Aprofundeix en els fonaments matemàtics i algorísmics de la informàtica. Domina la Intel·ligència Artificial, el disseny d'algorismes avançats i l'optimització de sistemes complexos.",
+        "whyChoose": "Si t'apassiona resoldre problemes complexos, entendre com funcionen els llenguatges per sota i crear IA des de zero.",
+        "roles": [
+          "AI/ML Engineer",
+          "Algorithm Researcher",
+          "Data Scientist",
+          "Graphics Engineer"
+        ],
+        "benefits": [
+          "Gran demanda en sectors d'IA",
+          "Base matemàtica sòlida",
+          "Capacitat de resoldre problemes inèdits"
+        ]
+      },
+      "EC": {
+        "name": "Enginyeria de Computadors",
+        "description": "Connecta el món del software amb l'electrònica. Dissenya arquitectures de microprocesadors, sistemes encastats, IoT i aprèn a esprémer al màxim el rendiment del maquinari.",
+        "whyChoose": "Si vols entendre com funciona realment un ordinador i dissenyar els dispositius que connectaran el món del futur.",
+        "roles": [
+          "Hardware Engineer",
+          "Embedded Systems Developer",
+          "IoT Architect",
+          "Systems Programmer"
+        ],
+        "benefits": [
+          "Molt pràctic i tangible",
+          "Indispensable per a robòtica i IoT",
+          "Poca competència de programadors purs"
+        ]
+      },
+      "ES": {
+        "name": "Enginyeria del Software",
+        "description": "Especialitza't en el cicle de vida complet de grans sistemes de programari. Aprèn arquitectura, gestió de projectes, assegurament de la qualitat i metodologies àgils.",
+        "whyChoose": "Si el teu objectiu és liderar equips, dissenyar arquitectures escalables i construir productes de software de gran impacte.",
+        "roles": [
+          "Software Architect",
+          "Full Stack Engineer",
+          "Project Manager",
+          "QA Lead"
+        ],
+        "benefits": [
+          "Alta versatilitat laboral",
+          "Preparació per a rols de lideratge",
+          "Domini de metodologies professionals"
+        ]
+      },
+      "SI": {
+        "name": "Sistemes d'Informació",
+        "description": "Alinea la tecnologia amb les estratègies de negoci. Aprèn a dissenyar, integrar i auditar sistemes d'informació empresarials complexos maximitzant-ne el valor corporatiu.",
+        "whyChoose": "Si tens visió de negoci i vols ser el pont entre la direcció estratègica i la implementació tecnològica.",
+        "roles": [
+          "IT Consultant",
+          "Business Analyst",
+          "Data Engineer",
+          "ERP Specialist"
+        ],
+        "benefits": [
+          "Visió holística empresa-tecnologia",
+          "Carrera en consultoria",
+          "Gestión de grans volums de dades corporatives"
+        ]
+      },
+      "TI": {
+        "name": "Tecnologies de la Informació",
+        "description": "Domina el desplegament, configuració i manteniment d'infraestructures tecnològiques. Sigues expert en xarxes, ciberseguretat, sistemes operatius i integració de serveis.",
+        "whyChoose": "Si gaudeixes amb el hacking ètic, el disseny de xarxes de telecomunicacions i l'administració de grans servidors cloud.",
+        "roles": [
+          "Cloud Architect",
+          "Cybersecurity Analyst",
+          "DevOps Engineer",
+          "Network Administrator"
+        ],
+        "benefits": [
+          "Demanda explosiva en ciberseguretat",
+          "Fonamental en l'era del Cloud Computing",
+          "Perfil hiper-tècnic i indispensable"
+        ]
+      }
+    }
   }
 }

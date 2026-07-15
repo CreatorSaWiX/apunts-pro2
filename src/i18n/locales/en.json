@@ -95,6 +95,8 @@
     }
   },
   "common": {
+    "change": "Change",
+    "clickToEdit": "Click to edit",
     "back": "Back",
     "languages": {
       "ca": "Català",
@@ -362,8 +364,12 @@
     "community": "Community",
     "planner": "Planner",
     "settings": "Settings",
-    "profile": "My profile",
-    "login": "Log In"
+    "profile": "My Profile",
+    "login": "Login",
+    "general": "General",
+    "offline": "Storage",
+    "ai": "AI Assistant",
+    "about": "About"
   },
   "hero": {
     "newVersion": "There is a new version",
@@ -697,5 +703,122 @@
     "placeholder": "Message {{aiName}}...",
     "attachFile": "Attach image or PDF",
     "warning": "AI can make mistakes. Do not share sensitive or personal data."
+  },
+  "roadmapSubjectEvaluation": {
+    "title": "Evaluation Distribution",
+    "percentTotal": "% of total"
+  },
+  "roadmapView": {
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "fitView": "Fit View",
+    "startingSystems": "Starting Systems...",
+    "averageGrade": "Weighted Average",
+    "passedECTS": "Passed Credits",
+    "plannedECTS": "Planned Credits",
+    "masterReady": "Master Ready",
+    "parsRequirements": "PARS Requirements Met",
+    "addText": "Add Text",
+    "addPostit": "Add Post-it",
+    "undo": "Undo",
+    "redo": "Redo",
+    "clearAll": "Clear all",
+    "exit": "Exit",
+    "specialization": "Specialization",
+    "specializationShort": "Spec.",
+    "elective": "Elective",
+    "electiveShort": "Elec.",
+    "draw": "Draw",
+    "drawShort": "Drw.",
+    "more": "More",
+    "addExperience": "Add Experience",
+    "validations": "Validations",
+    "schedulePlanner": "Schedule planner",
+    "saving": "Saving...",
+    "saveRoadmap": "Save Roadmap"
+  },
+  "curriculum": {
+    "specializations": {
+      "C": {
+        "name": "Computing",
+        "description": "Deepen your knowledge in the mathematical and algorithmic foundations of computer science. Master Artificial Intelligence, advanced algorithm design, and complex system optimization.",
+        "whyChoose": "If you are passionate about solving complex problems, understanding how languages work under the hood, and building AI from scratch.",
+        "roles": [
+          "AI/ML Engineer",
+          "Algorithm Researcher",
+          "Data Scientist",
+          "Graphics Engineer"
+        ],
+        "benefits": [
+          "High demand in AI sectors",
+          "Solid mathematical background",
+          "Ability to solve unprecedented problems"
+        ]
+      },
+      "EC": {
+        "name": "Computer Engineering",
+        "description": "Connect the software world with electronics. Design microprocessor architectures, embedded systems, IoT, and learn to squeeze the most out of hardware performance.",
+        "whyChoose": "If you want to understand how a computer really works and design the devices that will connect the world of the future.",
+        "roles": [
+          "Hardware Engineer",
+          "Embedded Systems Developer",
+          "IoT Architect",
+          "Systems Programmer"
+        ],
+        "benefits": [
+          "Highly practical and tangible",
+          "Essential for robotics and IoT",
+          "Low competition from pure programmers"
+        ]
+      },
+      "ES": {
+        "name": "Software Engineering",
+        "description": "Specialize in the complete lifecycle of large software systems. Learn architecture, project management, quality assurance, and agile methodologies.",
+        "whyChoose": "If your goal is to lead teams, design scalable architectures, and build high-impact software products.",
+        "roles": [
+          "Software Architect",
+          "Full Stack Engineer",
+          "Project Manager",
+          "QA Lead"
+        ],
+        "benefits": [
+          "High job versatility",
+          "Preparation for leadership roles",
+          "Mastery of professional methodologies"
+        ]
+      },
+      "SI": {
+        "name": "Information Systems",
+        "description": "Align technology with business strategies. Learn to design, integrate, and audit complex enterprise information systems maximizing corporate value.",
+        "whyChoose": "If you have a business vision and want to be the bridge between strategic management and technological implementation.",
+        "roles": [
+          "IT Consultant",
+          "Business Analyst",
+          "Data Engineer",
+          "ERP Specialist"
+        ],
+        "benefits": [
+          "Holistic business-technology vision",
+          "Career in consulting",
+          "Management of large corporate data volumes"
+        ]
+      },
+      "TI": {
+        "name": "Information Technologies",
+        "description": "Master the deployment, configuration, and maintenance of technological infrastructures. Be an expert in networking, cybersecurity, operating systems, and service integration.",
+        "whyChoose": "If you enjoy ethical hacking, telecommunications network design, and managing large cloud servers.",
+        "roles": [
+          "Cloud Architect",
+          "Cybersecurity Analyst",
+          "DevOps Engineer",
+          "Network Administrator"
+        ],
+        "benefits": [
+          "Explosive demand in cybersecurity",
+          "Fundamental in the Cloud Computing era",
+          "Hyper-technical and indispensable profile"
+        ]
+      }
+    }
   }
 }

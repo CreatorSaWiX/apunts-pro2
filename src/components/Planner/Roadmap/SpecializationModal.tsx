@@ -112,7 +112,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                     >
                                         <div className={`w-2 h-2 rounded-full transition-all duration-300 ${isPreviewed ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
                                         <span className={`transition-colors duration-300 ${isSelected ? 'text-white font-bold' : isPreviewed ? 'text-slate-200' : 'text-slate-400'}`}>
-                                            {spec.name}
+                                            {t(`curriculum.specializations.${spec.id}.name`, spec.name)}
                                         </span>
                                     </button>
                                 </div>
@@ -136,11 +136,11 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                 className="flex flex-col"
                             >
                                 <div className="flex items-center gap-4 mb-4">
-                                    <h2 className="text-3xl font-black text-white tracking-tight">{activeSpec.name}</h2>
+                                    <h2 className="text-3xl font-black text-white tracking-tight">{t(`curriculum.specializations.${activeSpec.id}.name`, activeSpec.name)}</h2>
                                 </div>
 
                                 <p className="text-base text-slate-300 leading-relaxed mb-6">
-                                    {activeSpec.description}
+                                    {t(`curriculum.specializations.${activeSpec.id}.description`, activeSpec.description)}
                                 </p>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -151,7 +151,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                         {t('planner.roadmapSpecialization.whyChooseIt', 'Per què triar-la?')}
                                     </h4>
                                     <p className="text-sm text-slate-400 leading-relaxed">
-                                        {activeSpec.whyChoose}
+                                        {t(`curriculum.specializations.${activeSpec.id}.whyChoose`, activeSpec.whyChoose)}
                                     </p>
                                 </div>
 
@@ -179,7 +179,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                         {t('planner.roadmapSpecialization.careerPaths', 'Sortides Professionals')}
                                     </h4>
                                     <ul className="space-y-3">
-                                        {activeSpec.roles.map(role => (
+                                        {(t(`curriculum.specializations.${activeSpec.id}.roles`, { returnObjects: true, defaultValue: activeSpec.roles }) as string[]).map(role => (
                                             <li key={role} className="flex items-center gap-3 text-sm text-slate-300">
                                                 <div className={`w-1.5 h-1.5 rounded-full ${theme.dot} shadow-[0_0_8px_currentColor] ${theme.text}`} />
                                                 {role}
@@ -194,7 +194,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                         {t('planner.roadmapSpecialization.keyBenefits', 'Beneficis Clau')}
                                     </h4>
                                     <ul className="space-y-3">
-                                        {activeSpec.benefits.map(benefit => (
+                                        {(t(`curriculum.specializations.${activeSpec.id}.benefits`, { returnObjects: true, defaultValue: activeSpec.benefits }) as string[]).map(benefit => (
                                             <li key={benefit} className="flex items-center gap-3 text-sm text-slate-300">
                                                 <div className={`w-1.5 h-1.5 rounded-full ${theme.dot} shadow-[0_0_8px_currentColor] ${theme.text}`} />
                                                 {benefit}
