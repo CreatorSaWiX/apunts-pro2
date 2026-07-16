@@ -18,6 +18,9 @@ import { useTranslation } from 'react-i18next';
 
 import LiquidDropdown from '../components/ui/glass/LiquidDropdown';
 import { LiquidToolbar, LiquidToolbarButton } from '../components/ui/glass/LiquidToolbar';
+import CommunityCanvas from '../components/community/CommunityCanvas';
+import NavigationPill from '../components/ui/NavigationPill';
+import { Users, Palette } from 'lucide-react';
 
 const mockEpicPost: CommunityPost = {
     id: 'mock-epic',
@@ -92,6 +95,9 @@ const CommunityPage = () => {
     
     // Hero 3D Showcase State
     const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
+    // Canvas State
+    const [isCanvasOpen, setIsCanvasOpen] = useState(false);
 
     // Offline state
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -248,6 +254,49 @@ const CommunityPage = () => {
 
     return (
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
+
+            {/* Dynamic Island Navigator (Fixed Top Right) */}
+            <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-[110]">
+                <NavigationPill>
+                    <button type="button"
+                        onClick={() => setIsCanvasOpen(false)}
+                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${!isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                    >
+                        {!isCanvasOpen && (
+                            <motion.div
+                                layoutId="community-active-tab"
+                                className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
+                                initial={false}
+                                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                            >
+                                <div className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                            </motion.div>
+                        )}
+                        <Users size={16} strokeWidth={!isCanvasOpen ? 2.5 : 2} className={`transition-colors ${!isCanvasOpen ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} />
+                        <span className="hidden sm:inline">Feed</span>
+                    </button>
+
+                    <div className="w-px h-6 bg-white/[0.1] mx-1"></div>
+
+                    <button type="button"
+                        onClick={() => setIsCanvasOpen(true)}
+                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                    >
+                        {isCanvasOpen && (
+                            <motion.div
+                                layoutId="community-active-tab"
+                                className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
+                                initial={false}
+                                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                            >
+                                <div className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                            </motion.div>
+                        )}
+                        <Palette size={16} strokeWidth={isCanvasOpen ? 2.5 : 2} className={`transition-colors ${isCanvasOpen ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} />
+                        <span className="hidden sm:inline">Llenç</span>
+                    </button>
+                </NavigationPill>
+            </div>
 
             {/* Awwwards Hero Section */}
             <section className="relative w-full min-h-[55vh] flex items-center justify-center z-10 overflow-hidden pt-28 pb-8">
@@ -623,6 +672,20 @@ const CommunityPage = () => {
                     />
                 )}
             </Suspense>
+
+            <AnimatePresence>
+                {isCanvasOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 50, scale: 0.95 }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                        className="fixed inset-0 z-[100] bg-[#09090b]"
+                    >
+                        <CommunityCanvas onClose={() => setIsCanvasOpen(false)} />
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

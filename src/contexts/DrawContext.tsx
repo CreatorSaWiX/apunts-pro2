@@ -7,14 +7,21 @@ export interface Stroke {
     width: number;
 }
 
+export type DrawTool = 'pen' | 'eraser' | 'pan';
+
 interface DrawContextType {
-    isDrawMode: boolean;
+    isDrawMode: boolean; // Computed based on currentTool !== 'pan'
     setIsDrawMode: (v: boolean) => void;
+    currentTool: DrawTool;
+    setCurrentTool: (t: DrawTool) => void;
     currentColor: string;
     setCurrentColor: (c: string) => void;
+    currentWidth: number;
+    setCurrentWidth: (w: number) => void;
     strokes: Stroke[];
     setStrokes: (strokes: Stroke[]) => void;
     addStroke: (stroke: Stroke) => void;
+    removeStroke: (id: string) => void;
     clearStrokes: () => void;
     undoStroke: () => void;
     redoStroke: () => void;
@@ -25,8 +32,16 @@ interface DrawContextType {
 const DrawContext = createContext<DrawContextType | undefined>(undefined);
 
 export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [isDrawMode, setIsDrawMode] = useState(false);
+    const [currentTool, setCurrentTool] = useState<DrawTool>('pen');
+    const isDrawMode = currentTool !== 'pan';
+    
+    // Kept for backwards compatibility but it just sets tool to 'pen' or 'pan'
+    const setIsDrawMode = useCallback((v: boolean) => {
+        setCurrentTool(v ? 'pen' : 'pan');
+    }, []);
+
     const [currentColor, setCurrentColor] = useState('#ef4444'); // Default red
+    const [currentWidth, setCurrentWidth] = useState(4); // Default brush width
     const [strokes, setStrokes] = useState<Stroke[]>([]);
     const [undoneStrokes, setUndoneStrokes] = useState<Stroke[]>([]);
 
@@ -38,6 +53,10 @@ export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const clearStrokes = useCallback(() => {
         setStrokes([]);
         setUndoneStrokes([]);
+    }, []);
+
+    const removeStroke = useCallback((id: string) => {
+        setStrokes((prev) => prev.filter(s => s.id !== id));
     }, []);
 
     const undoStroke = useCallback(() => {
@@ -67,17 +86,22 @@ export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const contextValue = useMemo(() => ({
         isDrawMode,
         setIsDrawMode,
+        currentTool,
+        setCurrentTool,
         currentColor,
         setCurrentColor,
+        currentWidth,
+        setCurrentWidth,
         strokes,
         setStrokes,
         addStroke,
+        removeStroke,
         clearStrokes,
         undoStroke,
         redoStroke,
         canUndo: strokes.length > 0,
         canRedo: undoneStrokes.length > 0
-    }), [isDrawMode, currentColor, strokes, undoneStrokes, addStroke, clearStrokes, undoStroke, redoStroke]);
+    }), [isDrawMode, currentTool, currentColor, currentWidth, strokes, undoneStrokes, addStroke, removeStroke, clearStrokes, undoStroke, redoStroke, setIsDrawMode]);
 
     return (
         <DrawContext.Provider value={contextValue}>
