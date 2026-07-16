@@ -396,6 +396,8 @@
     "subtitle": "Selecciona un problema per veure'n la solució"
   },
   "community": {
+    "resources": "Recursos",
+    "canvas": "Llenç",
     "subjects": "Assignatures",
     "subjectsShort": "Assig.",
     "rarity": "Raresa",

@@ -396,6 +396,8 @@
     "subtitle": "Select a problem to view its solution"
   },
   "community": {
+    "resources": "Resources",
+    "canvas": "Canvas",
     "subjects": "Subjects",
     "subjectsShort": "Subj.",
     "rarity": "Rarity",

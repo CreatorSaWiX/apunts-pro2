@@ -396,6 +396,8 @@
     "subtitle": "Selecciona un problema para ver la solución"
   },
   "community": {
+    "resources": "Recursos",
+    "canvas": "Lienzo",
     "subjects": "Asignaturas",
     "subjectsShort": "Asig.",
     "rarity": "Rareza",

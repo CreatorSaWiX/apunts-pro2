@@ -273,7 +273,7 @@ const CommunityPage = () => {
                             </motion.div>
                         )}
                         <Users size={16} strokeWidth={!isCanvasOpen ? 2.5 : 2} className={`transition-colors ${!isCanvasOpen ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} />
-                        <span className="hidden sm:inline">Feed</span>
+                        <span className="hidden sm:inline">{t('community.resources', 'Recursos')}</span>
                     </button>
 
                     <div className="w-px h-6 bg-white/[0.1] mx-1"></div>
@@ -293,7 +293,7 @@ const CommunityPage = () => {
                             </motion.div>
                         )}
                         <Palette size={16} strokeWidth={isCanvasOpen ? 2.5 : 2} className={`transition-colors ${isCanvasOpen ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} />
-                        <span className="hidden sm:inline">Llenç</span>
+                        <span className="hidden sm:inline">{t('community.canvas', 'Llenç')}</span>
                     </button>
                 </NavigationPill>
             </div>
