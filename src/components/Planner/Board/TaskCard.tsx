@@ -1,4 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import LiquidPanel from '../../ui/glass/LiquidPanel';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Task, TaskPriority } from '../../../types/tasks';
@@ -85,12 +87,40 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
             .filter(s => s.name.toLowerCase().includes(subjectSearchQuery.toLowerCase()));
     }, [subjects, subjectSearchQuery]);
 
+    const subjectTriggerRef = useRef<HTMLButtonElement>(null);
+    const [subjectPickerCoords, setSubjectPickerCoords] = useState({ top: 0, left: 0 });
+
     const toggleSubjectPicker = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        setShowSubjectPicker(!showSubjectPicker);
-        setSubjectSearchQuery('');
+        if (!showSubjectPicker) {
+            if (subjectTriggerRef.current) {
+                const rect = subjectTriggerRef.current.getBoundingClientRect();
+                setSubjectPickerCoords({ top: rect.bottom + 8, left: rect.left });
+            }
+            setShowSubjectPicker(true);
+            setSubjectSearchQuery('');
+        } else {
+            setShowSubjectPicker(false);
+        }
     };
+
+    useEffect(() => {
+        const handleScrollOrResize = () => {
+            if (showSubjectPicker && subjectTriggerRef.current) {
+                const rect = subjectTriggerRef.current.getBoundingClientRect();
+                setSubjectPickerCoords({ top: rect.bottom + 8, left: rect.left });
+            }
+        };
+        if (showSubjectPicker) {
+            window.addEventListener('scroll', handleScrollOrResize, true);
+            window.addEventListener('resize', handleScrollOrResize);
+            return () => {
+                window.removeEventListener('scroll', handleScrollOrResize, true);
+                window.removeEventListener('resize', handleScrollOrResize);
+            };
+        }
+    }, [showSubjectPicker]);
 
     const {
         setNodeRef,
@@ -319,6 +349,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                             <div className="relative">
                                 {subjects && subjects.length > 0 && (
                                     <button type="button"
+                                        ref={subjectTriggerRef}
                                         onClick={toggleSubjectPicker}
                                         className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${editSubjectId
                                             ? (() => {
@@ -334,23 +365,35 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                     </button>
                                 )}
 
-                                {showSubjectPicker && (
+                                {showSubjectPicker && createPortal(
                                     <>
-                                        <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setShowSubjectPicker(false); }} />
-                                        <div className="absolute top-full left-0 mt-2 w-48 bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] p-2 rounded-[20px] flex flex-col gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] z-50 cursor-default">
-                                            <input
-                                                autoFocus
-                                                value={subjectSearchQuery}
+                                        <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setShowSubjectPicker(false); }} />
+                                        <motion.div 
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                                            style={{ 
+                                                top: subjectPickerCoords.top, 
+                                                left: subjectPickerCoords.left,
+                                                WebkitBackdropFilter: 'blur(24px)'
+                                            }}
+                                            className="fixed z-[9999] w-[260px] cursor-default flex flex-col gap-2 p-3 !rounded-[24px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
+                                            onClick={(e) => e.stopPropagation()}
+                                            onPointerDown={(e) => e.stopPropagation()}
+                                            onDoubleClick={(e) => e.stopPropagation()}
+                                        >
+                                                <input
+                                                    autoFocus
+                                                    value={subjectSearchQuery}
                                                 onChange={(e) => setSubjectSearchQuery(e.target.value)}
-                                                placeholder="Cerca..."
-                                                className="bg-white/5 border border-white/10 text-slate-200 text-[12px] font-medium px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500 transition-colors"
-                                                onClick={(e) => e.stopPropagation()}
-                                                onKeyDown={(e) => e.stopPropagation()}
+                                                placeholder="Cerca assignatura..."
+                                                className="bg-white/5 border border-white/10 text-slate-200 text-[13px] font-medium px-4 py-2.5 rounded-xl focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500 transition-colors"
                                             />
-                                            <div className="flex flex-col gap-1 max-h-32 overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                                            <div className="flex flex-col gap-1 max-h-[220px] overflow-y-auto [&::-webkit-scrollbar]:hidden mt-1">
                                                 <button type="button"
                                                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(null); setShowSubjectPicker(false); }}
-                                                    className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                    className={`text-left px-4 py-3 rounded-xl text-[13px] font-semibold tracking-wide transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                                 >
                                                     Sense assignatura
                                                 </button>
@@ -358,15 +401,16 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                                     <button type="button"
                                                         key={s.id}
                                                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(s.id); setShowSubjectPicker(false); }}
-                                                        className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                                        className={`text-left px-4 py-3 rounded-xl text-[13px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
                                                     >
-                                                        <span className={`w-2 h-2 rounded-full bg-${s.colorToken}`}></span>
+                                                        <span className={`w-2.5 h-2.5 rounded-full bg-${s.colorToken}`}></span>
                                                         {s.name}
                                                     </button>
                                                 ))}
                                             </div>
-                                        </div>
-                                    </>
+                                        </motion.div>
+                                    </>,
+                                    document.body
                                 )}
                             </div>
 

@@ -91,14 +91,17 @@ const TaskPopover: React.FC = () => {
             {isOpen && (
                 <motion.div 
                     ref={popoverRef}
-                    initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)', y: -10 }}
-                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, filter: 'blur(5px)', y: -5 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 0.8 }}
-                    className="fixed z-[1001] w-[240px] flex flex-col origin-top-left"
-                    style={{ left: position.x, top: position.y }}
+                    className="fixed z-[1001] w-[240px] flex flex-col origin-top-left flex flex-col !rounded-[16px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
+                    style={{ 
+                        left: position.x, 
+                        top: position.y,
+                        WebkitBackdropFilter: 'blur(24px)'
+                    }}
                 >
-                    <LiquidPanel className="flex flex-col !rounded-[16px]">
                     {/* Títol Ràpid */}
                     <div className="p-3 border-b border-white/[0.05]">
                         <input 
@@ -203,7 +206,6 @@ const TaskPopover: React.FC = () => {
                             })}
                         </div>
                     </div>
-                </LiquidPanel>
                 </motion.div>
             )}
         </AnimatePresence>

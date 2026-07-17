@@ -23,9 +23,11 @@ const CodeEditorSkeleton = () => {
         </div>
     );
 };
+
 import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
 import Spinner from '../components/ui/Spinner';
 import DOMPurify from 'dompurify';
+
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();
     const { t } = useTranslation();

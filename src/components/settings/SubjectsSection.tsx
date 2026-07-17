@@ -7,17 +7,46 @@ import subjectsData from '../../data/subjects.json';
 import NavigationPill from '../ui/NavigationPill';
 import { Modal } from '../ui/Modal';
 import { useTranslation } from 'react-i18next';
+import { createPortal } from 'react-dom';
+import { useLayoutEffect } from 'react';
+import { useShortcut } from '../../hooks/useShortcut';
 
 export const SubjectsSection = () => {
     const { t } = useTranslation();
-    const { homeSubjects, setHomeSubjects, customSubjectColors, setCustomSubjectColors } = useSettings();
+    const { homeSubjects, setHomeSubjects, customSubjectColors, setCustomSubjectColors, shortcuts } = useSettings();
+    const searchShortcut = shortcuts?.searchSubjects || { key: 'k', meta: true };
     const [searchQuery, setSearchQuery] = useState('');
     const [isCommandOpen, setIsCommandOpen] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     const isDraggingRef = useRef(false);
     const [editingSubjectColor, setEditingSubjectColor] = useState<string | null>(null);
     const [previewSubject, setPreviewSubject] = useState<string>('');
     const [subjectError, setSubjectError] = useState<string | null>(null);
+    const [dropdownCoords, setDropdownCoords] = useState({ top: 0, left: 0, width: 0 });
+
+    const updateCoords = () => {
+        if (searchRef.current) {
+            const rect = searchRef.current.getBoundingClientRect();
+            setDropdownCoords({
+                top: rect.bottom + 8,
+                left: rect.left,
+                width: rect.width
+            });
+        }
+    };
+
+    useLayoutEffect(() => {
+        if (isCommandOpen) {
+            updateCoords();
+            window.addEventListener('resize', updateCoords);
+            window.addEventListener('scroll', updateCoords, true);
+            return () => {
+                window.removeEventListener('resize', updateCoords);
+                window.removeEventListener('scroll', updateCoords, true);
+            };
+        }
+    }, [isCommandOpen]);
 
     useEffect(() => {
         if (homeSubjects.length > 0 && !homeSubjects.includes(previewSubject)) {
@@ -34,6 +63,10 @@ export const SubjectsSection = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    useShortcut('searchSubjects', () => {
+        inputRef.current?.focus();
+    });
 
     const filteredSubjects = subjectsData.filter(s =>
         s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -72,6 +105,7 @@ export const SubjectsSection = () => {
                 >
                     <Search size={20} className={`ml-4 mr-3 ${isCommandOpen ? 'text-white' : 'text-slate-500'} transition-colors duration-300`} />
                     <input
+                        ref={inputRef}
                         type="text"
                         placeholder={t('settings.subjects.searchPlaceholder', "Cerca i afegeix assignatures...")}
                         value={searchQuery}
@@ -81,22 +115,36 @@ export const SubjectsSection = () => {
                     />
                     {!isCommandOpen && (
                         <div className="absolute right-4 flex items-center gap-1 px-2 py-1 rounded bg-white/10 text-slate-300 text-[10px] font-bold uppercase tracking-wider">
-                            <Command size={12} /> K
+                            {searchShortcut.meta && <Command size={12} />} {searchShortcut.key === ' ' ? 'SPACE' : searchShortcut.key}
                         </div>
                     )}
                 </div>
 
-                <AnimatePresence>
-                    {isCommandOpen && searchQuery.length > 0 && (
+                {isCommandOpen && createPortal(
+                    <>
                         <motion.div
-                            initial={{ opacity: 0, y: -10, filter: 'blur(5px)' }}
-                            animate={{ opacity: 1, y: 8, filter: 'blur(0px)' }}
-                            exit={{ opacity: 0, y: -10, filter: 'blur(5px)' }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-full left-0 right-0 bg-[#0a0d16]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl max-h-[300px] overflow-y-auto custom-scrollbar overflow-hidden p-2 z-50"
+                            className="fixed inset-0 z-[9998]"
+                            onClick={() => setIsCommandOpen(false)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.98 }}
+                            transition={{ duration: 0.2 }}
+                            style={{
+                                top: dropdownCoords.top,
+                                left: dropdownCoords.left,
+                                width: dropdownCoords.width,
+                                WebkitBackdropFilter: 'blur(24px)'
+                            }}
+                            className="fixed z-[9999] p-3 !rounded-[24px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)] origin-top"
                         >
                             {filteredSubjects.length > 0 ? (
-                                <div className="flex flex-col gap-1">
+                                <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto custom-scrollbar pr-1">
                                     {filteredSubjects.map(subject => {
                                         const defaultColor = subject.colorToken ? subject.colorToken.split('-')[0] : 'sky';
                                         const colorFamily = customSubjectColors[subject.name] || defaultColor;
@@ -131,12 +179,13 @@ export const SubjectsSection = () => {
                                 <div className="p-6 text-center text-slate-500 font-medium">{t('settings.subjects.noResults', "No s'han trobat resultats")}</div>
                             )}
                         </motion.div>
-                    )}
-                </AnimatePresence>
+                    </>,
+                    document.body
+                )}
             </div>
 
             {/* Selected Subjects - Glass Pills Preview */}
-            <div className={`w-full transition-all duration-300 ${isCommandOpen && searchQuery.length > 0 ? 'opacity-30 blur-sm pointer-events-none' : ''}`}>
+            <div className={`w-full transition-all duration-300 ${isCommandOpen ? 'opacity-30 blur-sm pointer-events-none' : ''}`}>
                 <Reorder.Group
                     axis="x"
                     values={homeSubjects}

@@ -50,6 +50,15 @@
       "resourcesDesc": "Material and resources for",
       "filesAvailable": "files available"
     },
+    "shortcuts": {
+      "title": "Keyboard Shortcuts",
+      "subtitle": "Customize shortcuts to quickly access different features.",
+      "pressAnyKey": "Press any key to change...",
+      "reset": "Reset",
+      "actions": {
+        "searchSubjects": "Search Subjects"
+      }
+    },
     "ai": {
       "title": "AI Assistant",
       "subtitle": "Configure the personality and behavior of your copilot. This feature is inspired by",
@@ -368,6 +377,7 @@
     "login": "Login",
     "general": "General",
     "offline": "Storage",
+    "shortcuts": "Shortcuts",
     "ai": "AI Assistant",
     "about": "About"
   },

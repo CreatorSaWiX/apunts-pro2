@@ -48,7 +48,7 @@ const ParticleNetwork = () => {
     );
 };
 
-const CommunityHero3D = () => {
+const CommunityHero3D = ({ isPaused = false }: { isPaused?: boolean }) => {
     const [dpr, setDpr] = useState(1.5);
     const [mounted, setMounted] = useState(false);
 
@@ -64,7 +64,7 @@ const CommunityHero3D = () => {
             style={{ maskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)' }}
         >
             {mounted && (
-                <Canvas camera={{ position: [0, 0, 3], fov: 60 }} dpr={dpr}>
+                <Canvas frameloop={isPaused ? "never" : "always"} camera={{ position: [0, 0, 3], fov: 60 }} dpr={dpr}>
                     <PerformanceMonitor onIncline={() => setDpr(1.5)} onDecline={() => setDpr(1)} />
                     <ParticleNetwork />
                 </Canvas>

@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => {
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
           globIgnores: ['**/embeddings*.json', '**/node_modules/**/*'],
-          maximumFileSizeToCacheInBytes: 1500000,
+          maximumFileSizeToCacheInBytes: 4000000,
           navigateFallbackDenylist: [/^\/pdfs\//, /^\/api\//], // EXCLOURE ELS PDFS DEL SERVICE WORKER
           runtimeCaching: [
             {

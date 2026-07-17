@@ -98,6 +98,38 @@ const CommunityPage = () => {
 
     // Canvas State
     const [isCanvasOpen, setIsCanvasOpen] = useState(false);
+    const [isCanvasFullyOpen, setIsCanvasFullyOpen] = useState(false);
+    const [isBackgroundHidden, setIsBackgroundHidden] = useState(false);
+    const [isCanvasClosing, setIsCanvasClosing] = useState(false);
+
+    const handleOpenCanvas = () => {
+        setIsCanvasOpen(true);
+        // Després de l'animació d'expansió (800ms)
+        setTimeout(() => {
+            setIsCanvasFullyOpen(true); // Pausa el WebGL
+            setIsBackgroundHidden(true); // Oculta per no re-pintar
+        }, 800);
+    };
+
+    const handleCloseCanvas = () => {
+        setIsCanvasClosing(true);
+        
+        // 1. Fem visible el fons i despausem el WebGL immediatament.
+        // D'aquesta manera, té 350ms per recompilar els shaders i pintar-se abans que comenci l'animació de sortida.
+        // Això evita que aparegui de sobte (pop-in) al final de l'animació.
+        setIsBackgroundHidden(false);
+        setIsCanvasFullyOpen(false);
+        
+        // 2. Donem temps al navegador (350ms) per fer el fade-out suau del Canvas interactiu i desmuntar-lo
+        // abans de començar l'animació pesada del clipPath
+        setTimeout(() => setIsCanvasOpen(false), 350);
+
+        // 3. Reset de l'estat de tancament quan l'animació de sortida hagi acabat completament 
+        // (350ms fade + 800ms clipPath = 1150ms total)
+        setTimeout(() => {
+            setIsCanvasClosing(false);
+        }, 1200);
+    };
 
     // Offline state
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -259,7 +291,7 @@ const CommunityPage = () => {
             <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-[110]">
                 <NavigationPill>
                     <button type="button"
-                        onClick={() => setIsCanvasOpen(false)}
+                        onClick={handleCloseCanvas}
                         className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${!isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                     >
                         {!isCanvasOpen && (
@@ -279,7 +311,7 @@ const CommunityPage = () => {
                     <div className="w-px h-6 bg-white/[0.1] mx-1"></div>
 
                     <button type="button"
-                        onClick={() => setIsCanvasOpen(true)}
+                        onClick={handleOpenCanvas}
                         className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                     >
                         {isCanvasOpen && (
@@ -298,9 +330,11 @@ const CommunityPage = () => {
                 </NavigationPill>
             </div>
 
-            {/* Awwwards Hero Section */}
-            <section className="relative w-full min-h-[55vh] flex items-center justify-center z-10 overflow-hidden pt-28 pb-8">
-                <CommunityHero3D />
+            {/* Fons intel·ligent: L'ocultem amb CSS per evitar problemes de remounting. Fem servir visibility per no perdre l'scroll i el layout, i pausem WebGL. */}
+            <div className={`transition-all duration-700 ease-in-out ${isBackgroundHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}`}>
+                {/* Awwwards Hero Section */}
+                <section className="relative w-full min-h-[55vh] flex items-center justify-center z-10 overflow-hidden pt-28 pb-8">
+                <CommunityHero3D isPaused={isCanvasFullyOpen} />
                 
                 <div className="w-full max-w-[1600px] px-4 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-6 items-center relative z-20">
                     {/* Left Text */}
@@ -644,6 +678,7 @@ const CommunityPage = () => {
                     )}
                 </div>
             </main>
+            </div>
 
             {/* Modals */}
             <Suspense fallback={null}>
@@ -676,13 +711,14 @@ const CommunityPage = () => {
             <AnimatePresence>
                 {isCanvasOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 50, scale: 0.95 }}
-                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed inset-0 z-[100] bg-[#09090b]"
+                        key="canvas-overlay"
+                        initial={{ clipPath: 'circle(0% at calc(100% - 4rem) 2.5rem)' }}
+                        animate={{ clipPath: 'circle(150% at calc(100% - 4rem) 2.5rem)' }}
+                        exit={{ clipPath: 'circle(0% at calc(100% - 4rem) 2.5rem)' }}
+                        transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+                        className="fixed inset-0 z-40 bg-[#09090b]"
                     >
-                        <CommunityCanvas onClose={() => setIsCanvasOpen(false)} />
+                        <CommunityCanvas onClose={handleCloseCanvas} isClosing={isCanvasClosing} />
                     </motion.div>
                 )}
             </AnimatePresence>

@@ -5,6 +5,7 @@ import { es, ca, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import LiquidPanel from '../../ui/glass/LiquidPanel';
 
 interface DateTimePickerProps {
     value: string;
@@ -157,12 +158,16 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                 <AnimatePresence>
                     <motion.div
                         ref={popoverRef}
-                        initial={{ opacity: 0, y: -15, scale: 0.9, filter: 'blur(8px)' }}
-                        animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-                        exit={{ opacity: 0, y: -10, scale: 0.95, filter: 'blur(4px)' }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
-                        style={{ top: coords.top, left: coords.left }}
-                        className="fixed z-[9999] w-[280px] bg-[#13131A]/70 backdrop-blur-[40px] border border-white/[0.08] rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] p-5 flex flex-col gap-4"
+                        style={{ 
+                            top: coords.top, 
+                            left: coords.left,
+                            WebkitBackdropFilter: 'blur(24px)'
+                        }}
+                        className="fixed z-[9999] w-[280px] flex flex-col gap-4 p-5 !rounded-[24px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
                         onClick={(e) => e.stopPropagation()}
                         onDoubleClick={(e) => e.stopPropagation()}
                         onPointerDown={(e) => e.stopPropagation()}

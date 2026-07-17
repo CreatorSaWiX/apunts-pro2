@@ -32,7 +32,7 @@ interface DrawContextType {
 const DrawContext = createContext<DrawContextType | undefined>(undefined);
 
 export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [currentTool, setCurrentTool] = useState<DrawTool>('pen');
+    const [currentTool, setCurrentTool] = useState<DrawTool>('pan');
     const isDrawMode = currentTool !== 'pan';
     
     // Kept for backwards compatibility but it just sets tool to 'pen' or 'pan'

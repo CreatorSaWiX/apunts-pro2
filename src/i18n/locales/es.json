@@ -50,6 +50,15 @@
       "resourcesDesc": "Material y recursos para",
       "filesAvailable": "archivos disponibles"
     },
+    "shortcuts": {
+      "title": "Atajos de Teclado",
+      "subtitle": "Personaliza los atajos para acceder rápidamente a diferentes funciones.",
+      "pressAnyKey": "Pulsa cualquier tecla para cambiar...",
+      "reset": "Restablecer",
+      "actions": {
+        "searchSubjects": "Buscar Asignaturas"
+      }
+    },
     "ai": {
       "title": "Asistente IA",
       "subtitle": "Configura la personalidad y el comportamiento de tu copiloto. Esta funcionalidad está inspirada en",
@@ -368,6 +377,7 @@
     "login": "Iniciar Sesión",
     "general": "General",
     "offline": "Almacenamiento",
+    "shortcuts": "Atajos",
     "ai": "Asistente IA",
     "about": "Acerca de"
   },

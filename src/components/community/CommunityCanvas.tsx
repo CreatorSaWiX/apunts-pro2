@@ -6,7 +6,7 @@ import CommunityDrawLayer from './CommunityDrawLayer';
 import { LiquidToolbar, LiquidToolbarButton } from '../ui/glass/LiquidToolbar';
 import { Palette, X, Undo2, Redo2, Trash2, Pen, Eraser, Hand } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { m as motion } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { useMultiplayerCanvas } from '../../hooks/useMultiplayerCanvas';
 
 // A wrapper to use the hooks inside ReactFlowProvider and DrawProvider
@@ -63,57 +63,71 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             {/* Drawing Toolbar */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
                 <LiquidToolbar>
-                    <LiquidToolbarButton onClick={() => setCurrentTool('pan')} active={currentTool === 'pan'}>
+                    <LiquidToolbarButton key="pan" onClick={() => setCurrentTool('pan')} active={currentTool === 'pan'}>
                         <Hand size={18} />
                     </LiquidToolbarButton>
-                    <LiquidToolbarButton onClick={() => setCurrentTool('pen')} active={currentTool === 'pen'}>
+                    <LiquidToolbarButton key="pen" onClick={() => setCurrentTool('pen')} active={currentTool === 'pen'}>
                         <Pen size={18} />
                     </LiquidToolbarButton>
-                    <LiquidToolbarButton onClick={() => setCurrentTool('eraser')} active={currentTool === 'eraser'}>
+                    <LiquidToolbarButton key="eraser" onClick={() => setCurrentTool('eraser')} active={currentTool === 'eraser'}>
                         <Eraser size={18} />
                     </LiquidToolbarButton>
 
-                    <div className="w-px h-6 bg-white/10 mx-1" />
+                    <AnimatePresence mode="popLayout">
+                        {currentTool === 'pen' && (
+                            <motion.div
+                                key="pen-controls"
+                                layout
+                                initial={{ opacity: 0, width: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, width: "auto", scale: 1 }}
+                                exit={{ opacity: 0, width: 0, scale: 0.8 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                                className="flex items-center gap-1"
+                            >
+                                <div className="w-px h-6 bg-white/10 mx-1" />
 
-                    {/* Size controls */}
-                    {[2, 4, 8].map(size => (
-                        <button
-                            key={size}
-                            type="button"
-                            onClick={() => setCurrentWidth(size)}
-                            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${currentWidth === size ? 'bg-white/20 shadow-inner' : 'hover:bg-white/10 opacity-70 hover:opacity-100'}`}
-                        >
-                            <div 
-                                className="rounded-full bg-white transition-all duration-300"
-                                style={{ width: size + 2, height: size + 2 }}
-                            />
-                        </button>
-                    ))}
+                                {/* Size controls */}
+                                {[2, 4, 8].map(size => (
+                                    <button
+                                        key={size}
+                                        type="button"
+                                        onClick={() => setCurrentWidth(size)}
+                                        className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition-all duration-300 ${currentWidth === size ? 'bg-white/20 shadow-inner' : 'hover:bg-white/10 opacity-70 hover:opacity-100'}`}
+                                    >
+                                        <div 
+                                            className="rounded-full bg-white transition-all duration-300"
+                                            style={{ width: size + 2, height: size + 2 }}
+                                        />
+                                    </button>
+                                ))}
 
-                    <div className="w-px h-6 bg-white/10 mx-1" />
+                                <div className="w-px h-6 bg-white/10 mx-1" />
 
-                    {/* Color controls */}
-                    {drawColors.map(c => (
-                        <button
-                            key={c.id}
-                            type="button"
-                            onClick={() => setCurrentColor(c.value)}
-                            className={`w-8 h-8 rounded-full transition-all duration-300 relative ${currentColor === c.value ? 'scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)] z-10' : 'scale-90 hover:scale-100 opacity-70 hover:opacity-100'}`}
-                            style={{ backgroundColor: c.value, boxShadow: currentColor === c.value ? `0 0 20px ${c.value}66` : 'none' }}
-                        />
-                    ))}
+                                {/* Color controls */}
+                                {drawColors.map(c => (
+                                    <button
+                                        key={c.id}
+                                        type="button"
+                                        onClick={() => setCurrentColor(c.value)}
+                                        className={`w-8 h-8 shrink-0 rounded-full transition-all duration-300 relative ${currentColor === c.value ? 'scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)] z-10' : 'scale-90 hover:scale-100 opacity-70 hover:opacity-100'}`}
+                                        style={{ backgroundColor: c.value, boxShadow: currentColor === c.value ? `0 0 20px ${c.value}66` : 'none' }}
+                                    />
+                                ))}
 
-                    <div className="w-px h-6 bg-white/10 mx-1" />
+                                <div className="w-px h-6 bg-white/10 mx-1" />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                    <LiquidToolbarButton onClick={undoStroke} active={false} className={!canUndo ? 'opacity-30 cursor-not-allowed' : ''}>
+                    <LiquidToolbarButton key="undo" onClick={undoStroke} active={false} className={!canUndo ? 'opacity-30 cursor-not-allowed' : ''}>
                         <Undo2 size={18} />
                     </LiquidToolbarButton>
 
-                    <LiquidToolbarButton onClick={redoStroke} active={false} className={!canRedo ? 'opacity-30 cursor-not-allowed' : ''}>
+                    <LiquidToolbarButton key="redo" onClick={redoStroke} active={false} className={!canRedo ? 'opacity-30 cursor-not-allowed' : ''}>
                         <Redo2 size={18} />
                     </LiquidToolbarButton>
 
-                    <LiquidToolbarButton onClick={() => { if(window.confirm('Vols esborrar tot el llenç?')) { clearStrokes(); broadcastClear(); } }} active={false} className="text-red-400 hover:text-red-300 hover:bg-red-500/10">
+                    <LiquidToolbarButton key="clear" onClick={() => { if(window.confirm('Vols esborrar tot el llenç?')) { clearStrokes(); broadcastClear(); } }} active={false} className="text-red-400 hover:text-red-300 hover:bg-red-500/10">
                         <Trash2 size={18} />
                     </LiquidToolbarButton>
 
@@ -125,13 +139,40 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
 interface CommunityCanvasProps {
     onClose: () => void;
+    isClosing?: boolean;
 }
 
-const CommunityCanvas: React.FC<CommunityCanvasProps> = ({ onClose }) => {
+const CommunityCanvas: React.FC<CommunityCanvasProps> = ({ onClose, isClosing }) => {
+    // Retardem la càrrega del contingut pesat (ReactFlow) per garantir que l'animació CSS (clipPath) funcioni a 60FPS sense bloquejos
+    const [isReady, setIsReady] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsReady(true), 800);
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
         <ReactFlowProvider>
             <DrawProvider>
-                <CanvasContent onClose={onClose} />
+                <AnimatePresence mode="wait">
+                    {isReady && !isClosing ? (
+                        <motion.div 
+                            key="canvas-content"
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1 }} 
+                            exit={{ opacity: 0, scale: 0.98 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }} 
+                            className="w-full h-full absolute inset-0"
+                        >
+                            <CanvasContent onClose={onClose} />
+                        </motion.div>
+                    ) : (
+                        <motion.div 
+                            key="canvas-bg"
+                            className="w-full h-full bg-[#09090b] absolute inset-0" 
+                        />
+                    )}
+                </AnimatePresence>
             </DrawProvider>
         </ReactFlowProvider>
     );

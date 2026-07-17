@@ -50,6 +50,15 @@
       "resourcesDesc": "Material i recursos per a",
       "filesAvailable": "arxius disponibles"
     },
+    "shortcuts": {
+      "title": "Dreceres de Teclat",
+      "subtitle": "Personalitza les dreceres per accedir ràpidament a diferents funcions.",
+      "pressAnyKey": "Prem qualsevol tecla per canviar...",
+      "reset": "Restablir",
+      "actions": {
+        "searchSubjects": "Cercar Assignatures"
+      }
+    },
     "ai": {
       "title": "Assistent IA",
       "subtitle": "Configura la personalitat i el comportament del teu copilot. Aquesta funcionalitat està inspirat en",
@@ -368,6 +377,7 @@
     "login": "Inicia Sessió",
     "general": "General",
     "offline": "Emmagatzematge",
+    "shortcuts": "Dreceres",
     "ai": "Assistent IA",
     "about": "Quant a"
   },

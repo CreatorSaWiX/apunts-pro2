@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Settings2, Sparkles, Bot, Database } from 'lucide-react';
+import { Settings2, Sparkles, Bot, Database, Keyboard } from 'lucide-react';
 import { RoadmapProvider } from '../contexts/RoadmapContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -13,8 +13,9 @@ import { DeleteAccSection } from '../components/settings/DeleteAccSection';
 import { AISection } from '../components/settings/AISection';
 import { AboutSection } from '../components/settings/AboutSection';
 import { OfflineSection } from '../components/settings/OfflineSection';
+import { ShortcutsSection } from '../components/settings/ShortcutsSection';
 
-type TabId = 'general' | 'offline' | 'ai' | 'about';
+type TabId = 'general' | 'shortcuts' | 'offline' | 'ai' | 'about';
 
 
 const SettingsContent = () => {
@@ -24,6 +25,7 @@ const SettingsContent = () => {
 
     const TABS: { id: TabId; label: string; icon: any }[] = [
         { id: 'general', label: t('nav.general', 'General'), icon: Settings2 },
+        { id: 'shortcuts', label: t('nav.shortcuts', 'Dreceres'), icon: Keyboard },
         { id: 'offline', label: t('nav.offline', 'Emmagatzematge'), icon: Database },
         { id: 'ai', label: t('nav.ai', 'Assistent IA'), icon: Bot },
         { id: 'about', label: t('nav.about', 'Quant a'), icon: Sparkles },
@@ -49,6 +51,7 @@ const SettingsContent = () => {
                     )}
                 </div>
             );
+            case 'shortcuts': return <ShortcutsSection />;
             case 'offline': return <OfflineSection />;
             case 'ai': return user ? <AISection /> : null;
             case 'about': return <AboutSection />;

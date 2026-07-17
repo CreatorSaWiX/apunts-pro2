@@ -8,6 +8,13 @@ export type OfflineStorageSettings = Record<string, boolean>;
 
 const DEFAULT_OFFLINE_STORAGE: OfflineStorageSettings = {};
 
+export type ShortcutConfig = { key: string; meta: boolean };
+export type ShortcutsSettings = Record<string, ShortcutConfig>;
+
+const DEFAULT_SHORTCUTS: ShortcutsSettings = {
+    searchSubjects: { key: 'k', meta: true }
+};
+
 interface SettingsContextType {
     homeSubjects: string[];
     setHomeSubjects: React.Dispatch<React.SetStateAction<string[]>>;
@@ -19,6 +26,8 @@ interface SettingsContextType {
     setAiSettings: React.Dispatch<React.SetStateAction<AISettings>>;
     offlineStorage: OfflineStorageSettings;
     setOfflineStorage: React.Dispatch<React.SetStateAction<OfflineStorageSettings>>;
+    shortcuts: ShortcutsSettings;
+    setShortcuts: React.Dispatch<React.SetStateAction<ShortcutsSettings>>;
     isSettingsLoaded: boolean;
 }
 
@@ -92,6 +101,18 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return DEFAULT_OFFLINE_STORAGE;
     });
 
+    const [shortcuts, setShortcuts] = useState<ShortcutsSettings>(() => {
+        const saved = localStorage.getItem('app-settings-shortcuts');
+        if (saved) {
+            try {
+                return { ...DEFAULT_SHORTCUTS, ...JSON.parse(saved) };
+            } catch (e) {
+                return DEFAULT_SHORTCUTS;
+            }
+        }
+        return DEFAULT_SHORTCUTS;
+    });
+
     // Load from Firebase on mount if user is logged in
     useEffect(() => {
         let isMounted = true;
@@ -133,6 +154,9 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                     if (data.offlineStorage) {
                         setOfflineStorage({ ...DEFAULT_OFFLINE_STORAGE, ...data.offlineStorage });
                     }
+                    if (data.shortcuts) {
+                        setShortcuts({ ...DEFAULT_SHORTCUTS, ...data.shortcuts });
+                    }
                 }
             } catch (err) {
                 console.error('Failed to load settings from Firebase:', err);
@@ -155,6 +179,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             localStorage.setItem('app-settings-subject-colors', JSON.stringify(customSubjectColors));
             localStorage.setItem('app-settings-ai', JSON.stringify(aiSettings));
             localStorage.setItem('app-settings-offline', JSON.stringify(offlineStorage));
+            localStorage.setItem('app-settings-shortcuts', JSON.stringify(shortcuts));
         }, 300);
 
         if (isSettingsLoaded && user) {
@@ -170,7 +195,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                         defaultPlannerView,
                         customSubjectColors,
                         aiSettings,
-                        offlineStorage
+                        offlineStorage,
+                        shortcuts
                     }, { merge: true });
                 } catch (err) {
                     console.error('Failed to save settings to Firebase:', err);
@@ -185,7 +211,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         }
         
         return () => clearTimeout(localTimeoutId);
-    }, [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, isSettingsLoaded, user]);
+    }, [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, shortcuts, isSettingsLoaded, user]);
 
     // MEMOITZACIÓ: Evitem fer un "new Struct" cada cop i mantenim el punter estable al Heap.
     // Això salva a tota l'aplicació de repintar-se si les variables de dalt no han canviat realment.
@@ -200,8 +226,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setAiSettings,
         offlineStorage,
         setOfflineStorage,
+        shortcuts,
+        setShortcuts,
         isSettingsLoaded
-    }), [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, isSettingsLoaded]);
+    }), [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, shortcuts, isSettingsLoaded]);
 
     return (
         <SettingsContext.Provider value={contextValue}>
