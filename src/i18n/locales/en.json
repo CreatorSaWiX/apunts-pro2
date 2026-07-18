@@ -48,7 +48,15 @@
       "empty": "There are no materials available to download currently.",
       "pdfsDesc": "The entire collection of degree PDFs.",
       "resourcesDesc": "Material and resources for",
-      "filesAvailable": "files available"
+      "filesAvailable": "files available",
+      "advanced": "Advanced Explorer",
+      "advancedDesc": "Individually manage internal caches and browser databases. Be careful, deleting App Shell files may break offline navigation until you reload the page.",
+      "opaqueNoteTitle": "Technical note (Opaque Response Padding):",
+      "opaqueNoteDesc": "If the App Shell's total size is significantly larger than the sum of its files, it's because the browser (Chromium/Webkit) artificially inflates the space taken by \"opaque\" responses (requests to other domains without strict CORS configuration, like api-cache) by adding up to ~7MB extra per file for security reasons.",
+      "filesCount": "files",
+      "deleteCache": "Delete entire cache",
+      "opaqueTooltip": "Opaque Response (Hidden by CORS). The browser artificially adds ~7MB.",
+      "deleteDB": "Delete database"
     },
     "shortcuts": {
       "title": "Keyboard Shortcuts",
@@ -507,6 +515,7 @@
     },
     "defaultUser": "User",
     "contact": "Contact",
+    "bannerFormatHint": "2MB max (WebP/WebM recommended)",
     "stats": {
       "solutions": "SOLUTIONS",
       "rankScale": "Rank Scale",

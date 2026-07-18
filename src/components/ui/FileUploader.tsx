@@ -18,7 +18,7 @@ interface FileUploaderProps {
     onUploadComplete: (attachments: Attachment[]) => void;
     maxFiles?: number;
     variant?: 'default' | 'avatar' | 'banner';
-    acceptType?: 'all' | 'images';
+    acceptType?: 'all' | 'images' | 'imagesAndVideos';
     maxSizeMB?: number;
 }
 
@@ -131,20 +131,23 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
     const onDropRejected = useCallback((fileRejections: any[]) => {
         const errors = fileRejections.map(r => {
             if (r.errors.find((e: any) => e.code === 'file-too-large')) {
-                return `L'arxiu "${r.file.name}" és massa gran. El límit és de ${MAX_FILE_SIZE_MB}MB.`;
+                return `L'arxiu "${r.file.name}" és massa gran. El límit és de ${maxSizeMB}MB.`;
             }
             return `L'arxiu "${r.file.name}" no s'ha pogut pujar. Format no acceptat o massa gran.`;
         });
         alert(errors.join('\\n'));
-    }, []);
+    }, [maxSizeMB]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         onDropRejected,
         maxFiles,
-        maxSize: MAX_FILE_SIZE_BYTES,
+        maxSize: maxSizeMB * 1024 * 1024,
         accept: acceptType === 'images' ? {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+        } : acceptType === 'imagesAndVideos' ? {
+            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
+            'video/*': ['.mp4', '.webm', '.ogg', '.mov']
         } : {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
             'application/pdf': ['.pdf'],

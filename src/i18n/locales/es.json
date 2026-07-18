@@ -48,7 +48,15 @@
       "empty": "No hay materiales disponibles para descargar actualmente.",
       "pdfsDesc": "Toda la colección de PDFs del grado.",
       "resourcesDesc": "Material y recursos para",
-      "filesAvailable": "archivos disponibles"
+      "filesAvailable": "archivos disponibles",
+      "advanced": "Explorador Avanzado",
+      "advancedDesc": "Gestiona individualmente las cachés internas y las bases de datos del navegador. Ten cuidado, borrar archivos de la App Shell puede romper la navegación offline hasta que recargues la página.",
+      "opaqueNoteTitle": "Nota técnica (Opaque Response Padding):",
+      "opaqueNoteDesc": "Si el peso total de la App Shell es exageradamente más alto que el peso sumado de sus archivos, es porque el navegador (Chromium/Webkit) infla de forma artificial el espacio que ocupan las respuestas \"opacas\" (peticiones a otros dominios sin configuración estricta CORS, como la api-cache) sumándoles hasta ~7MB extra por archivo por razones de seguridad.",
+      "filesCount": "archivos",
+      "deleteCache": "Eliminar caché entera",
+      "opaqueTooltip": "Respuesta Opaca (Oculta por CORS). El navegador le suma ~7MB artificialmente.",
+      "deleteDB": "Eliminar base de datos"
     },
     "shortcuts": {
       "title": "Atajos de Teclado",
@@ -507,6 +515,7 @@
     },
     "defaultUser": "Usuario",
     "contact": "Contactar",
+    "bannerFormatHint": "2MB max (WebP/WebM recomendado)",
     "stats": {
       "solutions": "SOLUCIONARIOS",
       "rankScale": "Escala de Rangos",

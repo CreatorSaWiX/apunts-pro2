@@ -48,7 +48,15 @@
       "empty": "No hi ha materials disponibles per descarregar actualment.",
       "pdfsDesc": "Tota la col·lecció de PDFs del grau.",
       "resourcesDesc": "Material i recursos per a",
-      "filesAvailable": "arxius disponibles"
+      "filesAvailable": "arxius disponibles",
+      "advanced": "Explorador Avançat",
+      "advancedDesc": "Gestiona individualment les memòries cau internes i les bases de dades del navegador. Ves amb compte, esborrar arxius de l'App Shell pot trencar la navegació offline fins que recarreguis la pàgina.",
+      "opaqueNoteTitle": "Nota tècnica (Opaque Response Padding):",
+      "opaqueNoteDesc": "Si el pes total de l'App Shell és exageradament més alt que el pes sumat dels seus arxius, és perquè el navegador (Chromium/Webkit) infla de forma artificial l'espai que ocupen les respostes \"opaques\" (peticions a altres dominis sense configuració estricta CORS, com l'api-cache) sumant-los fins a ~7MB extra per fitxer per raons de seguretat.",
+      "filesCount": "arxius",
+      "deleteCache": "Eliminar memòria cau sencera",
+      "opaqueTooltip": "Resposta Opaca (Amagada per CORS). El navegador li suma ~7MB artificialment.",
+      "deleteDB": "Eliminar base de dades"
     },
     "shortcuts": {
       "title": "Dreceres de Teclat",
@@ -507,6 +515,7 @@
     },
     "defaultUser": "Usuari",
     "contact": "Contactar",
+    "bannerFormatHint": "2MB max (WebP/WebM recomanat)",
     "stats": {
       "solutions": "SOLUCIONARIS",
       "rankScale": "Escala de Rangs",

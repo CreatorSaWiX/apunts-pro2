@@ -1000,6 +1000,58 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
               res.end('Method Not Allowed');
             }
           });
+          // Middleware per servir arxius R2 localment saltant-se el bloqueig SNI dels ISPs a r2.dev
+          server.middlewares.use('/api/cdn', async (req, res) => {
+            try {
+              const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
+              const { getSignedUrl } = await import('@aws-sdk/s3-request-presigner');
+
+              const accountId = env.R2_ACCOUNT_ID;
+              const endpoint = env.R2_ENDPOINT || (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : null);
+              const accessKeyId = env.R2_ACCESS_KEY_ID;
+              const secretAccessKey = env.R2_SECRET_ACCESS_KEY;
+              const bucketName = env.R2_BUCKET_NAME;
+
+              if (!endpoint || !accessKeyId || !secretAccessKey || !bucketName) {
+                res.statusCode = 500;
+                res.end('Falta configuració de R2');
+                return;
+              }
+
+              const S3 = new S3Client({
+                region: 'auto',
+                endpoint: endpoint ? new URL(endpoint).origin : undefined,
+                credentials: { accessKeyId, secretAccessKey },
+                forcePathStyle: true,
+              });
+
+              // req.url equals the path after /api/cdn, e.g. /community/1784383481543-sawix2.webp
+              const urlParts = new URL(req.url || '/', `http://${req.headers.host}`);
+              const objectKey = decodeURIComponent(urlParts.pathname.substring(1)); // remove leading slash
+
+              if (!objectKey) {
+                res.statusCode = 400;
+                res.end('Missing object key');
+                return;
+              }
+
+              const command = new GetObjectCommand({
+                Bucket: bucketName,
+                Key: objectKey,
+              });
+
+              const presignedUrl = await getSignedUrl(S3, command, { expiresIn: 3600 });
+              
+              // Fem un redirect 302 al presigned URL de cloudflarestorage.com que NO està bloquejat
+              res.writeHead(302, { Location: presignedUrl });
+              res.end();
+            } catch (e: any) {
+              console.error("[DevServer R2 CDN Error]:", e);
+              res.statusCode = 500;
+              res.end('Error CDN');
+            }
+          });
         }
+
       };
 }

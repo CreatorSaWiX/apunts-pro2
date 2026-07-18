@@ -288,8 +288,20 @@ const ProfilePage = () => {
     };
 
 
-    const bannerUrl = extendedUser?.banner || `https://picsum.photos/seed/${extendedUser?.username || 'Apunts'}/1920/1080`;
-    const avatarUrl = extendedUser?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`;
+    const getProxyUrl = (url: string | undefined | null) => {
+        if (!url) return undefined;
+        // Si estem en desenvolupament (Vite), passem pel proxy per evitar el bloqueig dels ISPs espanyols al subdomini .r2.dev
+        if (import.meta.env.DEV && url.includes('.r2.dev/')) {
+            const path = new URL(url).pathname;
+            return `/api/cdn${path}`;
+        } 
+        return url;
+    };
+
+    const isVideoUrl = (url: string) => /\.(mp4|webm|mov|ogg)$/i.test(url.split('?')[0]);
+    const bannerUrl = getProxyUrl(extendedUser?.banner) || `https://picsum.photos/seed/${extendedUser?.username || 'Apunts'}/1920/1080`;
+    const avatarUrl = getProxyUrl(extendedUser?.avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`;
+    const isBannerVideo = bannerUrl && isVideoUrl(bannerUrl);
 
     return (
         <div className="min-h-screen w-full relative z-10 font-sans bg-transparent">
@@ -305,20 +317,31 @@ const ProfilePage = () => {
                         willChange: 'transform' // Performance optimization
                     }}
                 >
-                    <div className="absolute inset-0 bg-cover bg-center opacity-40 blur-[40px] scale-110 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
-                    <div className="absolute inset-0 bg-cover bg-center opacity-70 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
+                    {isBannerVideo ? (
+                        <>
+                            <video src={bannerUrl} autoPlay loop muted playsInline className="absolute inset-0 object-cover w-full h-full opacity-40 blur-[40px] scale-110 transition-opacity duration-1000" />
+                            <video src={bannerUrl} autoPlay loop muted playsInline className="absolute inset-0 object-cover w-full h-full opacity-70 transition-opacity duration-1000" />
+                        </>
+                    ) : (
+                        <>
+                            <div className="absolute inset-0 bg-cover bg-center opacity-40 blur-[40px] scale-110 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
+                            <div className="absolute inset-0 bg-cover bg-center opacity-70 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
+                        </>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/60 to-transparent opacity-100" />
                 </div>
 
                 {isOwnProfile && (
                     <div className="absolute top-20 right-4 z-30 opacity-0 group-hover/hero:opacity-100 transition-opacity duration-300 pointer-events-auto">
                         <div className="relative overflow-hidden rounded-xl">
-                            <button type="button" className="flex items-center bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 p-2 text-white transition-all font-semibold shadow-lg text-sm cursor-pointer">
-                                <Upload size={16} />
+                            <button type="button" className="flex items-center gap-2 bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 px-3 py-2 text-white transition-all font-medium shadow-lg text-xs cursor-pointer">
+                                <Upload size={14} />
+                                <span className="hidden sm:inline">{t('profile.bannerFormatHint', '2MB max (WebP/WebM recomanat)')}</span>
                             </button>
                             <FileUploader
                                 variant="avatar"
-                                acceptType="images"
+                                acceptType="imagesAndVideos"
+                                maxSizeMB={2}
                                 maxFiles={1}
                                 onUploadComplete={(atts) => handleImageUpload(atts, 'banner')}
                             />
