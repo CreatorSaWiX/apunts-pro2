@@ -243,13 +243,42 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         }
     }, []);
 
-    const handlePrev = () => {
+    const handlePrev = useCallback(() => {
         if (activeIndex > 0) scrollTo(activeIndex - 1);
-    };
+    }, [activeIndex, scrollTo]);
 
-    const handleNext = () => {
+    const handleNext = useCallback(() => {
         if (activeIndex < sortedTopics.length - 1) scrollTo(activeIndex + 1);
-    };
+    }, [activeIndex, sortedTopics.length, scrollTo]);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (isMobile && isMenuOpen) return;
+
+            const target = e.target as HTMLElement;
+            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                handlePrev();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                handleNext();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const activeTopic = sortedTopics[activeIndex];
+                if (activeTopic) {
+                    const versions = allPersonalNotes.filter(n => n.slug === activeTopic.slug);
+                    const newestUpdate = Math.max(0, ...versions.map(n => (n as any).isUpdated || 0));
+                    markAsSeen(activeTopic.slug, newestUpdate);
+                    navigate(`/tema/${activeTopic.slug}`);
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [activeIndex, sortedTopics, isMenuOpen, isMobile, handlePrev, handleNext, navigate]);
 
     // Optimized with requestAnimationFrame + Cached Metrics for 120fps Zero-Lag Sync
     const handleScroll = () => {

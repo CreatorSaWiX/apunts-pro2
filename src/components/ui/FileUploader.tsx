@@ -188,7 +188,7 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
                         initial={{ opacity: 0, y: isOverlayVariant ? 0 : -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: isOverlayVariant ? 0 : -10 }}
-                        className={`flex flex-col items-center justify-center ${isOverlayVariant ? 'absolute inset-0 bg-black/60 z-20 h-full rounded-[inherit]' : 'p-6 bg-white/5 border border-white/10 rounded-2xl w-full'}`}
+                        className={`flex flex-col items-center justify-center ${isOverlayVariant ? 'absolute inset-0 bg-black z-20 h-full rounded-[inherit]' : 'p-6 bg-white/5 border border-white/10 rounded-2xl w-full'}`}
                     >
                         <Spinner size={isOverlayVariant ? 'sm' : 'lg'} variant="primary" className={isOverlayVariant ? '' : 'mb-3'} />
                         {!isOverlayVariant && <p className="text-sm font-bold text-white">{t('common.fileUploader.uploading', 'Preparant i pujant a la xarxa...')}</p>}

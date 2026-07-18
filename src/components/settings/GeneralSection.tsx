@@ -21,7 +21,7 @@ export const GeneralSection = () => {
                         {preferredLang === 'ca' && (
                             <motion.div layoutId="lang-active-bg" className="absolute inset-0 bg-white/10 rounded-xl shadow-sm border border-white/10" transition={{ type: "spring", stiffness: 400, damping: 30 }} />
                         )}
-                        <Globe size={16} className={`relative z-10 transition-colors duration-300 ${preferredLang === 'ca' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                        <Globe size={16} className={`shrink-0 relative z-10 transition-colors duration-300 ${preferredLang === 'ca' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
                         <span className={`relative z-10 text-sm font-semibold transition-colors duration-300 ${preferredLang === 'ca' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}>{t('common.languages.ca', 'Català')}</span>
                     </button>
 
@@ -32,7 +32,7 @@ export const GeneralSection = () => {
                         {preferredLang === 'es' && (
                             <motion.div layoutId="lang-active-bg" className="absolute inset-0 bg-white/10 rounded-xl shadow-sm border border-white/10" transition={{ type: "spring", stiffness: 400, damping: 30 }} />
                         )}
-                        <Globe size={16} className={`relative z-10 transition-colors duration-300 ${preferredLang === 'es' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                        <Globe size={16} className={`shrink-0 relative z-10 transition-colors duration-300 ${preferredLang === 'es' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
                         <span className={`relative z-10 text-sm font-semibold transition-colors duration-300 ${preferredLang === 'es' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}>{t('common.languages.es', 'Español')}</span>
                     </button>
 
@@ -43,7 +43,7 @@ export const GeneralSection = () => {
                         {preferredLang === 'en' && (
                             <motion.div layoutId="lang-active-bg" className="absolute inset-0 bg-white/10 rounded-xl shadow-sm border border-white/10" transition={{ type: "spring", stiffness: 400, damping: 30 }} />
                         )}
-                        <Globe size={16} className={`relative z-10 transition-colors duration-300 ${preferredLang === 'en' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                        <Globe size={16} className={`shrink-0 relative z-10 transition-colors duration-300 ${preferredLang === 'en' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
                         <span className={`relative z-10 text-sm font-semibold transition-colors duration-300 ${preferredLang === 'en' ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}>{t('common.languages.en', 'English')}</span>
                     </button>
                 </div>

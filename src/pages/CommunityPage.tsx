@@ -331,7 +331,7 @@ const CommunityPage = () => {
             </div>
 
             {/* Fons intel·ligent: L'ocultem amb CSS per evitar problemes de remounting. Fem servir visibility per no perdre l'scroll i el layout, i pausem WebGL. */}
-            <div className={`transition-all duration-700 ease-in-out ${isBackgroundHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}`}>
+            <div className={`w-full transition-all duration-700 ease-in-out ${isBackgroundHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}`}>
                 {/* Awwwards Hero Section */}
                 <section className="relative w-full min-h-[55vh] flex items-center justify-center z-10 overflow-hidden pt-28 pb-8">
                 <CommunityHero3D isPaused={isCanvasFullyOpen} />

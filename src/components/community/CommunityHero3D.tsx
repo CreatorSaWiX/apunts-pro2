@@ -60,7 +60,7 @@ const CommunityHero3D = ({ isPaused = false }: { isPaused?: boolean }) => {
 
     return (
         <div
-            className={`absolute inset-0 top-0 left-0 w-full h-[600px] overflow-hidden pointer-events-none -z-10 transition-opacity duration-1000 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10 transition-opacity duration-1000 ${mounted ? 'opacity-100' : 'opacity-0'}`}
             style={{ maskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, white 0%, white 60%, transparent 100%)' }}
         >
             {mounted && (
