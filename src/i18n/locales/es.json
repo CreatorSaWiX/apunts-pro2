@@ -63,8 +63,29 @@
       "subtitle": "Personaliza los atajos para acceder rápidamente a diferentes funciones.",
       "pressAnyKey": "Pulsa cualquier tecla para cambiar...",
       "reset": "Restablecer",
+      "categories": {
+        "global": "Global",
+        "community": "Comunidad y Apuntes",
+        "editor": "Editor de Texto"
+      },
       "actions": {
-        "searchSubjects": "Buscar Asignaturas"
+        "searchSubjects": "Buscar Asignaturas",
+        "carouselLeft": "Tema Anterior (Carrusel)",
+        "carouselRight": "Tema Siguiente (Carrusel)",
+        "carouselEnter": "Acceder al Tema (Carrusel)",
+        "editorBold": "Negrita",
+        "editorItalic": "Cursiva",
+        "editorUnderline": "Subrayado",
+        "editorStrikethrough": "Tachado",
+        "editorLink": "Enlace",
+        "editorAlignLeft": "Alinear a la Izquierda",
+        "editorAlignCenter": "Centrar",
+        "editorAlignRight": "Alinear a la Derecha",
+        "editorAlignJustify": "Justificar",
+        "editorListBullet": "Lista de Viñetas",
+        "editorListOrdered": "Lista Numerada",
+        "editorTaskList": "Lista de Tareas",
+        "editorTable": "Tabla"
       }
     },
     "ai": {
@@ -137,6 +158,45 @@
       "uploadFailed": "Error de subida",
       "uploadSuccess": "¡Archivo subido!"
     }
+  },
+  "editor": {
+    "typography": "Tipografía",
+    "normalText": "Texto Normal",
+    "heading1": "Título Grande",
+    "heading2": "Título Mediano",
+    "heading3": "Título Pequeño",
+    "bold": "Negrita",
+    "italic": "Cursiva",
+    "underline": "Subrayado",
+    "strikethrough": "Tachado",
+    "subscript": "Subíndice",
+    "superscript": "Superíndice",
+    "alignment": "Alineación",
+    "alignLeft": "Alinear a la Izquierda",
+    "alignCenter": "Centrar",
+    "alignRight": "Alinear a la Derecha",
+    "alignJustify": "Justificar",
+    "lineSpacing": "Interlineado",
+    "spacingSingle": "Sencillo (1.0)",
+    "spacingNormal": "Normal (1.15)",
+    "spacingRelaxed": "Relajado (1.5)",
+    "spacingDouble": "Doble (2.0)",
+    "bulletList": "Lista de Viñetas",
+    "orderedList": "Lista Numerada",
+    "taskList": "Tareas",
+    "link": "Enlace",
+    "blockquote": "Cita",
+    "codeBlock": "Bloque de Código",
+    "tables": "Tablas",
+    "insertTable": "Insertar Tabla (3x3)",
+    "addColumnBefore": "Añadir Columna Antes",
+    "addColumnAfter": "Añadir Columna Después",
+    "deleteColumn": "Eliminar Columna",
+    "addRowBefore": "Añadir Fila Antes",
+    "addRowAfter": "Añadir Fila Después",
+    "deleteRow": "Eliminar Fila",
+    "deleteTable": "Eliminar Tabla Entera",
+    "horizontalRule": "Línea Separadora"
   },
   "topics": {
     "topic": "Tema",
@@ -442,7 +502,9 @@
       "extendedNote": "Apunte Extenso",
       "publishBtn": "Publicar",
       "livePreview": "Live Preview",
-      "livePreviewDesc": "Así se verá tu apunte en la Comunidad"
+      "livePreviewDesc": "Así se verá tu apunte en la Comunidad",
+      "thumbnailError": "Error subiendo la miniatura. Inténtalo de nuevo.",
+      "changeThumbnail": "Cambiar Miniatura"
     },
     "postDetail": {
       "actionNote": "Ha creado un apunte extenso",

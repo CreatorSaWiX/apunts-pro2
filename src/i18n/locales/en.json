@@ -63,8 +63,29 @@
       "subtitle": "Customize shortcuts to quickly access different features.",
       "pressAnyKey": "Press any key to change...",
       "reset": "Reset",
+      "categories": {
+        "global": "Global",
+        "community": "Community & Notes",
+        "editor": "Text Editor"
+      },
       "actions": {
-        "searchSubjects": "Search Subjects"
+        "searchSubjects": "Search Subjects",
+        "carouselLeft": "Previous Topic (Carousel)",
+        "carouselRight": "Next Topic (Carousel)",
+        "carouselEnter": "Access Topic (Carousel)",
+        "editorBold": "Bold",
+        "editorItalic": "Italic",
+        "editorUnderline": "Underline",
+        "editorStrikethrough": "Strikethrough",
+        "editorLink": "Link",
+        "editorAlignLeft": "Align Left",
+        "editorAlignCenter": "Align Center",
+        "editorAlignRight": "Align Right",
+        "editorAlignJustify": "Justify",
+        "editorListBullet": "Bullet List",
+        "editorListOrdered": "Numbered List",
+        "editorTaskList": "Task List",
+        "editorTable": "Table"
       }
     },
     "ai": {
@@ -137,6 +158,45 @@
       "uploadFailed": "Upload failed",
       "uploadSuccess": "File uploaded!"
     }
+  },
+  "editor": {
+    "typography": "Typography",
+    "normalText": "Normal Text",
+    "heading1": "Large Heading",
+    "heading2": "Medium Heading",
+    "heading3": "Small Heading",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strikethrough": "Strikethrough",
+    "subscript": "Subscript",
+    "superscript": "Superscript",
+    "alignment": "Alignment",
+    "alignLeft": "Align Left",
+    "alignCenter": "Align Center",
+    "alignRight": "Align Right",
+    "alignJustify": "Justify",
+    "lineSpacing": "Line Spacing",
+    "spacingSingle": "Single (1.0)",
+    "spacingNormal": "Normal (1.15)",
+    "spacingRelaxed": "Relaxed (1.5)",
+    "spacingDouble": "Double (2.0)",
+    "bulletList": "Bullet List",
+    "orderedList": "Numbered List",
+    "taskList": "Task List",
+    "link": "Link",
+    "blockquote": "Blockquote",
+    "codeBlock": "Code Block",
+    "tables": "Tables",
+    "insertTable": "Insert Table (3x3)",
+    "addColumnBefore": "Add Column Before",
+    "addColumnAfter": "Add Column After",
+    "deleteColumn": "Delete Column",
+    "addRowBefore": "Add Row Before",
+    "addRowAfter": "Add Row After",
+    "deleteRow": "Delete Row",
+    "deleteTable": "Delete Entire Table",
+    "horizontalRule": "Horizontal Rule"
   },
   "topics": {
     "topic": "Topic",
@@ -442,7 +502,9 @@
       "extendedNote": "Extended Note",
       "publishBtn": "Publish",
       "livePreview": "Live Preview",
-      "livePreviewDesc": "This is how your note will look in the Community"
+      "livePreviewDesc": "This is how your note will look in the Community",
+      "thumbnailError": "Error uploading thumbnail. Try again.",
+      "changeThumbnail": "Change Thumbnail"
     },
     "postDetail": {
       "actionNote": "Created an extended note",

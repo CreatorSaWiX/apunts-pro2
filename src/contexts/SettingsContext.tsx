@@ -12,7 +12,24 @@ export type ShortcutConfig = { key: string; meta: boolean };
 export type ShortcutsSettings = Record<string, ShortcutConfig>;
 
 const DEFAULT_SHORTCUTS: ShortcutsSettings = {
-    searchSubjects: { key: 'k', meta: true }
+    searchSubjects: { key: 'k', meta: true },
+    carouselLeft: { key: 'ArrowLeft', meta: false },
+    carouselRight: { key: 'ArrowRight', meta: false },
+    carouselEnter: { key: 'Enter', meta: false },
+    createResource: { key: 'c', meta: false },
+    editorBold: { key: 'b', meta: true },
+    editorItalic: { key: 'i', meta: true },
+    editorUnderline: { key: 'u', meta: true },
+    editorStrikethrough: { key: 'x', meta: true },
+    editorLink: { key: 'k', meta: true },
+    editorAlignLeft: { key: 'l', meta: true },
+    editorAlignCenter: { key: 'e', meta: true },
+    editorAlignRight: { key: 'r', meta: true },
+    editorAlignJustify: { key: 'j', meta: true },
+    editorListBullet: { key: '8', meta: true },
+    editorListOrdered: { key: '7', meta: true },
+    editorTaskList: { key: '9', meta: true },
+    editorTable: { key: 't', meta: true }
 };
 
 interface SettingsContextType {
@@ -69,21 +86,21 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const [aiSettings, setAiSettings] = useState<AISettings>(() => {
         const saved = localStorage.getItem('app-settings-ai');
         if (saved) {
-            try { 
+            try {
                 const parsed = JSON.parse(saved);
                 return {
                     ...DEFAULT_AI_SETTINGS,
                     ...parsed,
                     identity: { ...DEFAULT_AI_SETTINGS.identity, ...(parsed.identity || {}) },
-                    userContext: { 
-                        ...DEFAULT_AI_SETTINGS.userContext, 
+                    userContext: {
+                        ...DEFAULT_AI_SETTINGS.userContext,
                         ...(parsed.userContext || {}),
                         memories: parsed.userContext?.memories || []
                     },
                     soul: { ...DEFAULT_AI_SETTINGS.soul, ...(parsed.soul || {}) }
                 };
-            } catch (e) { 
-                return DEFAULT_AI_SETTINGS; 
+            } catch (e) {
+                return DEFAULT_AI_SETTINGS;
             }
         }
         return DEFAULT_AI_SETTINGS;
@@ -131,7 +148,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                     if (data.homeSubjects) setHomeSubjects(data.homeSubjects);
                     if (data.defaultPlannerView) setDefaultPlannerView(data.defaultPlannerView);
                     if (data.customSubjectColors) setCustomSubjectColors(data.customSubjectColors);
-                    
+
                     if (data.aiSettings) {
                         setAiSettings({
                             ...DEFAULT_AI_SETTINGS,
@@ -209,7 +226,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                 clearTimeout(localTimeoutId);
             };
         }
-        
+
         return () => clearTimeout(localTimeoutId);
     }, [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, shortcuts, isSettingsLoaded, user]);
 

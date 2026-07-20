@@ -6,6 +6,8 @@ import { allPersonalNotes } from 'content-collections';
 import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { m as motion, useMotionTemplate, useMotionValue, MotionConfig } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { useShortcut } from '../hooks/useShortcut';
+import { useSettings } from '../contexts/SettingsContext';
 
 const SpotlightCard = React.memo(({
     children,
@@ -74,7 +76,24 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const subject = (subjectOverride || contextSubject || '').toLowerCase();
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
+    const { shortcuts } = useSettings();
     const [activeIndex, setActiveIndex] = useState(0);
+
+    const enterShortcut = shortcuts?.carouselEnter || { key: 'Enter', meta: false };
+    const leftShortcut = shortcuts?.carouselLeft || { key: 'ArrowLeft', meta: false };
+    const rightShortcut = shortcuts?.carouselRight || { key: 'ArrowRight', meta: false };
+
+    const formatShortcut = useCallback((shortcut: { key: string, meta: boolean }) => {
+        if (!shortcut.key) return '';
+        let key = shortcut.key.toUpperCase();
+        if (shortcut.key === ' ') key = 'SPACE';
+        if (shortcut.key === 'ArrowLeft') key = '←';
+        if (shortcut.key === 'ArrowRight') key = '→';
+        if (shortcut.key === 'ArrowUp') key = '↑';
+        if (shortcut.key === 'ArrowDown') key = '↓';
+        if (shortcut.key === 'Enter') key = 'ENTER';
+        return shortcut.meta ? `⌘ ${key}` : key;
+    }, []);
     const scrollRef = useRef<HTMLDivElement>(null);
     const requestRef = useRef<number>(0);
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -251,34 +270,26 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         if (activeIndex < sortedTopics.length - 1) scrollTo(activeIndex + 1);
     }, [activeIndex, sortedTopics.length, scrollTo]);
 
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (isMobile && isMenuOpen) return;
+    useShortcut('carouselLeft', () => {
+        if (isMobile && isMenuOpen) return;
+        handlePrev();
+    });
 
-            const target = e.target as HTMLElement;
-            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+    useShortcut('carouselRight', () => {
+        if (isMobile && isMenuOpen) return;
+        handleNext();
+    });
 
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                handlePrev();
-            } else if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                handleNext();
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                const activeTopic = sortedTopics[activeIndex];
-                if (activeTopic) {
-                    const versions = allPersonalNotes.filter(n => n.slug === activeTopic.slug);
-                    const newestUpdate = Math.max(0, ...versions.map(n => (n as any).isUpdated || 0));
-                    markAsSeen(activeTopic.slug, newestUpdate);
-                    navigate(`/tema/${activeTopic.slug}`);
-                }
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [activeIndex, sortedTopics, isMenuOpen, isMobile, handlePrev, handleNext, navigate]);
+    useShortcut('carouselEnter', () => {
+        if (isMobile && isMenuOpen) return;
+        const activeTopic = sortedTopics[activeIndex];
+        if (activeTopic) {
+            const versions = allPersonalNotes.filter(n => n.slug === activeTopic.slug);
+            const newestUpdate = Math.max(0, ...versions.map(n => (n as any).isUpdated || 0));
+            markAsSeen(activeTopic.slug, newestUpdate);
+            navigate(`/tema/${activeTopic.slug}`);
+        }
+    });
 
     // Optimized with requestAnimationFrame + Cached Metrics for 120fps Zero-Lag Sync
     const handleScroll = () => {
@@ -332,20 +343,30 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 {activeIndex > 0 && (
                     <button type="button"
                         onClick={handlePrev}
-                        className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100"
+                        className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 group/navleft"
                         aria-label="Previous topic"
                     >
-                        <ChevronLeft size={28} />
+                        <ChevronLeft size={28} className="group-hover/navleft:-translate-x-1 transition-transform" />
+                        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover/navleft:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="px-2 py-0.5 rounded bg-black/60 border border-white/10 text-[10px] font-bold tracking-wider text-slate-300">
+                                {formatShortcut(leftShortcut)}
+                            </span>
+                        </div>
                     </button>
                 )}
 
                 {activeIndex < sortedTopics.length - 1 && (
                     <button type="button"
                         onClick={handleNext}
-                        className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100"
+                        className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 group/navright"
                         aria-label="Next topic"
                     >
-                        <ChevronRight size={28} />
+                        <ChevronRight size={28} className="group-hover/navright:translate-x-1 transition-transform" />
+                        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover/navright:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="px-2 py-0.5 rounded bg-black/60 border border-white/10 text-[10px] font-bold tracking-wider text-slate-300">
+                                {formatShortcut(rightShortcut)}
+                            </span>
+                        </div>
                     </button>
                 )}
 
@@ -484,7 +505,12 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                                 onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
                                                 className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-3.5 py-2 md:px-4 md:py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0 text-[13px] md:text-sm"
                                             >
-                                                <span>{t('topics.explore', 'Explorar tema')}</span>
+                                                <div className="flex items-center gap-2.5">
+                                                    <span>{t('topics.explore', 'Explorar tema')}</span>
+                                                    <span className="hidden md:flex items-center justify-center px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-bold tracking-wider text-white/90 shadow-sm border border-white/10 opacity-70 group-hover/btn:opacity-100 transition-opacity">
+                                                        {formatShortcut(enterShortcut)}
+                                                    </span>
+                                                </div>
                                                 <ArrowRight size={16} className="group-hover/btn:translate-x-1 group-hover/btn:scale-110 transition-all duration-300" />
                                             </Link>
 

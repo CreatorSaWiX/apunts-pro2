@@ -1,9 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSettings } from '../contexts/SettingsContext';
 
 export const useShortcut = (actionName: string, callback: () => void) => {
     const { shortcuts } = useSettings();
     const shortcut = shortcuts?.[actionName];
+    const callbackRef = useRef(callback);
+
+    useEffect(() => {
+        callbackRef.current = callback;
+    }, [callback]);
 
     useEffect(() => {
         if (!shortcut) return;
@@ -17,17 +22,17 @@ export const useShortcut = (actionName: string, callback: () => void) => {
             if (shortcut.meta && !isMetaPressed) return;
             if (!shortcut.meta && isMetaPressed) return;
 
-            // Optional: avoid triggering if user is typing in an input/textarea (unless meta is pressed)
+            // Optional: avoid triggering if user is typing in an input/textarea/contenteditable (unless meta is pressed)
             const target = e.target as HTMLElement;
-            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') && !shortcut.meta) {
+            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) && !shortcut.meta) {
                 return;
             }
 
             e.preventDefault();
-            callback();
+            callbackRef.current();
         };
 
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [shortcut, callback]);
+        document.addEventListener('keydown', handleKeyDown, { capture: true });
+        return () => document.removeEventListener('keydown', handleKeyDown, { capture: true });
+    }, [shortcut]);
 };

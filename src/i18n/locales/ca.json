@@ -63,8 +63,29 @@
       "subtitle": "Personalitza les dreceres per accedir ràpidament a diferents funcions.",
       "pressAnyKey": "Prem qualsevol tecla per canviar...",
       "reset": "Restablir",
+      "categories": {
+        "global": "Global",
+        "community": "Comunitat i Apunts",
+        "editor": "Editor de Text"
+      },
       "actions": {
-        "searchSubjects": "Cercar Assignatures"
+        "searchSubjects": "Cercar Assignatures",
+        "carouselLeft": "Tema Anterior (Carrusel)",
+        "carouselRight": "Tema Següent (Carrusel)",
+        "carouselEnter": "Accedir al Tema (Carrusel)",
+        "editorBold": "Negreta",
+        "editorItalic": "Cursiva",
+        "editorUnderline": "Subratllat",
+        "editorStrikethrough": "Ratllat",
+        "editorLink": "Enllaç",
+        "editorAlignLeft": "Alinear Esquerra",
+        "editorAlignCenter": "Alinear Centre",
+        "editorAlignRight": "Alinear Dreta",
+        "editorAlignJustify": "Justificar",
+        "editorListBullet": "Llista de Punts",
+        "editorListOrdered": "Llista Numèrica",
+        "editorTaskList": "Llista de Tasques",
+        "editorTable": "Taula"
       }
     },
     "ai": {
@@ -137,6 +158,45 @@
       "uploadFailed": "Error de pujada",
       "uploadSuccess": "Arxiu pujat!"
     }
+  },
+  "editor": {
+    "typography": "Tipografia",
+    "normalText": "Text Normal",
+    "heading1": "Títol Gran",
+    "heading2": "Títol Mitjà",
+    "heading3": "Títol Petit",
+    "bold": "Negreta",
+    "italic": "Cursiva",
+    "underline": "Subratllat",
+    "strikethrough": "Ratllat",
+    "subscript": "Subíndex",
+    "superscript": "Superíndex",
+    "alignment": "Alineació",
+    "alignLeft": "Alinear Esquerra",
+    "alignCenter": "Alinear Centre",
+    "alignRight": "Alinear Dreta",
+    "alignJustify": "Justificar",
+    "lineSpacing": "Espaiat de línia",
+    "spacingSingle": "Senzill (1.0)",
+    "spacingNormal": "Normal (1.15)",
+    "spacingRelaxed": "Relaxat (1.5)",
+    "spacingDouble": "Doble (2.0)",
+    "bulletList": "Llista de Punts",
+    "orderedList": "Llista Numèrica",
+    "taskList": "Tasques",
+    "link": "Enllaç",
+    "blockquote": "Cita",
+    "codeBlock": "Bloc de Codi",
+    "tables": "Taules",
+    "insertTable": "Inserir Taula (3x3)",
+    "addColumnBefore": "Afegir Columna Abans",
+    "addColumnAfter": "Afegir Columna Després",
+    "deleteColumn": "Eliminar Columna",
+    "addRowBefore": "Afegir Fila Abans",
+    "addRowAfter": "Afegir Fila Després",
+    "deleteRow": "Eliminar Fila",
+    "deleteTable": "Eliminar Taula Sencera",
+    "horizontalRule": "Línia Separadora"
   },
   "topics": {
     "topic": "Tema",
@@ -442,7 +502,9 @@
       "extendedNote": "Apunt Extens",
       "publishBtn": "Publicar",
       "livePreview": "Live Preview",
-      "livePreviewDesc": "Així es veurà el teu apunt a la Comunitat"
+      "livePreviewDesc": "Així es veurà el teu apunt a la Comunitat",
+      "thumbnailError": "Error pujant la miniatura. Intenta-ho de nou.",
+      "changeThumbnail": "Canviar Miniatura"
     },
     "postDetail": {
       "actionNote": "Ha creat un apunt extens",

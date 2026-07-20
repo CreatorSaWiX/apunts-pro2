@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { SUBJECTS, getSubjectById, type SubjectType } from '../../config/subjects';
-import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, X, FileText } from 'lucide-react';
+import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, X, FileText, Maximize2, Minimize2, ImagePlus } from 'lucide-react';
 
 import GifPicker from '../ui/GifPicker';
 import SubjectSelectorModal from './SubjectSelectorModal';
@@ -31,26 +31,27 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     const [content, setContent] = useState('');
     const [subject, setSubject] = useState<SubjectType>('');
     const [loading, setLoading] = useState(false);
-    const [isNoteMode, setIsNoteMode] = useState(false);
+
     const [debouncedContent, setDebouncedContent] = useState('');
     const { customSubjectColors } = useSettings();
-    
+
     const [showGifPicker, setShowGifPicker] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showSubjectSelector, setShowSubjectSelector] = useState(false);
-    
+
     const [attachments, setAttachments] = useState<Attachment[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
     const [editorInstance, setEditorInstance] = useState<any>(null);
+
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [showUploader, setShowUploader] = useState(false);
+    const thumbnailInputRef = useRef<HTMLInputElement>(null);
+    const [thumbnailUploadingIndex, setThumbnailUploadingIndex] = useState<number | null>(null);
 
     const activeSubject = getSubjectById(subject);
 
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = '150px';
-        }
-    }, [isOpen]);
+
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -64,7 +65,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
         const lastPost = localStorage.getItem(`last_post_${user.id}`);
         const now = Date.now();
-        if (lastPost && now - parseInt(lastPost) < 30000) { 
+        if (lastPost && now - parseInt(lastPost) < 30000) {
             setError(t('community.createPost.waitLimit', 'Espera un moment abans de publicar de nou.'));
             setTimeout(() => setError(null), 5000);
             return;
@@ -84,7 +85,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 reactions: {},
                 rank: 0,
                 isPinned: false,
-                isNote: isNoteMode
+                isNote: true
             });
 
             setContent('');
@@ -100,7 +101,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     };
 
     const handleEmojiSelect = (emojiUrl: string) => {
-        if (isNoteMode && editorInstance) {
+        if (editorInstance) {
             editorInstance.chain().focus().setImage({ src: emojiUrl }).run();
         } else {
             const emojiName = emojiUrl.split('/').pop()?.split('.')[0] || 'emoji';
@@ -110,12 +111,44 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     };
 
     const handleGifSelect = async (gifUrl: string) => {
-        if (isNoteMode && editorInstance) {
+        if (editorInstance) {
             editorInstance.chain().focus().setImage({ src: gifUrl }).run();
         } else {
             setContent(prev => prev + (prev ? '\n\n' : '') + `![gif](${gifUrl})`);
         }
         setShowGifPicker(false);
+    };
+
+    const handleCustomThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setThumbnailUploadingIndex(index);
+        try {
+            const res = await fetch('/api/r2-presign', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filename: `custom_thumb_${Date.now()}_${file.name}`, contentType: file.type })
+            });
+            if (!res.ok) throw new Error("Error obtenint URL de pujada.");
+            
+            const { presignedUrl, publicUrl } = await res.json();
+            
+            const uploadRes = await fetch(presignedUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': file.type },
+                body: file
+            });
+            if (!uploadRes.ok) throw new Error("Error pujant a R2");
+
+            setAttachments(prev => prev.map((att, i) => i === index ? { ...att, thumbnailUrl: publicUrl } : att));
+        } catch (err) {
+            console.error("Thumbnail upload failed:", err);
+            alert(t('community.createPost.thumbnailError', 'Error pujant la miniatura. Intenta-ho de nou.'));
+        } finally {
+            setThumbnailUploadingIndex(null);
+            if (thumbnailInputRef.current) thumbnailInputRef.current.value = '';
+        }
     };
 
     const livePreviewElement = useMemo(() => {
@@ -133,211 +166,245 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             reactions: {},
             rank: 0,
             isPinned: false,
-            isNote: isNoteMode
+            isNote: true
         };
         return <PublicationCard post={livePost} />;
-    }, [debouncedContent, user?.id, user?.username, user?.avatar, subject, attachments, isNoteMode]);
+    }, [debouncedContent, user?.id, user?.username, user?.avatar, subject, attachments]);
 
     if (!user) return null;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="6xl">
+        <Modal isOpen={isOpen} onClose={onClose} size={isFullscreen ? 'screen' : '6xl'}>
             <Modal.Layout className="flex-col md:flex-row h-full w-full">
-                        {/* LEFT PANEL: EDITOR */}
-                        <div className="flex-1 flex flex-col relative z-10 w-full md:w-3/5">
-                            
-                            <Modal.Header className="!px-8 !py-6 !border-none !bg-transparent">
-                                <h2 className="text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
-                            </Modal.Header>
+                {/* LEFT PANEL: EDITOR */}
+                <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'}`}>
 
-                            {/* Content Area */}
-                            <Modal.Body className="!px-8 !pb-6 !pt-0 bg-transparent flex flex-col custom-scrollbar">
-                                
-                                {/* Sleek Subject Selector */}
-                                <div className="mb-6 flex">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowSubjectSelector(true)}
-                                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-all group"
-                                    >
-                                        <span 
-                                            className="w-2 h-2 rounded-full" 
-                                            style={activeSubject ? { 
-                                                backgroundColor: tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary || '#0ea5e9',
-                                                boxShadow: `0 0 10px rgba(${tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary_rgb || '14, 165, 233'}, 0.8)`
-                                            } : { backgroundColor: '#64748b' }} 
-                                        />
-                                        {activeSubject ? activeSubject.label : t('community.createPost.noSubject', 'Sense assignatura')}
-                                        <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors ml-1" />
-                                    </button>
-                                </div>
+                    <Modal.Header className="!px-8 !py-6 !border-none !bg-transparent flex justify-between items-center w-full">
+                        <h2 className="text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
+                        <button 
+                            type="button" 
+                            onClick={() => setIsFullscreen(!isFullscreen)} 
+                            className="p-2 text-slate-400 hover:text-white transition-colors ml-auto mr-12"
+                            title={isFullscreen ? "Minimitzar" : "Pantalla Completa"}
+                        >
+                            {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                        </button>
+                    </Modal.Header>
 
-                                {/* Seamless Text Input or Rich Editor */}
-                                <div className={`relative shrink-0 ${isNoteMode ? 'flex-1 min-h-[400px]' : 'min-h-[160px]'}`}>
-                                    {isNoteMode ? (
-                                        <RichTextEditor 
-                                            content={content} 
-                                            onChange={setContent} 
-                                            placeholder={t('community.createPost.noteModePlaceholder', "Títol de l'apunt... Comença a escriure aquí")}
-                                            editorRef={setEditorInstance}
-                                        />
-                                    ) : (
-                                        <textarea 
-                                            ref={textareaRef}
-                                            value={content}
-                                            onChange={(e) => setContent(e.target.value)}
-                                            placeholder={t('community.createPost.standardPlaceholder', "Comparteix coneixement...")}
-                                            className="w-full h-full bg-transparent text-white placeholder:text-slate-600 text-xl font-medium resize-none outline-none overflow-hidden"
-                                        />
-                                    )}
-                                </div>
+                    {/* Content Area */}
+                    <Modal.Body className="!px-8 !pb-6 !pt-0 bg-transparent flex flex-col custom-scrollbar">
 
-                                {/* Uploader */}
-                                {!isNoteMode && (
-                                    <div className="mt-auto pt-6 border-t border-white/5">
-                                        <FileUploader 
-                                            onUploadComplete={(newAtts) => setAttachments(prev => [...prev, ...newAtts])} 
-                                        />
-                                        
-                                        {attachments.length > 0 && (
-                                        <div className="flex flex-col gap-3 mt-4">
-                                            {attachments.map((att, i) => (
-                                                <div key={i} className="flex items-center justify-between bg-white/[0.03] border border-white/10 p-3 rounded-2xl group hover:border-white/20 transition-colors">
-                                                    <div className="flex items-center gap-4 overflow-hidden">
-                                                        <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-black/50 border border-white/5 flex items-center justify-center">
-                                                            {att.thumbnailUrl ? (
-                                                                <img src={att.thumbnailUrl} alt={att.name} loading="lazy" className="w-full h-full object-cover" />
-                                                            ) : att.type.startsWith('image/') ? (
-                                                                <img src={att.url} alt={att.name} loading="lazy" className="w-full h-full object-cover" />
+
+
+                        {/* Seamless Text Input or Rich Editor */}
+                        <div className="relative shrink-0 flex-1 min-h-[400px]">
+                            <RichTextEditor
+                                content={content}
+                                onChange={setContent}
+                                placeholder={t('community.createPost.noteModePlaceholder', "Títol de l'apunt... Comença a escriure aquí")}
+                                editorRef={setEditorInstance}
+                            />
+                        </div>
+
+                        {/* Uploader */}
+                        {(!isFullscreen || showUploader) && (
+                            <div className="mt-auto pt-6 border-t border-white/5">
+                                <FileUploader
+                                    onUploadComplete={(newAtts) => setAttachments(prev => [...prev, ...newAtts])}
+                                />
+
+                                {attachments.length > 0 && (
+                                    <div className="flex flex-col gap-3 mt-4">
+                                        {attachments.map((att, i) => (
+                                            <div key={i} className="flex items-center justify-between bg-white/[0.03] border border-white/10 p-3 rounded-2xl group hover:border-white/20 transition-colors">
+                                                <div className="flex items-center gap-4 overflow-hidden">
+                                                    <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-black/50 border border-white/5 flex items-center justify-center group/thumb">
+                                                        {att.thumbnailUrl ? (
+                                                            <img src={att.thumbnailUrl} alt={att.name} loading="lazy" className="w-full h-full object-cover" />
+                                                        ) : att.type.startsWith('image/') ? (
+                                                            <img src={att.url} alt={att.name} loading="lazy" className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <Paperclip size={18} className="text-slate-400" />
+                                                        )}
+                                                        
+                                                        {/* Custom Thumbnail Overlay */}
+                                                        <button 
+                                                            type="button"
+                                                            onClick={() => {
+                                                                if (thumbnailInputRef.current) {
+                                                                    thumbnailInputRef.current.dataset.index = i.toString();
+                                                                    thumbnailInputRef.current.click();
+                                                                }
+                                                            }}
+                                                            className="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover/thumb:opacity-100 flex flex-col items-center justify-center transition-all cursor-pointer"
+                                                            title={t('community.createPost.changeThumbnail', 'Canviar Miniatura')}
+                                                        >
+                                                            {thumbnailUploadingIndex === i ? (
+                                                                <Spinner size="sm" variant="primary" />
                                                             ) : (
-                                                                <Paperclip size={18} className="text-slate-400" />
+                                                                <ImagePlus size={16} className="text-white" />
                                                             )}
-                                                        </div>
-                                                        <div className="flex flex-col min-w-0">
-                                                            <span className="truncate text-sm font-bold text-slate-200">{att.name}</span>
-                                                            <span className="text-xs text-slate-500">{(att.size / 1024 / 1024).toFixed(2)} MB</span>
-                                                        </div>
+                                                        </button>
                                                     </div>
-                                                    <button type="button" aria-label="Eliminar fitxer"
-                                                        onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
-                                                        className="text-slate-500 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100"
-                                                    >
-                                                        <X size={16} />
-                                                    </button>
+                                                    <div className="flex flex-col min-w-0">
+                                                        <span className="truncate text-sm font-bold text-slate-200">{att.name}</span>
+                                                        <span className="text-xs text-slate-500">{(att.size / 1024 / 1024).toFixed(2)} MB</span>
+                                                    </div>
                                                 </div>
+                                                <button type="button" aria-label="Eliminar fitxer"
+                                                    onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
+                                                    className="text-slate-500 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                     </div>
+                                )}
+                                <input
+                                    type="file"
+                                    ref={thumbnailInputRef}
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const idxStr = e.target.dataset.index;
+                                        if (idxStr !== undefined) {
+                                            handleCustomThumbnailUpload(e, parseInt(idxStr, 10));
+                                        }
+                                    }}
+                                />
+                            </div>
+                        )}
+                    </Modal.Body>
+
+                    {/* Footer */}
+                    <div className="px-8 py-5 border-t border-white/5 bg-transparent flex items-center justify-between shrink-0">
+                        <div className="flex items-center gap-2">
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); }}
+                                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                                    title={t('community.createPost.addGif', 'Afegir GIF')}
+                                >
+                                    <ImageIcon size={20} />
+                                </button>
+                                {showGifPicker && (
+                                    <div className="absolute bottom-full left-0 mb-4 z-50">
+                                        <div className="fixed inset-0" onClick={() => setShowGifPicker(false)} />
+                                        <div className="relative shadow-2xl border border-white/10 rounded-xl overflow-hidden">
+                                            <GifPicker onSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); }}
+                                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                                    title={t('community.createPost.addEmote', 'Afegir Emote personalitzat')}
+                                >
+                                    <Smile size={20} />
+                                </button>
+                                {showEmojiPicker && (
+                                    <div className="absolute bottom-full left-0 mb-4 z-50">
+                                        <div className="fixed inset-0" onClick={() => setShowEmojiPicker(false)} />
+                                        <div className="relative p-4 bg-[#111] border border-white/10 rounded-2xl shadow-2xl grid grid-cols-6 gap-2 w-72 max-h-64 overflow-y-auto custom-scrollbar">
+                                            {CUSTOM_EMOTES.map(emoji => (
+                                                <button
+                                                    key={emoji}
+                                                    type="button"
+                                                    onClick={() => handleEmojiSelect(emoji)}
+                                                    className="p-1 rounded-xl hover:bg-white/10 transition-transform hover:scale-110"
+                                                >
+                                                    <img src={emoji} alt="emoji" loading="lazy" className="w-8 h-8 object-contain" />
+                                                </button>
                                             ))}
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
                                 )}
-                            </Modal.Body>
+                            </div>
 
-                            {/* Footer */}
-                            <div className="px-8 py-5 border-t border-white/5 bg-transparent flex items-center justify-between shrink-0">
-                                <div className="flex items-center gap-2">
-                                    <div className="relative">
-                                        <button
-                                            type="button"
-                                            onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); }}
-                                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
-                                            title={t('community.createPost.addGif', 'Afegir GIF')}
-                                        >
-                                            <ImageIcon size={20} />
-                                        </button>
-                                        {showGifPicker && (
-                                            <div className="absolute bottom-full left-0 mb-4 z-50">
-                                                <div className="fixed inset-0" onClick={() => setShowGifPicker(false)} />
-                                                <div className="relative shadow-2xl border border-white/10 rounded-xl overflow-hidden">
-                                                    <GifPicker onSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="relative">
-                                        <button
-                                            type="button"
-                                            onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); }}
-                                            className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
-                                            title={t('community.createPost.addEmote', 'Afegir Emote personalitzat')}
-                                        >
-                                            <Smile size={20} />
-                                        </button>
-                                        {showEmojiPicker && (
-                                            <div className="absolute bottom-full left-0 mb-4 z-50">
-                                                <div className="fixed inset-0" onClick={() => setShowEmojiPicker(false)} />
-                                                <div className="relative p-4 bg-[#111] border border-white/10 rounded-2xl shadow-2xl grid grid-cols-6 gap-2 w-72 max-h-64 overflow-y-auto custom-scrollbar">
-                                                    {CUSTOM_EMOTES.map(emoji => (
-                                                        <button
-                                                            key={emoji}
-                                                            type="button"
-                                                            onClick={() => handleEmojiSelect(emoji)}
-                                                            className="p-1 rounded-xl hover:bg-white/10 transition-transform hover:scale-110"
-                                                        >
-                                                            <img src={emoji} alt="emoji" loading="lazy" className="w-8 h-8 object-contain" />
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                    
-                                    {error && (
-                                        <div className="ml-4 flex items-center gap-2 text-rose-400 text-xs font-bold px-3 py-1.5 bg-rose-500/10 rounded-full border border-rose-500/20">
-                                            <AlertCircle size={14} />
-                                            <span>{error}</span>
-                                        </div>
-                                    )}
-
-                                    <div className="w-px h-6 bg-white/10 mx-2 hidden sm:block" />
-
+                            {isFullscreen && (
+                                <div className="relative">
                                     <button
                                         type="button"
-                                        onClick={() => setIsNoteMode(!isNoteMode)}
-                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all ${isNoteMode ? 'bg-white/10 text-white border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]' : 'bg-white/5 text-slate-400 hover:text-white border-white/10 hover:bg-white/10'}`}
-                                        title={t('community.createPost.noteModeTitle', 'Mode Apunt Extens (Notion style)')}
+                                        onClick={() => setShowUploader(!showUploader)}
+                                        className={`w-10 h-10 flex items-center justify-center rounded-full transition-all ${showUploader ? 'text-white bg-white/20' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                                        title="Alternar Adjunts"
                                     >
-                                        <FileText size={14} />
-                                        <span className="hidden sm:inline">{t('community.createPost.extendedNote', 'Apunt Extens')}</span>
+                                        <Paperclip size={20} />
                                     </button>
                                 </div>
+                            )}
 
-                                <button type="button"
-                                    onClick={handleSend}
-                                    disabled={loading || (!content.trim() && attachments.length === 0)}
-                                    className="px-8 py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-                                >
-                                    {loading && <Spinner size="sm" variant="primary" />}
-                                    {t('community.createPost.publishBtn', 'Publicar')}
-                                </button>
-                            </div>
+                            {error && (
+                                <div className="ml-4 flex items-center gap-2 text-rose-400 text-xs font-bold px-3 py-1.5 bg-rose-500/10 rounded-full border border-rose-500/20">
+                                    <AlertCircle size={14} />
+                                    <span>{error}</span>
+                                </div>
+                            )}
+
                         </div>
 
-                        {/* RIGHT PANEL: LIVE PREVIEW */}
-                        <div className="hidden md:flex flex-col w-2/5 border-l border-white/5 relative overflow-hidden bg-black noise-bg shrink-0">
-                            {/* Abstract Ambient Glows */}
-                            <div className="absolute top-[10%] right-[10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
-                            <div className="absolute bottom-[10%] left-[10%] w-[250px] h-[250px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
-                            
-                            <div className="flex items-center justify-between px-8 py-6 relative z-10">
-                                <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    {t('community.createPost.livePreview', 'Live Preview')}
-                                </div>
-                            </div>
+                        <div className="flex items-center gap-4">
+                            <button
+                                type="button"
+                                onClick={() => setShowSubjectSelector(true)}
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-all group"
+                            >
+                                <span
+                                    className="w-2 h-2 rounded-full"
+                                    style={activeSubject ? {
+                                        backgroundColor: tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary || '#0ea5e9',
+                                        boxShadow: `0 0 10px rgba(${tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary_rgb || '14, 165, 233'}, 0.8)`
+                                    } : { backgroundColor: '#64748b' }}
+                                />
+                                {activeSubject ? activeSubject.label : t('community.createPost.noSubject', 'Sense assignatura')}
+                                <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors ml-1" />
+                            </button>
 
-                            <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">
-                                <div className="w-full max-w-[320px] pointer-events-none">
-                                    {livePreviewElement}
-                                </div>
-                                
-                                <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-[250px]">
-                                    {t('community.createPost.livePreviewDesc', 'Així es veurà el teu apunt a la Comunitat')}
-                                </p>
-                            </div>
+                            <button type="button"
+                                onClick={handleSend}
+                                disabled={loading || (!content.trim() && attachments.length === 0)}
+                                className="px-8 py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                            >
+                                {loading && <Spinner size="sm" variant="primary" />}
+                                {t('community.createPost.publishBtn', 'Publicar')}
+                            </button>
                         </div>
+                    </div>
+                </div>
+
+                {/* RIGHT PANEL: LIVE PREVIEW */}
+                {!isFullscreen && (
+                    <div className="hidden md:flex flex-col w-2/5 border-l border-white/5 relative overflow-hidden bg-black noise-bg shrink-0">
+                    {/* Abstract Ambient Glows */}
+                    <div className="absolute top-[10%] right-[10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
+                    <div className="absolute bottom-[10%] left-[10%] w-[250px] h-[250px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+
+                    <div className="flex items-center justify-between px-8 py-6 relative z-10">
+                        <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            {t('community.createPost.livePreview', 'Live Preview')}
+                        </div>
+                    </div>
+
+                    <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">
+                        <div className="w-full max-w-[320px] pointer-events-none">
+                            {livePreviewElement}
+                        </div>
+
+                        <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-[250px]">
+                            {t('community.createPost.livePreviewDesc', 'Així es veurà el teu apunt a la Comunitat')}
+                        </p>
+                    </div>
+                </div>
+                )}
             </Modal.Layout>
-            <SubjectSelectorModal 
+            <SubjectSelectorModal
                 isOpen={showSubjectSelector}
                 onClose={() => setShowSubjectSelector(false)}
                 onSelect={(id) => setSubject(id)}

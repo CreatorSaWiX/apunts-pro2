@@ -7,7 +7,7 @@ interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     children: React.ReactNode;
-    size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'full' | 'auto';
+    size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'full' | 'screen' | 'auto';
     closeOnOutsideClick?: boolean;
     className?: string;
     hideCloseButton?: boolean;
@@ -25,14 +25,15 @@ const SIZE_MAP = {
     '5xl': 'max-w-5xl w-full h-[85vh] min-h-[600px]',
     '6xl': 'max-w-6xl w-full h-[85vh] min-h-[600px]',
     'full': 'w-[95vw] max-w-7xl h-[90vh]',
+    'screen': 'w-screen h-screen max-w-none rounded-none',
     'auto': 'w-auto'
 };
 
-export const Modal = ({ 
-    isOpen, 
-    onClose, 
-    children, 
-    size = 'md', 
+export const Modal = ({
+    isOpen,
+    onClose,
+    children,
+    size = 'md',
     closeOnOutsideClick = true,
     className = '',
     hideCloseButton = false,
@@ -59,8 +60,8 @@ export const Modal = ({
     const content = (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
-                    <motion.div 
+                <div className={`fixed inset-0 z-[200] flex items-center justify-center ${size === 'screen' ? 'p-0' : 'p-4 sm:p-6'}`}>
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -68,19 +69,20 @@ export const Modal = ({
                         className={`fixed inset-0 ${overlayVariant === 'transparent' ? 'bg-[#020617]/20 backdrop-blur-sm' : 'bg-[#020617]/50 backdrop-blur-md'}`}
                         onClick={() => closeOnOutsideClick && onClose()}
                     />
-                    <motion.div 
+                    <motion.div
+                        layout
                         initial={{ opacity: 0, scale: 0.95, y: 15 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        className={`relative z-10 flex flex-col ${overlayVariant === 'transparent' ? 'bg-[#0F172A]/30' : 'bg-[#0F172A]/70'} backdrop-blur-[40px] border border-white/[0.12] rounded-[32px] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_60px_rgba(0,0,0,0.6)] max-h-[85vh] ${SIZE_MAP[size]} ${className}`}
+                        transition={{ layout: { type: "spring", stiffness: 400, damping: 35 }, type: "spring", stiffness: 400, damping: 30 }}
+                        className={`relative z-10 flex flex-col ${overlayVariant === 'transparent' ? 'bg-[#0F172A]/30' : 'bg-[#0F172A]/70'} backdrop-blur-[40px] border border-white/[0.12] ${size === 'screen' ? 'rounded-none max-h-screen border-0' : 'rounded-[32px] max-h-[85vh]'} overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_60px_rgba(0,0,0,0.6)] ${SIZE_MAP[size]} ${className}`}
                     >
                         {/* Subtle noise texture overlay for realism */}
                         <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
-                        
+
                         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent z-50 pointer-events-none" />
                         {!hideCloseButton && (
-                            <button type="button" 
+                            <button type="button"
                                 onClick={onClose}
                                 className="absolute top-4 right-4 z-[60] p-2 bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 rounded-full transition-all duration-300 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
                             >

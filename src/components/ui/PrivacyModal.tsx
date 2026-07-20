@@ -58,7 +58,7 @@ const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
 
                         <div className="mt-12 pt-6 border-t border-white/5 flex items-center justify-between text-xs text-slate-500">
                             <span>{t('privacy.footer.date', 'Darrera revisió: Juliol 2026')}</span>
-                            <span>Apunts PRO2</span>
+                            <span>Apunts</span>
                         </div>
                     </div>
                 </Modal.Body>
