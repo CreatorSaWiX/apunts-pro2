@@ -20,8 +20,6 @@ import { LineHeight } from './extensions/LineHeight';
 import TableGlobalResizer from './TableGlobalResizer';
 import { CustomCodeBlock } from './extensions/CustomCodeBlock';
 import { createLowlight, common } from 'lowlight';
-import { useCallback } from 'react';
-
 const lowlight = createLowlight(common);
 
 import {
@@ -30,8 +28,7 @@ import {
     AlignLeft, AlignCenter, AlignRight, AlignJustify, Link as LinkIcon, CheckSquare, Table as TableIcon,
     ChevronDown, Type, GripHorizontal, Columns, Rows, Trash2
 } from 'lucide-react';
-import { useEffect, useState, useRef } from 'react';
-
+import { useEffect, useState, useRef, useCallback } from 'react';
 interface RichTextEditorProps {
     content: string;
     onChange: (html: string) => void;
@@ -186,23 +183,39 @@ const MenuBar = ({ editor }: { editor: any }) => {
             <ToolbarButton onClick={() => editor.chain().focus().toggleCodeBlock().run()} isActive={editor.isActive('codeBlock')} icon={Code} title={t('editor.codeBlock', 'Bloc de Codi')} />
 
 
-            <EditorDropdown icon={TableIcon} title={t('editor.tables', 'Taules')} isActive={editor.isActive('table')}>
-                {!editor.isActive('table') ? (
-                    <DropdownItem onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} icon={TableIcon} label={t('editor.insertTable', 'Inserir Taula (3x3)') + formatShortcut('editorTable')} />
-                ) : (
-                    <>
-                        <DropdownItem onClick={() => editor.chain().focus().addRowBefore().run()} icon={Rows} label={t('editor.addRowBefore', 'Fila a Dalt')} />
-                        <DropdownItem onClick={() => editor.chain().focus().addRowAfter().run()} icon={Rows} label={t('editor.addRowAfter', 'Fila a Baix')} />
-                        <DropdownItem onClick={() => editor.chain().focus().deleteRow().run()} icon={Trash2} label={t('editor.deleteRow', 'Eliminar Fila')} />
-                        <div className="w-full h-px bg-white/10 my-1" />
-                        <DropdownItem onClick={() => editor.chain().focus().addColumnBefore().run()} icon={Columns} label={t('editor.addColumnBefore', 'Columna a l\'Esquerra')} />
-                        <DropdownItem onClick={() => editor.chain().focus().addColumnAfter().run()} icon={Columns} label={t('editor.addColumnAfter', 'Columna a la Dreta')} />
-                        <DropdownItem onClick={() => editor.chain().focus().deleteColumn().run()} icon={Trash2} label={t('editor.deleteColumn', 'Eliminar Columna')} />
-                        <div className="w-full h-px bg-white/10 my-1" />
-                        <DropdownItem onClick={() => editor.chain().focus().deleteTable().run()} icon={Trash2} label={t('editor.deleteTable', 'Eliminar Taula Sencera')} />
-                    </>
-                )}
-            </EditorDropdown>
+            <ToolbarButton 
+                onClick={() => {
+                    if (!editor.isActive('table')) {
+                        editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+                    }
+                }} 
+                isActive={editor.isActive('table')} 
+                icon={TableIcon} 
+                title={t('editor.insertTable', 'Inserir Taula') + formatShortcut('editorTable')} 
+            />
+
+            <div 
+                className={`flex items-center overflow-hidden origin-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+                    editor.isActive('table') ? 'max-w-[500px] opacity-100 scale-100 ml-1' : 'max-w-0 opacity-0 scale-95 ml-0'
+                }`}
+            >
+                <div className="flex items-center gap-1 w-max">
+                    <div className="w-px h-6 bg-primary/20 mx-1" />
+                    <ToolbarButton onClick={() => editor.chain().focus().addRowBefore().run()} isActive={false} icon={Rows} title={t('editor.addRowBefore', 'Fila a Dalt')} />
+                    <ToolbarButton onClick={() => editor.chain().focus().addRowAfter().run()} isActive={false} icon={Rows} title={t('editor.addRowAfter', 'Fila a Baix')} />
+                    <ToolbarButton onClick={() => editor.chain().focus().deleteRow().run()} isActive={false} icon={Trash2} title={t('editor.deleteRow', 'Eliminar Fila')} />
+                    
+                    <div className="w-px h-6 bg-primary/20 mx-1" />
+                    
+                    <ToolbarButton onClick={() => editor.chain().focus().addColumnBefore().run()} isActive={false} icon={Columns} title={t('editor.addColumnBefore', 'Columna a l\'Esquerra')} />
+                    <ToolbarButton onClick={() => editor.chain().focus().addColumnAfter().run()} isActive={false} icon={Columns} title={t('editor.addColumnAfter', 'Columna a la Dreta')} />
+                    <ToolbarButton onClick={() => editor.chain().focus().deleteColumn().run()} isActive={false} icon={Trash2} title={t('editor.deleteColumn', 'Eliminar Columna')} />
+                    
+                    <div className="w-px h-6 bg-primary/20 mx-1" />
+                    
+                    <ToolbarButton onClick={() => editor.chain().focus().deleteTable().run()} isActive={false} icon={Trash2} title={t('editor.deleteTable', 'Eliminar Taula Sencera')} />
+                </div>
+            </div>
 
             <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()} isActive={false} icon={Minus} title={t('editor.horizontalRule', 'Línia Separadora')} />
         </div>

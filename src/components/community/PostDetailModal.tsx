@@ -112,6 +112,14 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
             await Promise.all(repliesSnapshot.docs.map(replyDoc => deleteDoc(replyDoc.ref)));
 
             await deleteDoc(doc(db, 'community_posts', post.id));
+
+            // Sincronitzem l'esborrat amb Algolia
+            fetch('/api/sync-algolia', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete', postId: post.id })
+            }).catch(console.error);
+
             onClose();
         } catch (err) {
             console.error(err);

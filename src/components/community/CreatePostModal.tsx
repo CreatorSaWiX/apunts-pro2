@@ -74,7 +74,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
         setLoading(true);
         try {
-            await addDoc(collection(db, 'community_posts'), {
+            const postData = {
                 userId: user.id,
                 username: user.username,
                 userAvatar: user.avatar || '',
@@ -87,7 +87,18 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 rank: 0,
                 isPinned: false,
                 isNote: true
-            });
+            };
+            const docRef = await addDoc(collection(db, 'community_posts'), postData);
+
+            // Notify Algolia via Vercel webhook (fire and forget to not block UI)
+            fetch('/api/sync-algolia', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'create',
+                    post: { id: docRef.id, ...postData }
+                })
+            }).catch(console.error);
 
             setContent('');
             setAttachments([]);

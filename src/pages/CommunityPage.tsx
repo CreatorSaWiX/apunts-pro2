@@ -1,4 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import algoliasearch from 'algoliasearch/lite';
+
+const searchClient = algoliasearch(
+  import.meta.env.VITE_ALGOLIA_APP_ID || 'dummy',
+  import.meta.env.VITE_ALGOLIA_SEARCH_KEY || 'dummy'
+);
+const algoliaIndex = searchClient.initIndex('apunts_posts');
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import type { CommunityPost } from '../types/community';
@@ -8,12 +15,9 @@ import { Search, Plus, FileText as FileTextIcon, BookOpen, Sparkles, X } from 'l
 import CommunityHero3D from '../components/community/CommunityHero3D';
 import { lazy, Suspense } from 'react';
 
-const SubjectSelectorModal = lazy(() => import('../components/community/SubjectSelectorModal'));
-const CreatePostModal = lazy(() => import('../components/community/CreatePostModal'));
-const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
 import Spinner from '../components/ui/Spinner';
 import { useSettings } from '../contexts/SettingsContext';
-import { SUBJECTS, getSubjectById } from '../config/subjects';
+import { getSubjectById } from '../config/subjects';
 import { useTranslation } from 'react-i18next';
 import { useShortcut } from '../hooks/useShortcut';
 
@@ -22,6 +26,11 @@ import { LiquidToolbar, LiquidToolbarButton } from '../components/ui/glass/Liqui
 import CommunityCanvas from '../components/community/CommunityCanvas';
 import NavigationPill from '../components/ui/NavigationPill';
 import { Users, Palette } from 'lucide-react';
+
+const SubjectSelectorModal = lazy(() => import('../components/community/SubjectSelectorModal'));
+const CreatePostModal = lazy(() => import('../components/community/CreatePostModal'));
+const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
+
 
 const mockEpicPost: CommunityPost = {
     id: 'mock-epic',
@@ -191,35 +200,52 @@ const CommunityPage = () => {
 
         const setup = async () => {
             const { db } = await import('../lib/firebase');
-            const { collection, query, orderBy, onSnapshot, where, limit } = await import('firebase/firestore');
+            const { collection, query, orderBy, onSnapshot, where, limit, documentId } = await import('firebase/firestore');
 
-            const currentLimit = debouncedSearch ? 100 : POSTS_PER_PAGE;
+            const currentLimit = debouncedSearch ? 30 : POSTS_PER_PAGE;
+            let postIdsToFetch: string[] = [];
+
+            if (debouncedSearch.trim()) {
+                try {
+                    const results = await algoliaIndex.search(debouncedSearch);
+                    postIdsToFetch = results.hits.map(hit => hit.objectID);
+                } catch (err) {
+                    console.error("Algolia search failed", err);
+                }
+                
+                if (postIdsToFetch.length === 0) {
+                    setPosts([]);
+                    setLoading(false);
+                    setHasMore(false);
+                    return;
+                }
+            }
 
             let q = query(
                 collection(db, 'community_posts'),
-                orderBy('isPinned', 'desc'),
-                orderBy('createdAt', 'desc'),
                 limit(currentLimit)
             );
 
-            if (activeSubject !== 'all') {
-                q = query(q, where('subject', '==', activeSubject));
-            }
-
-            if (activeRank !== null) {
-                q = query(q, where('rank', '==', activeRank));
+            if (debouncedSearch.trim()) {
+                // Quan estem cercant per Algolia, demanem exactament els documents que han fet "match". Max 30 degut a límits de Firestore 'in'.
+                const chunk = postIdsToFetch.slice(0, 30);
+                q = query(q, where(documentId(), 'in', chunk));
+            } else {
+                q = query(q, orderBy('isPinned', 'desc'), orderBy('createdAt', 'desc'));
+                if (activeSubject !== 'all') {
+                    q = query(q, where('subject', '==', activeSubject));
+                }
+                if (activeRank !== null) {
+                    q = query(q, where('rank', '==', activeRank));
+                }
             }
 
             unsubscribe = onSnapshot(q, (snapshot) => {
                 let rawPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
 
+                // Restaurem l'ordre de rellevància d'Algolia si estem cercant
                 if (debouncedSearch.trim()) {
-                    const lowerQ = debouncedSearch.toLowerCase();
-                    rawPosts = rawPosts.filter(p =>
-                        p.content.toLowerCase().includes(lowerQ) ||
-                        (p.username && p.username.toLowerCase().includes(lowerQ)) ||
-                        (p.attachments && p.attachments.some(a => a.name.toLowerCase().includes(lowerQ)))
-                    );
+                    rawPosts.sort((a, b) => postIdsToFetch.indexOf(a.id) - postIdsToFetch.indexOf(b.id));
                 }
 
                 setPosts(rawPosts);
@@ -235,12 +261,14 @@ const CommunityPage = () => {
 
     const loadMore = useCallback(async () => {
         if (loadingMore || !hasMore || !lastVisible || isOffline) return;
+        if (debouncedSearch.trim()) return; // Disable infinite scroll during Algolia search
+
         setLoadingMore(true);
 
         const { db } = await import('../lib/firebase');
         const { collection, query, orderBy, getDocs, where, limit, startAfter } = await import('firebase/firestore');
 
-        const currentLimit = debouncedSearch ? 100 : POSTS_PER_PAGE;
+        const currentLimit = POSTS_PER_PAGE;
 
         let q = query(
             collection(db, 'community_posts'),
@@ -260,15 +288,6 @@ const CommunityPage = () => {
 
         const snapshot = await getDocs(q);
         let newPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
-
-        if (debouncedSearch.trim()) {
-            const lowerQ = debouncedSearch.toLowerCase();
-            newPosts = newPosts.filter(p =>
-                p.content.toLowerCase().includes(lowerQ) ||
-                (p.username && p.username.toLowerCase().includes(lowerQ)) ||
-                (p.attachments && p.attachments.some(a => a.name.toLowerCase().includes(lowerQ)))
-            );
-        }
 
         setPosts(prev => {
             const existingIds = new Set(prev.map(p => p.id));
