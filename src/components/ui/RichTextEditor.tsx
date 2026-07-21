@@ -1,5 +1,4 @@
 import { useEditor, EditorContent } from '@tiptap/react';
-import { BubbleMenu } from '@tiptap/react/menus';
 import { useShortcut } from '../../hooks/useShortcut';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +18,11 @@ import { TableHeader } from '@tiptap/extension-table-header';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { LineHeight } from './extensions/LineHeight';
 import TableGlobalResizer from './TableGlobalResizer';
+import { CustomCodeBlock } from './extensions/CustomCodeBlock';
+import { createLowlight, common } from 'lowlight';
+import { useCallback } from 'react';
+
+const lowlight = createLowlight(common);
 
 import {
     Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Minus,
@@ -109,16 +113,15 @@ const MenuBar = ({ editor }: { editor: any }) => {
         };
     }, [editor]);
 
-    if (!editor) return null;
+    const isMac = useRef(navigator.userAgent.toLowerCase().includes('mac')).current;
 
-    const formatShortcut = (actionName: string) => {
+    const formatShortcut = useCallback((actionName: string) => {
         const shortcut = shortcuts?.[actionName];
         if (!shortcut) return '';
-        const isMac = navigator.userAgent.toLowerCase().includes('mac');
         const metaStr = shortcut.meta ? (isMac ? '⌘' : 'Ctrl+') : '';
         const key = shortcut.key.toUpperCase();
         return ` (${metaStr}${key})`;
-    };
+    }, [shortcuts, isMac]);
 
     const setLink = () => {
         const previousUrl = editor.getAttributes('link').href;
@@ -183,16 +186,23 @@ const MenuBar = ({ editor }: { editor: any }) => {
             <ToolbarButton onClick={() => editor.chain().focus().toggleCodeBlock().run()} isActive={editor.isActive('codeBlock')} icon={Code} title={t('editor.codeBlock', 'Bloc de Codi')} />
 
 
-            <ToolbarButton
-                onClick={() => {
-                    if (!editor.isActive('table')) {
-                        editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
-                    }
-                }}
-                isActive={editor.isActive('table')}
-                icon={TableIcon}
-                title={t('editor.tables', 'Taules (3x3)') + formatShortcut('editorTable')}
-            />
+            <EditorDropdown icon={TableIcon} title={t('editor.tables', 'Taules')} isActive={editor.isActive('table')}>
+                {!editor.isActive('table') ? (
+                    <DropdownItem onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} icon={TableIcon} label={t('editor.insertTable', 'Inserir Taula (3x3)') + formatShortcut('editorTable')} />
+                ) : (
+                    <>
+                        <DropdownItem onClick={() => editor.chain().focus().addRowBefore().run()} icon={Rows} label={t('editor.addRowBefore', 'Fila a Dalt')} />
+                        <DropdownItem onClick={() => editor.chain().focus().addRowAfter().run()} icon={Rows} label={t('editor.addRowAfter', 'Fila a Baix')} />
+                        <DropdownItem onClick={() => editor.chain().focus().deleteRow().run()} icon={Trash2} label={t('editor.deleteRow', 'Eliminar Fila')} />
+                        <div className="w-full h-px bg-white/10 my-1" />
+                        <DropdownItem onClick={() => editor.chain().focus().addColumnBefore().run()} icon={Columns} label={t('editor.addColumnBefore', 'Columna a l\'Esquerra')} />
+                        <DropdownItem onClick={() => editor.chain().focus().addColumnAfter().run()} icon={Columns} label={t('editor.addColumnAfter', 'Columna a la Dreta')} />
+                        <DropdownItem onClick={() => editor.chain().focus().deleteColumn().run()} icon={Trash2} label={t('editor.deleteColumn', 'Eliminar Columna')} />
+                        <div className="w-full h-px bg-white/10 my-1" />
+                        <DropdownItem onClick={() => editor.chain().focus().deleteTable().run()} icon={Trash2} label={t('editor.deleteTable', 'Eliminar Taula Sencera')} />
+                    </>
+                )}
+            </EditorDropdown>
 
             <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()} isActive={false} icon={Minus} title={t('editor.horizontalRule', 'Línia Separadora')} />
         </div>
@@ -202,9 +212,11 @@ const MenuBar = ({ editor }: { editor: any }) => {
 const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure...', editorRef }: RichTextEditorProps) => {
     const { t } = useTranslation();
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const updateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
+                codeBlock: false,
                 heading: { levels: [1, 2, 3] }
             }),
             Underline,
@@ -219,6 +231,7 @@ const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure.
             TableHeader,
             TableCell,
             LineHeight,
+            CustomCodeBlock.configure({ lowlight }),
             Image.configure({
                 HTMLAttributes: {
                     class: 'rounded-xl max-h-[400px] object-contain my-4',
@@ -231,7 +244,14 @@ const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure.
         ],
         content: content,
         onUpdate: ({ editor }) => {
-            onChange(editor.getHTML());
+            if (updateTimeoutRef.current) {
+                clearTimeout(updateTimeoutRef.current);
+            }
+            updateTimeoutRef.current = setTimeout(() => {
+                if (!editor.isDestroyed) {
+                    onChange(editor.getHTML());
+                }
+            }, 300);
         },
         editorProps: {
             attributes: {
@@ -274,6 +294,9 @@ const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure.
         if (editorRef && editor) {
             editorRef(editor);
         }
+        return () => {
+            if (updateTimeoutRef.current) clearTimeout(updateTimeoutRef.current);
+        };
     }, [editor, editorRef]);
 
     return (
@@ -282,41 +305,14 @@ const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure.
             <div className="flex-1 overflow-y-auto custom-scrollbar bg-black/20 relative" ref={scrollContainerRef}>
                 {editor && <TableGlobalResizer editor={editor} scrollContainerRef={scrollContainerRef} />}
 
-                {editor && (
-                    <BubbleMenu
-                        editor={editor}
-                        // @ts-ignore
-                        tippyOptions={{ duration: 100, placement: 'top', animation: 'shift-away' }}
-                        shouldShow={({ editor }) => editor.isActive('table')}
-                        className="flex items-center gap-1 bg-slate-800/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl p-1.5 overflow-hidden"
-                    >
-                        <div className="flex items-center px-2 text-xs font-bold text-white/50 uppercase tracking-widest mr-1">
-                            {t('editor.tables', 'Taula')}
-                        </div>
-                        <ToolbarButton onClick={() => editor.chain().focus().addRowBefore().run()} icon={Rows} title={t('editor.addRowBefore', 'Fila a Dalt')} />
-                        <ToolbarButton onClick={() => editor.chain().focus().addRowAfter().run()} icon={Rows} title={t('editor.addRowAfter', 'Fila a Baix')} />
-                        <ToolbarButton onClick={() => editor.chain().focus().deleteRow().run()} icon={Trash2} title={t('editor.deleteRow', 'Eliminar Fila')} />
-                        <div className="w-px h-5 bg-white/10 mx-1" />
-                        <ToolbarButton onClick={() => editor.chain().focus().addColumnBefore().run()} icon={Columns} title={t('editor.addColumnBefore', 'Columna a l\'Esquerra')} />
-                        <ToolbarButton onClick={() => editor.chain().focus().addColumnAfter().run()} icon={Columns} title={t('editor.addColumnAfter', 'Columna a la Dreta')} />
-                        <ToolbarButton onClick={() => editor.chain().focus().deleteColumn().run()} icon={Trash2} title={t('editor.deleteColumn', 'Eliminar Columna')} />
-                        <div className="w-px h-5 bg-white/10 mx-1" />
-                        <button
-                            type="button"
-                            onClick={() => editor.chain().focus().deleteTable().run()}
-                            className="p-2 rounded-lg text-rose-400 hover:text-white hover:bg-rose-500/20 transition-colors"
-                            title={t('editor.deleteTable', 'Eliminar Taula Sencera')}
-                        >
-                            <Trash2 size={16} />
-                        </button>
-                    </BubbleMenu>
-                )}
-
                 <EditorContent editor={editor} />
             </div>
 
             <style>{`
-                .is-editor-empty:first-child::before {
+                p.is-editor-empty:first-child::before,
+                h1.is-editor-empty:first-child::before,
+                h2.is-editor-empty:first-child::before,
+                h3.is-editor-empty:first-child::before {
                     color: #475569;
                     content: attr(data-placeholder);
                     float: left;

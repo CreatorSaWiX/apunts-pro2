@@ -3,6 +3,7 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, ExternalLink, Users, Clock, Target, CheckSquare, Layers, Activity, Book, Key } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
 import DOMPurify from 'dompurify';
+import { HtmlRenderer } from '../../ui/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
 
 interface SubjectDetailsModalProps {
@@ -378,7 +379,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                         }).slice(2, -2);
 
                                                         return (
-                                                            <div
+                                                            <HtmlRenderer
                                                                 key={sec.title}
                                                                 className="prose prose-invert prose-lg max-w-none 
                                                                     prose-headings:font-bold prose-headings:text-white prose-headings:tracking-tight 
@@ -411,7 +412,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                     prose-table:w-full prose-table:border-collapse prose-table:rounded-xl prose-table:overflow-hidden
                                                                     prose-td:border prose-td:border-white/5 prose-td:p-4 prose-td:bg-white/[0.02]
                                                                     prose-th:border prose-th:border-white/10 prose-th:bg-white/[0.05] prose-th:p-4 prose-th:text-left prose-th:text-white"
-                                                                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(processedHtml) }}
+                                                                content={processedHtml}
                                                             />
                                                         );
                                                     })}

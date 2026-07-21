@@ -25,6 +25,7 @@ const CodeEditorSkeleton = () => {
 };
 
 import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
+import { HtmlRenderer } from '../components/ui/HtmlRenderer';
 import Spinner from '../components/ui/Spinner';
 import DOMPurify from 'dompurify';
 
@@ -297,7 +298,7 @@ const SolutionDetailPage = () => {
                         </div>
                         <div className="p-6 text-slate-300 leading-relaxed text-[15px]">
                             {solution.statement ? (
-                                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(solution.statement) }} className="jutge-content space-y-4" />
+                                <HtmlRenderer content={solution.statement} className="jutge-content space-y-4" />
                             ) : (
                                 <p className="italic text-slate-500">{t('solutionDetail.statementNotAvailable', 'Enunciat no disponible.')}</p>
                             )}

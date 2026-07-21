@@ -142,11 +142,17 @@ body.player-fullscreen .nav-pill-container {
 }
 
 /* Tiptap Table Styles */
+.editor-content-area .tableWrapper {
+  @apply overflow-hidden my-6 rounded-xl shadow-sm w-full;
+}
+
 .editor-content-area table {
-  @apply border-collapse my-6 table-fixed rounded-xl overflow-hidden shadow-sm border-hidden min-w-[50%];
-  width: max-content;
+  @apply border-collapse table-fixed rounded-xl overflow-hidden border-hidden min-w-[50%];
+  width: var(--custom-table-width, max-content) !important;
+  height: var(--custom-table-height, auto) !important;
   max-width: 100%;
   border-spacing: 0;
+  margin: 0 !important;
 }
 
 .editor-content-area td,
@@ -179,7 +185,7 @@ body.player-fullscreen .nav-pill-container {
 }
 
 .editor-content-area .column-resize-handle {
-  @apply absolute -right-2 top-1 bottom-1 w-4 cursor-col-resize z-20 flex items-center justify-center opacity-0 transition-opacity;
+  @apply absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize z-20 flex items-center justify-center opacity-0 transition-opacity;
 }
 
 /* Prevent accidental deformation by hiding the right-most handle */
@@ -190,7 +196,17 @@ body.player-fullscreen .nav-pill-container {
 
 .editor-content-area .column-resize-handle::after {
   content: '';
-  @apply h-full w-2 bg-primary rounded-full;
+  @apply absolute w-1.5 bg-primary;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.editor-content-area th .column-resize-handle::after,
+.editor-content-area td .column-resize-handle::after {
+  top: -10000px;
+  bottom: -10000px;
 }
 
 .editor-content-area .column-resize-handle:hover,
@@ -467,6 +483,8 @@ canvas {
   z-index: 0;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .masonry-grid {
@@ -587,3 +605,75 @@ canvas {
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/*                        HIGHLIGHT.JS SYNTAX THEME (Awwwards)                 */
+/* -------------------------------------------------------------------------- */
+.hljs-comment,
+.hljs-quote {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-keyword,
+.hljs-formula {
+  color: #ff7b72;
+}
+
+.hljs-section,
+.hljs-name,
+.hljs-selector-tag,
+.hljs-deletion,
+.hljs-subst {
+  color: #ff7b72;
+}
+
+.hljs-literal {
+  color: #79c0ff;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta .hljs-string {
+  color: #a5d6ff;
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-number {
+  color: #79c0ff;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-title {
+  color: #d2a8ff;
+}
+
+.hljs-built_in,
+.hljs-title.class_,
+.hljs-class .hljs-title {
+  color: #d2a8ff;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-link {
+  text-decoration: underline;
+}

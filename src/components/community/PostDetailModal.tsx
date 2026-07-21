@@ -10,6 +10,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment, setDoc, serverTimestamp } from 'firebase/firestore';
 import DOMPurify from 'dompurify';
+import { HtmlRenderer } from '../ui/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
 
 interface PostDetailModalProps {
@@ -202,9 +203,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                             >
                                 {/* Text Content */}
                                 {post.isNote ? (
-                                    <div className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium"
-                                         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
-                                    />
+                                    <HtmlRenderer content={post.content} className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium" />
                                 ) : (
                                     <div className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium">
                                         <ReactMarkdown remarkPlugins={[remarkGfm]}>

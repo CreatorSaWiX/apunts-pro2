@@ -16,50 +16,65 @@ const TableGlobalResizer: React.FC<TableGlobalResizerProps> = ({ editor, scrollC
     const initialMouse = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
     const initialTableSize = useRef<{ width: number, height: number }>({ width: 0, height: 0 });
     const dragMode = useRef<'width' | 'both'>('both');
+    const frameReq = useRef<number | null>(null);
 
     const updateRect = useCallback(() => {
-        if (!editor || isDraggingRef.current) return;
-        
-        if (!editor.isActive('table')) {
-            setRect(prev => prev ? null : prev);
-            tableNodeInfo.current = null;
-            tableDomRef.current = null;
-            return;
-        }
+        if (frameReq.current) return;
+        frameReq.current = requestAnimationFrame(() => {
+            frameReq.current = null;
+            if (!editor || isDraggingRef.current) return;
+            
+            if (!editor.isActive('table')) {
+                setRect(prev => prev ? null : prev);
+                tableNodeInfo.current = null;
+                tableDomRef.current = null;
+                return;
+            }
 
-        const { state, view } = editor;
-        const { selection } = state;
-        const match = findParentNode((node) => node.type.name === 'table')(selection);
+            const { state, view } = editor;
+            const { selection } = state;
+            const match = findParentNode((node) => node.type.name === 'table')(selection);
 
-        if (!match) {
-            setRect(prev => prev ? null : prev);
-            tableNodeInfo.current = null;
-            tableDomRef.current = null;
-            return;
-        }
+            if (!match) {
+                setRect(prev => prev ? null : prev);
+                tableNodeInfo.current = null;
+                tableDomRef.current = null;
+                return;
+            }
 
-        tableNodeInfo.current = { pos: match.pos, node: match.node };
+            tableNodeInfo.current = { pos: match.pos, node: match.node };
 
-        // For prosemirror-tables, nodeDOM usually returns the tableWrapper. We need the wrapper or table
-        const domAtPos = view.nodeDOM(match.pos) as HTMLElement;
-        let tableDom = domAtPos;
-        if (tableDom && tableDom.classList.contains('tableWrapper')) {
-            tableDom = tableDom.querySelector('table') as HTMLElement;
-        }
-        
-        tableDomRef.current = tableDom;
+            // For prosemirror-tables, nodeDOM usually returns the tableWrapper. We need the wrapper or table
+            const domAtPos = view.nodeDOM(match.pos) as HTMLElement;
+            let tableDom = domAtPos;
+            if (tableDom && tableDom.classList.contains('tableWrapper')) {
+                tableDom = tableDom.querySelector('table') as HTMLElement;
+            }
+            
+            tableDomRef.current = tableDom;
 
-        if (tableDom && tableDom.tagName === 'TABLE' && scrollContainerRef.current) {
-            const tableRect = tableDom.getBoundingClientRect();
-            const containerRect = scrollContainerRef.current.getBoundingClientRect();
+            if (tableDom && tableDom.tagName === 'TABLE' && scrollContainerRef.current) {
+                const tableRect = tableDom.getBoundingClientRect();
+                const containerRect = scrollContainerRef.current.getBoundingClientRect();
 
-            setRect({
-                top: tableRect.top - containerRect.top + scrollContainerRef.current.scrollTop,
-                left: tableRect.left - containerRect.left + scrollContainerRef.current.scrollLeft,
-                width: tableRect.width,
-                height: tableRect.height,
-            });
-        }
+                setRect(prev => {
+                    const newRect = {
+                        top: tableRect.top - containerRect.top + scrollContainerRef.current!.scrollTop,
+                        left: tableRect.left - containerRect.left + scrollContainerRef.current!.scrollLeft,
+                        width: tableRect.width,
+                        height: tableRect.height,
+                    };
+                    
+                    if (prev && Math.abs(prev.top - newRect.top) < 1 && 
+                                Math.abs(prev.left - newRect.left) < 1 && 
+                                Math.abs(prev.width - newRect.width) < 1 && 
+                                Math.abs(prev.height - newRect.height) < 1) {
+                        return prev;
+                    }
+                    return newRect;
+                });
+            }
+        });
     }, [editor, scrollContainerRef]);
 
     useEffect(() => {
@@ -73,6 +88,9 @@ const TableGlobalResizer: React.FC<TableGlobalResizerProps> = ({ editor, scrollC
             editor.off('selectionUpdate', updateRect);
             editor.off('transaction', updateRect);
             window.removeEventListener('resize', updateRect);
+            if (frameReq.current) {
+                cancelAnimationFrame(frameReq.current);
+            }
         };
     }, [editor, updateRect]);
 
@@ -92,9 +110,9 @@ const TableGlobalResizer: React.FC<TableGlobalResizerProps> = ({ editor, scrollC
         initialTableSize.current = { width: tableRect.width, height: tableRect.height };
         
         // Lock width/height on DOM temporarily
-        tableDomRef.current.style.width = `${tableRect.width}px`;
+        tableDomRef.current.style.setProperty('--custom-table-width', `${tableRect.width}px`);
         if (mode === 'both') {
-            tableDomRef.current.style.height = `${tableRect.height}px`;
+            tableDomRef.current.style.setProperty('--custom-table-height', `${tableRect.height}px`);
         }
 
         const onMouseMove = (moveEvent: MouseEvent) => {
@@ -106,11 +124,14 @@ const TableGlobalResizer: React.FC<TableGlobalResizerProps> = ({ editor, scrollC
             const newWidth = Math.max(100, initialTableSize.current.width + deltaX);
             
             // Smoothly update DOM for 60fps
-            tableDomRef.current.style.width = `${newWidth}px`;
+            tableDomRef.current.style.setProperty('--custom-table-width', `${newWidth}px`);
             
             if (dragMode.current === 'both') {
                 const newHeight = Math.max(50, initialTableSize.current.height + deltaY);
-                tableDomRef.current.style.height = `${newHeight}px`;
+                tableDomRef.current.style.setProperty('--custom-table-height', `${newHeight}px`);
+                
+                tableDomRef.current.parentElement!.style.setProperty('--custom-table-width', `${newWidth}px`);
+                tableDomRef.current.parentElement!.style.setProperty('--custom-table-height', `${newHeight}px`);
                 
                 // Update resizer outline position
                 setRect(prev => prev ? { ...prev, width: newWidth, height: newHeight } : null);
@@ -167,7 +188,7 @@ const TableGlobalResizer: React.FC<TableGlobalResizerProps> = ({ editor, scrollC
                 className="absolute right-0 top-0 bottom-0 w-4 cursor-col-resize pointer-events-auto group translate-x-1/2 flex items-center justify-center"
                 onMouseDown={(e) => onMouseDown(e, 'width')}
             >
-                <div className={`w-1.5 h-10 bg-white border border-slate-300 rounded-full shadow-md transition-all ${isDragging && dragMode.current === 'width' ? 'opacity-100 bg-primary border-primary scale-110' : 'opacity-0 group-hover:opacity-100'}`} />
+                <div className={`w-1.5 h-[calc(100%-16px)] bg-white border border-slate-300 rounded-full shadow-md transition-all ${isDragging && dragMode.current === 'width' ? 'opacity-100 bg-primary border-primary scale-110' : 'opacity-0 group-hover:opacity-100'}`} />
             </div>
             
             <div 

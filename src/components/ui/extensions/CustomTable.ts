@@ -8,10 +8,10 @@ export class CustomTableView extends TableView {
 
     applyCustomStyles(node: any) {
         if (node.attrs.width) {
-            this.table.style.width = node.attrs.width;
+            this.table.style.setProperty('--custom-table-width', node.attrs.width);
         }
         if (node.attrs.height && node.attrs.height !== 'auto') {
-            this.table.style.height = node.attrs.height;
+            this.table.style.setProperty('--custom-table-height', node.attrs.height);
         }
     }
 

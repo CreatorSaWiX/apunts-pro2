@@ -61,7 +61,8 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     }, [content]);
 
     const handleSend = async () => {
-        if (!user || (!content.trim() && attachments.length === 0)) return;
+        const currentContent = editorInstance && !editorInstance.isDestroyed ? editorInstance.getHTML() : content;
+        if (!user || ((editorInstance && !editorInstance.isDestroyed ? editorInstance.isEmpty : !currentContent.trim()) && attachments.length === 0)) return;
 
         const lastPost = localStorage.getItem(`last_post_${user.id}`);
         const now = Date.now();
@@ -77,7 +78,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 userId: user.id,
                 username: user.username,
                 userAvatar: user.avatar || '',
-                content: content.trim(),
+                content: currentContent.trim(),
                 subject: subject,
                 type: 'resource',
                 attachments: attachments,
@@ -368,7 +369,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
                             <button type="button"
                                 onClick={handleSend}
-                                disabled={loading || (!content.trim() && attachments.length === 0)}
+                                disabled={loading || ((editorInstance && !editorInstance.isDestroyed ? editorInstance.isEmpty : !content.trim()) && attachments.length === 0)}
                                 className="px-8 py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                             >
                                 {loading && <Spinner size="sm" variant="primary" />}
@@ -382,12 +383,12 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 {!isFullscreen && (
                     <div className="hidden md:flex flex-col w-2/5 border-l border-white/5 relative overflow-hidden bg-black noise-bg shrink-0">
                     {/* Abstract Ambient Glows */}
-                    <div className="absolute top-[10%] right-[10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
-                    <div className="absolute bottom-[10%] left-[10%] w-[250px] h-[250px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+                    <div className="absolute top-[10%] right-[10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-[120px] pointer-events-none transform-gpu will-change-transform" />
+                    <div className="absolute bottom-[10%] left-[10%] w-[250px] h-[250px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none transform-gpu will-change-transform" />
 
                     <div className="flex items-center justify-between px-8 py-6 relative z-10">
                         <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                             {t('community.createPost.livePreview', 'Live Preview')}
                         </div>
                     </div>
