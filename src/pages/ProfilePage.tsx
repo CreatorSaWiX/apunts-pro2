@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { User, LogOut, Upload, Globe, Edit2, Mail, Send, Bell, Info, ExternalLink } from 'lucide-react';
 import { useParams, Navigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ import Modal from '../components/ui/Modal';
 import FileUploader, { type Attachment } from '../components/ui/FileUploader';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
-import PostDetailModal from '../components/community/PostDetailModal';
+const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
 import { useTranslation } from 'react-i18next';
 
 // --- Inline Editable Text Component ---
@@ -653,11 +653,13 @@ const ProfilePage = () => {
                     />
                 )}
                 {selectedPost && (
-                    <PostDetailModal
-                        isOpen={!!selectedPost}
-                        onClose={() => setSelectedPost(null)}
-                        post={selectedPost}
-                    />
+                    <Suspense fallback={null}>
+                        <PostDetailModal
+                            isOpen={!!selectedPost}
+                            onClose={() => setSelectedPost(null)}
+                            post={selectedPost}
+                        />
+                    </Suspense>
                 )}
             </AnimatePresence>
         </div>

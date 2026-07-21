@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle, XCircle, Clock, AlertTriangle, RefreshCw, Trophy } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { quizzes } from '../content/data/quizzes';
+import type { TopicQuiz } from '../content/data/quizzes';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
@@ -87,6 +87,7 @@ const QuizPage: React.FC = () => {
             if (!topicId) return;
             
             // 1. Hardcoded quiz?
+            const { quizzes } = await import('../content/data/quizzes');
             const originalQuiz = quizzes.find(q => q.topicId === topicId);
             if (originalQuiz) {
                 const fullyShuffled = {

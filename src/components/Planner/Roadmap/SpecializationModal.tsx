@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { Modal } from '../../ui/Modal';
+import Modal from '../../ui/Modal';
 import { specializations, type SpecializationData } from '../../../data/curriculum';
 import { Briefcase, BookOpen, Star, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

@@ -5,7 +5,7 @@ import { m as motion } from 'framer-motion';
 import { useSolution, useSolutions } from '../hooks/useSolutions';
 import CodeBlock from '../components/ui/CodeBlock';
 import { useAuth } from '../contexts/AuthContext';
-import { courseStructure } from '../content/data/courseStructure';
+import type { TopicDefinition } from '../content/data/courseStructure';
 import { Suspense, lazy } from 'react';
 import CommentsSection from '../components/comments/CommentsSection';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +36,11 @@ const SolutionDetailPage = () => {
     const { solution, loading, setSolution } = useSolution(topicId || '', problemId || '', lang);
     const { solutions } = useSolutions(topicId || '');
     const [authorData, setAuthorData] = useState<{ avatar?: string; username?: string; } | null>(null);
+    const [courseStructure, setCourseStructure] = useState<TopicDefinition[]>([]);
+
+    useEffect(() => {
+        import('../content/data/courseStructure').then(m => setCourseStructure(m.courseStructure));
+    }, []);
 
     // Edit logic
     const { user } = useAuth();

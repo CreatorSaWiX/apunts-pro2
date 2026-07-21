@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Layers, ChevronRight, Hash } from 'lucide-react';
-import { courseStructure } from '../../content/data/courseStructure';
+import type { TopicDefinition } from '../../content/data/courseStructure';
 import Modal from '../ui/Modal';
 import { useTranslation } from 'react-i18next';
 
@@ -20,16 +20,24 @@ interface ProblemSelectorModalProps {
 const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onClose, onSelect }) => {
     const { t } = useTranslation();
     const [search, setSearch] = useState('');
-    const [selectedTopicId, setSelectedTopicId] = useState<string>(courseStructure[0]?.id || '');
+    const [courseStructure, setCourseStructure] = useState<TopicDefinition[]>([]);
+    const [selectedTopicId, setSelectedTopicId] = useState<string>('');
     const [results, setResults] = useState<Problem[]>([]);
+
+    useEffect(() => {
+        import('../../content/data/courseStructure').then(m => {
+            setCourseStructure(m.courseStructure);
+            if (!selectedTopicId) setSelectedTopicId(m.courseStructure[0]?.id || '');
+        });
+    }, []);
 
     // Reset when opening
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && courseStructure.length > 0) {
             setSearch('');
             setSelectedTopicId(courseStructure[0]?.id || '');
         }
-    }, [isOpen]);
+    }, [isOpen, courseStructure]);
 
     // Filtering Logic
     useEffect(() => {

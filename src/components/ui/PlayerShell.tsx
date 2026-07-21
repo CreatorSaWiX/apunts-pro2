@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Maximize, Minimize } from 'lucide-react';
 
-export interface PlayerTab {
+interface PlayerTab {
     id: string;
     label: string;
     icon: ReactNode;

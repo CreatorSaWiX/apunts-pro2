@@ -62,6 +62,7 @@ interface CommunityDrawLayerProps {
 const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, broadcastStroke, broadcastLiveStroke, broadcastRemoveStroke }) => {
     const { x, y, zoom } = useViewport();
     const { isDrawMode, currentTool, currentColor, currentWidth, strokes, setStrokes, removeStroke } = useDrawContext();
+    const rafId = useRef<number | null>(null);
     
     const [currentStroke, setCurrentStroke] = useState<Stroke | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
@@ -82,10 +83,14 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
         const rect = svgRef.current.getBoundingClientRect();
         const clientX = 'clientX' in e ? e.clientX : 0;
         const clientY = 'clientY' in e ? e.clientY : 0;
-        const mouseX = clientX - rect.left;
-        const mouseY = clientY - rect.top;
-        document.documentElement.style.setProperty('--mouse-x', `${mouseX}px`);
-        document.documentElement.style.setProperty('--mouse-y', `${mouseY}px`);
+        
+        if (rafId.current) cancelAnimationFrame(rafId.current);
+        rafId.current = requestAnimationFrame(() => {
+            const mouseX = clientX - rect.left;
+            const mouseY = clientY - rect.top;
+            document.documentElement.style.setProperty('--mouse-x', `${mouseX}px`);
+            document.documentElement.style.setProperty('--mouse-y', `${mouseY}px`);
+        });
     };
 
     // Send cursor position even when not drawing if mouse is over
@@ -98,7 +103,10 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
             }
         };
         window.addEventListener('mousemove', handleGlobalMove);
-        return () => window.removeEventListener('mousemove', handleGlobalMove);
+        return () => {
+            window.removeEventListener('mousemove', handleGlobalMove);
+            if (rafId.current) cancelAnimationFrame(rafId.current);
+        };
     }, [isDrawMode, x, y, zoom, updateCursor]);
 
     const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
@@ -131,7 +139,7 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
         e.preventDefault();
         
         const coords = getMouseCoords(e);
-        setCurrentStroke(prev => {
+        setCurrentStroke((prev: Stroke | null) => {
             if (!prev) return prev;
             return {
                 ...prev,
@@ -154,7 +162,7 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
         e.currentTarget.releasePointerCapture(e.pointerId);
         
         if (currentStroke.points.length > 0) {
-            setStrokes(prev => [...prev, currentStroke]);
+            setStrokes((prev: Stroke[]) => [...prev, currentStroke]);
             broadcastStroke(currentStroke);
         }
         setCurrentStroke(null);

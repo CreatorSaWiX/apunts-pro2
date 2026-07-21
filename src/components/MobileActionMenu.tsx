@@ -14,7 +14,7 @@ interface Contributor {
     avatar: string;
 }
 
-export const MobileActionMenu: React.FC<{
+const MobileActionMenu: React.FC<{
     isOpen: boolean;
     setIsOpen: (val: boolean) => void;
 }> = ({ isOpen, setIsOpen }) => {

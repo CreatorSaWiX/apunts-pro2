@@ -5,7 +5,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import { tailwindColors } from '../../contexts/SubjectContext';
 import subjectsData from '../../data/subjects.json';
 import NavigationPill from '../ui/NavigationPill';
-import { Modal } from '../ui/Modal';
+import Modal from '../ui/Modal';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import { useLayoutEffect } from 'react';

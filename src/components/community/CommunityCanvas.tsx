@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ReactFlow, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { DrawProvider, useDrawContext } from '../../contexts/DrawContext';
+import { DrawProvider, useDrawContext, type Stroke } from '../../contexts/DrawContext';
 import CommunityDrawLayer from './CommunityDrawLayer';
 import { LiquidToolbar, LiquidToolbarButton } from '../ui/glass/LiquidToolbar';
 import { Palette, X, Undo2, Redo2, Trash2, Pen, Eraser, Hand } from 'lucide-react';
@@ -13,7 +13,7 @@ import { useMultiplayerCanvas } from '../../hooks/useMultiplayerCanvas';
 const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { t } = useTranslation();
     const { isDrawMode, currentTool, setCurrentTool, currentColor, setCurrentColor, currentWidth, setCurrentWidth, undoStroke, redoStroke, canUndo, canRedo, clearStrokes, strokes, setStrokes } = useDrawContext();
-    const { updateCursor, broadcastStroke, broadcastLiveStroke, broadcastClear, broadcastRemoveStroke } = useMultiplayerCanvas(strokes, setStrokes, currentColor);
+    const { updateCursor, broadcastStroke, broadcastLiveStroke, broadcastClear, broadcastRemoveStroke } = useMultiplayerCanvas(strokes, setStrokes as React.Dispatch<React.SetStateAction<Stroke[]>>, currentColor);
     
     // Enable draw mode by default when opening canvas, and manage body overflow
     useEffect(() => {

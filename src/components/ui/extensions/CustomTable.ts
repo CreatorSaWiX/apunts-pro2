@@ -1,6 +1,6 @@
 import { Table, TableView } from '@tiptap/extension-table';
 
-export class CustomTableView extends TableView {
+class CustomTableView extends TableView {
     constructor(node: any, cellMinWidth: number, view: any, HTMLAttributes: any) {
         super(node, cellMinWidth, view, HTMLAttributes);
         this.applyCustomStyles(node);

@@ -3,7 +3,7 @@ import { Bot, Trash2, Save } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import FileUploader from '../ui/FileUploader';
-import { Modal } from '../ui/Modal';
+import Modal from '../ui/Modal';
 import { useTranslation } from 'react-i18next';
 import { InputField, TextAreaField } from './SharedFields';
 

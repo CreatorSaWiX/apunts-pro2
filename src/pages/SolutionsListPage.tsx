@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, Check, Code2, ExternalLink, FileText, X } from 'lucide-react';
 import { useSolutions } from '../hooks/useSolutions';
-import { courseStructure } from '../content/data/courseStructure';
+import type { TopicDefinition } from '../content/data/courseStructure';
 import NotebookLayout from '../components/layout/NotebookLayout';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +17,13 @@ const SolutionsListPage = () => {
     const [isPdfMenuOpen, setIsPdfMenuOpen] = useState(false);
 
     // 1. Get definitions for the current topic from our static structure
-    const topicDefinition = courseStructure.find(t => t.id === topicId);
+    const [topicDefinition, setTopicDefinition] = useState<TopicDefinition | undefined>(undefined);
+    
+    useEffect(() => {
+        import('../content/data/courseStructure').then(m => {
+            setTopicDefinition(m.courseStructure.find(t => t.id === topicId));
+        });
+    }, [topicId]);
     
     // We pass the explicit problem IDs so they are searched globally (not just constrained by topicId namespace)
     const predefinedProblemIds = topicDefinition?.problems?.map(p => p.id) || [];

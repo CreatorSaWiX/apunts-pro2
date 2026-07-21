@@ -68,7 +68,7 @@ export const OfflineSection = () => {
                     const cache = await caches.open(name);
                     const requests = await cache.keys();
                     let totalSize = 0;
-                    const files: { url: string; size: number }[] = [];
+                    const files: { url: string; size: number; isOpaque?: boolean }[] = [];
                     for (const req of requests) {
                         const res = await cache.match(req);
                         if (res) {

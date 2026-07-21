@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { X, BookOpen, ChevronRight } from 'lucide-react';
-import { allPersonalNotes } from 'content-collections';
 import { m as motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
@@ -17,6 +16,14 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
     const preferredLang = i18n.language;
     
     const safeSubject = (subject || '').toLowerCase();
+    
+    const [allPersonalNotes, setAllPersonalNotes] = React.useState<any[]>([]);
+    
+    React.useEffect(() => {
+        if (isMenuOpen) {
+            import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes));
+        }
+    }, [isMenuOpen]);
     
     if (!isMenuOpen) return null;
 

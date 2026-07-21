@@ -29,7 +29,7 @@ const SIZE_MAP = {
     'auto': 'w-auto'
 };
 
-export const Modal = ({
+const Modal = ({
     isOpen,
     onClose,
     children,

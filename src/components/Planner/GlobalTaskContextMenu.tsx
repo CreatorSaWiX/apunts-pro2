@@ -5,7 +5,7 @@ import { Copy, Trash2, Flag } from 'lucide-react';
 import type { Task, TaskPriority } from '../../types/tasks';
 import { useTranslation } from 'react-i18next';
 
-export interface ContextMenuEventDetail {
+interface ContextMenuEventDetail {
     x: number;
     y: number;
     task: Task;

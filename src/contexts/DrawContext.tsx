@@ -19,7 +19,7 @@ interface DrawContextType {
     currentWidth: number;
     setCurrentWidth: (w: number) => void;
     strokes: Stroke[];
-    setStrokes: (strokes: Stroke[]) => void;
+    setStrokes: React.Dispatch<React.SetStateAction<Stroke[]>>;
     addStroke: (stroke: Stroke) => void;
     removeStroke: (id: string) => void;
     clearStrokes: () => void;

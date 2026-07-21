@@ -38,6 +38,16 @@
   }
 }
 
+/* Mobile GPU performance optimization: cap heavy backdrop filters on small screens to prevent fill-rate exhaustion */
+@media (max-width: 768px) {
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-3xl {
+    -webkit-backdrop-filter: blur(8px) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
   height: 5px;

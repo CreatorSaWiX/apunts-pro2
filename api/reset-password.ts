@@ -3,11 +3,10 @@ import { getAuth } from 'firebase-admin/auth';
 import nodemailer from 'nodemailer';
 
 export const config = {
-    runtime: 'edge'
+    runtime: 'nodejs'
 };
 
 const CORS_HEADERS: Record<string, string> = {
-    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
     'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization',
 };
@@ -232,5 +231,3 @@ export async function POST(req: Request): Promise<Response> {
         return jsonResponse({ error: "S'ha produït un error al servidor." }, 500);
     }
 }
-
-export default POST;

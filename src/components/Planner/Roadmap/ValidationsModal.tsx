@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { Modal } from '../../ui/Modal';
+import Modal from '../../ui/Modal';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { CFGS_DEGREES } from '../../../data/cfgs';
 import { GraduationCap, Sparkles, BookOpen, Layers, Plus, ArrowRight } from 'lucide-react';
