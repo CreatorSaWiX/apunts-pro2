@@ -6,6 +6,7 @@ import { RotateCcw } from 'lucide-react';
 import { useInView } from 'framer-motion';
 import { InteractionLock } from './InteractionLock';
 import { useInteraction } from '../../contexts/InteractionContext';
+import Spinner from './Spinner';
 
 interface GraphVisualizerProps {
     initialData?: {
@@ -321,8 +322,8 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                         className="w-full h-full flex items-center justify-center text-slate-500 bg-slate-900/50 pointer-events-none"
                         style={{ height: dimensions.height }}
                     >
-                        <div className="flex flex-col items-center gap-2">
-                            <RotateCcw size={24} className="animate-spin-slow opacity-20" />
+                        <div className="flex flex-col items-center gap-4">
+                            <Spinner size="md" variant="primary" />
                             <span className="text-xs font-mono uppercase tracking-widest opacity-40">Renderitzant Graf...</span>
                         </div>
                     </div>

@@ -144,7 +144,7 @@ const SolutionDetailPage = () => {
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center pt-24 pb-20 px-4">
             <div className="flex flex-col items-center gap-4">
-                <Spinner size="lg" variant="sky" />
+                <Spinner size="lg" variant="primary" />
                 <p className="text-slate-400 text-sm">{t('solutionDetail.loadingSolution', 'Carregant solució...')}</p>
             </div>
         </div>

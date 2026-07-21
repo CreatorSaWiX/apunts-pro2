@@ -62,7 +62,7 @@ const AIParticles = () => {
 
 const FallbackSpinner = () => (
     <div className="flex items-center justify-center w-full h-full min-h-[300px]">
-        <Spinner size="xl" variant="primary" className="opacity-50" />
+        <Spinner size="xl" variant="primary" />
     </div>
 );
 

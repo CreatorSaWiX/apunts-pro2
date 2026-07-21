@@ -30,12 +30,12 @@ const STROKE_MAP: Record<SpinnerSize, number> = {
 };
 
 const GRADIENT_MAP: Record<SpinnerVariant, { light: string, dark: string }> = {
-    'primary': { light: 'rgba(var(--primary-rgb), 0.4)', dark: 'var(--primary)' },
+    'primary': { light: '#ffffff', dark: 'var(--primary)' },
     'white':   { light: 'rgba(255,255,255,0.2)', dark: '#ffffff' },
     'slate':   { light: '#cbd5e1', dark: '#475569' },
-    'sky':     { light: '#bae6fd', dark: '#0ea5e9' },
+    'sky':     { light: '#ffffff', dark: '#0ea5e9' },
     'rose':    { light: '#fecdd3', dark: '#e11d48' },
-    'emerald': { light: '#a7f3d0', dark: '#059669' },
+    'emerald': { light: '#ffffff', dark: '#059669' },
     'fuchsia': { light: '#f5d0fe', dark: '#c026d3' },
     'linkedin':{ light: '#93c5fd', dark: '#0A66C2' },
     'youtube': { light: '#fca5a5', dark: '#FF0000' },
@@ -71,7 +71,7 @@ const Spinner: React.FC<SpinnerProps> = ({
 
     if (!colors && tailwindColors[variant]) {
         colors = {
-            light: `rgba(${tailwindColors[variant].primary_rgb}, 0.4)`,
+            light: '#ffffff',
             dark: tailwindColors[variant].primary
         };
         filterGlow = `drop-shadow(0 0 6px rgba(${tailwindColors[variant].primary_rgb}, 0.5))`;

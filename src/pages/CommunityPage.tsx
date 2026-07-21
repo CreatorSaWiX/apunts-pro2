@@ -696,8 +696,8 @@ const CommunityPage = () => {
                                     size="lg"
                                     variant={
                                         activeSubject !== 'all'
-                                            ? customSubjectColors[getSubjectById(activeSubject)?.label || ''] || getSubjectById(activeSubject)?.color || 'white'
-                                            : 'white'
+                                            ? customSubjectColors[getSubjectById(activeSubject)?.label || ''] || getSubjectById(activeSubject)?.color || 'primary'
+                                            : 'primary'
                                     }
                                 />
                             </div>

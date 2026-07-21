@@ -276,8 +276,8 @@ const ProfilePage = () => {
 
     if (authLoading || isFetchingUser || !extendedUser) {
         return (
-            <div className="min-h-screen flex items-center justify-center relative z-10 w-full bg-[#0a0a0a]">
-                <Spinner size="lg" variant="primary" />
+            <div className="min-h-screen flex items-center justify-center w-full">
+                <Spinner size="2xl" variant="primary" />
             </div>
         );
     }
