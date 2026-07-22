@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, FileText as FileTextIcon, BookOpen, X, Sparkles, Filter, ArrowUpDown, Flame, Eye, Clock, Image, Code2 } from 'lucide-react';
+import { Search, Plus, FileText as FileTextIcon, BookOpen, X, Sparkles, Filter, ArrowUpDown, Flame, Eye, Clock, Image, Code2, Heart } from 'lucide-react';
 import CommunityHero3D from '../components/community/CommunityHero3D';
 import { lazy, Suspense } from 'react';
 
@@ -97,7 +97,7 @@ const CommunityPage = () => {
 
     // Dock Filter & Sort States
     const [filterType, setFilterType] = useState<'all' | 'pdf' | 'image' | 'code'>('all');
-    const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'views'>('recent');
+    const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'views' | 'liked'>('recent');
     const [showTypeDropdown, setShowTypeDropdown] = useState(false);
     const [showSortDropdown, setShowSortDropdown] = useState(false);
 
@@ -123,10 +123,16 @@ const CommunityPage = () => {
             });
         } else if (sortBy === 'views') {
             result.sort((a, b) => (b.views || 0) - (a.views || 0));
+        } else if (sortBy === 'liked') {
+            if (user) {
+                result = result.filter(p => p.reactions && p.reactions[user.id]?.emoji === '❤️');
+            } else {
+                result = [];
+            }
         }
 
         return result;
-    }, [posts, filterType, sortBy]);
+    }, [posts, filterType, sortBy, user]);
 
     // Canvas State
     const [isCanvasOpen, setIsCanvasOpen] = useState(false);
@@ -597,10 +603,10 @@ const CommunityPage = () => {
                             >
                                 <ArrowUpDown size={16} />
                                 <span className="hidden sm:inline">
-                                    {sortBy === 'recent' ? t('community.recent', 'Recents') : sortBy === 'popular' ? t('community.popular', 'Populars') : t('community.views', 'Vistos')}
+                                    {sortBy === 'recent' ? t('community.recent', 'Recents') : sortBy === 'popular' ? t('community.popular', 'Populars') : sortBy === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
                                 </span>
                                 <span className="sm:hidden">
-                                    {sortBy === 'recent' ? 'Recents' : sortBy === 'popular' ? 'Popular' : 'Vistos'}
+                                    {sortBy === 'recent' ? t('community.recent', 'Recents') : sortBy === 'popular' ? t('community.popular', 'Populars') : sortBy === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
                                 </span>
                             </LiquidToolbarButton>
 
@@ -627,6 +633,13 @@ const CommunityPage = () => {
                                         >
                                             <Eye size={16} className="text-white shrink-0" />
                                             <span>{t('community.sortViews', 'Més vistos')}</span>
+                                        </button>
+                                        <button type="button"
+                                            onClick={() => { setSortBy('liked'); setShowSortDropdown(false); }}
+                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'liked' ? 'bg-white/10' : ''}`}
+                                        >
+                                            <Heart size={16} className="text-white shrink-0" />
+                                            <span>{t('community.sortLiked', "Els meus m'agrada")}</span>
                                         </button>
                                     </LiquidDropdown>
                                 )}

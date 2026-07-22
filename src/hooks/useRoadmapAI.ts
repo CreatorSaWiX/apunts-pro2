@@ -88,8 +88,13 @@ export const useRoadmapAI = (
         setAttachedFile(null);
 
         const activeNodes = nodes
-            .filter(n => ['passed', 'in_progress', 'retaking'].includes(n.data.status))
-            .map(n => ({ id: n.id, status: n.data.status }));
+            .map(n => ({ 
+                id: n.id, 
+                status: n.data.status,
+                credits: n.data.credits,
+                semester: n.data.semester,
+                ...(n.data.status === 'passed' && n.data.grade !== undefined && { grade: n.data.grade })
+            }));
 
         try {
             const { auth, db } = await import('../lib/firebase');

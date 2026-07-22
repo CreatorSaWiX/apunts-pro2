@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import type { CommunityPost } from '../../types/community';
-import { Heart, Eye, FileCode2, Box, FileVideo, FileText, Archive } from 'lucide-react';
+import { Heart, Eye, FileCode2, Box, FileVideo, FileText, Archive, Pin } from 'lucide-react';
 import { db } from '../../lib/firebase';
 import { doc, updateDoc, deleteField, deleteDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import Tilt from 'react-parallax-tilt';
@@ -157,16 +157,16 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                 </div>
 
                 {/* Top Left Badges */}
-                <div className="absolute top-2 left-2 flex flex-wrap gap-1 z-10 max-w-[80%]">
+                <div className="absolute top-2 left-2 flex flex-wrap gap-1.5 z-10 max-w-[80%]">
+                    {post.isPinned && (
+                        <div className="bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center justify-center shadow-xl">
+                            <Pin size={12} className="text-white -rotate-45" />
+                        </div>
+                    )}
                     {badgeText && (
                         <div className="bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold tracking-widest px-2 py-1 rounded-md flex items-center gap-1.5 shadow-xl">
                             <span className="text-primary">{badgeIcon}</span>
                             {badgeText}
-                        </div>
-                    )}
-                    {post.isPinned && (
-                        <div className="bg-white text-black text-[10px] font-bold tracking-widest px-2 py-1 rounded-md shadow-xl">
-                            DESTACAT
                         </div>
                     )}
                 </div>
