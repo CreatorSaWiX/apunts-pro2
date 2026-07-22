@@ -82,15 +82,15 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
             onClose={onClose}
             size="5xl"
             overlayVariant="transparent"
-            className="bg-[var(--glass-bg-darker)] border border-[var(--glass-border)] shadow-2xl rounded-[32px] overflow-hidden backdrop-blur-3xl backdrop-saturate-150"
+            className="bg-(--glass-bg-darker)er border-(--glass-border)ow-2xl rounded-4xlxlflow-hidden backdrop-blur-3xl backdrop-saturate-150"
             hideCloseButton
         >
-            <div className="flex flex-col md:flex-row flex-1 w-full h-full min-h-[600px] md:h-[75vh] relative overflow-hidden">
+            <div className="flex flex-col md:flex-row flex-1 w-full h-full min-h-150 md:h-[75vh] relative overflow-hidden">
                 
                 {/* No background gradient to match ExperienceSelectorModal */}
 
                 {/* Left Column: Sidebar List */}
-                <div className="w-full md:w-[360px] border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0 shrink-0">
+                <div className="w-full md:w-90 border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0 shrink-0">
                     <div className="mb-8 shrink-0">
                         <h3 className="text-2xl font-bold text-white mb-2">{t('planner.roadmapValidations.title', 'Convalidacions')}</h3>
                         <p className="text-sm text-slate-400">{t('planner.roadmapValidations.subtitle', 'Afegeix crèdits a la teva motxilla a través de cicles formatius o activitats extraescolars.')}</p>
@@ -111,7 +111,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                 )}
                                 <button type="button"
                                     onClick={() => setActiveTab('custom')}
-                                    className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group ${activeTab === 'custom' ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'}`}
+                                    className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group ${activeTab === 'custom' ? 'bg-white/4' : 'hover:bg-white/2'}`}
                                 >
                                     <div className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${activeTab === 'custom' ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
                                     <div className="flex flex-col min-w-0">
@@ -143,7 +143,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                             )}
                                             <button type="button"
                                                 onClick={() => { setActiveTab('cfgs'); setSelectedId(cfgs.id); }}
-                                                className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group pr-4 ${isSelected ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'}`}
+                                                className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group pr-4 ${isSelected ? 'bg-white/4' : 'hover:bg-white/2'}`}
                                             >
                                                 <div className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${isSelected ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
                                                 <div className="flex flex-col min-w-0 flex-1 gap-1">
@@ -151,7 +151,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                                         {cfgs.title.split(' (')[0]}
                                                     </span>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-[10px] text-slate-500 font-bold border border-white/10 px-1.5 py-[1px] rounded uppercase">
+                                                        <span className="text-[10px] text-slate-500 font-bold border border-white/10 px-1.5 py-px rounded uppercase">
                                                             {cfgs.title.includes('LOE') ? 'LOE' : 'LOGSE'}
                                                         </span>
                                                         <span className="text-[10px] text-slate-500 font-bold">
@@ -208,7 +208,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                         </h4>
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pb-4">
                                             {selectedCFGS.modules.map((mod, idx) => (
-                                                <div key={idx} className="p-4 rounded-xl bg-white/[0.02] border border-white/10 flex flex-col gap-2">
+                                                <div key={idx} className="p-4 rounded-xl bg-white/2 border border-white/10 flex flex-col gap-2">
                                                     <span className="text-sm font-bold text-slate-200">{mod.name}</span>
                                                     <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-slate-400">
                                                         <BookOpen size={12} /> {mod.credits} ECTS

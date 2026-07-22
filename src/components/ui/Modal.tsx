@@ -60,7 +60,7 @@ const Modal = ({
     const content = (
         <AnimatePresence>
             {isOpen && (
-                <div className={`fixed inset-0 z-[200] flex items-center justify-center ${size === 'screen' ? 'p-0' : 'p-4 sm:p-6'}`}>
+                <div className={`fixed inset-0 z-200 flex items-center justify-center ${size === 'screen' ? 'p-0' : 'p-4 sm:p-6'}`}>
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -75,16 +75,16 @@ const Modal = ({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
                         transition={{ layout: { type: "spring", stiffness: 400, damping: 35 }, type: "spring", stiffness: 400, damping: 30 }}
-                        className={`relative z-10 flex flex-col ${overlayVariant === 'transparent' ? 'bg-[#0F172A]/30' : 'bg-[#0F172A]/70'} backdrop-blur-[40px] border border-white/[0.12] ${size === 'screen' ? 'rounded-none max-h-screen border-0' : 'rounded-[32px] max-h-[85vh]'} overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_60px_rgba(0,0,0,0.6)] ${SIZE_MAP[size]} ${className}`}
+                        className={`relative z-10 flex flex-col ${overlayVariant === 'transparent' ? 'bg-[#0F172A]/30' : 'bg-[#0F172A]/70'} backdrop-blur-2xl border border-white/12 ${size === 'screen' ? 'rounded-none max-h-screen border-0' : 'rounded-4xl max-h-[85vh]'} overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_60px_rgba(0,0,0,0.6)] ${SIZE_MAP[size]} ${className}`}
                     >
                         {/* Subtle noise texture overlay for realism */}
                         <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
-                        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent z-50 pointer-events-none" />
+                        <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent z-50 pointer-events-none" />
                         {!hideCloseButton && (
                             <button type="button"
                                 onClick={onClose}
-                                className="absolute top-4 right-4 z-[60] p-2 bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 rounded-full transition-all duration-300 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                                className="absolute top-4 right-4 z-60 p-2 bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 rounded-full transition-all duration-300 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
                             >
                                 <X size={20} strokeWidth={2.5} />
                             </button>
@@ -103,7 +103,7 @@ const Modal = ({
 };
 
 const ModalHeader = ({ title, children, className = '' }: { title?: string, children?: React.ReactNode, className?: string }) => (
-    <div className={`p-6 border-b border-white/[0.08] relative shrink-0 ${className}`}>
+    <div className={`p-6 border-b border-white/8 relative shrink-0 ${className}`}>
         {title && <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>}
         {children}
     </div>
@@ -116,7 +116,7 @@ const ModalBody = ({ children, className = '' }: { children: React.ReactNode, cl
 );
 
 const ModalSidebar = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-    <div className={`w-72 border-r border-white/[0.08] bg-white/[0.02] shrink-0 flex flex-col ${className}`}>
+    <div className={`w-72 border-r border-white/8 bg-white/2 shrink-0 flex flex-col ${className}`}>
         {children}
     </div>
 );
@@ -139,7 +139,7 @@ ModalInput.displayName = 'ModalInput';
 const ModalTextarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(({ className = '', ...props }, ref) => (
     <textarea
         ref={ref}
-        className={`w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-slate-300 placeholder:text-slate-600 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all min-h-[120px] resize-y custom-scrollbar ${className}`}
+        className={`w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-slate-300 placeholder:text-slate-600 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all min-h-30 resize-y custom-scrollbar ${className}`}
         {...props}
     />
 ));

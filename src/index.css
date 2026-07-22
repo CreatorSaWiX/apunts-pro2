@@ -335,7 +335,7 @@ ul[data-type="taskList"] li>div {
 }
 
 .jutge-content td {
-  @apply p-3 text-slate-300 border-b border-white/5 align-top bg-white/[0.02];
+  @apply p-3 text-slate-300 border-b border-white/5 align-top bg-white/2;
 }
 
 .jutge-content tr:last-child td {
@@ -535,6 +535,7 @@ canvas {
 
 .apple-text-gradient {
   background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.5) 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

@@ -91,7 +91,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                 </Modal.Header>
 
                 {/* Search Bar */}
-                <div className="p-4 border-b border-white/[0.08] bg-white/[0.02] shrink-0">
+                <div className="p-4 border-b border-white/8 bg-white/2 shrink-0">
                     <div className="relative group">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-sky-400 transition-colors" size={18} />
                         <input
@@ -107,7 +107,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
 
                 {/* Topic Tabs (Only visible if not searching) */}
                 {search.trim() === '' && (
-                    <div className="px-4 py-3 border-b border-white/[0.08] flex gap-2 overflow-x-auto custom-scrollbar bg-white/[0.02] shrink-0">
+                    <div className="px-4 py-3 border-b border-white/8 flex gap-2 overflow-x-auto custom-scrollbar bg-white/2 shrink-0">
                         {courseStructure.map(topic => (
                             <button type="button"
                                 key={topic.id}

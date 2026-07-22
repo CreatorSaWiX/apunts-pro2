@@ -302,7 +302,7 @@ export const OfflineSection = () => {
             </div>
 
             <div className="w-full">
-                <div className="bg-white/[0.02] border border-white/5 rounded-[24px] p-8 flex flex-col gap-8 mb-8 relative overflow-hidden">
+                <div className="bg-white/2 border border-white/5 rounded-3xl p-8 flex flex-col gap-8 mb-8 relative overflow-hidden">
                     <div className="flex justify-between items-end">
                         <div>
                             <h3 className="text-white font-bold text-xl mb-1">{t('settings.offline.local', 'Emmagatzematge Local')}</h3>
@@ -360,7 +360,7 @@ export const OfflineSection = () => {
                         const downloaded = isDownloaded[cat.id];
 
                         return (
-                            <div key={cat.id} className="flex flex-col p-5 rounded-2xl bg-white/[0.02] border border-white/5 relative overflow-hidden group transition-colors">
+                            <div key={cat.id} className="flex flex-col p-5 rounded-2xl bg-white/2 border border-white/5 relative overflow-hidden group transition-colors">
                                 <div className="flex items-center justify-between">
                                     <div
                                         className="flex items-center gap-5 flex-1 min-w-0 cursor-pointer group-hover:opacity-80 transition-opacity"
@@ -428,7 +428,7 @@ export const OfflineSection = () => {
                                             <span className="text-xs font-bold text-slate-400 hidden sm:block">{t('settings.offline.autoSync', 'Actualització automàtica')}</span>
                                             <button type="button"
                                                 onClick={() => handleToggleSync(cat.id, !isSyncEnabled)}
-                                                className={`relative w-11 h-6 rounded-full transition-colors duration-300 outline-none flex-shrink-0 ${isSyncEnabled ? 'bg-emerald-500' : 'bg-slate-700'}`}
+                                                className={`relative w-11 h-6 rounded-full transition-colors duration-300 outline-none shrink-0 ${isSyncEnabled ? 'bg-emerald-500' : 'bg-slate-700'}`}
                                                 title="Sincronització automàtica"
                                             >
                                                 <div className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-300 flex items-center justify-center ${isSyncEnabled ? 'translate-x-5' : 'translate-x-0'}`}>
@@ -452,7 +452,7 @@ export const OfflineSection = () => {
                                                 {manifest[cat.id]?.map((fileUrl, idx) => {
                                                     const fileName = decodeURIComponent(fileUrl.split('/').pop() || '');
                                                     return (
-                                                        <div key={idx} className="flex items-center justify-between py-2.5 px-4 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors border border-white/5">
+                                                        <div key={idx} className="flex items-center justify-between py-2.5 px-4 rounded-xl bg-white/2 hover:bg-white/4 transition-colors border border-white/5">
                                                             <div className="flex items-center gap-3 min-w-0">
                                                                 <FileText size={16} className="text-slate-500 shrink-0" />
                                                                 <span className="text-sm font-medium text-slate-300 truncate">{fileName}</span>
@@ -474,7 +474,7 @@ export const OfflineSection = () => {
                     })}
 
                     {availableCategories.length === 0 && (
-                        <div className="p-8 text-center text-slate-500 bg-white/[0.02] rounded-2xl border border-white/5">
+                        <div className="p-8 text-center text-slate-500 bg-white/2 rounded-2xl border border-white/5">
                             {t('settings.offline.empty', 'No hi ha materials disponibles per descarregar actualment.')}
                         </div>
                     )}
@@ -500,7 +500,7 @@ export const OfflineSection = () => {
                         <div className="flex flex-col gap-4">
                             {/* CACHES */}
                             {detailedCaches.map((cache, idx) => (
-                                <div key={`cache-${idx}`} className="flex flex-col p-5 rounded-2xl bg-white/[0.02] border border-white/5 relative overflow-hidden transition-colors">
+                                <div key={`cache-${idx}`} className="flex flex-col p-5 rounded-2xl bg-white/2 border border-white/5 relative overflow-hidden transition-colors">
                                     <div className="flex items-center justify-between">
                                         <div 
                                             className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
@@ -562,7 +562,7 @@ export const OfflineSection = () => {
 
                             {/* INDEXEDDBS */}
                             {indexedDBs.map((dbName, idx) => (
-                                <div key={`db-${idx}`} className="flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/5">
+                                <div key={`db-${idx}`} className="flex items-center justify-between p-5 rounded-2xl bg-white/2 border border-white/5">
                                     <div className="flex items-center gap-4 min-w-0">
                                         <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
                                             <div className="w-4 h-4 rounded-sm bg-slate-500" />

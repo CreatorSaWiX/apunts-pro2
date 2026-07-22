@@ -81,13 +81,10 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 userAvatar: user.avatar || '',
                 content: currentContent.trim(),
                 subject: subject,
-                type: 'resource',
                 attachments: attachments,
                 createdAt: serverTimestamp(),
                 reactions: {},
-                rank: 0,
-                isPinned: false,
-                isNote: true
+                isPinned: false
             };
             const docRef = await addDoc(collection(db, 'community_posts'), postData);
 
@@ -173,13 +170,10 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             userAvatar: user.avatar || '',
             content: debouncedContent.trim() || t('community.createPost.previewPlaceholder', 'Comença a escriure per veure com queda...'),
             subject: subject,
-            type: 'resource',
             attachments: attachments,
             createdAt: new Date() as any,
             reactions: {},
-            rank: 0,
-            isPinned: false,
-            isNote: true
+            isPinned: false
         };
         return <PublicationCard post={livePost} />;
     }, [debouncedContent, user?.id, user?.username, user?.avatar, subject, attachments]);
@@ -191,8 +185,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             <Modal.Layout className="flex-col md:flex-row h-full w-full">
                 {/* LEFT PANEL: EDITOR */}
                 <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'}`}>
-
-                    <Modal.Header className="!px-8 !py-6 !border-none !bg-transparent flex justify-between items-center w-full">
+                    <Modal.Header className="px-8! py-6! border-none! bg-transparent! flex justify-between items-center w-full">
                         <h2 className="text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
                         <button 
                             type="button" 
@@ -205,14 +198,14 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                     </Modal.Header>
 
                     {/* Content Area */}
-                    <Modal.Body className="!px-8 !pb-6 !pt-0 bg-transparent flex flex-col custom-scrollbar">
+                    <Modal.Body className="px-8! pb-6! pt-0! bg-transparent flex flex-col custom-scrollbar">
 
 
 
                         {/* Seamless Text Input or Rich Editor */}
-                        <div className="relative shrink-0 flex-1 min-h-[400px]">
+                        <div className="relative shrink-0 flex-1 min-h-100">
                             <Suspense fallback={
-                                <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-white/[0.02] border border-white/5 rounded-2xl">
+                                <div className="w-full h-full min-h-100 flex items-center justify-center bg-white/2 border border-white/5 rounded-2xl">
                                     <Spinner size="lg" variant="primary" />
                                 </div>
                             }>
@@ -235,7 +228,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                 {attachments.length > 0 && (
                                     <div className="flex flex-col gap-3 mt-4">
                                         {attachments.map((att, i) => (
-                                            <div key={i} className="flex items-center justify-between bg-white/[0.03] border border-white/10 p-3 rounded-2xl group hover:border-white/20 transition-colors">
+                                            <div key={i} className="flex items-center justify-between bg-white/3 border border-white/10 p-3 rounded-2xl group hover:border-white/20 transition-colors">
                                                 <div className="flex items-center gap-4 overflow-hidden">
                                                     <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-black/50 border border-white/5 flex items-center justify-center group/thumb">
                                                         {att.thumbnailUrl ? (
@@ -401,8 +394,8 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 {!isFullscreen && (
                     <div className="hidden md:flex flex-col w-2/5 border-l border-white/5 relative overflow-hidden bg-black noise-bg shrink-0">
                     {/* Abstract Ambient Glows */}
-                    <div className="absolute top-[10%] right-[10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-[120px] pointer-events-none transform-gpu will-change-transform" />
-                    <div className="absolute bottom-[10%] left-[10%] w-[250px] h-[250px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none transform-gpu will-change-transform" />
+                    <div className="absolute top-[10%] right-[10%] w-75 h-75 bg-primary/20 rounded-full blur-[120px] pointer-events-none transform-gpu will-change-transform" />
+                    <div className="absolute bottom-[10%] left-[10%] w-62.5 h-62.5 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none transform-gpu will-change-transform" />
 
                     <div className="flex items-center justify-between px-8 py-6 relative z-10">
                         <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">
@@ -416,12 +409,12 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                             {livePreviewElement}
                         </div>
 
-                        <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-[250px]">
+                        <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-62.5">
                             {t('community.createPost.livePreviewDesc', 'Així es veurà el teu apunt a la Comunitat')}
                         </p>
                     </div>
                 </div>
-                )}
+                )}    
             </Modal.Layout>
             <SubjectSelectorModal
                 isOpen={showSubjectSelector}

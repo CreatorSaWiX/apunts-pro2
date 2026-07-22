@@ -267,7 +267,7 @@ const QuizPage: React.FC = () => {
             <div className="min-h-screen pt-24 pb-12 px-4 max-w-2xl mx-auto flex flex-col items-center justify-center text-center relative z-10">
                 {isGenerating ? (
                     <div className="flex flex-col items-center gap-6">
-                        <div className="bg-slate-900/60 p-8 rounded-[2rem] border border-white/10 shadow-2xl">
+                        <div className="bg-slate-900/60 p-8 rounded-4xl border border-white/10 shadow-2xl">
                             <AIStreamingIndicator 
                                 phase={aiPhase} 
                                 thoughtText={aiThought}
@@ -339,7 +339,7 @@ const QuizPage: React.FC = () => {
                                 <h2 className="text-3xl xl:text-4xl font-black text-white mb-3 tracking-tight">{t('quiz.finishedTitle', 'Cicle Finalitzat')}</h2>
 
                                 <div className="flex items-center justify-center gap-4 mb-4">
-                                    <div className="text-5xl xl:text-6xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+                                    <div className="text-5xl xl:text-6xl font-black bg-linear-to-br from-primary to-accent bg-clip-text text-transparent">
                                         {Math.round((score / quiz.questions.length) * 100)}%
                                     </div>
                                     <div className="h-12 w-px bg-white/10" />
@@ -460,8 +460,8 @@ const QuizPage: React.FC = () => {
 
                                 {currentQ.codeSnippet && (
                                     <div className="rounded-2xl overflow-hidden mb-5 border border-white/10 shadow-xl bg-[#0d1117] shrink-0 group relative">
-                                        <div className="flex items-center px-4 py-3 bg-white/[0.03] border-b border-white/5 relative">
-                                            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <div className="flex items-center px-4 py-3 bg-white/3 border-b border-white/5 relative">
+                                            <div className="absolute inset-0 bg-linear-to-r from-primary/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
                                             <div className="flex gap-1.5 z-10 hover:gap-2 transition-all cursor-default">
                                                 <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
                                                 <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></div>
@@ -482,7 +482,7 @@ const QuizPage: React.FC = () => {
                                                     ".cm-scroller": { fontFamily: "inherit" }
                                                 })]}
                                                 extensions={[cpp()]}
-                                                className="font-mono leading-relaxed tracking-tight !bg-transparent"
+                                                className="font-mono leading-relaxed tracking-tight bg-transparent!"
                                                 basicSetup={{
                                                     lineNumbers: true,
                                                     foldGutter: false,
@@ -515,7 +515,7 @@ const QuizPage: React.FC = () => {
                                                 {isSelected && (
                                                     <motion.div
                                                         layoutId="selection-glow"
-                                                        className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent pointer-events-none"
+                                                        className="absolute inset-0 bg-linear-to-r from-primary/10 to-transparent pointer-events-none"
                                                     />
                                                 )}
 
@@ -546,7 +546,7 @@ const QuizPage: React.FC = () => {
                             <ChevronLeft size={18} /> <span className="hidden sm:inline">{t('quiz.prev', 'Anterior')}</span>
                         </button>
 
-                        <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent via-white/10 to-transparent hidden md:block" />
+                        <div className="flex-1 max-w-xs h-px bg-linear-to-r from-transparent via-white/10 to-transparent hidden md:block" />
 
                         <button type="button"
                             onClick={handleNext}
@@ -557,7 +557,7 @@ const QuizPage: React.FC = () => {
                                 }`}
                         >
                             {selectedAnswers[currentQ.id] && (
-                                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                                <div className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                             )}
 
                             <span className="relative z-10">{currentQuestionIdx === quiz.questions.length - 1 ? t('quiz.evaluate', 'Avaluar') : t('quiz.next', 'Següent')}</span>

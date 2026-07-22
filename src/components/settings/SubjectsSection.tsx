@@ -101,7 +101,7 @@ export const SubjectsSection = () => {
             {/* Premium Command Palette */}
             <div className="w-full relative z-40" ref={searchRef}>
                 <div
-                    className={`relative flex items-center w-full bg-white/[0.03] border rounded-xl transition-all duration-300 overflow-hidden ${isCommandOpen ? 'border-white/30 bg-white/[0.06]' : 'border-white/10 hover:border-white/20 hover:bg-white/[0.05]'}`}
+                    className={`relative flex items-center w-full bg-white/3 border rounded-xl transition-all duration-300 overflow-hidden ${isCommandOpen ? 'border-white/30 bg-white/6' : 'border-white/10 hover:border-white/20 hover:bg-white/5'}`}
                 >
                     <Search size={20} className={`ml-4 mr-3 ${isCommandOpen ? 'text-white' : 'text-slate-500'} transition-colors duration-300`} />
                     <input
@@ -127,7 +127,7 @@ export const SubjectsSection = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="fixed inset-0 z-[9998]"
+                            className="fixed inset-0 z-9998"
                             onClick={() => setIsCommandOpen(false)}
                         />
                         <motion.div
@@ -141,10 +141,10 @@ export const SubjectsSection = () => {
                                 width: dropdownCoords.width,
                                 WebkitBackdropFilter: 'blur(24px)'
                             }}
-                            className="fixed z-[9999] p-3 !rounded-[24px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)] origin-top"
+                            className="fixed z-9999 p-3 rounded-3xl! backdrop-blur-xl border border-(--glass-border) border-t-(--glass-border-light) border-l-(--glass-border-light) shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-(--glass-bg) origin-top"
                         >
                             {filteredSubjects.length > 0 ? (
-                                <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto custom-scrollbar pr-1">
+                                <div className="flex flex-col gap-1 max-h-75 overflow-y-auto custom-scrollbar pr-1">
                                     {filteredSubjects.map(subject => {
                                         const defaultColor = subject.colorToken ? subject.colorToken.split('-')[0] : 'sky';
                                         const colorFamily = customSubjectColors[subject.name] || defaultColor;
@@ -164,7 +164,7 @@ export const SubjectsSection = () => {
                                                     setIsCommandOpen(false);
                                                     setSubjectError(null);
                                                 }}
-                                                className="flex items-center justify-between px-4 py-3 rounded-xl transition-all text-left group/item hover:bg-white/[0.05]"
+                                                className="flex items-center justify-between px-4 py-3 rounded-xl transition-all text-left group/item hover:bg-white/5"
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-2.5 h-2.5 rounded-full bg-${colorFamily}-500`} />
@@ -212,7 +212,7 @@ export const SubjectsSection = () => {
                                     onDragEnd={() => { setTimeout(() => { isDraggingRef.current = false; }, 150); }}
                                     className="cursor-grab active:cursor-grabbing outline-none"
                                 >
-                                    <div className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/20 hover:bg-white/[0.05] transition-all duration-300 shadow-sm pointer-events-auto">
+                                    <div className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/3 border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all duration-300 shadow-sm pointer-events-auto">
                                         <button type="button"
                                             onClick={(e) => {
                                                 e.preventDefault();
@@ -263,14 +263,14 @@ export const SubjectsSection = () => {
             </div>
 
             {/* Navbar Preview */}
-            <div className="w-full mt-2 flex flex-col gap-4 bg-white/[0.02] border border-white/5 p-6 rounded-2xl relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <div className="w-full mt-2 flex flex-col gap-4 bg-white/2 border border-white/5 p-6 rounded-2xl relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-white/10 to-transparent" />
                 <div className="flex flex-col gap-1">
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t('settings.subjects.previewTitle', 'Vista Prèvia del Navbar')}</span>
                     <span className="text-[13px] text-slate-400">{t('settings.subjects.previewSubtitle', 'Així es veurà el teu menú principal.')}</span>
                 </div>
 
-                <div className="flex items-center mt-2 relative z-10 w-full h-[72px] bg-[#0a0d16] rounded-xl border border-white/5 px-4 shadow-inner overflow-x-auto custom-scrollbar">
+                <div className="flex items-center mt-2 relative z-10 w-full h-18 bg-[#0a0d16] rounded-xl border border-white/5 px-4 shadow-inner overflow-x-auto custom-scrollbar">
                     {homeSubjects.length > 0 ? (
                         <NavigationPill>
                             <AnimatePresence mode="popLayout">
@@ -296,14 +296,14 @@ export const SubjectsSection = () => {
                                             {isActive && (
                                                 <motion.div
                                                     layoutId="active-pill-preview"
-                                                    className="absolute inset-0 rounded-full border border-white/[0.15] z-[-1]"
+                                                    className="absolute inset-0 rounded-full border border-white/15 z-[-1]"
                                                     style={{
                                                         backgroundColor: colorHex,
                                                         boxShadow: `inset 0 1px 1px rgba(255,255,255,0.3), 0 0 15px rgba(${colorRgb}, 0.5)`
                                                     }}
                                                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                                 >
-                                                    <div className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                                                    <div className="absolute inset-x-3 -bottom-px h-px bg-linear-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
                                                 </motion.div>
                                             )}
                                             {subj.toUpperCase()}

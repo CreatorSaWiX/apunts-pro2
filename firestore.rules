@@ -80,7 +80,7 @@ service cloud.firestore {
         // Rank i Pin: només moderadors
         isModerator() ||
         // Propi contingut: l'autor
-        (request.auth.uid == resource.data.userId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content', 'subject', 'type']))
+        (request.auth.uid == resource.data.userId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content', 'subject']))
       );
       allow delete: if request.auth.uid != null && (request.auth.uid == resource.data.userId || isModerator());
 

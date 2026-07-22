@@ -15,7 +15,7 @@ const CodeEditor = lazy(() => import('../components/ui/CodeEditor'));
 const CodeEditorSkeleton = () => {
     const { t } = useTranslation();
     return (
-        <div className="w-full h-[600px] bg-slate-900/50 animate-pulse rounded-2xl border border-white/10 flex items-center justify-center">
+        <div className="w-full h-150 bg-slate-900/50 animate-pulse rounded-2xl border border-white/10 flex items-center justify-center">
             <div className="flex flex-col items-center gap-4 text-slate-500">
                 <Spinner />
                 <span className="text-sm font-medium">{t('solutionDetail.loadingEditor', 'Carregant editor...')}</span>
@@ -167,7 +167,7 @@ const SolutionDetailPage = () => {
     );
 
     return (
-        <div className="min-h-screen pt-24 pb-12 px-4 max-w-[1400px] mx-auto flex flex-col relative z-10">
+        <div className="min-h-screen pt-24 pb-12 px-4 max-w-350 mx-auto flex flex-col relative z-10">
 
             {/* Top Navigation Bar */}
             <motion.div
@@ -320,7 +320,7 @@ const SolutionDetailPage = () => {
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="relative lg:col-span-1 h-full flex flex-col"
                 >
-                    <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden shadow-xl flex-1 flex flex-col min-h-[500px] backdrop-blur-sm transition-all duration-500 hover:border-white/10 hover:shadow-2xl hover:-translate-y-1">
+                    <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden shadow-xl flex-1 flex flex-col min-h-125 backdrop-blur-sm transition-all duration-500 hover:border-white/10 hover:shadow-2xl hover:-translate-y-1">
                         <div className="relative flex-1 bg-transparent overflow-hidden flex flex-col p-px">
                             {solution.type === 'notebook' ? (
                                 <div className="p-8 md:p-10 h-full overflow-y-auto custom-scrollbar">
@@ -330,7 +330,7 @@ const SolutionDetailPage = () => {
                                 </div>
                             ) : isEditing ? (
                                 <>
-                                    <div className="px-5 py-3 bg-white/[0.03] border-b border-white/[0.06] flex items-center justify-between shrink-0">
+                                    <div className="px-5 py-3 bg-white/3 border-b border-white/6 flex items-center justify-between shrink-0">
                                         <div className="flex items-center gap-3">
                                             {jutgeUrl ? (
                                                 <a href={jutgeUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-slate-400 hover:text-sky-400 hover:underline transition-colors flex items-center gap-1.5" title={t('solutionDetail.openJutgeSite', 'Obrir a jutge.org')}>
@@ -375,7 +375,7 @@ const SolutionDetailPage = () => {
                                     title={`${solution.id}.cpp`}
                                     titleHref={jutgeUrl}
                                     showHeader={true}
-                                    className="!m-0 h-full !bg-transparent !rounded-none !shadow-none !border-0 flex-1 flex flex-col"
+                                    className="m-0! h-full bg-transparent! rounded-none! shadow-none! border-0! flex-1 flex flex-col"
                                     headerActions={
                                         <div className="flex items-center gap-2">
                                             {user && (user.role === 'moderador' || user.role === 'editor') && (

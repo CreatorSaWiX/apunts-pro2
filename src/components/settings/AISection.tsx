@@ -24,7 +24,7 @@ export const AISection = () => {
 
             <div className="space-y-8">
                 {/* IDENTITY GROUP */}
-                <div className="space-y-6 bg-white/[0.02] border border-white/5 p-8 rounded-[24px]">
+                <div className="space-y-6 bg-white/2 border border-white/5 p-8 rounded-3xl">
                     <div className="flex items-center gap-4 mb-2">
                         <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-sm font-bold text-slate-300">1</div>
                         <h3 className="text-lg font-bold text-white">{t('settings.ai.identity', 'Identitat (Qui soc)')}</h3>
@@ -32,7 +32,7 @@ export const AISection = () => {
 
                     <div className="flex flex-col gap-6">
                         <div className="flex items-end gap-6">
-                            <div className="relative w-24 h-24 rounded-[32px] border border-white/10 overflow-hidden bg-white/[0.03] flex-shrink-0 flex items-center justify-center group shadow-lg">
+                            <div className="relative w-24 h-24 rounded-4xl border border-white/10 overflow-hidden bg-white/3 shrink-0 flex items-center justify-center group shadow-lg">
                                 {aiSettings.identity.avatarUrl ? (
                                     <img src={aiSettings.identity.avatarUrl} alt="Avatar" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                 ) : (
@@ -87,7 +87,7 @@ export const AISection = () => {
                                     type="text"
                                     value={aiSettings.userContext?.userPreferredName || ''}
                                     onChange={(e) => setAiSettings({ ...aiSettings, userContext: { memories: aiSettings.userContext?.memories || [], ...aiSettings.userContext, userPreferredName: e.target.value } })}
-                                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/[0.06] transition-all"
+                                    className="w-full bg-white/3 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/6 transition-all"
                                     placeholder="ex: mestre, cap..."
                                 />
                             </div>
@@ -104,7 +104,7 @@ export const AISection = () => {
                 </div>
 
                 {/* SOUL GROUP */}
-                <div className="space-y-6 bg-white/[0.02] border border-white/5 p-8 rounded-[24px]">
+                <div className="space-y-6 bg-white/2 border border-white/5 p-8 rounded-3xl">
                     <div className="flex items-center gap-4 mb-2">
                         <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-sm font-bold text-slate-300">2</div>
                         <h3 className="text-lg font-bold text-white">{t('settings.ai.soul', 'Ànima (Regles de comportament)')}</h3>
@@ -122,7 +122,7 @@ export const AISection = () => {
                                     <textarea
                                         readOnly
                                         value={aiSettings.soul[field.id as keyof typeof aiSettings.soul] || ''}
-                                        className="w-full bg-slate-900/40 px-4 py-3 text-white placeholder-slate-600 transition-all resize-y custom-scrollbar filter blur-[4px] opacity-60 select-none pointer-events-none"
+                                        className="w-full bg-slate-900/40 px-4 py-3 text-white placeholder-slate-600 transition-all resize-y custom-scrollbar filter blur-xs opacity-60 select-none pointer-events-none"
                                         style={{ minHeight: field.minHeight }}
                                         placeholder={field.placeholder}
                                     />
@@ -143,7 +143,7 @@ export const AISection = () => {
                 </div>
 
                 {/* MEMORIES GROUP */}
-                <div className="space-y-6 bg-white/[0.02] border border-white/5 p-8 rounded-[24px]">
+                <div className="space-y-6 bg-white/2 border border-white/5 p-8 rounded-3xl">
                     <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-4 mb-2">
                             <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-sm font-bold text-slate-300">3</div>
@@ -156,13 +156,13 @@ export const AISection = () => {
 
                     <div>
                         {(!aiSettings.userContext?.memories || aiSettings.userContext.memories.length === 0) ? (
-                            <div className="p-6 bg-white/[0.03] rounded-xl border border-white/5 text-slate-500 text-sm font-medium flex justify-center items-center">
+                            <div className="p-6 bg-white/3 rounded-xl border border-white/5 text-slate-500 text-sm font-medium flex justify-center items-center">
                                 {t('settings.ai.noMemories', 'La IA encara no té memòries guardades.')}
                             </div>
                         ) : (
                             <div className="grid gap-3">
                                 {aiSettings.userContext.memories.map((mem, idx) => (
-                                    <div key={idx} className="flex items-start justify-between gap-4 p-4 bg-white/[0.03] border border-white/5 rounded-xl hover:border-white/10 transition-colors group">
+                                    <div key={idx} className="flex items-start justify-between gap-4 p-4 bg-white/3 border border-white/5 rounded-xl hover:border-white/10 transition-colors group">
                                         <span className="text-sm text-slate-300 font-medium leading-relaxed">{mem}</span>
                                         <button type="button"
                                             onClick={() => {
@@ -211,7 +211,7 @@ export const AISection = () => {
                                 ...aiSettings,
                                 soul: { ...aiSettings.soul, [editingSoulField as string]: e.target.value }
                             })}
-                            className="w-full flex-1 bg-white/[0.03] border border-white/10 rounded-xl px-5 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/[0.06] transition-all resize-none custom-scrollbar text-sm leading-relaxed"
+                            className="w-full flex-1 bg-white/3 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/6 transition-all resize-none custom-scrollbar text-sm leading-relaxed"
                             placeholder={t('settings.ai.soulPlaceholder', "Escriu aquí les instruccions...")}
                         />
                     </div>

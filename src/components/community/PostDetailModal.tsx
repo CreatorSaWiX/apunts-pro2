@@ -2,14 +2,11 @@ import { useEffect } from 'react';
 import type { CommunityPost } from '../../types/community';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, Share2, MessageSquare, Trash2 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import ReplySection from './ReplySection';
 import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment, setDoc, serverTimestamp } from 'firebase/firestore';
-import DOMPurify from 'dompurify';
 import { HtmlRenderer } from '../ui/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
 
@@ -30,7 +27,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
 
         const recordView = async () => {
             if (user && post.userId === user.id) return; // Els autors no sumen visualitzacions
-            
+
             const storageKey = user ? `viewed_posts_${user.id}` : 'viewed_posts';
             const viewedPostsStr = localStorage.getItem(storageKey) || '{}';
             let viewedPosts: Record<string, boolean> = {};
@@ -41,12 +38,12 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                 } else {
                     viewedPosts = parsed;
                 }
-            } catch (e) {}
+            } catch (e) { }
 
             if (!viewedPosts[post.id]) {
                 viewedPosts[post.id] = true;
                 localStorage.setItem(storageKey, JSON.stringify(viewedPosts));
-                
+
                 const postRef = doc(db, 'community_posts', post.id);
                 try {
                     await updateDoc(postRef, {
@@ -70,7 +67,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                 await updateDoc(postRef, {
                     [`reactions.${user.id}`]: deleteField()
                 });
-                
+
                 // Remove notification if un-liked
                 if (post.userId !== user.id) {
                     await deleteDoc(doc(db, 'notifications', `like_${post.id}_${user.id}`));
@@ -133,20 +130,20 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
         <AnimatePresence>
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 overflow-hidden">
-                    <motion.div 
-                        initial={{ opacity: 0 }} 
-                        animate={{ opacity: 1 }} 
-                        exit={{ opacity: 0 }} 
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         className="absolute inset-0 bg-[#050505]/90 backdrop-blur-md"
                         onClick={onClose}
                     />
-                    
-                    <motion.div 
+
+                    <motion.div
                         initial={{ opacity: 0, y: "100%", scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: "100%", scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="relative w-full max-w-5xl bg-[#0a0a0a] border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col h-full max-h-full"
+                        className="relative w-full max-w-5xl bg-[#0a0a0a] border border-white/10 rounded-4xl shadow-2xl overflow-hidden flex flex-col h-full max-h-full"
                     >
                         {/* Header Navbar */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 shrink-0 bg-[#0a0a0a]/80 backdrop-blur-xl z-10">
@@ -154,13 +151,13 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                 <img src={post.userAvatar} alt={post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800" />
                                 <div>
                                     <h3 className="font-bold text-slate-100">{post.username}</h3>
-                                    <p className="text-xs text-slate-500 font-medium">{post.isNote ? t('community.postDetail.actionNote', 'Ha creat un apunt extens') : (post.type === 'question' ? t('community.postDetail.actionQuestion', 'Ha preguntat un dubte') : t('community.postDetail.actionResource', 'Ha compartit un recurs'))}</p>
+                                    <p className="text-xs text-slate-500 font-medium">{t('community.postDetail.actionNote', 'Ha creat una publicació')}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
-                                <motion.button 
+                                <motion.button
                                     whileTap={{ scale: 0.9 }}
-                                    onClick={handleLike} 
+                                    onClick={handleLike}
                                     className={`px-4 py-2 rounded-full transition-colors flex items-center gap-2 ${hasLiked ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent'}`}
                                 >
                                     <motion.div animate={{ scale: hasLiked ? [1, 1.3, 1] : 1 }} transition={{ duration: 0.3 }}>
@@ -191,7 +188,7 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                         <div className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth">
                             {/* Visual/Cover Section (If there are images) */}
                             {post.attachments && post.attachments.filter(a => a.type.startsWith('image/')).length > 0 && (
-                                <motion.div 
+                                <motion.div
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.2, duration: 0.5 }}
@@ -203,22 +200,14 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                 </motion.div>
                             )}
 
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3, duration: 0.5 }}
                                 className="max-w-3xl mx-auto px-6 py-12"
                             >
                                 {/* Text Content */}
-                                {post.isNote ? (
-                                    <HtmlRenderer content={post.content} className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium" />
-                                ) : (
-                                    <div className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium">
-                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                            {post.content}
-                                        </ReactMarkdown>
-                                    </div>
-                                )}
+                                <HtmlRenderer content={post.content} className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium" />
 
                                 {/* Files / Documents with Viewers */}
                                 {post.attachments && post.attachments.filter(a => !a.type.startsWith('image/')).length > 0 && (
@@ -226,12 +215,12 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                         <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">{t('community.postDetail.attachmentsTitle', 'Fitxers Adjunts i Interacció')}</h4>
                                         <div className="flex flex-col gap-8">
                                             {post.attachments.filter(a => !a.type.startsWith('image/')).map((file, i) => (
-                                                <FileViewerRenderer 
-                                                    key={i} 
-                                                    url={file.url} 
-                                                    filename={file.name} 
-                                                    type={file.type} 
-                                                    size={file.size} 
+                                                <FileViewerRenderer
+                                                    key={i}
+                                                    url={file.url}
+                                                    filename={file.name}
+                                                    type={file.type}
+                                                    size={file.size}
                                                 />
                                             ))}
                                         </div>

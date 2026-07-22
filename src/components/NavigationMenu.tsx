@@ -41,7 +41,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed top-0 left-0 h-full w-[85vw] md:w-[400px] bg-slate-900 border-r border-white/10 shadow-2xl z-50 flex flex-col"
+                className="fixed top-0 left-0 h-full w-[85vw] md:w-100 bg-slate-900 border-r border-white/10 shadow-2xl z-50 flex flex-col"
             >
                 <div className="p-6 border-b border-white/5 flex justify-between items-center bg-slate-950/50">
                     <h3 className="text-xl font-bold text-white flex items-center gap-3">
@@ -76,7 +76,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                                 onClick={() => setIsMenuOpen(false)}
                                 className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-800/50 border border-transparent hover:border-slate-700/50 transition-all group"
                             >
-                                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-500 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
+                                <span className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-500 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
                                     {(() => {
                                         const match = topic.title.match(/^Tema (\d+)/);
                                         if (match) return match[1];
@@ -115,7 +115,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                                         onClick={() => setIsMenuOpen(false)}
                                         className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-800/50 border border-transparent hover:border-slate-700/50 transition-all group"
                                     >
-                                        <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-500 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-500 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
                                             L{i + 1}
                                         </span>
                                         <div className="flex-1 min-w-0">

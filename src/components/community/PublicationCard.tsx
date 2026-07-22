@@ -77,61 +77,16 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
         } catch (err) { console.error(err); }
     };
 
-    const getSafeContent = (content: string, length: number, isHtml: boolean = false) => {
+    const getSafeContent = (content: string, length: number) => {
         if (!content) return '';
-        let textOnly = content;
-        if (isHtml) {
-            textOnly = content.replace(/<[^>]*>?/gm, ' '); // Strip HTML tags for the preview snippet
-        }
+        let textOnly = content.replace(/<[^>]*>?/gm, ' '); // Strip HTML tags for the preview snippet
         textOnly = textOnly.replace(/!\[.*?\]\(.*?\)/g, '');
         const truncated = textOnly.length > length ? textOnly.substring(0, length) + '...' : textOnly;
         return DOMPurify.sanitize(renderEmojis(truncated));
     };
 
-    const safeContentHero = useMemo(() => post.content ? getSafeContent(post.content, 150, post.isNote) : 'Discussió', [post.content, post.isNote]);
-    const safeContentTitle = useMemo(() => post.content ? getSafeContent(post.content, 150, post.isNote) : 'Sense descripció', [post.content, post.isNote]);
-
-    const getRankStyles = (rank: number) => {
-        switch(rank) {
-            case 4: // Mythic
-                return {
-                    border: 'border-rose-500/50 group-hover:border-cyan-400/80',
-                    shadow: 'shadow-[0_0_20px_rgba(244,63,94,0.2)] group-hover:shadow-[0_0_40px_rgba(34,211,238,0.4)]',
-                    glow: 'from-rose-500/20 via-purple-500/20 to-cyan-500/20',
-                    badge: 'bg-linear-to-r from-rose-500 to-cyan-500 text-white border-transparent shadow-[0_0_15px_rgba(244,63,94,0.5)]'
-                };
-            case 3: // Legendary
-                return {
-                    border: 'border-amber-400/50 group-hover:border-amber-400/80',
-                    shadow: 'shadow-[0_0_20px_rgba(251,191,36,0.2)] group-hover:shadow-[0_0_40px_rgba(251,191,36,0.4)]',
-                    glow: 'from-amber-400/20 to-yellow-600/20',
-                    badge: 'bg-linear-to-r from-amber-400 to-yellow-600 text-black border-transparent shadow-[0_0_15px_rgba(251,191,36,0.5)]'
-                };
-            case 2: // Epic
-                return {
-                    border: 'border-purple-500/50 group-hover:border-purple-400/80',
-                    shadow: 'shadow-[0_0_20px_rgba(168,85,247,0.2)] group-hover:shadow-[0_0_40px_rgba(168,85,247,0.4)]',
-                    glow: 'from-purple-500/20 to-fuchsia-500/20',
-                    badge: 'bg-linear-to-r from-purple-500 to-fuchsia-500 text-white border-transparent shadow-[0_0_15px_rgba(168,85,247,0.5)]'
-                };
-            case 1: // Featured
-                return {
-                    border: 'border-white/20 group-hover:border-white/40',
-                    shadow: 'shadow-lg group-hover:shadow-[0_15px_40px_rgba(255,255,255,0.15)]',
-                    glow: 'from-white/10 to-transparent',
-                    badge: 'bg-white text-black border-transparent'
-                };
-            default:
-                return {
-                    border: 'border-white/10 group-hover:border-white/20',
-                    shadow: 'shadow-lg group-hover:shadow-[0_15px_40px_rgba(255,255,255,0.08)]',
-                    glow: 'from-white/5 to-transparent',
-                    badge: 'bg-black/50 text-white border-white/10'
-                };
-        }
-    };
-
-    const rankStyles = getRankStyles(post.rank || 0);
+    const safeContentHero = useMemo(() => post.content ? getSafeContent(post.content, 150) : 'Discussió', [post.content]);
+    const safeContentTitle = useMemo(() => post.content ? getSafeContent(post.content, 150) : 'Sense descripció', [post.content]);
 
     return (
         <div 
@@ -145,12 +100,8 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                 tiltMaxAngleY={isHeroMode ? 0 : 5}
                 scale={isHeroMode ? 1 : 1.02}
                 transitionSpeed={2000}
-                className={`w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border ${rankStyles.border} transition-all duration-500 ${rankStyles.shadow}`}
+                className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 group-hover:border-white/20 shadow-lg group-hover:shadow-[0_15px_40px_rgba(255,255,255,0.08)] transition-all duration-500"
             >
-                {/* Rarity Glow Overlay */}
-                {(post.rank || 0) > 1 && (
-                    <div className={`absolute inset-0 bg-linear-to-br ${rankStyles.glow} opacity-30 group-hover:opacity-60 transition-opacity duration-500 z-0 pointer-events-none`} />
-                )}
                 {/* Spotlight Overlay - Static Performant CSS Glow */}
                 <div 
                     className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_0%,transparent_70%)]"
@@ -213,14 +164,9 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                             {badgeText}
                         </div>
                     )}
-                    {(post.rank || 0) > 0 && (
-                        <div className={`${rankStyles.badge} text-[10px] font-black tracking-widest px-2 py-1 rounded-md shadow-xl uppercase backdrop-blur-md border`}>
-                            {['', 'FEATURED', 'EPIC', 'LEGENDARY', 'MYTHIC'][post.rank || 0]}
-                        </div>
-                    )}
-                    {post.isPinned && (post.rank || 0) === 0 && (
+                    {post.isPinned && (
                         <div className="bg-white text-black text-[10px] font-bold tracking-widest px-2 py-1 rounded-md shadow-xl">
-                            FEATURED
+                            DESTACAT
                         </div>
                     )}
                 </div>

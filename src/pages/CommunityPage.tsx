@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, FileText as FileTextIcon, BookOpen, Sparkles, X } from 'lucide-react';
+import { Search, Plus, FileText as FileTextIcon, BookOpen, X, Sparkles, Filter, ArrowUpDown, Flame, Eye, Clock, Image, Code2 } from 'lucide-react';
 import CommunityHero3D from '../components/community/CommunityHero3D';
 import { lazy, Suspense } from 'react';
 
@@ -16,8 +16,8 @@ import { getSubjectById } from '../config/subjects';
 import { useTranslation } from 'react-i18next';
 import { useShortcut } from '../hooks/useShortcut';
 
-import LiquidDropdown from '../components/ui/glass/LiquidDropdown';
 import { LiquidToolbar, LiquidToolbarButton } from '../components/ui/glass/LiquidToolbar';
+import LiquidDropdown from '../components/ui/glass/LiquidDropdown';
 import CommunityCanvas from '../components/community/CommunityCanvas';
 import NavigationPill from '../components/ui/NavigationPill';
 import { Users, Palette } from 'lucide-react';
@@ -34,10 +34,8 @@ const mockEpicPost: CommunityPost = {
     userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
     content: 'Guia completa d\'Estructures de Dades. Arbres AVL i Grafs amb exemples en C++.',
     subject: 'pro2',
-    type: 'resource',
     createdAt: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as any,
     reactions: { 'user1': { userId: 'user1', username: 'Bob', emoji: '❤️' }, 'user2': { userId: 'user2', username: 'Alice', emoji: '❤️' } },
-    rank: 2,
     isPinned: false,
     views: 1240,
     attachments: [{ url: '', name: 'apunts_pro2_complets.pdf', type: 'application/pdf', size: 1024 }]
@@ -50,10 +48,8 @@ const mockLegendaryPost: CommunityPost = {
     userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria',
     content: 'Resum interactiu de Fonaments d\'Ordinadors amb esquemes de circuits.',
     subject: 'm1',
-    type: 'resource',
     createdAt: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as any,
     reactions: { 'u1': { userId: '1', username: '', emoji: '❤️' }, 'u2': { userId: '2', username: '', emoji: '❤️' }, 'u3': { userId: '3', username: '', emoji: '❤️' }, 'u4': { userId: '4', username: '', emoji: '❤️' }, 'u5': { userId: '5', username: '', emoji: '❤️' } },
-    rank: 3,
     isPinned: true,
     views: 3500,
     attachments: [{ url: '', name: 'esquemes_m1.png', type: 'image/png', size: 1024, thumbnailUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800' }]
@@ -66,10 +62,8 @@ const mockMythicPost: CommunityPost = {
     userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sawix',
     content: 'Projecte Final: Simulador de Processadors. Codi font sencer i documentació.',
     subject: 'm2',
-    type: 'resource',
     createdAt: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as any,
     reactions: { '1': { userId: '1', username: '', emoji: '❤️' }, '2': { userId: '2', username: '', emoji: '❤️' }, '3': { userId: '3', username: '', emoji: '❤️' }, '4': { userId: '4', username: '', emoji: '❤️' }, '5': { userId: '5', username: '', emoji: '❤️' }, '6': { userId: '6', username: '', emoji: '❤️' }, '7': { userId: '7', username: '', emoji: '❤️' }, '8': { userId: '8', username: '', emoji: '❤️' } },
-    rank: 4,
     isPinned: true,
     views: 12500,
     attachments: [{ url: '', name: 'simulador_cpu.zip', type: 'application/zip', size: 1024 }]
@@ -97,15 +91,42 @@ const CommunityPage = () => {
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
     const { customSubjectColors } = useSettings();
 
-    // New Filter States
-    const [showRarityFilter, setShowRarityFilter] = useState(false);
-    const [activeRank, setActiveRank] = useState<number | null>(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
+    // Dock Filter & Sort States
+    const [filterType, setFilterType] = useState<'all' | 'pdf' | 'image' | 'code'>('all');
+    const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'views'>('recent');
+    const [showTypeDropdown, setShowTypeDropdown] = useState(false);
+    const [showSortDropdown, setShowSortDropdown] = useState(false);
+
     // Hero 3D Showcase State
     const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
+    const filteredAndSortedPosts = useMemo(() => {
+        let result = [...posts];
+
+        if (filterType === 'pdf') {
+            result = result.filter(p => p.attachments && p.attachments.some(att => att.type.includes('pdf') || att.name.toLowerCase().endsWith('.pdf')));
+        } else if (filterType === 'image') {
+            result = result.filter(p => p.attachments && p.attachments.some(att => att.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|svg)$/i.test(att.name)));
+        } else if (filterType === 'code') {
+            result = result.filter(p => p.content.includes('```') || (p.attachments && p.attachments.some(att => /\.(cpp|c|py|js|ts|java|html|css|json)$/i.test(att.name))));
+        }
+
+        if (sortBy === 'popular') {
+            result.sort((a, b) => {
+                const countA = a.reactions ? Object.keys(a.reactions).length : 0;
+                const countB = b.reactions ? Object.keys(b.reactions).length : 0;
+                return countB - countA;
+            });
+        } else if (sortBy === 'views') {
+            result.sort((a, b) => (b.views || 0) - (a.views || 0));
+        }
+
+        return result;
+    }, [posts, filterType, sortBy]);
 
     // Canvas State
     const [isCanvasOpen, setIsCanvasOpen] = useState(false);
@@ -244,9 +265,6 @@ const CommunityPage = () => {
                 if (activeSubject !== 'all') {
                     q = query(q, where('subject', '==', activeSubject));
                 }
-                if (activeRank !== null) {
-                    q = query(q, where('rank', '==', activeRank));
-                }
             }
 
             unsubscribe = onSnapshot(q, (snapshot) => {
@@ -266,7 +284,7 @@ const CommunityPage = () => {
 
         setup();
         return () => unsubscribe();
-    }, [activeSubject, activeRank, debouncedSearch, isOffline]);
+    }, [activeSubject, debouncedSearch, isOffline]);
 
     const loadMore = useCallback(async () => {
         if (loadingMore || !hasMore || !lastVisible || isOffline) return;
@@ -291,10 +309,6 @@ const CommunityPage = () => {
             q = query(q, where('subject', '==', activeSubject));
         }
 
-        if (activeRank !== null) {
-            q = query(q, where('rank', '==', activeRank));
-        }
-
         const snapshot = await getDocs(q);
         let newPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
 
@@ -306,7 +320,7 @@ const CommunityPage = () => {
         setLastVisible(snapshot.docs[snapshot.docs.length - 1] || null);
         setHasMore(snapshot.docs.length === currentLimit);
         setLoadingMore(false);
-    }, [loadingMore, hasMore, lastVisible, activeSubject, activeRank, debouncedSearch, isOffline]);
+    }, [loadingMore, hasMore, lastVisible, activeSubject, debouncedSearch, isOffline]);
 
     const lastPostRef = useCallback((node: HTMLDivElement | null) => {
         if (loading || loadingMore) return;
@@ -323,7 +337,7 @@ const CommunityPage = () => {
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
 
             {/* Dynamic Island Navigator (Fixed Top Right) */}
-            <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-[110]">
+            <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-110">
                 <NavigationPill>
                     <button type="button"
                         onClick={handleCloseCanvas}
@@ -333,18 +347,18 @@ const CommunityPage = () => {
                         {!isCanvasOpen && (
                             <motion.div
                                 layoutId="community-active-tab"
-                                className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
+                                className="absolute inset-0 bg-white/12 border border-white/15 rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
                                 initial={false}
                                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
                             >
-                                <div className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                                <div className="absolute inset-x-4 -bottom-px h-px bg-linear-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
                             </motion.div>
                         )}
                         <Users size={16} strokeWidth={!isCanvasOpen ? 2.5 : 2} className={`transition-colors ${!isCanvasOpen ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} />
                         <span className="hidden sm:inline">{t('community.resources', 'Recursos')}</span>
                     </button>
 
-                    <div className="w-px h-6 bg-white/[0.1] mx-1"></div>
+                    <div className="w-px h-6 bg-white/10 mx-1"></div>
 
                     <button type="button"
                         onClick={handleOpenCanvas}
@@ -354,11 +368,11 @@ const CommunityPage = () => {
                         {isCanvasOpen && (
                             <motion.div
                                 layoutId="community-active-tab"
-                                className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
+                                className="absolute inset-0 bg-white/12 border border-white/15 rounded-full z-[-1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
                                 initial={false}
                                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
                             >
-                                <div className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                                <div className="absolute inset-x-4 -bottom-px h-px bg-linear-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
                             </motion.div>
                         )}
                         <Palette size={16} strokeWidth={isCanvasOpen ? 2.5 : 2} className={`transition-colors ${isCanvasOpen ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} />
@@ -373,7 +387,7 @@ const CommunityPage = () => {
                 <section className="relative w-full min-h-[55vh] flex items-center justify-center z-10 overflow-hidden pt-28 pb-8">
                     <CommunityHero3D isPaused={isCanvasFullyOpen} />
 
-                    <div className="w-full max-w-[1600px] px-4 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-6 items-center relative z-20">
+                    <div className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-6 items-center relative z-20">
                         {/* Left Text */}
                         <div className="flex flex-col items-start text-left mt-4 lg:mt-0">
                             <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] font-black mb-6 tracking-tighter flex flex-col items-start leading-[0.95] md:leading-[0.9]">
@@ -404,7 +418,7 @@ const CommunityPage = () => {
                                             animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
                                             exit={{ y: -30, opacity: 0, filter: 'blur(8px)' }}
                                             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                                            className="text-transparent bg-clip-text bg-linear-to-r from-primary via-accent to-primary bg-[length:200%_auto] animate-[gradient_3s_linear_infinite] absolute left-0 py-2 drop-shadow-lg whitespace-nowrap"
+                                            className="text-transparent bg-clip-text bg-linear-to-r from-primary via-accent to-primary bg-size-[200%_auto] animate-[gradient_3s_linear_infinite] absolute left-0 py-2 drop-shadow-lg whitespace-nowrap"
                                         >
                                             {heroWords[heroWordIndex]}
                                         </motion.span>
@@ -427,9 +441,9 @@ const CommunityPage = () => {
                             >
                                 <button type="button"
                                     onClick={handleUploadClick}
-                                    className="group relative px-8 py-4 bg-[var(--glass-bg)] backdrop-blur-3xl backdrop-saturate-150 border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),0_0_40px_rgba(255,255,255,0.05)] text-white font-bold text-lg rounded-full flex items-center gap-3 transition-all duration-500 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] active:scale-95 hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] overflow-hidden"
+                                    className="group relative px-8 py-4 bg-(--glass-bg) backdrop-blur-3xl backdrop-saturate-150 border border-(--glass-border) border-t-(--glass-border-light) border-l-(--glass-border-light) shadow-[var(--glass-shadow-inner),0_0_40px_rgba(255,255,255,0.05)] text-white font-bold text-lg rounded-full flex items-center gap-3 transition-all duration-500 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] active:scale-95 hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] overflow-hidden"
                                 >
-                                    <div className="absolute inset-0 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out opacity-0 group-hover:opacity-100" />
+                                    <div className="absolute inset-0 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out opacity-0 group-hover:opacity-100" />
                                     <Plus size={20} className="transition-transform group-hover:rotate-90 duration-300 relative z-10" />
                                     <span className="relative z-10">{t('hero.uploadResource', 'Pujar Recurs')}</span>
                                 </button>
@@ -438,9 +452,9 @@ const CommunityPage = () => {
 
                         {/* Right Visuals (Floating Cards Showcase - Awwwards Style) */}
                         <div
-                            className="hidden lg:flex relative h-[450px] w-full items-center justify-center perspective-[1200px]"
+                            className="hidden lg:flex relative h-112.5 w-full items-center justify-center perspective-distant"
                         >
-                            <div className="relative w-full h-full max-w-[550px]">
+                            <div className="relative w-full h-full max-w-137.5">
                                 {/* Decorational backglow */}
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)] rounded-full pointer-events-none" />
 
@@ -488,13 +502,13 @@ const CommunityPage = () => {
                                             transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.8 }}
                                             onMouseEnter={() => setHoveredCard(card.id)}
                                             onMouseLeave={() => setHoveredCard(null)}
-                                            className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer origin-center ${card.align === 'center' ? 'w-[300px]' : card.align === 'right' ? 'w-[260px]' : 'w-[240px]'}`}
+                                            className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer origin-center ${card.align === 'center' ? 'w-75' : card.align === 'right' ? 'w-65' : 'w-60'}`}
                                         >
                                             <motion.div
                                                 animate={{ y: hoveredCard === null ? [0, card.align === 'center' ? -12 : -8, 0] : 0 }}
                                                 transition={{ duration: card.align === 'center' ? 5 : 4, repeat: Infinity, ease: "easeInOut", delay: card.id * 0.5 }}
                                             >
-                                                <div className={`absolute ${card.align === 'center' ? '-inset-10 blur-[50px]' : '-inset-8 blur-[40px]'} rounded-full pointer-events-none transition-opacity duration-700 ${card.glow} ${isHovered ? 'opacity-100' : (hoveredCard === null && card.align === 'center' ? 'opacity-50' : 'opacity-0')}`} />
+                                                <div className={`absolute ${card.align === 'center' ? '-inset-10 blur-[50px]' : '-inset-8 blur-2xl'} rounded-full pointer-events-none transition-opacity duration-700 ${card.glow} ${isHovered ? 'opacity-100' : (hoveredCard === null && card.align === 'center' ? 'opacity-50' : 'opacity-0')}`} />
                                                 <div className="relative"><PublicationCard post={card.post} isHeroMode={true} /></div>
                                             </motion.div>
                                         </motion.div>
@@ -506,14 +520,14 @@ const CommunityPage = () => {
 
                 </section>
 
-                <main className="w-full max-w-[1600px] px-4 sm:px-8 lg:px-12 relative z-10">
+                <main className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
 
                     {/* Floating Glassmorphic Pill Filter (Awwwards Style) */}
                     <LiquidToolbar delay={0.5}>
                         {/* Assignatures */}
                         <LiquidToolbarButton
                             key="assignatures"
-                            onClick={() => setShowSubjectFilter(true)}
+                            onClick={() => { setShowSubjectFilter(true); setShowTypeDropdown(false); setShowSortDropdown(false); }}
                             active={activeSubject !== 'all'}
                         >
                             <BookOpen size={16} />
@@ -524,41 +538,50 @@ const CommunityPage = () => {
 
                         <div key="divider-1" className="w-px h-6 bg-white/10 mx-1" />
 
-                        {/* Raresa */}
-                        <div key="raresa" className="relative">
+                        {/* Tipus de recurs */}
+                        <div key="filter-type" className="relative">
                             <LiquidToolbarButton
-                                onClick={() => setShowRarityFilter(!showRarityFilter)}
-                                active={activeRank !== null}
+                                onClick={() => { setShowTypeDropdown(!showTypeDropdown); setShowSortDropdown(false); }}
+                                active={showTypeDropdown || filterType !== 'all'}
                             >
-                                <Sparkles size={16} />
-                                <span className="hidden sm:inline">{t('community.rarity', 'Raresa')}</span>
-                                <span className="sm:hidden">{t('community.rarityShort', 'Rar.')}</span>
-                                {activeRank !== null && <span className="ml-1 text-[10px] bg-primary/20 text-current px-1.5 py-0.5 rounded-md uppercase">Lv.{activeRank}</span>}
+                                <Filter size={16} />
+                                <span className="hidden sm:inline">
+                                    {filterType === 'all' ? t('community.allTypes', 'Tipus') : filterType === 'pdf' ? 'PDF' : filterType === 'image' ? 'Imatges' : 'Codi'}
+                                </span>
+                                <span className="sm:hidden">{filterType === 'all' ? 'Tipus' : filterType.toUpperCase()}</span>
                             </LiquidToolbarButton>
 
-                            {/* Raresa Dropdown */}
                             <AnimatePresence>
-                                {showRarityFilter && (
-                                    <LiquidDropdown
-                                        className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 origin-bottom z-50 w-44"
-                                        panelClassName="p-2 flex flex-col gap-1"
-                                    >
+                                {showTypeDropdown && (
+                                    <LiquidDropdown className="min-w-52.5">
                                         <button type="button"
-                                            onClick={() => { setActiveRank(null); setShowRarityFilter(false); }}
-                                            className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors ${activeRank === null ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                                            onClick={() => { setFilterType('all'); setShowTypeDropdown(false); }}
+                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'all' ? 'bg-white/10' : ''}`}
                                         >
-                                            {t('community.anyRarity', 'Qualsevol raresa')}
+                                            <BookOpen size={16} className="text-white shrink-0" />
+                                            <span>{t('community.filterAll', 'Tots els recursos')}</span>
                                         </button>
-                                        {[0, 1, 2, 3, 4].map(rank => (
-                                            <button type="button"
-                                                key={rank}
-                                                onClick={() => { setActiveRank(rank); setShowRarityFilter(false); }}
-                                                className={`px-4 py-2 rounded-xl text-xs font-bold text-left transition-colors flex items-center justify-between group ${activeRank === rank ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
-                                            >
-                                                <span>{['Normal', 'Featured', 'Epic', 'Legendary', 'Mythic'][rank]}</span>
-                                                <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${activeRank === rank ? 'bg-primary/30 text-primary' : 'bg-white/10 text-slate-400 group-hover:text-white'}`}>Lv.{rank}</span>
-                                            </button>
-                                        ))}
+                                        <button type="button"
+                                            onClick={() => { setFilterType('pdf'); setShowTypeDropdown(false); }}
+                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'pdf' ? 'bg-white/10' : ''}`}
+                                        >
+                                            <FileTextIcon size={16} className="text-white shrink-0" />
+                                            <span>{t('community.filterPdf', 'Documents PDF')}</span>
+                                        </button>
+                                        <button type="button"
+                                            onClick={() => { setFilterType('image'); setShowTypeDropdown(false); }}
+                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'image' ? 'bg-white/10' : ''}`}
+                                        >
+                                            <Image size={16} className="text-white shrink-0" />
+                                            <span>{t('community.filterImage', 'Imatges / Fotos')}</span>
+                                        </button>
+                                        <button type="button"
+                                            onClick={() => { setFilterType('code'); setShowTypeDropdown(false); }}
+                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'code' ? 'bg-white/10' : ''}`}
+                                        >
+                                            <Code2 size={16} className="text-white shrink-0" />
+                                            <span>{t('community.filterCode', 'Codi Font')}</span>
+                                        </button>
                                     </LiquidDropdown>
                                 )}
                             </AnimatePresence>
@@ -566,8 +589,54 @@ const CommunityPage = () => {
 
                         <div key="divider-2" className="w-px h-6 bg-white/10 mx-1" />
 
+                        {/* Ordenació */}
+                        <div key="sort-by" className="relative">
+                            <LiquidToolbarButton
+                                onClick={() => { setShowSortDropdown(!showSortDropdown); setShowTypeDropdown(false); }}
+                                active={showSortDropdown || sortBy !== 'recent'}
+                            >
+                                <ArrowUpDown size={16} />
+                                <span className="hidden sm:inline">
+                                    {sortBy === 'recent' ? t('community.recent', 'Recents') : sortBy === 'popular' ? t('community.popular', 'Populars') : t('community.views', 'Vistos')}
+                                </span>
+                                <span className="sm:hidden">
+                                    {sortBy === 'recent' ? 'Recents' : sortBy === 'popular' ? 'Popular' : 'Vistos'}
+                                </span>
+                            </LiquidToolbarButton>
+
+                            <AnimatePresence>
+                                {showSortDropdown && (
+                                    <LiquidDropdown className="min-w-47.5">
+                                        <button type="button"
+                                            onClick={() => { setSortBy('recent'); setShowSortDropdown(false); }}
+                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'recent' ? 'bg-white/10' : ''}`}
+                                        >
+                                            <Clock size={16} className="text-white shrink-0" />
+                                            <span>{t('community.sortRecent', 'Més recents')}</span>
+                                        </button>
+                                        <button type="button"
+                                            onClick={() => { setSortBy('popular'); setShowSortDropdown(false); }}
+                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'popular' ? 'bg-white/10' : ''}`}
+                                        >
+                                            <Flame size={16} className="text-white shrink-0" />
+                                            <span>{t('community.sortPopular', 'Més populars')}</span>
+                                        </button>
+                                        <button type="button"
+                                            onClick={() => { setSortBy('views'); setShowSortDropdown(false); }}
+                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'views' ? 'bg-white/10' : ''}`}
+                                        >
+                                            <Eye size={16} className="text-white shrink-0" />
+                                            <span>{t('community.sortViews', 'Més vistos')}</span>
+                                        </button>
+                                    </LiquidDropdown>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        <div key="divider-3" className="w-px h-6 bg-white/10 mx-1" />
+
                         {/* Buscar */}
-                        <div key="buscar" className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-[180px] sm:w-[280px] ml-1' : 'w-10 ml-0'}`}>
+                        <div key="buscar" className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-45 sm:w-70 ml-1' : 'w-10 ml-0'}`}>
                             <button type="button"
                                 onClick={() => {
                                     if (isSearchOpen && !searchQuery) setIsSearchOpen(false);
@@ -641,7 +710,7 @@ const CommunityPage = () => {
                                         <p className="text-slate-400 max-w-sm text-sm leading-relaxed relative z-10">{t('community.offlineSubtitle', 'Actualment estàs offline. Per consultar els recursos de la comunitat o pujar-ne un de nou cal que et connectis a Internet.')}</p>
                                     </div>
                                 </motion.div>
-                            ) : posts.length === 0 ? (
+                            ) : filteredAndSortedPosts.length === 0 ? (
                                 <motion.div
                                     key="empty"
                                     initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
@@ -657,7 +726,7 @@ const CommunityPage = () => {
                                         </div>
 
                                         <h3 className="font-bold text-3xl text-white mb-3 tracking-tight relative z-10">{t('community.emptyTitle', 'Encara no hi ha apunts')}</h3>
-                                        <p className="text-slate-400 mb-10 max-w-sm text-sm leading-relaxed relative z-10">{t('community.emptySubtitle', 'No hi ha cap recurs compartit per a aquesta matèria. Sigues el primer en aportar valor a la comunitat i destacar.')}</p>
+                                        <p className="text-slate-400 mb-10 max-w-sm text-sm leading-relaxed relative z-10">{t('community.emptySubtitle', 'No s\'ha trobat cap recurs que coincideixi amb els filtres seleccionats.')}</p>
 
                                         <button type="button"
                                             onClick={handleUploadClick}
@@ -671,7 +740,7 @@ const CommunityPage = () => {
                                 </motion.div>
                             ) : (
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pt-8">
-                                    {posts.map((post, index) => {
+                                    {filteredAndSortedPosts.map((post, index) => {
                                         const cardProps = {
                                             onClick: () => setSelectedPost(post),
                                             className: "w-full cursor-pointer",
@@ -687,7 +756,7 @@ const CommunityPage = () => {
                                             </motion.div>
                                         );
 
-                                        if (posts.length === index + 1) {
+                                        if (filteredAndSortedPosts.length === index + 1) {
                                             return (
                                                 <div key={post.id} ref={lastPostRef} {...cardProps}>
                                                     {cardContent}

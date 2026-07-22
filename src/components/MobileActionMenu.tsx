@@ -81,7 +81,7 @@ const MobileActionMenu: React.FC<{
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setIsOpen(false)}
-                        className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[2000] flex items-end justify-center md:items-start md:justify-end"
+                        className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-2000 flex items-end justify-center md:items-start md:justify-end"
                     >
                         <motion.div
                             initial={{ y: '100%', x: 0 }}
@@ -97,7 +97,7 @@ const MobileActionMenu: React.FC<{
                                 }
                             }}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-full max-h-[90vh] md:h-full md:w-80 bg-slate-900 shadow-[0_-10px_50px_rgba(0,0,0,0.5)] md:shadow-2xl border-t md:border-t-0 md:border-l border-white/10 p-6 pt-3 md:pt-6 pb-8 md:pb-6 flex flex-col relative rounded-t-[32px] md:rounded-none overflow-hidden"
+                            className="w-full max-h-[90vh] md:h-full md:w-80 bg-slate-900 shadow-[0_-10px_50px_rgba(0,0,0,0.5)] md:shadow-2xl border-t md:border-t-0 md:border-l border-white/10 p-6 pt-3 md:pt-6 pb-8 md:pb-6 flex flex-col relative rounded-t-4xl md:rounded-none overflow-hidden"
                         >
                             {/* Drag Handle (Mobile only) */}
                             <div className="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6 md:hidden touch-none" />

@@ -70,13 +70,13 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
             onClose={onClose}
             size="4xl"
             overlayVariant="transparent"
-            className="bg-[var(--glass-bg-darker)] border border-[var(--glass-border)] shadow-2xl rounded-[32px] overflow-hidden backdrop-blur-3xl backdrop-saturate-150"
+            className="bg-(--glass-bg-darker) border border-(--glass-border) shadow-2xl rounded-4xl overflow-hidden backdrop-blur-3xl backdrop-saturate-150"
             hideCloseButton
         >
-            <div className="flex flex-col md:flex-row flex-1 w-full h-full min-h-[500px] md:min-h-[600px] relative overflow-hidden">
+            <div className="flex flex-col md:flex-row flex-1 w-full h-full min-h-125 md:min-h-150 relative overflow-hidden">
                 
                 {/* Dynamic Background Gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-50 transition-colors duration-500 pointer-events-none`} />
+                <div className={`absolute inset-0 bg-linear-to-br ${theme.gradient} opacity-50 transition-colors duration-500 pointer-events-none`} />
 
                 {/* Left Column: List */}
                 <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0">
