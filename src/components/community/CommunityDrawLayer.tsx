@@ -62,6 +62,7 @@ interface CommunityDrawLayerProps {
 const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, broadcastStroke, broadcastLiveStroke, broadcastRemoveStroke }) => {
     const { x, y, zoom } = useViewport();
     const { isDrawMode, currentTool, currentColor, currentWidth, strokes, setStrokes, removeStroke } = useDrawContext();
+    const customCursorRef = useRef<HTMLDivElement>(null);
     const rafId = useRef<number | null>(null);
     
     const [currentStroke, setCurrentStroke] = useState<Stroke | null>(null);
@@ -88,8 +89,9 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
         rafId.current = requestAnimationFrame(() => {
             const mouseX = clientX - rect.left;
             const mouseY = clientY - rect.top;
-            document.documentElement.style.setProperty('--mouse-x', `${mouseX}px`);
-            document.documentElement.style.setProperty('--mouse-y', `${mouseY}px`);
+            if (customCursorRef.current) {
+                customCursorRef.current.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+            }
         });
     };
 
@@ -210,6 +212,7 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
             {isDrawMode && (
                 <div className="pointer-events-none absolute inset-0 z-50 overflow-hidden">
                     <div 
+                        ref={customCursorRef}
                         className={`absolute rounded-full border-2 backdrop-blur-sm ${currentTool === 'eraser' ? 'border-red-500 bg-red-500/20' : 'border-white/50'}`}
                         style={{
                             width: cursorSize,
@@ -218,7 +221,7 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
                             marginTop: -cursorSize / 2,
                             boxShadow: currentTool === 'pen' ? `0 0 10px ${currentColor}` : 'none',
                             backgroundColor: currentTool === 'pen' ? `${currentColor}88` : undefined,
-                            transform: `translate(var(--mouse-x, -100px), var(--mouse-y, -100px))`
+                            transform: `translate(-100px, -100px)`
                         }}
                     />
                 </div>

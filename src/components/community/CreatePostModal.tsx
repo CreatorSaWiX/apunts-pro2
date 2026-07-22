@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -12,10 +12,11 @@ import Spinner from '../ui/Spinner';
 import Modal from '../ui/Modal';
 import PublicationCard from './PublicationCard';
 import type { CommunityPost } from '../../types/community';
-import RichTextEditor from '../ui/RichTextEditor';
 import { useSettings } from '../../contexts/SettingsContext';
 import { tailwindColors } from '../../contexts/SubjectContext';
 import { useTranslation } from 'react-i18next';
+
+const RichTextEditor = lazy(() => import('../ui/RichTextEditor'));
 
 const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
 const CUSTOM_EMOTES = Object.values(emojiModules) as string[];
@@ -210,12 +211,18 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
                         {/* Seamless Text Input or Rich Editor */}
                         <div className="relative shrink-0 flex-1 min-h-[400px]">
-                            <RichTextEditor
-                                content={content}
-                                onChange={setContent}
-                                placeholder={t('community.createPost.noteModePlaceholder', "Títol de l'apunt... Comença a escriure aquí")}
-                                editorRef={setEditorInstance}
-                            />
+                            <Suspense fallback={
+                                <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-white/[0.02] border border-white/5 rounded-2xl">
+                                    <Spinner size="lg" variant="primary" />
+                                </div>
+                            }>
+                                <RichTextEditor
+                                    content={content}
+                                    onChange={setContent}
+                                    placeholder={t('community.createPost.noteModePlaceholder', "Títol de l'apunt... Comença a escriure aquí")}
+                                    editorRef={setEditorInstance}
+                                />
+                            </Suspense>
                         </div>
 
                         {/* Uploader */}

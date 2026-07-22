@@ -170,8 +170,12 @@ const MathBackground = ({ variant }: { variant: 'login' | 'register' }) => {
 
     useEffect(() => {
         let frameId: number;
+        let lastTime = 0;
         const render = (t: number) => {
-            setTime(t / 1000);
+            if (t - lastTime >= 33) {
+                setTime(t / 1000);
+                lastTime = t;
+            }
             frameId = requestAnimationFrame(render);
         };
         frameId = requestAnimationFrame(render);

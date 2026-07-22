@@ -75,7 +75,8 @@ service cloud.firestore {
       allow create: if request.auth.uid != null;
       allow update: if request.auth.uid != null && (
         // Reaccions, reports i visualitzacions: qualsevol autenticat
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions', 'reports', 'views']) ||
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions', 'reports', 'views']) && 
+         (request.resource.data.views == resource.data.views || request.resource.data.views == resource.data.views + 1)) ||
         // Rank i Pin: només moderadors
         isModerator() ||
         // Propi contingut: l'autor

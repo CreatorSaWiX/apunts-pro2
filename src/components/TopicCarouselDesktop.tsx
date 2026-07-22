@@ -146,7 +146,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         } catch (e) { }
     }, []);
 
-    const markAsSeen = (slug: string, version?: number) => {
+    const markAsSeen = useCallback((slug: string, version?: number) => {
         try {
             // Mark as new-seen
             const savedNew = localStorage.getItem('seen-new-topics');
@@ -168,7 +168,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 }
             }
         } catch (e) { }
-    };
+    }, []);
 
     // Pre-calculate card metrics for ultra-fast scroll performance
     const updateMetrics = useCallback(() => {
@@ -270,17 +270,21 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         if (activeIndex < sortedTopics.length - 1) scrollTo(activeIndex + 1);
     }, [activeIndex, sortedTopics.length, scrollTo]);
 
-    useShortcut('carouselLeft', () => {
+    const handleCarouselLeft = useCallback(() => {
         if (isMobile && isMenuOpen) return;
         handlePrev();
-    });
+    }, [isMobile, isMenuOpen, handlePrev]);
 
-    useShortcut('carouselRight', () => {
+    useShortcut('carouselLeft', handleCarouselLeft);
+
+    const handleCarouselRight = useCallback(() => {
         if (isMobile && isMenuOpen) return;
         handleNext();
-    });
+    }, [isMobile, isMenuOpen, handleNext]);
 
-    useShortcut('carouselEnter', () => {
+    useShortcut('carouselRight', handleCarouselRight);
+
+    const handleCarouselEnter = useCallback(() => {
         if (isMobile && isMenuOpen) return;
         const activeTopic = sortedTopics[activeIndex];
         if (activeTopic) {
@@ -289,7 +293,9 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             markAsSeen(activeTopic.slug, newestUpdate);
             navigate(`/tema/${activeTopic.slug}`);
         }
-    });
+    }, [isMobile, isMenuOpen, sortedTopics, activeIndex, navigate, allPersonalNotes, markAsSeen]);
+
+    useShortcut('carouselEnter', handleCarouselEnter);
 
     // Optimized with requestAnimationFrame + Cached Metrics for 120fps Zero-Lag Sync
     const handleScroll = () => {

@@ -78,9 +78,9 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                             <motion.div
                                 key="pen-controls"
                                 layout
-                                initial={{ opacity: 0, width: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, width: "auto", scale: 1 }}
-                                exit={{ opacity: 0, width: 0, scale: 0.8 }}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
                                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
                                 className="flex items-center gap-1"
                             >

@@ -10,7 +10,7 @@ type MafsVisualizerProps = {
 
 
 const VisReglaBarrow = () => {
-    const [interval, setInterval] = React.useState({ a: 1, b: 3 });
+    const [range, setRange] = React.useState({ a: 1, b: 3 });
     const f = (x: number) => 0.4 * x + 0.8;
     const F = (x: number) => 0.2 * x * x + 0.8 * x;
 
@@ -21,13 +21,13 @@ const VisReglaBarrow = () => {
                     <Mafs viewBox={{ x: [-0.5, 4.5], y: [-0.5, 3.5] }} pan={false} preserveAspectRatio={false}>
                         <Coordinates.Cartesian />
                         <Polygon
-                            points={[[interval.a, 0], [interval.b, 0], [interval.b, f(interval.b)], [interval.a, f(interval.a)]]}
+                            points={[[range.a, 0], [range.b, 0], [range.b, f(range.b)], [range.a, f(range.a)]]}
                             color={Theme.blue} fillOpacity={0.4}
                         />
                         <Plot.OfX y={f} color={Theme.blue} weight={3} />
-                        <MovablePoint point={[interval.a, 0]} onMove={(p: [number, number]) => setInterval(prev => ({ ...prev, a: Math.max(0, Math.min(p[0], interval.b - 0.2)) }))} color={Theme.blue} />
-                        <MovablePoint point={[interval.b, 0]} onMove={(p: [number, number]) => setInterval(prev => ({ ...prev, b: Math.min(4, Math.max(p[0], interval.a + 0.2)) }))} color={Theme.blue} />
-                        <LaTeX at={[(interval.a + interval.b) / 2, 0.4]} tex="\int_a^b f" color="white" />
+                        <MovablePoint point={[range.a, 0]} onMove={(p: [number, number]) => setRange(prev => ({ ...prev, a: Math.max(0, Math.min(p[0], range.b - 0.2)) }))} color={Theme.blue} />
+                        <MovablePoint point={[range.b, 0]} onMove={(p: [number, number]) => setRange(prev => ({ ...prev, b: Math.min(4, Math.max(p[0], range.a + 0.2)) }))} color={Theme.blue} />
+                        <LaTeX at={[(range.a + range.b) / 2, 0.4]} tex="\int_a^b f" color="white" />
                     </Mafs>
                 </div>
 
@@ -36,13 +36,18 @@ const VisReglaBarrow = () => {
                         <Coordinates.Cartesian />
                         <Plot.OfX y={F} color={Theme.red} weight={3} />
 
-                        <Circle center={[interval.a, F(interval.a)]} radius={0.12} color={Theme.red} />
-                        <Circle center={[interval.b, F(interval.b)]} radius={0.12} color={Theme.red} />
+                        <Circle center={[range.a, F(range.a)]} radius={0.12} color={Theme.red} />
+                        <Circle center={[range.b, F(range.b)]} radius={0.12} color={Theme.red} />
 
-                        <Vector tail={[interval.b, F(interval.a)]} tip={[interval.b, F(interval.b)]} color={Theme.yellow} weight={3} />
-                        <Line.Segment point1={[interval.a, F(interval.a)]} point2={[interval.b, F(interval.a)]} color="white" opacity={0.3} />
+                        <Line.Segment point1={[range.a, 0]} point2={[range.a, F(range.a)]} color={Theme.red} style="dashed" />
+                        <Line.Segment point1={[range.b, 0]} point2={[range.b, F(range.b)]} color={Theme.red} style="dashed" />
+                        <Line.Segment point1={[0, F(range.a)]} point2={[range.a, F(range.a)]} color={Theme.red} style="dashed" />
+                        <Line.Segment point1={[0, F(range.b)]} point2={[range.b, F(range.b)]} color={Theme.red} style="dashed" />
 
-                        <LaTeX at={[interval.b + 0.6, (F(interval.a) + F(interval.b)) / 2]} tex="F(b)-F(a)" color={Theme.yellow} />
+                        <Vector tail={[range.b, F(range.a)]} tip={[range.b, F(range.b)]} color={Theme.yellow} weight={3} />
+                        <Line.Segment point1={[range.a, F(range.a)]} point2={[range.b, F(range.a)]} color="white" opacity={0.3} />
+
+                        <LaTeX at={[range.b + 0.6, (F(range.a) + F(range.b)) / 2]} tex="F(b)-F(a)" color={Theme.yellow} />
                     </Mafs>
                 </div>
             </div>

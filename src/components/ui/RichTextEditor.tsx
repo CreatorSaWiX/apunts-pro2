@@ -19,8 +19,20 @@ import { TableCell } from '@tiptap/extension-table-cell';
 import { LineHeight } from './extensions/LineHeight';
 import TableGlobalResizer from './TableGlobalResizer';
 import { CustomCodeBlock } from './extensions/CustomCodeBlock';
-import { createLowlight, common } from 'lowlight';
-const lowlight = createLowlight(common);
+import { createLowlight } from 'lowlight';
+import cpp from 'highlight.js/lib/languages/cpp';
+import java from 'highlight.js/lib/languages/java';
+import python from 'highlight.js/lib/languages/python';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import sql from 'highlight.js/lib/languages/sql';
+import xml from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import bash from 'highlight.js/lib/languages/bash';
+import json from 'highlight.js/lib/languages/json';
+import c from 'highlight.js/lib/languages/c';
+
+const lowlight = createLowlight({ cpp, java, python, javascript, typescript, sql, xml, html: xml, css, bash, json, c });
 
 import {
     Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Minus,

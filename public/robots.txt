@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://apunts-pro2.vercel.app/sitemap.xml

@@ -1,11 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import algoliasearch from 'algoliasearch/lite';
 
-const searchClient = algoliasearch(
-  import.meta.env.VITE_ALGOLIA_APP_ID || 'dummy',
-  import.meta.env.VITE_ALGOLIA_SEARCH_KEY || 'dummy'
-);
-const algoliaIndex = searchClient.initIndex('apunts_posts');
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import type { CommunityPost } from '../types/community';
@@ -81,6 +76,12 @@ const mockMythicPost: CommunityPost = {
 };
 
 const CommunityPage = () => {
+    const searchClient = useMemo(() => algoliasearch(
+        import.meta.env.VITE_ALGOLIA_APP_ID || 'dummy',
+        import.meta.env.VITE_ALGOLIA_SEARCH_KEY || 'dummy'
+    ), []);
+    const algoliaIndex = useMemo(() => searchClient.initIndex('apunts_posts'), [searchClient]);
+
     const { user } = useAuth();
     const navigate = useNavigate();
     const { t } = useTranslation();
@@ -112,34 +113,42 @@ const CommunityPage = () => {
     const [isBackgroundHidden, setIsBackgroundHidden] = useState(false);
     const [isCanvasClosing, setIsCanvasClosing] = useState(false);
 
+    const animationTimersRef = useRef<NodeJS.Timeout[]>([]);
+
     const handleOpenCanvas = () => {
         setIsCanvasOpen(true);
         // Després de l'animació d'expansió (800ms)
-        setTimeout(() => {
+        const t1 = setTimeout(() => {
             setIsCanvasFullyOpen(true); // Pausa el WebGL
             setIsBackgroundHidden(true); // Oculta per no re-pintar
         }, 800);
+        animationTimersRef.current.push(t1);
     };
 
     const handleCloseCanvas = () => {
         setIsCanvasClosing(true);
 
         // 1. Fem visible el fons i despausem el WebGL immediatament.
-        // D'aquesta manera, té 350ms per recompilar els shaders i pintar-se abans que comenci l'animació de sortida.
-        // Això evita que aparegui de sobte (pop-in) al final de l'animació.
         setIsBackgroundHidden(false);
         setIsCanvasFullyOpen(false);
 
-        // 2. Donem temps al navegador (350ms) per fer el fade-out suau del Canvas interactiu i desmuntar-lo
-        // abans de començar l'animació pesada del clipPath
-        setTimeout(() => setIsCanvasOpen(false), 350);
+        // 2. Fade-out suau del Canvas interactiu
+        const t1 = setTimeout(() => setIsCanvasOpen(false), 350);
 
-        // 3. Reset de l'estat de tancament quan l'animació de sortida hagi acabat completament 
-        // (350ms fade + 800ms clipPath = 1150ms total)
-        setTimeout(() => {
+        // 3. Reset de l'estat de tancament
+        const t2 = setTimeout(() => {
             setIsCanvasClosing(false);
         }, 1200);
+
+        animationTimersRef.current.push(t1, t2);
     };
+
+    useEffect(() => {
+        return () => {
+            animationTimersRef.current.forEach(clearTimeout);
+            if (observer.current) observer.current.disconnect();
+        };
+    }, []);
 
     // Offline state
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -318,6 +327,7 @@ const CommunityPage = () => {
                 <NavigationPill>
                     <button type="button"
                         onClick={handleCloseCanvas}
+                        aria-label={t('community.resources', 'Recursos')}
                         className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${!isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                     >
                         {!isCanvasOpen && (
@@ -338,6 +348,7 @@ const CommunityPage = () => {
 
                     <button type="button"
                         onClick={handleOpenCanvas}
+                        aria-label={t('community.canvas', 'Llenç')}
                         className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                     >
                         {isCanvasOpen && (
@@ -564,6 +575,7 @@ const CommunityPage = () => {
                                 }}
                                 className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isSearchOpen || searchQuery ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
                                 title={t('community.search', 'Buscar')}
+                                aria-label={t('community.search', 'Buscar')}
                             >
                                 <Search size={18} />
                             </button>
@@ -573,6 +585,7 @@ const CommunityPage = () => {
                                     autoFocus={isSearchOpen}
                                     type="text"
                                     placeholder={t('community.searchPlaceholder', 'Cerca apunts...')}
+                                    aria-label={t('community.searchPlaceholder', 'Cerca apunts...')}
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none pl-2 pr-8 placeholder:text-slate-600"
@@ -581,6 +594,7 @@ const CommunityPage = () => {
                                     <button type="button"
                                         onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
                                         className="absolute right-2 p-1 text-slate-500 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors z-10"
+                                        aria-label={t('community.clearSearch', 'Netejar cerca')}
                                     >
                                         <X size={14} />
                                     </button>

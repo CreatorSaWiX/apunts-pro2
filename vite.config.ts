@@ -93,6 +93,10 @@ export default defineConfig(({ mode }) => {
               if (id.includes('react-markdown') || id.includes('rehype') || id.includes('remark')) return 'vendor-markdown';
               if (id.includes('lucide-react')) return 'vendor-icons';
               if (id.includes('framer-motion')) return 'vendor-framer';
+              if (id.includes('@tiptap') || id.includes('tiptap') || id.includes('prosemirror')) return 'vendor-tiptap';
+              if (id.includes('katex')) return 'vendor-katex';
+              if (id.includes('three') || id.includes('@react-three')) return 'vendor-three';
+              if (id.includes('algoliasearch')) return 'vendor-algolia';
               // Be more specific with React core to avoid circular dependencies
               if (
                 id.includes('node_modules/react/') ||
