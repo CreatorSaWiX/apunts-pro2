@@ -33,16 +33,18 @@ function OOPPlayerContent({ sim }: { sim: any }) {
         if (isPlaying) {
             timer = setInterval(() => {
                 setCurrentStep(prev => {
-                    if (prev >= steps.length - 1) {
-                        setIsPlaying(false);
-                        return prev;
-                    }
-                    return prev + 1;
+                    return prev >= steps.length - 1 ? prev : prev + 1;
                 });
             }, speed);
         }
         return () => clearInterval(timer);
     }, [isPlaying, steps.length, speed]);
+
+    useEffect(() => {
+        if (isPlaying && currentStep >= steps.length - 1) {
+            setIsPlaying(false);
+        }
+    }, [isPlaying, currentStep, steps.length]);
 
     const step = steps[currentStep];
     const displayFile = userSelectedFile || step.activeFile;

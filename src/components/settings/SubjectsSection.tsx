@@ -64,9 +64,11 @@ export const SubjectsSection = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    useShortcut('searchSubjects', () => {
+    const handleSearchShortcut = useCallback(() => {
         inputRef.current?.focus();
-    });
+    }, []);
+
+    useShortcut('searchSubjects', handleSearchShortcut);
 
     const filteredSubjects = subjectsData.filter(s =>
         s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -530,9 +530,9 @@ export const OfflineSection = () => {
                                         {expandedCache === cache.name && (
                                             <motion.div
                                                 layout
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: 'auto' }}
-                                                exit={{ opacity: 0, height: 0 }}
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                exit={{ opacity: 0 }}
                                                 className="w-full overflow-hidden"
                                             >
                                                 <div className="border-t border-white/10 mt-4 pt-4 flex flex-col gap-1 max-h-80 overflow-y-auto custom-scrollbar pr-2">

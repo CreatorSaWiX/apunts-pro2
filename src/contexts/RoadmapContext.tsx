@@ -546,13 +546,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
     // Recalculate layout when edges change (only on connection)
     const onConnect = useCallback(
         (params: Connection) => {
-            setEdges((eds) => {
-                const newEdges = addEdge(params, eds);
-                setNodes(nds => {
-                    return checkPrerequisites(nds, newEdges) as Node<SubjectNodeData>[];
-                });
-                return newEdges;
-            });
+            setEdges((eds) => addEdge(params, eds));
         },
         []
     );

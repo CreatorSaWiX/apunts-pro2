@@ -191,11 +191,13 @@ const CommunityPage = () => {
         }
     }, []);
 
-    useShortcut('createResource', () => {
+    const handleCreateShortcut = useCallback(() => {
         if (!isOffline) {
             setIsCreateOpen(true);
         }
-    });
+    }, [isOffline]);
+
+    useShortcut('createResource', handleCreateShortcut);
 
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);

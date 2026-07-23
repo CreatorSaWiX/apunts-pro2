@@ -38,23 +38,33 @@ const QuizTimer = React.memo(({
     onTick: (time: number) => void;
 }) => {
     const [timeLeft, setTimeLeft] = useState(initialTime);
+    const onTimeUpRef = useRef(onTimeUp);
+    const onTickRef = useRef(onTick);
+
+    useEffect(() => {
+        onTimeUpRef.current = onTimeUp;
+        onTickRef.current = onTick;
+    }, [onTimeUp, onTick]);
 
     useEffect(() => {
         if (isFinished) return;
         const timer = setInterval(() => {
             setTimeLeft((prev) => {
-                if (prev <= 1) {
-                    onTimeUp();
-                    clearInterval(timer);
-                    return 0;
-                }
-                const newTime = prev - 1;
-                onTick(newTime);
-                return newTime;
+                const next = prev - 1;
+                return next < 0 ? 0 : next;
             });
         }, 1000);
         return () => clearInterval(timer);
-    }, [isFinished, onTimeUp, onTick]);
+    }, [isFinished]);
+
+    useEffect(() => {
+        if (isFinished) return;
+        if (timeLeft === 0) {
+            onTimeUpRef.current();
+        } else if (timeLeft < initialTime) {
+            onTickRef.current(timeLeft);
+        }
+    }, [timeLeft, isFinished, initialTime]);
 
     const formatTime = (seconds: number) => {
         const m = Math.floor(seconds / 60);

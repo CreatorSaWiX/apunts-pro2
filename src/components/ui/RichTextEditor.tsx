@@ -295,25 +295,38 @@ const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure.
             return;
         }
         editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-    };
+    }, [editor]);
 
-    useShortcut('editorBold', () => editor?.chain().focus().toggleBold().run());
-    useShortcut('editorItalic', () => editor?.chain().focus().toggleItalic().run());
-    useShortcut('editorUnderline', () => editor?.chain().focus().toggleUnderline().run());
-    useShortcut('editorStrikethrough', () => editor?.chain().focus().toggleStrike().run());
-    useShortcut('editorLink', setLink);
-    useShortcut('editorAlignLeft', () => editor?.chain().focus().setTextAlign('left').run());
-    useShortcut('editorAlignCenter', () => editor?.chain().focus().setTextAlign('center').run());
-    useShortcut('editorAlignRight', () => editor?.chain().focus().setTextAlign('right').run());
-    useShortcut('editorAlignJustify', () => editor?.chain().focus().setTextAlign('justify').run());
-    useShortcut('editorListBullet', () => editor?.chain().focus().toggleBulletList().run());
-    useShortcut('editorListOrdered', () => editor?.chain().focus().toggleOrderedList().run());
-    useShortcut('editorTaskList', () => editor?.chain().focus().toggleTaskList().run());
-    useShortcut('editorTable', () => {
+    const handleBold = useCallback(() => editor?.chain().focus().toggleBold().run(), [editor]);
+    const handleItalic = useCallback(() => editor?.chain().focus().toggleItalic().run(), [editor]);
+    const handleUnderline = useCallback(() => editor?.chain().focus().toggleUnderline().run(), [editor]);
+    const handleStrikethrough = useCallback(() => editor?.chain().focus().toggleStrike().run(), [editor]);
+    const handleAlignLeft = useCallback(() => editor?.chain().focus().setTextAlign('left').run(), [editor]);
+    const handleAlignCenter = useCallback(() => editor?.chain().focus().setTextAlign('center').run(), [editor]);
+    const handleAlignRight = useCallback(() => editor?.chain().focus().setTextAlign('right').run(), [editor]);
+    const handleAlignJustify = useCallback(() => editor?.chain().focus().setTextAlign('justify').run(), [editor]);
+    const handleListBullet = useCallback(() => editor?.chain().focus().toggleBulletList().run(), [editor]);
+    const handleListOrdered = useCallback(() => editor?.chain().focus().toggleOrderedList().run(), [editor]);
+    const handleTaskList = useCallback(() => editor?.chain().focus().toggleTaskList().run(), [editor]);
+    const handleTable = useCallback(() => {
         if (!editor?.isActive('table')) {
             editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
         }
-    });
+    }, [editor]);
+
+    useShortcut('editorBold', handleBold);
+    useShortcut('editorItalic', handleItalic);
+    useShortcut('editorUnderline', handleUnderline);
+    useShortcut('editorStrikethrough', handleStrikethrough);
+    useShortcut('editorLink', setLink);
+    useShortcut('editorAlignLeft', handleAlignLeft);
+    useShortcut('editorAlignCenter', handleAlignCenter);
+    useShortcut('editorAlignRight', handleAlignRight);
+    useShortcut('editorAlignJustify', handleAlignJustify);
+    useShortcut('editorListBullet', handleListBullet);
+    useShortcut('editorListOrdered', handleListOrdered);
+    useShortcut('editorTaskList', handleTaskList);
+    useShortcut('editorTable', handleTable);
 
     useEffect(() => {
         if (editorRef && editor) {

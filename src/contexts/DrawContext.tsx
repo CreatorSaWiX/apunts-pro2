@@ -60,28 +60,18 @@ export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, []);
 
     const undoStroke = useCallback(() => {
-        setStrokes((prev) => {
-            if (prev.length === 0) return prev;
-            const newStrokes = [...prev];
-            const popped = newStrokes.pop();
-            if (popped) {
-                setUndoneStrokes((u) => [...u, popped]);
-            }
-            return newStrokes;
-        });
-    }, []);
+        if (strokes.length === 0) return;
+        const popped = strokes[strokes.length - 1];
+        setStrokes(strokes.slice(0, -1));
+        setUndoneStrokes((u) => [...u, popped]);
+    }, [strokes]);
 
     const redoStroke = useCallback(() => {
-        setUndoneStrokes((prev) => {
-            if (prev.length === 0) return prev;
-            const newUndone = [...prev];
-            const popped = newUndone.pop();
-            if (popped) {
-                setStrokes((s) => [...s, popped]);
-            }
-            return newUndone;
-        });
-    }, []);
+        if (undoneStrokes.length === 0) return;
+        const popped = undoneStrokes[undoneStrokes.length - 1];
+        setUndoneStrokes(undoneStrokes.slice(0, -1));
+        setStrokes((s) => [...s, popped]);
+    }, [undoneStrokes]);
 
     const contextValue = useMemo(() => ({
         isDrawMode,
