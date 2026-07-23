@@ -86,7 +86,7 @@ const SendButton = ({
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
   const { aiSettings, setAiSettings } = useSettings();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const aiName = aiSettings?.identity?.name;
   
   const renderAIAvatar = (iconSize: number, iconClass: string) => {
@@ -356,7 +356,8 @@ export const ChatBot: React.FC = () => {
           currentPath: window.location.pathname,
           pageText,
           image: fileToSend ? { data: fileToSend.data, mimeType: fileToSend.mimeType } : undefined,
-          aiSettings
+          aiSettings,
+          language: i18n.language
         }),
         signal: controller.signal
       });

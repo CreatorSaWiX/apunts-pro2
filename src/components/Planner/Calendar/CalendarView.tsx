@@ -13,7 +13,7 @@ import {
 import { createPortal } from 'react-dom';
 import { useTasks } from '../../../contexts/TasksContext';
 import type { Task } from '../../../types/tasks';
-import { useAltKey } from '../../../hooks/useAltKey';
+import { useDuplicateModifier } from '../../../hooks/useDuplicateModifier';
 import MonthlyGrid from './MonthlyGrid';
 import WeeklyGrid from './WeeklyGrid';
 import YearlyGrid from './YearlyGrid';
@@ -29,7 +29,7 @@ const CalendarView: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [mode, setMode] = useState<CalendarMode>('week');
     const [activeTask, setActiveTask] = useState<Task | null>(null);
-    const isAltPressed = useAltKey();
+    const isAltPressed = useDuplicateModifier();
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -38,6 +38,40 @@ const CalendarView: React.FC = () => {
             },
         })
     );
+
+    React.useEffect(() => {
+        const handlePlannerAction = (e: Event) => {
+            const action = (e as CustomEvent).detail.action;
+            if (action === 'plannerToday') {
+                setCurrentDate(new Date());
+            } else if (action === 'plannerViewWeek') {
+                setMode('week');
+            } else if (action === 'plannerViewMonth') {
+                setMode('month');
+            } else if (action === 'plannerViewYear') {
+                setMode('year');
+            } else if (action === 'plannerPrev') {
+                setCurrentDate(prev => {
+                    const newDate = new Date(prev);
+                    if (mode === 'week') newDate.setDate(newDate.getDate() - 7);
+                    else if (mode === 'month') newDate.setMonth(newDate.getMonth() - 1);
+                    else if (mode === 'year') newDate.setFullYear(newDate.getFullYear() - 1);
+                    return newDate;
+                });
+            } else if (action === 'plannerNext') {
+                setCurrentDate(prev => {
+                    const newDate = new Date(prev);
+                    if (mode === 'week') newDate.setDate(newDate.getDate() + 7);
+                    else if (mode === 'month') newDate.setMonth(newDate.getMonth() + 1);
+                    else if (mode === 'year') newDate.setFullYear(newDate.getFullYear() + 1);
+                    return newDate;
+                });
+            }
+        };
+
+        window.addEventListener('planner-action', handlePlannerAction);
+        return () => window.removeEventListener('planner-action', handlePlannerAction);
+    }, [mode]);
 
     const handleSelectMonth = (date: Date) => {
         setCurrentDate(date);
@@ -97,6 +131,10 @@ const CalendarView: React.FC = () => {
                         startDate: newDate.toISOString(),
                         estimatedMinutes: task.estimatedMinutes,
                         source: task.source
+                    }).then((newTaskId) => {
+                        setTimeout(() => {
+                            window.dispatchEvent(new CustomEvent('task-selected', { detail: newTaskId }));
+                        }, 50);
                     });
                 } else {
                     const updates: Partial<Task> = { startDate: newDate.toISOString() };

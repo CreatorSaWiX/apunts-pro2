@@ -29,7 +29,20 @@ const DEFAULT_SHORTCUTS: ShortcutsSettings = {
     editorListBullet: { key: '8', meta: true },
     editorListOrdered: { key: '7', meta: true },
     editorTaskList: { key: '9', meta: true },
-    editorTable: { key: 't', meta: true }
+    editorTable: { key: 't', meta: true },
+    plannerToday: { key: 't', meta: false },
+    plannerViewWeek: { key: 'w', meta: false },
+    plannerViewMonth: { key: 'm', meta: false },
+    plannerViewYear: { key: 'y', meta: false },
+    plannerPrev: { key: 'ArrowLeft', meta: false },
+    plannerNext: { key: 'ArrowRight', meta: false },
+    plannerCreateTask: { key: 'c', meta: false },
+    plannerDeleteTask: { key: 'Backspace', meta: false },
+    plannerEditTask: { key: 'Enter', meta: false },
+    plannerPriorityLow: { key: '1', meta: false },
+    plannerPriorityMedium: { key: '2', meta: false },
+    plannerPriorityHigh: { key: '3', meta: false },
+    plannerDuplicateModifier: { key: 'Alt', meta: false }
 };
 
 interface SettingsContextType {

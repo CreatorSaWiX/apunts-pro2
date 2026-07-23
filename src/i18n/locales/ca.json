@@ -65,8 +65,9 @@
       "reset": "Restablir",
       "categories": {
         "global": "Global",
-        "community": "Comunitat i Apunts",
-        "editor": "Editor de Text"
+        "notes": "Notes",
+        "editor": "Comunitat",
+        "planner": "Planificador / Calendari"
       },
       "actions": {
         "searchSubjects": "Cercar Assignatures",
@@ -85,7 +86,14 @@
         "editorListBullet": "Llista de Punts",
         "editorListOrdered": "Llista Numèrica",
         "editorTaskList": "Llista de Tasques",
-        "editorTable": "Taula"
+        "editorTable": "Taula",
+        "plannerToday": "Anar a Avui",
+        "plannerViewWeek": "Vista Setmanal",
+        "plannerViewMonth": "Vista Mensual",
+        "plannerViewYear": "Vista Anual",
+        "plannerPrev": "Anterior (Setmana/Mes/Any)",
+        "plannerNext": "Següent (Setmana/Mes/Any)",
+        "plannerCreateTask": "Crear Tasca"
       }
     },
     "ai": {

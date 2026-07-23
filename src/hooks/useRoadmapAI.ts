@@ -11,6 +11,8 @@ export interface Message {
 
 export type StreamPhase = 'idle' | 'connecting' | 'thinking' | 'writing' | 'done';
 
+import { useTranslation } from 'react-i18next';
+
 export const useRoadmapAI = (
     aiSettings: any,
     nodes: any[],
@@ -22,6 +24,7 @@ export const useRoadmapAI = (
             return saved ? JSON.parse(saved) : [];
         } catch { return []; }
     });
+    const { i18n } = useTranslation();
 
     const [isGenerating, setIsGenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -134,7 +137,8 @@ export const useRoadmapAI = (
                     memory,
                     aiSettings,
                     userName,
-                    attachedFile
+                    attachedFile,
+                    language: i18n.language
                 }),
                 signal: controller.signal
             });

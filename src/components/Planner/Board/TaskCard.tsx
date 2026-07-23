@@ -10,6 +10,7 @@ import { Calendar, Flag, Play, X, Check, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { DateTimePicker } from './DateTimePicker';
 import { useTranslation } from 'react-i18next';
+import SubjectPicker from '../SubjectPicker';
 
 interface TaskCardProps {
     task: Task;
@@ -77,51 +78,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
     const [editStartDate, setEditStartDate] = useState<string>(toLocalDatetime(task.startDate));
     const [editSubjectId, setEditSubjectId] = useState<string | null>(task.subjectId || null);
 
-    const [showSubjectPicker, setShowSubjectPicker] = useState(false);
-    const [subjectSearchQuery, setSubjectSearchQuery] = useState('');
-
-    const filteredSubjects = useMemo(() => {
-        if (!subjects) return [];
-        return [...subjects]
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .filter(s => s.name.toLowerCase().includes(subjectSearchQuery.toLowerCase()));
-    }, [subjects, subjectSearchQuery]);
-
-    const subjectTriggerRef = useRef<HTMLButtonElement>(null);
-    const [subjectPickerCoords, setSubjectPickerCoords] = useState({ top: 0, left: 0 });
-
-    const toggleSubjectPicker = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!showSubjectPicker) {
-            if (subjectTriggerRef.current) {
-                const rect = subjectTriggerRef.current.getBoundingClientRect();
-                setSubjectPickerCoords({ top: rect.bottom + 8, left: rect.left });
-            }
-            setShowSubjectPicker(true);
-            setSubjectSearchQuery('');
-        } else {
-            setShowSubjectPicker(false);
-        }
-    };
-
-    useEffect(() => {
-        const handleScrollOrResize = () => {
-            if (showSubjectPicker && subjectTriggerRef.current) {
-                const rect = subjectTriggerRef.current.getBoundingClientRect();
-                setSubjectPickerCoords({ top: rect.bottom + 8, left: rect.left });
-            }
-        };
-        if (showSubjectPicker) {
-            window.addEventListener('scroll', handleScrollOrResize, true);
-            window.addEventListener('resize', handleScrollOrResize);
-            return () => {
-                window.removeEventListener('scroll', handleScrollOrResize, true);
-                window.removeEventListener('resize', handleScrollOrResize);
-            };
-        }
-    }, [showSubjectPicker]);
-
     const {
         setNodeRef,
         attributes,
@@ -144,7 +100,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
             : isDragging
                 ? `${CSS.Transform.toString(transform)} rotate(2deg) scale(1.02)`
                 : CSS.Transform.toString(transform),
-        zIndex: isDragging || isOverlay ? 10000 : (isEditing || showSubjectPicker ? 50 : 'auto'),
+        zIndex: isDragging || isOverlay ? 10000 : (isEditing ? 50 : 'auto'),
     };
 
     const handleSave = () => {
@@ -348,69 +304,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
 
                             <div className="relative">
                                 {subjects && subjects.length > 0 && (
-                                    <button type="button"
-                                        ref={subjectTriggerRef}
-                                        onClick={toggleSubjectPicker}
-                                        className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${editSubjectId
-                                            ? (() => {
-                                                const s = subjects.find(sub => sub.id === editSubjectId);
-                                                return s ? `text-${s.colorToken.replace('500', '400')} bg-${s.colorToken}/10 border-${s.colorToken}/20` : 'text-slate-400 bg-slate-500/10 border-slate-500/20';
-                                            })()
-                                            : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
-                                            }`}
-                                    >
-                                        <span className="font-semibold text-[10px] tracking-wider uppercase">
-                                            {editSubjectId ? subjects.find(sub => sub.id === editSubjectId)?.name : 'Assignatura'}
-                                        </span>
-                                    </button>
-                                )}
-
-                                {showSubjectPicker && createPortal(
-                                    <>
-                                        <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setShowSubjectPicker(false); }} />
-                                        <motion.div 
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                                            style={{ 
-                                                top: subjectPickerCoords.top, 
-                                                left: subjectPickerCoords.left,
-                                                WebkitBackdropFilter: 'blur(24px)'
-                                            }}
-                                            className="fixed z-[9999] w-[260px] cursor-default flex flex-col gap-2 p-3 !rounded-[24px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
-                                            onClick={(e) => e.stopPropagation()}
-                                            onPointerDown={(e) => e.stopPropagation()}
-                                            onDoubleClick={(e) => e.stopPropagation()}
-                                        >
-                                                <input
-                                                    autoFocus
-                                                    value={subjectSearchQuery}
-                                                onChange={(e) => setSubjectSearchQuery(e.target.value)}
-                                                placeholder="Cerca assignatura..."
-                                                className="bg-white/5 border border-white/10 text-slate-200 text-[13px] font-medium px-4 py-2.5 rounded-xl focus:outline-none focus:border-white/20 w-full placeholder:text-slate-500 transition-colors"
-                                            />
-                                            <div className="flex flex-col gap-1 max-h-[220px] overflow-y-auto [&::-webkit-scrollbar]:hidden mt-1">
-                                                <button type="button"
-                                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(null); setShowSubjectPicker(false); }}
-                                                    className={`text-left px-4 py-3 rounded-xl text-[13px] font-semibold tracking-wide transition-colors ${!editSubjectId ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
-                                                >
-                                                    Sense assignatura
-                                                </button>
-                                                {filteredSubjects.map(s => (
-                                                    <button type="button"
-                                                        key={s.id}
-                                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditSubjectId(s.id); setShowSubjectPicker(false); }}
-                                                        className={`text-left px-4 py-3 rounded-xl text-[13px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${editSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
-                                                    >
-                                                        <span className={`w-2.5 h-2.5 rounded-full bg-${s.colorToken}`}></span>
-                                                        {s.name}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </motion.div>
-                                    </>,
-                                    document.body
+                                    <SubjectPicker
+                                        value={editSubjectId}
+                                        onChange={setEditSubjectId}
+                                        placeholder="Assignatura"
+                                    />
                                 )}
                             </div>
 

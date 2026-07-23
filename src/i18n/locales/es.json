@@ -65,8 +65,9 @@
       "reset": "Restablecer",
       "categories": {
         "global": "Global",
-        "community": "Comunidad y Apuntes",
-        "editor": "Editor de Texto"
+        "community": "Comunidad",
+        "editor": "Comunidad",
+        "planner": "Planificador / Calendario"
       },
       "actions": {
         "searchSubjects": "Buscar Asignaturas",
@@ -85,7 +86,14 @@
         "editorListBullet": "Lista de Viñetas",
         "editorListOrdered": "Lista Numerada",
         "editorTaskList": "Lista de Tareas",
-        "editorTable": "Tabla"
+        "editorTable": "Tabla",
+        "plannerToday": "Ir a Hoy",
+        "plannerViewWeek": "Vista Semanal",
+        "plannerViewMonth": "Vista Mensual",
+        "plannerViewYear": "Vista Anual",
+        "plannerPrev": "Anterior (Semana/Mes/Año)",
+        "plannerNext": "Siguiente (Semana/Mes/Año)",
+        "plannerCreateTask": "Crear Tarea"
       }
     },
     "ai": {

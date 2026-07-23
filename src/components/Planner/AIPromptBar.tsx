@@ -12,7 +12,7 @@ interface AIPromptBarProps {
 }
 
 const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [prompt, setPrompt] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
     const [streamPhase, setStreamPhase] = useState<StreamPhase>('idle');
@@ -105,7 +105,8 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                     subjects: subjects.map(s => ({ id: s.id, name: s.name })),
                     currentDate: new Date().toISOString(),
                     aiSettings,
-                    attachedFile
+                    attachedFile,
+                    language: i18n.language
                 }),
                 signal: abortControllerRef.current.signal
             });

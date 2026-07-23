@@ -5,6 +5,7 @@ import { startOfWeek, endOfWeek, eachDayOfInterval, format, isToday, addDays, su
 import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
+import { useDuplicateModifier } from '../../../hooks/useDuplicateModifier';
 
 interface WeeklyGridProps {
     currentDate: Date;
@@ -42,11 +43,9 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     const [currentHeight, setCurrentHeight] = React.useState(baseHeight);
     const [currentTop, setCurrentTop] = React.useState(top);
     
-    const [isEditing, setIsEditing] = React.useState(false);
-    const [editTitle, setEditTitle] = React.useState(task.title);
     const [isSelected, setIsSelected] = React.useState(false);
-    const inputRef = React.useRef<HTMLInputElement>(null);
     const taskRef = React.useRef<HTMLDivElement>(null);
+    const isAltPressed = useDuplicateModifier();
 
     const dragStart = React.useRef({ y: 0, height: 0, top: 0 });
 
@@ -59,40 +58,48 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
 
     React.useEffect(() => {
         const handleGlobalClick = () => setIsSelected(false);
-        const handleGlobalKeyDown = (e: KeyboardEvent) => {
-            if (isSelected && !isEditing && (e.key === 'Backspace' || e.key === 'Delete')) {
+        const handlePlannerAction = (e: Event) => {
+            if (!isSelected) return;
+            const action = (e as CustomEvent).detail.action;
+            
+            if (action === 'plannerDeleteTask') {
                 deleteTask(task.id);
-            }
-        };
-        const handleTaskSelected = (e: Event) => {
-            const customEvent = e as CustomEvent;
-            if (customEvent.detail !== task.id) {
-                setIsSelected(false);
-            }
-        };
-        
-        const handleEditInline = (e: Event) => {
-            const customEvent = e as CustomEvent;
-            if (customEvent.detail === task.id) {
-                setIsEditing(true);
-                setTimeout(() => inputRef.current?.focus(), 0);
+            } else if (action === 'plannerEditTask') {
+                const rect = taskRef.current?.getBoundingClientRect();
+                window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: rect ? rect.left + rect.width / 2 : window.innerWidth / 2, y: rect ? rect.top + rect.height / 2 : window.innerHeight / 2, taskId: task.id } }));
+            } else if (action === 'plannerPriorityLow') {
+                updateTask(task.id, { priority: 'LOW' });
+            } else if (action === 'plannerPriorityMedium') {
+                updateTask(task.id, { priority: 'MEDIUM' });
+            } else if (action === 'plannerPriorityHigh') {
+                updateTask(task.id, { priority: 'HIGH' });
             }
         };
 
         if (isSelected) {
             window.addEventListener('click', handleGlobalClick);
-            window.addEventListener('keydown', handleGlobalKeyDown);
-            window.addEventListener('task-selected', handleTaskSelected);
+            window.addEventListener('planner-action', handlePlannerAction);
         }
-        window.addEventListener('task-edit-inline', handleEditInline);
 
         return () => {
             window.removeEventListener('click', handleGlobalClick);
-            window.removeEventListener('keydown', handleGlobalKeyDown);
-            window.removeEventListener('task-selected', handleTaskSelected);
-            window.removeEventListener('task-edit-inline', handleEditInline);
+            window.removeEventListener('planner-action', handlePlannerAction);
         };
-    }, [isSelected, isEditing, task.id, deleteTask]);
+    }, [isSelected, task.id, deleteTask]);
+
+    React.useEffect(() => {
+        const handleTaskSelected = (e: Event) => {
+            const customEvent = e as CustomEvent;
+            if (customEvent.detail === task.id) {
+                setIsSelected(true);
+            } else if (isSelected) {
+                setIsSelected(false);
+            }
+        };
+
+        window.addEventListener('task-selected', handleTaskSelected);
+        return () => window.removeEventListener('task-selected', handleTaskSelected);
+    }, [task.id, isSelected]);
 
     const handlePointerDown = (type: 'top' | 'bottom') => (e: React.PointerEvent) => {
         e.preventDefault(); // Això evita que l'input perdi el focus (onBlur)
@@ -160,17 +167,6 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
         setCurrentHeight(snappedMinutes);
     };
 
-    // L'edició en línia ara s'activa a través de l'event 'task-edit-inline' quan es crea la tasca
-
-    const handleTitleSubmit = () => {
-        setIsEditing(false);
-        if (editTitle.trim() && editTitle !== task.title) {
-            updateTask(task.id, { title: editTitle.trim() });
-        } else {
-            setEditTitle(task.title);
-        }
-    };
-
     const height = isResizing ? currentHeight : baseHeight;
     const layoutTop = isResizing ? currentTop : top;
     
@@ -187,6 +183,15 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     const startH = Math.floor(visualTop / 60);
     const startM = visualTop % 60;
     const startTimeStr = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
+
+    // Temps originals per a la còpia fantasma
+    const origEndMinutes = top + baseHeight;
+    const origEndH = Math.floor(origEndMinutes / 60);
+    const origEndM = origEndMinutes % 60;
+    const origEndTimeStr = `${origEndH.toString().padStart(2, '0')}:${origEndM.toString().padStart(2, '0')}`;
+    const origStartH = Math.floor(top / 60);
+    const origStartM = top % 60;
+    const origStartTimeStr = `${origStartH.toString().padStart(2, '0')}:${origStartM.toString().padStart(2, '0')}`;
 
     const radiusClass = isContinuingFromPrev && isContinuingToNext ? 'rounded-none border-y-0' 
         : isContinuingFromPrev ? 'rounded-b-md rounded-t-none border-t-0' 
@@ -206,8 +211,36 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     const accentColor = taskSubject ? `bg-${taskSubject.colorToken}` : (priorityColors[task.priority as keyof typeof priorityColors] || priorityColors.LOW);
 
     return (
-        <div 
-            ref={(node) => {
+        <>
+            {/* Còpia Fantasma quan es duplica amb Alt */}
+            {isDragging && isAltPressed && (
+                <div 
+                    className={`absolute left-1 right-1 border overflow-hidden flex flex-col pointer-events-none
+                        bg-slate-900/40 opacity-50 border-white/[0.03]
+                        ${radiusClass}
+                    `}
+                    style={{
+                        top: `${top}px`,
+                        height: `${baseHeight}px`,
+                        zIndex: 5
+                    }}
+                >
+                    <div className={`absolute top-0 bottom-0 left-0 w-1 ${accentColor} shadow-[0_0_15px_currentColor] opacity-50`} />
+                    <div className={`pl-3 pr-2 flex flex-col h-full overflow-hidden ${baseHeight < 40 ? 'py-0.5' : 'py-2'}`}>
+                        {baseHeight >= 40 && (
+                            <div className="flex items-center gap-1.5 opacity-40 mb-0.5 pr-4 shrink-0">
+                                <span className="text-[9px] font-bold tracking-[0.1em] text-slate-300">{origStartTimeStr} - {origEndTimeStr}</span>
+                            </div>
+                        )}
+                        <div className={`font-bold leading-tight text-slate-200/50 shrink-0 ${baseHeight < 30 ? 'text-[9px] truncate' : 'text-[12px] line-clamp-3'}`}>
+                            {task.title || 'Nova Tasca'}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <div 
+                ref={(node) => {
                 setNodeRef(node);
                 if (node) taskRef.current = node;
             }}
@@ -270,37 +303,24 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                     </div>
                 )}
                 
-                {isEditing ? (
-                    <input
-                        ref={inputRef}
-                        className="text-[12px] font-bold leading-tight bg-slate-900/90 rounded-md px-1.5 py-0.5 -mx-1.5 -my-0.5 text-white outline-none w-[calc(100%+0.75rem)] border border-white/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/30 pointer-events-auto shadow-lg backdrop-blur-sm transition-all"
-                        value={editTitle}
-                        onChange={e => setEditTitle(e.target.value)}
-                        onBlur={handleTitleSubmit}
-                        onKeyDown={e => e.key === 'Enter' && handleTitleSubmit()}
-                        onPointerDown={e => e.stopPropagation()}
-                        onClick={e => e.stopPropagation()}
-                        onDoubleClick={e => e.stopPropagation()}
-                    />
-                ) : (
+                <div 
+                    className={`font-bold leading-tight text-slate-200 pointer-events-auto shrink-0 ${height < 30 ? 'text-[9px] truncate' : 'text-[12px] line-clamp-3'}`}
+                >
+                    {task.title || 'Nova Tasca'}
+                </div>
+            </div>
+
+                {/* Bottom Resize Handle */}
+                {!isContinuingToNext && (
                     <div 
-                        className={`font-bold leading-tight text-slate-200 pointer-events-auto shrink-0 ${height < 30 ? 'text-[9px] truncate' : 'text-[12px] line-clamp-3'}`}
+                        className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize z-20 flex justify-center pb-0.5 items-end opacity-0 group-hover:opacity-100 transition-opacity"
+                        onPointerDown={handlePointerDown('bottom')}
                     >
-                        {task.title}
+                        <div className="w-8 h-1 rounded-full bg-white/20" />
                     </div>
                 )}
             </div>
-
-            {/* Bottom Resize Handle */}
-            {!isContinuingToNext && (
-                <div 
-                    className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize z-20 flex justify-center pb-0.5 items-end opacity-0 group-hover:opacity-100 transition-opacity"
-                    onPointerDown={handlePointerDown('bottom')}
-                >
-                    <div className="w-8 h-1 rounded-full bg-white/20" />
-                </div>
-            )}
-        </div>
+        </>
     );
 };
 
@@ -355,7 +375,7 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
             estimatedMinutes,
             source: 'MANUAL'
         });
-        window.dispatchEvent(new CustomEvent('task-edit-inline', { detail: id }));
+        window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: id } }));
     };
 
     return (

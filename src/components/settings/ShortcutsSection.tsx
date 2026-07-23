@@ -19,6 +19,7 @@ export const ShortcutsSection = () => {
         if (key === 'ArrowUp') displayKey = '↑ UP';
         if (key === 'ArrowDown') displayKey = '↓ DOWN';
         if (key === 'Enter') displayKey = 'ENTER';
+        if (key === 'Backspace' || key === 'backspace') displayKey = '⌫ BACKSPACE';
         return `${metaStr}${displayKey}`;
     };
 
@@ -34,13 +35,19 @@ export const ShortcutsSection = () => {
                 return;
             }
 
-            // Ignore just modifier keys pressed alone
-            if (['Meta', 'Control', 'Shift', 'Alt'].includes(e.key)) {
+            // Ignore just modifier keys pressed alone unless configuring a modifier action
+            if (['Meta', 'Control', 'Shift', 'Alt'].includes(e.key) && listeningAction !== 'plannerDuplicateModifier') {
                 return;
             }
 
-            const meta = e.metaKey || e.ctrlKey;
-            const key = e.key.toLowerCase();
+            let meta = e.metaKey || e.ctrlKey;
+            let key = e.key;
+
+            if (listeningAction === 'plannerDuplicateModifier' && ['Meta', 'Control', 'Shift', 'Alt'].includes(key)) {
+                meta = false;
+            } else {
+                key = key.toLowerCase();
+            }
 
             setShortcuts(prev => ({
                 ...prev,
@@ -68,7 +75,7 @@ export const ShortcutsSection = () => {
         },
         {
             id: 'community',
-            label: t('settings.shortcuts.categories.community', 'Comunitat / Apunts'),
+            label: t('settings.shortcuts.categories.notes', 'Notes'),
             actions: [
                 {
                     id: 'carouselLeft',
@@ -84,17 +91,12 @@ export const ShortcutsSection = () => {
                     id: 'carouselEnter',
                     label: t('settings.shortcuts.actions.carouselEnter', 'Accedir al Tema (Carrusel)'),
                     default: { key: 'Enter', meta: false }
-                },
-                {
-                    id: 'createResource',
-                    label: t('settings.shortcuts.actions.createResource', 'Nou recurs'),
-                    default: { key: 'c', meta: false }
                 }
             ]
         },
         {
             id: 'editor',
-            label: t('settings.shortcuts.categories.editor', 'Editor de Text'),
+            label: t('settings.shortcuts.categories.community', 'Community'),
             actions: [
                 { id: 'editorBold', label: t('settings.shortcuts.actions.editorBold', 'Negreta'), default: { key: 'b', meta: true } },
                 { id: 'editorItalic', label: t('settings.shortcuts.actions.editorItalic', 'Cursiva'), default: { key: 'i', meta: true } },
@@ -109,6 +111,21 @@ export const ShortcutsSection = () => {
                 { id: 'editorListOrdered', label: t('settings.shortcuts.actions.editorListOrdered', 'Llista Numèrica'), default: { key: '7', meta: true } },
                 { id: 'editorTaskList', label: t('settings.shortcuts.actions.editorTaskList', 'Llista de Tasques'), default: { key: '9', meta: true } },
                 { id: 'editorTable', label: t('settings.shortcuts.actions.editorTable', 'Taula'), default: { key: 't', meta: true } }
+            ]
+        },
+        {
+            id: 'planner',
+            label: t('settings.shortcuts.categories.planner', 'Planificador / Calendari'),
+            actions: [
+                { id: 'plannerToday', label: t('settings.shortcuts.actions.plannerToday', 'Anar a Avui'), default: { key: 't', meta: false } },
+                { id: 'plannerViewWeek', label: t('settings.shortcuts.actions.plannerViewWeek', 'Vista Setmanal'), default: { key: 'w', meta: false } },
+                { id: 'plannerViewMonth', label: t('settings.shortcuts.actions.plannerViewMonth', 'Vista Mensual'), default: { key: 'm', meta: false } },
+                { id: 'plannerViewYear', label: t('settings.shortcuts.actions.plannerViewYear', 'Vista Anual'), default: { key: 'y', meta: false } },
+                { id: 'plannerPrev', label: t('settings.shortcuts.actions.plannerPrev', 'Anterior (Setmana/Mes/Any)'), default: { key: 'ArrowLeft', meta: false } },
+                { id: 'plannerNext', label: t('settings.shortcuts.actions.plannerNext', 'Següent (Setmana/Mes/Any)'), default: { key: 'ArrowRight', meta: false } },
+                { id: 'plannerDeleteTask', label: t('settings.shortcuts.actions.plannerDeleteTask', 'Eliminar Tasca'), default: { key: 'Backspace', meta: false } },
+                { id: 'plannerEditTask', label: t('settings.shortcuts.actions.plannerEditTask', 'Editar Tasca'), default: { key: 'Enter', meta: false } },
+                { id: 'plannerDuplicateModifier', label: t('settings.shortcuts.actions.plannerDuplicateModifier', 'Modificador Duplicar (Ratolí)'), default: { key: 'Alt', meta: false } }
             ]
         }
     ];

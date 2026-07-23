@@ -11,6 +11,7 @@ import AIPromptBar from './AIPromptBar';
 import GlobalTaskContextMenu from './GlobalTaskContextMenu';
 import GlobalFiltersBar from './GlobalFiltersBar';
 import TaskPopover from './TaskPopover';
+import { usePlannerShortcuts } from './usePlannerShortcuts';
 
 const BoardView = lazy(() => import('./Board/BoardView'));
 const CalendarView = lazy(() => import('./Calendar/CalendarView'));
@@ -76,6 +77,8 @@ const PlannerLayout: React.FC = () => {
     const [isAIModalOpen, setIsAIModalOpen] = useState(false);
     const [screenGlow, setScreenGlow] = useState(false);
 
+    usePlannerShortcuts();
+
     useEffect(() => {
         const handleMagic = () => {
             setScreenGlow(true);
@@ -84,7 +87,30 @@ const PlannerLayout: React.FC = () => {
         window.addEventListener('ai-magic-done', handleMagic);
         return () => window.removeEventListener('ai-magic-done', handleMagic);
     }, []);
-    // const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+
+    useEffect(() => {
+        const handlePlannerAction = (e: Event) => {
+            const action = (e as CustomEvent).detail.action;
+            if (['plannerViewWeek', 'plannerViewMonth', 'plannerViewYear'].includes(action)) {
+                if (activeTab !== 'calendar') {
+                    setActiveTab('calendar');
+                    startTransition(() => {
+                        setView('calendar');
+                    });
+                }
+            } else if (action === 'plannerCreateTask') {
+                window.dispatchEvent(new CustomEvent('open-task-popover', { 
+                    detail: { 
+                        x: window.innerWidth / 2, 
+                        y: window.innerHeight / 2, 
+                        taskId: null 
+                    } 
+                }));
+            }
+        };
+        window.addEventListener('planner-action', handlePlannerAction);
+        return () => window.removeEventListener('planner-action', handlePlannerAction);
+    }, [activeTab]);
 
     const usedSubjects = useMemo(() => {
         return subjects.filter(subject => tasks.some(t => t.subjectId === subject.id));

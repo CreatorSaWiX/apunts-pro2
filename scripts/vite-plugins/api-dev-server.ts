@@ -166,7 +166,7 @@ RETORNA UNICAMENT AQUEST FORMAT JSON:
               });
               req.on('end', async () => {
                 try {
-                  const { message, history, currentPath = '/', pageText = '', image, aiSettings } = JSON.parse(body);
+                  const { message, history, currentPath = '/', pageText = '', image, aiSettings, language } = JSON.parse(body);
                   const { GoogleGenAI } = await import('@google/genai');
 
                   const apiKey = env.GEMINI_API_KEY;
@@ -227,7 +227,9 @@ RETORNA UNICAMENT AQUEST FORMAT JSON:
                     'gemini-2.0-flash-lite',     // de rescat
                   ];
 
+                  const langName = language?.startsWith('en') ? 'English' : language?.startsWith('es') ? 'Spanish' : 'Catalan';
                   const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+[CRITICAL LANGUAGE REQUIREMENT]: The user has set the app language to ${langName.toUpperCase()}. YOU MUST REPLY ENTIRELY IN ${langName.toUpperCase()}. Translate your personality, vibe, and any default phrases into ${langName.toUpperCase()}.
 Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
 L'usuari amb qui parles vol que li diguis: ${aiSettings?.userContext?.userPreferredName || "l'alumne"}.
 Memòria a llarg termini de l'usuari (Fets que ja coneixes):
@@ -448,7 +450,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
               });
               req.on('end', async () => {
                 try {
-                  const { prompt, currentTasks, subjects, currentDate, aiSettings, attachedFile } = JSON.parse(body);
+                  const { prompt, currentTasks, subjects, currentDate, aiSettings, attachedFile, language } = JSON.parse(body);
                   const { GoogleGenAI } = await import('@google/genai');
                   const apiKey = env.GEMINI_API_KEY;
 
@@ -459,7 +461,9 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                   }
 
                   const genAI = new GoogleGenAI({ apiKey });
+                  const langName = language?.startsWith('en') ? 'English' : language?.startsWith('es') ? 'Spanish' : 'Catalan';
                   const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+[CRITICAL LANGUAGE REQUIREMENT]: The user has set the app language to ${langName.toUpperCase()}. YOU MUST REPLY ENTIRELY IN ${langName.toUpperCase()}. Translate your personality, vibe, and any default phrases into ${langName.toUpperCase()}.
 Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
 
 [VIBE]
@@ -667,7 +671,7 @@ L'estructura exacta ha de ser:
               });
               req.on('end', async () => {
                 try {
-                  const { prompt, currentNodes, history = [], memory = {}, aiSettings, userName, attachedFile } = JSON.parse(body);
+                  const { prompt, currentNodes, history = [], memory = {}, aiSettings, userName, attachedFile, language } = JSON.parse(body);
                   const { GoogleGenAI } = await import('@google/genai');
                   const fs = await import('fs');
                   const path = await import('path');
@@ -732,7 +736,9 @@ L'estructura exacta ha de ser:
                   }
 
                   const genAI = new GoogleGenAI({ apiKey });
+                  const langName = language?.startsWith('en') ? 'English' : language?.startsWith('es') ? 'Spanish' : 'Catalan';
                   const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+[CRITICAL LANGUAGE REQUIREMENT]: The user has set the app language to ${langName.toUpperCase()}. YOU MUST REPLY ENTIRELY IN ${langName.toUpperCase()}. Translate your personality, vibe, and any default phrases into ${langName.toUpperCase()}.
 Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
 
 [VIBE]

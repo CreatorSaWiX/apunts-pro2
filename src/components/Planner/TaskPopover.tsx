@@ -3,8 +3,8 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
 import { Flag, Bookmark } from 'lucide-react';
 import type { TaskPriority } from '../../types/tasks';
-import LiquidPanel from '../ui/glass/LiquidPanel';
 import { useTranslation } from 'react-i18next';
+import SubjectPicker from './SubjectPicker';
 
 export interface TaskPopoverEventDetail {
     x: number;
@@ -18,12 +18,9 @@ const TaskPopover: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [taskId, setTaskId] = useState<string | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [subjectSearchQuery, setSubjectSearchQuery] = useState('');
-    const [showSubjectPicker, setShowSubjectPicker] = useState(false);
     const popoverRef = useRef<HTMLDivElement>(null);
 
     const task = tasks.find(t => t.id === taskId);
-    const filteredSubjects = subjects.filter(s => s.name.toLowerCase().includes(subjectSearchQuery.toLowerCase()));
 
     useEffect(() => {
         const handleOpen = (e: Event) => {
@@ -53,8 +50,13 @@ const TaskPopover: React.FC = () => {
 
         const handleClose = () => setIsOpen(false);
 
+        const isInsidePortal = (target: Node) => {
+            if (target instanceof Element && target.closest('.subject-picker-portal')) return true;
+            return false;
+        };
+
         const handlePointerDownOutside = (e: PointerEvent) => {
-            if (isOpen && popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+            if (isOpen && popoverRef.current && !popoverRef.current.contains(e.target as Node) && !isInsidePortal(e.target as Node)) {
                 if (e.button === 0) {
                     e.stopPropagation();
                 }
@@ -67,10 +69,9 @@ const TaskPopover: React.FC = () => {
         };
 
         const handleScroll = (e: Event) => {
-            if (isOpen && popoverRef.current && popoverRef.current.contains(e.target as Node)) {
-                return;
+            if (isOpen && popoverRef.current && !popoverRef.current.contains(e.target as Node) && !isInsidePortal(e.target as Node)) {
+                handleClose();
             }
-            handleClose();
         };
 
         window.addEventListener('pointerdown', handlePointerDownOutside, true);
@@ -120,63 +121,12 @@ const TaskPopover: React.FC = () => {
                             <span>{t('planner.popover.subject', 'Assignatura')}</span>
                         </div>
                         <div className="px-1 mb-2 relative">
-                            <button type="button"
-                                onClick={() => setShowSubjectPicker(!showSubjectPicker)}
-                                className={`w-full flex items-center justify-between gap-1.5 px-2 py-1.5 rounded-md transition-colors border ${task.subjectId
-                                        ? (() => {
-                                            const s = subjects.find(sub => sub.id === task.subjectId);
-                                            return s ? `text-${s.colorToken.replace('500', '400')} bg-${s.colorToken}/10 border-${s.colorToken}/20` : 'text-slate-400 bg-slate-500/10 border-slate-500/20';
-                                        })()
-                                        : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
-                                    }`}
-                            >
-                                <span className="font-semibold text-[10px] tracking-wider uppercase">
-                                    {task.subjectId ? subjects.find(sub => sub.id === task.subjectId)?.name : t('planner.popover.noSubject', 'Sense Assignatura')}
-                                </span>
-                            </button>
-
-                            {showSubjectPicker && (
-                                <LiquidPanel className="absolute top-full left-0 right-0 mt-1 p-1.5 flex flex-col gap-1 z-50 !rounded-[12px]">
-                                    <input 
-                                        autoFocus
-                                        value={subjectSearchQuery}
-                                        onChange={(e) => setSubjectSearchQuery(e.target.value)}
-                                        placeholder={t('planner.popover.searchSubject', "Cerca assignatura...")}
-                                        className="bg-white/5 border border-white/10 text-slate-200 text-[10px] px-2 py-1.5 rounded focus:outline-none focus:border-white/20 placeholder:text-slate-500 mb-1"
-                                    />
-                                    <div className="flex flex-col gap-1 max-h-[120px] overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-                                        <button type="button"
-                                            onClick={() => { updateTask(task.id, { subjectId: undefined }); setShowSubjectPicker(false); }}
-                                            className={`text-left px-2 py-1.5 rounded text-[10px] font-medium transition-colors ${
-                                                !task.subjectId 
-                                                    ? 'bg-white/10 text-white' 
-                                                    : 'text-slate-400 hover:bg-white/5'
-                                            }`}
-                                        >
-                                            {t('planner.popover.noneSubject', 'Cap assignatura')}
-                                        </button>
-                                        {filteredSubjects.map(subject => {
-                                            const isSelected = task.subjectId === subject.id;
-                                            return (
-                                                <button type="button"
-                                                    key={subject.id}
-                                                    onClick={() => { updateTask(task.id, { subjectId: subject.id }); setShowSubjectPicker(false); }}
-                                                    className={`text-left flex items-center gap-2 px-2 py-1.5 rounded text-[10px] font-medium transition-all ${
-                                                        isSelected
-                                                            ? `bg-${subject.colorToken}/20 text-${subject.colorToken.replace('500', '400')}`
-                                                            : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                                                    }`}
-                                                >
-                                                    <div 
-                                                        className={`w-1.5 h-1.5 rounded-full bg-${subject.colorToken} ${isSelected ? 'shadow-[0_0_4px_currentColor]' : ''}`} 
-                                                    />
-                                                    <span>{subject.name}</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </LiquidPanel>
-                            )}
+                            <SubjectPicker
+                                value={task.subjectId}
+                                onChange={(subjectId) => updateTask(task.id, { subjectId: subjectId || undefined })}
+                                className="w-full justify-between py-1.5"
+                                placeholder={t('planner.popover.noSubject', 'Sense Assignatura')}
+                            />
                         </div>
 
                         {/* Prioritat */}

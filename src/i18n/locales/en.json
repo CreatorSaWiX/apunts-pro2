@@ -65,8 +65,9 @@
       "reset": "Reset",
       "categories": {
         "global": "Global",
-        "community": "Community & Notes",
-        "editor": "Text Editor"
+        "community": "Community",
+        "editor": "Community",
+        "planner": "Planner / Calendar"
       },
       "actions": {
         "searchSubjects": "Search Subjects",
@@ -85,7 +86,14 @@
         "editorListBullet": "Bullet List",
         "editorListOrdered": "Numbered List",
         "editorTaskList": "Task List",
-        "editorTable": "Table"
+        "editorTable": "Table",
+        "plannerToday": "Go to Today",
+        "plannerViewWeek": "Weekly View",
+        "plannerViewMonth": "Monthly View",
+        "plannerViewYear": "Yearly View",
+        "plannerPrev": "Previous (Week/Month/Year)",
+        "plannerNext": "Next (Week/Month/Year)",
+        "plannerCreateTask": "Create Task"
       }
     },
     "ai": {
