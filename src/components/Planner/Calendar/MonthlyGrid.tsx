@@ -31,8 +31,7 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
             priority: 'LOW',
             dueDate: dueDate.toISOString(),
             startDate: startDate.toISOString(),
-            estimatedMinutes,
-            source: 'MANUAL'
+            estimatedMinutes
         });
         window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: id } }));
     };

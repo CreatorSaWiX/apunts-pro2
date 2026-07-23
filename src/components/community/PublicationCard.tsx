@@ -8,16 +8,19 @@ import Tilt from 'react-parallax-tilt';
 import { renderEmojis } from '../../lib/emojis';
 import DOMPurify from 'dompurify';
 import Spinner from '../ui/Spinner';
+import FileUploader from '../ui/FileUploader';
+import { ImagePlus } from 'lucide-react';
 
 interface PublicationCardProps {
     post: CommunityPost;
     isHeroMode?: boolean;
+    onThumbnailUpload?: (attachments: any[]) => void;
 }
 
 const CODE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx', 'json', 'html', 'css', 'cpp', 'c', 'h', 'hpp', 'py', 'java', 'go', 'rs', 'php', 'rb'];
 const MODEL_EXTENSIONS = ['gltf', 'glb', 'obj'];
 
-const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => {
+const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: PublicationCardProps) => {
     const { user } = useAuth();
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -139,6 +142,27 @@ const PublicationCard = ({ post, isHeroMode = false }: PublicationCardProps) => 
                                 __html: safeContentHero
                             }}
                         />
+                    </div>
+                )}
+
+                {/* Custom Thumbnail Upload Overlay */}
+                {onThumbnailUpload && (
+                    <div 
+                        className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center text-white cursor-pointer z-30 backdrop-blur-sm"
+                        title="Canviar Miniatura"
+                    >
+                        <div className="flex flex-col items-center justify-center transform scale-90 group-hover:scale-100 transition-transform duration-300 pointer-events-none">
+                            <ImagePlus size={32} className="mb-2 drop-shadow-md text-white" />
+                            <span className="text-xs font-bold tracking-widest uppercase text-center px-4 drop-shadow-md">Canviar Miniatura</span>
+                        </div>
+                        <div className="absolute inset-0 z-40">
+                            <FileUploader
+                                variant="avatar"
+                                acceptType="images"
+                                maxFiles={1}
+                                onUploadComplete={onThumbnailUpload}
+                            />
+                        </div>
                     </div>
                 )}
 

@@ -372,8 +372,7 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
             priority: 'LOW',
             dueDate: dueDate.toISOString(),
             startDate: newTaskDate.toISOString(),
-            estimatedMinutes,
-            source: 'MANUAL'
+            estimatedMinutes
         });
         window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: id } }));
     };

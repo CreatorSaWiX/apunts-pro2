@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { User, LogOut, Upload, Globe, Edit2, Mail, Send, Bell, Info, ExternalLink } from 'lucide-react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useUserSolutions } from '../hooks/useSolutions';
-import { getRank } from '../utils/ranks';
+// import { getRank } from '../utils/ranks';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
@@ -282,11 +282,10 @@ const ProfilePage = () => {
         );
     }
 
-    const rank = getRank(userContributions.length);
-    const displayUrl = (url: string) => {
-        try { return new URL(url).hostname; } catch { return url; }
-    };
-
+    // const rank = getRank(userContributions.length);
+    // const displayUrl = (url: string) => {
+    //     try { return new URL(url).hostname; } catch { return url; }
+    // };
 
     const getProxyUrl = (url: string | undefined | null) => {
         if (!url) return undefined;
@@ -446,14 +445,14 @@ const ProfilePage = () => {
                 </div>
             </div>
 
-            {/* ANTIC BENTO GRID DE CONTENIDORS (Comentat per a ús futur) */}
+            {/* ANTIC BENTO GRID DE CONTENIDORS (Comentat per a ús futur) 
             {false && (
                 <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-24 md:mt-28 relative z-30 pb-32">
 
                     {(extendedUser?.role === 'moderador' || extendedUser?.role === 'editor') && (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-4 md:mb-5">
 
-                            {/* Solucionaris Card */}
+                            {/* Solucionaris Card 
                             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
                                 <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group">
                                     <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 mb-6 group-hover:text-white group-hover:border-white/20 transition-all">
@@ -471,7 +470,7 @@ const ProfilePage = () => {
                                 </div>
                             </motion.div>
 
-                            {/* Rank Card (Wider) */}
+                            {/* Rank Card (Wider) 
                             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full md:col-span-1 relative z-50">
                                 <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group relative overflow-visible">
                                     <div className="flex justify-between items-start w-full relative z-40 mb-6">
@@ -482,7 +481,7 @@ const ProfilePage = () => {
                                             <div className="p-1.5 hover:bg-white/10 rounded-full transition-colors text-slate-500 group-hover/info:text-white">
                                                 <Info size={16} />
                                             </div>
-                                            {/* Rank Tooltip */}
+                                            {/* Rank Tooltip 
                                             <div className="absolute right-0 top-full mt-2 w-64 p-5 bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all duration-300 origin-top-right translate-y-2 group-hover/info:translate-y-0 z-50 pointer-events-none">
                                                 <h4 className="font-bold text-white mb-4 tracking-tight text-xs uppercase">{t('profile.stats.rankScale', 'Escala de Rangs')}</h4>
                                                 <ul className="space-y-2.5 text-[11px] font-semibold">
@@ -527,7 +526,7 @@ const ProfilePage = () => {
                                 </div>
                             </motion.div>
 
-                            {/* Portfolio Card */}
+                            {/* Portfolio Card 
                             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
                                 <div className={`premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group ${(extendedUser?.portfolio && !isOwnProfile) ? 'premium-bento-hover cursor-pointer' : 'opacity-80 hover:opacity-100 transition-opacity'}`}>
                                     {extendedUser?.portfolio && !isOwnProfile && (
@@ -563,7 +562,7 @@ const ProfilePage = () => {
                         </div>
                     )}
 
-                    {/* Mailing & Notifications Row */}
+                    {/* Mailing & Notifications Row 
                     {isOwnProfile && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
                             <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} onClick={() => setIsMailboxOpen(true)} className="text-left outline-none">
@@ -611,6 +610,7 @@ const ProfilePage = () => {
                     )}
                 </div>
             )}
+            */}
 
             {/* USER POSTS MASONRY GRID */}
             <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-8 md:mt-12 lg:mt-20 pb-32 relative z-30">

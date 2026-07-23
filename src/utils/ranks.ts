@@ -1,48 +1,48 @@
-export type Rank = {
-    name: string;
-    division?: 'I' | 'II' | 'III';
-    color: string;
-    minSolutions: number;
-    icon?: string;
-};
+// export type Rank = {
+//     name: string;
+//     division?: 'I' | 'II' | 'III';
+//     color: string;
+//     minSolutions: number;
+//     icon?: string;
+// };
 
-const ranks: Omit<Rank, 'division'>[] = [
-    { name: 'Bronze', color: 'text-orange-600', minSolutions: 0 },
-    { name: 'Silver', color: 'text-slate-400', minSolutions: 5 },
-    { name: 'Gold', color: 'text-yellow-400', minSolutions: 10 },
-    { name: 'Platinum', color: 'text-cyan-400', minSolutions: 15 },
-    { name: 'Diamond', color: 'text-blue-500', minSolutions: 20 },
-    { name: 'Champion', color: 'text-purple-500', minSolutions: 25 },
-    { name: 'Grand Champion', color: 'text-red-500', minSolutions: 35 },
-    { name: 'SSL', color: 'ssl-platinum-rank text-transparent bg-clip-text', minSolutions: 50 },
-];
+// const ranks: Omit<Rank, 'division'>[] = [
+//     { name: 'Bronze', color: 'text-orange-600', minSolutions: 0 },
+//     { name: 'Silver', color: 'text-slate-400', minSolutions: 5 },
+//     { name: 'Gold', color: 'text-yellow-400', minSolutions: 10 },
+//     { name: 'Platinum', color: 'text-cyan-400', minSolutions: 15 },
+//     { name: 'Diamond', color: 'text-blue-500', minSolutions: 20 },
+//     { name: 'Champion', color: 'text-purple-500', minSolutions: 25 },
+//     { name: 'Grand Champion', color: 'text-red-500', minSolutions: 35 },
+//     { name: 'SSL', color: 'ssl-platinum-rank text-transparent bg-clip-text', minSolutions: 50 },
+// ];
 
-export const getRank = (solutionsCount: number): Rank => {
-    let currentTierIndex = 0;
+// export const getRank = (solutionsCount: number): Rank => {
+//     let currentTierIndex = 0;
     
-    for (let i = ranks.length - 1; i >= 0; i--) {
-        if (solutionsCount >= ranks[i].minSolutions) {
-            currentTierIndex = i;
-            break;
-        }
-    }
+//     for (let i = ranks.length - 1; i >= 0; i--) {
+//         if (solutionsCount >= ranks[i].minSolutions) {
+//             currentTierIndex = i;
+//             break;
+//         }
+//     }
 
-    const rankTier = ranks[currentTierIndex];
+//     const rankTier = ranks[currentTierIndex];
 
-    if (rankTier.name === 'SSL') return { ...rankTier };
+//     if (rankTier.name === 'SSL') return { ...rankTier };
 
-    const nextTier = ranks[currentTierIndex + 1];
-    let division: 'I' | 'II' | 'III' = 'I';
+//     const nextTier = ranks[currentTierIndex + 1];
+//     let division: 'I' | 'II' | 'III' = 'I';
 
-    if (nextTier) {
-        const range = nextTier.minSolutions - rankTier.minSolutions;
-        const progress = solutionsCount - rankTier.minSolutions;
+//     if (nextTier) {
+//         const range = nextTier.minSolutions - rankTier.minSolutions;
+//         const progress = solutionsCount - rankTier.minSolutions;
 
-        if (progress >= (range * 2 / 3)) division = 'III';
-        else if (progress >= (range / 3)) division = 'II';
-    } else {
-        return { ...rankTier };
-    }
+//         if (progress >= (range * 2 / 3)) division = 'III';
+//         else if (progress >= (range / 3)) division = 'II';
+//     } else {
+//         return { ...rankTier };
+//     }
 
-    return { ...rankTier, division };
-};
+//     return { ...rankTier, division };
+// };

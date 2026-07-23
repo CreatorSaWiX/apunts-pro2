@@ -1,6 +1,5 @@
 export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'COMPLETE' | string;
 export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
-export type TaskSource = 'MANUAL' | 'AI';
 
 export interface Subject {
     id: string;
@@ -44,7 +43,6 @@ export interface Task {
     
     estimatedMinutes: number;   
     
-    source: TaskSource;
     createdAt: string;
     
     subjectId?: string;

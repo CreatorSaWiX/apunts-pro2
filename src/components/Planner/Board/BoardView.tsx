@@ -218,8 +218,7 @@ const BoardView: React.FC = () => {
                                     priority: taskData.priority || 'LOW',
                                     dueDate: taskData.dueDate || null,
                                     startDate: taskData.startDate || null,
-                                    estimatedMinutes: 60,
-                                    source: 'MANUAL'
+                                    estimatedMinutes: 60
                                 });
                             }}
                             onUpdateColumn={(updates) => updateColumn(col.id, updates)}

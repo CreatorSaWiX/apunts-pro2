@@ -21,7 +21,7 @@ export interface CommunityPost {
     username: string;
     userAvatar: string;
     content: string;
-    subject: string; // m1, m2, pro2, comunitari
+    subject: string; 
     createdAt: Timestamp;
     reactions: Record<string, Reaction>; // Key is userId
     isPinned: boolean;

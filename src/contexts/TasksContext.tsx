@@ -138,7 +138,6 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                             dueDate: data.dueDate,
                             startDate: data.startDate,
                             estimatedMinutes: data.estimatedMinutes,
-                            source: data.source,
                             createdAt: data.createdAt,
                             subjectId: data.subjectId
                         });
@@ -276,7 +275,6 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 dueDate: lastDeleted.dueDate,
                 startDate: lastDeleted.startDate,
                 estimatedMinutes: lastDeleted.estimatedMinutes,
-                source: lastDeleted.source,
                 createdAt: lastDeleted.createdAt
             });
         } catch (err) {

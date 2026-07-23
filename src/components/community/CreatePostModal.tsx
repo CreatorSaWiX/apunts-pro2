@@ -47,11 +47,8 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [showUploader, setShowUploader] = useState(false);
-    const thumbnailInputRef = useRef<HTMLInputElement>(null);
-    const [thumbnailUploadingIndex, setThumbnailUploadingIndex] = useState<number | null>(null);
 
     const activeSubject = getSubjectById(subject);
-
 
 
     useEffect(() => {
@@ -129,38 +126,6 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
         setShowGifPicker(false);
     };
 
-    const handleCustomThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        setThumbnailUploadingIndex(index);
-        try {
-            const res = await fetch('/api/r2-presign', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ filename: `custom_thumb_${Date.now()}_${file.name}`, contentType: file.type })
-            });
-            if (!res.ok) throw new Error("Error obtenint URL de pujada.");
-            
-            const { presignedUrl, publicUrl } = await res.json();
-            
-            const uploadRes = await fetch(presignedUrl, {
-                method: 'PUT',
-                headers: { 'Content-Type': file.type },
-                body: file
-            });
-            if (!uploadRes.ok) throw new Error("Error pujant a R2");
-
-            setAttachments(prev => prev.map((att, i) => i === index ? { ...att, thumbnailUrl: publicUrl } : att));
-        } catch (err) {
-            console.error("Thumbnail upload failed:", err);
-            alert(t('community.createPost.thumbnailError', 'Error pujant la miniatura. Intenta-ho de nou.'));
-        } finally {
-            setThumbnailUploadingIndex(null);
-            if (thumbnailInputRef.current) thumbnailInputRef.current.value = '';
-        }
-    };
-
     const livePreviewElement = useMemo(() => {
         if (!user) return null;
         const livePost: CommunityPost = {
@@ -175,8 +140,23 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             reactions: {},
             isPinned: false
         };
-        return <PublicationCard post={livePost} />;
-    }, [debouncedContent, user?.id, user?.username, user?.avatar, subject, attachments]);
+        return <PublicationCard 
+            post={livePost} 
+            onThumbnailUpload={(newAtts) => {
+                if (newAtts.length > 0) {
+                    setAttachments(prev => {
+                        if (prev.length > 0) {
+                            const newArray = [...prev];
+                            newArray[0] = { ...newArray[0], thumbnailUrl: newAtts[0].url };
+                            return newArray;
+                        } else {
+                            return [...prev, newAtts[0]];
+                        }
+                    });
+                }
+            }}
+        />;
+    }, [debouncedContent, user?.id, user?.username, user?.avatar, subject, attachments, setAttachments, t]);
 
     if (!user) return null;
 
@@ -187,9 +167,9 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'}`}>
                     <Modal.Header className="px-8! py-6! border-none! bg-transparent! flex justify-between items-center w-full">
                         <h2 className="text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
-                        <button 
-                            type="button" 
-                            onClick={() => setIsFullscreen(!isFullscreen)} 
+                        <button
+                            type="button"
+                            onClick={() => setIsFullscreen(!isFullscreen)}
                             className="p-2 text-slate-400 hover:text-white transition-colors ml-auto mr-12"
                             title={isFullscreen ? "Minimitzar" : "Pantalla Completa"}
                         >
@@ -238,25 +218,6 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                                         ) : (
                                                             <Paperclip size={18} className="text-slate-400" />
                                                         )}
-                                                        
-                                                        {/* Custom Thumbnail Overlay */}
-                                                        <button 
-                                                            type="button"
-                                                            onClick={() => {
-                                                                if (thumbnailInputRef.current) {
-                                                                    thumbnailInputRef.current.dataset.index = i.toString();
-                                                                    thumbnailInputRef.current.click();
-                                                                }
-                                                            }}
-                                                            className="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover/thumb:opacity-100 flex flex-col items-center justify-center transition-all cursor-pointer"
-                                                            title={t('community.createPost.changeThumbnail', 'Canviar Miniatura')}
-                                                        >
-                                                            {thumbnailUploadingIndex === i ? (
-                                                                <Spinner size="sm" variant="primary" />
-                                                            ) : (
-                                                                <ImagePlus size={16} className="text-white" />
-                                                            )}
-                                                        </button>
                                                     </div>
                                                     <div className="flex flex-col min-w-0">
                                                         <span className="truncate text-sm font-bold text-slate-200">{att.name}</span>
@@ -271,20 +232,8 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                                 </button>
                                             </div>
                                         ))}
-                                     </div>
+                                    </div>
                                 )}
-                                <input
-                                    type="file"
-                                    ref={thumbnailInputRef}
-                                    className="hidden"
-                                    accept="image/*"
-                                    onChange={(e) => {
-                                        const idxStr = e.target.dataset.index;
-                                        if (idxStr !== undefined) {
-                                            handleCustomThumbnailUpload(e, parseInt(idxStr, 10));
-                                        }
-                                    }}
-                                />
                             </div>
                         )}
                     </Modal.Body>
@@ -393,28 +342,28 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 {/* RIGHT PANEL: LIVE PREVIEW */}
                 {!isFullscreen && (
                     <div className="hidden md:flex flex-col w-2/5 border-l border-white/5 relative overflow-hidden bg-black noise-bg shrink-0">
-                    {/* Abstract Ambient Glows */}
-                    <div className="absolute top-[10%] right-[10%] w-75 h-75 bg-primary/20 rounded-full blur-[120px] pointer-events-none transform-gpu will-change-transform" />
-                    <div className="absolute bottom-[10%] left-[10%] w-62.5 h-62.5 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none transform-gpu will-change-transform" />
+                        {/* Abstract Ambient Glows */}
+                        <div className="absolute top-[10%] right-[10%] w-75 h-75 bg-primary/20 rounded-full blur-[120px] pointer-events-none transform-gpu will-change-transform" />
+                        <div className="absolute bottom-[10%] left-[10%] w-62.5 h-62.5 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none transform-gpu will-change-transform" />
 
-                    <div className="flex items-center justify-between px-8 py-6 relative z-10">
-                        <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                            {t('community.createPost.livePreview', 'Live Preview')}
-                        </div>
-                    </div>
-
-                    <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">
-                        <div className="w-full max-w-[320px] pointer-events-none">
-                            {livePreviewElement}
+                        <div className="flex items-center justify-between px-8 py-6 relative z-10">
+                            <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                {t('community.createPost.livePreview', 'Live Preview')}
+                            </div>
                         </div>
 
-                        <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-62.5">
-                            {t('community.createPost.livePreviewDesc', 'Així es veurà el teu apunt a la Comunitat')}
-                        </p>
+                        <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">
+                            <div className="w-full max-w-[320px]">
+                                {livePreviewElement}
+                            </div>
+
+                            <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-62.5">
+                                {t('community.createPost.livePreviewDesc', 'Així es veurà el teu apunt a la Comunitat')}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                )}    
+                )}
             </Modal.Layout>
             <SubjectSelectorModal
                 isOpen={showSubjectSelector}

@@ -171,8 +171,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                                                 dueDate: action.task.dueDate || null,
                                                 startDate: action.task.startDate || null,
                                                 estimatedMinutes: action.task.estimatedMinutes || 60,
-                                                subjectId: action.task.subjectId || undefined,
-                                                source: 'AI'
+                                                subjectId: action.task.subjectId || undefined
                                             });
                                         } else if (action.type === 'UPDATE' && action.taskId && action.updates) {
                                             await updateTask(action.taskId, action.updates);

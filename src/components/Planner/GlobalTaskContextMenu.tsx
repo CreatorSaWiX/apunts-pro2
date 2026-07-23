@@ -82,8 +82,7 @@ const GlobalTaskContextMenu: React.FC = () => {
                     priority: task.priority,
                     dueDate: task.dueDate,
                     startDate: task.startDate,
-                    estimatedMinutes: task.estimatedMinutes,
-                    source: task.source
+                    estimatedMinutes: task.estimatedMinutes
                 });
                 handleCloseMenu();
             }
@@ -110,8 +109,7 @@ const GlobalTaskContextMenu: React.FC = () => {
             priority: task.priority,
             dueDate: task.dueDate,
             startDate: task.startDate,
-            estimatedMinutes: task.estimatedMinutes,
-            source: task.source
+            estimatedMinutes: task.estimatedMinutes
         });
         setIsOpen(false);
     };
