@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
 import { Copy, Trash2, Flag } from 'lucide-react';
@@ -28,9 +29,9 @@ const GlobalTaskContextMenu: React.FC = () => {
             let finalX = x;
             let finalY = y;
             
-            // Approximate menu size
-            const menuWidth = 180;
-            const menuHeight = 160;
+            // Approximate menu size (overestimate to prevent clipping if body has overflow: hidden)
+            const menuWidth = 220;
+            const menuHeight = 260;
             
             if (x + menuWidth > window.innerWidth) {
                 finalX = window.innerWidth - menuWidth - 10;
@@ -97,7 +98,7 @@ const GlobalTaskContextMenu: React.FC = () => {
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('scroll', handleCloseMenu, true);
         };
-    }, [deleteTask, addTask, isOpen, task]);
+    }, [deleteTask, addTask, isOpen, task, t]);
 
     const handleDuplicate = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -130,7 +131,7 @@ const GlobalTaskContextMenu: React.FC = () => {
         setIsOpen(false);
     };
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && task && (
                 <motion.div 
@@ -177,7 +178,8 @@ const GlobalTaskContextMenu: React.FC = () => {
                     </button>
                 </motion.div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
 

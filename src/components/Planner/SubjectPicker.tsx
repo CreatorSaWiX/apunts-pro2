@@ -32,7 +32,22 @@ const SubjectPicker: React.FC<SubjectPickerProps> = ({ value, onChange, placehol
         if (!isOpen) {
             if (triggerRef.current) {
                 const rect = triggerRef.current.getBoundingClientRect();
-                setCoords({ top: rect.bottom + 8, left: rect.left });
+                let top = rect.bottom + 8;
+                let left = rect.left;
+                
+                // Approximate menu height and width
+                const menuHeight = 300;
+                const menuWidth = 260;
+                
+                if (top + menuHeight > window.innerHeight) {
+                    top = rect.top - menuHeight - 8;
+                }
+                
+                if (left + menuWidth > window.innerWidth) {
+                    left = window.innerWidth - menuWidth - 10;
+                }
+                
+                setCoords({ top, left });
             }
             setIsOpen(true);
             setSearchQuery('');
@@ -45,7 +60,21 @@ const SubjectPicker: React.FC<SubjectPickerProps> = ({ value, onChange, placehol
         const handleScrollOrResize = () => {
             if (isOpen && triggerRef.current) {
                 const rect = triggerRef.current.getBoundingClientRect();
-                setCoords({ top: rect.bottom + 8, left: rect.left });
+                let top = rect.bottom + 8;
+                let left = rect.left;
+                
+                const menuHeight = 300;
+                const menuWidth = 260;
+                
+                if (top + menuHeight > window.innerHeight) {
+                    top = rect.top - menuHeight - 8;
+                }
+                
+                if (left + menuWidth > window.innerWidth) {
+                    left = window.innerWidth - menuWidth - 10;
+                }
+                
+                setCoords({ top, left });
             }
         };
         if (isOpen) {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
 import { Flag, Bookmark } from 'lucide-react';
@@ -14,7 +15,7 @@ export interface TaskPopoverEventDetail {
 
 const TaskPopover: React.FC = () => {
     const { t } = useTranslation();
-    const { tasks, updateTask, subjects } = useTasks();
+    const { tasks, updateTask } = useTasks();
     const [isOpen, setIsOpen] = useState(false);
     const [taskId, setTaskId] = useState<string | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -27,9 +28,9 @@ const TaskPopover: React.FC = () => {
             const customEvent = e as CustomEvent<TaskPopoverEventDetail>;
             const { x, y, taskId: targetId } = customEvent.detail;
             
-            // Adjust position so it doesn't go off screen
-            const width = 240;
-            const height = 200;
+            // Adjust position so it doesn't go off screen (overestimate size)
+            const width = 300;
+            const height = 350;
             let finalX = x;
             let finalY = y;
             
@@ -85,9 +86,9 @@ const TaskPopover: React.FC = () => {
         };
     }, [isOpen]);
 
-    if (!isOpen || !task) return null;
+    if (!task) return null;
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <motion.div 
@@ -158,7 +159,8 @@ const TaskPopover: React.FC = () => {
                     </div>
                 </motion.div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
 
