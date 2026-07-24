@@ -44,7 +44,7 @@ const LoginPage = () => {
             setError(t('auth.login.enterEmail', 'Introdueix el teu correu electrònic.'));
             return;
         }
-        setError('');
+        setError(''); //<- això és necessari?
         setIsLoading(true);
 
         try {

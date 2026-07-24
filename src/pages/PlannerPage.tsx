@@ -10,7 +10,7 @@ const PlannerPage: React.FC = () => {
 
     if (isLoading) {
         return (
-            <div className="h-[100dvh] flex items-center justify-center bg-transparent">
+            <div className="h-dvh flex items-center justify-center bg-transparent">
                 <Spinner size="2xl" variant="fuchsia" />
             </div>
         );
@@ -22,7 +22,7 @@ const PlannerPage: React.FC = () => {
 
     return (
         <TasksProvider>
-            <div className="h-[100dvh] w-full overflow-hidden flex flex-col bg-transparent">
+            <div className="h-dvh w-full overflow-hidden flex flex-col bg-transparent">
                 <PlannerLayout />
             </div>
         </TasksProvider>

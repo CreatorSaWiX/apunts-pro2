@@ -53,7 +53,7 @@ const NewSolutionPage = () => {
                 authorId: user.id,
                 authorName: user.username,
                 createdAt: serverTimestamp(),
-                status: 'pending'
+                status: 'pending'      //<- és necessari?
             });
 
             navigate(`/tema/${topicId}/solucionaris`);

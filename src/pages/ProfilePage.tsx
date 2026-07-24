@@ -1,16 +1,14 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { User, LogOut, Upload, Globe, Edit2, Mail, Send, Bell, Info, ExternalLink } from 'lucide-react';
+import { LogOut, Upload, Mail, Send, Bell, ExternalLink } from 'lucide-react';
 import { useParams, Navigate } from 'react-router-dom';
-import { useUserSolutions } from '../hooks/useSolutions';
-// import { getRank } from '../utils/ranks';
+
 import { m as motion, AnimatePresence } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
-import SSLParticles from '../components/SSLParticles';
 import Spinner from '../components/ui/Spinner';
-import Modal from '../components/ui/Modal';
+
 import FileUploader, { type Attachment } from '../components/ui/FileUploader';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
@@ -125,17 +123,25 @@ const ProfilePage = () => {
     const userIdToFetch = uid || authUser?.id;
     const isOwnProfile = Boolean(!uid || (authUser && authUser.id === uid));
 
-    const { solutions: userContributions } = useUserSolutions(userIdToFetch || '');
-
     const [isMailboxOpen, setIsMailboxOpen] = useState(false);
     const [isInboxOpen, setIsInboxOpen] = useState(false);
     const [isComposeOpen, setIsComposeOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
 
-    const [extendedUser, setExtendedUser] = useState<any>(null);
+    interface ExtendedUser {
+        id: string;
+        username: string;
+        avatar?: string;
+        banner?: string;
+        bio?: string;
+        portfolio?: string;
+        role?: string;
+        email?: string;
+    }
+
+    const [extendedUser, setExtendedUser] = useState<ExtendedUser | null>(null);
     const [isFetchingUser, setIsFetchingUser] = useState(true);
-    const [isHoveringSSL, setIsHoveringSSL] = useState(false);
 
     const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
     const [isFetchingPosts, setIsFetchingPosts] = useState(true);
@@ -155,19 +161,20 @@ const ProfilePage = () => {
                 const bannerHeight = bannerRef.current.offsetHeight || 380;
                 const scale = 1 + (Math.abs(y) / bannerHeight);
                 // translateY(y) moves it UP relative to the document, canceling the OS down-shift
-                bannerRef.current.style.transform = `translateY(${y}px) scale(${scale})`;
+                bannerRef.current.style.transform = `translate3d(0, ${y}px, 0) scale(${scale})`;
             } else if (y > 0) {
                 // Parallax Effect on Scroll Down
-                bannerRef.current.style.transform = `translateY(${y * 0.4}px) scale(1)`;
+                bannerRef.current.style.transform = `translate3d(0, ${y * 0.4}px, 0) scale(1)`;
                 const opacity = Math.max(0, 1 - (y / 500));
                 bannerRef.current.style.opacity = opacity.toString();
             } else {
-                bannerRef.current.style.transform = `translateY(0px) scale(1)`;
+                bannerRef.current.style.transform = `translate3d(0, 0px, 0) scale(1)`;
                 bannerRef.current.style.opacity = '1';
             }
         };
 
         const handleScroll = () => {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
             animationFrameId = requestAnimationFrame(render);
         };
 
@@ -176,20 +183,26 @@ const ProfilePage = () => {
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            cancelAnimationFrame(animationFrameId);
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
         };
     }, []);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchUserData = async () => {
             if (userIdToFetch) {
                 setIsFetchingUser(true);
                 const { db } = await import('../lib/firebase');
                 const { doc, getDoc } = await import('firebase/firestore');
+                if (!isMounted) return;
+                
                 const docRef = doc(db, 'users', userIdToFetch);
                 const docSnap = await getDoc(docRef);
+                
+                if (!isMounted) return;
+
                 if (docSnap.exists()) {
-                    setExtendedUser({ ...docSnap.data(), id: userIdToFetch });
+                    setExtendedUser({ ...docSnap.data(), id: userIdToFetch } as ExtendedUser);
                 } else if (isOwnProfile && authUser) {
                     setExtendedUser(authUser);
                 } else {
@@ -203,17 +216,25 @@ const ProfilePage = () => {
             }
         };
         fetchUserData();
-    }, [userIdToFetch, authUser, isOwnProfile]);
+        return () => { isMounted = false; };
+    }, [userIdToFetch, authUser, isOwnProfile, t]);
 
     useEffect(() => {
         if (!userIdToFetch) return;
+        let isMounted = true;
+        
         const fetchPosts = async () => {
             setIsFetchingPosts(true);
             try {
                 const { db } = await import('../lib/firebase');
                 const { collection, query, where, getDocs } = await import('firebase/firestore');
+                if (!isMounted) return;
+
                 const q = query(collection(db, 'community_posts'), where('userId', '==', userIdToFetch));
                 const snapshot = await getDocs(q);
+                
+                if (!isMounted) return;
+
                 const posts: CommunityPost[] = [];
                 snapshot.forEach(doc => {
                     posts.push({ id: doc.id, ...doc.data() } as CommunityPost);
@@ -223,20 +244,25 @@ const ProfilePage = () => {
             } catch (err) {
                 console.error("Error fetching user posts:", err);
             } finally {
-                setIsFetchingPosts(false);
+                if (isMounted) setIsFetchingPosts(false);
             }
         };
         fetchPosts();
+        return () => { isMounted = false; };
     }, [userIdToFetch]);
 
     useEffect(() => {
         if (!isOwnProfile || !authUser) return;
-        let unsubscribeMsg = () => { };
-        let unsubscribeNotif = () => { };
+        let isMounted = true;
+        let unsubscribeMsg: (() => void) | undefined;
+        let unsubscribeNotif: (() => void) | undefined;
 
         const setup = async () => {
             const { db } = await import('../lib/firebase');
             const { collection, query, where, onSnapshot } = await import('firebase/firestore');
+            
+            if (!isMounted) return;
+
             const qMsg = query(collection(db, 'messages'), where('receiverId', '==', authUser.id), where('read', '==', false));
             unsubscribeMsg = onSnapshot(qMsg, (snapshot) => setUnreadCount(snapshot.size));
 
@@ -245,10 +271,14 @@ const ProfilePage = () => {
         };
 
         setup();
-        return () => { unsubscribeMsg(); unsubscribeNotif(); };
+        return () => { 
+            isMounted = false;
+            if (unsubscribeMsg) unsubscribeMsg(); 
+            if (unsubscribeNotif) unsubscribeNotif(); 
+        };
     }, [isOwnProfile, authUser]);
 
-    const handleUpdateProfile = async (data: any) => {
+    const handleUpdateProfile = async (data: Partial<ExtendedUser>) => {
         if (!authUser?.id) return;
         const { db, auth } = await import('../lib/firebase');
         const { doc, setDoc } = await import('firebase/firestore');
@@ -259,7 +289,7 @@ const ProfilePage = () => {
             if (auth.currentUser && data.username) {
                 await updateProfile(auth.currentUser, { displayName: data.username, photoURL: data.avatar || auth.currentUser.photoURL });
             }
-            setExtendedUser((prev: any) => ({ ...prev, ...data }));
+            setExtendedUser((prev: ExtendedUser | null) => prev ? { ...prev, ...data } : null);
             if (data.username !== authUser.username && data.username) window.location.reload();
         } catch (error) {
             console.error("Error updating profile:", error);
@@ -281,11 +311,6 @@ const ProfilePage = () => {
             </div>
         );
     }
-
-    // const rank = getRank(userContributions.length);
-    // const displayUrl = (url: string) => {
-    //     try { return new URL(url).hostname; } catch { return url; }
-    // };
 
     const getProxyUrl = (url: string | undefined | null) => {
         if (!url) return undefined;
@@ -444,173 +469,6 @@ const ProfilePage = () => {
                     </motion.div>
                 </div>
             </div>
-
-            {/* ANTIC BENTO GRID DE CONTENIDORS (Comentat per a ús futur) 
-            {false && (
-                <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-24 md:mt-28 relative z-30 pb-32">
-
-                    {(extendedUser?.role === 'moderador' || extendedUser?.role === 'editor') && (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-4 md:mb-5">
-
-                            {/* Solucionaris Card 
-                            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
-                                <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group">
-                                    <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 mb-6 group-hover:text-white group-hover:border-white/20 transition-all">
-                                        <Upload size={20} strokeWidth={2} />
-                                    </div>
-                                    <div>
-                                        <span className="block text-4xl md:text-5xl font-bold tracking-tight text-white mb-2 tabular-nums">
-                                            {userContributions.length}
-                                        </span>
-                                        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                            <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
-                                            {t('profile.stats.solutions', 'SOLUCIONARIS')}
-                                        </span>
-                                    </div>
-                                </div>
-                            </motion.div>
-
-                            {/* Rank Card (Wider) 
-                            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full md:col-span-1 relative z-50">
-                                <div className="premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group relative overflow-visible">
-                                    <div className="flex justify-between items-start w-full relative z-40 mb-6">
-                                        <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all">
-                                            <User size={20} strokeWidth={2} />
-                                        </div>
-                                        <div className="group/info cursor-help">
-                                            <div className="p-1.5 hover:bg-white/10 rounded-full transition-colors text-slate-500 group-hover/info:text-white">
-                                                <Info size={16} />
-                                            </div>
-                                            {/* Rank Tooltip 
-                                            <div className="absolute right-0 top-full mt-2 w-64 p-5 bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all duration-300 origin-top-right translate-y-2 group-hover/info:translate-y-0 z-50 pointer-events-none">
-                                                <h4 className="font-bold text-white mb-4 tracking-tight text-xs uppercase">{t('profile.stats.rankScale', 'Escala de Rangs')}</h4>
-                                                <ul className="space-y-2.5 text-[11px] font-semibold">
-                                                    <li className="flex justify-between items-center"><span className="text-orange-500">Bronze</span> <span className="text-slate-500 tabular-nums">0+</span></li>
-                                                    <li className="flex justify-between items-center"><span className="text-slate-300">Silver</span> <span className="text-slate-500 tabular-nums">5+</span></li>
-                                                    <li className="flex justify-between items-center"><span className="text-yellow-400">Gold</span> <span className="text-slate-500 tabular-nums">10+</span></li>
-                                                    <li className="flex justify-between items-center"><span className="text-cyan-400">Platinum</span> <span className="text-slate-500 tabular-nums">15+</span></li>
-                                                    <li className="flex justify-between items-center"><span className="text-blue-500">Diamond</span> <span className="text-slate-500 tabular-nums">20+</span></li>
-                                                    <li className="flex justify-between items-center"><span className="text-purple-500">Champion</span> <span className="text-slate-500 tabular-nums">25+</span></li>
-                                                    <li className="flex justify-between items-center"><span className="text-red-500">Grand Champion</span> <span className="text-slate-500 tabular-nums">35+</span></li>
-                                                    <li className="flex justify-between items-center"><span className="ssl-platinum-rank text-transparent bg-clip-text font-black">SSL</span> <span className="text-slate-400 tabular-nums">50+</span></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="relative z-20">
-                                        <div
-                                            className={`flex items-baseline gap-2 mb-2 ${rank.color}`}
-                                            onMouseEnter={rank.name === 'SSL' ? () => setIsHoveringSSL(true) : undefined}
-                                            onMouseLeave={rank.name === 'SSL' ? () => setIsHoveringSSL(false) : undefined}
-                                        >
-                                            {rank.name === 'SSL' && <SSLParticles isHovered={isHoveringSSL} />}
-                                            <span className={`text-3xl md:text-4xl font-bold tracking-tight truncate ${rank.color.includes('bg-clip-text') ? rank.color : 'text-white'}`}>
-                                                {rank.name}
-                                            </span>
-                                            {rank.division && (
-                                                <div className="flex gap-1 ml-1">
-                                                    {[1, 2, 3].map((bar) => {
-                                                        const isActive = bar <= (rank.division === 'I' ? 1 : rank.division === 'II' ? 2 : 3);
-                                                        return (
-                                                            <div key={bar} className={`h-4 w-1.5 rounded-[1px] skew-x-[-15deg] transition-all duration-300 ${isActive ? `bg-current shadow-[0_0_8px_currentColor] opacity-100` : 'bg-white/10'}`} />
-                                                        );
-                                                    })}
-                                                </div>
-                                            )}
-                                        </div>
-                                        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                            <div className="h-px w-4 bg-slate-700 group-hover:w-8 group-hover:bg-white/50 transition-all" />
-                                            {t('profile.stats.currentLevel', 'NIVELL ACTUAL')}
-                                        </span>
-                                    </div>
-                                </div>
-                            </motion.div>
-
-                            {/* Portfolio Card 
-                            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="h-full">
-                                <div className={`premium-bento-card rounded-3xl p-6 md:p-8 h-full flex flex-col justify-between group ${(extendedUser?.portfolio && !isOwnProfile) ? 'premium-bento-hover cursor-pointer' : 'opacity-80 hover:opacity-100 transition-opacity'}`}>
-                                    {extendedUser?.portfolio && !isOwnProfile && (
-                                        <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="absolute inset-0 z-10" />
-                                    )}
-                                    <div className="flex justify-between items-start w-full relative z-40 mb-6 pointer-events-none">
-                                        <div className="p-3 w-fit rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all">
-                                            <Globe size={20} strokeWidth={2} />
-                                        </div>
-                                        {extendedUser?.portfolio && (
-                                            <a href={extendedUser.portfolio} target="_blank" rel="noreferrer" className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors pointer-events-auto" title="Visitar Portfoli">
-                                                <Globe size={16} />
-                                            </a>
-                                        )}
-                                    </div>
-                                    <div className="relative z-20 pointer-events-auto">
-                                        <InlineEditableText
-                                            value={extendedUser?.portfolio || ''}
-                                            onSave={async (val) => await handleUpdateProfile({ portfolio: val })}
-                                            placeholder={t('profile.stats.noLink', 'Sense vincular')}
-                                            isEditable={isOwnProfile}
-                                            className="block text-xl md:text-2xl font-bold tracking-tight text-white mb-2 truncate"
-                                            inputClassName="text-base font-normal mt-2 mb-2"
-                                        />
-                                        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2 pointer-events-none mt-2">
-                                            <div className={`h-px bg-slate-700 transition-all ${extendedUser?.portfolio ? 'w-4 group-hover:w-8 group-hover:bg-white/50' : 'w-4'}`} />
-                                            {t('profile.stats.portfolio', 'PORTFOLI')}
-                                        </span>
-                                    </div>
-                                </div>
-                            </motion.div>
-
-                        </div>
-                    )}
-
-                    {/* Mailing & Notifications Row 
-                    {isOwnProfile && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-                            <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} onClick={() => setIsMailboxOpen(true)} className="text-left outline-none">
-                                <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
-                                    <div className="relative">
-                                        <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
-                                            <Mail size={20} strokeWidth={2} />
-                                        </div>
-                                        {unreadCount > 0 && (
-                                            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[#0d0f17]">
-                                                {unreadCount}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">{t('profile.inbox.privateMailbox', 'Bústia Privada')}</h3>
-                                        <p className="text-sm text-slate-500 truncate">
-                                            {unreadCount > 0 ? t('profile.inbox.pendingMessages', 'Tens {{count}} missatges pendents', { count: unreadCount }) : t('profile.inbox.allRead', 'Tot llegit.')}
-                                        </p>
-                                    </div>
-                                </div>
-                            </motion.button>
-
-                            <motion.button initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} onClick={() => setIsInboxOpen(true)} className="text-left outline-none">
-                                <div className="premium-bento-card premium-bento-hover rounded-3xl p-6 md:p-8 flex items-center gap-5 group w-full">
-                                    <div className="relative">
-                                        <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/20 transition-all shadow-lg">
-                                            <Bell size={20} strokeWidth={2} />
-                                        </div>
-                                        {unreadNotificationsCount > 0 && (
-                                            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg border-2 border-[#0d0f17]">
-                                                {unreadNotificationsCount}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="text-base md:text-lg font-bold text-white mb-0.5 tracking-tight group-hover:text-white transition-colors">{t('profile.notifications.title', 'Notificacions')}</h3>
-                                        <p className="text-sm text-slate-500 truncate">
-                                            {unreadNotificationsCount > 0 ? t('profile.notifications.unread', '{{count}} novetats sense llegir', { count: unreadNotificationsCount }) : t('profile.notifications.upToDate', 'Estàs al dia.')}
-                                        </p>
-                                    </div>
-                                </div>
-                            </motion.button>
-                        </div>
-                    )}
-                </div>
-            )}
-            */}
 
             {/* USER POSTS MASONRY GRID */}
             <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-8 md:mt-12 lg:mt-20 pb-32 relative z-30">

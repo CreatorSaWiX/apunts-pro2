@@ -130,8 +130,8 @@ const CalendarView: React.FC = () => {
                         dueDate: task.dueDate ? new Date(newDate.getTime() + (task.estimatedMinutes || 60) * 60000).toISOString() : null,
                         startDate: newDate.toISOString(),
                         estimatedMinutes: task.estimatedMinutes,
-                        source: task.source
-                    }).then((newTaskId) => {
+                        source: (task as any).source
+                    } as any).then((newTaskId) => {
                         setTimeout(() => {
                             window.dispatchEvent(new CustomEvent('task-selected', { detail: newTaskId }));
                         }, 50);

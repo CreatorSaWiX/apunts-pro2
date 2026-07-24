@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, FileText as FileTextIcon, BookOpen, X, Sparkles, Filter, ArrowUpDown, Flame, Eye, Clock, Image, Code2, Heart } from 'lucide-react';
+import { Search, Plus, FileText as FileTextIcon, BookOpen, X, Filter, ArrowUpDown, Flame, Eye, Clock, Image, Code2, Heart } from 'lucide-react';
 import CommunityHero3D from '../components/community/CommunityHero3D';
 import { lazy, Suspense } from 'react';
 
