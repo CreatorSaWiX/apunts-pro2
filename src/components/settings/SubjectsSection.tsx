@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { m as motion, AnimatePresence, Reorder } from 'framer-motion';
 import { Search, Command, ChevronRight, X } from 'lucide-react';
 import { useSettings } from '../../contexts/SettingsContext';
