@@ -1,4 +1,5 @@
 import { useEditor, EditorContent } from '@tiptap/react';
+import { Node, mergeAttributes } from '@tiptap/core';
 import { useShortcut } from '../../hooks/useShortcut';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useTranslation } from 'react-i18next';
@@ -38,9 +39,42 @@ import {
     Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Minus,
     Underline as UnderlineIcon, Subscript as SubscriptIcon, Superscript as SuperscriptIcon,
     AlignLeft, AlignCenter, AlignRight, AlignJustify, Link as LinkIcon, CheckSquare, Table as TableIcon,
-    ChevronDown, Type, GripHorizontal, Columns, Rows, Trash2
+    ChevronDown, Type, GripHorizontal, Columns, Rows, Trash2, Smile
 } from 'lucide-react';
 import { useEffect, useState, useRef, useCallback } from 'react';
+
+const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
+const CUSTOM_EMOTES = Object.values(emojiModules) as string[];
+
+const CustomEmoji = Node.create({
+    name: 'customEmoji',
+    group: 'inline',
+    inline: true,
+    atom: true,
+    selectable: true,
+    draggable: false,
+
+    addAttributes() {
+        return {
+            src: {
+                default: null,
+            },
+        };
+    },
+
+    parseHTML() {
+        return [
+            {
+                tag: 'img[data-emoji]',
+            },
+        ];
+    },
+
+    renderHTML({ HTMLAttributes }) {
+        return ['img', mergeAttributes(HTMLAttributes, { 'data-emoji': 'true', class: 'w-7 h-7 inline-block align-middle !m-0 !mx-1 select-none' })];
+    },
+});
+
 interface RichTextEditorProps {
     content: string;
     onChange: (html: string) => void;
@@ -112,6 +146,10 @@ const MenuBar = ({ editor }: { editor: any }) => {
     const { t } = useTranslation();
     const { shortcuts } = useSettings();
     const [, forceUpdate] = useState({});
+
+    const handleEmojiSelect = (emojiUrl: string) => {
+        editor.chain().focus().insertContent({ type: 'customEmoji', attrs: { src: emojiUrl } }).run();
+    };
 
     useEffect(() => {
         if (!editor) return;
@@ -193,6 +231,20 @@ const MenuBar = ({ editor }: { editor: any }) => {
             <ToolbarButton onClick={setLink} isActive={editor.isActive('link')} icon={LinkIcon} title={t('editor.link', 'Enllaç') + formatShortcut('editorLink')} />
             <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} isActive={editor.isActive('blockquote')} icon={Quote} title={t('editor.blockquote', 'Cita')} />
             <ToolbarButton onClick={() => editor.chain().focus().toggleCodeBlock().run()} isActive={editor.isActive('codeBlock')} icon={Code} title={t('editor.codeBlock', 'Bloc de Codi')} />
+            <EditorDropdown icon={Smile} title={t('editor.addEmote', 'Afegir Emote')} isActive={false}>
+                <div className="p-3 grid grid-cols-6 gap-1 w-64 max-h-64 overflow-y-auto custom-scrollbar">
+                    {CUSTOM_EMOTES.map(emoji => (
+                        <button
+                            key={emoji}
+                            type="button"
+                            onClick={() => handleEmojiSelect(emoji)}
+                            className="p-1.5 rounded-xl hover:bg-white/10 transition-transform hover:scale-110 flex items-center justify-center"
+                        >
+                            <img src={emoji} alt="emoji" loading="lazy" className="w-6 h-6 object-contain" />
+                        </button>
+                    ))}
+                </div>
+            </EditorDropdown>
 
 
             <ToolbarButton 
@@ -244,6 +296,7 @@ const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure.
                 codeBlock: false,
                 heading: { levels: [1, 2, 3] }
             }),
+            CustomEmoji,
             Underline,
             Subscript,
             Superscript,

@@ -134,7 +134,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                         />
                     </>
                 ) : (
-                    <div className={`w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-white/10 to-white/5 p-6 text-center border border-white/5 relative overflow-hidden transition-transform duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''}`}>
+                    <div className={`w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-white/10 to-white/5 p-6 text-center border border-white/5 rounded-[inherit] relative overflow-hidden transition-transform duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''}`}>
                         <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-0" />
                         <span className="text-4xl font-black text-white/10 select-none absolute -bottom-4 -right-4">{post.subject}</span>
                         <p className="text-white font-bold text-lg leading-snug line-clamp-3 relative z-10"
@@ -148,7 +148,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                 {/* Custom Thumbnail Upload Overlay */}
                 {onThumbnailUpload && (
                     <div 
-                        className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center text-white cursor-pointer z-30 backdrop-blur-sm"
+                        className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center text-white cursor-pointer z-30 backdrop-blur-sm rounded-[inherit]"
                         title="Canviar Miniatura"
                     >
                         <div className="flex flex-col items-center justify-center transform scale-90 group-hover:scale-100 transition-transform duration-300 pointer-events-none">

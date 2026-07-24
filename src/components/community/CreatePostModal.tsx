@@ -3,9 +3,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { SUBJECTS, getSubjectById, type SubjectType } from '../../config/subjects';
-import { Image as ImageIcon, Smile, AlertCircle, ChevronDown, Paperclip, X, FileText, Maximize2, Minimize2, ImagePlus } from 'lucide-react';
+import { AlertCircle, ChevronDown, Paperclip, X, FileText, Maximize2, Minimize2, ImagePlus } from 'lucide-react';
 
-import GifPicker from '../ui/GifPicker';
 import SubjectSelectorModal from './SubjectSelectorModal';
 import FileUploader, { type Attachment } from '../ui/FileUploader';
 import Spinner from '../ui/Spinner';
@@ -18,8 +17,6 @@ import { useTranslation } from 'react-i18next';
 
 const RichTextEditor = lazy(() => import('../ui/RichTextEditor'));
 
-const emojiModules = import.meta.glob('../../assets/emojis/*.{png,PNG,webp,jpg}', { eager: true, query: '?url', import: 'default' });
-const CUSTOM_EMOTES = Object.values(emojiModules) as string[];
 
 interface CreatePostModalProps {
     isOpen: boolean;
@@ -36,8 +33,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     const [debouncedContent, setDebouncedContent] = useState('');
     const { customSubjectColors } = useSettings();
 
-    const [showGifPicker, setShowGifPicker] = useState(false);
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
     const [showSubjectSelector, setShowSubjectSelector] = useState(false);
 
     const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -107,24 +103,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
         }
     };
 
-    const handleEmojiSelect = (emojiUrl: string) => {
-        if (editorInstance) {
-            editorInstance.chain().focus().setImage({ src: emojiUrl }).run();
-        } else {
-            const emojiName = emojiUrl.split('/').pop()?.split('.')[0] || 'emoji';
-            setContent(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `:${emojiName}: `);
-        }
-        setShowEmojiPicker(false);
-    };
 
-    const handleGifSelect = async (gifUrl: string) => {
-        if (editorInstance) {
-            editorInstance.chain().focus().setImage({ src: gifUrl }).run();
-        } else {
-            setContent(prev => prev + (prev ? '\n\n' : '') + `![gif](${gifUrl})`);
-        }
-        setShowGifPicker(false);
-    };
 
     const livePreviewElement = useMemo(() => {
         if (!user) return null;
@@ -241,52 +220,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                     {/* Footer */}
                     <div className="px-8 py-5 border-t border-white/5 bg-transparent flex items-center justify-between shrink-0">
                         <div className="flex items-center gap-2">
-                            <div className="relative">
-                                <button
-                                    type="button"
-                                    onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); }}
-                                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
-                                    title={t('community.createPost.addGif', 'Afegir GIF')}
-                                >
-                                    <ImageIcon size={20} />
-                                </button>
-                                {showGifPicker && (
-                                    <div className="absolute bottom-full left-0 mb-4 z-50">
-                                        <div className="fixed inset-0" onClick={() => setShowGifPicker(false)} />
-                                        <div className="relative shadow-2xl border border-white/10 rounded-xl overflow-hidden">
-                                            <GifPicker onSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
 
-                            <div className="relative">
-                                <button
-                                    type="button"
-                                    onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); }}
-                                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
-                                    title={t('community.createPost.addEmote', 'Afegir Emote personalitzat')}
-                                >
-                                    <Smile size={20} />
-                                </button>
-                                {showEmojiPicker && (
-                                    <div className="absolute bottom-full left-0 mb-4 z-50">
-                                        <div className="fixed inset-0" onClick={() => setShowEmojiPicker(false)} />
-                                        <div className="relative p-4 bg-[#111] border border-white/10 rounded-2xl shadow-2xl grid grid-cols-6 gap-2 w-72 max-h-64 overflow-y-auto custom-scrollbar">
-                                            {CUSTOM_EMOTES.map(emoji => (
-                                                <button
-                                                    key={emoji}
-                                                    type="button"
-                                                    onClick={() => handleEmojiSelect(emoji)}
-                                                    className="p-1 rounded-xl hover:bg-white/10 transition-transform hover:scale-110"
-                                                >
-                                                    <img src={emoji} alt="emoji" loading="lazy" className="w-8 h-8 object-contain" />
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
 
                             {isFullscreen && (
                                 <div className="relative">
