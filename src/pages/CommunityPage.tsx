@@ -345,7 +345,7 @@ const CommunityPage = () => {
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
 
             {/* Dynamic Island Navigator (Fixed Top Right) */}
-            <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-110">
+            <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-40">
                 <NavigationPill>
                     <button type="button"
                         onClick={handleCloseCanvas}

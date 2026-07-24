@@ -36,7 +36,7 @@ import c from 'highlight.js/lib/languages/c';
 const lowlight = createLowlight({ cpp, java, python, javascript, typescript, sql, xml, html: xml, css, bash, json, c });
 
 import {
-    Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Minus,
+    Bold, Italic, Strikethrough, Code, SquareTerminal, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Minus,
     Underline as UnderlineIcon, Subscript as SubscriptIcon, Superscript as SuperscriptIcon,
     AlignLeft, AlignCenter, AlignRight, AlignJustify, Link as LinkIcon, CheckSquare, Table as TableIcon,
     ChevronDown, Type, GripHorizontal, Columns, Rows, Trash2, Smile
@@ -230,7 +230,8 @@ const MenuBar = ({ editor }: { editor: any }) => {
             {/* INSERT */}
             <ToolbarButton onClick={setLink} isActive={editor.isActive('link')} icon={LinkIcon} title={t('editor.link', 'Enllaç') + formatShortcut('editorLink')} />
             <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} isActive={editor.isActive('blockquote')} icon={Quote} title={t('editor.blockquote', 'Cita')} />
-            <ToolbarButton onClick={() => editor.chain().focus().toggleCodeBlock().run()} isActive={editor.isActive('codeBlock')} icon={Code} title={t('editor.codeBlock', 'Bloc de Codi')} />
+            <ToolbarButton onClick={() => editor.chain().focus().toggleCode().run()} isActive={editor.isActive('code')} icon={Code} title={t('editor.inlineCode', 'Codi en línia') + formatShortcut('editorInlineCode')} />
+            <ToolbarButton onClick={() => editor.chain().focus().toggleCodeBlock().run()} isActive={editor.isActive('codeBlock')} icon={SquareTerminal} title={t('editor.codeBlock', 'Bloc de Codi')} />
             <EditorDropdown icon={Smile} title={t('editor.addEmote', 'Afegir Emote')} isActive={false}>
                 <div className="p-3 grid grid-cols-6 gap-1 w-64 max-h-64 overflow-y-auto custom-scrollbar">
                     {CUSTOM_EMOTES.map(emoji => (
@@ -354,6 +355,7 @@ const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure.
     const handleItalic = useCallback(() => editor?.chain().focus().toggleItalic().run(), [editor]);
     const handleUnderline = useCallback(() => editor?.chain().focus().toggleUnderline().run(), [editor]);
     const handleStrikethrough = useCallback(() => editor?.chain().focus().toggleStrike().run(), [editor]);
+    const handleInlineCode = useCallback(() => editor?.chain().focus().toggleCode().run(), [editor]);
     const handleAlignLeft = useCallback(() => editor?.chain().focus().setTextAlign('left').run(), [editor]);
     const handleAlignCenter = useCallback(() => editor?.chain().focus().setTextAlign('center').run(), [editor]);
     const handleAlignRight = useCallback(() => editor?.chain().focus().setTextAlign('right').run(), [editor]);
@@ -371,6 +373,7 @@ const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure.
     useShortcut('editorItalic', handleItalic);
     useShortcut('editorUnderline', handleUnderline);
     useShortcut('editorStrikethrough', handleStrikethrough);
+    useShortcut('editorInlineCode', handleInlineCode);
     useShortcut('editorLink', setLink);
     useShortcut('editorAlignLeft', handleAlignLeft);
     useShortcut('editorAlignCenter', handleAlignCenter);

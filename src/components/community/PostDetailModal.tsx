@@ -9,6 +9,8 @@ import { db } from '../../lib/firebase';
 import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment, setDoc, serverTimestamp } from 'firebase/firestore';
 import { HtmlRenderer } from '../ui/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
+import { formatDistanceToNow } from 'date-fns';
+import { ca, es, enUS } from 'date-fns/locale';
 
 interface PostDetailModalProps {
     post: CommunityPost | null;
@@ -17,10 +19,25 @@ interface PostDetailModalProps {
 }
 
 const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { user } = useAuth();
     const hasLiked = user && post?.reactions?.[user.id]?.emoji === '❤️';
     const likeCount = Object.values(post?.reactions || {}).filter(r => r.emoji === '❤️').length;
+
+    const dateLocales: Record<string, any> = { ca, es, en: enUS };
+    const currentLocale = dateLocales[i18n.language] || ca;
+    
+    let timeAgo = '';
+    if (post?.createdAt) {
+        try {
+            const date = typeof post.createdAt.toDate === 'function' 
+                ? post.createdAt.toDate() 
+                : new Date(post.createdAt.seconds * 1000);
+            timeAgo = formatDistanceToNow(date, { addSuffix: true, locale: currentLocale });
+        } catch (e) {
+            console.error('Error formatting date:', e);
+        }
+    }
 
     useEffect(() => {
         if (!post || !isOpen) return;
@@ -124,12 +141,12 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
         }
     };
 
-    if (!post) return null;
+    if (!isOpen || !post) return null;
 
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 overflow-hidden">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -145,13 +162,12 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
                         className="relative w-full max-w-5xl bg-[#0a0a0a] border border-white/10 rounded-4xl shadow-2xl overflow-hidden flex flex-col h-full max-h-full"
                     >
-                        {/* Header Navbar */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 shrink-0 bg-[#0a0a0a]/80 backdrop-blur-xl z-10">
                             <div className="flex items-center gap-3">
                                 <img src={post.userAvatar} alt={post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800" />
                                 <div>
                                     <h3 className="font-bold text-slate-100">{post.username}</h3>
-                                    <p className="text-xs text-slate-500 font-medium">{t('community.postDetail.actionNote', 'Ha creat una publicació')}</p>
+                                    {timeAgo && <p className="text-xs text-slate-500 font-medium capitalize first-letter:capitalize">{timeAgo}</p>}
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">

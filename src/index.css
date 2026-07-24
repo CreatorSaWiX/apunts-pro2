@@ -151,6 +151,19 @@ body.player-fullscreen .nav-pill-container {
   line-height: 1.25 !important;
 }
 
+.prose code {
+  @apply font-mono text-[0.85em] bg-white/10 text-emerald-400 px-1.5 py-0.5 rounded-md font-medium;
+}
+
+.prose code::before,
+.prose code::after {
+  content: none !important;
+}
+
+.prose pre code {
+  @apply bg-transparent text-inherit p-0 rounded-none font-normal;
+}
+
 /* Tiptap Table Styles */
 .editor-content-area .tableWrapper {
   @apply overflow-hidden my-6 rounded-xl shadow-sm w-full;

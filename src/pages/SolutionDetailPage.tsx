@@ -27,7 +27,6 @@ const CodeEditorSkeleton = () => {
 import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
 import { HtmlRenderer } from '../components/ui/HtmlRenderer';
 import Spinner from '../components/ui/Spinner';
-import DOMPurify from 'dompurify';
 
 const SolutionDetailPage = () => {
     const { id: topicId, problemId } = useParams();

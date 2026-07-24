@@ -10,6 +10,7 @@ import DOMPurify from 'dompurify';
 import Spinner from '../ui/Spinner';
 import FileUploader from '../ui/FileUploader';
 import { ImagePlus } from 'lucide-react';
+import subjectsData from '../../data/subjects.json';
 
 interface PublicationCardProps {
     post: CommunityPost;
@@ -91,6 +92,11 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
     const safeContentHero = useMemo(() => post.content ? getSafeContent(post.content, 150) : 'Discussió', [post.content]);
     const safeContentTitle = useMemo(() => post.content ? getSafeContent(post.content, 150) : 'Sense descripció', [post.content]);
 
+    const subjectData = useMemo(() => {
+        if (!post.subject) return null;
+        return subjectsData.find(s => s.id === post.subject || s.name === post.subject);
+    }, [post.subject]);
+
     return (
         <div 
             className="flex flex-col gap-2 group cursor-pointer"
@@ -136,7 +142,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                 ) : (
                     <div className={`w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-white/10 to-white/5 p-6 text-center border border-white/5 rounded-[inherit] relative overflow-hidden transition-transform duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''}`}>
                         <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-0" />
-                        <span className="text-4xl font-black text-white/10 select-none absolute -bottom-4 -right-4">{post.subject}</span>
+                        <span className="text-4xl font-black text-white/10 select-none absolute -bottom-4 -right-4">{subjectData ? subjectData.name : post.subject}</span>
                         <p className="text-white font-bold text-lg leading-snug line-clamp-3 relative z-10"
                             dangerouslySetInnerHTML={{
                                 __html: safeContentHero
@@ -185,6 +191,12 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                     {post.isPinned && (
                         <div className="bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center justify-center shadow-xl">
                             <Pin size={12} className="text-white -rotate-45" />
+                        </div>
+                    )}
+                    {subjectData && (
+                        <div className="bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold tracking-widest px-2 py-1 rounded-md flex items-center gap-1.5 shadow-xl">
+                            <span className={`w-1.5 h-1.5 rounded-full bg-${subjectData.colorToken}`} />
+                            {subjectData.name}
                         </div>
                     )}
                     {badgeText && (
