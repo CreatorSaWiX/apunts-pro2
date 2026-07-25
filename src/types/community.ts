@@ -26,6 +26,6 @@ export interface CommunityPost {
     reactions: Record<string, Reaction>; // Key is userId
     isPinned: boolean;
     views?: number;
-    attachments?: { url: string; name: string; type: string; size: number; thumbnailUrl?: string }[];
+    attachments?: { url: string; name: string; type: string; size: number; thumbnailUrl?: string; isCustomThumbnail?: boolean }[];
 }
 

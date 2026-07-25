@@ -129,7 +129,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                             newArray[0] = { ...newArray[0], thumbnailUrl: newAtts[0].url };
                             return newArray;
                         } else {
-                            return [...prev, newAtts[0]];
+                            return [...prev, { ...newAtts[0], isCustomThumbnail: true }];
                         }
                     });
                 }
@@ -140,20 +140,36 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     if (!user) return null;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size={isFullscreen ? 'screen' : '6xl'}>
+        <Modal isOpen={isOpen} onClose={onClose} size={isFullscreen ? 'screen' : '6xl'} hideCloseButton={true}>
             <Modal.Layout className="flex-col md:flex-row h-full w-full">
                 {/* LEFT PANEL: EDITOR */}
                 <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'}`}>
                     <Modal.Header className="px-8! py-6! border-none! bg-transparent! flex justify-between items-center w-full">
                         <h2 className="text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
-                        <button
-                            type="button"
-                            onClick={() => setIsFullscreen(!isFullscreen)}
-                            className="p-2 text-slate-400 hover:text-white transition-colors ml-auto mr-12"
-                            title={isFullscreen ? "Minimitzar" : "Pantalla Completa"}
-                        >
-                            {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                        </button>
+                        <div className="flex items-center gap-2 ml-auto">
+                            <button
+                                type="button"
+                                onClick={() => setIsFullscreen(!isFullscreen)}
+                                className="p-2.5 rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs group"
+                                title={isFullscreen ? "Minimitzar" : "Ampliar editor"}
+                            >
+                                {isFullscreen ? (
+                                    <Minimize2 size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
+                                ) : (
+                                    <Maximize2 size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
+                                )}
+                            </button>
+                            {isFullscreen && (
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="p-2.5 rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs"
+                                    title="Tancar"
+                                >
+                                    <X size={18} strokeWidth={2.5} />
+                                </button>
+                            )}
+                        </div>
                     </Modal.Header>
 
                     {/* Content Area */}
@@ -199,7 +215,12 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                                         )}
                                                     </div>
                                                     <div className="flex flex-col min-w-0">
-                                                        <span className="truncate text-sm font-bold text-slate-200">{att.name}</span>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="truncate text-sm font-bold text-slate-200">{att.name}</span>
+                                                            {att.isCustomThumbnail && (
+                                                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary border border-primary/30 uppercase tracking-wider shrink-0">Miniatura</span>
+                                                            )}
+                                                        </div>
                                                         <span className="text-xs text-slate-500">{(att.size / 1024 / 1024).toFixed(2)} MB</span>
                                                     </div>
                                                 </div>
@@ -285,6 +306,14 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 {t('community.createPost.livePreview', 'Live Preview')}
                             </div>
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="p-2.5 rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs"
+                                title="Tancar"
+                            >
+                                <X size={18} strokeWidth={2.5} />
+                            </button>
                         </div>
 
                         <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">

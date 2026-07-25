@@ -126,9 +126,9 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
     const hasMore = replies.length > visibleLimit;
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col h-full min-h-0 overflow-hidden w-full">
             {/* Replies List */}
-            <div className="space-y-4">
+            <div className="flex-1 min-h-0 overflow-y-auto p-6 custom-scrollbar space-y-4">
                 {loading ? (
                     <div className="flex justify-center py-4">
                         <Spinner size="sm" variant="slate" glow={false} />
@@ -178,7 +178,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
 
             {/* Input Area */}
             {user ? (
-                <form onSubmit={handleSend} className="relative mt-2">
+                <form onSubmit={handleSend} className="shrink-0 border-t border-white/10 bg-[#0a0a0a] p-4 relative">
                     <div className="relative flex items-center gap-2">
                         <div className="relative">
                             <button
@@ -233,7 +233,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                     </div>
                 </form>
             ) : (
-                <div className="text-center py-2 text-[10px] text-slate-600 uppercase tracking-widest font-bold">
+                <div className="shrink-0 border-t border-white/10 bg-[#0a0a0a] text-center py-4 text-xs text-slate-500 uppercase tracking-widest font-bold">
                     Inicia sessió per respondre
                 </div>
             )}

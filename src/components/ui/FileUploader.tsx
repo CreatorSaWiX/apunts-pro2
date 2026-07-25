@@ -12,6 +12,7 @@ export interface Attachment {
     type: string;
     size: number;
     thumbnailUrl?: string;
+    isCustomThumbnail?: boolean;
 }
 
 interface FileUploaderProps {

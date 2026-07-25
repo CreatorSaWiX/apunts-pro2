@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { CommunityPost } from '../../types/community';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, Share2, MessageSquare, Trash2 } from 'lucide-react';
+import { X, Heart, Share2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import ReplySection from './ReplySection';
 import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
@@ -21,8 +21,13 @@ interface PostDetailModalProps {
 const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
     const { t, i18n } = useTranslation();
     const { user } = useAuth();
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const hasLiked = user && post?.reactions?.[user.id]?.emoji === '❤️';
     const likeCount = Object.values(post?.reactions || {}).filter(r => r.emoji === '❤️').length;
+
+    useEffect(() => {
+        setCurrentImageIndex(0);
+    }, [post?.id]);
 
     const dateLocales: Record<string, any> = { ca, es, en: enUS };
     const currentLocale = dateLocales[i18n.language] || ca;
@@ -143,10 +148,13 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
 
     if (!isOpen || !post) return null;
 
+    const postImages = post.attachments?.filter(a => a.type.startsWith('image/') && !a.isCustomThumbnail) || [];
+    const postFiles = post.attachments?.filter(a => !a.type.startsWith('image/') && !a.isCustomThumbnail) || [];
+
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -160,11 +168,12 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: "100%", scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="relative w-full max-w-5xl bg-[#0a0a0a] border border-white/10 rounded-4xl shadow-2xl overflow-hidden flex flex-col h-full max-h-full"
+                        className="relative w-full max-w-7xl h-[90vh] bg-[#0a0a0a] border border-white/10 rounded-4xl shadow-2xl overflow-hidden flex flex-col"
                     >
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 shrink-0 bg-[#0a0a0a]/80 backdrop-blur-xl z-10">
+                        {/* Top Bar Header */}
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0 bg-[#0a0a0a]/90 backdrop-blur-xl z-20">
                             <div className="flex items-center gap-3">
-                                <img src={post.userAvatar} alt={post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800" />
+                                <img src={post.userAvatar} alt={post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800 border border-white/10" />
                                 <div>
                                     <h3 className="font-bold text-slate-100">{post.username}</h3>
                                     {timeAgo && <p className="text-xs text-slate-500 font-medium capitalize first-letter:capitalize">{timeAgo}</p>}
@@ -200,62 +209,109 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                             </div>
                         </div>
 
-                        {/* Scrollable Content */}
-                        <div className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth">
-                            {/* Visual/Cover Section (If there are images) */}
-                            {post.attachments && post.attachments.filter(a => a.type.startsWith('image/')).length > 0 && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: 0.2, duration: 0.5 }}
-                                    className="w-full bg-[#050505] flex flex-col items-center justify-center border-b border-white/5 py-8 px-4"
-                                >
-                                    {post.attachments.filter(a => a.type.startsWith('image/')).map((img, i) => (
-                                        <img key={i} src={img.url} alt="Cover" loading="lazy" className="max-w-full max-h-[70vh] rounded-xl object-contain mb-6 last:mb-0 shadow-2xl" />
-                                    ))}
-                                </motion.div>
-                            )}
+                        {/* Two Column Content & Comments */}
+                        <div className="flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden">
+                            {/* Left Column: Content & Carousel */}
+                            <div className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar bg-[#060606] flex flex-col">
+                                {/* Visual/Carousel Section (If there are images) */}
+                                {postImages.length > 0 && (
+                                    <div className="w-full h-[450px] sm:h-[500px] lg:h-[540px] bg-[#020202] border-b border-white/10 relative group/carousel select-none flex flex-col items-center justify-center overflow-hidden shrink-0">
+                                        <AnimatePresence mode="wait">
+                                            <motion.img
+                                                key={currentImageIndex}
+                                                src={postImages[currentImageIndex]?.url}
+                                                alt={`Image ${currentImageIndex + 1}`}
+                                                initial={{ opacity: 0, scale: 0.98 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.98 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="w-full h-full object-contain p-4 mx-auto"
+                                            />
+                                        </AnimatePresence>
 
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3, duration: 0.5 }}
-                                className="max-w-3xl mx-auto px-6 py-12"
-                            >
-                                {/* Text Content */}
-                                <HtmlRenderer content={post.content} className="prose prose-invert prose-lg max-w-none prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary mb-12 font-medium" />
+                                        {/* Carousel Controls (If > 1 image) */}
+                                        {postImages.length > 1 && (
+                                            <>
+                                                {/* Left Arrow */}
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setCurrentImageIndex((prev) => (prev === 0 ? postImages.length - 1 : prev - 1));
+                                                    }}
+                                                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/10 backdrop-blur-md flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all hover:scale-110 active:scale-95 z-10 shadow-lg"
+                                                    title="Anterior"
+                                                >
+                                                    <ChevronLeft size={22} className="-ml-0.5" />
+                                                </button>
 
-                                {/* Files / Documents with Viewers */}
-                                {post.attachments && post.attachments.filter(a => !a.type.startsWith('image/')).length > 0 && (
-                                    <div className="mb-12">
-                                        <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">{t('community.postDetail.attachmentsTitle', 'Fitxers Adjunts i Interacció')}</h4>
-                                        <div className="flex flex-col gap-8">
-                                            {post.attachments.filter(a => !a.type.startsWith('image/')).map((file, i) => (
-                                                <FileViewerRenderer
-                                                    key={i}
-                                                    url={file.url}
-                                                    filename={file.name}
-                                                    type={file.type}
-                                                    size={file.size}
-                                                />
-                                            ))}
-                                        </div>
+                                                {/* Right Arrow */}
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setCurrentImageIndex((prev) => (prev === postImages.length - 1 ? 0 : prev + 1));
+                                                    }}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/10 backdrop-blur-md flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all hover:scale-110 active:scale-95 z-10 shadow-lg"
+                                                    title="Següent"
+                                                >
+                                                    <ChevronRight size={22} className="-mr-0.5" />
+                                                </button>
+
+                                                {/* Counter Badge */}
+                                                <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-white text-xs font-bold tracking-wider z-10 shadow-md">
+                                                    {currentImageIndex + 1} / {postImages.length}
+                                                </div>
+
+                                                {/* Dots Indicator */}
+                                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 shadow-md">
+                                                    {postImages.map((_, idx) => (
+                                                        <button
+                                                            key={idx}
+                                                            type="button"
+                                                            onClick={() => setCurrentImageIndex(idx)}
+                                                            className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentImageIndex ? 'w-6 bg-primary shadow-[0_0_8px_rgba(14,165,233,0.8)]' : 'w-1.5 bg-white/40 hover:bg-white/80'}`}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 )}
 
-                                <div className="w-full h-px bg-linear-to-r from-transparent via-white/10 to-transparent my-12" />
+                                <div className="p-6 sm:p-8 lg:p-10 max-w-4xl mx-auto w-full">
+                                    {/* Text Content */}
+                                    <HtmlRenderer content={post.content} className="prose prose-invert prose-lg max-w-none prose-p:text-slate-200 prose-headings:text-white prose-a:text-primary mb-10 font-normal leading-relaxed" />
 
-                                {/* Comments Section */}
-                                <div className="pb-12">
-                                    <div className="flex items-center gap-3 mb-8">
-                                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                            <MessageSquare size={20} />
+                                    {/* Files / Documents with Viewers */}
+                                    {postFiles.length > 0 && (
+                                        <div className="mt-8 pt-8 border-t border-white/5">
+                                            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                                {t('community.postDetail.attachmentsTitle', 'Fitxers Adjunts i Interacció')}
+                                            </h4>
+                                            <div className="flex flex-col gap-6">
+                                                {postFiles.map((file, i) => (
+                                                    <FileViewerRenderer
+                                                        key={i}
+                                                        url={file.url}
+                                                        filename={file.name}
+                                                        type={file.type}
+                                                        size={file.size}
+                                                    />
+                                                ))}
+                                            </div>
                                         </div>
-                                        <h3 className="text-xl font-bold text-white">{t('community.postDetail.commentsTitle', 'Comentaris')}</h3>
-                                    </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Right Column: Comments Section */}
+                            <div className="w-full lg:w-[420px] xl:w-[450px] shrink-0 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#080808] flex flex-col h-full min-h-0 overflow-hidden">
+                                <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
                                     <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
                                 </div>
-                            </motion.div>
+                            </div>
                         </div>
                     </motion.div>
                 </div>
