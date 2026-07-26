@@ -345,7 +345,7 @@ const CommunityPage = () => {
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
 
             {/* Dynamic Island Navigator (Fixed Top Right) */}
-            <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-40">
+            <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-50">
                 <NavigationPill>
                     <button type="button"
                         onClick={handleCloseCanvas}
@@ -823,13 +823,28 @@ const CommunityPage = () => {
                     />
                 )}
 
-                {selectedPost && (
-                    <PostDetailModal
-                        post={posts.find(p => p.id === selectedPost.id) || selectedPost}
-                        isOpen={!!selectedPost}
-                        onClose={() => setSelectedPost(null)}
-                    />
-                )}
+                {selectedPost && (() => {
+                    const list = filteredAndSortedPosts.some(p => p.id === selectedPost.id) ? filteredAndSortedPosts : posts;
+                    const currentIdx = list.findIndex(p => p.id === selectedPost.id);
+                    const handlePrevPost = list.length > 1 && currentIdx !== -1 ? () => {
+                        const prevIdx = currentIdx > 0 ? currentIdx - 1 : list.length - 1;
+                        setSelectedPost(list[prevIdx]);
+                    } : undefined;
+                    const handleNextPost = list.length > 1 && currentIdx !== -1 ? () => {
+                        const nextIdx = currentIdx < list.length - 1 ? currentIdx + 1 : 0;
+                        setSelectedPost(list[nextIdx]);
+                    } : undefined;
+
+                    return (
+                        <PostDetailModal
+                            post={posts.find(p => p.id === selectedPost.id) || selectedPost}
+                            isOpen={!!selectedPost}
+                            onClose={() => setSelectedPost(null)}
+                            onPrev={handlePrevPost}
+                            onNext={handleNextPost}
+                        />
+                    );
+                })()}
             </Suspense>
 
             <AnimatePresence>

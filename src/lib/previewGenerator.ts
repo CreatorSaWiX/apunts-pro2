@@ -25,9 +25,17 @@ const generateImageThumbnail = (file: File): Promise<string> => {
         img.onload = () => {
             const canvas = document.createElement('canvas');
             const MAX_WIDTH = 800;
-            const scaleSize = MAX_WIDTH / img.width;
-            canvas.width = MAX_WIDTH;
-            canvas.height = img.height * scaleSize;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+                const scale = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+                width = Math.round(width * scale);
+                height = Math.round(height * scale);
+            }
+            canvas.width = width;
+            canvas.height = height;
             
             const ctx = canvas.getContext('2d');
             if (ctx) {
@@ -54,8 +62,18 @@ const generateVideoThumbnail = (file: File): Promise<string> => {
         
         video.onseeked = () => {
             const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = video.videoWidth || 640;
+            let height = video.videoHeight || 360;
+
+            if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+                const scale = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+                width = Math.round(width * scale);
+                height = Math.round(height * scale);
+            }
+            canvas.width = width;
+            canvas.height = height;
             const ctx = canvas.getContext('2d');
             if (ctx) {
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -105,7 +123,9 @@ const generatePdfThumbnail = async (file: File): Promise<string> => {
     const pdf = await loadingTask.promise;
     const page = await pdf.getPage(1);
     
-    const viewport = page.getViewport({ scale: 2.0 }); // High res for premium feel
+    const initialViewport = page.getViewport({ scale: 1.0 });
+    const scale = Math.min(800 / initialViewport.width, 800 / initialViewport.height, 2.0);
+    const viewport = page.getViewport({ scale });
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     

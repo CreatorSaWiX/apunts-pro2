@@ -166,6 +166,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                                 variant="avatar"
                                 acceptType="images"
                                 maxFiles={1}
+                                maxSizeMB={5}
                                 onUploadComplete={onThumbnailUpload}
                             />
                         </div>

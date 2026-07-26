@@ -16,12 +16,65 @@ interface PostDetailModalProps {
     post: CommunityPost | null;
     isOpen: boolean;
     onClose: () => void;
+    onNext?: () => void;
+    onPrev?: () => void;
 }
 
-const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
+const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailModalProps) => {
     const { t, i18n } = useTranslation();
     const { user } = useAuth();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [direction, setDirection] = useState<'next' | 'prev' | null>(null);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            const target = e.target as HTMLElement;
+            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+                return;
+            }
+            if (e.key === 'ArrowLeft' && onPrev) {
+                e.preventDefault();
+                setDirection('prev');
+                onPrev();
+            } else if (e.key === 'ArrowRight' && onNext) {
+                e.preventDefault();
+                setDirection('next');
+                onNext();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onPrev, onNext]);
+
+    const contentVariants = {
+        enter: (dir: 'next' | 'prev' | null) => ({
+            x: dir === 'next' ? 60 : dir === 'prev' ? -60 : 0,
+            opacity: 0,
+            scale: 0.98,
+        }),
+        center: {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            transition: {
+                x: { type: "spring", stiffness: 380, damping: 32 },
+                opacity: { duration: 0.2 },
+                scale: { duration: 0.2 }
+            }
+        },
+        exit: (dir: 'next' | 'prev' | null) => ({
+            x: dir === 'next' ? -60 : dir === 'prev' ? 60 : 0,
+            opacity: 0,
+            scale: 0.98,
+            transition: {
+                x: { type: "spring", stiffness: 380, damping: 32 },
+                opacity: { duration: 0.15 },
+                scale: { duration: 0.15 }
+            }
+        })
+    };
+
     const hasLiked = user && post?.reactions?.[user.id]?.emoji === '❤️';
     const likeCount = Object.values(post?.reactions || {}).filter(r => r.emoji === '❤️').length;
 
@@ -163,6 +216,40 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                         onClick={onClose}
                     />
 
+                    {/* Floating Left Navigation Button */}
+                    {onPrev && (
+                        <motion.button
+                            type="button"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            whileHover={{ scale: 1.1, x: -3 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={(e) => { e.stopPropagation(); setDirection('prev'); onPrev(); }}
+                            className="flex absolute left-2 sm:left-4 md:left-6 xl:left-8 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
+                            title="Publicació anterior (←)"
+                        >
+                            <ChevronLeft size={28} className="group-hover:-translate-x-0.5 transition-transform" />
+                        </motion.button>
+                    )}
+
+                    {/* Floating Right Navigation Button */}
+                    {onNext && (
+                        <motion.button
+                            type="button"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 20 }}
+                            whileHover={{ scale: 1.1, x: 3 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={(e) => { e.stopPropagation(); setDirection('next'); onNext(); }}
+                            className="flex absolute right-2 sm:right-4 md:right-6 xl:right-8 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
+                            title="Publicació següent (→)"
+                        >
+                            <ChevronRight size={28} className="group-hover:translate-x-0.5 transition-transform" />
+                        </motion.button>
+                    )}
+
                     <motion.div
                         initial={{ opacity: 0, y: "100%", scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -172,14 +259,25 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                     >
                         {/* Top Bar Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0 bg-[#0a0a0a]/90 backdrop-blur-xl z-20">
-                            <div className="flex items-center gap-3">
-                                <img src={post.userAvatar} alt={post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800 border border-white/10" />
-                                <div>
-                                    <h3 className="font-bold text-slate-100">{post.username}</h3>
-                                    {timeAgo && <p className="text-xs text-slate-500 font-medium capitalize first-letter:capitalize">{timeAgo}</p>}
-                                </div>
+                            <div className="flex items-center gap-3 min-w-0">
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={post.id}
+                                        initial={{ opacity: 0, y: 5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -5 }}
+                                        transition={{ duration: 0.15 }}
+                                        className="flex items-center gap-3 min-w-0"
+                                    >
+                                        <img src={post.userAvatar} alt={post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800 border border-white/10 shrink-0" />
+                                        <div className="min-w-0">
+                                            <h3 className="font-bold text-slate-100 truncate">{post.username}</h3>
+                                            {timeAgo && <p className="text-xs text-slate-500 font-medium capitalize first-letter:capitalize truncate">{timeAgo}</p>}
+                                        </div>
+                                    </motion.div>
+                                </AnimatePresence>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                                 <motion.button
                                     whileTap={{ scale: 0.9 }}
                                     onClick={handleLike}
@@ -210,8 +308,18 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                         </div>
 
                         {/* Two Column Content & Comments */}
-                        <div className="flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden">
-                            {/* Left Column: Content & Carousel */}
+                        <div className="flex-1 min-h-0 relative overflow-hidden flex flex-col">
+                            <AnimatePresence mode="wait" custom={direction}>
+                                <motion.div
+                                    key={post.id}
+                                    custom={direction}
+                                    variants={contentVariants}
+                                    initial="enter"
+                                    animate="center"
+                                    exit="exit"
+                                    className="flex flex-col lg:flex-row flex-1 min-h-0 w-full h-full overflow-hidden"
+                                >
+                                    {/* Left Column: Content & Carousel */}
                             <div className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar bg-[#060606] flex flex-col">
                                 {/* Visual/Carousel Section (If there are images) */}
                                 {postImages.length > 0 && (
@@ -312,6 +420,8 @@ const PostDetailModal = ({ post, isOpen, onClose }: PostDetailModalProps) => {
                                     <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
                                 </div>
                             </div>
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </motion.div>
                 </div>

@@ -386,6 +386,7 @@ const ProfilePage = () => {
                                             variant="avatar"
                                             acceptType="images"
                                             maxFiles={1}
+                                            maxSizeMB={5}
                                             onUploadComplete={(atts) => handleImageUpload(atts, 'avatar')}
                                         />
                                     </div>
@@ -510,15 +511,29 @@ const ProfilePage = () => {
                         initialSubject=""
                     />
                 )}
-                {selectedPost && (
-                    <Suspense fallback={null}>
-                        <PostDetailModal
-                            isOpen={!!selectedPost}
-                            onClose={() => setSelectedPost(null)}
-                            post={selectedPost}
-                        />
-                    </Suspense>
-                )}
+                {selectedPost && (() => {
+                    const currentIdx = userPosts.findIndex(p => p.id === selectedPost.id);
+                    const handlePrevPost = userPosts.length > 1 && currentIdx !== -1 ? () => {
+                        const prevIdx = currentIdx > 0 ? currentIdx - 1 : userPosts.length - 1;
+                        setSelectedPost(userPosts[prevIdx]);
+                    } : undefined;
+                    const handleNextPost = userPosts.length > 1 && currentIdx !== -1 ? () => {
+                        const nextIdx = currentIdx < userPosts.length - 1 ? currentIdx + 1 : 0;
+                        setSelectedPost(userPosts[nextIdx]);
+                    } : undefined;
+
+                    return (
+                        <Suspense fallback={null}>
+                            <PostDetailModal
+                                isOpen={!!selectedPost}
+                                onClose={() => setSelectedPost(null)}
+                                post={selectedPost}
+                                onPrev={handlePrevPost}
+                                onNext={handleNextPost}
+                            />
+                        </Suspense>
+                    );
+                })()}
             </AnimatePresence>
         </div>
     );
