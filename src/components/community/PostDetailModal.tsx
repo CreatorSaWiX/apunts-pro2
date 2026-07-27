@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { CommunityPost } from '../../types/community';
-import { m as motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence, type Variants } from 'framer-motion';
 import { X, Heart, Share2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import ReplySection from './ReplySection';
 import FileViewerRenderer from './viewers/FileViewerRenderer';
@@ -47,7 +47,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isOpen, onPrev, onNext]);
 
-    const contentVariants = {
+    const contentVariants: Variants = {
         enter: (dir: 'next' | 'prev' | null) => ({
             x: dir === 'next' ? 60 : dir === 'prev' ? -60 : 0,
             opacity: 0,

@@ -10,6 +10,10 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { useMultiplayerCanvas } from '../../hooks/useMultiplayerCanvas';
 import { useCanvasShortcuts } from '../../hooks/useCanvasShortcuts';
 
+const EMPTY_NODES: any[] = [];
+const EMPTY_EDGES: any[] = [];
+const PRO_OPTIONS = { hideAttribution: true };
+
 // A wrapper to use the hooks inside ReactFlowProvider and DrawProvider
 const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { t } = useTranslation();
@@ -45,8 +49,8 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
             <div className="w-full h-full relative z-10">
                 <ReactFlow
-                    nodes={[]}
-                    edges={[]}
+                    nodes={EMPTY_NODES}
+                    edges={EMPTY_EDGES}
                     panOnDrag={!isDrawMode}
                     nodesDraggable={!isDrawMode}
                     zoomOnScroll={!isDrawMode}
@@ -56,7 +60,7 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     nodesConnectable={!isDrawMode}
                     minZoom={0.1}
                     maxZoom={4}
-                    proOptions={{ hideAttribution: true }}
+                    proOptions={PRO_OPTIONS}
                     className="bg-transparent"
                 >
                     <Background color="#38bdf8" variant={BackgroundVariant.Dots} gap={24} size={2} className="opacity-10" />

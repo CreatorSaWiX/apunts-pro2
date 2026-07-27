@@ -23,6 +23,7 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
 
         const count = geo.attributes.position.count;
         geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+        geo.computeVertexNormals();
 
         return geo;
     }, []);
@@ -58,7 +59,6 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
         }
         geometry.attributes.position.needsUpdate = true;
         geometry.attributes.color.needsUpdate = true;
-        geometry.computeVertexNormals();
     });
 
     return (

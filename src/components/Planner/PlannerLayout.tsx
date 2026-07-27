@@ -5,7 +5,6 @@ import NavigationPill from '../ui/NavigationPill';
 import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles, Route } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { RoadmapProvider } from '../../contexts/RoadmapContext';
 import Spinner from '../ui/Spinner';
 import AIPromptBar from './AIPromptBar';
 import GlobalTaskContextMenu from './GlobalTaskContextMenu';
@@ -17,7 +16,6 @@ const BoardView = lazy(() => import('./Board/BoardView'));
 const CalendarView = lazy(() => import('./Calendar/CalendarView'));
 const GanttView = lazy(() => import('./Gantt/GanttView'));
 const RoadmapView = lazy(() => import('./Roadmap/RoadmapView'));
-import { ReactFlowProvider } from '@xyflow/react';
 
 
 type ViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
@@ -137,9 +135,8 @@ const PlannerLayout: React.FC = () => {
 
 
     return (
-        <RoadmapProvider>
-            <div className="flex flex-col flex-1 h-full relative w-full">
-                <GlobalTaskContextMenu />
+        <div className="flex flex-col flex-1 h-full relative w-full">
+            <GlobalTaskContextMenu />
                 {/* Let the global Background.tsx handle the background! */}
 
                 {/* Dynamic Island Navigator (Fixed Top Right) */}
@@ -261,9 +258,7 @@ const PlannerLayout: React.FC = () => {
                                     transition={{ duration: 0.4, ease: 'easeInOut' }}
                                     className="fixed inset-0 z-0"
                                 >
-                                    <ReactFlowProvider>
-                                        <RoadmapView isOpenAI={isAIModalOpen} onCloseAI={() => setIsAIModalOpen(false)} />
-                                    </ReactFlowProvider>
+                                    <RoadmapView isOpenAI={isAIModalOpen} onCloseAI={() => setIsAIModalOpen(false)} />
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -287,7 +282,6 @@ const PlannerLayout: React.FC = () => {
                 {view !== 'roadmap' && <AIPromptBar isOpen={isAIModalOpen} onClose={() => setIsAIModalOpen(false)} />}
                 <TaskPopover />
             </div>
-        </RoadmapProvider>
     );
 };
 

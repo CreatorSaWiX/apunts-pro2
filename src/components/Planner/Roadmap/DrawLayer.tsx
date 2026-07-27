@@ -15,6 +15,37 @@ const getSvgPathFromPoints = (points: { x: number; y: number }[]) => {
     return path;
 };
 
+const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStroke }: { strokes: Stroke[]; currentTool: string; removeStroke: (id: string) => void }) => {
+    return (
+        <>
+            {strokes.map(stroke => (
+                <path
+                    key={stroke.id}
+                    d={getSvgPathFromPoints(stroke.points)}
+                    stroke={stroke.color}
+                    strokeWidth={stroke.width}
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ filter: `drop-shadow(0px 0px 6px ${stroke.color}66)` }}
+                    pointerEvents={currentTool === 'eraser' ? 'stroke' : 'none'}
+                    onPointerDown={(e) => {
+                        if (currentTool === 'eraser') {
+                            e.stopPropagation();
+                            removeStroke(stroke.id);
+                        }
+                    }}
+                    onPointerEnter={(e) => {
+                        if (currentTool === 'eraser' && e.buttons > 0) {
+                            removeStroke(stroke.id);
+                        }
+                    }}
+                />
+            ))}
+        </>
+    );
+});
+
 const DrawLayer: React.FC = () => {
     const { x, y, zoom } = useViewport();
     const { isDrawMode, currentTool, currentColor, currentWidth, strokes, addStroke, removeStroke } = useDrawContext();
@@ -84,30 +115,7 @@ const DrawLayer: React.FC = () => {
             style={{ touchAction: 'none' }}
         >
             <g transform={`translate(${x}, ${y}) scale(${zoom})`}>
-                {strokes.map(stroke => (
-                    <path
-                        key={stroke.id}
-                        d={getSvgPathFromPoints(stroke.points)}
-                        stroke={stroke.color}
-                        strokeWidth={stroke.width}
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{ filter: `drop-shadow(0px 0px 6px ${stroke.color}66)` }}
-                        pointerEvents={currentTool === 'eraser' ? 'stroke' : 'none'}
-                        onPointerDown={(e) => {
-                            if (currentTool === 'eraser') {
-                                e.stopPropagation();
-                                removeStroke(stroke.id);
-                            }
-                        }}
-                        onPointerEnter={(e) => {
-                            if (currentTool === 'eraser' && e.buttons > 0) {
-                                removeStroke(stroke.id);
-                            }
-                        }}
-                    />
-                ))}
+                <MemoizedCompletedStrokes strokes={strokes} currentTool={currentTool} removeStroke={removeStroke} />
                 
                 {currentStroke && (
                     <path

@@ -97,19 +97,23 @@ export const useMultiplayerCanvas = (
             }
         });
 
-        // Listen for full clear
-        const unsubscribeValue = onValue(strokesRef, (snapshot) => {
-            if (!snapshot.exists()) {
-                setStrokes([]);
-                localStrokesRef.current.clear();
+        // Listen for full clear via lightweight metadata node instead of downloading all strokes on every change
+        let isInitialMeta = true;
+        const metaRef = ref(rtdb, 'community_canvas/meta/lastClearedAt');
+        const unsubscribeMeta = onValue(metaRef, (snapshot) => {
+            if (isInitialMeta) {
+                isInitialMeta = false;
+                return;
             }
+            setStrokes([]);
+            localStrokesRef.current.clear();
         });
 
         return () => {
             unsubscribeAdded();
             unsubscribeRemoved();
             unsubscribeChanged();
-            unsubscribeValue();
+            unsubscribeMeta();
         };
     }, [user, setStrokes]);
 
@@ -134,6 +138,7 @@ export const useMultiplayerCanvas = (
     const broadcastClear = useCallback(() => {
         if (!user) return;
         remove(ref(rtdb, 'community_canvas/strokes')).catch(console.error);
+        set(ref(rtdb, 'community_canvas/meta/lastClearedAt'), serverTimestamp()).catch(console.error);
     }, [user]);
 
     const broadcastRemoveStroke = useCallback((id: string) => {

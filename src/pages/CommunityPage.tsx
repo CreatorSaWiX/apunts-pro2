@@ -7,7 +7,6 @@ import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, FileText as FileTextIcon, BookOpen, X, Filter, ArrowUpDown, Flame, Eye, Clock, Image, Code2, Heart } from 'lucide-react';
-import CommunityHero3D from '../components/community/CommunityHero3D';
 import { lazy, Suspense } from 'react';
 
 import Spinner from '../components/ui/Spinner';
@@ -18,10 +17,11 @@ import { useShortcut } from '../hooks/useShortcut';
 
 import { LiquidToolbar, LiquidToolbarButton } from '../components/ui/glass/LiquidToolbar';
 import LiquidDropdown from '../components/ui/glass/LiquidDropdown';
-import CommunityCanvas from '../components/community/CommunityCanvas';
 import NavigationPill from '../components/ui/NavigationPill';
 import { Users, Palette } from 'lucide-react';
 
+const CommunityHero3D = lazy(() => import('../components/community/CommunityHero3D'));
+const CommunityCanvas = lazy(() => import('../components/community/CommunityCanvas'));
 const SubjectSelectorModal = lazy(() => import('../components/community/SubjectSelectorModal'));
 const CreatePostModal = lazy(() => import('../components/community/CreatePostModal'));
 const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
@@ -234,11 +234,14 @@ const CommunityPage = () => {
         setLoading(true);
         setHasMore(true);
         setPosts([]);
+        let isCancelled = false;
         let unsubscribe = () => { };
 
         const setup = async () => {
             const { db } = await import('../lib/firebase');
             const { collection, query, orderBy, onSnapshot, where, limit, documentId } = await import('firebase/firestore');
+
+            if (isCancelled) return;
 
             const currentLimit = debouncedSearch ? 30 : POSTS_PER_PAGE;
             let postIdsToFetch: string[] = [];
@@ -251,6 +254,7 @@ const CommunityPage = () => {
                     console.error("Algolia search failed", err);
                 }
                 
+                if (isCancelled) return;
                 if (postIdsToFetch.length === 0) {
                     setPosts([]);
                     setLoading(false);
@@ -258,6 +262,8 @@ const CommunityPage = () => {
                     return;
                 }
             }
+
+            if (isCancelled) return;
 
             let q = query(
                 collection(db, 'community_posts'),
@@ -276,6 +282,7 @@ const CommunityPage = () => {
             }
 
             unsubscribe = onSnapshot(q, (snapshot) => {
+                if (isCancelled) return;
                 let rawPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
 
                 // Restaurem l'ordre de rellevància d'Algolia si estem cercant
@@ -291,7 +298,10 @@ const CommunityPage = () => {
         };
 
         setup();
-        return () => unsubscribe();
+        return () => {
+            isCancelled = true;
+            unsubscribe();
+        };
     }, [activeSubject, debouncedSearch, isOffline]);
 
     const loadMore = useCallback(async () => {
@@ -393,7 +403,9 @@ const CommunityPage = () => {
             <div className={`w-full transition-all duration-700 ease-in-out ${isBackgroundHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}`}>
                 {/* Awwwards Hero Section */}
                 <section className="relative w-full min-h-[55vh] flex items-center justify-center z-10 overflow-hidden pt-28 pb-8">
-                    <CommunityHero3D isPaused={isCanvasFullyOpen} />
+                    <Suspense fallback={null}>
+                        <CommunityHero3D isPaused={isCanvasFullyOpen} />
+                    </Suspense>
 
                     <div className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-6 items-center relative z-20">
                         {/* Left Text */}
@@ -857,7 +869,9 @@ const CommunityPage = () => {
                         transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
                         className="fixed inset-0 z-40 bg-[#09090b]"
                     >
-                        <CommunityCanvas onClose={handleCloseCanvas} isClosing={isCanvasClosing} />
+                        <Suspense fallback={null}>
+                            <CommunityCanvas onClose={handleCloseCanvas} isClosing={isCanvasClosing} />
+                        </Suspense>
                     </motion.div>
                 )}
             </AnimatePresence>

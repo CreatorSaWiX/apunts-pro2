@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Settings2, Sparkles, Bot, Database, Keyboard } from 'lucide-react';
-import { RoadmapProvider } from '../contexts/RoadmapContext';
 import { useAuth } from '../contexts/AuthContext';
 
 import { GeneralSection } from '../components/settings/GeneralSection';
@@ -128,11 +127,7 @@ const SettingsContent = () => {
 };
 
 const SettingsPage = () => {
-    return (
-        <RoadmapProvider>
-            <SettingsContent />
-        </RoadmapProvider>
-    );
+    return <SettingsContent />;
 };
 
 export default SettingsPage;

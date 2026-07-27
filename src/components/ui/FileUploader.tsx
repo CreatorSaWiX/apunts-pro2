@@ -62,7 +62,8 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
         const uploadRes = await fetch(presignedUrl, {
             method: 'PUT',
             headers: {
-                'Content-Type': contentType
+                'Content-Type': contentType,
+                'Cache-Control': 'public, max-age=31536000, immutable'
             },
             body: fileOrBlob
         }).catch(err => {

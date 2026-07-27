@@ -1,11 +1,11 @@
 import { lazy, Suspense } from 'react';
-import Model3DViewer from './Model3DViewer';
 import VideoViewer from './VideoViewer';
 import { Download, File, Box } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
 
 const PdfViewer = lazy(() => import('./PdfViewer'));
 const CodeViewer = lazy(() => import('./CodeViewer'));
+const Model3DViewer = lazy(() => import('./Model3DViewer'));
 
 const ViewerSkeleton = ({ text }: { text: string }) => (
     <div className="w-full h-64 md:h-96 bg-slate-900/50 animate-pulse rounded-xl border border-white/10 flex items-center justify-center">
@@ -51,7 +51,11 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
     }
 
     if (MODEL_EXTENSIONS.includes(ext) || type.includes('model')) {
-        return <Model3DViewer url={url} filename={filename} />;
+        return (
+            <Suspense fallback={<ViewerSkeleton text="Carregant visor 3D..." />}>
+                <Model3DViewer url={url} filename={filename} />
+            </Suspense>
+        );
     }
 
     // Default fallback: a premium styled download card for unsupported files (ZIP, etc)

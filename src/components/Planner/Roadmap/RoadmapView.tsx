@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow } from '@xyflow/react';
-import { useRoadmap } from '../../../contexts/RoadmapContext';
+import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
+import { useRoadmap, RoadmapProvider } from '../../../contexts/RoadmapContext';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
 import SubjectNode from './SubjectNode';
 import SubjectContextMenu from './SubjectContextMenu';
@@ -31,6 +31,14 @@ const nodeTypes = {
     tfm: SubjectNode,
     textNode: TextNode,
     postItNode: PostItNode,
+};
+
+const FIT_VIEW_OPTIONS = { padding: 0.2 };
+const PRO_OPTIONS = { hideAttribution: true };
+const DEFAULT_EDGE_OPTIONS = {
+    type: 'smoothstep',
+    animated: false,
+    style: { stroke: 'rgba(56, 189, 248, 0.4)', strokeWidth: 2 }
 };
 
 // Custom Zoom Controls Component
@@ -200,8 +208,8 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     onNodeClick={onNodeClick}
                     nodeTypes={nodeTypes}
                     fitView
-                    fitViewOptions={{ padding: 0.2 }}
-                    proOptions={{ hideAttribution: true }}
+                    fitViewOptions={FIT_VIEW_OPTIONS}
+                    proOptions={PRO_OPTIONS}
                     className="bg-transparent"
                     minZoom={0.1}
                     maxZoom={2}
@@ -212,11 +220,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     zoomOnDoubleClick={false}
                     elementsSelectable={!isDrawMode}
                     nodesConnectable={!isDrawMode}
-                    defaultEdgeOptions={{
-                        type: 'smoothstep',
-                        animated: false,
-                        style: { stroke: 'rgba(56, 189, 248, 0.4)', strokeWidth: 2 }
-                    }}
+                    defaultEdgeOptions={DEFAULT_EDGE_OPTIONS}
                 >
                     <Background color="#38bdf8" variant={BackgroundVariant.Dots} gap={24} size={2} className="opacity-10" />
                     <CustomControls />
@@ -530,9 +534,13 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 };
 
 const RoadmapView: React.FC<RoadmapViewProps> = (props) => (
-    <DrawProvider>
-        <RoadmapViewInner {...props} />
-    </DrawProvider>
+    <RoadmapProvider>
+        <ReactFlowProvider>
+            <DrawProvider>
+                <RoadmapViewInner {...props} />
+            </DrawProvider>
+        </ReactFlowProvider>
+    </RoadmapProvider>
 );
 
 export default RoadmapView;

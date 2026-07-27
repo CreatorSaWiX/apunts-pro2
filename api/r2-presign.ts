@@ -57,12 +57,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             Bucket: bucketName,
             Key: objectKey,
             ContentType: contentType,
+            CacheControl: 'public, max-age=31536000, immutable',
         });
 
         // Generar URL signada vàlida per 5 minuts (300s)
         const presignedUrl = await getSignedUrl(S3, command, { 
             expiresIn: 300,
-            signableHeaders: new Set(['content-type'])
+            signableHeaders: new Set(['content-type', 'cache-control'])
         });
         
         // Retornem la URL on cal fer el PUT, i la URL pública final
