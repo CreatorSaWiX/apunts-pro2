@@ -17,7 +17,7 @@ const getSvgPathFromPoints = (points: { x: number; y: number }[]) => {
 
 const DrawLayer: React.FC = () => {
     const { x, y, zoom } = useViewport();
-    const { isDrawMode, currentColor, strokes, addStroke } = useDrawContext();
+    const { isDrawMode, currentTool, currentColor, currentWidth, strokes, addStroke, removeStroke } = useDrawContext();
     
     const [currentStroke, setCurrentStroke] = useState<Stroke | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
@@ -35,7 +35,7 @@ const DrawLayer: React.FC = () => {
     };
 
     const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
-        if (!isDrawMode) return;
+        if (!isDrawMode || currentTool !== 'pen') return;
         e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);
         
@@ -44,12 +44,12 @@ const DrawLayer: React.FC = () => {
             id: Date.now().toString(),
             points: [coords],
             color: currentColor,
-            width: 4 // Default brush width
+            width: currentWidth
         });
     };
 
     const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
-        if (!isDrawMode || !currentStroke) return;
+        if (!isDrawMode || currentTool !== 'pen' || !currentStroke) return;
         e.preventDefault();
         
         const coords = getMouseCoords(e);
@@ -63,7 +63,7 @@ const DrawLayer: React.FC = () => {
     };
 
     const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
-        if (!isDrawMode || !currentStroke) return;
+        if (!isDrawMode || currentTool !== 'pen' || !currentStroke) return;
         e.preventDefault();
         e.currentTarget.releasePointerCapture(e.pointerId);
         
@@ -76,7 +76,7 @@ const DrawLayer: React.FC = () => {
     return (
         <svg
             ref={svgRef}
-            className={`absolute inset-0 w-full h-full z-40 ${isDrawMode ? 'cursor-crosshair touch-none pointer-events-auto' : 'pointer-events-none'}`}
+            className={`absolute inset-0 w-full h-full z-40 ${isDrawMode ? (currentTool === 'eraser' ? 'cursor-cell' : 'cursor-crosshair') + ' touch-none pointer-events-auto' : 'pointer-events-none'}`}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -94,6 +94,18 @@ const DrawLayer: React.FC = () => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         style={{ filter: `drop-shadow(0px 0px 6px ${stroke.color}66)` }}
+                        pointerEvents={currentTool === 'eraser' ? 'stroke' : 'none'}
+                        onPointerDown={(e) => {
+                            if (currentTool === 'eraser') {
+                                e.stopPropagation();
+                                removeStroke(stroke.id);
+                            }
+                        }}
+                        onPointerEnter={(e) => {
+                            if (currentTool === 'eraser' && e.buttons > 0) {
+                                removeStroke(stroke.id);
+                            }
+                        }}
                     />
                 ))}
                 

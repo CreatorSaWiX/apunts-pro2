@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ReactFlow, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { DrawProvider, useDrawContext, type Stroke } from '../../contexts/DrawContext';
+import { DrawProvider, useDrawContext, type Stroke, type DrawTool } from '../../contexts/DrawContext';
 import CommunityDrawLayer from './CommunityDrawLayer';
 import { LiquidToolbar, LiquidToolbarButton } from '../ui/glass/LiquidToolbar';
 import { Palette, X, Undo2, Redo2, Trash2, Pen, Eraser, Hand } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useMultiplayerCanvas } from '../../hooks/useMultiplayerCanvas';
+import { useCanvasShortcuts } from '../../hooks/useCanvasShortcuts';
 
 // A wrapper to use the hooks inside ReactFlowProvider and DrawProvider
 const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
@@ -25,6 +26,9 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             document.body.style.overflow = 'auto';
         };
     }, [setCurrentTool]);
+
+    // Keyboard shortcuts listener (Power user UX) - shared hook with customizable settings & i18n
+    useCanvasShortcuts({ onClose, onClearBroadcast: broadcastClear });
 
     const drawColors = [
         { id: 'red', value: '#ef4444' },
@@ -63,13 +67,13 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             {/* Drawing Toolbar */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
                 <LiquidToolbar>
-                    <LiquidToolbarButton key="pan" onClick={() => setCurrentTool('pan')} active={currentTool === 'pan'}>
+                    <LiquidToolbarButton key="pan" onClick={() => setCurrentTool('pan')} active={currentTool === 'pan'} title={t('canvas.tools.pan', 'Moure / Panoràmica (H / 1 / Espai)')}>
                         <Hand size={18} />
                     </LiquidToolbarButton>
-                    <LiquidToolbarButton key="pen" onClick={() => setCurrentTool('pen')} active={currentTool === 'pen'}>
+                    <LiquidToolbarButton key="pen" onClick={() => setCurrentTool('pen')} active={currentTool === 'pen'} title={t('canvas.tools.pen', 'Dibuixar (P / 2)')}>
                         <Pen size={18} />
                     </LiquidToolbarButton>
-                    <LiquidToolbarButton key="eraser" onClick={() => setCurrentTool('eraser')} active={currentTool === 'eraser'}>
+                    <LiquidToolbarButton key="eraser" onClick={() => setCurrentTool('eraser')} active={currentTool === 'eraser'} title={t('canvas.tools.eraser', 'Esborrar (E / 3)')}>
                         <Eraser size={18} />
                     </LiquidToolbarButton>
 
@@ -92,6 +96,7 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                         key={size}
                                         type="button"
                                         onClick={() => setCurrentWidth(size)}
+                                        title={t('canvas.tools.size', 'Mida {{size}}px ([ / ])', { size })}
                                         className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition-all duration-300 ${currentWidth === size ? 'bg-white/20 shadow-inner' : 'hover:bg-white/10 opacity-70 hover:opacity-100'}`}
                                     >
                                         <div 
@@ -104,30 +109,39 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                 <div className="w-px h-6 bg-white/10 mx-1" />
 
                                 {/* Color controls */}
-                                {drawColors.map(c => (
-                                    <button
-                                        key={c.id}
-                                        type="button"
-                                        onClick={() => setCurrentColor(c.value)}
-                                        className={`w-8 h-8 shrink-0 rounded-full transition-all duration-300 relative ${currentColor === c.value ? 'scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)] z-10' : 'scale-90 hover:scale-100 opacity-70 hover:opacity-100'}`}
-                                        style={{ backgroundColor: c.value, boxShadow: currentColor === c.value ? `0 0 20px ${c.value}66` : 'none' }}
-                                    />
-                                ))}
+                                {drawColors.map(c => {
+                                    const colorTitles: Record<string, string> = {
+                                        red: t('canvas.colors.red', 'Vermell (R / 4 / C)'),
+                                        blue: t('canvas.colors.blue', 'Blau (B / 5 / C)'),
+                                        yellow: t('canvas.colors.yellow', 'Groc (Y / 6 / C)'),
+                                        purple: t('canvas.colors.purple', 'Lila (U / 7 / C)')
+                                    };
+                                    return (
+                                        <button
+                                            key={c.id}
+                                            type="button"
+                                            onClick={() => setCurrentColor(c.value)}
+                                            title={colorTitles[c.id] || t('canvas.colors.cycle', 'Canviar color (C)')}
+                                            className={`w-8 h-8 shrink-0 rounded-full transition-all duration-300 relative ${currentColor === c.value ? 'scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)] z-10' : 'scale-90 hover:scale-100 opacity-70 hover:opacity-100'}`}
+                                            style={{ backgroundColor: c.value, boxShadow: currentColor === c.value ? `0 0 20px ${c.value}66` : 'none' }}
+                                        />
+                                    );
+                                })}
 
                                 <div className="w-px h-6 bg-white/10 mx-1" />
                             </motion.div>
                         )}
                     </AnimatePresence>
 
-                    <LiquidToolbarButton key="undo" onClick={undoStroke} active={false} className={!canUndo ? 'opacity-30 cursor-not-allowed' : ''}>
+                    <LiquidToolbarButton key="undo" onClick={undoStroke} active={false} className={!canUndo ? 'opacity-30 cursor-not-allowed' : ''} title={t('canvas.actions.undo', 'Desfer (Ctrl+Z)')}>
                         <Undo2 size={18} />
                     </LiquidToolbarButton>
 
-                    <LiquidToolbarButton key="redo" onClick={redoStroke} active={false} className={!canRedo ? 'opacity-30 cursor-not-allowed' : ''}>
+                    <LiquidToolbarButton key="redo" onClick={redoStroke} active={false} className={!canRedo ? 'opacity-30 cursor-not-allowed' : ''} title={t('canvas.actions.redo', 'Refer (Ctrl+Y / Ctrl+Shift+Z)')}>
                         <Redo2 size={18} />
                     </LiquidToolbarButton>
 
-                    <LiquidToolbarButton key="clear" onClick={() => { if(window.confirm('Vols esborrar tot el llenç?')) { clearStrokes(); broadcastClear(); } }} active={false} className="text-red-400 hover:text-red-300 hover:bg-red-500/10">
+                    <LiquidToolbarButton key="clear" onClick={() => { if(window.confirm(t('canvas.confirmClear', 'Vols esborrar tot el llenç?'))) { clearStrokes(); broadcastClear(); } }} active={false} className="text-red-400 hover:text-red-300 hover:bg-red-500/10" title={t('canvas.actions.clear', 'Netejar tot el llenç (Shift+Supr)')}>
                         <Trash2 size={18} />
                     </LiquidToolbarButton>
 

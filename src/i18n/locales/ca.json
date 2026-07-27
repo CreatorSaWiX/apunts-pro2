@@ -67,7 +67,8 @@
         "global": "Global",
         "notes": "Notes",
         "editor": "Comunitat",
-        "planner": "Planificador / Calendari"
+        "planner": "Planificador / Calendari",
+        "canvas": "Llenç / Dibuix (Canvas)"
       },
       "actions": {
         "searchSubjects": "Cercar Assignatures",
@@ -93,7 +94,38 @@
         "plannerViewYear": "Vista Anual",
         "plannerPrev": "Anterior (Setmana/Mes/Any)",
         "plannerNext": "Següent (Setmana/Mes/Any)",
-        "plannerCreateTask": "Crear Tasca"
+        "plannerCreateTask": "Crear Tasca",
+        "canvasPen": "Eina Dibuixar (Pen)",
+        "canvasEraser": "Eina Esborrar (Eraser)",
+        "canvasPan": "Eina Moure (Pan)",
+        "canvasTempPan": "Moure Temporal (Mantenir)",
+        "canvasUndo": "Desfer Traç",
+        "canvasRedo": "Refer Traç",
+        "canvasClear": "Netejar Llenç",
+        "canvasSizeDecrease": "Reduir Pincell",
+        "canvasSizeIncrease": "Augmentar Pincell",
+        "canvasColorCycle": "Ciclar Color"
+      }
+    },
+    "canvas": {
+      "tools": {
+        "pan": "Moure / Panoràmica (H / 1 / Espai)",
+        "pen": "Dibuixar (P / 2)",
+        "eraser": "Esborrar (E / 3)",
+        "size": "Mida {{size}}px ([ / ])"
+      },
+      "colors": {
+        "red": "Vermell (R / 4 / C)",
+        "blue": "Blau (B / 5 / C)",
+        "yellow": "Groc (Y / 6 / C)",
+        "purple": "Lila (U / 7 / C)",
+        "cycle": "Canviar color (C)"
+      },
+      "actions": {
+        "undo": "Desfer (Ctrl+Z)",
+        "redo": "Refer (Ctrl+Y / Ctrl+Shift+Z)",
+        "clear": "Netejar tot el llenç (Shift+Supr)",
+        "confirmClear": "Vols esborrar tot el llenç?"
       }
     },
     "ai": {

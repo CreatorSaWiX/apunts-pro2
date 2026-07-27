@@ -67,7 +67,8 @@
         "global": "Global",
         "community": "Community",
         "editor": "Community",
-        "planner": "Planner / Calendar"
+        "planner": "Planner / Calendar",
+        "canvas": "Canvas / Drawing"
       },
       "actions": {
         "searchSubjects": "Search Subjects",
@@ -93,7 +94,38 @@
         "plannerViewYear": "Yearly View",
         "plannerPrev": "Previous (Week/Month/Year)",
         "plannerNext": "Next (Week/Month/Year)",
-        "plannerCreateTask": "Create Task"
+        "plannerCreateTask": "Create Task",
+        "canvasPen": "Draw Tool (Pen)",
+        "canvasEraser": "Eraser Tool",
+        "canvasPan": "Pan Tool (Hand)",
+        "canvasTempPan": "Temporary Pan (Hold)",
+        "canvasUndo": "Undo Stroke",
+        "canvasRedo": "Redo Stroke",
+        "canvasClear": "Clear Canvas",
+        "canvasSizeDecrease": "Decrease Brush Size",
+        "canvasSizeIncrease": "Increase Brush Size",
+        "canvasColorCycle": "Cycle Color"
+      }
+    },
+    "canvas": {
+      "tools": {
+        "pan": "Pan Tool (H / 1 / Space)",
+        "pen": "Draw Tool (P / 2)",
+        "eraser": "Eraser Tool (E / 3)",
+        "size": "Size {{size}}px ([ / ])"
+      },
+      "colors": {
+        "red": "Red (R / 4 / C)",
+        "blue": "Blue (B / 5 / C)",
+        "yellow": "Yellow (Y / 6 / C)",
+        "purple": "Purple (U / 7 / C)",
+        "cycle": "Cycle Color (C)"
+      },
+      "actions": {
+        "undo": "Undo (Ctrl+Z)",
+        "redo": "Redo (Ctrl+Y / Ctrl+Shift+Z)",
+        "clear": "Clear Canvas (Shift+Del)",
+        "confirmClear": "Do you want to clear the entire canvas?"
       }
     },
     "ai": {

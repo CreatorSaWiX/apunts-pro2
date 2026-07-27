@@ -19,6 +19,7 @@ import TextNode from './Nodes/TextNode';
 import PostItNode from './Nodes/PostItNode';
 import DrawLayer from './DrawLayer';
 import { DrawProvider, useDrawContext } from '../../../contexts/DrawContext';
+import { useCanvasShortcuts } from '../../../hooks/useCanvasShortcuts';
 import LiquidPanel from '../../ui/glass/LiquidPanel';
 import { LiquidToolbar, LiquidToolbarButton } from '../../ui/glass/LiquidToolbar';
 
@@ -78,6 +79,8 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
     const isPresent = useIsPresent();
     const [shouldRender, setShouldRender] = useState(true);
+
+    useCanvasShortcuts({ enabled: isDrawMode, onClose: () => setIsDrawMode(false) });
 
     useEffect(() => {
         if (!isPresent) {
@@ -322,19 +325,19 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                 {/* Floating Dock Action Buttons Bottom Center */}
                 <LiquidToolbar delay={0.3}>
                     {isDrawMode ? [
-                        <LiquidToolbarButton key="color-red" onClick={() => setCurrentColor('#ef4444')} className={currentColor === '#ef4444' ? 'text-red-500' : 'text-slate-400 hover:text-red-400'} title="Vermell">
+                        <LiquidToolbarButton key="color-red" onClick={() => setCurrentColor('#ef4444')} className={currentColor === '#ef4444' ? 'text-red-500' : 'text-slate-400 hover:text-red-400'} title={t('canvas.colors.red', 'Vermell (R / 4 / C)')}>
                             <div className="w-4 h-4 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                         </LiquidToolbarButton>,
 
-                        <LiquidToolbarButton key="color-blue" onClick={() => setCurrentColor('#3b82f6')} className={currentColor === '#3b82f6' ? 'text-blue-500' : 'text-slate-400 hover:text-blue-400'} title="Blau">
+                        <LiquidToolbarButton key="color-blue" onClick={() => setCurrentColor('#3b82f6')} className={currentColor === '#3b82f6' ? 'text-blue-500' : 'text-slate-400 hover:text-blue-400'} title={t('canvas.colors.blue', 'Blau (B / 5 / C)')}>
                             <div className="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
                         </LiquidToolbarButton>,
 
-                        <LiquidToolbarButton key="color-yellow" onClick={() => setCurrentColor('#eab308')} className={currentColor === '#eab308' ? 'text-yellow-500' : 'text-slate-400 hover:text-yellow-400'} title="Groc">
+                        <LiquidToolbarButton key="color-yellow" onClick={() => setCurrentColor('#eab308')} className={currentColor === '#eab308' ? 'text-yellow-500' : 'text-slate-400 hover:text-yellow-400'} title={t('canvas.colors.yellow', 'Groc (Y / 6 / C)')}>
                             <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
                         </LiquidToolbarButton>,
 
-                        <LiquidToolbarButton key="color-purple" onClick={() => setCurrentColor('#a855f7')} className={currentColor === '#a855f7' ? 'text-purple-500' : 'text-slate-400 hover:text-purple-400'} title="Lila">
+                        <LiquidToolbarButton key="color-purple" onClick={() => setCurrentColor('#a855f7')} className={currentColor === '#a855f7' ? 'text-purple-500' : 'text-slate-400 hover:text-purple-400'} title={t('canvas.colors.purple', 'Lila (U / 7 / C)')}>
                             <div className="w-4 h-4 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
                         </LiquidToolbarButton>,
 
@@ -352,7 +355,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                         <LiquidToolbarButton key="undo"
                             onClick={undoStroke}
-                            title={t('roadmapView.undo', 'Desfer')}
+                            title={t('canvas.actions.undo', 'Desfer (Ctrl+Z)')}
                             disabled={!canUndo}
                             className={!canUndo ? 'opacity-50 cursor-not-allowed' : ''}
                         >
@@ -361,14 +364,14 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                         <LiquidToolbarButton key="redo"
                             onClick={redoStroke}
-                            title={t('roadmapView.redo', 'Refer')}
+                            title={t('canvas.actions.redo', 'Refer (Ctrl+Y / Ctrl+Shift+Z)')}
                             disabled={!canRedo}
                             className={!canRedo ? 'opacity-50 cursor-not-allowed' : ''}
                         >
                             <Redo2 size={16} />
                         </LiquidToolbarButton>,
 
-                        <LiquidToolbarButton key="clear" onClick={clearStrokes} title={t('roadmapView.clearAll', 'Netejar tot')} className="hover:text-rose-400">
+                        <LiquidToolbarButton key="clear" onClick={() => { if(window.confirm(t('canvas.confirmClear', 'Vols esborrar tot el llenç?'))) clearStrokes(); }} title={t('canvas.actions.clear', 'Netejar tot el llenç (Shift+Supr)')} className="hover:text-rose-400">
                             <Trash2 size={16} />
                         </LiquidToolbarButton>,
 

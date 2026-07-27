@@ -67,7 +67,8 @@
         "global": "Global",
         "community": "Comunidad",
         "editor": "Comunidad",
-        "planner": "Planificador / Calendario"
+        "planner": "Planificador / Calendario",
+        "canvas": "Lienzo / Dibujo (Canvas)"
       },
       "actions": {
         "searchSubjects": "Buscar Asignaturas",
@@ -93,7 +94,38 @@
         "plannerViewYear": "Vista Anual",
         "plannerPrev": "Anterior (Semana/Mes/Año)",
         "plannerNext": "Siguiente (Semana/Mes/Año)",
-        "plannerCreateTask": "Crear Tarea"
+        "plannerCreateTask": "Crear Tarea",
+        "canvasPen": "Herramienta Dibujar (Pen)",
+        "canvasEraser": "Herramienta Borrar (Eraser)",
+        "canvasPan": "Herramienta Mover (Pan)",
+        "canvasTempPan": "Mover Temporal (Mantener)",
+        "canvasUndo": "Deshacer Trazo",
+        "canvasRedo": "Rehacer Trazo",
+        "canvasClear": "Limpiar Lienzo",
+        "canvasSizeDecrease": "Reducir Pincel",
+        "canvasSizeIncrease": "Aumentar Pincel",
+        "canvasColorCycle": "Ciclar Color"
+      }
+    },
+    "canvas": {
+      "tools": {
+        "pan": "Herramienta Mover (H / 1 / Espacio)",
+        "pen": "Dibujar (P / 2)",
+        "eraser": "Borrar (E / 3)",
+        "size": "Tamaño {{size}}px ([ / ])"
+      },
+      "colors": {
+        "red": "Rojo (R / 4 / C)",
+        "blue": "Azul (B / 5 / C)",
+        "yellow": "Amarillo (Y / 6 / C)",
+        "purple": "Morado (U / 7 / C)",
+        "cycle": "Ciclar color (C)"
+      },
+      "actions": {
+        "undo": "Deshacer (Ctrl+Z)",
+        "redo": "Rehacer (Ctrl+Y / Ctrl+Shift+Z)",
+        "clear": "Limpiar Lienzo (Shift+Supr)",
+        "confirmClear": "¿Quieres borrar todo el lienzo?"
       }
     },
     "ai": {

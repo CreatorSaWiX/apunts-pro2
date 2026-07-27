@@ -127,6 +127,22 @@ export const ShortcutsSection = () => {
                 { id: 'plannerEditTask', label: t('settings.shortcuts.actions.plannerEditTask', 'Editar Tasca'), default: { key: 'Enter', meta: false } },
                 { id: 'plannerDuplicateModifier', label: t('settings.shortcuts.actions.plannerDuplicateModifier', 'Modificador Duplicar (Ratolí)'), default: { key: 'Alt', meta: false } }
             ]
+        },
+        {
+            id: 'canvas',
+            label: t('settings.shortcuts.categories.canvas', 'Llenç / Dibuix (Canvas)'),
+            actions: [
+                { id: 'canvasPen', label: t('settings.shortcuts.actions.canvasPen', 'Eina Dibuixar (Pen)'), default: { key: 'p', meta: false } },
+                { id: 'canvasEraser', label: t('settings.shortcuts.actions.canvasEraser', 'Eina Esborrar (Eraser)'), default: { key: 'e', meta: false } },
+                { id: 'canvasPan', label: t('settings.shortcuts.actions.canvasPan', 'Eina Moure (Pan)'), default: { key: 'h', meta: false } },
+                { id: 'canvasTempPan', label: t('settings.shortcuts.actions.canvasTempPan', 'Moure Temporal (Mantenir)'), default: { key: ' ', meta: false } },
+                { id: 'canvasUndo', label: t('settings.shortcuts.actions.canvasUndo', 'Desfer Traç'), default: { key: 'z', meta: true } },
+                { id: 'canvasRedo', label: t('settings.shortcuts.actions.canvasRedo', 'Refer Traç'), default: { key: 'y', meta: true } },
+                { id: 'canvasClear', label: t('settings.shortcuts.actions.canvasClear', 'Netejar Llenç'), default: { key: 'Delete', meta: false } },
+                { id: 'canvasSizeDecrease', label: t('settings.shortcuts.actions.canvasSizeDecrease', 'Reduir Pincell'), default: { key: '[', meta: false } },
+                { id: 'canvasSizeIncrease', label: t('settings.shortcuts.actions.canvasSizeIncrease', 'Augmentar Pincell'), default: { key: ']', meta: false } },
+                { id: 'canvasColorCycle', label: t('settings.shortcuts.actions.canvasColorCycle', 'Ciclar Color'), default: { key: 'c', meta: false } }
+            ]
         }
     ];
 

@@ -42,7 +42,17 @@ const DEFAULT_SHORTCUTS: ShortcutsSettings = {
     plannerPriorityLow: { key: '1', meta: false },
     plannerPriorityMedium: { key: '2', meta: false },
     plannerPriorityHigh: { key: '3', meta: false },
-    plannerDuplicateModifier: { key: 'Alt', meta: false }
+    plannerDuplicateModifier: { key: 'Alt', meta: false },
+    canvasPen: { key: 'p', meta: false },
+    canvasEraser: { key: 'e', meta: false },
+    canvasPan: { key: 'h', meta: false },
+    canvasTempPan: { key: ' ', meta: false },
+    canvasUndo: { key: 'z', meta: true },
+    canvasRedo: { key: 'y', meta: true },
+    canvasClear: { key: 'Delete', meta: false },
+    canvasSizeDecrease: { key: '[', meta: false },
+    canvasSizeIncrease: { key: ']', meta: false },
+    canvasColorCycle: { key: 'c', meta: false }
 };
 
 interface SettingsContextType {
