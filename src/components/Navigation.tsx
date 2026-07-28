@@ -132,6 +132,7 @@ const Navigation: React.FC = () => {
 
     // Mobile Navbar states
     const [isMobile, setIsMobile] = useState(false);
+    const [isCanvasActive, setIsCanvasActive] = useState(false);
     const navRef = useRef<HTMLDivElement>(null);
 
     // Track window size for mobile navbar behaviour
@@ -142,10 +143,20 @@ const Navigation: React.FC = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    useEffect(() => {
+        const handleCanvasChange = (e: CustomEvent | Event) => {
+            if ('detail' in e) {
+                setIsCanvasActive(!!(e as CustomEvent).detail);
+            }
+        };
+        window.addEventListener('apunts_canvas_active', handleCanvasChange as EventListener);
+        return () => window.removeEventListener('apunts_canvas_active', handleCanvasChange as EventListener);
+    }, []);
+
     return (
         <>
             {/* Main Floating Navigation Pill (Bottom on Mobile, Top-Left on Desktop) */}
-            <div ref={navRef} className={`nav-pill-container fixed z-50 transition-all duration-300 ease-out bottom-4 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[calc(100%-2rem)] max-w-[400px] md:w-[max-content] md:max-w-none`}>
+            <div ref={navRef} className={`nav-pill-container fixed z-50 transition-all duration-300 ease-out bottom-4 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[calc(100%-2rem)] max-w-[400px] md:w-[max-content] md:max-w-none ${isMobile && isCanvasActive ? 'opacity-0 pointer-events-none translate-y-24 !z-0' : ''}`}>
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}

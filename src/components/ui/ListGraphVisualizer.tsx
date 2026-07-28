@@ -4,46 +4,51 @@ import { useState, useMemo } from 'react';
 import GraphVisualizer from './GraphVisualizer';
 import { Plus, Minus } from 'lucide-react';
 
-export default function ListGraphVisualizer() {
-    // La nostra memòria virtual de la Llista Enllaçada
-    const [list, setList] = useState<number[]>([10, 20, 30]);
-    const [inputValue, setInputValue] = useState<string>('40');
-    const [lastAction, setLastAction] = useState<string>('');
-    const [updateKey, setUpdateKey] = useState(0);
+interface GraphNode {
+    id: string;
+    label: string;
+    color?: string;
+    overrideVal?: number;
+}
 
-    const handlePushFront = () => {
-        if (!inputValue) return;
-        const val = parseInt(inputValue, 10);
-        if (isNaN(val)) return;
+interface GraphLink {
+    source: string;
+    target: string;
+    label?: string;
+}
+
+export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { initialList?: number[] }) {
+    const [list, setList] = useState<number[]>(initialList);
+    const [inputVal, setInputVal] = useState<string>("");
+    const [lastAction, setLastAction] = useState<string>("Inici (Llista estàtica generada automàticament pre-estesa)");
+    const [updateKey, setUpdateKey] = useState<number>(0);
+
+    const handlePushBack = () => {
         if (list.length >= 8) {
-            setLastAction("Error: Llista massa llarga per visualitzar (Overflow)");
+            setLastAction("Avís: Mida màxima de llista assolida (8 elements).");
             return;
         }
-        setList([val, ...list]);
-        setInputValue(Math.floor(Math.random() * 100).toString());
-        setLastAction(`L.push_front(${val})`);
+        const val = parseInt(inputVal) || Math.floor(Math.random() * 90) + 10;
+        setList([...list, val]);
+        setLastAction(`L.push_back(${val}) -> afegeix al final`);
+        setInputVal("");
         setUpdateKey(k => k + 1);
     };
 
-    const handlePushBack = () => {
-        if (!inputValue) return;
-        const val = parseInt(inputValue, 10);
-        if (isNaN(val)) return;
+    const handlePushFront = () => {
         if (list.length >= 8) {
-            setLastAction("Error: Llista massa llarga per visualitzar (Overflow)");
+            setLastAction("Avís: Mida màxima de llista assolida (8 elements).");
             return;
         }
-        setList([...list, val]);
-        setInputValue(Math.floor(Math.random() * 100).toString());
-        setLastAction(`L.push_back(${val})`);
+        const val = parseInt(inputVal) || Math.floor(Math.random() * 90) + 10;
+        setList([val, ...list]);
+        setLastAction(`L.push_front(${val}) -> afegeix a l'inici`);
+        setInputVal("");
         setUpdateKey(k => k + 1);
     };
 
     const handlePopFront = () => {
-        if (list.length === 0) {
-            setLastAction("Error: Llista buida");
-            return;
-        }
+        if (list.length === 0) return;
         const val = list[0];
         setList(list.slice(1));
         setLastAction(`L.pop_front() -> extreu ${val}`);
@@ -51,10 +56,7 @@ export default function ListGraphVisualizer() {
     };
 
     const handlePopBack = () => {
-        if (list.length === 0) {
-            setLastAction("Error: Llista buida");
-            return;
-        }
+        if (list.length === 0) return;
         const val = list[list.length - 1];
         setList(list.slice(0, -1));
         setLastAction(`L.pop_back() -> extreu ${val}`);
@@ -63,8 +65,8 @@ export default function ListGraphVisualizer() {
 
     // Construcció dinàmica del JSON del Graf basat en l'estat actual de 'list'
     const graphData = useMemo(() => {
-        const nodes: any[] = [{ id: "begin", label: "begin()", color: "#10b981" }];
-        const links: any[] = [];
+        const nodes: GraphNode[] = [{ id: "begin", label: "begin()", color: "#10b981" }];
+        const links: GraphLink[] = [];
 
         // Els elements reals de la llista
         list.forEach((val, index) => {
@@ -100,60 +102,67 @@ export default function ListGraphVisualizer() {
 
             {/* Comandaments de la Llista Enllaçada */}
             <div className="flex flex-col gap-4 w-full max-w-xs mt-8">
-                <div className="flex items-center gap-2 mb-2 border-b border-slate-800/80 pb-2">
-                    <h3 className="text-slate-500 text-[10px] font-bold tracking-widest uppercase">mètodes std::list</h3>
+                <div className="flex items-center justify-between mb-2 border-b border-slate-800/80 pb-2">
+                    <h3 className="text-slate-400 text-xs font-extrabold tracking-widest uppercase">mètodes std::list</h3>
+                    <span className="text-[10px] text-slate-500 font-mono">Mida: {list.length}/8</span>
                 </div>
 
-                <input
-                    type="number"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Valor Node"
-                    className="w-full h-10 bg-slate-900/40 border border-slate-800 rounded-lg px-3 text-center text-sky-200 focus:outline-none focus:border-sky-500/50 transition-colors"
-                />
+                <div className="relative">
+                    <input
+                        type="number"
+                        value={inputVal}
+                        onChange={(e) => setInputVal(e.target.value)}
+                        placeholder="Valor Node (ex: 42)"
+                        className="w-full h-11 bg-slate-900/60 border border-slate-700/80 rounded-full px-4 text-center text-sky-200 font-bold focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all placeholder:text-slate-500 shadow-inner"
+                    />
+                </div>
 
-                <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="grid grid-cols-2 gap-2.5 mt-1">
                     <button type="button"
                         onClick={handlePushFront}
-                        className="h-10 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-[10px] tracking-wide rounded-lg flex items-center justify-center gap-1 transition-all active:scale-[0.98] border border-emerald-500/20"
+                        disabled={list.length >= 8}
+                        className="h-11 bg-emerald-500/15 hover:bg-emerald-500/25 disabled:opacity-40 disabled:hover:bg-emerald-500/15 text-emerald-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
                         title="Insereix al principi"
                     >
-                        <Plus size={14} /> p_front
+                        <Plus size={16} /> push_front
                     </button>
 
                     <button type="button"
                         onClick={handlePushBack}
-                        className="h-10 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-[10px] tracking-wide rounded-lg flex items-center justify-center gap-1 transition-all active:scale-[0.98] border border-emerald-500/20"
+                        disabled={list.length >= 8}
+                        className="h-11 bg-emerald-500/15 hover:bg-emerald-500/25 disabled:opacity-40 disabled:hover:bg-emerald-500/15 text-emerald-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
                         title="Insereix al final"
                     >
-                        <Plus size={14} /> p_back
+                        <Plus size={16} /> push_back
                     </button>
 
                     <button type="button"
                         onClick={handlePopFront}
-                        className="h-10 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-[10px] tracking-wide rounded-lg flex items-center justify-center gap-1 transition-all active:scale-[0.98] border border-rose-500/20"
+                        disabled={list.length === 0}
+                        className="h-11 bg-rose-500/15 hover:bg-rose-500/25 disabled:opacity-40 disabled:hover:bg-rose-500/15 text-rose-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
                         title="Extreu del principi"
                     >
-                        <Minus size={14} /> pop_front
+                        <Minus size={16} /> pop_front
                     </button>
 
                     <button type="button"
                         onClick={handlePopBack}
-                        className="h-10 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-[10px] tracking-wide rounded-lg flex items-center justify-center gap-1 transition-all active:scale-[0.98] border border-rose-500/20"
+                        disabled={list.length === 0}
+                        className="h-11 bg-rose-500/15 hover:bg-rose-500/25 disabled:opacity-40 disabled:hover:bg-rose-500/15 text-rose-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
                         title="Extreu del final"
                     >
-                        <Minus size={14} /> pop_back
+                        <Minus size={16} /> pop_back
                     </button>
                 </div>
 
 
-                <div className="w-full mt-4 h-4 flex items-center justify-center">
+                <div className="w-full mt-4 min-h-[20px] flex items-center justify-center">
                     {lastAction ? (
-                        <span className={`text-[11px] font-bold ${lastAction.startsWith('Error') ? 'text-rose-400/80' : 'text-slate-500'}`}>
+                        <span className={`text-xs font-bold text-center ${lastAction.startsWith('Error') ? 'text-rose-400' : 'text-slate-300'}`}>
                             {lastAction}
                         </span>
                     ) : (
-                        <span className="text-[11px] text-slate-800/80">Esperant ordres per la llista...</span>
+                        <span className="text-xs text-slate-500 italic">Esperant ordres per la llista...</span>
                     )}
                 </div>
             </div>

@@ -38,15 +38,59 @@
   }
 }
 
-/* Mobile GPU performance optimization: cap heavy backdrop filters on small screens to prevent fill-rate exhaustion */
-@media (max-width: 768px) {
-  .backdrop-blur-xl,
-  .backdrop-blur-2xl,
-  .backdrop-blur-3xl {
-    -webkit-backdrop-filter: blur(8px) !important;
-    backdrop-filter: blur(8px) !important;
+/* Lite Mode GPU & WCAG performance optimization: disable heavy backdrop filters on low-end/slow devices and provide cooperative fallbacks without destroying badge tints */
+.lite-mode *, .lite-mode ::before, .lite-mode ::after {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.lite-mode .glass-panel,
+.lite-mode .apple-glass-panel,
+.lite-mode .premium-bento-card {
+  background-color: rgba(15, 23, 42, 0.96) !important;
+}
+
+/* Awwwards Shimmer Skeleton Placeholder (60fps compositor thread animation) */
+.shimmer-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(30, 41, 59, 0.6);
+}
+
+.shimmer-skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.08) 20%,
+    rgba(255, 255, 255, 0.15) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer-slide 2s infinite;
+  will-change: transform;
+}
+
+@keyframes shimmer-slide {
+  100% {
+    transform: translateX(100%);
   }
 }
+
+/* Mobile Safe Area utilities for Bottom Navigation and Header */
+.pb-safe-nav {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 20px)) !important;
+}
+
+.pt-safe-header {
+  padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)) !important;
+}
+
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
@@ -525,8 +569,11 @@ canvas {
 .masonry-item {
   break-inside: avoid;
   margin-bottom: 1.5rem;
-  transform: translateZ(0);
-  /* Hardware acceleration */
+  /* Avoid blanket translateZ(0) to prevent GPU VRAM layer explosion on low-end Androids */
+}
+
+.masonry-item:hover, .masonry-item:active {
+  will-change: transform;
 }
 
 @plugin "@tailwindcss/typography";

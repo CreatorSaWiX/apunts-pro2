@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettings } from '../../contexts/SettingsContext';
-import { Keyboard, RotateCcw } from 'lucide-react';
+import { Keyboard, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
 
 export const ShortcutsSection = () => {
     const { t } = useTranslation();
     const { shortcuts, setShortcuts } = useSettings();
     const [listeningAction, setListeningAction] = useState<string | null>(null);
+    const [showOnMobile, setShowOnMobile] = useState<boolean>(false);
 
     const formatKey = (meta: boolean, key: string) => {
         if (!key) return '';
@@ -148,13 +149,33 @@ export const ShortcutsSection = () => {
 
     return (
         <div id="shortcuts" className="flex flex-col gap-6 w-full pt-6 pb-12">
-            <div className="w-full">
-                <h2 className="text-2xl font-bold text-white mb-1">{t('settings.shortcuts.title', 'Dreceres de Teclat')}</h2>
-                <p className="text-slate-400 text-sm font-medium">{t('settings.shortcuts.subtitle', 'Personalitza les dreceres per accedir ràpidament a diferents funcions.')}</p>
+            {/* Mobile / Touch Screen Accordion Notice */}
+            <div className="md:hidden flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-3xl text-center gap-4 my-2">
+                <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 shadow-lg shadow-sky-500/5">
+                    <Keyboard size={24} />
+                </div>
+                <div>
+                    <h3 className="text-base font-bold text-white mb-1">Dreceres de Teclat (Dispositius Tàctils)</h3>
+                    <p className="text-xs text-slate-400 font-medium max-w-sm leading-relaxed mb-3">Les dreceres estan pensades per a teclats físics, però si tens un teclat Bluetooth connectat al teu mòbil o tauleta, pots utilitzar-les.</p>
+                    <button type="button"
+                        onClick={() => setShowOnMobile(!showOnMobile)}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition-all active:scale-95 border border-white/10 min-h-[44px]"
+                    >
+                        <span>{showOnMobile ? "Amagar dreceres" : "Configurar amb teclat extern"}</span>
+                        {showOnMobile ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </button>
+                </div>
             </div>
 
-            <div className="w-full mt-2 flex flex-col gap-8">
-                {categories.map(category => (
+            {/* Shortcuts Content (Always visible on Desktop md:, conditionally on mobile) */}
+            <div className={`${showOnMobile ? 'flex' : 'hidden'} md:flex flex-col gap-6 w-full`}>
+                <div className="w-full">
+                    <h2 className="text-2xl font-bold text-white mb-1">{t('settings.shortcuts.title', 'Dreceres de Teclat')}</h2>
+                    <p className="text-slate-400 text-sm font-medium">{t('settings.shortcuts.subtitle', 'Personalitza les dreceres per accedir ràpidament a diferents funcions.')}</p>
+                </div>
+
+                <div className="w-full mt-2 flex flex-col gap-8">
+                    {categories.map(category => (
                     <div key={category.id} className="flex flex-col gap-3">
                         <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider pl-2">{category.label}</h3>
                         <div className="flex flex-col gap-2">
@@ -199,6 +220,7 @@ export const ShortcutsSection = () => {
                         </div>
                     </div>
                 ))}
+                </div>
             </div>
         </div>
     );

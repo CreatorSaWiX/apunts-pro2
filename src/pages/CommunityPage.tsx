@@ -171,6 +171,24 @@ const CommunityPage = () => {
     };
 
     useEffect(() => {
+        if (typeof document !== 'undefined') {
+            if (isCanvasOpen) {
+                document.body.classList.add('canvas-active');
+                window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: true }));
+            } else {
+                document.body.classList.remove('canvas-active');
+                window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: false }));
+            }
+        }
+        return () => {
+            if (typeof document !== 'undefined') {
+                document.body.classList.remove('canvas-active');
+                window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: false }));
+            }
+        };
+    }, [isCanvasOpen]);
+
+    useEffect(() => {
         return () => {
             animationTimersRef.current.forEach(clearTimeout);
             if (observer.current) observer.current.disconnect();
@@ -867,7 +885,7 @@ const CommunityPage = () => {
                         animate={{ clipPath: 'circle(150% at calc(100% - 4rem) 2.5rem)' }}
                         exit={{ clipPath: 'circle(0% at calc(100% - 4rem) 2.5rem)' }}
                         transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                        className="fixed inset-0 z-40 bg-[#09090b]"
+                        className="fixed inset-0 z-30 bg-[#09090b]"
                     >
                         <Suspense fallback={null}>
                             <CommunityCanvas onClose={handleCloseCanvas} isClosing={isCanvasClosing} />

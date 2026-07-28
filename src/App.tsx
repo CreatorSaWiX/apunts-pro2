@@ -6,7 +6,8 @@ import Background from './components/Background';
 // import FeedbackModal from './components/FeedbackModal';
 import HomePage from './pages/HomePage';
 import PageTransition from './components/ui/PageTransition';
-import { AnimatePresence, LazyMotion, domMax, MotionConfig } from 'framer-motion';
+import { AnimatePresence, LazyMotion, MotionConfig } from 'framer-motion';
+const loadFeatures = () => import('framer-motion').then(res => res.domMax);
 import { AppProviders } from './contexts/AppProviders';
 import Spinner from './components/ui/Spinner';
 import { Analytics } from "@vercel/analytics/react";
@@ -33,7 +34,7 @@ function App() {
   return (
     <AppProviders>
       <MotionConfig reducedMotion="user">
-      <LazyMotion features={domMax}>
+      <LazyMotion features={loadFeatures} strict>
         <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
         <Background />
         {/* <PerformanceMonitor /> */}

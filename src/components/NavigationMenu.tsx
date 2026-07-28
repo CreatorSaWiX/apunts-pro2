@@ -50,13 +50,14 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                     </h3>
                     <button type="button"
                         onClick={() => setIsMenuOpen(false)}
-                        className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors"
+                        className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/10 active:bg-white/20 rounded-full text-slate-300 hover:text-white transition-colors"
+                        aria-label="Tancar menú"
                     >
                         <X size={24} />
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
                     <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2">{t('navigation.courseSyllabus', 'Temari del Curs')}</div>
                     {[...allPersonalNotes]
                         .filter(note => {
@@ -74,9 +75,9 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                                 key={topic.slug}
                                 to={`/tema/${topic.slug}`}
                                 onClick={() => setIsMenuOpen(false)}
-                                className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-800/50 border border-transparent hover:border-slate-700/50 transition-all group"
+                                className="flex items-center gap-4 p-3.5 min-h-[48px] rounded-2xl hover:bg-slate-800/50 active:bg-slate-800 border border-transparent hover:border-slate-700/50 transition-all group"
                             >
-                                <span className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-500 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
+                                <span className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-400 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
                                     {(() => {
                                         const match = topic.title.match(/^Tema (\d+)/);
                                         if (match) return match[1];
@@ -86,11 +87,11 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                                     })()}
                                 </span>
                                 <div className="flex-1 min-w-0">
-                                    <h4 className="text-slate-300 font-medium group-hover:text-white transition-colors truncate">
+                                    <h4 className="text-slate-200 font-medium group-hover:text-white transition-colors truncate">
                                         {topic.title}
                                     </h4>
                                 </div>
-                                <ChevronRight size={16} className="text-slate-600 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                                <ChevronRight size={16} className="text-slate-500 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
                             </Link>
                         ))}
 
@@ -113,24 +114,24 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                                         key={topic.slug}
                                         to={`/tema/${topic.slug}`}
                                         onClick={() => setIsMenuOpen(false)}
-                                        className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-800/50 border border-transparent hover:border-slate-700/50 transition-all group"
+                                        className="flex items-center gap-4 p-3.5 min-h-[48px] rounded-2xl hover:bg-slate-800/50 active:bg-slate-800 border border-transparent hover:border-slate-700/50 transition-all group"
                                     >
-                                        <span className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-500 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-400 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
                                             L{i + 1}
                                         </span>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="text-slate-300 font-medium group-hover:text-white transition-colors truncate">
+                                            <h4 className="text-slate-200 font-medium group-hover:text-white transition-colors truncate">
                                                 {topic.title}
                                             </h4>
                                         </div>
-                                        <ChevronRight size={16} className="text-slate-600 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                                        <ChevronRight size={16} className="text-slate-500 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
                                     </Link>
                                 ))}
                         </>
                     )}
                 </div>
 
-                <div className="p-4 border-t border-white/5 text-center text-xs text-slate-600">
+                <div className="p-4 pb-safe-nav md:pb-4 border-t border-white/5 text-center text-xs text-slate-500">
                     {t('navigation.madeWithLove', 'Fet amb ❤️ per a la FIB')}
                 </div>
             </motion.div>

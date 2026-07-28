@@ -26,6 +26,7 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         
         // Hide scrollbar on the page
         document.body.style.overflow = 'hidden';
+        
         return () => {
             document.body.style.overflow = 'auto';
         };

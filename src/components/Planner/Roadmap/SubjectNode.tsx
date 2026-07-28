@@ -5,9 +5,11 @@ import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
 import { m as motion } from 'framer-motion';
 import Tilt from 'react-parallax-tilt';
 import { useTranslation } from 'react-i18next';
+import { useMobilePerformance } from '../../../hooks/useMobilePerformance';
 
 const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) => {
     const { t } = useTranslation();
+    const { isMobile, isLiteMode } = useMobilePerformance();
 
     // Hexagonal / Sci-Fi styles
     const getStatusStyles = () => {
@@ -108,24 +110,10 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
         return id;
     };
 
-    return (
-        <Tilt
-            tiltMaxAngleX={10}
-            tiltMaxAngleY={10}
-            perspective={800}
-            scale={1.02}
-            transitionSpeed={1500}
-            gyroscope={false}
-            glareEnable={true}
-            glareMaxOpacity={0.1}
-            glareColor="#ffffff"
-            glarePosition="all"
-            glareBorderRadius="8px"
-            className="rounded-lg"
-        >
+    const nodeContent = (
         <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            initial={isLiteMode ? false : { scale: 0.9, opacity: 0 }}
+            animate={isLiteMode ? { scale: 1, opacity: 1 } : { scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             style={{ transformStyle: 'preserve-3d' }}
             className={`relative min-w-[150px] max-w-[180px] p-0 rounded-lg border-2 transition-colors duration-300 ${containerClasses} ${selected ? 'ring-2 ring-white/70 ring-offset-2 ring-offset-slate-950' : ''}`}
@@ -134,7 +122,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
 
             <div className="relative z-10 flex flex-col p-3 items-center text-center overflow-hidden rounded-lg h-full">
                 {/* Tech texture pattern overlay */}
-                <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '8px 8px' }}></div>
+                {!isLiteMode && <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '8px 8px' }}></div>}
 
                 {/* Type indicator line */}
                 <div className={`absolute top-0 left-0 w-full h-[2px] ${getTopBarColor()} opacity-50`}></div>
@@ -154,7 +142,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             </div>
 
             {/* Glowing rotating border for in_progress / retaking */}
-            {(data.status === 'in_progress' || data.status === 'retaking') && (
+            {!isLiteMode && (data.status === 'in_progress' || data.status === 'retaking') && (
                 <div className="absolute inset-[-2px] rounded-lg overflow-hidden pointer-events-none z-0 mix-blend-screen">
                     <div className={`absolute inset-[-100%] animate-[spin_3s_linear_infinite] ${data.status === 'retaking' ? 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(251,191,36,0.6)_360deg)]' : 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.6)_360deg)]'}`} />
                     <div className="absolute inset-[2px] bg-slate-900 rounded-lg" />
@@ -164,7 +152,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             {/* ATTEMPTS BADGE */}
             {data.attempts > 1 && data.status !== 'passed' && (
                 <div className="absolute -top-2 -right-2 bg-amber-500 text-amber-950 text-[9px] font-black px-1.5 py-0.5 rounded-sm shadow-[0_0_10px_rgba(245,158,11,0.6)] border border-amber-300 z-20 flex items-center gap-1 transform rotate-3">
-                    <span className="animate-pulse">⚠️</span> {t('planner.roadmapSubjectNode.attempt', 'INTENT')} {data.attempts}
+                    <span className={!isLiteMode ? "animate-pulse" : ""}>⚠️</span> {t('planner.roadmapSubjectNode.attempt', 'INTENT')} {data.attempts}
                 </div>
             )}
 
@@ -182,6 +170,28 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
 
             <Handle type="source" position={Position.Bottom} className="w-3 h-1 !bg-sky-400 !border-0 !rounded-sm opacity-50" />
         </motion.div>
+    );
+
+    if (isMobile || isLiteMode) {
+        return <div className="rounded-lg">{nodeContent}</div>;
+    }
+
+    return (
+        <Tilt
+            tiltMaxAngleX={10}
+            tiltMaxAngleY={10}
+            perspective={800}
+            scale={1.02}
+            transitionSpeed={1500}
+            gyroscope={false}
+            glareEnable={true}
+            glareMaxOpacity={0.1}
+            glareColor="#ffffff"
+            glarePosition="all"
+            glareBorderRadius="8px"
+            className="rounded-lg"
+        >
+            {nodeContent}
         </Tilt>
     );
 };

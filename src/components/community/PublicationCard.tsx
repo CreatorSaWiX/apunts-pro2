@@ -11,6 +11,7 @@ import Spinner from '../ui/Spinner';
 import FileUploader from '../ui/FileUploader';
 import { ImagePlus } from 'lucide-react';
 import subjectsData from '../../data/subjects.json';
+import { useMobilePerformance } from '../../hooks/useMobilePerformance';
 
 interface PublicationCardProps {
     post: CommunityPost;
@@ -23,6 +24,7 @@ const MODEL_EXTENSIONS = ['gltf', 'glb', 'obj'];
 
 const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: PublicationCardProps) => {
     const { user } = useAuth();
+    const { isMobile, isLiteMode } = useMobilePerformance();
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     
@@ -97,117 +99,128 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
         return subjectsData.find(s => s.id === post.subject || s.name === post.subject);
     }, [post.subject]);
 
+    const cardVisuals = (
+        <>
+            {/* Spotlight Overlay - Static Performant CSS Glow */}
+            <div 
+                className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_0%,transparent_70%)]"
+            />
+            {isVideo && isHovered && firstAttachment ? (
+                <video 
+                    src={firstAttachment.url} 
+                    autoPlay 
+                    muted 
+                    loop 
+                    className="w-full h-full object-cover transition-opacity duration-300 opacity-0 animate-[fadeIn_0.3s_ease-in-out_forwards]" 
+                />
+            ) : coverUrl ? (
+                <>
+                    {!imageLoaded && (
+                        <div className="absolute inset-0 shimmer-skeleton z-10" />
+                    )}
+                    <img
+                        src={coverUrl} 
+                        alt={post.content.substring(0, 20)} 
+                        className={`w-full h-full object-cover transition-all duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''} ${imageLoaded ? 'opacity-100 blur-none' : 'opacity-0 blur-sm'}`}
+                        loading="lazy"
+                        decoding="async"
+                        onLoad={() => setImageLoaded(true)}
+                    />
+                </>
+            ) : (
+                <div className={`w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-white/10 to-white/5 p-6 text-center border border-white/5 rounded-[inherit] relative overflow-hidden transition-transform duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''}`}>
+                    <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-0" />
+                    <span className="text-4xl font-black text-white/10 select-none absolute -bottom-4 -right-4">{subjectData ? subjectData.name : post.subject}</span>
+                    <p className="text-white font-bold text-lg leading-snug line-clamp-3 relative z-10"
+                        dangerouslySetInnerHTML={{
+                            __html: safeContentHero
+                        }}
+                    />
+                </div>
+            )}
+
+            {/* Custom Thumbnail Upload Overlay */}
+            {onThumbnailUpload && (
+                <div 
+                    className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center text-white cursor-pointer z-30 backdrop-blur-sm rounded-[inherit]"
+                    title="Canviar Miniatura"
+                >
+                    <div className="flex flex-col items-center justify-center transform scale-90 group-hover:scale-100 transition-transform duration-300 pointer-events-none">
+                        <ImagePlus size={32} className="mb-2 drop-shadow-md text-white" />
+                        <span className="text-xs font-bold tracking-widest uppercase text-center px-4 drop-shadow-md">Canviar Miniatura</span>
+                    </div>
+                    <div className="absolute inset-0 z-40">
+                        <FileUploader
+                            variant="avatar"
+                            acceptType="images"
+                            maxFiles={1}
+                            maxSizeMB={5}
+                            onUploadComplete={onThumbnailUpload}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* Overlays */}
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            {/* Top Right Actions (Like Button - Always visible on mobile, hover on desktop) */}
+            <div className="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 z-10">
+                <button type="button" 
+                    onClick={handleLike}
+                    className={`h-8 px-2.5 rounded-full flex items-center justify-center gap-1.5 backdrop-blur-md border border-white/20 transition-all active:scale-90 ${hasLiked ? 'bg-rose-500/20 text-rose-500 border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]' : 'bg-black/60 text-white hover:bg-black/80'}`}
+                    aria-label="M'agrada"
+                >
+                    <Heart size={14} fill={hasLiked ? 'currentColor' : 'none'} />
+                    {likeCount > 0 && <span className="text-xs font-bold">{likeCount}</span>}
+                </button>
+            </div>
+
+            {/* Top Left Badges */}
+            <div className="absolute top-2 left-2 flex flex-wrap gap-1.5 z-10 max-w-[80%]">
+                {post.isPinned && (
+                    <div className="bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center justify-center shadow-xl">
+                        <Pin size={12} className="text-white -rotate-45" />
+                    </div>
+                )}
+                {subjectData && (
+                    <div className="bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold tracking-widest px-2 py-1 rounded-md flex items-center gap-1.5 shadow-xl">
+                        <span className={`w-1.5 h-1.5 rounded-full bg-${subjectData.colorToken}`} />
+                        {subjectData.name}
+                    </div>
+                )}
+                {badgeText && (
+                    <div className="bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold tracking-widest px-2 py-1 rounded-md flex items-center gap-1.5 shadow-xl">
+                        <span className="text-primary">{badgeIcon}</span>
+                        {badgeText}
+                    </div>
+                )}
+            </div>
+        </>
+    );
+
     return (
         <div 
             className="flex flex-col gap-2 group cursor-pointer"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <Tilt
-                tiltEnable={!isHeroMode}
-                tiltMaxAngleX={isHeroMode ? 0 : 5}
-                tiltMaxAngleY={isHeroMode ? 0 : 5}
-                scale={isHeroMode ? 1 : 1.02}
-                transitionSpeed={2000}
-                className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 group-hover:border-white/20 shadow-lg group-hover:shadow-[0_15px_40px_rgba(255,255,255,0.08)] transition-all duration-500"
-            >
-                {/* Spotlight Overlay - Static Performant CSS Glow */}
-                <div 
-                    className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_0%,transparent_70%)]"
-                />
-                {isVideo && isHovered && firstAttachment ? (
-                    <video 
-                        src={firstAttachment.url} 
-                        autoPlay 
-                        muted 
-                        loop 
-                        className="w-full h-full object-cover transition-opacity duration-300 opacity-0 animate-[fadeIn_0.3s_ease-in-out_forwards]" 
-                    />
-                ) : coverUrl ? (
-                    <>
-                        {!imageLoaded && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-[#0F172A] z-10">
-                                <Spinner size="md" variant="primary" />
-                            </div>
-                        )}
-                        <img
-                            src={coverUrl} 
-                            alt={post.content.substring(0, 20)} 
-                            className={`w-full h-full object-cover transition-all duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''} ${imageLoaded ? 'opacity-100 blur-none' : 'opacity-0 blur-sm'}`}
-                            loading="lazy"
-                            decoding="async"
-                            onLoad={() => setImageLoaded(true)}
-                        />
-                    </>
-                ) : (
-                    <div className={`w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-white/10 to-white/5 p-6 text-center border border-white/5 rounded-[inherit] relative overflow-hidden transition-transform duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''}`}>
-                        <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-0" />
-                        <span className="text-4xl font-black text-white/10 select-none absolute -bottom-4 -right-4">{subjectData ? subjectData.name : post.subject}</span>
-                        <p className="text-white font-bold text-lg leading-snug line-clamp-3 relative z-10"
-                            dangerouslySetInnerHTML={{
-                                __html: safeContentHero
-                            }}
-                        />
-                    </div>
-                )}
-
-                {/* Custom Thumbnail Upload Overlay */}
-                {onThumbnailUpload && (
-                    <div 
-                        className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center text-white cursor-pointer z-30 backdrop-blur-sm rounded-[inherit]"
-                        title="Canviar Miniatura"
-                    >
-                        <div className="flex flex-col items-center justify-center transform scale-90 group-hover:scale-100 transition-transform duration-300 pointer-events-none">
-                            <ImagePlus size={32} className="mb-2 drop-shadow-md text-white" />
-                            <span className="text-xs font-bold tracking-widest uppercase text-center px-4 drop-shadow-md">Canviar Miniatura</span>
-                        </div>
-                        <div className="absolute inset-0 z-40">
-                            <FileUploader
-                                variant="avatar"
-                                acceptType="images"
-                                maxFiles={1}
-                                maxSizeMB={5}
-                                onUploadComplete={onThumbnailUpload}
-                            />
-                        </div>
-                    </div>
-                )}
-
-                {/* Overlays */}
-                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                {/* Top Right Actions (Like Button) */}
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                    <button type="button" 
-                        onClick={handleLike}
-                        className={`h-8 px-2.5 rounded-full flex items-center justify-center gap-1.5 backdrop-blur-md border border-white/20 transition-all active:scale-90 ${hasLiked ? 'bg-rose-500/20 text-rose-500 border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]' : 'bg-black/50 text-white hover:bg-black/70'}`}
-                    >
-                        <Heart size={14} fill={hasLiked ? 'currentColor' : 'none'} />
-                        {likeCount > 0 && <span className="text-xs font-bold">{likeCount}</span>}
-                    </button>
+            {isMobile || isLiteMode || isHeroMode ? (
+                <div className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 active:scale-[0.98] active:border-white/20 shadow-lg transition-all duration-200">
+                    {cardVisuals}
                 </div>
-
-                {/* Top Left Badges */}
-                <div className="absolute top-2 left-2 flex flex-wrap gap-1.5 z-10 max-w-[80%]">
-                    {post.isPinned && (
-                        <div className="bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center justify-center shadow-xl">
-                            <Pin size={12} className="text-white -rotate-45" />
-                        </div>
-                    )}
-                    {subjectData && (
-                        <div className="bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold tracking-widest px-2 py-1 rounded-md flex items-center gap-1.5 shadow-xl">
-                            <span className={`w-1.5 h-1.5 rounded-full bg-${subjectData.colorToken}`} />
-                            {subjectData.name}
-                        </div>
-                    )}
-                    {badgeText && (
-                        <div className="bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold tracking-widest px-2 py-1 rounded-md flex items-center gap-1.5 shadow-xl">
-                            <span className="text-primary">{badgeIcon}</span>
-                            {badgeText}
-                        </div>
-                    )}
-                </div>
-            </Tilt>
+            ) : (
+                <Tilt
+                    tiltEnable={true}
+                    tiltMaxAngleX={5}
+                    tiltMaxAngleY={5}
+                    scale={1.02}
+                    transitionSpeed={2000}
+                    className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 group-hover:border-white/20 shadow-lg group-hover:shadow-[0_15px_40px_rgba(255,255,255,0.08)] transition-all duration-500"
+                >
+                    {cardVisuals}
+                </Tilt>
+            )}
 
             {/* Info Section */}
             <div className="flex flex-col gap-1 px-1 mt-1">
@@ -217,15 +230,15 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                     }}
                 />
                 
-                <div className="flex items-center justify-between mt-0.5">
-                    <div className="flex items-center gap-1.5 min-w-0">
+                <div className="flex items-center justify-between gap-2 mt-1">
+                    <div className="flex items-center gap-1.5 min-w-0 flex-1 mr-1">
                         <img src={post.userAvatar} alt={post.username} loading="lazy" decoding="async" className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
-                        <span className="text-[11px] text-slate-400 truncate group-hover:text-white transition-colors">
+                        <span className="text-[11px] text-slate-300 truncate group-hover:text-white transition-colors">
                             {post.username}
                         </span>
                     </div>
                     
-                    <div className="flex items-center gap-2 shrink-0 text-slate-500 text-[11px] font-medium">
+                    <div className="flex items-center gap-2 shrink-0 text-slate-400 text-[11px] font-medium">
                         <div className="flex items-center gap-1">
                             <Heart size={12} className={hasLiked ? 'text-rose-500 fill-rose-500' : ''} />
                             <span className={hasLiked ? 'text-rose-500' : ''}>{likeCount > 0 ? likeCount : ''}</span>

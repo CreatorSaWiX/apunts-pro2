@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Settings2, Sparkles, Bot, Database, Keyboard } from 'lucide-react';
+import { Settings2, Sparkles, Bot, Database, Keyboard, type LucideIcon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 import { GeneralSection } from '../components/settings/GeneralSection';
@@ -22,7 +22,7 @@ const SettingsContent = () => {
     const { user } = useAuth();
     const [activeTab, setActiveTab] = useState<TabId>('general');
 
-    const TABS: { id: TabId; label: string; icon: any }[] = [
+    const TABS: { id: TabId; label: string; icon: LucideIcon }[] = [
         { id: 'general', label: t('nav.general', 'General'), icon: Settings2 },
         { id: 'shortcuts', label: t('nav.shortcuts', 'Dreceres'), icon: Keyboard },
         { id: 'offline', label: t('nav.offline', 'Emmagatzematge'), icon: Database },
@@ -91,9 +91,9 @@ const SettingsContent = () => {
                                         <div className="relative z-10 flex items-center gap-3">
                                             <tab.icon
                                                 size={18}
-                                                className={`transition-colors duration-300 ${isActive ? 'text-white' : 'text-neutral-500 group-hover:text-neutral-300'}`}
+                                                className={`transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}
                                             />
-                                            <span className={`font-medium text-[14px] transition-colors duration-300 ${isActive ? 'text-white' : 'text-neutral-500 group-hover:text-neutral-300'}`}>
+                                            <span className={`font-semibold text-[14px] transition-colors duration-300 ${isActive ? 'text-white font-bold' : 'text-slate-400 group-hover:text-slate-200'}`}>
                                                 {tab.label}
                                             </span>
                                         </div>
@@ -104,7 +104,7 @@ const SettingsContent = () => {
                     </aside>
 
                     {/* Main Content Area */}
-                    <main className="flex-1 h-auto relative z-20 pb-16">
+                    <main className="flex-1 h-auto relative z-20 pb-28 md:pb-20 safe-area-bottom">
                         <div className="w-full px-6 py-8 md:px-12 md:py-20 flex flex-col items-start justify-start min-h-full">
                             <AnimatePresence mode="wait">
                                 <motion.div

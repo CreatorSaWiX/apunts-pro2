@@ -60,29 +60,29 @@ export const AboutSection = () => {
                     href="https://github.com/CreatorSaWiX/apunts-pro2"
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative flex flex-col justify-between p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-white/20 transition-all duration-500 overflow-hidden outline-none h-48"
+                    className="group relative flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-white/20 transition-all duration-500 overflow-hidden outline-none h-48"
                 >
                     <div className="z-10">
                         <Github size={32} className="text-white mb-4" />
                         <h3 className="text-2xl font-black text-white tracking-tight">{t('settings.repository', 'Repositori')}</h3>
                         <p className="text-slate-400 text-sm font-medium mt-1">{t('settings.openSource', 'Codi obert a GitHub')}</p>
                     </div>
-                    <div className="absolute right-0 bottom-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500 transform translate-x-1/4 translate-y-1/4">
-                        <Github size={120} />
+                    <div className="absolute right-0 bottom-0 opacity-15 group-hover:opacity-25 transition-opacity duration-500 transform translate-x-1/4 translate-y-1/4 text-white pointer-events-none [mask-image:linear-gradient(to_top_left,white,transparent_75%)]">
+                        <Github size={140} strokeWidth={1.2} />
                     </div>
                 </a>
 
                 <button type="button"
                     onClick={openContributors}
-                    className="group relative text-left flex flex-col justify-between p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-rose-500/30 hover:bg-rose-500/10 transition-all duration-500 overflow-hidden outline-none h-48"
+                    className="group relative text-left flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-rose-500/30 hover:bg-rose-500/10 transition-all duration-500 overflow-hidden outline-none h-48"
                 >
                     <div className="z-10">
                         <Heart size={32} className="text-rose-400 mb-4" />
                         <h3 className="text-2xl font-black text-white tracking-tight">{t('settings.contributors', 'Contribuïdors')}</h3>
                         <p className="text-slate-400 text-sm font-medium mt-1">{t('settings.teamBehind', 'L\'equip darrere el projecte')}</p>
                     </div>
-                    <div className="absolute right-0 bottom-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500 transform translate-x-1/4 translate-y-1/4 text-rose-500">
-                        <Heart size={120} />
+                    <div className="absolute right-0 bottom-0 opacity-15 group-hover:opacity-25 transition-opacity duration-500 transform translate-x-1/4 translate-y-1/4 text-rose-500 pointer-events-none [mask-image:linear-gradient(to_top_left,white,transparent_75%)]">
+                        <Heart size={140} strokeWidth={1.2} />
                     </div>
                 </button>
             </div>
@@ -102,7 +102,7 @@ export const AboutSection = () => {
                             animate={{ scale: 1, y: 0, opacity: 1 }}
                             exit={{ scale: 0.9, y: 20, opacity: 0 }}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                            className="relative w-full max-w-lg p-8 overflow-hidden rounded-[40px] bg-slate-900 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.8)]"
+                            className="relative w-full max-w-lg p-5 sm:p-8 overflow-y-auto max-h-[85vh] custom-scrollbar rounded-3xl sm:rounded-[40px] bg-slate-900 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.8)]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Glowing background inside modal */}
@@ -111,7 +111,7 @@ export const AboutSection = () => {
 
                             <button type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors cursor-pointer z-20 outline-none bg-white/5 p-2 rounded-full"
+                                className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors cursor-pointer z-20 outline-none bg-white/5 hover:bg-white/10 p-2 rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"
                             >
                                 <X size={20} />
                             </button>
@@ -145,22 +145,22 @@ export const AboutSection = () => {
                                                 initial={{ opacity: 0, x: -20 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 transition={{ delay: 0.05 * i }}
-                                                className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all group cursor-pointer"
+                                                className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group cursor-pointer"
                                             >
-                                                <div className="w-14 h-14 rounded-full overflow-hidden bg-gradient-to-tr from-sky-400 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-sky-500/20 group-hover:scale-110 transition-transform relative">
+                                                <div className="w-14 h-14 rounded-full overflow-hidden bg-gradient-to-tr from-sky-400 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform relative border-2 border-white/20 shrink-0">
                                                     {user.avatar ? (
                                                         <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" loading="lazy" />
                                                     ) : (
                                                         <span className="text-xl">{user.username.charAt(0).toUpperCase()}</span>
                                                     )}
                                                 </div>
-                                                <div className="flex-1 flex flex-col justify-center items-start">
-                                                    <h3 className="text-white font-bold text-lg leading-none mb-1">
+                                                <div className="flex-1 flex flex-col justify-center items-start min-w-0">
+                                                    <h3 className="text-white font-bold text-lg leading-none mb-1 truncate w-full">
                                                         {user.username}
                                                     </h3>
-                                                    <p className="text-xs font-bold tracking-widest text-slate-400 uppercase">{user.role}</p>
+                                                    <p className="text-xs font-bold tracking-widest text-slate-300 uppercase">{user.role}</p>
                                                 </div>
-                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20 group-hover:text-rose-400 text-slate-600 transition-all">
+                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20 group-hover:text-rose-400 text-slate-400 transition-all shrink-0">
                                                     <ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
                                                 </div>
                                             </motion.div>

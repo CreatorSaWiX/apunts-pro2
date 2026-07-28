@@ -69,6 +69,10 @@ interface SettingsContextType {
     shortcuts: ShortcutsSettings;
     setShortcuts: React.Dispatch<React.SetStateAction<ShortcutsSettings>>;
     isSettingsLoaded: boolean;
+    isMobile: boolean;
+    isSlowNetwork: boolean;
+    isLowEndHardware: boolean;
+    isLiteMode: boolean;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -152,6 +156,94 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         }
         return DEFAULT_SHORTCUTS;
     });
+
+    const [isMobile, setIsMobile] = useState(false);
+    const [isSlowNetwork, setIsSlowNetwork] = useState(false);
+    const [isLowEndHardware, setIsLowEndHardware] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        const checkNetwork = () => {
+            const conn = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+            if (conn) {
+                const effectiveType = conn.effectiveType || '';
+                const is2g3g = effectiveType.includes('2g') || effectiveType === 'slow-2g' || effectiveType === '3g';
+                const saveData = conn.saveData === true;
+                const lowDownlink = typeof conn.downlink === 'number' && conn.downlink < 1.6;
+                const highRtt = typeof conn.rtt === 'number' && conn.rtt > 280;
+                
+                const currentSlow = is2g3g || saveData || lowDownlink || highRtt;
+                if (currentSlow) {
+                    setIsSlowNetwork(true);
+                } else {
+                    setIsSlowNetwork(false);
+                }
+            } else {
+                setIsSlowNetwork(false);
+            }
+        };
+
+        const checkHardware = () => {
+            const concurrency = navigator.hardwareConcurrency || 8;
+            const memory = (navigator as any).deviceMemory || 8;
+            
+            let isLowEndGpu = false;
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = (gl as WebGLRenderingContext).getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        const renderer = (gl as WebGLRenderingContext).getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)?.toLowerCase() || '';
+                        // Detect low-tier or unaccelerated mobile GPUs commonly found in budget Androids
+                        if (renderer.includes('mali-4') || renderer.includes('mali-t') || renderer.includes('mali-g3') || renderer.includes('mali-g5') || renderer.includes('powervr') || renderer.includes('adreno (tm) 3') || renderer.includes('adreno (tm) 5') || renderer.includes('swiftshader') || renderer.includes('llvmpipe')) {
+                            isLowEndGpu = true;
+                        }
+                    }
+                }
+            } catch (e) {
+                // Ignore canvas creation errors in restricted environments
+            }
+
+            const isLowCpuMem = concurrency <= 4 || memory <= 4 || (concurrency <= 6 && memory <= 6);
+            setIsLowEndHardware(isLowCpuMem || isLowEndGpu);
+        };
+
+        checkMobile();
+        checkNetwork();
+        checkHardware();
+
+        window.addEventListener('resize', checkMobile);
+
+        const conn = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+        if (conn && conn.addEventListener) {
+            conn.addEventListener('change', checkNetwork);
+        }
+
+        return () => {
+            window.removeEventListener('resize', checkMobile);
+            if (conn && conn.removeEventListener) {
+                conn.removeEventListener('change', checkNetwork);
+            }
+        };
+    }, []);
+
+    const isLiteMode = useMemo(() => {
+        return (isMobile && (isSlowNetwork || isLowEndHardware)) || isSlowNetwork;
+    }, [isMobile, isSlowNetwork, isLowEndHardware]);
+
+    useEffect(() => {
+        if (typeof document !== 'undefined') {
+            if (isLiteMode) {
+                document.documentElement.classList.add('lite-mode');
+            } else {
+                document.documentElement.classList.remove('lite-mode');
+            }
+        }
+    }, [isLiteMode]);
 
     // Load from Firebase on mount if user is logged in
     useEffect(() => {
@@ -268,8 +360,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setOfflineStorage,
         shortcuts,
         setShortcuts,
-        isSettingsLoaded
-    }), [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, shortcuts, isSettingsLoaded]);
+        isSettingsLoaded,
+        isMobile,
+        isSlowNetwork,
+        isLowEndHardware,
+        isLiteMode
+    }), [homeSubjects, defaultPlannerView, customSubjectColors, aiSettings, offlineStorage, shortcuts, isSettingsLoaded, isMobile, isSlowNetwork, isLowEndHardware, isLiteMode]);
 
     return (
         <SettingsContext.Provider value={contextValue}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Code2, Database, TerminalSquare, ChevronDown, ChevronUp } from 'lucide-react';
-import { oopSimulations } from '../../lib/oopSimulations';
-import ReactCodeMirror from '@uiw/react-codemirror';
+import { oopSimulations, type OOPStep, type OOPSimulation } from '../../lib/oopSimulations';
+import ReactCodeMirror, { type ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
 import { cpp } from '@codemirror/lang-cpp';
@@ -18,43 +18,46 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
     return <OOPPlayerContent sim={sim} />;
 }
 
-function OOPPlayerContent({ sim }: { sim: any }) {
+function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
 
-    const [steps] = useState(sim.generateSteps());
+    const [steps] = useState<OOPStep[]>(() => sim.generateSteps());
     const [currentStep, setCurrentStep] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [activeTab, setActiveTab] = useState<'term' | 'code'>('code');
-    const [userSelectedFile, setUserSelectedFile] = useState<string | null>(null);
+    const [selectedFileObj, setSelectedFileObj] = useState<{ step: number; file: string } | null>(null);
     const [isMemoryExpanded, setIsMemoryExpanded] = useState(true);
     const speed = 1500; // Slower for OOP to read descriptions
 
+    const userSelectedFile = selectedFileObj?.step === currentStep ? selectedFileObj.file : null;
+    const setUserSelectedFile = (file: string | null) => setSelectedFileObj(file ? { step: currentStep, file } : null);
+
     useEffect(() => {
-        let timer: any;
-        if (isPlaying) {
+        let timer: ReturnType<typeof setInterval>;
+        if (isPlaying && currentStep < steps.length - 1) {
             timer = setInterval(() => {
                 setCurrentStep(prev => {
-                    return prev >= steps.length - 1 ? prev : prev + 1;
+                    const next = prev + 1;
+                    if (next >= steps.length - 1) {
+                        setIsPlaying(false);
+                        return steps.length - 1;
+                    }
+                    return next;
                 });
             }, speed);
         }
         return () => clearInterval(timer);
-    }, [isPlaying, steps.length, speed]);
+    }, [isPlaying, currentStep, steps.length, speed]);
 
-    useEffect(() => {
-        if (isPlaying && currentStep >= steps.length - 1) {
-            setIsPlaying(false);
-        }
-    }, [isPlaying, currentStep, steps.length]);
-
-    const step = steps[currentStep];
-    const displayFile = userSelectedFile || step.activeFile;
-
-    useEffect(() => {
-        setUserSelectedFile(null);
-    }, [currentStep]);
+    const step: Partial<OOPStep> = steps[currentStep] || {};
+    const displayFile = userSelectedFile || step.activeFile || Object.keys(sim.files)[0];
 
     const handlePlayPause = () => {
-        if (!isPlaying) setActiveTab('code');
+        if (!isPlaying) {
+            setActiveTab('code');
+            if (currentStep >= steps.length - 1) {
+                setCurrentStep(0);
+            }
+        }
         setIsPlaying(!isPlaying);
     };
     const handleNext = () => React.startTransition(() => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1)));
@@ -83,7 +86,6 @@ function OOPPlayerContent({ sim }: { sim: any }) {
             color: "rgba(148, 163, 184, 0.3)",
             fontSize: "12px",
         },
-        // Disable CM's built-in active line highlight — we use our custom overlay
         ".cm-activeLine": {
             backgroundColor: "transparent !important",
             background: "none !important",
@@ -99,28 +101,24 @@ function OOPPlayerContent({ sim }: { sim: any }) {
         },
     });
 
-    const editorRef = useRef<any>(null);
+    const editorRef = useRef<ReactCodeMirrorRef | null>(null);
     const highlightRef = useRef<HTMLDivElement>(null);
     const [highlightStyle, setHighlightStyle] = useState<{ top: number; height: number; opacity: number }>({ top: 0, height: 20, opacity: 0 });
 
-    // Update highlight overlay position when step changes
     useEffect(() => {
         if (editorRef.current?.view && displayFile === step.activeFile) {
             const view = editorRef.current.view;
             const docLines = view.state.doc.lines;
-            const targetLine = Math.min(Math.max(1, step.line), docLines);
+            const lineNum = step.line || 1;
+            const targetLine = Math.min(Math.max(1, lineNum), docLines);
             const line = view.state.doc.line(targetLine);
 
-            // Save page scroll
-            const savedScrollY = window.scrollY;
-
-            // Set selection for cursor position
+            // En lloc d'usar EditorView.scrollIntoView() que pot forçar el scroll de tota la finestra del navegador
+            // i provocar conflictes de scroll tàctil en Android, actualitzem només la selecció interna:
             view.dispatch({
-                selection: { anchor: line.from },
-                effects: EditorView.scrollIntoView(line.from, { y: "center" })
+                selection: { anchor: line.from }
             });
 
-            // Calculate line position for our custom overlay
             const lineBlock = view.lineBlockAt(line.from);
             const scroller = view.scrollDOM;
 
@@ -131,6 +129,10 @@ function OOPPlayerContent({ sim }: { sim: any }) {
             });
 
             if (scroller) {
+                // Calculem el scroll centrat exclusivament dins del contenidor de CodeMirror (0% impacte al DOM extern)
+                const targetScrollTop = Math.max(0, lineBlock.top - (scroller.clientHeight / 2) + (lineBlock.height / 2));
+                scroller.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+
                 const handleScroll = () => {
                     if (highlightRef.current) {
                         highlightRef.current.style.transform = `translateY(-${scroller.scrollTop}px)`;
@@ -139,12 +141,6 @@ function OOPPlayerContent({ sim }: { sim: any }) {
 
                 handleScroll();
                 scroller.addEventListener('scroll', handleScroll, { passive: true });
-
-                // Restore page scroll
-                window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
-                requestAnimationFrame(() => {
-                    window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
-                });
 
                 return () => {
                     scroller.removeEventListener('scroll', handleScroll);
@@ -162,26 +158,23 @@ function OOPPlayerContent({ sim }: { sim: any }) {
                 { id: 'term', label: 'TERMINAL', icon: <TerminalSquare size={14} /> }
             ]}
             activeTab={activeTab}
-            onTabChange={(id: any) => setActiveTab(id)}
+            onTabChange={(id: string) => setActiveTab(id as 'term' | 'code')}
             leftPanel={
                 <div className={`flex-1 min-w-0 flex flex-col relative bg-[#0d1117] h-full shadow-[15px_0_30px_rgba(0,0,0,0.3)] lg:border-r border-white/5 ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
-                    {/* Code Tab Header */}
-                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] overflow-hidden">
+                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] overflow-x-auto overflow-y-hidden custom-scrollbar touch-pan-x [-webkit-overflow-scrolling:touch]">
                         {Object.keys(sim.files).map(filename => (
                             <div key={filename}
                                 onClick={() => setUserSelectedFile(filename)}
-                                className={`px-4 py-2 border-t border-x rounded-t-xl text-[10px] font-mono tracking-wider flex gap-2 items-center shadow-sm relative top-[1px] z-10 transition-colors cursor-pointer whitespace-nowrap
-                                ${displayFile === filename ? 'bg-[#0d1117] border-slate-800/80 text-emerald-400' : 'bg-[#161b22] border-transparent text-slate-500 border-b-slate-800/80 hover:bg-[#1f262e]'}`}>
-                                <Code2 size={12} className={displayFile === filename ? "text-emerald-500" : "text-slate-600"} />
+                                className={`px-4 py-2 border-t border-x rounded-t-xl text-[10px] sm:text-[11px] font-mono tracking-wider flex gap-2 items-center shadow-sm relative top-[1px] z-10 transition-colors cursor-pointer whitespace-nowrap shrink-0
+                                ${displayFile === filename ? 'bg-[#0d1117] border-slate-800/80 text-emerald-400 font-bold' : 'bg-[#161b22] border-transparent text-slate-300 border-b-slate-800/80 hover:bg-[#1f262e] hover:text-white'}`}>
+                                <Code2 size={14} className={displayFile === filename ? "text-emerald-400 shrink-0" : "text-slate-400 shrink-0"} />
                                 <span>{filename}</span>
                             </div>
                         ))}
                         <div className="flex-1 border-b border-slate-800/80 h-full relative -z-0 min-w-[20px]"></div>
                     </div>
 
-                    {/* IDE Viewport */}
-                    <div className="flex-1 overflow-auto relative bg-[#0d1117] text-[12px] sm:text-[13px] pt-4 pb-6 min-h-[50%] flex flex-col" style={{ overscrollBehavior: 'contain' }}>
-                        {/* Animated highlight overlay */}
+                    <div className="flex-1 relative overflow-hidden flex flex-col bg-[#0d1117] text-[12px] sm:text-[13px] pt-4 pb-6 min-h-[50%]">
                         <div
                             ref={highlightRef}
                             className="absolute left-0 right-0 z-10 pointer-events-none"
@@ -196,7 +189,7 @@ function OOPPlayerContent({ sim }: { sim: any }) {
                         />
                         <ReactCodeMirror
                             ref={editorRef}
-                            value={String(sim.files[displayFile] || '')}
+                            value={String((displayFile && sim.files[displayFile]) || '')}
                             readOnly={true}
                             editable={false}
                             height="100%"
@@ -208,44 +201,30 @@ function OOPPlayerContent({ sim }: { sim: any }) {
                                 foldGutter: false,
                                 highlightActiveLine: displayFile === step.activeFile,
                                 highlightSelectionMatches: false,
-                                syntaxHighlighting: true,
-                                drawSelection: false,
-                                dropCursor: false,
-                                allowMultipleSelections: false,
-                                indentOnInput: false,
                                 bracketMatching: true,
-                                closeBrackets: false,
                                 autocompletion: false,
-                                rectangularSelection: false,
-                                crosshairCursor: false,
-                                closeBracketsKeymap: false,
-                                searchKeymap: false,
-                                foldKeymap: false,
-                                completionKeymap: false,
-                                lintKeymap: false,
                             }}
                         />
                     </div>
 
-                    {/* Environment Variables Panel */}
-                    <div className={`${isMemoryExpanded ? 'h-[35%] min-h-[140px] max-h-[200px]' : 'h-auto'} bg-[#090b10] border-t border-slate-800/80 flex flex-col relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] flex-shrink-0 transition-all duration-300`}>
+                    <div className="h-32 bg-[#1e1e1e] border-t border-slate-800/80 flex flex-col shrink-0">
                         <div
-                            className="px-4 py-1.5 sm:py-2 bg-[#0d1117] border-b border-slate-800/50 flex items-center justify-between cursor-pointer hover:bg-[#161b22] transition-colors"
+                            className="bg-[#252526] px-3 py-1.5 border-b border-slate-800 flex justify-between items-center text-xs text-slate-400 font-mono select-none cursor-pointer hover:bg-[#2a2d2e] transition-colors"
                             onClick={() => setIsMemoryExpanded(!isMemoryExpanded)}
                         >
                             <div className="flex items-center gap-2">
-                                <Database size={11} className="text-sky-500" />
-                                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400 select-none">Objectes a Memòria</span>
+                                <Database size={14} className="text-sky-400 shrink-0" />
+                                <span className="text-[10px] sm:text-xs uppercase font-extrabold tracking-widest text-slate-200">Objectes a Memòria</span>
                             </div>
-                            <button type="button" className="text-slate-500 hover:text-slate-300">
-                                {isMemoryExpanded ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+                            <button type="button" className="text-slate-300 hover:text-white p-1" aria-label={isMemoryExpanded ? "Replegar memòria" : "Desplegar memòria"}>
+                                {isMemoryExpanded ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
                             </button>
                         </div>
                         {isMemoryExpanded && (
-                            <div className="flex-1 overflow-auto custom-scrollbar p-2 flex flex-col gap-0.5 content-start">
-                                {Object.entries(step.variables).map(([k, v]) => (
-                                    <div key={k} className="flex text-[11px] sm:text-xs group hover:bg-[#2a2d2e] px-2 py-1 rounded transition-colors duration-200">
-                                        <span className="text-[#9cdcfe] font-mono mr-2 shrink-0">{k}:</span>
+                            <div className="flex-1 overflow-auto custom-scrollbar p-3 flex flex-col gap-1 content-start">
+                                {Object.entries(step.variables || {}).map(([k, v]) => (
+                                    <div key={k} className="flex text-xs group hover:bg-[#2a2d2e] px-2.5 py-1.5 rounded transition-colors duration-200">
+                                        <span className="text-[#9cdcfe] font-mono font-bold mr-2 shrink-0">{k}:</span>
                                         <span className="text-[#b5cea8] font-mono break-all">{String(v)}</span>
                                     </div>
                                 ))}
@@ -257,14 +236,13 @@ function OOPPlayerContent({ sim }: { sim: any }) {
             rightPanel={
                 <div className={`lg:w-[450px] xl:w-[480px] shrink-0 flex-col relative z-20 bg-gradient-to-br from-[#0B0F17] via-[#0F1420] to-[#0A0D14] h-full ${activeTab === 'term' ? 'flex' : 'hidden'} lg:flex`}>
                     <div className="flex-1 flex flex-col p-4 sm:p-6 pb-[160px] relative overflow-hidden">
-                        {/* Terminal Window */}
                         <div className="flex-1 bg-black/40 border border-white/5 rounded-xl shadow-inner overflow-hidden flex flex-col backdrop-blur-sm relative">
                             <div className="bg-white/5 border-b border-white/5 px-3 py-2 flex items-center gap-2">
                                 <TerminalSquare size={12} className="text-slate-400" />
                                 <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold">Terminal de Sortida</span>
                             </div>
                             <div className="flex-1 p-4 overflow-y-auto custom-scrollbar font-mono text-xs sm:text-[13px] text-slate-300 flex flex-col gap-1.5 leading-relaxed">
-                                {step.terminalOutput.map((line: string, i: number) => (
+                                {(step.terminalOutput || []).map((line: string, i: number) => (
                                     <div key={i} className={`${line.startsWith('>') ? 'text-sky-400 font-bold opacity-70' : 'text-slate-200'} transition-all`}>
                                         {line}
                                     </div>
@@ -277,7 +255,7 @@ function OOPPlayerContent({ sim }: { sim: any }) {
                     <PlayerControls
                         currentStep={currentStep}
                         totalSteps={steps.length}
-                        description={step.description}
+                        description={step.description || ''}
                         isPlaying={isPlaying}
                         onStepChange={setCurrentStep}
                         onPlayPause={handlePlayPause}

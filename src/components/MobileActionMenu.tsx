@@ -100,7 +100,7 @@ const MobileActionMenu: React.FC<{
                             className="w-full max-h-[90vh] md:h-full md:w-80 bg-slate-900 shadow-[0_-10px_50px_rgba(0,0,0,0.5)] md:shadow-2xl border-t md:border-t-0 md:border-l border-white/10 p-6 pt-3 md:pt-6 pb-8 md:pb-6 flex flex-col relative rounded-t-4xl md:rounded-none overflow-hidden"
                         >
                             {/* Drag Handle (Mobile only) */}
-                            <div className="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6 md:hidden touch-none" />
+                            <div className="w-12 h-1.5 bg-white/40 rounded-full mx-auto mb-6 md:hidden touch-none" />
 
                             <button type="button"
                                 onClick={() => setIsOpen(false)}
@@ -120,7 +120,7 @@ const MobileActionMenu: React.FC<{
                                 <div className="space-y-8 flex-1">
                                     {/* Subject Switcher */}
                                     <div className="space-y-3">
-                                        <label className="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-3">
+                                        <label className="text-xs uppercase tracking-wider text-slate-400 font-bold block mb-3">
                                             {t('settings.subject', 'Assignatura')}
                                         </label>
                                         <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
@@ -130,7 +130,7 @@ const MobileActionMenu: React.FC<{
                                                     onClick={() => startTransition(() => setSubject(sub))}
                                                     className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${safeSubject === sub
                                                         ? 'text-white'
-                                                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                                                        : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                                                         }`}
                                                 >
                                                     {safeSubject === sub && (
@@ -151,7 +151,7 @@ const MobileActionMenu: React.FC<{
 
                                     {/* Language Switcher */}
                                     <div className="space-y-3">
-                                        <label className="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-3">
+                                        <label className="text-xs uppercase tracking-wider text-slate-400 font-bold block mb-3">
                                             {t('settings.language', 'Idioma')}
                                         </label>
                                         <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
@@ -160,14 +160,14 @@ const MobileActionMenu: React.FC<{
                                                     key={lang}
                                                     onClick={() => i18n.changeLanguage(lang)}
                                                     className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${preferredLang === lang
-                                                        ? 'text-slate-950'
-                                                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                                                        ? 'text-white'
+                                                        : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                                                         }`}
                                                 >
                                                     {preferredLang === lang && (
                                                         <motion.div
                                                             layoutId="active-lang-menu"
-                                                            className="absolute inset-0 bg-linear-to-br from-white to-slate-400 rounded-xl shadow-md z-[-1]"
+                                                            className="absolute inset-0 bg-linear-to-r from-sky-500 to-blue-600 rounded-xl shadow-[0_0_15px_rgba(14,165,233,0.4)] z-[-1]"
                                                             transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                                         />
                                                     )}

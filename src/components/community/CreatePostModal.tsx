@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect, useMemo, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { SUBJECTS, getSubjectById, type SubjectType } from '../../config/subjects';
-import { AlertCircle, ChevronDown, Paperclip, X, FileText, Maximize2, Minimize2, ImagePlus } from 'lucide-react';
+import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { getSubjectById, type SubjectType } from '../../config/subjects';
+import { AlertCircle, ChevronDown, Paperclip, X, Maximize2, Minimize2 } from 'lucide-react';
 
 import SubjectSelectorModal from './SubjectSelectorModal';
 import FileUploader, { type Attachment } from '../ui/FileUploader';
@@ -17,68 +17,106 @@ import { useTranslation } from 'react-i18next';
 
 const RichTextEditor = lazy(() => import('../ui/RichTextEditor'));
 
-
 interface CreatePostModalProps {
     isOpen: boolean;
     onClose: () => void;
+    initialSubject?: SubjectType;
 }
 
-const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
+interface TiptapEditor {
+    isDestroyed?: boolean;
+    isEmpty?: boolean;
+    getHTML: () => string;
+}
+
+export default function CreatePostModal({ isOpen, onClose, initialSubject }: CreatePostModalProps) {
     const { t } = useTranslation();
     const { user } = useAuth();
-    const [content, setContent] = useState('');
-    const [subject, setSubject] = useState<SubjectType>('');
-    const [loading, setLoading] = useState(false);
-
-    const [debouncedContent, setDebouncedContent] = useState('');
     const { customSubjectColors } = useSettings();
-
+    const [subject, setSubject] = useState<SubjectType>(initialSubject || 'General');
+    const [content, setContent] = useState('');
+    const [debouncedContent, setDebouncedContent] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const [showSubjectSelector, setShowSubjectSelector] = useState(false);
 
     const [attachments, setAttachments] = useState<Attachment[]>([]);
     const [error, setError] = useState<string | null>(null);
 
-    const [editorInstance, setEditorInstance] = useState<any>(null);
+    const [editorInstance, setEditorInstance] = useState<TiptapEditor | null>(null);
 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [showUploader, setShowUploader] = useState(false);
 
     const activeSubject = getSubjectById(subject);
 
+    useEffect(() => {
+        if (initialSubject) {
+            setSubject(initialSubject);
+        }
+    }, [initialSubject]);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const handler = setTimeout(() => {
             setDebouncedContent(content);
-        }, 500);
-        return () => clearTimeout(timer);
+        }, 300);
+        return () => clearTimeout(handler);
     }, [content]);
 
-    const handleSend = async () => {
+    const handleSaveDraft = () => {
+        if (!user) return;
         const currentContent = editorInstance && !editorInstance.isDestroyed ? editorInstance.getHTML() : content;
         if (!user || ((editorInstance && !editorInstance.isDestroyed ? editorInstance.isEmpty : !currentContent.trim()) && attachments.length === 0)) return;
+        
+        const draftData = {
+            content: currentContent,
+            subject,
+            attachments,
+            updatedAt: new Date().toISOString()
+        };
+        localStorage.setItem(`apunts_post_draft_${user.id}`, JSON.stringify(draftData));
+    };
 
-        const lastPost = localStorage.getItem(`last_post_${user.id}`);
-        const now = Date.now();
-        if (lastPost && now - parseInt(lastPost) < 30000) {
-            setError(t('community.createPost.waitLimit', 'Espera un moment abans de publicar de nou.'));
-            setTimeout(() => setError(null), 5000);
-            return;
+    useEffect(() => {
+        if (debouncedContent.trim() || attachments.length > 0) {
+            handleSaveDraft();
         }
+    }, [debouncedContent, attachments, subject]);
+
+    const handleClearDraft = () => {
+        if (!user) return;
+        localStorage.removeItem(`apunts_post_draft_${user.id}`);
+    };
+
+    const handleSend = async () => {
+        const finalContent = editorInstance && !editorInstance.isDestroyed ? editorInstance.getHTML() : content;
+        if (!user || ((editorInstance && !editorInstance.isDestroyed ? editorInstance.isEmpty : !finalContent.trim()) && attachments.length === 0)) return;
 
         setLoading(true);
+        setError(null);
+
         try {
+            const cleanAttachments = attachments.map(att => ({
+                url: att.url || '',
+                name: att.name || 'document',
+                type: att.type || 'unknown',
+                size: att.size || 0,
+                ...(att.thumbnailUrl ? { thumbnailUrl: att.thumbnailUrl } : {}),
+                ...(att.isCustomThumbnail !== undefined ? { isCustomThumbnail: att.isCustomThumbnail } : {})
+            }));
+
             const postData = {
                 userId: user.id,
-                username: user.username,
-                userAvatar: user.avatar || '',
-                content: currentContent.trim(),
+                username: user.username || 'Anònim',
+                userAvatar: user.avatar || null,
+                content: finalContent.trim(),
                 subject: subject,
-                attachments: attachments,
+                attachments: cleanAttachments,
                 createdAt: serverTimestamp(),
                 reactions: {},
                 isPinned: false
             };
+
             const docRef = await addDoc(collection(db, 'community_posts'), postData);
 
             // Notify Algolia via Vercel webhook (fire and forget to not block UI)
@@ -93,29 +131,26 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
             setContent('');
             setAttachments([]);
-            localStorage.setItem(`last_post_${user.id}`, now.toString());
+            handleClearDraft();
             onClose();
-        } catch (err) {
-            console.error(err);
-            setError(t('community.createPost.publishError', 'Error al publicar. Torna-ho a provar.'));
+        } catch {
+            setError('No s\'ha pogut publicar el post. Torna-ho a provar.');
         } finally {
             setLoading(false);
         }
     };
-
-
 
     const livePreviewElement = useMemo(() => {
         if (!user) return null;
         const livePost: CommunityPost = {
             id: 'preview',
             userId: user.id,
-            username: user.username,
+            username: user.username || 'Anònim',
             userAvatar: user.avatar || '',
-            content: debouncedContent.trim() || t('community.createPost.previewPlaceholder', 'Comença a escriure per veure com queda...'),
+            content: debouncedContent.trim() || 'Comença a escriure per veure com queda...',
             subject: subject,
             attachments: attachments,
-            createdAt: new Date() as any,
+            createdAt: Timestamp.now(),
             reactions: {},
             isPinned: false
         };
@@ -135,7 +170,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 }
             }}
         />;
-    }, [debouncedContent, user?.id, user?.username, user?.avatar, subject, attachments, setAttachments, t]);
+    }, [debouncedContent, user, subject, attachments]);
 
     if (!user) return null;
 
@@ -144,13 +179,13 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             <Modal.Layout className="flex-col md:flex-row h-full w-full">
                 {/* LEFT PANEL: EDITOR */}
                 <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'}`}>
-                    <Modal.Header className="px-8! py-6! border-none! bg-transparent! flex justify-between items-center w-full">
-                        <h2 className="text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
+                    <Modal.Header className="px-4! md:px-8! py-4! md:py-6! border-none! bg-transparent! flex justify-between items-center w-full">
+                        <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
                         <div className="flex items-center gap-2 ml-auto">
                             <button
                                 type="button"
                                 onClick={() => setIsFullscreen(!isFullscreen)}
-                                className="p-2.5 rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs group"
+                                className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs group"
                                 title={isFullscreen ? "Minimitzar" : "Ampliar editor"}
                             >
                                 {isFullscreen ? (
@@ -159,21 +194,19 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                     <Maximize2 size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
                                 )}
                             </button>
-                            {isFullscreen && (
-                                <button
-                                    type="button"
-                                    onClick={onClose}
-                                    className="p-2.5 rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs"
-                                    title="Tancar"
-                                >
-                                    <X size={18} strokeWidth={2.5} />
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className={`p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs ${isFullscreen ? 'flex' : 'flex md:hidden'}`}
+                                title="Tancar"
+                            >
+                                <X size={18} strokeWidth={2.5} />
+                            </button>
                         </div>
                     </Modal.Header>
 
                     {/* Content Area */}
-                    <Modal.Body className="px-8! pb-6! pt-0! bg-transparent flex flex-col custom-scrollbar">
+                    <Modal.Body className="px-4! md:px-8! pb-6! pt-0! bg-transparent flex flex-col custom-scrollbar">
 
 
 
@@ -226,7 +259,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                                                 </div>
                                                 <button type="button" aria-label="Eliminar fitxer"
                                                     onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
-                                                    className="text-slate-500 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100"
+                                                    className="text-slate-500 hover:text-white p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full hover:bg-white/10 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100"
                                                 >
                                                     <X size={16} />
                                                 </button>
@@ -239,7 +272,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                     </Modal.Body>
 
                     {/* Footer */}
-                    <div className="px-8 py-5 border-t border-white/5 bg-transparent flex items-center justify-between shrink-0">
+                    <div className="px-4 md:px-8 py-4 md:py-5 border-t border-white/5 bg-transparent flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shrink-0">
                         <div className="flex items-center gap-2">
 
 
@@ -257,7 +290,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                             )}
 
                             {error && (
-                                <div className="ml-4 flex items-center gap-2 text-rose-400 text-xs font-bold px-3 py-1.5 bg-rose-500/10 rounded-full border border-rose-500/20">
+                                <div className="ml-2 flex items-center gap-2 text-rose-400 text-xs font-bold px-3 py-1.5 bg-rose-500/10 rounded-full border border-rose-500/20">
                                     <AlertCircle size={14} />
                                     <span>{error}</span>
                                 </div>
@@ -265,27 +298,27 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2 md:gap-4 ml-auto sm:ml-0">
                             <button
                                 type="button"
                                 onClick={() => setShowSubjectSelector(true)}
-                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-all group"
+                                className="inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs md:text-sm font-medium transition-all group min-h-[44px]"
                             >
                                 <span
-                                    className="w-2 h-2 rounded-full"
+                                    className="w-2 h-2 rounded-full shrink-0"
                                     style={activeSubject ? {
                                         backgroundColor: tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary || '#0ea5e9',
                                         boxShadow: `0 0 10px rgba(${tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary_rgb || '14, 165, 233'}, 0.8)`
                                     } : { backgroundColor: '#64748b' }}
                                 />
-                                {activeSubject ? activeSubject.label : t('community.createPost.noSubject', 'Sense assignatura')}
-                                <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors ml-1" />
+                                <span className="truncate max-w-[110px] sm:max-w-none">{activeSubject ? activeSubject.label : t('community.createPost.noSubject', 'Assignatura')}</span>
+                                <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors shrink-0" />
                             </button>
 
                             <button type="button"
                                 onClick={handleSend}
                                 disabled={loading || ((editorInstance && !editorInstance.isDestroyed ? editorInstance.isEmpty : !content.trim()) && attachments.length === 0)}
-                                className="px-8 py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                                className="px-6 md:px-8 py-2.5 md:py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)] text-xs md:text-base min-h-[44px]"
                             >
                                 {loading && <Spinner size="sm" variant="primary" />}
                                 {t('community.createPost.publishBtn', 'Publicar')}
@@ -337,6 +370,4 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
             />
         </Modal>
     );
-};
-
-export default CreatePostModal;
+}
