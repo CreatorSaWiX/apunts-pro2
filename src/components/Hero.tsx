@@ -53,8 +53,26 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
         updateServiceWorker,
     } = useRegisterSW();
 
+    const [isLandscapeMobile, setIsLandscapeMobile] = React.useState(false);
+    React.useEffect(() => {
+        const check = () => {
+            if (typeof window !== 'undefined') {
+                setIsLandscapeMobile(window.innerHeight < 550 && window.innerWidth > window.innerHeight);
+            }
+        };
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
+
     const safeSubject = (subject || '').toLowerCase();
     const currentData = APP_DATA[safeSubject] || { version: 'v1.0.0', updated: 'N/A' };
+    
+    // Hide entirely on landscape mobile to give space for the native vertical list
+    if (isMobile && isLandscapeMobile) {
+        return null;
+    }
+
     return (
         <div className="relative flex flex-col items-center justify-center pt-8 pb-3 md:pt-12 md:pb-4 z-10 text-center px-4">
 

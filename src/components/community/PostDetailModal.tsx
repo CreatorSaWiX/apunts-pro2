@@ -207,7 +207,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 md:p-6 overflow-hidden">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -226,7 +226,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                             whileHover={{ scale: 1.1, x: -3 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={(e) => { e.stopPropagation(); setDirection('prev'); onPrev(); }}
-                            className="flex absolute left-2 sm:left-4 md:left-6 xl:left-8 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
+                            className="hidden sm:flex absolute left-2 sm:left-4 md:left-6 xl:left-8 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
                             title="Publicació anterior (←)"
                         >
                             <ChevronLeft size={28} className="group-hover:-translate-x-0.5 transition-transform" />
@@ -243,7 +243,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                             whileHover={{ scale: 1.1, x: 3 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={(e) => { e.stopPropagation(); setDirection('next'); onNext(); }}
-                            className="flex absolute right-2 sm:right-4 md:right-6 xl:right-8 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
+                            className="hidden sm:flex absolute right-2 sm:right-4 md:right-6 xl:right-8 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
                             title="Publicació següent (→)"
                         >
                             <ChevronRight size={28} className="group-hover:translate-x-0.5 transition-transform" />
@@ -255,7 +255,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: "100%", scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="relative w-full max-w-7xl h-[90vh] bg-[#0a0a0a] border border-white/10 rounded-4xl shadow-2xl overflow-hidden flex flex-col"
+                        className="relative w-full h-full sm:h-[90vh] sm:max-w-7xl bg-[#0a0a0a] sm:border sm:border-white/10 sm:rounded-4xl shadow-2xl overflow-hidden flex flex-col"
                     >
                         {/* Top Bar Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0 bg-[#0a0a0a]/90 backdrop-blur-xl z-20">
@@ -288,7 +288,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                                     </motion.div>
                                     <span className="text-sm font-bold hidden sm:inline">{likeCount > 0 ? likeCount : t('community.postDetail.like', "M'agrada")}</span>
                                 </motion.button>
-                                <button type="button" aria-label="Desar" className="p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors">
+                                <button type="button" aria-label="Desar" className="hidden sm:block p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors">
                                     <Share2 size={18} />
                                 </button>
                                 {user?.id === post.userId && (
@@ -320,7 +320,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                                     className="flex flex-col lg:flex-row flex-1 min-h-0 w-full h-full overflow-hidden"
                                 >
                                     {/* Left Column: Content & Carousel */}
-                            <div className="flex-1 min-w-0 h-full overflow-y-auto custom-scrollbar bg-[#060606] flex flex-col">
+                                    <div className="flex-1 min-w-0 min-h-[30vh] lg:h-full overflow-y-auto custom-scrollbar bg-[#060606] flex flex-col">
                                 {/* Visual/Carousel Section (If there are images) */}
                                 {postImages.length > 0 && (
                                     <div className="w-full h-[450px] sm:h-[500px] lg:h-[540px] bg-[#020202] border-b border-white/10 relative group/carousel select-none flex flex-col items-center justify-center overflow-hidden shrink-0">
@@ -389,7 +389,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
 
                                 <div className="p-6 sm:p-8 lg:p-10 max-w-4xl mx-auto w-full">
                                     {/* Text Content */}
-                                    <HtmlRenderer content={post.content} className="prose prose-invert prose-lg max-w-none prose-p:text-slate-200 prose-headings:text-white prose-a:text-primary mb-10 font-normal leading-relaxed" />
+                                    <HtmlRenderer content={post.content} className="prose prose-invert prose-lg max-w-none break-words overflow-x-hidden prose-p:text-slate-200 prose-headings:text-white prose-a:text-primary mb-10 font-normal leading-relaxed prose-pre:max-w-[calc(100vw-3rem)] sm:prose-pre:max-w-full" />
 
                                     {/* Files / Documents with Viewers */}
                                     {postFiles.length > 0 && (
@@ -415,7 +415,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                             </div>
 
                             {/* Right Column: Comments Section */}
-                            <div className="w-full lg:w-[420px] xl:w-[450px] shrink-0 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#080808] flex flex-col h-full min-h-0 overflow-hidden">
+                            <div className="w-full lg:w-[420px] xl:w-[450px] shrink-0 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#080808] flex flex-col h-[45vh] lg:h-full min-h-0 overflow-hidden">
                                 <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
                                     <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
                                 </div>

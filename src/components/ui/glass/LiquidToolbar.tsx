@@ -20,7 +20,7 @@ export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, classNam
             animate={isSticky ? { y: 0, opacity: 1 } : { y: 0 }}
             transition={{ delay, type: "spring", stiffness: 200, damping: 20 }}
             onAnimationComplete={() => setIsReady(true)}
-            className={`${isSticky ? 'sticky top-24 z-40 mb-8' : 'fixed bottom-6 sm:bottom-10 inset-x-0 z-50'} flex justify-center pointer-events-none ${isReady ? '!transform-none' : ''}`}
+            className={`${isSticky ? 'sticky top-24 z-40 mb-8' : 'sticky top-20 mb-8 sm:mb-0 sm:fixed sm:top-auto sm:bottom-10 sm:inset-x-0 z-40 sm:z-50'} flex justify-center pointer-events-none ${isReady ? '!transform-none' : ''}`}
         >
             <motion.div 
                 layout

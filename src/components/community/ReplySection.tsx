@@ -135,7 +135,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                     </div>
                 ) : replies.length === 0 ? (
                     <div className="text-center py-4 text-slate-500 text-xs italic">
-                        Encara no hi ha respostes. Sigues el primer!
+                        Encara no hi ha respostes. <span className="text-slate-300">Sigues el primer!</span>
                     </div>
                 ) : (
                     <>
@@ -178,7 +178,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
 
             {/* Input Area */}
             {user ? (
-                <form onSubmit={handleSend} className="shrink-0 border-t border-white/10 bg-[#0a0a0a] p-4 relative">
+                <form onSubmit={handleSend} className="shrink-0 border-t border-white/10 bg-[#0a0a0a] p-4 pb-6 sm:pb-4 relative">
                     <div className="relative flex items-center gap-2">
                         <div className="relative">
                             <button
@@ -219,14 +219,14 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                                     handleInputChange(e.target.value, e.target.selectionStart || 0);
                                 }}
                                 placeholder="Escriu una resposta..."
-                                className="w-full bg-slate-950/50 border border-white/5 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-primary/50 transition-all"
+                                className="w-full bg-[#161616] sm:bg-slate-950/50 border border-white/5 rounded-xl px-4 py-3 sm:py-2 text-base sm:text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-primary/50 transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]"
                             />
                         </div>
 
                         <button 
                             type="submit"
                             disabled={!newReply.trim()}
-                            className="p-2 bg-primary text-white rounded-xl disabled:opacity-30 transition-all shadow-lg shadow-primary/20"
+                            className="p-3 sm:p-2 bg-primary text-white rounded-xl disabled:opacity-30 transition-all shadow-lg shadow-primary/20"
                         >
                             <Send size={16} />
                         </button>

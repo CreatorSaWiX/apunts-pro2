@@ -179,7 +179,8 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
                     {variant === 'default' && (
                         <>
                             <UploadCloud className="mx-auto mb-2 text-slate-400" size={24} />
-                            <p className="text-sm font-bold text-slate-300">{t('common.fileUploader.dragFiles', 'Arrossega arxius per adjuntar')}</p>
+                            <p className="hidden md:block text-sm font-bold text-slate-300">{t('common.fileUploader.dragFiles', 'Arrossega arxius per adjuntar')}</p>
+                            <p className="md:hidden text-sm font-bold text-slate-300">{t('common.fileUploader.tapToUpload', 'Toca per pujar un fitxer')}</p>
                             <p className="text-xs text-slate-500 mt-1">{t('common.fileUploader.supportedTypes', 'Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {{max}}MB per arxiu)', { max: maxSizeMB })}</p>
                         </>
                     )}

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useSubject } from '../contexts/SubjectContext';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
 import { ArrowRight, Book, Terminal, Calculator, RefreshCw, Sparkles } from 'lucide-react';
 import { m as motion, MotionConfig, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { hapticSelection, hapticLight } from '../lib/haptics';
 
 const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, scrollX, itemWidth, t }: any) => {
     const trackRef = useRef<HTMLDivElement>(null);
@@ -18,7 +19,7 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
         setPointerDownX(e.clientX);
         (e.target as HTMLElement).setPointerCapture(e.pointerId);
         handlePointerMove(e, true);
-        if (navigator.vibrate) navigator.vibrate(10);
+        hapticSelection();
     };
 
     const handlePointerMove = (e: React.PointerEvent, forceScroll = false) => {
@@ -41,7 +42,7 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
         if (isDragging || forceScroll) {
             if (newIndex !== activeIndex) {
                  scrollToCard(newIndex, isRealDrag);
-                 if (navigator.vibrate && isRealDrag) navigator.vibrate(15);
+                 if (isRealDrag) hapticLight();
             }
         }
     };
@@ -225,33 +226,48 @@ const CarouselCard = React.memo(({
                         {/* Interactive Buttons Footer */}
                         <div className={`pt-5 mt-auto transition-all duration-500 transform-gpu ${isActive ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
                             <div className="flex flex-col gap-3">
-                                <Link
-                                    to={`/tema/${topic.slug}`}
-                                    onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                    className="group/btn relative overflow-hidden flex items-center justify-between text-white font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-5 py-4 rounded-xl shadow-[0_12px_24px_rgba(var(--primary-rgb),0.25)] transition-all duration-300 active:scale-95"
+                                <motion.div
+                                    whileTap={{ scale: 0.96 }}
+                                    onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        hapticLight();
+                                        markAsSeen(topic.slug, newestUpdate); 
+                                        navigate(`/tema/${topic.slug}`);
+                                    }}
+                                    className="group/btn relative overflow-hidden flex items-center justify-between text-white font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-5 py-4 rounded-xl shadow-[0_12px_24px_rgba(var(--primary-rgb),0.25)] transition-colors duration-300 cursor-pointer"
                                 >
                                     <span className="relative z-10 text-[15px] tracking-wide">{t('topics.explore', 'Explorar tema')}</span>
                                     <div className="relative z-10 bg-white/20 p-1.5 rounded-lg group-hover/btn:bg-white/30 transition-colors">
                                         <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
                                     </div>
-                                </Link>
+                                </motion.div>
 
                                 <div className="flex items-center gap-2.5">
-                                    <Link
-                                        to={`/tema/${topic.slug}/test`}
-                                        onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                        className="flex-1 text-slate-300 hover:text-amber-400 text-xs font-semibold flex items-center justify-center gap-2 transition-all bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-amber-500/10 hover:border-amber-500/20 shadow-inner"
+                                    <motion.div
+                                        whileTap={{ scale: 0.96 }}
+                                        onClick={(e) => { 
+                                            e.stopPropagation(); 
+                                            hapticLight();
+                                            markAsSeen(topic.slug, newestUpdate); 
+                                            navigate(`/tema/${topic.slug}/test`);
+                                        }}
+                                        className="flex-1 text-slate-300 hover:text-amber-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-amber-500/10 hover:border-amber-500/20 shadow-inner cursor-pointer"
                                     >
                                         <RefreshCw size={14} /> Test
-                                    </Link>
+                                    </motion.div>
 
-                                    <Link
-                                        to={subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : subject === 'pro2' && topic.slug === 'pro2-tema-9' ? '/tema/pro2-lab-7' : `/tema/${topic.slug}/solucionaris`}
-                                        onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                        className="flex-1 text-slate-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-all bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner"
+                                    <motion.div
+                                        whileTap={{ scale: 0.96 }}
+                                        onClick={(e) => { 
+                                            e.stopPropagation(); 
+                                            hapticLight();
+                                            markAsSeen(topic.slug, newestUpdate); 
+                                            navigate(subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : subject === 'pro2' && topic.slug === 'pro2-tema-9' ? '/tema/pro2-lab-7' : `/tema/${topic.slug}/solucionaris`);
+                                        }}
+                                        className="flex-1 text-slate-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner cursor-pointer"
                                     >
                                         {subject === 'pro2' ? <Terminal size={14} /> : <Calculator size={14} />} {t('topic.solutions', 'Solucionaris')}
-                                    </Link>
+                                    </motion.div>
                                 </div>
                             </div>
                         </div>
@@ -259,6 +275,56 @@ const CarouselCard = React.memo(({
                 </div>
             </motion.div>
         </div>
+    );
+});
+
+const LandscapeTopicCard = React.memo(({ topic, index, subject, navigate, markAsSeen, seenNewTopics, seenVersions, t }: any) => {
+    const versions = allPersonalNotes.filter((n: any) => n.slug === topic.slug);
+    const hasNewTag = versions.some((n: any) => n.isNew);
+    const newestUpdate = Math.max(0, ...versions.map((n: any) => n.isUpdated || 0));
+
+    const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
+    const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
+
+    return (
+        <motion.div 
+            whileTap={{ scale: 0.96 }}
+            onClick={(e) => {
+                e.stopPropagation();
+                hapticLight();
+                markAsSeen(topic.slug, newestUpdate);
+                navigate(`/tema/${topic.slug}`);
+            }}
+            className="group relative w-full h-full bg-slate-900/60 hover:bg-slate-800/80 border border-white/5 hover:border-primary/30 rounded-[20px] p-5 flex flex-col shadow-lg backdrop-blur-md cursor-pointer transition-colors duration-300 overflow-hidden"
+        >
+            {/* Subtle glow effect on hover */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none -mr-10 -mt-10" />
+
+            <div className="flex items-start justify-between w-full mb-4 relative z-10">
+                <div className="w-11 h-11 bg-primary/10 text-accent rounded-2xl flex items-center justify-center font-bold text-lg border border-primary/20 shadow-sm">
+                    {String(index + 1).padStart(2, '0')}
+                </div>
+                
+                <div className="flex gap-1.5">
+                    {isTopicNew && <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 uppercase shadow-sm">{t('topics.new', 'Nou')}</span>}
+                    {isTopicUpdated && <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase shadow-sm">{t('topics.updated', 'Act')}</span>}
+                </div>
+            </div>
+            
+            <div className="flex-1 min-w-0 relative z-10 flex flex-col">
+                <h3 className="text-white font-bold text-base leading-tight mb-2 line-clamp-2">{topic.title}</h3>
+                <p className="text-slate-400 text-[11px] leading-relaxed line-clamp-2 mb-4">{topic.description}</p>
+                
+                <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/5">
+                    <span className="text-[10px] font-mono text-slate-500 font-semibold tracking-wider uppercase">
+                        {topic.readTime || '10 Min'}
+                    </span>
+                    <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                        <ArrowRight size={12} className="text-slate-400 group-hover:text-accent group-hover:translate-x-0.5 transition-all" />
+                    </div>
+                </div>
+            </div>
+        </motion.div>
     );
 });
 
@@ -280,6 +346,18 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
     const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
     
     const isInteractive = !(isMobile && isMenuOpen);
+
+    const [isLandscape, setIsLandscape] = useState(false);
+    useEffect(() => {
+        const updateOrientation = () => {
+            if (typeof window !== 'undefined') {
+                setIsLandscape(window.innerHeight < 550 && window.innerWidth > window.innerHeight);
+            }
+        };
+        updateOrientation();
+        window.addEventListener('resize', updateOrientation);
+        return () => window.removeEventListener('resize', updateOrientation);
+    }, []);
 
     const sortedTopics = useMemo(() => {
         return [...allPersonalNotes]
@@ -320,7 +398,7 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
         const newIndex = Math.round(latest / itemWidth);
         if (newIndex !== activeIndex && newIndex >= 0 && newIndex < sortedTopics.length) {
             setActiveIndex(newIndex);
-            if (navigator.vibrate) navigator.vibrate(8);
+            hapticSelection();
         }
     });
 
@@ -398,6 +476,30 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
             }
         } catch (e) { }
     }, []);
+
+    if (isLandscape) {
+        return (
+            <div className="fixed inset-0 z-0 w-full flex flex-col overflow-hidden pointer-events-none">
+                <div className="flex-1 w-full h-full overflow-y-auto px-6 pt-24 pb-12 pointer-events-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <div className="grid grid-cols-2 gap-4 max-w-5xl mx-auto h-max">
+                        {sortedTopics.map((topic, index) => (
+                            <LandscapeTopicCard
+                                key={topic.slug}
+                                topic={topic}
+                                index={index}
+                                subject={subject}
+                                navigate={navigate}
+                                markAsSeen={markAsSeen}
+                                seenNewTopics={seenNewTopics}
+                                seenVersions={seenVersions}
+                                t={t}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <MotionConfig reducedMotion={!isInteractive ? "always" : "never"}>

@@ -3,6 +3,7 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Settings2, Sparkles, Bot, Database, Keyboard, type LucideIcon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 import { GeneralSection } from '../components/settings/GeneralSection';
 import { PlannerSection } from '../components/settings/PlannerSection';
@@ -20,6 +21,7 @@ type TabId = 'general' | 'shortcuts' | 'offline' | 'ai' | 'about';
 const SettingsContent = () => {
     const { t } = useTranslation();
     const { user } = useAuth();
+    const isMobile = useIsMobile();
     const [activeTab, setActiveTab] = useState<TabId>('general');
 
     const TABS: { id: TabId; label: string; icon: LucideIcon }[] = [
@@ -39,7 +41,7 @@ const SettingsContent = () => {
         switch (activeTab) {
             case 'general': return (
                 <div className="flex flex-col">
-                    <GeneralSection />
+                    {!isMobile && <GeneralSection />}
                     <SubjectsSection />
                     {user && (
                         <>
@@ -62,8 +64,9 @@ const SettingsContent = () => {
         <div className="w-full h-dvh bg-[#0a0d16] text-slate-300 overflow-hidden relative selection:bg-sky-500/30 selection:text-sky-200">
             {/* Ambient Background Effects */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-sky-500/10 rounded-full blur-[150px] opacity-70" />
-                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-rose-500/10 rounded-full blur-[150px] opacity-70" />
+                <div className="hidden md:block absolute top-0 right-0 w-[800px] h-[800px] bg-sky-500/10 rounded-full blur-[150px] opacity-70" />
+                <div className="hidden md:block absolute bottom-0 left-0 w-[600px] h-[600px] bg-rose-500/10 rounded-full blur-[150px] opacity-70" />
+                <div className="md:hidden absolute inset-0 bg-gradient-to-br from-sky-900/10 to-rose-900/10" />
                 <div className="noise-bg absolute inset-0 opacity-[0.03]" />
             </div>
 
@@ -109,9 +112,9 @@ const SettingsContent = () => {
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeTab}
-                                    initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-                                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                                    exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                                    initial={{ opacity: 0, y: 10, filter: isMobile ? 'none' : 'blur(4px)' }}
+                                    animate={{ opacity: 1, y: 0, filter: isMobile ? 'none' : 'blur(0px)' }}
+                                    exit={{ opacity: 0, y: -10, filter: isMobile ? 'none' : 'blur(4px)' }}
                                     transition={{ duration: 0.25, ease: "easeOut" }}
                                     className="w-full"
                                 >

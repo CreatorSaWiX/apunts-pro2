@@ -4,7 +4,7 @@ import { Points, PointMaterial, PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
 
 import { useSubject } from '../../contexts/SubjectContext';
-import { useMobilePerformance } from '../../hooks/useMobilePerformance';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 const ParticleNetwork = ({ count }: { count: number }) => {
     const { theme } = useSubject();
@@ -75,8 +75,8 @@ const LiteHeroBanner = () => {
 };
 
 const CommunityHero3D = ({ isPaused = false }: { isPaused?: boolean }) => {
-    const { isMobile, isLiteMode, isLowEndHardware } = useMobilePerformance();
-    const useLiteFallback = isLiteMode || isLowEndHardware;
+    const isMobile = useIsMobile();
+    const useLiteFallback = false;
 
     const initialDpr = isMobile ? 1 : 1.5;
     const particleCount = isMobile ? 600 : 3000;

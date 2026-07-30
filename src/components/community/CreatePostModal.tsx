@@ -175,7 +175,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
     if (!user) return null;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size={isFullscreen ? 'screen' : '6xl'} hideCloseButton={true}>
+        <Modal isOpen={isOpen} onClose={onClose} size={isFullscreen ? 'screen' : '6xl'} className="max-md:!w-screen max-md:!h-[100dvh] max-md:!max-w-none max-md:!rounded-none max-md:!border-0 max-md:!m-0" hideCloseButton={true}>
             <Modal.Layout className="flex-col md:flex-row h-full w-full">
                 {/* LEFT PANEL: EDITOR */}
                 <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'}`}>
@@ -185,7 +185,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                             <button
                                 type="button"
                                 onClick={() => setIsFullscreen(!isFullscreen)}
-                                className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs group"
+                                className="hidden md:flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs group"
                                 title={isFullscreen ? "Minimitzar" : "Ampliar editor"}
                             >
                                 {isFullscreen ? (
@@ -197,7 +197,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className={`p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs ${isFullscreen ? 'flex' : 'flex md:hidden'}`}
+                                className="flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs"
                                 title="Tancar"
                             >
                                 <X size={18} strokeWidth={2.5} />
@@ -211,9 +211,9 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
 
 
                         {/* Seamless Text Input or Rich Editor */}
-                        <div className="relative shrink-0 flex-1 min-h-100">
+                        <div className="relative shrink-0 flex-1 min-h-[200px] md:min-h-100 flex flex-col">
                             <Suspense fallback={
-                                <div className="w-full h-full min-h-100 flex items-center justify-center bg-white/2 border border-white/5 rounded-2xl">
+                                <div className="w-full h-full min-h-[200px] md:min-h-100 flex items-center justify-center bg-white/2 border border-white/5 rounded-2xl">
                                     <Spinner size="lg" variant="primary" />
                                 </div>
                             }>

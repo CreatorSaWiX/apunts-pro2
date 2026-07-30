@@ -87,7 +87,7 @@ const ToolbarButton = ({ onClick, isActive, disabled = false, icon: Icon, title 
         type="button"
         onClick={onClick}
         disabled={disabled}
-        className={`p-2 rounded-lg transition-colors ${isActive ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white hover:bg-white/10'} disabled:opacity-30`}
+        className={`p-3 sm:p-2 rounded-lg transition-colors ${isActive ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white hover:bg-white/10'} disabled:opacity-30`}
         title={title}
     >
         <Icon size={16} />
@@ -113,7 +113,7 @@ const EditorDropdown = ({ icon: Icon, label, children, title, isActive = false }
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`p-2 flex items-center gap-1 rounded-lg transition-colors ${isOpen || isActive ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                className={`p-3 sm:p-2 flex items-center gap-1 rounded-lg transition-colors ${isOpen || isActive ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
                 title={title}
             >
                 {Icon && <Icon size={16} />}
@@ -182,7 +182,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
     };
 
     return (
-        <div className="flex flex-wrap items-center gap-1 p-2 border-b border-white/10 bg-black/20 shrink-0">
+        <div className="flex flex-nowrap md:flex-wrap overflow-x-auto custom-scrollbar items-center gap-2 sm:gap-1 p-2 sm:p-2 border-b border-white/10 bg-black/20 shrink-0">
             {/* TEXT FORMAT */}
             <EditorDropdown icon={Type} title={t('editor.typography', 'Tipografia')} isActive={editor.isActive('heading')}>
                 <DropdownItem onClick={() => editor.chain().focus().setParagraph().run()} isActive={editor.isActive('paragraph')} label={t('editor.normalText', 'Text Normal')} />

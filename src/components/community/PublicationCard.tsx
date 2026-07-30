@@ -11,7 +11,7 @@ import Spinner from '../ui/Spinner';
 import FileUploader from '../ui/FileUploader';
 import { ImagePlus } from 'lucide-react';
 import subjectsData from '../../data/subjects.json';
-import { useMobilePerformance } from '../../hooks/useMobilePerformance';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 interface PublicationCardProps {
     post: CommunityPost;
@@ -24,7 +24,7 @@ const MODEL_EXTENSIONS = ['gltf', 'glb', 'obj'];
 
 const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: PublicationCardProps) => {
     const { user } = useAuth();
-    const { isMobile, isLiteMode } = useMobilePerformance();
+    const isMobile = useIsMobile();
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     
@@ -205,7 +205,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {isMobile || isLiteMode || isHeroMode ? (
+            {isMobile || isHeroMode ? (
                 <div className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 active:scale-[0.98] active:border-white/20 shadow-lg transition-all duration-200">
                     {cardVisuals}
                 </div>

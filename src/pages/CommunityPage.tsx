@@ -87,6 +87,7 @@ const CommunityPage = () => {
 
     const [activeSubject, setActiveSubject] = useState<string>('all');
     const [showSubjectFilter, setShowSubjectFilter] = useState(false);
+    const [showMobileFiltersMenu, setShowMobileFiltersMenu] = useState(false);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
     const { customSubjectColors } = useSettings();
@@ -372,8 +373,63 @@ const CommunityPage = () => {
     return (
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
 
-            {/* Dynamic Island Navigator (Fixed Top Right) */}
-            <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-50">
+            {/* Mobile Filter Button (Top Left) */}
+            <div className="md:hidden absolute top-5 left-4 z-50">
+                <NavigationPill>
+                    <button type="button" 
+                        onClick={() => setShowMobileFiltersMenu(!showMobileFiltersMenu)} 
+                        className="flex items-center justify-center w-9 h-9 text-white hover:text-primary transition-colors active:scale-95"
+                        aria-label="Filtres"
+                    >
+                        <Filter size={16} />
+                    </button>
+                </NavigationPill>
+                
+                <AnimatePresence>
+                    {showMobileFiltersMenu && (
+                        <>
+                            <div className="fixed inset-0 z-40" onClick={() => setShowMobileFiltersMenu(false)} />
+                            <motion.div 
+                                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                className="absolute top-14 left-0 w-64 bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl z-50 flex flex-col gap-4"
+                            >
+                                <div>
+                                    <h4 className="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest">{t('community.subjects', 'Assignatures')}</h4>
+                                    <button onClick={() => { setShowSubjectFilter(true); setShowMobileFiltersMenu(false); }} className="flex items-center gap-2 w-full p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-colors">
+                                        <BookOpen size={16} />
+                                        {activeSubject === 'all' ? t('community.allSubjects', 'Totes') : activeSubject.toUpperCase()}
+                                    </button>
+                                </div>
+                                <div>
+                                    <h4 className="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest">{t('community.allTypes', 'Tipus')}</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {['all', 'pdf', 'image', 'code'].map(type => (
+                                            <button key={type} onClick={() => { setFilterType(type as any); setShowMobileFiltersMenu(false); }} className={`p-2 rounded-xl text-xs font-medium transition-colors ${filterType === type ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white/5 text-slate-300'}`}>
+                                                {type === 'all' ? 'Tots' : type === 'pdf' ? 'PDFs' : type === 'image' ? 'Imatges' : 'Codi'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest">Ordenació</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {['recent', 'popular', 'views', 'liked'].map(sort => (
+                                            <button key={sort} onClick={() => { setSortBy(sort as any); setShowMobileFiltersMenu(false); }} className={`p-2 rounded-xl text-xs font-medium transition-colors ${sortBy === sort ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white/5 text-slate-300'}`}>
+                                                {sort === 'recent' ? t('community.recent', 'Recents') : sort === 'popular' ? t('community.popular', 'Populars') : sort === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* Dynamic Island Navigator (Canvas/Resources) - Top Right */}
+            <div className="absolute top-5 md:fixed md:top-6 right-4 sm:right-6 z-50">
                 <NavigationPill>
                     <button type="button"
                         onClick={handleCloseCanvas}
@@ -420,7 +476,7 @@ const CommunityPage = () => {
             {/* Fons intel·ligent: L'ocultem amb CSS per evitar problemes de remounting. Fem servir visibility per no perdre l'scroll i el layout, i pausem WebGL. */}
             <div className={`w-full transition-all duration-700 ease-in-out ${isBackgroundHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}`}>
                 {/* Awwwards Hero Section */}
-                <section className="relative w-full min-h-[55vh] flex items-center justify-center z-10 overflow-hidden pt-28 pb-8">
+                <section className="hidden md:flex relative w-full min-h-[55vh] items-center justify-center z-10 overflow-hidden pt-28 pb-8">
                     <Suspense fallback={null}>
                         <CommunityHero3D isPaused={isCanvasFullyOpen} />
                     </Suspense>
@@ -560,8 +616,21 @@ const CommunityPage = () => {
 
                 <main className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
 
+                    {/* Mobile Upload FAB */}
+                    <div className="md:hidden fixed bottom-24 right-4 z-50">
+                        <button type="button" 
+                            onClick={handleUploadClick} 
+                            className="group relative w-14 h-14 bg-[#0a0a0a]/80 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition-all duration-300 active:scale-95 overflow-hidden"
+                        >
+                            <div className="absolute inset-0 bg-linear-to-r from-primary/30 via-accent/30 to-primary/30 opacity-60" />
+                            <div className="absolute inset-0 rounded-full border border-white/20" />
+                            <Plus size={24} className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
+                        </button>
+                    </div>
+
                     {/* Floating Glassmorphic Pill Filter (Awwwards Style) */}
-                    <LiquidToolbar delay={0.5}>
+                    <div className="hidden md:block">
+                        <LiquidToolbar delay={0.5}>
                         {/* Assignatures */}
                         <LiquidToolbarButton
                             key="assignatures"
@@ -716,6 +785,7 @@ const CommunityPage = () => {
                             </div>
                         </div>
                     </LiquidToolbar>
+                    </div>
 
                     {/* Feed Section */}
                     <div className="w-full">
@@ -784,7 +854,7 @@ const CommunityPage = () => {
                                     </div>
                                 </motion.div>
                             ) : (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pt-8">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 pt-8">
                                     {filteredAndSortedPosts.map((post, index) => {
                                         const cardProps = {
                                             onClick: () => setSelectedPost(post),
