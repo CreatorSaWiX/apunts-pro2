@@ -6,7 +6,7 @@ import {
     addDoc, serverTimestamp 
 } from 'firebase/firestore';
 import type { PostReply } from '../../types/community';
-import { Send, Smile, ChevronDown } from 'lucide-react';
+import { Send, Smile, ChevronDown, ArrowUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { formatDistanceToNow } from 'date-fns';
@@ -178,62 +178,76 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
 
             {/* Input Area */}
             {user ? (
-                <form onSubmit={handleSend} className="shrink-0 border-t border-white/10 bg-[#0a0a0a] p-4 pb-6 sm:pb-4 relative">
-                    <div className="relative flex items-center gap-2">
-                        <div className="relative">
-                            <button
-                                type="button"
-                                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                className={`p-2 rounded-lg transition-all ${showEmojiPicker ? 'bg-primary/20 text-accent' : 'text-slate-500 hover:text-white hover:bg-white/5'}`}
-                            >
-                                <Smile size={18} />
-                            </button>
-                            {showEmojiPicker && (
-                                <div className="absolute bottom-full left-0 mb-2 z-50">
-                                    <div className="fixed inset-0" onClick={() => setShowEmojiPicker(false)} />
-                                    <div className="relative p-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl grid grid-cols-6 gap-1 w-72 max-h-48 overflow-y-auto custom-scrollbar">
-                                        {CUSTOM_EMOTES.map(emoji => (
-                                            <button
-                                                key={emoji}
-                                                type="button"
-                                                onClick={() => handleEmojiSelect(emoji)}
-                                                className="p-1 rounded-lg hover:bg-slate-800 transition-transform hover:scale-110 flex items-center justify-center"
-                                            >
-                                                <img src={emoji} alt="emoji" loading="lazy" className="w-6 h-6 object-contain" />
-                                            </button>
-                                        ))}
+                <form onSubmit={handleSend} className="shrink-0 bg-transparent px-4 py-3 pb-8 sm:pb-4 relative">
+                    <div className="flex items-end gap-2.5">
+                        <img 
+                            src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`} 
+                            alt={user.username} 
+                            className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10 bg-slate-800 mb-0.5"
+                        />
+                        <div className="relative flex-1 flex items-end bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-white/30 focus-within:bg-white/10 rounded-[1.25rem] p-1 transition-all">
+                            
+                            <div className="relative flex-1">
+                                {mentionSearch && (
+                                    <MentionPopup users={suggestedUsers} onSelect={(u) => setNewReply(insertMention(newReply, u))} position="top" />
+                                )}
+                                <textarea 
+                                    value={newReply}
+                                    onChange={(e) => {
+                                        setNewReply(e.target.value);
+                                        handleInputChange(e.target.value, e.target.selectionStart || 0);
+                                    }}
+                                    placeholder="Afegeix un comentari..."
+                                    rows={1}
+                                    onInput={(e) => {
+                                        const target = e.target as HTMLTextAreaElement;
+                                        target.style.height = 'auto';
+                                        target.style.height = Math.min(target.scrollHeight, 100) + 'px';
+                                    }}
+                                    className="w-full bg-transparent border-none px-3 py-2 text-base sm:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-0 resize-none max-h-[100px]"
+                                    style={{ height: '36px' }}
+                                />
+                            </div>
+
+                            <div className="relative shrink-0 flex items-center mb-0.5">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                    className={`p-1.5 rounded-full transition-colors mr-1 ${showEmojiPicker ? 'text-primary' : 'text-slate-400 hover:text-white'}`}
+                                >
+                                    <Smile size={22} />
+                                </button>
+                                {showEmojiPicker && (
+                                    <div className="absolute bottom-full right-0 mb-4 z-50">
+                                        <div className="fixed inset-0" onClick={() => setShowEmojiPicker(false)} />
+                                        <div className="relative p-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl grid grid-cols-6 gap-1 w-72 max-h-48 overflow-y-auto custom-scrollbar">
+                                            {CUSTOM_EMOTES.map(emoji => (
+                                                <button
+                                                    key={emoji}
+                                                    type="button"
+                                                    onClick={() => handleEmojiSelect(emoji)}
+                                                    className="p-1 rounded-lg hover:bg-slate-800 transition-transform hover:scale-110 flex items-center justify-center"
+                                                >
+                                                    <img src={emoji} alt="emoji" loading="lazy" className="w-6 h-6 object-contain" />
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
+                                
+                                <button 
+                                    type="submit"
+                                    disabled={!newReply.trim()}
+                                    className={`p-1.5 rounded-full transition-all flex items-center justify-center mr-1 ${newReply.trim() ? 'bg-primary text-white shadow-md shadow-primary/30' : 'bg-transparent text-slate-600'}`}
+                                >
+                                    <ArrowUp size={20} strokeWidth={3} />
+                                </button>
+                            </div>
                         </div>
-
-                        <div className="relative flex-1">
-                            {mentionSearch && (
-                                <MentionPopup users={suggestedUsers} onSelect={(u) => setNewReply(insertMention(newReply, u))} position="top" />
-                            )}
-                            <input 
-                                type="text" 
-                                value={newReply}
-                                onChange={(e) => {
-                                    setNewReply(e.target.value);
-                                    handleInputChange(e.target.value, e.target.selectionStart || 0);
-                                }}
-                                placeholder="Escriu una resposta..."
-                                className="w-full bg-[#161616] sm:bg-slate-950/50 border border-white/5 rounded-xl px-4 py-3 sm:py-2 text-base sm:text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-primary/50 transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]"
-                            />
-                        </div>
-
-                        <button 
-                            type="submit"
-                            disabled={!newReply.trim()}
-                            className="p-3 sm:p-2 bg-primary text-white rounded-xl disabled:opacity-30 transition-all shadow-lg shadow-primary/20"
-                        >
-                            <Send size={16} />
-                        </button>
                     </div>
                 </form>
             ) : (
-                <div className="shrink-0 border-t border-white/10 bg-[#0a0a0a] text-center py-4 text-xs text-slate-500 uppercase tracking-widest font-bold">
+                <div className="shrink-0 bg-transparent text-center py-6 text-xs text-slate-500 uppercase tracking-widest font-bold">
                     Inicia sessió per respondre
                 </div>
             )}

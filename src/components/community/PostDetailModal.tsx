@@ -493,7 +493,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                                 onClose={() => setShowCommentsMobile(false)}
                                 title={t('community.postDetail.comments', 'Comentaris')}
                             >
-                                <div className="h-[70vh] flex flex-col bg-[#060606] -mx-4 -mb-4">
+                                <div className="h-[70vh] flex flex-col -mx-4 -mb-4">
                                     <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
                                 </div>
                             </BottomSheet>

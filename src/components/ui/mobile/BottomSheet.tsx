@@ -52,7 +52,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title, subti
                         exit={{ y: '100%' }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
                         style={{ willChange: 'transform' }}
-                        className="fixed bottom-0 inset-x-0 mx-auto max-w-2xl bg-[#0F172A]/30 backdrop-blur-xl border-white/12 border-t sm:border-x rounded-t-[2.5rem] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] px-[max(1.5rem,env(safe-area-inset-left))] shadow-2xl z-[999] flex flex-col gap-6 max-h-[85vh]"
+                        className="fixed bottom-0 inset-x-0 mx-auto w-full lg:max-w-2xl bg-[#0F172A]/30 backdrop-blur-xl border-white/12 border-t lg:border-x rounded-t-[2.5rem] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] px-[max(1.5rem,env(safe-area-inset-left))] shadow-2xl z-[999] flex flex-col gap-6 max-h-[85vh]"
                         role="dialog"
                         aria-modal="true"
                     >
