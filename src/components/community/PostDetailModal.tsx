@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { CommunityPost } from '../../types/community';
 import { m as motion, AnimatePresence, type Variants } from 'framer-motion';
 import { X, Heart, Share2, Trash2, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
@@ -222,7 +223,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
     const postImages = post.attachments?.filter(a => a.type.startsWith('image/') && !a.isCustomThumbnail) || [];
     const postFiles = post.attachments?.filter(a => !a.type.startsWith('image/') && !a.isCustomThumbnail) || [];
 
-    return (
+    const content = (
         <AnimatePresence>
             {isOpen && (
                 <div className={`fixed inset-0 z-[100] flex items-center justify-center overflow-hidden ${isMobile ? 'p-0' : 'p-4 md:p-6'}`}>
@@ -504,6 +505,9 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
             )}
         </AnimatePresence>
     );
+
+    if (typeof document === 'undefined') return null;
+    return createPortal(content, document.body);
 };
 
 export default PostDetailModal;
