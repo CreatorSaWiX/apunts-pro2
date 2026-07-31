@@ -492,8 +492,9 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                                 isOpen={showCommentsMobile}
                                 onClose={() => setShowCommentsMobile(false)}
                                 title={t('community.postDetail.comments', 'Comentaris')}
+                                fullBleed={true}
                             >
-                                <div className="h-[70vh] flex flex-col -mx-4 -mb-4">
+                                <div className="h-[70vh] flex flex-col overflow-hidden pb-[env(safe-area-inset-bottom)]">
                                     <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
                                 </div>
                             </BottomSheet>

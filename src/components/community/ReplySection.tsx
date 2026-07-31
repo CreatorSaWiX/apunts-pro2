@@ -126,7 +126,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
     const hasMore = replies.length > visibleLimit;
 
     return (
-        <div className="flex flex-col h-full min-h-0 overflow-hidden w-full">
+        <div className="flex flex-col h-full min-h-0 overflow-hidden">
             {/* Replies List */}
             <div className="flex-1 min-h-0 overflow-y-auto p-6 custom-scrollbar space-y-4">
                 {loading ? (
@@ -204,7 +204,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                                         target.style.height = 'auto';
                                         target.style.height = Math.min(target.scrollHeight, 100) + 'px';
                                     }}
-                                    className="w-full bg-transparent border-none px-3 py-2 text-base sm:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-0 resize-none max-h-[100px]"
+                                    className="w-full bg-transparent border-none px-3 py-2 text-base sm:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-0 resize-none max-h-[100px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                                     style={{ height: '36px' }}
                                 />
                             </div>

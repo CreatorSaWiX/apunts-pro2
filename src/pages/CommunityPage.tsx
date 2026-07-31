@@ -385,7 +385,7 @@ const CommunityPage = () => {
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
 
             {/* Mobile Filter Button (Top Left) */}
-            <div className="md:hidden absolute top-5 left-4 z-50">
+            <div className="md:hidden fixed top-5 left-4 z-50">
                 <NavigationPill>
                     <button type="button"
                         onClick={() => {
@@ -466,7 +466,7 @@ const CommunityPage = () => {
             </div>
 
             {/* Dynamic Island Navigator (Canvas/Resources) - Top Right */}
-            <div className="absolute top-5 md:fixed md:top-6 right-4 sm:right-6 z-50">
+            <div className="fixed top-5 md:top-6 right-4 sm:right-6 z-50">
                 <NavigationPill>
                     <button type="button"
                         onClick={() => {
@@ -657,15 +657,14 @@ const CommunityPage = () => {
 
                 </section>
 
-                <main className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 relative z-10 pt-24 md:pt-0">
+                <main className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 relative z-10 pt-4 md:pt-0">
 
                     {/* Mobile Upload FAB */}
                     <div className="md:hidden fixed bottom-28 right-4 z-50">
                         <button type="button"
                             onClick={handleUploadClick}
-                            className="group relative w-14 h-14 bg-[#0a0a0a]/80 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition-all duration-300 active:scale-95 overflow-hidden"
+                            className="group relative w-14 h-14 bg-[#0a0a0a]/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition-all duration-300 active:scale-95 overflow-hidden"
                         >
-                            <div className="absolute inset-0 bg-linear-to-r from-primary/30 via-accent/30 to-primary/30 opacity-60" />
                             <div className="absolute inset-0 rounded-full border border-white/20" />
                             <Plus size={24} className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
                         </button>
