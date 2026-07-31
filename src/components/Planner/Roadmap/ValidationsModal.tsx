@@ -81,7 +81,6 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
             isOpen={isOpen}
             onClose={onClose}
             size="5xl"
-            overlayVariant="transparent"
             className="bg-(--glass-bg-darker)er border-(--glass-border)ow-2xl rounded-4xlxlflow-hidden backdrop-blur-3xl backdrop-saturate-150"
             hideCloseButton
         >

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import type { CommunityPost } from '../../types/community';
 import { Heart, Eye, FileCode2, Box, FileVideo, FileText, Archive, Pin } from 'lucide-react';
@@ -27,10 +27,10 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
     const isMobile = useIsMobile();
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
-    
+
     const firstAttachment = post.attachments?.[0];
     const imageAttachment = post.attachments?.find(a => a.type.startsWith('image/'));
-    
+
     const coverUrl = firstAttachment?.thumbnailUrl || imageAttachment?.url;
 
     const ext = firstAttachment?.name.split('.').pop()?.toLowerCase() || '';
@@ -43,7 +43,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
     else if (type === 'application/pdf') { badgeIcon = <FileText size={10} />; badgeText = 'PDF'; }
     else if (CODE_EXTENSIONS.includes(ext) || type.startsWith('text/')) { badgeIcon = <FileCode2 size={10} />; badgeText = 'Codi'; }
     else if (MODEL_EXTENSIONS.includes(ext)) { badgeIcon = <Box size={10} />; badgeText = '3D'; }
-    else if (['zip','rar','tar'].includes(ext)) { badgeIcon = <Archive size={10} />; badgeText = 'ZIP'; }
+    else if (['zip', 'rar', 'tar'].includes(ext)) { badgeIcon = <Archive size={10} />; badgeText = 'ZIP'; }
 
     const isVideo = type.startsWith('video/');
     const likeCount = Object.values(post.reactions || {}).filter(r => r.emoji === '❤️').length;
@@ -56,7 +56,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
         try {
             if (hasLiked) {
                 await updateDoc(postRef, { [`reactions.${user.id}`]: deleteField() });
-                
+
                 if (post.userId !== user.id) {
                     await deleteDoc(doc(db, 'notifications', `like_${post.id}_${user.id}`));
                 }
@@ -102,16 +102,16 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
     const cardVisuals = (
         <>
             {/* Spotlight Overlay - Static Performant CSS Glow */}
-            <div 
+            <div
                 className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_0%,transparent_70%)]"
             />
             {isVideo && isHovered && firstAttachment ? (
-                <video 
-                    src={firstAttachment.url} 
-                    autoPlay 
-                    muted 
-                    loop 
-                    className="w-full h-full object-cover transition-opacity duration-300 opacity-0 animate-[fadeIn_0.3s_ease-in-out_forwards]" 
+                <video
+                    src={firstAttachment.url}
+                    autoPlay
+                    muted
+                    loop
+                    className="w-full h-full object-cover transition-opacity duration-300 opacity-0 animate-[fadeIn_0.3s_ease-in-out_forwards]"
                 />
             ) : coverUrl ? (
                 <>
@@ -119,8 +119,8 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                         <div className="absolute inset-0 shimmer-skeleton z-10" />
                     )}
                     <img
-                        src={coverUrl} 
-                        alt={post.content.substring(0, 20)} 
+                        src={coverUrl}
+                        alt={post.content.substring(0, 20)}
                         className={`w-full h-full object-cover transition-all duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''} ${imageLoaded ? 'opacity-100 blur-none' : 'opacity-0 blur-sm'}`}
                         loading="lazy"
                         decoding="async"
@@ -141,7 +141,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
 
             {/* Custom Thumbnail Upload Overlay */}
             {onThumbnailUpload && (
-                <div 
+                <div
                     className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center text-white cursor-pointer z-30 backdrop-blur-sm rounded-[inherit]"
                     title="Canviar Miniatura"
                 >
@@ -166,7 +166,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
 
             {/* Top Right Actions (Like Button - Always visible on mobile, hover on desktop) */}
             <div className="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 z-10">
-                <button type="button" 
+                <button type="button"
                     onClick={handleLike}
                     className={`h-8 px-2.5 rounded-full flex items-center justify-center gap-1.5 backdrop-blur-md border border-white/20 transition-all active:scale-90 ${hasLiked ? 'bg-rose-500/20 text-rose-500 border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]' : 'bg-black/60 text-white hover:bg-black/80'}`}
                     aria-label="M'agrada"
@@ -200,7 +200,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
     );
 
     return (
-        <div 
+        <div
             className="flex flex-col gap-2 group cursor-pointer"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -229,7 +229,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                         __html: safeContentTitle
                     }}
                 />
-                
+
                 <div className="flex items-center justify-between gap-2 mt-1">
                     <div className="flex items-center gap-1.5 min-w-0 flex-1 mr-1">
                         <img src={post.userAvatar} alt={post.username} loading="lazy" decoding="async" className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
@@ -237,7 +237,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                             {post.username}
                         </span>
                     </div>
-                    
+
                     <div className="flex items-center gap-2 shrink-0 text-slate-400 text-[11px] font-medium">
                         <div className="flex items-center gap-1">
                             <Heart size={12} className={hasLiked ? 'text-rose-500 fill-rose-500' : ''} />
@@ -254,4 +254,10 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
     );
 };
 
-export default PublicationCard;
+export default memo(PublicationCard, (prev, next) => {
+    // Custom comparison to ensure it only re-renders if post data has actually changed
+    return prev.post.id === next.post.id &&
+        prev.isHeroMode === next.isHeroMode &&
+        JSON.stringify(prev.post.reactions) === JSON.stringify(next.post.reactions) &&
+        prev.post.views === next.post.views;
+});

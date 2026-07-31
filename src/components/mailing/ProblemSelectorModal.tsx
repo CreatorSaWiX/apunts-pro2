@@ -81,7 +81,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
     if (!isOpen) return null;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="3xl" overlayVariant="transparent">
+        <Modal isOpen={isOpen} onClose={onClose} size="3xl">
             <Modal.Layout className="flex-col">
                 <Modal.Header>
                     <div className="flex flex-col">

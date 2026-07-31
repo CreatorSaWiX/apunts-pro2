@@ -10,6 +10,7 @@ import { Search, Plus, FileText as FileTextIcon, BookOpen, X, Filter, ArrowUpDow
 import { lazy, Suspense } from 'react';
 
 import Spinner from '../components/ui/Spinner';
+import BottomSheet from '../components/ui/mobile/BottomSheet';
 import { useSettings } from '../contexts/SettingsContext';
 import { getSubjectById } from '../config/subjects';
 import { useTranslation } from 'react-i18next';
@@ -272,7 +273,7 @@ const CommunityPage = () => {
                 } catch (err) {
                     console.error("Algolia search failed", err);
                 }
-                
+
                 if (isCancelled) return;
                 if (postIdsToFetch.length === 0) {
                     setPosts([]);
@@ -370,71 +371,110 @@ const CommunityPage = () => {
         if (node) observer.current.observe(node);
     }, [loading, loadingMore, hasMore, loadMore]);
 
+    // Algorithmic optimization for mobile: auto-fetch if client-side filters hide all current chunk items
+    useEffect(() => {
+        if (!loading && !loadingMore && hasMore && posts.length > 0 && filteredAndSortedPosts.length === 0) {
+            const t = setTimeout(() => {
+                loadMore();
+            }, 100);
+            return () => clearTimeout(t);
+        }
+    }, [filteredAndSortedPosts.length, loading, loadingMore, hasMore, posts.length, loadMore]);
+
     return (
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
 
             {/* Mobile Filter Button (Top Left) */}
             <div className="md:hidden absolute top-5 left-4 z-50">
                 <NavigationPill>
-                    <button type="button" 
-                        onClick={() => setShowMobileFiltersMenu(!showMobileFiltersMenu)} 
-                        className="flex items-center justify-center w-9 h-9 text-white hover:text-primary transition-colors active:scale-95"
+                    <button type="button"
+                        onClick={() => {
+                            if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(30);
+                            setShowMobileFiltersMenu(!showMobileFiltersMenu);
+                        }}
+                        className="flex items-center justify-center w-11 h-11 text-white hover:text-primary transition-colors active:scale-95"
                         aria-label="Filtres"
                     >
-                        <Filter size={16} />
+                        <Filter size={20} />
                     </button>
                 </NavigationPill>
-                
-                <AnimatePresence>
-                    {showMobileFiltersMenu && (
-                        <>
-                            <div className="fixed inset-0 z-40" onClick={() => setShowMobileFiltersMenu(false)} />
-                            <motion.div 
-                                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                className="absolute top-14 left-0 w-64 bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl z-50 flex flex-col gap-4"
-                            >
-                                <div>
-                                    <h4 className="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest">{t('community.subjects', 'Assignatures')}</h4>
-                                    <button onClick={() => { setShowSubjectFilter(true); setShowMobileFiltersMenu(false); }} className="flex items-center gap-2 w-full p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-colors">
-                                        <BookOpen size={16} />
-                                        {activeSubject === 'all' ? t('community.allSubjects', 'Totes') : activeSubject.toUpperCase()}
-                                    </button>
+
+                <BottomSheet
+                    isOpen={showMobileFiltersMenu}
+                    onClose={() => setShowMobileFiltersMenu(false)}
+                    title={t('community.filters', 'Filtres')}
+                >
+                    <div className="flex flex-col gap-6">
+                        <div>
+                            <h4 className="text-[11px] font-bold text-slate-400 mb-3 uppercase tracking-widest">{t('community.subjects', 'Assignatures')}</h4>
+                            <button onClick={() => { setShowSubjectFilter(true); setShowMobileFiltersMenu(false); }} className="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-medium transition-colors border border-white/5">
+                                <div className="flex items-center gap-3">
+                                    <BookOpen size={18} className="text-primary" />
+                                    <span>{activeSubject === 'all' ? t('community.allSubjects', 'Totes les assignatures') : activeSubject.toUpperCase()}</span>
                                 </div>
-                                <div>
-                                    <h4 className="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest">{t('community.allTypes', 'Tipus')}</h4>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {['all', 'pdf', 'image', 'code'].map(type => (
-                                            <button key={type} onClick={() => { setFilterType(type as any); setShowMobileFiltersMenu(false); }} className={`p-2 rounded-xl text-xs font-medium transition-colors ${filterType === type ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white/5 text-slate-300'}`}>
-                                                {type === 'all' ? 'Tots' : type === 'pdf' ? 'PDFs' : type === 'image' ? 'Imatges' : 'Codi'}
-                                            </button>
-                                        ))}
-                                    </div>
+                                <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                                 </div>
-                                <div>
-                                    <h4 className="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest">Ordenació</h4>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {['recent', 'popular', 'views', 'liked'].map(sort => (
-                                            <button key={sort} onClick={() => { setSortBy(sort as any); setShowMobileFiltersMenu(false); }} className={`p-2 rounded-xl text-xs font-medium transition-colors ${sortBy === sort ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white/5 text-slate-300'}`}>
-                                                {sort === 'recent' ? t('community.recent', 'Recents') : sort === 'popular' ? t('community.popular', 'Populars') : sort === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </>
-                    )}
-                </AnimatePresence>
+                            </button>
+                        </div>
+                        <div>
+                            <h4 className="text-[11px] font-bold text-slate-400 mb-3 uppercase tracking-widest">{t('community.allTypes', 'Tipus de recurs')}</h4>
+                            <div className="grid grid-cols-2 gap-3">
+                                {['all', 'pdf', 'image', 'code'].map((type, i) => (
+                                    <motion.button
+                                        key={type}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: i * 0.05 + 0.1 }}
+                                        onClick={() => {
+                                            if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(40);
+                                            setFilterType(type as any);
+                                            setTimeout(() => setShowMobileFiltersMenu(false), 200);
+                                        }}
+                                        className={`p-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${filterType === type ? 'bg-primary text-white shadow-[0_0_20px_rgba(0,0,0,0.2)] scale-[1.02]' : 'bg-white/5 text-slate-300 border border-white/5'}`}
+                                    >
+                                        {type === 'all' ? <BookOpen size={16} /> : type === 'pdf' ? <FileTextIcon size={16} /> : type === 'image' ? <Image size={16} /> : <Code2 size={16} />}
+                                        {type === 'all' ? 'Tots' : type === 'pdf' ? 'PDFs' : type === 'image' ? 'Imatges' : 'Codi'}
+                                    </motion.button>
+                                ))}
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-[11px] font-bold text-slate-400 mb-3 uppercase tracking-widest">Ordenació</h4>
+                            <div className="grid grid-cols-2 gap-3">
+                                {['recent', 'popular', 'views', 'liked'].map((sort, i) => (
+                                    <motion.button
+                                        key={sort}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: i * 0.05 + 0.2 }}
+                                        onClick={() => {
+                                            if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(40);
+                                            setSortBy(sort as any);
+                                            setTimeout(() => setShowMobileFiltersMenu(false), 200);
+                                        }}
+                                        className={`p-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${sortBy === sort ? 'bg-primary text-white shadow-[0_0_20px_rgba(0,0,0,0.2)] scale-[1.02]' : 'bg-white/5 text-slate-300 border border-white/5'}`}
+                                    >
+                                        {sort === 'recent' ? <Clock size={16} /> : sort === 'popular' ? <Flame size={16} /> : sort === 'views' ? <Eye size={16} /> : <Heart size={16} />}
+                                        {sort === 'recent' ? t('community.recent', 'Recents') : sort === 'popular' ? t('community.popular', 'Populars') : sort === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
+                                    </motion.button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </BottomSheet>
             </div>
 
             {/* Dynamic Island Navigator (Canvas/Resources) - Top Right */}
             <div className="absolute top-5 md:fixed md:top-6 right-4 sm:right-6 z-50">
                 <NavigationPill>
                     <button type="button"
-                        onClick={handleCloseCanvas}
+                        onClick={() => {
+                            if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(20);
+                            handleCloseCanvas();
+                        }}
                         aria-label={t('community.resources', 'Recursos')}
-                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${!isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${!isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                     >
                         {!isCanvasOpen && (
                             <motion.div
@@ -453,9 +493,12 @@ const CommunityPage = () => {
                     <div className="w-px h-6 bg-white/10 mx-1"></div>
 
                     <button type="button"
-                        onClick={handleOpenCanvas}
+                        onClick={() => {
+                            if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(20);
+                            handleOpenCanvas();
+                        }}
                         aria-label={t('community.canvas', 'Llenç')}
-                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                     >
                         {isCanvasOpen && (
                             <motion.div
@@ -614,12 +657,12 @@ const CommunityPage = () => {
 
                 </section>
 
-                <main className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
+                <main className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 relative z-10 pt-24 md:pt-0">
 
                     {/* Mobile Upload FAB */}
-                    <div className="md:hidden fixed bottom-24 right-4 z-50">
-                        <button type="button" 
-                            onClick={handleUploadClick} 
+                    <div className="md:hidden fixed bottom-28 right-4 z-50">
+                        <button type="button"
+                            onClick={handleUploadClick}
                             className="group relative w-14 h-14 bg-[#0a0a0a]/80 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition-all duration-300 active:scale-95 overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-linear-to-r from-primary/30 via-accent/30 to-primary/30 opacity-60" />
@@ -631,160 +674,160 @@ const CommunityPage = () => {
                     {/* Floating Glassmorphic Pill Filter (Awwwards Style) */}
                     <div className="hidden md:block">
                         <LiquidToolbar delay={0.5}>
-                        {/* Assignatures */}
-                        <LiquidToolbarButton
-                            key="assignatures"
-                            onClick={() => { setShowSubjectFilter(true); setShowTypeDropdown(false); setShowSortDropdown(false); }}
-                            active={activeSubject !== 'all'}
-                        >
-                            <BookOpen size={16} />
-                            <span className="hidden sm:inline">{t('community.subjects', 'Assignatures')}</span>
-                            <span className="sm:hidden">{t('community.subjectsShort', 'Assig.')}</span>
-                            {activeSubject !== 'all' && <span className="ml-1 text-[10px] bg-black/20 text-current px-1.5 py-0.5 rounded-md uppercase">{activeSubject}</span>}
-                        </LiquidToolbarButton>
-
-                        <div key="divider-1" className="w-px h-6 bg-white/10 mx-1" />
-
-                        {/* Tipus de recurs */}
-                        <div key="filter-type" className="relative">
+                            {/* Assignatures */}
                             <LiquidToolbarButton
-                                onClick={() => { setShowTypeDropdown(!showTypeDropdown); setShowSortDropdown(false); }}
-                                active={showTypeDropdown || filterType !== 'all'}
+                                key="assignatures"
+                                onClick={() => { setShowSubjectFilter(true); setShowTypeDropdown(false); setShowSortDropdown(false); }}
+                                active={activeSubject !== 'all'}
                             >
-                                <Filter size={16} />
-                                <span className="hidden sm:inline">
-                                    {filterType === 'all' ? t('community.allTypes', 'Tipus') : filterType === 'pdf' ? 'PDF' : filterType === 'image' ? 'Imatges' : 'Codi'}
-                                </span>
-                                <span className="sm:hidden">{filterType === 'all' ? 'Tipus' : filterType.toUpperCase()}</span>
+                                <BookOpen size={16} />
+                                <span className="hidden sm:inline">{t('community.subjects', 'Assignatures')}</span>
+                                <span className="sm:hidden">{t('community.subjectsShort', 'Assig.')}</span>
+                                {activeSubject !== 'all' && <span className="ml-1 text-[10px] bg-black/20 text-current px-1.5 py-0.5 rounded-md uppercase">{activeSubject}</span>}
                             </LiquidToolbarButton>
 
-                            <AnimatePresence>
-                                {showTypeDropdown && (
-                                    <LiquidDropdown className="min-w-52.5">
-                                        <button type="button"
-                                            onClick={() => { setFilterType('all'); setShowTypeDropdown(false); }}
-                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'all' ? 'bg-white/10' : ''}`}
-                                        >
-                                            <BookOpen size={16} className="text-white shrink-0" />
-                                            <span>{t('community.filterAll', 'Tots els recursos')}</span>
-                                        </button>
-                                        <button type="button"
-                                            onClick={() => { setFilterType('pdf'); setShowTypeDropdown(false); }}
-                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'pdf' ? 'bg-white/10' : ''}`}
-                                        >
-                                            <FileTextIcon size={16} className="text-white shrink-0" />
-                                            <span>{t('community.filterPdf', 'Documents PDF')}</span>
-                                        </button>
-                                        <button type="button"
-                                            onClick={() => { setFilterType('image'); setShowTypeDropdown(false); }}
-                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'image' ? 'bg-white/10' : ''}`}
-                                        >
-                                            <Image size={16} className="text-white shrink-0" />
-                                            <span>{t('community.filterImage', 'Imatges / Fotos')}</span>
-                                        </button>
-                                        <button type="button"
-                                            onClick={() => { setFilterType('code'); setShowTypeDropdown(false); }}
-                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'code' ? 'bg-white/10' : ''}`}
-                                        >
-                                            <Code2 size={16} className="text-white shrink-0" />
-                                            <span>{t('community.filterCode', 'Codi Font')}</span>
-                                        </button>
-                                    </LiquidDropdown>
-                                )}
-                            </AnimatePresence>
-                        </div>
+                            <div key="divider-1" className="w-px h-6 bg-white/10 mx-1" />
 
-                        <div key="divider-2" className="w-px h-6 bg-white/10 mx-1" />
+                            {/* Tipus de recurs */}
+                            <div key="filter-type" className="relative">
+                                <LiquidToolbarButton
+                                    onClick={() => { setShowTypeDropdown(!showTypeDropdown); setShowSortDropdown(false); }}
+                                    active={showTypeDropdown || filterType !== 'all'}
+                                >
+                                    <Filter size={16} />
+                                    <span className="hidden sm:inline">
+                                        {filterType === 'all' ? t('community.allTypes', 'Tipus') : filterType === 'pdf' ? 'PDF' : filterType === 'image' ? 'Imatges' : 'Codi'}
+                                    </span>
+                                    <span className="sm:hidden">{filterType === 'all' ? 'Tipus' : filterType.toUpperCase()}</span>
+                                </LiquidToolbarButton>
 
-                        {/* Ordenació */}
-                        <div key="sort-by" className="relative">
-                            <LiquidToolbarButton
-                                onClick={() => { setShowSortDropdown(!showSortDropdown); setShowTypeDropdown(false); }}
-                                active={showSortDropdown || sortBy !== 'recent'}
-                            >
-                                <ArrowUpDown size={16} />
-                                <span className="hidden sm:inline">
-                                    {sortBy === 'recent' ? t('community.recent', 'Recents') : sortBy === 'popular' ? t('community.popular', 'Populars') : sortBy === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
-                                </span>
-                                <span className="sm:hidden">
-                                    {sortBy === 'recent' ? t('community.recent', 'Recents') : sortBy === 'popular' ? t('community.popular', 'Populars') : sortBy === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
-                                </span>
-                            </LiquidToolbarButton>
-
-                            <AnimatePresence>
-                                {showSortDropdown && (
-                                    <LiquidDropdown className="min-w-47.5">
-                                        <button type="button"
-                                            onClick={() => { setSortBy('recent'); setShowSortDropdown(false); }}
-                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'recent' ? 'bg-white/10' : ''}`}
-                                        >
-                                            <Clock size={16} className="text-white shrink-0" />
-                                            <span>{t('community.sortRecent', 'Més recents')}</span>
-                                        </button>
-                                        <button type="button"
-                                            onClick={() => { setSortBy('popular'); setShowSortDropdown(false); }}
-                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'popular' ? 'bg-white/10' : ''}`}
-                                        >
-                                            <Flame size={16} className="text-white shrink-0" />
-                                            <span>{t('community.sortPopular', 'Més populars')}</span>
-                                        </button>
-                                        <button type="button"
-                                            onClick={() => { setSortBy('views'); setShowSortDropdown(false); }}
-                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'views' ? 'bg-white/10' : ''}`}
-                                        >
-                                            <Eye size={16} className="text-white shrink-0" />
-                                            <span>{t('community.sortViews', 'Més vistos')}</span>
-                                        </button>
-                                        <button type="button"
-                                            onClick={() => { setSortBy('liked'); setShowSortDropdown(false); }}
-                                            className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'liked' ? 'bg-white/10' : ''}`}
-                                        >
-                                            <Heart size={16} className="text-white shrink-0" />
-                                            <span>{t('community.sortLiked', "Els meus m'agrada")}</span>
-                                        </button>
-                                    </LiquidDropdown>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        <div key="divider-3" className="w-px h-6 bg-white/10 mx-1" />
-
-                        {/* Buscar */}
-                        <div key="buscar" className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-45 sm:w-70 ml-1' : 'w-10 ml-0'}`}>
-                            <button type="button"
-                                onClick={() => {
-                                    if (isSearchOpen && !searchQuery) setIsSearchOpen(false);
-                                    else setIsSearchOpen(true);
-                                }}
-                                className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isSearchOpen || searchQuery ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
-                                title={t('community.search', 'Buscar')}
-                                aria-label={t('community.search', 'Buscar')}
-                            >
-                                <Search size={18} />
-                            </button>
-
-                            <div className="flex-1 relative h-10 flex items-center">
-                                <input
-                                    autoFocus={isSearchOpen}
-                                    type="text"
-                                    placeholder={t('community.searchPlaceholder', 'Cerca apunts...')}
-                                    aria-label={t('community.searchPlaceholder', 'Cerca apunts...')}
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none pl-2 pr-8 placeholder:text-slate-600"
-                                />
-                                {(searchQuery || isSearchOpen) && (
-                                    <button type="button"
-                                        onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
-                                        className="absolute right-2 p-1 text-slate-500 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors z-10"
-                                        aria-label={t('community.clearSearch', 'Netejar cerca')}
-                                    >
-                                        <X size={14} />
-                                    </button>
-                                )}
+                                <AnimatePresence>
+                                    {showTypeDropdown && (
+                                        <LiquidDropdown className="min-w-52.5">
+                                            <button type="button"
+                                                onClick={() => { setFilterType('all'); setShowTypeDropdown(false); }}
+                                                className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'all' ? 'bg-white/10' : ''}`}
+                                            >
+                                                <BookOpen size={16} className="text-white shrink-0" />
+                                                <span>{t('community.filterAll', 'Tots els recursos')}</span>
+                                            </button>
+                                            <button type="button"
+                                                onClick={() => { setFilterType('pdf'); setShowTypeDropdown(false); }}
+                                                className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'pdf' ? 'bg-white/10' : ''}`}
+                                            >
+                                                <FileTextIcon size={16} className="text-white shrink-0" />
+                                                <span>{t('community.filterPdf', 'Documents PDF')}</span>
+                                            </button>
+                                            <button type="button"
+                                                onClick={() => { setFilterType('image'); setShowTypeDropdown(false); }}
+                                                className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'image' ? 'bg-white/10' : ''}`}
+                                            >
+                                                <Image size={16} className="text-white shrink-0" />
+                                                <span>{t('community.filterImage', 'Imatges / Fotos')}</span>
+                                            </button>
+                                            <button type="button"
+                                                onClick={() => { setFilterType('code'); setShowTypeDropdown(false); }}
+                                                className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'code' ? 'bg-white/10' : ''}`}
+                                            >
+                                                <Code2 size={16} className="text-white shrink-0" />
+                                                <span>{t('community.filterCode', 'Codi Font')}</span>
+                                            </button>
+                                        </LiquidDropdown>
+                                    )}
+                                </AnimatePresence>
                             </div>
-                        </div>
-                    </LiquidToolbar>
+
+                            <div key="divider-2" className="w-px h-6 bg-white/10 mx-1" />
+
+                            {/* Ordenació */}
+                            <div key="sort-by" className="relative">
+                                <LiquidToolbarButton
+                                    onClick={() => { setShowSortDropdown(!showSortDropdown); setShowTypeDropdown(false); }}
+                                    active={showSortDropdown || sortBy !== 'recent'}
+                                >
+                                    <ArrowUpDown size={16} />
+                                    <span className="hidden sm:inline">
+                                        {sortBy === 'recent' ? t('community.recent', 'Recents') : sortBy === 'popular' ? t('community.popular', 'Populars') : sortBy === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
+                                    </span>
+                                    <span className="sm:hidden">
+                                        {sortBy === 'recent' ? t('community.recent', 'Recents') : sortBy === 'popular' ? t('community.popular', 'Populars') : sortBy === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
+                                    </span>
+                                </LiquidToolbarButton>
+
+                                <AnimatePresence>
+                                    {showSortDropdown && (
+                                        <LiquidDropdown className="min-w-47.5">
+                                            <button type="button"
+                                                onClick={() => { setSortBy('recent'); setShowSortDropdown(false); }}
+                                                className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'recent' ? 'bg-white/10' : ''}`}
+                                            >
+                                                <Clock size={16} className="text-white shrink-0" />
+                                                <span>{t('community.sortRecent', 'Més recents')}</span>
+                                            </button>
+                                            <button type="button"
+                                                onClick={() => { setSortBy('popular'); setShowSortDropdown(false); }}
+                                                className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'popular' ? 'bg-white/10' : ''}`}
+                                            >
+                                                <Flame size={16} className="text-white shrink-0" />
+                                                <span>{t('community.sortPopular', 'Més populars')}</span>
+                                            </button>
+                                            <button type="button"
+                                                onClick={() => { setSortBy('views'); setShowSortDropdown(false); }}
+                                                className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'views' ? 'bg-white/10' : ''}`}
+                                            >
+                                                <Eye size={16} className="text-white shrink-0" />
+                                                <span>{t('community.sortViews', 'Més vistos')}</span>
+                                            </button>
+                                            <button type="button"
+                                                onClick={() => { setSortBy('liked'); setShowSortDropdown(false); }}
+                                                className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'liked' ? 'bg-white/10' : ''}`}
+                                            >
+                                                <Heart size={16} className="text-white shrink-0" />
+                                                <span>{t('community.sortLiked', "Els meus m'agrada")}</span>
+                                            </button>
+                                        </LiquidDropdown>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            <div key="divider-3" className="w-px h-6 bg-white/10 mx-1" />
+
+                            {/* Buscar */}
+                            <div key="buscar" className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-45 sm:w-70 ml-1' : 'w-10 ml-0'}`}>
+                                <button type="button"
+                                    onClick={() => {
+                                        if (isSearchOpen && !searchQuery) setIsSearchOpen(false);
+                                        else setIsSearchOpen(true);
+                                    }}
+                                    className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isSearchOpen || searchQuery ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                                    title={t('community.search', 'Buscar')}
+                                    aria-label={t('community.search', 'Buscar')}
+                                >
+                                    <Search size={18} />
+                                </button>
+
+                                <div className="flex-1 relative h-10 flex items-center">
+                                    <input
+                                        autoFocus={isSearchOpen}
+                                        type="text"
+                                        placeholder={t('community.searchPlaceholder', 'Cerca apunts...')}
+                                        aria-label={t('community.searchPlaceholder', 'Cerca apunts...')}
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="absolute inset-0 w-full h-full bg-transparent text-white text-sm font-medium focus:outline-none pl-2 pr-8 placeholder:text-slate-600"
+                                    />
+                                    {(searchQuery || isSearchOpen) && (
+                                        <button type="button"
+                                            onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
+                                            className="absolute right-2 p-1 text-slate-500 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors z-10"
+                                            aria-label={t('community.clearSearch', 'Netejar cerca')}
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </LiquidToolbar>
                     </div>
 
                     {/* Feed Section */}
@@ -837,11 +880,16 @@ const CommunityPage = () => {
 
                                         <div className="relative w-20 h-20 bg-black/50 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center mb-8 shadow-2xl group-hover:scale-110 transition-transform duration-500">
                                             <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent opacity-50 rounded-2xl pointer-events-none" />
-                                            <FileTextIcon size={36} className="text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
+                                            <motion.div
+                                                animate={(loading || loadingMore) ? { rotate: 360 } : { y: [0, -10, 0] }}
+                                                transition={(loading || loadingMore) ? { repeat: Infinity, duration: 2, ease: "linear" } : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                            >
+                                                {(loading || loadingMore) ? <Spinner size="sm" variant="primary" /> : <FileTextIcon size={36} className="text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" />}
+                                            </motion.div>
                                         </div>
 
-                                        <h3 className="font-bold text-3xl text-white mb-3 tracking-tight relative z-10">{t('community.emptyTitle', 'Encara no hi ha apunts')}</h3>
-                                        <p className="text-slate-400 mb-10 max-w-sm text-sm leading-relaxed relative z-10">{t('community.emptySubtitle', 'No s\'ha trobat cap recurs que coincideixi amb els filtres seleccionats.')}</p>
+                                        <h3 className="font-bold text-3xl text-white mb-3 tracking-tight relative z-10">{(loading || loadingMore) ? t('community.emptyLoadingTitle', 'Cercant apunts...') : t('community.emptyTitle', 'Encara no hi ha apunts')}</h3>
+                                        <p className="text-slate-400 mb-10 max-w-sm text-sm leading-relaxed relative z-10">{(loading || loadingMore) ? t('community.emptyLoadingSubtitle', 'Estem aplicant els filtres a la següent pàgina de dades...') : t('community.emptySubtitle', 'No s\'ha trobat cap recurs que coincideixi amb els filtres seleccionats.')}</p>
 
                                         <button type="button"
                                             onClick={handleUploadClick}

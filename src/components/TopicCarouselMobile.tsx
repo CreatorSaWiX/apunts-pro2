@@ -333,7 +333,7 @@ interface TopicCarouselProps {
     subjectOverride?: string;
 }
 
-const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = false, subjectOverride }) => {
+const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: any) => {
     const isMobile = useIsMobile();
     const navigate = useNavigate();
     const { subject: contextSubject } = useSubject();
@@ -346,18 +346,6 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
     const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
     
     const isInteractive = !(isMobile && isMenuOpen);
-
-    const [isLandscape, setIsLandscape] = useState(false);
-    useEffect(() => {
-        const updateOrientation = () => {
-            if (typeof window !== 'undefined') {
-                setIsLandscape(window.innerHeight < 550 && window.innerWidth > window.innerHeight);
-            }
-        };
-        updateOrientation();
-        window.addEventListener('resize', updateOrientation);
-        return () => window.removeEventListener('resize', updateOrientation);
-    }, []);
 
     const sortedTopics = useMemo(() => {
         return [...allPersonalNotes]
@@ -422,27 +410,37 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
 
     const lastRestoredSubject = useRef('');
     useEffect(() => {
-        if (lastRestoredSubject.current !== subject && carouselRef.current && itemWidth > 0) {
-            const saved = sessionStorage.getItem(`topic-carousel-h-${subject}`);
-            let newIndex = 0;
-            if (saved) {
-                const index = parseInt(saved, 10);
-                if (!isNaN(index) && index >= 0 && index < sortedTopics.length) {
-                    newIndex = index;
+        if (carouselRef.current && itemWidth > 0) {
+            let newIndex = activeIndex;
+            
+            // Only load from session storage if subject actually changed
+            if (lastRestoredSubject.current !== subject) {
+                const saved = sessionStorage.getItem(`topic-carousel-h-${subject}`);
+                if (saved) {
+                    const index = parseInt(saved, 10);
+                    if (!isNaN(index) && index >= 0 && index < sortedTopics.length) {
+                        newIndex = index;
+                    }
                 }
+                lastRestoredSubject.current = subject;
             } else {
                 newIndex = Math.min(activeIndex, Math.max(0, sortedTopics.length - 1));
             }
             
-            // Disable scroll animation for instant subject switch snap
+            // Disable scroll animation for instant subject switch snap or remount snap
             carouselRef.current.style.scrollBehavior = 'auto';
             carouselRef.current.scrollLeft = newIndex * itemWidth;
+            
+            // Force layout reflow
+            void carouselRef.current.offsetWidth;
+            
             carouselRef.current.style.scrollBehavior = 'smooth';
             
-            setActiveIndex(newIndex);
-            lastRestoredSubject.current = subject;
+            if (newIndex !== activeIndex) {
+                setActiveIndex(newIndex);
+            }
         }
-    }, [subject, itemWidth, sortedTopics.length, activeIndex]);
+    }, [subject, itemWidth, sortedTopics.length]); // removed isLandscape
 
     useEffect(() => {
         sessionStorage.setItem(`topic-carousel-h-${subject}`, activeIndex.toString());
@@ -476,30 +474,6 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
             }
         } catch (e) { }
     }, []);
-
-    if (isLandscape) {
-        return (
-            <div className="fixed inset-0 z-0 w-full flex flex-col overflow-hidden pointer-events-none">
-                <div className="flex-1 w-full h-full overflow-y-auto px-6 pt-24 pb-12 pointer-events-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                    <div className="grid grid-cols-2 gap-4 max-w-5xl mx-auto h-max">
-                        {sortedTopics.map((topic, index) => (
-                            <LandscapeTopicCard
-                                key={topic.slug}
-                                topic={topic}
-                                index={index}
-                                subject={subject}
-                                navigate={navigate}
-                                markAsSeen={markAsSeen}
-                                seenNewTopics={seenNewTopics}
-                                seenVersions={seenVersions}
-                                t={t}
-                            />
-                        ))}
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <MotionConfig reducedMotion={!isInteractive ? "always" : "never"}>
@@ -551,6 +525,106 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
             </div>
         </MotionConfig>
     );
+});
+
+interface TopicCarouselProps {
+    isMenuOpen?: boolean;
+    subjectOverride?: string;
+}
+
+const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = false, subjectOverride }) => {
+    const [isLandscape, setIsLandscape] = useState(false);
+    useEffect(() => {
+        const updateOrientation = () => {
+            if (typeof window !== 'undefined') {
+                setIsLandscape(window.innerHeight < 550 && window.innerWidth > window.innerHeight);
+            }
+        };
+        updateOrientation();
+        window.addEventListener('resize', updateOrientation);
+        return () => window.removeEventListener('resize', updateOrientation);
+    }, []);
+
+    if (isLandscape) {
+        return <LandscapeView subjectOverride={subjectOverride} />;
+    }
+
+    return <PortraitCarousel isMenuOpen={isMenuOpen} subjectOverride={subjectOverride} />;
+});
+
+const LandscapeView = React.memo(({ subjectOverride }: any) => {
+    const navigate = useNavigate();
+    const { subject: contextSubject } = useSubject();
+    const subject = (subjectOverride || contextSubject || '').toLowerCase();
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
+    
+    const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
+    const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
+    
+    useEffect(() => {
+        try {
+            const savedNew = localStorage.getItem('seen-new-topics');
+            if (savedNew) setSeenNewTopics(JSON.parse(savedNew));
+            const savedVersions = localStorage.getItem('seen-topic-versions');
+            if (savedVersions) setSeenVersions(JSON.parse(savedVersions));
+        } catch (e) { }
+    }, []);
+
+    const markAsSeen = useCallback((slug: string, version?: number) => {
+        try {
+            const savedNew = localStorage.getItem('seen-new-topics');
+            const prevNew = savedNew ? JSON.parse(savedNew) : [];
+            if (!prevNew.includes(slug)) {
+                const updatedNew = [...prevNew, slug];
+                localStorage.setItem('seen-new-topics', JSON.stringify(updatedNew));
+            }
+
+            if (version !== undefined) {
+                const savedVersions = localStorage.getItem('seen-topic-versions');
+                const prevVersions = savedVersions ? JSON.parse(savedVersions) : {};
+                if (prevVersions[slug] !== version) {
+                    const updatedVersions = { ...prevVersions, [slug]: version };
+                    localStorage.setItem('seen-topic-versions', JSON.stringify(updatedVersions));
+                }
+            }
+        } catch (e) { }
+    }, []);
+
+    const sortedTopics = useMemo(() => {
+        return [...allPersonalNotes]
+            .filter(note => {
+                const isMatch = (note as any).subject === subject && !note.slug.includes('-lab-');
+                if (!isMatch) return false;
+                if ((note as any).draft) return false;
+
+                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+                const hasPreferred = versions.some(n => n.lang === preferredLang);
+                return hasPreferred ? note.lang === preferredLang : note.lang === 'ca';
+            })
+            .sort((a, b) => a.order - b.order);
+    }, [subject, preferredLang]);
+        return (
+            <div className="fixed inset-0 z-0 w-full flex flex-col overflow-hidden pointer-events-none">
+                <div className="flex-1 w-full h-full overflow-y-auto px-6 pt-24 pb-12 pointer-events-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <div className="grid grid-cols-2 gap-4 max-w-5xl mx-auto h-max">
+                        {sortedTopics.map((topic, index) => (
+                            <LandscapeTopicCard
+                                key={topic.slug}
+                                topic={topic}
+                                index={index}
+                                subject={subject}
+                                navigate={navigate}
+                                markAsSeen={markAsSeen}
+                                seenNewTopics={seenNewTopics}
+                                seenVersions={seenVersions}
+                                t={t}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
 });
 
 export default TopicCarouselMobile;

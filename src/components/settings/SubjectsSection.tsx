@@ -324,7 +324,6 @@ export const SubjectsSection = () => {
                 isOpen={!!editingSubjectColor}
                 onClose={() => setEditingSubjectColor(null)}
                 size="md"
-                overlayVariant="transparent"
             >
                 {editingSubjectColor && (
                     <div className="p-8">

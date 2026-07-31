@@ -11,7 +11,7 @@ interface ModalProps {
     closeOnOutsideClick?: boolean;
     className?: string;
     hideCloseButton?: boolean;
-    overlayVariant?: 'default' | 'transparent';
+    fullScreenOnMobile?: boolean;
 }
 
 const SIZE_MAP = {
@@ -37,7 +37,7 @@ const Modal = ({
     closeOnOutsideClick = true,
     className = '',
     hideCloseButton = false,
-    overlayVariant = 'default'
+    fullScreenOnMobile = false
 }: ModalProps) => {
 
     useEffect(() => {
@@ -60,13 +60,13 @@ const Modal = ({
     const content = (
         <AnimatePresence>
             {isOpen && (
-                <div className={`fixed inset-0 z-200 flex items-center justify-center ${size === 'screen' ? 'p-0' : 'p-4 sm:p-6'}`}>
+                <div className={`fixed inset-0 z-[1000] flex items-center justify-center ${size === 'screen' ? 'p-0' : `p-4 sm:p-6 ${fullScreenOnMobile ? 'max-md:p-0' : ''}`}`}>
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className={`fixed inset-0 ${overlayVariant === 'transparent' ? 'bg-[#020617]/20 backdrop-blur-sm' : 'bg-[#020617]/50 backdrop-blur-md'}`}
+                        className="fixed inset-0 bg-[#020617]/20 backdrop-blur-sm"
                         onClick={() => closeOnOutsideClick && onClose()}
                     />
                     <motion.div
@@ -75,11 +75,9 @@ const Modal = ({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
                         transition={{ layout: { type: "spring", stiffness: 400, damping: 35 }, type: "spring", stiffness: 400, damping: 30 }}
-                        className={`relative z-10 flex flex-col ${overlayVariant === 'transparent' ? 'bg-[#0F172A]/30' : 'bg-[#0F172A]/70'} backdrop-blur-2xl border border-white/12 ${size === 'screen' ? 'rounded-none max-h-screen border-0' : 'rounded-4xl max-h-[85vh]'} overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_60px_rgba(0,0,0,0.6)] ${SIZE_MAP[size]} ${className}`}
+                        style={{ willChange: 'transform, opacity' }}
+                        className={`relative z-10 flex flex-col bg-[#0F172A]/30 backdrop-blur-xl border border-white/12 overflow-hidden shadow-2xl ${SIZE_MAP[size]} ${size === 'screen' ? 'rounded-none max-h-screen border-0' : `rounded-4xl max-h-[85vh] ${fullScreenOnMobile ? 'max-md:!rounded-none max-md:!max-w-none max-md:!w-screen max-md:!h-[100dvh] max-md:!max-h-screen max-md:!border-0' : ''}`} ${className}`}
                     >
-                        {/* Subtle noise texture overlay for realism */}
-                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
-
                         <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent z-50 pointer-events-none" />
                         {!hideCloseButton && (
                             <button type="button"

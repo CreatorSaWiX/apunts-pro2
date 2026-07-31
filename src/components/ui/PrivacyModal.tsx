@@ -10,7 +10,7 @@ interface PrivacyModalProps {
 const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="3xl" overlayVariant="transparent">
+        <Modal isOpen={isOpen} onClose={onClose} size="3xl">
             <Modal.Header>
                 <div className="px-2 pt-2">
                     <h2 className="text-2xl font-serif text-slate-100 tracking-tight">{t('privacy.title', 'Política de Privacitat i Tractament de Dades')}</h2>

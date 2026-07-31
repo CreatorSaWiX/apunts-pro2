@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { getSubjectById, type SubjectType } from '../../config/subjects';
-import { AlertCircle, ChevronDown, Paperclip, X, Maximize2, Minimize2 } from 'lucide-react';
+import { AlertCircle, ChevronDown, Paperclip, X, Maximize2, Minimize2, Eye, ChevronLeft } from 'lucide-react';
 
 import SubjectSelectorModal from './SubjectSelectorModal';
 import FileUploader, { type Attachment } from '../ui/FileUploader';
@@ -47,6 +47,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [showUploader, setShowUploader] = useState(false);
+    const [showMobilePreview, setShowMobilePreview] = useState(false);
 
     const activeSubject = getSubjectById(subject);
 
@@ -140,6 +141,20 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
         }
     };
 
+    const handleThumbnailUpload = (newAtts: Attachment[]) => {
+        if (newAtts.length > 0) {
+            setAttachments(prev => {
+                if (prev.length > 0) {
+                    const newArray = [...prev];
+                    newArray[0] = { ...newArray[0], thumbnailUrl: newAtts[0].url };
+                    return newArray;
+                } else {
+                    return [...prev, { ...newAtts[0], isCustomThumbnail: true }];
+                }
+            });
+        }
+    };
+
     const livePreviewElement = useMemo(() => {
         if (!user) return null;
         const livePost: CommunityPost = {
@@ -156,29 +171,17 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
         };
         return <PublicationCard 
             post={livePost} 
-            onThumbnailUpload={(newAtts) => {
-                if (newAtts.length > 0) {
-                    setAttachments(prev => {
-                        if (prev.length > 0) {
-                            const newArray = [...prev];
-                            newArray[0] = { ...newArray[0], thumbnailUrl: newAtts[0].url };
-                            return newArray;
-                        } else {
-                            return [...prev, { ...newAtts[0], isCustomThumbnail: true }];
-                        }
-                    });
-                }
-            }}
+            onThumbnailUpload={handleThumbnailUpload}
         />;
     }, [debouncedContent, user, subject, attachments]);
 
     if (!user) return null;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size={isFullscreen ? 'screen' : '6xl'} className="max-md:!w-screen max-md:!h-[100dvh] max-md:!max-w-none max-md:!rounded-none max-md:!border-0 max-md:!m-0" hideCloseButton={true}>
+        <Modal isOpen={isOpen} onClose={onClose} size={isFullscreen ? 'screen' : '6xl'} fullScreenOnMobile={true} hideCloseButton={true}>
             <Modal.Layout className="flex-col md:flex-row h-full w-full">
                 {/* LEFT PANEL: EDITOR */}
-                <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'}`}>
+                <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'} ${showMobilePreview ? 'hidden md:flex' : 'flex'}`}>
                     <Modal.Header className="px-4! md:px-8! py-4! md:py-6! border-none! bg-transparent! flex justify-between items-center w-full">
                         <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
                         <div className="flex items-center gap-2 ml-auto">
@@ -193,6 +196,14 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                                 ) : (
                                     <Maximize2 size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
                                 )}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setShowMobilePreview(!showMobilePreview)}
+                                className={`md:hidden flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full transition-all text-white border border-white/10 backdrop-blur-md shadow-xs ${showMobilePreview ? 'bg-primary text-white border-primary/50' : 'bg-white/5 hover:bg-white/15'}`}
+                                title={showMobilePreview ? "Tancar miniatura" : "Veure miniatura"}
+                            >
+                                <Eye size={18} strokeWidth={showMobilePreview ? 3 : 2.5} />
                             </button>
                             <button
                                 type="button"
@@ -329,29 +340,46 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
 
                 {/* RIGHT PANEL: LIVE PREVIEW */}
                 {!isFullscreen && (
-                    <div className="hidden md:flex flex-col w-2/5 border-l border-white/5 relative overflow-hidden bg-black noise-bg shrink-0">
+                    <div className={`${showMobilePreview ? 'flex w-full h-full' : 'hidden md:flex md:w-2/5'} flex-col border-l border-white/5 relative overflow-hidden bg-black noise-bg shrink-0`}>
                         {/* Abstract Ambient Glows */}
                         <div className="absolute top-[10%] right-[10%] w-75 h-75 bg-primary/20 rounded-full blur-[120px] pointer-events-none transform-gpu will-change-transform" />
                         <div className="absolute bottom-[10%] left-[10%] w-62.5 h-62.5 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none transform-gpu will-change-transform" />
 
-                        <div className="flex items-center justify-between px-8 py-6 relative z-10">
+                        <div className="flex items-center justify-between px-6 md:px-8 py-6 relative z-10">
                             <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 {t('community.createPost.livePreview', 'Live Preview')}
                             </div>
                             <button
                                 type="button"
-                                onClick={onClose}
-                                className="p-2.5 rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs"
-                                title="Tancar"
+                                onClick={() => showMobilePreview ? setShowMobilePreview(false) : onClose()}
+                                className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs flex items-center gap-2"
+                                title={showMobilePreview ? "Tornar a l'edició" : "Tancar"}
                             >
-                                <X size={18} strokeWidth={2.5} />
+                                {showMobilePreview ? (
+                                    <>
+                                        <ChevronLeft size={18} strokeWidth={2.5} />
+                                        <span className="text-xs font-bold pr-1 md:hidden">Tornar</span>
+                                    </>
+                                ) : (
+                                    <X size={18} strokeWidth={2.5} />
+                                )}
                             </button>
                         </div>
 
                         <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">
-                            <div className="w-full max-w-[320px]">
+                            <div className="w-full max-w-[320px] flex flex-col items-center gap-6">
                                 {livePreviewElement}
+                                
+                                <div className="w-full max-w-[240px]">
+                                    <FileUploader 
+                                        onUploadComplete={handleThumbnailUpload} 
+                                        variant="button" 
+                                        acceptType="images" 
+                                        maxFiles={1} 
+                                        maxSizeMB={5}
+                                    />
+                                </div>
                             </div>
 
                             <p className="mt-12 text-[11px] font-mono text-white/30 text-center max-w-62.5">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { CommunityPost } from '../../types/community';
 import { m as motion, AnimatePresence, type Variants } from 'framer-motion';
-import { X, Heart, Share2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Heart, Share2, Trash2, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import ReplySection from './ReplySection';
 import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
@@ -11,6 +11,8 @@ import { HtmlRenderer } from '../ui/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
 import { ca, es, enUS } from 'date-fns/locale';
+import BottomSheet from '../ui/mobile/BottomSheet';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 interface PostDetailModalProps {
     post: CommunityPost | null;
@@ -25,9 +27,22 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
     const { user } = useAuth();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [direction, setDirection] = useState<'next' | 'prev' | null>(null);
+    const isMobile = useIsMobile();
+    const [showCommentsMobile, setShowCommentsMobile] = useState(false);
+    
+    // Swipe gestures states
+    const [touchStartX, setTouchStartX] = useState<number | null>(null);
+    const [touchEndX, setTouchEndX] = useState<number | null>(null);
+    const [touchStartY, setTouchStartY] = useState<number | null>(null);
+    const [touchEndY, setTouchEndY] = useState<number | null>(null);
 
     useEffect(() => {
         if (!isOpen) return;
+        
+        // Lock body scroll to prevent background scrolling on mobile
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        
         const handleKeyDown = (e: KeyboardEvent) => {
             const target = e.target as HTMLElement;
             if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
@@ -44,7 +59,10 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
             }
         };
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = originalOverflow;
+        };
     }, [isOpen, onPrev, onNext]);
 
     const contentVariants: Variants = {
@@ -207,7 +225,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 md:p-6 overflow-hidden">
+                <div className={`fixed inset-0 z-[100] flex items-center justify-center overflow-hidden ${isMobile ? 'p-0' : 'p-4 md:p-6'}`}>
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -217,7 +235,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                     />
 
                     {/* Floating Left Navigation Button */}
-                    {onPrev && (
+                    {!isMobile && onPrev && (
                         <motion.button
                             type="button"
                             initial={{ opacity: 0, x: -20 }}
@@ -226,7 +244,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                             whileHover={{ scale: 1.1, x: -3 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={(e) => { e.stopPropagation(); setDirection('prev'); onPrev(); }}
-                            className="hidden sm:flex absolute left-2 sm:left-4 md:left-6 xl:left-8 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
+                            className="absolute left-4 md:left-6 xl:left-8 top-1/2 -translate-y-1/2 z-[110] w-12 h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl flex items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
                             title="Publicació anterior (←)"
                         >
                             <ChevronLeft size={28} className="group-hover:-translate-x-0.5 transition-transform" />
@@ -234,7 +252,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                     )}
 
                     {/* Floating Right Navigation Button */}
-                    {onNext && (
+                    {!isMobile && onNext && (
                         <motion.button
                             type="button"
                             initial={{ opacity: 0, x: 20 }}
@@ -243,7 +261,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                             whileHover={{ scale: 1.1, x: 3 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={(e) => { e.stopPropagation(); setDirection('next'); onNext(); }}
-                            className="hidden sm:flex absolute right-2 sm:right-4 md:right-6 xl:right-8 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
+                            className="absolute right-4 md:right-6 xl:right-8 top-1/2 -translate-y-1/2 z-[110] w-12 h-12 md:w-14 md:h-14 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/15 backdrop-blur-xl flex items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.6)] cursor-pointer group transition-colors"
                             title="Publicació següent (→)"
                         >
                             <ChevronRight size={28} className="group-hover:translate-x-0.5 transition-transform" />
@@ -255,7 +273,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: "100%", scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="relative w-full h-full sm:h-[90vh] sm:max-w-7xl bg-[#0a0a0a] sm:border sm:border-white/10 sm:rounded-4xl shadow-2xl overflow-hidden flex flex-col"
+                        className={`relative w-full bg-[#0a0a0a] shadow-2xl overflow-hidden flex flex-col ${isMobile ? 'h-[100dvh] rounded-none border-none' : 'h-[90vh] max-w-7xl border border-white/10 rounded-4xl'}`}
                     >
                         {/* Top Bar Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0 bg-[#0a0a0a]/90 backdrop-blur-xl z-20">
@@ -317,10 +335,39 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                                     initial="enter"
                                     animate="center"
                                     exit="exit"
+                                    onTouchStart={(e) => {
+                                        if (!isMobile) return;
+                                        setTouchEndX(null);
+                                        setTouchEndY(null);
+                                        setTouchStartX(e.targetTouches[0].clientX);
+                                        setTouchStartY(e.targetTouches[0].clientY);
+                                    }}
+                                    onTouchMove={(e) => {
+                                        if (!isMobile) return;
+                                        setTouchEndX(e.targetTouches[0].clientX);
+                                        setTouchEndY(e.targetTouches[0].clientY);
+                                    }}
+                                    onTouchEnd={() => {
+                                        if (!isMobile || !touchStartX || !touchEndX || !touchStartY || !touchEndY) return;
+                                        const distanceX = touchStartX - touchEndX;
+                                        const distanceY = Math.abs(touchStartY - touchEndY);
+                                        
+                                        // Només detectar com a swipe si el desplaçament horitzontal és més gran que el vertical
+                                        // i supera un llindar de 50 píxels. Això evita que fer scroll avall canviï el post per accident.
+                                        if (Math.abs(distanceX) > 50 && Math.abs(distanceX) > distanceY) {
+                                            if (distanceX > 0 && onNext) {
+                                                setDirection('next');
+                                                onNext();
+                                            } else if (distanceX < 0 && onPrev) {
+                                                setDirection('prev');
+                                                onPrev();
+                                            }
+                                        }
+                                    }}
                                     className="flex flex-col lg:flex-row flex-1 min-h-0 w-full h-full overflow-hidden"
                                 >
                                     {/* Left Column: Content & Carousel */}
-                                    <div className="flex-1 min-w-0 min-h-[30vh] lg:h-full overflow-y-auto custom-scrollbar bg-[#060606] flex flex-col">
+                                    <div className="flex-1 min-w-0 min-h-[30vh] lg:h-full overflow-y-auto overscroll-contain custom-scrollbar bg-[#060606] flex flex-col">
                                 {/* Visual/Carousel Section (If there are images) */}
                                 {postImages.length > 0 && (
                                     <div className="w-full h-[450px] sm:h-[500px] lg:h-[540px] bg-[#020202] border-b border-white/10 relative group/carousel select-none flex flex-col items-center justify-center overflow-hidden shrink-0">
@@ -414,15 +461,43 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                                 </div>
                             </div>
 
-                            {/* Right Column: Comments Section */}
-                            <div className="w-full lg:w-[420px] xl:w-[450px] shrink-0 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#080808] flex flex-col h-[45vh] lg:h-full min-h-0 overflow-hidden">
-                                <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-                                    <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
-                                </div>
-                            </div>
+                                {/* Right Column: Comments Section (Desktop only) */}
+                                {!isMobile && (
+                                    <div className="flex w-[420px] xl:w-[450px] shrink-0 border-l border-white/10 bg-[#080808] flex-col h-full min-h-0 overflow-hidden">
+                                        <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+                                            <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
+                                        </div>
+                                    </div>
+                                )}
                                 </motion.div>
                             </AnimatePresence>
                         </div>
+                        
+                        {/* Mobile Floating Comments Button */}
+                        {isMobile && (
+                            <div className="absolute bottom-6 right-4 z-50">
+                                <motion.button
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={() => setShowCommentsMobile(true)}
+                                    className="w-14 h-14 rounded-full bg-black/80 backdrop-blur-xl border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.8)] text-white flex items-center justify-center relative group"
+                                >
+                                    <MessageCircle size={28} className="text-white drop-shadow-md" />
+                                </motion.button>
+                            </div>
+                        )}
+                        
+                        {/* Mobile Bottom Sheet for Comments */}
+                        {isMobile && (
+                            <BottomSheet
+                                isOpen={showCommentsMobile}
+                                onClose={() => setShowCommentsMobile(false)}
+                                title={t('community.postDetail.comments', 'Comentaris')}
+                            >
+                                <div className="h-[70vh] flex flex-col bg-[#060606] -mx-4 -mb-4">
+                                    <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
+                                </div>
+                            </BottomSheet>
+                        )}
                     </motion.div>
                 </div>
             )}

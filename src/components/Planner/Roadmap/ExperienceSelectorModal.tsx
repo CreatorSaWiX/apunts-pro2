@@ -285,7 +285,7 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="5xl" overlayVariant="transparent">
+        <Modal isOpen={isOpen} onClose={onClose} size="5xl">
             <Modal.Layout>
                 {/* SIDEBAR */}
                 <Modal.Sidebar>

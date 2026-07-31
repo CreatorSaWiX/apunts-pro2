@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud } from 'lucide-react';
+import { UploadCloud, Paperclip } from 'lucide-react';
 
 import Spinner from '../ui/Spinner';
 import { m as motion, AnimatePresence } from 'framer-motion';
@@ -18,7 +18,7 @@ export interface Attachment {
 interface FileUploaderProps {
     onUploadComplete: (attachments: Attachment[]) => void;
     maxFiles?: number;
-    variant?: 'default' | 'avatar' | 'banner';
+    variant?: 'default' | 'avatar' | 'banner' | 'button';
     acceptType?: 'all' | 'images' | 'imagesAndVideos';
     maxSizeMB?: number;
 }
@@ -164,6 +164,7 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
     });
 
     const isOverlayVariant = variant === 'avatar' || variant === 'banner';
+    const isButtonVariant = variant === 'button';
 
     return (
         <div className={`w-full ${isOverlayVariant ? 'h-full' : 'mt-2'}`}>
@@ -172,16 +173,31 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
                     {...getRootProps()} 
                     className={isOverlayVariant 
                         ? 'absolute inset-0 cursor-pointer z-10 outline-none rounded-[inherit]'
-                        : `border border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all duration-300 ${isDragActive ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(14,165,233,0.2)]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`
+                        : isButtonVariant
+                        ? 'w-full flex justify-center'
+                        : `cursor-pointer transition-all duration-300 ${isDragActive ? 'md:border-primary md:bg-primary/10' : 'md:border-white/10 md:hover:border-white/30 md:hover:bg-white/5'} md:border md:border-dashed md:rounded-2xl md:p-6 md:text-center`
                     }
                 >
                     <input {...getInputProps()} />
+                    {isButtonVariant && (
+                        <div className="flex items-center justify-center gap-2 py-2 px-4 w-auto inline-flex rounded-full bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-xs font-semibold text-white/50 hover:text-white cursor-pointer">
+                            <UploadCloud size={14} />
+                            <span>{t('common.fileUploader.uploadThumbnail', 'Afegir miniatura')}</span>
+                        </div>
+                    )}
                     {variant === 'default' && (
                         <>
-                            <UploadCloud className="mx-auto mb-2 text-slate-400" size={24} />
-                            <p className="hidden md:block text-sm font-bold text-slate-300">{t('common.fileUploader.dragFiles', 'Arrossega arxius per adjuntar')}</p>
-                            <p className="md:hidden text-sm font-bold text-slate-300">{t('common.fileUploader.tapToUpload', 'Toca per pujar un fitxer')}</p>
-                            <p className="text-xs text-slate-500 mt-1">{t('common.fileUploader.supportedTypes', 'Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {{max}}MB per arxiu)', { max: maxSizeMB })}</p>
+                            {/* Desktop View */}
+                            <div className="hidden md:block">
+                                <UploadCloud className="mx-auto mb-2 text-slate-400" size={24} />
+                                <p className="text-sm font-bold text-slate-300">{t('common.fileUploader.dragFiles', 'Arrossega arxius per adjuntar')}</p>
+                                <p className="text-xs text-slate-500 mt-1">{t('common.fileUploader.supportedTypes', 'Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {{max}}MB per arxiu)', { max: maxSizeMB })}</p>
+                            </div>
+                            {/* Mobile View */}
+                            <div className="md:hidden flex items-center justify-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-all text-slate-300">
+                                <Paperclip size={20} className="text-slate-400" />
+                                <span className="text-sm font-bold">{t('common.fileUploader.tapToUpload', 'Adjuntar fitxer...')}</span>
+                            </div>
                         </>
                     )}
                 </div>

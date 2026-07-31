@@ -110,7 +110,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="xl" overlayVariant="transparent">
+        <Modal isOpen={isOpen} onClose={onClose} size="xl">
             <Modal.Header>
                 <div className="flex flex-col">
                     <span className="text-xl font-bold text-white tracking-tight">{t('mailing.compose.title', 'Redactar missatge')}</span>

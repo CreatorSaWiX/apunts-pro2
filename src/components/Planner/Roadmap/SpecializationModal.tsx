@@ -69,7 +69,6 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
             isOpen={isOpen}
             onClose={onClose}
             size="4xl"
-            overlayVariant="transparent"
             className="bg-(--glass-bg-darker) border border-(--glass-border) shadow-2xl rounded-4xl overflow-hidden backdrop-blur-3xl backdrop-saturate-150"
             hideCloseButton
         >

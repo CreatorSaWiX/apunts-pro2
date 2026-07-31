@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from 'react';
 import subjectsData from '../data/subjects.json';
 import { useSettings } from './SettingsContext';
 
@@ -41,7 +41,7 @@ interface SubjectContextType {
 
 const SubjectContext = createContext<SubjectContextType | undefined>(undefined);
 
-export function SubjectProvider({ children }: { children: React.ReactNode }) {
+export function SubjectProvider({ children }: { children: ReactNode }) {
     const { customSubjectColors } = useSettings();
 
     const [subject, setSubject] = useState<string>(() => {

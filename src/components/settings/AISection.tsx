@@ -191,7 +191,6 @@ export const AISection = () => {
                 isOpen={!!editingSoulField}
                 onClose={() => setEditingSoulField(null)}
                 size="3xl"
-                overlayVariant="transparent"
             >
                 <div className="p-8 flex flex-col h-full">
                     <div className="mb-8">

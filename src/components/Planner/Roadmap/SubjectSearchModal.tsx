@@ -101,7 +101,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
     });
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="4xl" overlayVariant="transparent">
+        <Modal isOpen={isOpen} onClose={onClose} size="4xl">
             <Modal.Layout className="flex-col h-full w-full">
                 {/* Inner Glow Line */}
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-400/40 to-transparent z-50 pointer-events-none" />
