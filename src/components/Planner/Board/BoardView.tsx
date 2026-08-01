@@ -197,7 +197,7 @@ const BoardView: React.FC = () => {
     };
 
     return (
-        <div className="h-full flex overflow-x-auto overflow-y-hidden gap-8 px-8 pt-4 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10 w-full">
+        <div className="h-full flex overflow-x-auto overflow-y-hidden gap-8 px-4 md:px-8 pt-4 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10 w-full max-md:snap-x max-md:snap-mandatory max-md:scroll-px-4">
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCorners}
@@ -209,7 +209,8 @@ const BoardView: React.FC = () => {
                     {columns.map(col => (
                         <BoardColumn 
                             key={col.id} 
-                            column={col} 
+                            column={col}
+                            allColumns={columns}
                             tasks={tasksByStatus[col.id] || []} 
                             onAddTask={(taskData: Partial<Task> = {}) => {
                                 addTask({
@@ -228,7 +229,7 @@ const BoardView: React.FC = () => {
                 </SortableContext>
 
                 {/* Add Column UI */}
-                <div className="flex-shrink-0 w-[350px] h-full">
+                <div className="flex-shrink-0 w-[85vw] max-md:snap-center md:w-[350px] h-full">
                     {!isAddingColumn ? (
                         <button type="button" 
                             onClick={() => setIsAddingColumn(true)}
@@ -275,7 +276,7 @@ const BoardView: React.FC = () => {
                     <DragOverlay dropAnimation={null}>
                         {activeTask ? <TaskCard task={activeTask} isOverlay={true} /> : null}
                         {activeColumn ? (
-                            <div className="w-[350px] h-full bg-[#111115]/50 backdrop-blur border border-white/10 rounded-2xl ring-2 ring-primary/30 flex items-start justify-center pt-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                            <div className="w-[85vw] md:w-[350px] h-full bg-[#111115]/50 backdrop-blur border border-white/10 rounded-2xl ring-2 ring-primary/30 flex items-start justify-center pt-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                                 <span className="font-bold text-sm tracking-widest uppercase text-white/50">{activeColumn.title}</span>
                             </div>
                         ) : null}

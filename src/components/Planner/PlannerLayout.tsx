@@ -160,7 +160,7 @@ const PlannerLayout: React.FC = () => {
                                             setView(tab.id as ViewMode);
                                         });
                                     }}
-                                    className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-9 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'
+                                    className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'
                                         }`}
                                 >
                                     {isActive && (
@@ -188,7 +188,7 @@ const PlannerLayout: React.FC = () => {
 
                         <button type="button"
                             onClick={() => setIsAIModalOpen(true)}
-                            className="group relative flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full transition-all duration-500 shrink-0 hover:scale-[1.05] active:scale-[0.95] overflow-hidden"
+                            className="group relative flex items-center justify-center w-11 h-11 md:w-10 md:h-10 rounded-full transition-all duration-500 shrink-0 hover:scale-[1.05] active:scale-[0.95] overflow-hidden"
                             title="IA Planner"
                         >
                             <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
@@ -220,7 +220,7 @@ const PlannerLayout: React.FC = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                     transition={{ duration: 0.4, ease: 'easeInOut' }}
-                                    className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
+                                    className={`absolute inset-x-0 bottom-0 top-[88px] ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'md:top-[140px]' : ''} z-10`}
                                 >
                                     <BoardView />
                                 </motion.div>
@@ -244,7 +244,7 @@ const PlannerLayout: React.FC = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                     transition={{ duration: 0.4, ease: 'easeInOut' }}
-                                    className={`absolute inset-x-0 bottom-0 ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'top-[140px]' : 'top-[88px]'} z-10`}
+                                    className={`absolute inset-x-0 bottom-0 top-[88px] ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'md:top-[140px]' : ''} z-10`}
                                 >
                                     <GanttView />
                                 </motion.div>

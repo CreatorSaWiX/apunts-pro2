@@ -6,7 +6,7 @@ import { CSS } from '@dnd-kit/utilities';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
 import { m as motion, useMotionTemplate, useMotionValue } from 'framer-motion';
-import { Calendar, Flag, Play, X, Check, Trash2 } from 'lucide-react';
+import { Calendar, Flag, Play, X, Check, Trash2, Pencil } from 'lucide-react';
 import { format } from 'date-fns';
 import { DateTimePicker } from './DateTimePicker';
 import { useTranslation } from 'react-i18next';
@@ -26,9 +26,10 @@ const toLocalDatetime = (isoString?: string | null) => {
 interface TaskCardProps {
     task: Task;
     isOverlay?: boolean;
+    allColumns?: { id: string; title: string; color?: string }[];
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
     const { t } = useTranslation();
     const { updateTask, subjects, deleteTask } = useTasks();
     const subject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
@@ -77,6 +78,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
     const [editDueDate, setEditDueDate] = useState<string>(toLocalDatetime(task.dueDate));
     const [editStartDate, setEditStartDate] = useState<string>(toLocalDatetime(task.startDate));
     const [editSubjectId, setEditSubjectId] = useState<string | null>(task.subjectId || null);
+    const [editStatus, setEditStatus] = useState<string>(task.status);
 
     const {
         setNodeRef,
@@ -110,7 +112,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
             priority: editPriority,
             dueDate: editDueDate ? new Date(editDueDate).toISOString() : null,
             startDate: editStartDate ? new Date(editStartDate).toISOString() : null,
-            subjectId: editSubjectId || undefined
+            subjectId: editSubjectId || undefined,
+            status: editStatus as any
         };
 
         if (updates.startDate && updates.dueDate) {
@@ -228,14 +231,16 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                     window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
                 }}
                 onDoubleClick={(e) => {
-                    e.stopPropagation();
-                    setIsEditing(true);
+                    if (!window.matchMedia('(max-width: 768px)').matches) {
+                        e.stopPropagation();
+                        setIsEditing(true);
+                    }
                 }}
                 onMouseMove={handleMouseMove}
                 className={`group bg-[#111115]/80 border border-white/[0.04] rounded-[16px] p-3.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_4px_16px_rgba(0,0,0,0.5)] hover:border-white/[0.1] hover:bg-[#111115]/90 hover:shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-[20px] transition-all duration-300 flex flex-col gap-2 relative transform-gpu ${isDragging ? 'shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-white/[0.15] opacity-100 scale-105 rotate-2' : ''}`}
             >
                 <motion.div
-                    className="pointer-events-none absolute -inset-px rounded-[16px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
+                    className="pointer-events-none absolute -inset-px rounded-[16px] opacity-0 transition duration-300 group-hover:opacity-100 z-0 max-md:hidden"
                     style={{ background: backgroundStyle }}
                 />
 
@@ -268,6 +273,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                                     setEditDueDate(toLocalDatetime(task.dueDate));
                                     setEditStartDate(toLocalDatetime(task.startDate));
                                     setEditSubjectId(task.subjectId || null);
+                                    setEditStatus(task.status);
                                     setIsEditing(false);
                                 }}
                                 className="flex items-center justify-center p-1.5 rounded-md text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
@@ -285,6 +291,19 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 text-xs">
+                            {allColumns && (
+                                <select 
+                                    value={editStatus} 
+                                    onChange={(e) => setEditStatus(e.target.value)} 
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="md:hidden bg-slate-500/10 text-slate-300 font-semibold border border-slate-500/20 px-2 py-1.5 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer"
+                                >
+                                    {allColumns.map(c => (
+                                        <option key={c.id} value={c.id} className="bg-[#111115] text-slate-200">{c.title}</option>
+                                    ))}
+                                </select>
+                            )}
+
                             <button type="button"
                                 onClick={(e) => {
                                     e.preventDefault();
@@ -333,13 +352,22 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                             <h4 className="text-[13px] font-semibold text-white/90 flex-1 leading-snug tracking-wide">
                                 {task.title}
                             </h4>
-                            <button type="button"
-                                onClick={(e) => { e.stopPropagation(); deleteTask(task.id); }}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-500 hover:text-red-400 p-1 pointer-events-auto"
-                                title="Eliminar tasca"
-                            >
-                                <Trash2 size={14} />
-                            </button>
+                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity pointer-events-auto">
+                                <button type="button"
+                                    onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
+                                    className="text-slate-500 hover:text-white p-1 md:hidden"
+                                    title="Editar tasca"
+                                >
+                                    <Pencil size={14} />
+                                </button>
+                                <button type="button"
+                                    onClick={(e) => { e.stopPropagation(); deleteTask(task.id); }}
+                                    className="text-slate-500 hover:text-red-400 p-1"
+                                    title="Eliminar tasca"
+                                >
+                                    <Trash2 size={14} />
+                                </button>
+                            </div>
                         </div>
 
                         {renderProgressBar()}
@@ -348,7 +376,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay }) => {
                             {/* Priority Toggle Pill */}
                             <button type="button"
                                 onClick={togglePriority}
-                                className={`flex items-center justify-center w-5 h-5 rounded-md border transition-colors ${getPriorityStyle(task.priority)}`}
+                                className={`flex items-center justify-center w-8 h-8 md:w-5 md:h-5 rounded-md border transition-colors ${getPriorityStyle(task.priority)}`}
                                 title={`Priority: ${task.priority}`}
                             >
                                 <Flag size={10} className={task.priority === 'HIGH' ? 'fill-current' : ''} />

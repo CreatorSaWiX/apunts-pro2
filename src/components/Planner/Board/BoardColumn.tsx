@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 interface BoardColumnProps {
     column: { id: string; title: string; color?: string };
+    allColumns: { id: string; title: string; color?: string }[];
     tasks: Task[];
     onAddTask: (taskData?: Partial<Task>) => void;
     onUpdateColumn?: (updates: Partial<{ title: string; color: string }>) => void;
@@ -22,7 +23,7 @@ const toLocalDatetime = (d: Date) => {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onUpdateColumn, onDeleteColumn }) => {
+const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, onAddTask, onUpdateColumn, onDeleteColumn }) => {
     const { t } = useTranslation();
     const { subjects, deleteTask } = useTasks();
     const taskIds = useMemo(() => tasks.map(t => t.id), [tasks]);
@@ -136,7 +137,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
         <div
             ref={setNodeRef}
             style={style}
-            className={`relative flex flex-col flex-shrink-0 w-[350px] h-full max-h-full transition-colors duration-300 ease-out group/col rounded-2xl ${isOver ? 'bg-white/[0.02] ring-1 ring-primary/30' : 'bg-transparent'}`}
+            className={`relative flex flex-col flex-shrink-0 w-[85vw] max-md:snap-center md:w-[350px] h-full max-h-full transition-colors duration-300 ease-out group/col rounded-2xl ${isOver ? 'bg-white/[0.02] ring-1 ring-primary/30' : 'bg-transparent'}`}
             onDoubleClick={handleDoubleClick}
         >
             {/* Minimalist Header */}
@@ -218,7 +219,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                     )}
                     <span className="text-[11px] font-medium text-slate-500 bg-white/[0.03] px-2 py-0.5 rounded-md ml-1">{tasks.length}</span>
                 </div>
-                <div className="flex items-center gap-1 opacity-0 group-hover/col:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 max-md:opacity-100 md:opacity-0 md:group-hover/col:opacity-100 transition-opacity">
                     <button type="button"
                         onClick={(e) => { 
                             e.stopPropagation(); 
@@ -262,7 +263,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                         </div>
                     ) : (
                         tasks.map(task => (
-                            <TaskCard key={task.id} task={task} />
+                            <TaskCard key={task.id} task={task} allColumns={allColumns} />
                         ))
                     )}
                 </SortableContext>
@@ -399,8 +400,19 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, tasks, onAddTask, onU
                 {/* Àrea invisible per agafar el doble clic a baix */}
                 {tasks.length > 0 && !isDrafting && (
                     <div
-                        onDoubleClick={(e) => { e.stopPropagation(); startDrafting(); }}
-                        className="flex-1 min-h-[60px] cursor-pointer rounded-[32px] opacity-0 hover:opacity-100 hover:bg-white/[0.03] flex items-center justify-center transition-all mt-2 border border-transparent hover:border-white/5"
+                        onClick={(e) => {
+                            if (window.matchMedia('(max-width: 768px)').matches) {
+                                e.stopPropagation();
+                                startDrafting();
+                            }
+                        }}
+                        onDoubleClick={(e) => { 
+                            if (!window.matchMedia('(max-width: 768px)').matches) {
+                                e.stopPropagation(); 
+                                startDrafting(); 
+                            }
+                        }}
+                        className="flex-1 min-h-[60px] cursor-pointer rounded-[32px] max-md:opacity-50 md:opacity-0 md:hover:opacity-100 hover:bg-white/[0.03] flex items-center justify-center transition-all mt-2 border border-transparent hover:border-white/5"
                         title={t('planner.boardView.doubleClickHint', "Doble clic per afegir tasca")}
                     >
                         <Plus size={20} className="text-slate-500" />
