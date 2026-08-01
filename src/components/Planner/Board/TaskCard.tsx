@@ -8,9 +8,11 @@ import { useTasks } from '../../../contexts/TasksContext';
 import { m as motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { Calendar, Flag, Play, X, Check, Trash2, Pencil } from 'lucide-react';
 import { format } from 'date-fns';
+import { es, ca, enUS } from 'date-fns/locale';
 import { DateTimePicker } from './DateTimePicker';
 import { useTranslation } from 'react-i18next';
 import SubjectPicker from '../SubjectPicker';
+import StatusPicker from './StatusPicker';
 
 interface TaskCardProps {
     task: Task;
@@ -30,7 +32,8 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
     const { updateTask, subjects, deleteTask } = useTasks();
     const subject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
 
@@ -292,16 +295,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
 
                         <div className="flex flex-wrap items-center gap-2 text-xs">
                             {allColumns && (
-                                <select 
-                                    value={editStatus} 
-                                    onChange={(e) => setEditStatus(e.target.value)} 
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="md:hidden bg-slate-500/10 text-slate-300 font-semibold border border-slate-500/20 px-2 py-1.5 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer"
-                                >
-                                    {allColumns.map(c => (
-                                        <option key={c.id} value={c.id} className="bg-[#111115] text-slate-200">{c.title}</option>
-                                    ))}
-                                </select>
+                                <StatusPicker 
+                                    value={editStatus}
+                                    onChange={setEditStatus}
+                                    columns={allColumns}
+                                />
                             )}
 
                             <button type="button"
@@ -376,7 +374,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                             {/* Priority Toggle Pill */}
                             <button type="button"
                                 onClick={togglePriority}
-                                className={`flex items-center justify-center w-8 h-8 md:w-5 md:h-5 rounded-md border transition-colors ${getPriorityStyle(task.priority)}`}
+                                className={`flex items-center justify-center w-6 h-6 md:w-5 md:h-5 rounded-md border transition-colors ${getPriorityStyle(task.priority)}`}
                                 title={`Priority: ${task.priority}`}
                             >
                                 <Flag size={10} className={task.priority === 'HIGH' ? 'fill-current' : ''} />
@@ -385,7 +383,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                             {/* Date Display Pill */}
                             <button type="button" className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-semibold tracking-widest uppercase border transition-colors ${task.dueDate ? 'bg-white/[0.03] text-slate-300 border-white/[0.05] hover:bg-white/[0.08]' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/5'}`}>
                                 <Calendar size={10} />
-                                {task.dueDate ? format(new Date(task.dueDate), 'MMM d') : 'No date'}
+                                {task.dueDate ? format(new Date(task.dueDate), 'MMM d', { locale: preferredLang === 'es' ? es : preferredLang === 'en' ? enUS : ca }).replace('.', '') : 'No date'}
                             </button>
 
                             <div className="ml-auto flex items-center gap-1.5">

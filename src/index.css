@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "@xyflow/react/dist/style.css";
 
+@custom-variant touch-landscape (@media (max-height: 600px) and (pointer: coarse) and (orientation: landscape));
+
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -47,7 +47,7 @@ const GlobalFiltersBar: React.FC = () => {
     return (
         <>
         {/* Mobile Filter Button (Top Left) */}
-        <div className="md:hidden fixed top-5 left-4 z-50">
+        <div className="md:hidden touch-landscape:block fixed top-5 left-4 z-50">
             <NavigationPill>
                 <button type="button"
                     onClick={() => {
@@ -70,16 +70,16 @@ const GlobalFiltersBar: React.FC = () => {
             {/* Clear All / Totes */}
             <button type="button"
                 onClick={clearFilters}
-                className={`shrink-0 max-md:hidden px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${activeFilterCount === 0 ? 'bg-white/10 text-white border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.15)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-white/10 hover:text-slate-300'}`}
+                className={`shrink-0 max-md:hidden touch-landscape:hidden px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${activeFilterCount === 0 ? 'bg-white/10 text-white border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.15)]' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-500 border-white/5 hover:border-white/10 hover:text-slate-300'}`}
             >
                 {t('planner.filters.all', 'Totes')}
             </button>
 
-            <div className="w-px h-6 bg-white/[0.1] mx-1 shrink-0 max-md:hidden"></div>
+            <div className="w-px h-6 bg-white/[0.1] mx-1 shrink-0 max-md:hidden touch-landscape:hidden"></div>
 
             {/* Subjects Dropdown */}
             {usedSubjects.length > 0 && (
-                <div className="relative shrink-0 max-md:hidden">
+                <div className="relative shrink-0 max-md:hidden touch-landscape:hidden">
                     <button type="button"
                         onClick={() => toggleFilter('SUBJECTS')}
                         className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${filters.subjects.length > 0 ? 'bg-indigo-400/10 text-indigo-300 border-indigo-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'SUBJECTS' ? 'border-white/20 bg-white/5 text-white' : ''}`}
@@ -121,7 +121,7 @@ const GlobalFiltersBar: React.FC = () => {
             )}
 
             {/* Priorities Dropdown */}
-            <div className="relative shrink-0 max-md:hidden">
+            <div className="relative shrink-0 max-md:hidden touch-landscape:hidden">
                 <button type="button"
                     onClick={() => toggleFilter('PRIORITY')}
                     className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${filters.priorities.length > 0 ? 'bg-amber-400/10 text-amber-300 border-amber-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'PRIORITY' ? 'border-white/20 bg-white/5 text-white' : ''}`}
@@ -169,7 +169,7 @@ const GlobalFiltersBar: React.FC = () => {
             </div>
 
             {/* Date Range Dropdown */}
-            <div className="relative shrink-0 max-md:hidden">
+            <div className="relative shrink-0 max-md:hidden touch-landscape:hidden">
                 <button type="button"
                     onClick={() => toggleFilter('DATERANGE')}
                     className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 border ${filters.dateRange !== 'ALL' ? 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'DATERANGE' ? 'border-white/20 bg-white/5 text-white' : ''}`}

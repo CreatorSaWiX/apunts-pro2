@@ -135,9 +135,11 @@ const Navigation: React.FC = () => {
     const [isCanvasActive, setIsCanvasActive] = useState(false);
     const navRef = useRef<HTMLDivElement>(null);
 
-    // Track window size for mobile navbar behaviour
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        const handleResize = () => {
+            const isTouchLandscape = window.matchMedia('(max-height: 600px) and (pointer: coarse) and (orientation: landscape)').matches;
+            setIsMobile(window.innerWidth < 768 || isTouchLandscape);
+        };
         handleResize();
         window.addEventListener('resize', handleResize, { passive: true });
         return () => window.removeEventListener('resize', handleResize);
@@ -156,14 +158,14 @@ const Navigation: React.FC = () => {
     return (
         <>
             {/* Main Floating Navigation Pill (Bottom on Mobile, Top-Left on Desktop) */}
-            <div ref={navRef} className={`nav-pill-container fixed z-50 transition-all duration-300 ease-out bottom-4 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[calc(100%-2rem)] max-w-[400px] md:w-[max-content] md:max-w-none ${isMobile && isCanvasActive ? 'opacity-0 pointer-events-none translate-y-24 !z-0' : ''}`}>
+            <div ref={navRef} className={`nav-pill-container fixed z-50 transition-all duration-300 ease-out bottom-4 md:bottom-auto touch-landscape:bottom-4 md:top-6 touch-landscape:top-auto left-1/2 -translate-x-1/2 md:left-6 touch-landscape:left-1/2 md:translate-x-0 touch-landscape:-translate-x-1/2 w-[calc(100%-2rem)] max-w-[400px] md:w-[max-content] touch-landscape:w-[calc(100%-2rem)] touch-landscape:max-w-[400px] md:max-w-none ${isMobile && isCanvasActive ? 'opacity-0 pointer-events-none translate-y-24 !z-0' : ''}`}>
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     className="w-full"
                 >
-                    <NavigationPill className={`!p-2 md:!p-1.5 ${isMobile ? '!bg-[#0B1120]/85 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.2)] w-full justify-between px-3 md:px-2' : 'w-[max-content] justify-start'}`}>
+                    <NavigationPill className={`!p-2 md:!p-1.5 touch-landscape:!p-2 ${isMobile ? '!bg-[#0B1120]/85 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.2)] w-full justify-between px-3 md:px-2 touch-landscape:px-3' : 'w-[max-content] justify-start'}`}>
 
                             <NavLinkItem 
                                 to="/" 

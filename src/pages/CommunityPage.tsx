@@ -385,7 +385,7 @@ const CommunityPage = () => {
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
 
             {/* Mobile Filter Button (Top Left) */}
-            <div className="md:hidden fixed top-5 left-4 z-50">
+            <div className="md:hidden touch-landscape:block fixed top-5 left-4 z-50">
                 <NavigationPill>
                     <button type="button"
                         onClick={() => {
@@ -519,7 +519,7 @@ const CommunityPage = () => {
             {/* Fons intel·ligent: L'ocultem amb CSS per evitar problemes de remounting. Fem servir visibility per no perdre l'scroll i el layout, i pausem WebGL. */}
             <div className={`w-full transition-all duration-700 ease-in-out ${isBackgroundHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}`}>
                 {/* Awwwards Hero Section */}
-                <section className="hidden md:flex relative w-full min-h-[55vh] items-center justify-center z-10 overflow-hidden pt-28 pb-8">
+                <section className="hidden md:flex touch-landscape:hidden relative w-full min-h-[55vh] items-center justify-center z-10 overflow-hidden pt-28 pb-8">
                     <Suspense fallback={null}>
                         <CommunityHero3D isPaused={isCanvasFullyOpen} />
                     </Suspense>
@@ -657,10 +657,10 @@ const CommunityPage = () => {
 
                 </section>
 
-                <main className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 relative z-10 pt-4 md:pt-0">
+                <main className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 relative z-10 pt-4 md:pt-0 touch-landscape:pt-4">
 
                     {/* Mobile Upload FAB */}
-                    <div className="md:hidden fixed bottom-28 right-4 z-50">
+                    <div className="md:hidden touch-landscape:block fixed bottom-28 right-4 z-50">
                         <button type="button"
                             onClick={handleUploadClick}
                             className="group relative w-14 h-14 bg-[#0a0a0a]/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition-all duration-300 active:scale-95 overflow-hidden"
@@ -671,7 +671,7 @@ const CommunityPage = () => {
                     </div>
 
                     {/* Floating Glassmorphic Pill Filter (Awwwards Style) */}
-                    <div className="hidden md:block">
+                    <div className="hidden md:block touch-landscape:hidden">
                         <LiquidToolbar delay={0.5}>
                             {/* Assignatures */}
                             <LiquidToolbarButton

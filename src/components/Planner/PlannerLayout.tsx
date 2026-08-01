@@ -220,7 +220,7 @@ const PlannerLayout: React.FC = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                     transition={{ duration: 0.4, ease: 'easeInOut' }}
-                                    className={`absolute inset-x-0 bottom-0 top-[88px] ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'md:top-[140px]' : ''} z-10`}
+                                    className={`absolute inset-x-0 bottom-0 top-[88px] ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'md:top-[140px] touch-landscape:top-[88px]' : ''} z-10`}
                                 >
                                     <BoardView />
                                 </motion.div>
@@ -244,7 +244,7 @@ const PlannerLayout: React.FC = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                     transition={{ duration: 0.4, ease: 'easeInOut' }}
-                                    className={`absolute inset-x-0 bottom-0 top-[88px] ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'md:top-[140px]' : ''} z-10`}
+                                    className={`absolute inset-x-0 bottom-0 top-[88px] ${(usedSubjects.length > 0 || activeFilterCount > 0) ? 'md:top-[140px] touch-landscape:top-[88px]' : ''} z-10`}
                                 >
                                     <GanttView />
                                 </motion.div>

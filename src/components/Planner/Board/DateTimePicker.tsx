@@ -5,7 +5,6 @@ import { es, ca, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import LiquidPanel from '../../ui/glass/LiquidPanel';
 
 interface DateTimePickerProps {
     value: string;
@@ -18,16 +17,16 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
     const locale = preferredLang === 'es' ? es : preferredLang === 'en' ? enUS : ca;
-    
+
     const [isOpen, setIsOpen] = useState(false);
     const [coords, setCoords] = useState({ top: 0, left: 0 });
-    
+
     const [currentDate, setCurrentDate] = useState(() => {
         if (!value) return new Date();
         const d = new Date(value);
         return isNaN(d.getTime()) ? new Date() : d;
     });
-    
+
     const [viewDate, setViewDate] = useState(currentDate);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const popoverRef = useRef<HTMLDivElement>(null);
@@ -38,12 +37,12 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
             // Calculate if there's space below, else show above
             const spaceBelow = window.innerHeight - rect.bottom;
             const popoverHeight = 360; // Estimated height
-            
+
             let top = rect.bottom + 8;
             if (spaceBelow < popoverHeight && rect.top > popoverHeight) {
                 top = rect.top - popoverHeight - 8;
             }
-            
+
             setCoords({ top, left: rect.left });
         }
     };
@@ -132,20 +131,19 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
             <button type="button"
                 ref={triggerRef}
                 onClick={handleOpen}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${
-                    isOpen 
-                        ? 'bg-primary/20 border-primary/50 text-white' 
-                        : value 
-                            ? 'bg-slate-800/80 border-white/10 text-slate-200 hover:bg-slate-700' 
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${isOpen
+                        ? 'bg-primary/20 border-primary/50 text-white'
+                        : value
+                            ? 'bg-slate-800/80 border-white/10 text-slate-200 hover:bg-slate-700'
                             : 'bg-white/5 border-transparent text-slate-400 hover:text-slate-300 hover:bg-white/10'
-                }`}
+                    }`}
             >
                 {icon || <CalendarIcon size={12} />}
                 <span className="text-[11px] font-semibold tracking-wide mt-0.5">
-                    {value ? format(new Date(value), "d MMM, HH:mm", { locale }) : placeholder}
+                    {value ? format(new Date(value), "d MMM, HH:mm", { locale }).replace('.', '') : placeholder}
                 </span>
                 {value && (
-                    <div 
+                    <div
                         onClick={handleClear}
                         className="ml-1 p-0.5 rounded-full hover:bg-white/20 transition-colors"
                     >
@@ -162,8 +160,8 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
-                        style={{ 
-                            top: coords.top, 
+                        style={{
+                            top: coords.top,
                             left: coords.left,
                             WebkitBackdropFilter: 'blur(24px)'
                         }}
@@ -222,7 +220,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                                 <Clock size={16} />
                                 <span className="text-[13px] font-medium tracking-wide">{t('planner.time', 'Hora')}</span>
                             </div>
-                            
+
                             <div className="flex items-center gap-3">
                                 {/* Hours Control */}
                                 <div className="flex flex-col items-center gap-1 group">
@@ -236,9 +234,9 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                                         <ChevronDown size={14} strokeWidth={3} />
                                     </button>
                                 </div>
-                                
+
                                 <span className="text-slate-500 font-bold mb-1">:</span>
-                                
+
                                 {/* Minutes Control */}
                                 <div className="flex flex-col items-center gap-1 group">
                                     <button type="button" onClick={() => incrementTime('minutes', 1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
