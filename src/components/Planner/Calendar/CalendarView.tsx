@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { m as motion } from 'framer-motion';
+import { m as motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { 
     DndContext, 
     DragOverlay, 
     closestCorners, 
-    PointerSensor, 
+    MouseSensor,
+    TouchSensor,
     useSensor, 
     useSensors, 
     type DragStartEvent, 
     type DragEndEvent
 } from '@dnd-kit/core';
 import { createPortal } from 'react-dom';
+import { format } from 'date-fns';
+import { ca } from 'date-fns/locale';
 import { useTasks } from '../../../contexts/TasksContext';
 import type { Task } from '../../../types/tasks';
 import { useDuplicateModifier } from '../../../hooks/useDuplicateModifier';
@@ -28,16 +31,34 @@ const CalendarView: React.FC = () => {
     const { tasks, updateTask, addTask } = useTasks();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [mode, setMode] = useState<CalendarMode>('week');
+    const [direction, setDirection] = useState(0);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
     const isAltPressed = useDuplicateModifier();
 
     const sensors = useSensors(
-        useSensor(PointerSensor, {
+        useSensor(MouseSensor, {
             activationConstraint: {
                 distance: 5,
             },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 250,
+                tolerance: 5,
+            },
         })
     );
+
+    const handleSetMode = (newMode: CalendarMode, newDate?: Date) => {
+        const modes: CalendarMode[] = ['year', 'month', 'week'];
+        const currentIndex = modes.indexOf(mode);
+        const newIndex = modes.indexOf(newMode);
+        
+        // Zoom in = positive direction, Zoom out = negative direction
+        setDirection(newIndex > currentIndex ? 1 : -1);
+        setMode(newMode);
+        if (newDate) setCurrentDate(newDate);
+    };
 
     React.useEffect(() => {
         const handlePlannerAction = (e: Event) => {
@@ -45,11 +66,11 @@ const CalendarView: React.FC = () => {
             if (action === 'plannerToday') {
                 setCurrentDate(new Date());
             } else if (action === 'plannerViewWeek') {
-                setMode('week');
+                handleSetMode('week');
             } else if (action === 'plannerViewMonth') {
-                setMode('month');
+                handleSetMode('month');
             } else if (action === 'plannerViewYear') {
-                setMode('year');
+                handleSetMode('year');
             } else if (action === 'plannerPrev') {
                 setCurrentDate(prev => {
                     const newDate = new Date(prev);
@@ -72,11 +93,6 @@ const CalendarView: React.FC = () => {
         window.addEventListener('planner-action', handlePlannerAction);
         return () => window.removeEventListener('planner-action', handlePlannerAction);
     }, [mode]);
-
-    const handleSelectMonth = (date: Date) => {
-        setCurrentDate(date);
-        setMode('month');
-    };
 
     const onDragStart = (event: DragStartEvent) => {
         document.body.style.userSelect = 'none';
@@ -150,46 +166,78 @@ const CalendarView: React.FC = () => {
 
     const unplannedTasks = tasks.filter(t => !t.startDate);
 
+    const variants = {
+        initial: (direction: number) => ({
+            opacity: 0,
+            scale: direction > 0 ? 1.05 : 0.95,
+        }),
+        animate: {
+            opacity: 1,
+            scale: 1,
+            transition: { duration: 0.3, ease: 'easeOut' }
+        },
+        exit: (direction: number) => ({
+            opacity: 0,
+            scale: direction > 0 ? 0.95 : 1.05,
+            transition: { duration: 0.25, ease: 'easeIn' }
+        })
+    };
+
     return (
-        <div className="flex flex-col h-full relative w-full gap-4">
+        <div className="flex flex-col h-full relative w-full md:gap-4">
             {/* Grid Principal i Sidebar */}
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCorners}
                 onDragStart={onDragStart}
                 onDragEnd={onDragEnd}
+                autoScroll={typeof window !== 'undefined' && window.innerWidth < 768 ? false : true}
             >
-                <div className="flex flex-1 overflow-hidden gap-4 relative">
-                    {/* Floating View Toggle (iPad Dock style) */}
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
-                        <div className="bg-slate-900/80 backdrop-blur-3xl p-1 rounded-full border border-white/10 flex shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
+                <div className="flex flex-1 md:gap-4 relative z-10">
+                    {/* Floating View Toggle (iPad Dock style) - Hidden on mobile */}
+                    <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-50">
+                        <div className="bg-[#0f111a]/60 backdrop-blur-3xl p-1.5 rounded-full border border-white/[0.08] flex shadow-[0_30px_60px_-10px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.1)]">
                             {(['week', 'month', 'year'] as CalendarMode[]).map((m) => (
                                 <button type="button"
                                     key={m}
-                                    onClick={() => setMode(m)}
-                                    className={`relative px-5 py-1.5 text-[10px] font-extrabold tracking-widest uppercase transition-all duration-300 rounded-full outline-none hover:scale-105 active:scale-95 ${
+                                    onClick={() => handleSetMode(m)}
+                                    className={`relative px-6 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all duration-300 rounded-full outline-none hover:scale-[1.02] active:scale-95 ${
                                         mode === m ? 'text-white' : 'text-slate-400 hover:text-slate-200'
                                     }`}
                                 >
                                     {mode === m && (
                                         <motion.div
                                             layoutId="calendarMode"
-                                            className="absolute inset-0 bg-white/10 border border-white/10 rounded-full z-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_0_12px_rgba(255,255,255,0.05)]"
+                                            className="absolute inset-0 bg-white/10 border border-white/10 rounded-full z-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_0_20px_rgba(255,255,255,0.1)]"
                                             transition={{ type: "spring", stiffness: 450, damping: 30 }}
                                         />
                                     )}
-                                    <span className="relative z-10">{m === 'week' ? t('planner.calendarView.week', 'Setm') : m === 'month' ? t('planner.calendarView.month', 'Mes') : t('planner.calendarView.year', 'Any')}</span>
+                                    <span className="relative z-10 drop-shadow-md">{m === 'week' ? t('planner.calendarView.week', 'Setm') : m === 'month' ? t('planner.calendarView.month', 'Mes') : t('planner.calendarView.year', 'Any')}</span>
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Contingut Principal */}
-                    <div className="flex-1 overflow-hidden relative">
-                        {mode === 'month' && <MonthlyGrid currentDate={currentDate} tasks={tasks} />}
-                        {mode === 'week' && <WeeklyGrid currentDate={currentDate} tasks={tasks} />}
-                        {mode === 'year' && <YearlyGrid currentDate={currentDate} tasks={tasks} onSelectMonth={handleSelectMonth} />}
-                    </div>
+                    {/* Contingut Principal animat */}
+                    <LayoutGroup>
+                        <div className="flex-1 relative">
+                            <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+                                <motion.div
+                                    key={mode}
+                                    custom={direction}
+                                    variants={variants}
+                                    initial="initial"
+                                    animate="animate"
+                                    exit="exit"
+                                    className="w-full h-full absolute inset-0"
+                                >
+                                    {mode === 'month' && <MonthlyGrid currentDate={currentDate} tasks={tasks} onSelectDay={(date) => handleSetMode('week', date)} />}
+                                    {mode === 'week' && <WeeklyGrid currentDate={currentDate} tasks={tasks} />}
+                                    {mode === 'year' && <YearlyGrid currentDate={currentDate} tasks={tasks} onSelectMonth={(date) => handleSetMode('month', date)} />}
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
+                    </LayoutGroup>
                 </div>
 
                 <UnscheduledDrawer tasks={unplannedTasks} />
@@ -208,3 +256,4 @@ const CalendarView: React.FC = () => {
 };
 
 export default CalendarView;
+

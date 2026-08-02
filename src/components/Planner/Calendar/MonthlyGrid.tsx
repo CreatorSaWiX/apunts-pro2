@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { flushSync } from 'react-dom';
+import { flushSync, createPortal } from 'react-dom';
 import { useDroppable } from '@dnd-kit/core';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, format, isSameMonth, isToday, isSameDay, addMonths, subMonths } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
+import { m as motion } from 'framer-motion';
 import { useTasks } from '../../../contexts/TasksContext';
+import NavigationPill from '../../ui/NavigationPill';
 
 interface MonthlyGridProps {
     currentDate: Date;
     tasks: Task[];
+    onSelectDay?: (date: Date) => void;
 }
 
-const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> = ({ day, isCurrentMonth, tasks }) => {
+const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onSelectDay?: (date: Date) => void }> = ({ day, isCurrentMonth, tasks, onSelectDay }) => {
     const { addTask, subjects } = useTasks();
     const dateStr = format(day, 'yyyy-MM-dd');
     
@@ -21,6 +24,7 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
     });
 
     const handleDoubleClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
         const startDate = new Date(day.setHours(12, 0, 0, 0));
         const estimatedMinutes = 60;
         const dueDate = new Date(startDate.getTime() + estimatedMinutes * 60000);
@@ -36,33 +40,40 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
         window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: id } }));
     };
 
+    const handleClick = (e: React.MouseEvent) => {
+        if (onSelectDay) {
+            onSelectDay(day);
+        }
+    };
+
     return (
         <div 
             ref={setNodeRef}
             onDoubleClick={handleDoubleClick}
-            className={`relative flex flex-col min-h-[140px] p-1.5 transition-colors border-r border-b border-white/5 
-                ${!isCurrentMonth ? 'bg-slate-900/60 text-slate-600' : 'bg-transparent hover:bg-slate-800/40 cursor-pointer'}
-                ${isOver ? 'bg-primary/20 border-primary/50 shadow-[inset_0_0_20px_rgba(var(--primary-rgb),0.3)] z-20' : ''}
+            onClick={handleClick}
+            className={`group relative flex flex-col min-h-[90px] md:min-h-[120px] p-1 sm:p-1.5 transition-colors duration-300 border-r border-b border-white/[0.03] 
+                ${!isCurrentMonth ? 'opacity-40' : 'hover:bg-white/[0.02] cursor-pointer'}
+                ${isOver ? 'bg-primary/10 border-primary/30 z-20' : ''}
             `}
         >
-            <div className="flex justify-end items-start mb-1">
-                <span className={`text-[12px] font-bold w-6 h-6 flex items-center justify-center rounded-full transition-all duration-300 ${isToday(day) ? 'bg-primary text-white shadow-[0_0_10px_rgba(var(--primary-rgb),0.8)]' : 'text-slate-400 hover:bg-white/10'}`}>
+            <div className="flex justify-end items-start mb-0.5 relative z-10">
+                <span className={`text-[12px] md:text-[13px] font-medium w-6 h-6 md:w-7 md:h-7 flex items-center justify-center rounded-full transition-all duration-300 ${isToday(day) ? 'bg-white text-slate-900 font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)]' : 'text-slate-300 group-hover:text-white'}`}>
                     {format(day, 'd')}
                 </span>
             </div>
             
-            <div className="flex flex-col gap-[2px] overflow-y-auto flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex flex-col gap-1 overflow-y-auto flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10">
                 {tasks.map(task => {
                     const startDate = task.startDate ? new Date(task.startDate) : new Date();
                     const taskSubject = subjects.find(s => s.id === task.subjectId);
                     
-                    let textColorClass = 'text-slate-300';
+                    let dotColor = 'bg-slate-400';
                     if (taskSubject) {
-                        textColorClass = `text-${taskSubject.colorToken}`;
+                        dotColor = `bg-${taskSubject.colorToken}`;
                     } else if (task.priority === 'HIGH') {
-                        textColorClass = 'text-red-300';
+                        dotColor = 'bg-red-400';
                     } else if (task.priority === 'MEDIUM') {
-                        textColorClass = 'text-amber-300';
+                        dotColor = 'bg-amber-400';
                     }
 
                     return (
@@ -74,14 +85,16 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
                                 window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
                             }}
                             onClick={(e) => {
+                                if (window.innerWidth < 768) {
+                                    return; // Allow bubbling to DayCell onClick to open the daily view
+                                }
                                 e.stopPropagation();
                                 window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
                             }}
-                            className={`flex items-center gap-1.5 px-1.5 py-0.5 rounded transition-colors hover:bg-white/10 cursor-default group ${textColorClass}`}
+                            className="flex items-center gap-1.5 px-1.5 py-0.5 rounded hover:bg-white/[0.05] transition-colors cursor-default"
                         >
-                            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70 group-hover:opacity-100 transition-opacity"></span>
-                            <span className="text-[10px] font-bold opacity-60 tracking-wider">{format(startDate, 'HH:mm')}</span>
-                            <span className="text-[11px] font-semibold truncate flex-1 leading-tight">{task.title}</span>
+                            <div className={`w-1.5 h-1.5 rounded-full ${dotColor} shrink-0`} />
+                            <span className="text-[10px] sm:text-[11px] font-medium truncate flex-1 leading-tight tracking-tight text-slate-300">{task.title}</span>
                         </div>
                     );
                 })}
@@ -90,19 +103,20 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[] }> =
     );
 };
 
-const MonthBlock: React.FC<{ monthDate: Date; tasks: Task[] }> = ({ monthDate, tasks }) => {
+const MonthBlock: React.FC<{ monthDate: Date; tasks: Task[]; onSelectDay?: (date: Date) => void }> = ({ monthDate, tasks, onSelectDay }) => {
     const monthStart = startOfMonth(monthDate);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
     const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 });
     const days = eachDayOfInterval({ start: startDate, end: endDate });
+    const monthId = format(monthDate, 'yyyy-MM');
 
     return (
-        <div className="flex flex-col mb-12">
-            <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 tracking-tight drop-shadow-lg capitalize mb-4 px-2">
+        <div className="flex flex-col mb-8 relative w-full pt-4">
+            <h3 className="text-[22px] md:text-[32px] font-bold text-white tracking-tight capitalize mb-2 px-3">
                 {format(monthDate, 'MMMM yyyy', { locale: ca })}
             </h3>
-            <div className="grid grid-cols-7 flex-1 bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden shadow-sm">
+            <div className="grid grid-cols-7 w-full border-t border-l border-white/[0.03]">
                 {days.map(day => {
                     const dayTasks = tasks.filter(t => t.startDate && isSameDay(new Date(t.startDate), day));
                     return (
@@ -111,6 +125,7 @@ const MonthBlock: React.FC<{ monthDate: Date; tasks: Task[] }> = ({ monthDate, t
                             day={day} 
                             isCurrentMonth={isSameMonth(day, monthStart)} 
                             tasks={dayTasks}
+                            onSelectDay={onSelectDay}
                         />
                     );
                 })}
@@ -119,7 +134,7 @@ const MonthBlock: React.FC<{ monthDate: Date; tasks: Task[] }> = ({ monthDate, t
     );
 };
 
-const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks }) => {
+const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks, onSelectDay }) => {
     const weekDays = ['Dll', 'Dmt', 'Dmc', 'Djj', 'Dvv', 'Dss', 'Dmg'];
     
     const [baseDate, setBaseDate] = useState(() => startOfMonth(currentDate));
@@ -182,23 +197,35 @@ const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks }) => {
     };
 
     return (
-        <div className="flex flex-col h-full overflow-hidden relative">
-            <div className="grid grid-cols-7 border-b border-white/5 bg-slate-900/90 backdrop-blur-xl z-20 shadow-sm sticky top-0">
-                {weekDays.map(day => (
-                    <div key={day} className="py-3 text-center text-[11px] font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 uppercase tracking-[0.2em] border-r border-white/5 last:border-0">
-                        {day}
-                    </div>
-                ))}
-            </div>
-            
+        <div className="flex flex-col h-full relative w-full">
+            {/* Top-Left Navigation Pill Back Button */}
+            {createPortal(
+                <div className="md:hidden fixed top-5 left-4 z-[9999]">
+                    <NavigationPill>
+                        <button 
+                            type="button"
+                            onClick={() => window.dispatchEvent(new CustomEvent('planner-action', { detail: { action: 'plannerViewYear' } }))}
+                            className="relative flex items-center justify-center w-11 h-11 transition-colors active:scale-95 text-white hover:text-primary"
+                            aria-label="Tornar a la vista anual"
+                        >
+                            <svg className="w-5 h-5 pr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                    </NavigationPill>
+                </div>,
+                document.body
+            )}
+
+            {/* Scroll Container */}
             <div 
                 ref={scrollContainerRef} 
                 onScroll={handleScroll}
-                className="flex-1 overflow-y-auto p-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                className="absolute -top-[88px] bottom-0 left-0 right-0 overflow-y-auto px-0 md:px-4 pt-[100px] pb-16 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
             >
                 {monthsToRender.map((monthDate) => (
                     <div key={monthDate.toISOString()} id={`month-${format(monthDate, 'yyyy-MM')}`}>
-                        <MonthBlock monthDate={monthDate} tasks={tasks} />
+                        <MonthBlock monthDate={monthDate} tasks={tasks} onSelectDay={onSelectDay} />
                     </div>
                 ))}
             </div>

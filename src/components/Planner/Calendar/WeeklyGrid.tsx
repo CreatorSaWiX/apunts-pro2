@@ -1,11 +1,13 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { flushSync } from 'react-dom';
-import { useDroppable, useDraggable } from '@dnd-kit/core';
+import { flushSync, createPortal } from 'react-dom';
+import { useDroppable, useDraggable, useDndContext } from '@dnd-kit/core';
 import { startOfWeek, endOfWeek, eachDayOfInterval, format, isToday, addDays, subDays } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
+import { m as motion } from 'framer-motion';
 import { useTasks } from '../../../contexts/TasksContext';
 import { useDuplicateModifier } from '../../../hooks/useDuplicateModifier';
+import NavigationPill from '../../ui/NavigationPill';
 
 interface WeeklyGridProps {
     currentDate: Date;
@@ -251,11 +253,13 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
             }}
             onClick={(e) => {
                 e.stopPropagation();
-                setIsSelected(prev => {
-                    const next = !prev;
-                    if (next) window.dispatchEvent(new CustomEvent('task-selected', { detail: task.id }));
-                    return next;
-                });
+                if (isSelected) {
+                    // Substitueix el doble-clic per a mòbils: un segon clic edita la tasca
+                    window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+                    return;
+                }
+                setIsSelected(true);
+                window.dispatchEvent(new CustomEvent('task-selected', { detail: task.id }));
             }}
             onContextMenu={(e) => {
                 e.preventDefault();
@@ -266,11 +270,12 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 e.stopPropagation();
                 window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
             }}
-            className={`absolute left-1 right-1 border overflow-hidden backdrop-blur-2xl transition-[box-shadow,opacity] flex flex-col group
-                bg-slate-900/40 hover:bg-slate-900/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing
-                ${isSelected ? 'border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.1)]' : 'border-white/[0.03]'}
-                ${isResizing ? 'z-30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-95 scale-[1.02]' : 'hover:z-20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]'}
-                ${isDragging ? 'shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 opacity-90 scale-[1.02] cursor-grabbing pointer-events-none' : ''}
+            className={`absolute left-1 right-1 border overflow-hidden backdrop-blur-xl flex flex-col group
+                ${isDragging || isResizing ? '' : 'transition-[box-shadow,opacity,transform] duration-200'}
+                bg-white/[0.02] hover:bg-white/[0.05] shadow-[inset_0_1px_3px_rgba(255,255,255,0.1),0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing
+                ${isSelected ? 'border-white/30 shadow-[inset_0_1px_3px_rgba(255,255,255,0.3),0_0_30px_rgba(255,255,255,0.1)]' : 'border-white/[0.05]'}
+                ${isResizing ? 'z-30 shadow-[0_30px_60px_rgba(0,0,0,0.6)] opacity-95 scale-[1.03]' : 'hover:z-20 hover:shadow-[inset_0_1px_3px_rgba(255,255,255,0.2),0_15px_50px_rgba(0,0,0,0.5)]'}
+                ${isDragging ? 'shadow-[0_30px_60px_rgba(0,0,0,0.6)] z-50 opacity-90 scale-[1.04] cursor-grabbing pointer-events-none' : ''}
                 ${radiusClass}
             `}
             style={{
@@ -283,13 +288,17 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
         >
+            {/* Subtle Gradient background matching accent color */}
+            <div className={`absolute inset-0 opacity-[0.15] mix-blend-plus-lighter ${accentColor}`} />
+            
             {/* Color Accent Indicator */}
-            <div className={`absolute top-0 bottom-0 left-0 w-1 ${accentColor} shadow-[0_0_15px_currentColor] opacity-80`} />
+            <div className={`absolute top-0 bottom-0 left-0 w-[3px] ${accentColor} shadow-[0_0_20px_currentColor] opacity-100`} />
 
             {/* Top Resize Handle */}
             {!isContinuingFromPrev && (
                 <div 
-                    className="absolute top-0 left-0 right-0 h-3 cursor-ns-resize z-20 flex justify-center pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className={`absolute top-0 left-0 right-0 h-5 cursor-ns-resize z-20 flex justify-center pt-1 opacity-0 group-hover:opacity-100 ${isSelected ? 'opacity-100 bg-white/[0.05]' : ''} transition-opacity`}
+                    style={{ touchAction: 'none' }}
                     onPointerDown={handlePointerDown('top')}
                 >
                     <div className="w-8 h-1 rounded-full bg-white/20" />
@@ -313,7 +322,8 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 {/* Bottom Resize Handle */}
                 {!isContinuingToNext && (
                     <div 
-                        className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize z-20 flex justify-center pb-0.5 items-end opacity-0 group-hover:opacity-100 transition-opacity"
+                        className={`absolute bottom-0 left-0 right-0 h-5 cursor-ns-resize z-20 flex justify-center pb-1 items-end opacity-0 group-hover:opacity-100 ${isSelected ? 'opacity-100 bg-white/[0.05]' : ''} transition-opacity`}
+                        style={{ touchAction: 'none' }}
                         onPointerDown={handlePointerDown('bottom')}
                     >
                         <div className="w-8 h-1 rounded-full bg-white/20" />
@@ -339,8 +349,8 @@ const CurrentTimeLine = () => {
             className="absolute left-14 right-0 z-20 pointer-events-none flex items-center transition-all duration-1000 ease-linear"
             style={{ top: `${top}px` }}
         >
-            <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.9)] -ml-1.5 z-10"></div>
-            <div className="flex-1 h-px bg-red-500/60 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+            <div className="w-3 h-3 rounded-full bg-indigo-400 shadow-[0_0_20px_rgba(129,140,248,1),0_0_10px_rgba(255,255,255,0.8)] -ml-[5px] z-10 animate-pulse"></div>
+            <div className="flex-1 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-transparent shadow-[0_0_10px_rgba(129,140,248,0.8)]"></div>
         </div>
     );
 };
@@ -394,8 +404,20 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
 };
 
 const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
+    const { active } = useDndContext();
+    const isDraggingContext = !!active;
+
     const [baseDate, setBaseDate] = useState(() => startOfWeek(currentDate, { weekStartsOn: 1 }));
-    const [columnWidth, setColumnWidth] = useState(140);
+    const [columnWidth, setColumnWidth] = useState(() => {
+        if (typeof window !== 'undefined') {
+            if (window.innerWidth < 768) {
+                return window.innerWidth - 56;
+            } else {
+                return Math.max(140, (window.innerWidth - 56) / 7);
+            }
+        }
+        return 140;
+    });
 
     const startDate = subDays(baseDate, 28); // 4 weeks before
     const endDate = addDays(endOfWeek(baseDate, { weekStartsOn: 1 }), 28); // 4 weeks after (total 9 weeks = 63 days)
@@ -425,8 +447,12 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
     useEffect(() => {
         const updateWidth = () => {
             if (scrollContainerRef.current) {
-                const width = Math.max(140, (scrollContainerRef.current.clientWidth - 56) / 7);
-                setColumnWidth(width);
+                if (window.innerWidth < 768) {
+                    setColumnWidth(scrollContainerRef.current.clientWidth - 56);
+                } else {
+                    const width = Math.max(140, (scrollContainerRef.current.clientWidth - 56) / 7);
+                    setColumnWidth(width);
+                }
             }
         };
         updateWidth();
@@ -447,12 +473,18 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
             container.scrollTop = Math.max(0, currentMinutes - clientHeight / 2);
             
-            // Horizontal scroll: Center the current day of the week unconditionally
-            const exactFitWidth = (clientWidth - 56) / 7;
-            const width = Math.max(140, exactFitWidth);
-            
+            // Horizontal scroll: Target the current day accurately
+            const isMobile = window.innerWidth < 768;
+            const actualWidth = isMobile ? (clientWidth - 56) : Math.max(140, (clientWidth - 56) / 7);
             const dayOffset = (currentDate.getDay() + 6) % 7;
-            container.scrollLeft = (28 + dayOffset) * width - (clientWidth - 56) / 2 + width / 2;
+            
+            if (isMobile) {
+                // Mòbil: scroll exacte a l'inici de la columna del dia (compensat pels 56px fixed)
+                container.scrollLeft = (28 + dayOffset) * actualWidth;
+            } else {
+                // Desktop: centrar el dia a la pantalla
+                container.scrollLeft = (28 + dayOffset) * actualWidth - (clientWidth - 56) / 2 + actualWidth / 2;
+            }
         }
     }, [currentDate]);
 
@@ -478,34 +510,61 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
     return (
         <div className="flex flex-col h-full overflow-hidden relative">
             
-            {/* Title Header */}
-            <div className="flex items-center px-6 py-3 shrink-0 z-50">
-                <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/80 capitalize tracking-tight drop-shadow-sm">
+            {/* Desktop Title Header */}
+            <div className="hidden md:flex items-center px-8 py-6 shrink-0 z-50">
+                <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 capitalize tracking-tighter drop-shadow-2xl">
                     {format(baseDate, 'MMMM yyyy', { locale: ca })}
                 </h1>
             </div>
+
+            {/* Mobile Back (Fixed at Top Left via Portal to fix backdrop-blur bug) */}
+            {createPortal(
+                <div className="md:hidden fixed top-5 left-4 z-[9999]">
+                    <NavigationPill>
+                        <button 
+                            type="button"
+                            onClick={() => window.dispatchEvent(new CustomEvent('planner-action', { detail: { action: 'plannerViewMonth' } }))}
+                            className="relative flex items-center justify-center w-11 h-11 transition-colors active:scale-95 text-white hover:text-primary"
+                            aria-label="Tornar a la vista mensual"
+                        >
+                            <svg className="w-5 h-5 pr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                    </NavigationPill>
+                </div>,
+                document.body
+            )}
 
             {/* 2D Scrollable Area */}
             <div 
                 ref={scrollContainerRef} 
                 onScroll={handleScroll}
-                className="flex-1 overflow-auto relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                className={`flex-1 overflow-y-auto overflow-x-auto relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] max-md:scroll-pl-14
+                    ${!isDraggingContext ? 'max-md:snap-x max-md:snap-mandatory' : ''}
+                `}
             >
                 <div className="flex flex-col min-w-max">
                     
                     {/* Header Dies (Sticky Top) */}
-                    <div className="flex border-b border-white/5 bg-slate-900/90 backdrop-blur-xl z-40 shadow-sm sticky top-0">
-                        {/* Top-Left Corner (Sticky Top + Left) */}
-                        <div className="w-14 flex-shrink-0 border-r border-white/5 sticky left-0 z-50 bg-slate-900/90 backdrop-blur-xl"></div>
+                    <div className="flex border-b border-white/[0.05] bg-[#0f111a]/80 backdrop-blur-3xl z-40 shadow-[0_10px_30px_rgba(0,0,0,0.3)] sticky top-0">
+                        
+                        {/* Top-Left Corner (Sticky Top + Left) amb el nom del mes! */}
+                        <div className="w-14 flex-shrink-0 border-r border-white/[0.03] sticky left-0 z-50 backdrop-blur-3xl bg-[#0f111a]/60 flex items-center justify-center relative overflow-hidden">
+                            {/* Aquest petit text rotat dóna un look super premium i no perdem el context del mes! */}
+                            <span className="absolute text-[10px] md:hidden font-extrabold text-slate-500 uppercase tracking-[0.2em] -rotate-90 whitespace-nowrap">
+                                {format(baseDate, 'MMM', { locale: ca })}
+                            </span>
+                        </div>
                         
                         <div className="flex">
                             {days.map((day: Date) => (
-                                <div key={day.toISOString()} style={{ width: columnWidth, minWidth: columnWidth }} className={`flex-shrink-0 text-center py-2.5 border-r border-white/5 last:border-0 ${isToday(day) ? 'bg-primary/5' : ''}`}>
+                                <div key={day.toISOString()} style={{ width: columnWidth, minWidth: columnWidth }} className={`max-md:snap-start flex-shrink-0 text-center py-3 border-r border-white/[0.03] last:border-0 ${isToday(day) ? 'bg-white/[0.02]' : ''}`}>
                                     <div className="flex items-center justify-center gap-1.5">
-                                        <span className={`text-[13px] font-medium capitalize ${isToday(day) ? 'text-primary font-semibold' : 'text-slate-400'}`}>
+                                        <span className={`text-[13px] font-medium capitalize ${isToday(day) ? 'text-white font-bold' : 'text-slate-400'}`}>
                                             {format(day, 'EEE', { locale: ca })}
                                         </span>
-                                        <span className={`text-[18px] flex items-center justify-center w-8 h-8 rounded-full ${isToday(day) ? 'bg-primary text-white font-bold shadow-[0_0_12px_rgba(var(--primary-rgb),0.6)]' : 'text-slate-200 font-normal'}`}>
+                                        <span className={`text-[18px] flex items-center justify-center w-8 h-8 rounded-full ${isToday(day) ? 'bg-white text-slate-900 font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)]' : 'text-slate-200 font-normal'}`}>
                                             {format(day, 'd')}
                                         </span>
                                     </div>
@@ -518,7 +577,8 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
                     <div className="flex relative min-h-[1440px]">
                         
                         {/* Columna Hores (Sticky Left) */}
-                        <div className="w-14 flex-shrink-0 border-r border-white/[0.03] relative bg-slate-900/90 z-30 backdrop-blur-md sticky left-0">
+                        <div className="w-14 flex-shrink-0 border-r border-white/[0.03] relative bg-transparent z-30 backdrop-blur-2xl sticky left-0">
+                            <div className="absolute inset-0 bg-[#0f111a]/40 pointer-events-none -z-10" />
                             {Array.from({ length: 24 }).map((_, i) => (
                                 <div key={i} className="absolute w-full text-right pr-3 text-[10px] font-semibold text-slate-500/80 -translate-y-2" style={{ top: `${i * 60}px` }}>
                                     {i === 0 ? '' : `${i.toString().padStart(2, '0')}:00`}
