@@ -510,12 +510,7 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
     return (
         <div className="flex flex-col h-full overflow-hidden relative">
             
-            {/* Desktop Title Header */}
-            <div className="hidden md:flex items-center px-8 py-6 shrink-0 z-50">
-                <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 capitalize tracking-tighter drop-shadow-2xl">
-                    {format(baseDate, 'MMMM yyyy', { locale: ca })}
-                </h1>
-            </div>
+            {/* Desktop Title Header eliminat per estalviar espai */}
 
             {/* Mobile Back (Fixed at Top Left via Portal to fix backdrop-blur bug) */}
             {createPortal(
@@ -552,7 +547,7 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
                         {/* Top-Left Corner (Sticky Top + Left) amb el nom del mes! */}
                         <div className="w-14 flex-shrink-0 border-r border-white/[0.03] sticky left-0 z-50 backdrop-blur-3xl bg-[#0f111a]/60 flex items-center justify-center relative overflow-hidden">
                             {/* Aquest petit text rotat dóna un look super premium i no perdem el context del mes! */}
-                            <span className="absolute text-[10px] md:hidden font-extrabold text-slate-500 uppercase tracking-[0.2em] -rotate-90 whitespace-nowrap">
+                            <span className="absolute text-[10px] font-extrabold text-slate-500 uppercase tracking-[0.2em] -rotate-90 whitespace-nowrap">
                                 {format(baseDate, 'MMM', { locale: ca })}
                             </span>
                         </div>

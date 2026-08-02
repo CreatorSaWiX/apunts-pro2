@@ -23,10 +23,10 @@ const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: () => void 
     return (
         <div 
             onClick={onClick}
-            className="flex flex-col cursor-pointer group p-3 -m-3 rounded-2xl transition-all duration-500 hover:bg-[#151722] hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+            className="flex flex-col cursor-pointer group p-4 -m-4 rounded-3xl transition-all duration-500 ease-out border border-transparent hover:bg-white/[0.02] hover:backdrop-blur-xl hover:border-white/[0.06] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-1.5"
         >
             <h3 
-                className="text-lg font-bold text-slate-400 mb-2 capitalize transition-all duration-300 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/40"
+                className="text-lg font-bold text-slate-400 mb-2 capitalize transition-all duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 group-hover:translate-x-1"
             >
                 {format(monthDate, 'MMM', { locale: ca })}
             </h3>
