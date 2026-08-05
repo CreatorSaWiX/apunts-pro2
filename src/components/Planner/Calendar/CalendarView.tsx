@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { m as motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { 
     DndContext, 
@@ -34,6 +34,9 @@ const CalendarView: React.FC = () => {
     const [direction, setDirection] = useState(0);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
     const isAltPressed = useDuplicateModifier();
+    const [zoomOrigin, setZoomOrigin] = useState({ x: '50%', y: '50%' });
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const sensors = useSensors(
         useSensor(MouseSensor, {
@@ -49,13 +52,24 @@ const CalendarView: React.FC = () => {
         })
     );
 
-    const handleSetMode = (newMode: CalendarMode, newDate?: Date) => {
+    const handleSetMode = (newMode: CalendarMode, newDate?: Date, clickEvent?: React.MouseEvent) => {
         const modes: CalendarMode[] = ['year', 'month', 'week'];
         const currentIndex = modes.indexOf(mode);
         const newIndex = modes.indexOf(newMode);
         
+        // Compute zoom origin from click coordinates (Apple Calendar morphing zoom)
+        if (clickEvent && containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect();
+            const x = ((clickEvent.clientX - rect.left) / rect.width) * 100;
+            const y = ((clickEvent.clientY - rect.top) / rect.height) * 100;
+            setZoomOrigin({ x: `${x}%`, y: `${y}%` });
+        } else {
+            setZoomOrigin({ x: '50%', y: '50%' });
+        }
+        
         // Zoom in = positive direction, Zoom out = negative direction
         setDirection(newIndex > currentIndex ? 1 : -1);
+        setIsTransitioning(true);
         setMode(newMode);
         if (newDate) setCurrentDate(newDate);
     };
@@ -166,20 +180,24 @@ const CalendarView: React.FC = () => {
 
     const unplannedTasks = tasks.filter(t => !t.startDate);
 
+    // Apple Calendar morphing zoom — fast start, soft landing
+    const APPLE_EASE: [number, number, number, number] = [0.16, 0.85, 0.3, 1];
+    const ZOOM_DURATION = 0.28;
+
     const variants = {
         initial: (direction: number) => ({
             opacity: 0,
-            scale: direction > 0 ? 1.05 : 0.95,
+            scale: direction > 0 ? 0.82 : 1.35,
         }),
         animate: {
             opacity: 1,
             scale: 1,
-            transition: { duration: 0.3, ease: 'easeOut' }
+            transition: { duration: ZOOM_DURATION, ease: APPLE_EASE }
         },
         exit: (direction: number) => ({
             opacity: 0,
-            scale: direction > 0 ? 0.95 : 1.05,
-            transition: { duration: 0.25, ease: 'easeIn' }
+            scale: direction > 0 ? 2.2 : 0.55,
+            transition: { duration: ZOOM_DURATION * 0.85, ease: APPLE_EASE }
         })
     };
 
@@ -220,7 +238,7 @@ const CalendarView: React.FC = () => {
 
                     {/* Contingut Principal animat */}
                     <LayoutGroup>
-                        <div className="flex-1 relative">
+                        <div ref={containerRef} className="flex-1 relative">
                             <AnimatePresence mode="popLayout" custom={direction} initial={false}>
                                 <motion.div
                                     key={mode}
@@ -229,11 +247,15 @@ const CalendarView: React.FC = () => {
                                     initial="initial"
                                     animate="animate"
                                     exit="exit"
+                                    style={{ transformOrigin: `${zoomOrigin.x} ${zoomOrigin.y}` }}
+                                    onAnimationComplete={(definition) => {
+                                        if (definition === 'animate') setIsTransitioning(false);
+                                    }}
                                     className="w-full h-full absolute inset-0"
                                 >
-                                    {mode === 'month' && <MonthlyGrid currentDate={currentDate} tasks={tasks} onSelectDay={(date) => handleSetMode('week', date)} />}
-                                    {mode === 'week' && <WeeklyGrid currentDate={currentDate} tasks={tasks} />}
-                                    {mode === 'year' && <YearlyGrid currentDate={currentDate} tasks={tasks} onSelectMonth={(date) => handleSetMode('month', date)} />}
+                                    {mode === 'month' && <MonthlyGrid currentDate={currentDate} tasks={tasks} deferBuffers={isTransitioning} onSelectDay={(date, e) => handleSetMode('week', date, e)} />}
+                                    {mode === 'week' && <WeeklyGrid currentDate={currentDate} tasks={tasks} deferBuffers={isTransitioning} />}
+                                    {mode === 'year' && <YearlyGrid currentDate={currentDate} tasks={tasks} deferBuffers={isTransitioning} onSelectMonth={(date, e) => handleSetMode('month', date, e)} />}
                                 </motion.div>
                             </AnimatePresence>
                         </div>

@@ -11,10 +11,11 @@ import NavigationPill from '../../ui/NavigationPill';
 interface MonthlyGridProps {
     currentDate: Date;
     tasks: Task[];
-    onSelectDay?: (date: Date) => void;
+    onSelectDay?: (date: Date, clickEvent?: React.MouseEvent) => void;
+    deferBuffers?: boolean;
 }
 
-const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onSelectDay?: (date: Date) => void }> = ({ day, isCurrentMonth, tasks, onSelectDay }) => {
+const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onSelectDay?: (date: Date, clickEvent?: React.MouseEvent) => void }> = ({ day, isCurrentMonth, tasks, onSelectDay }) => {
     const { addTask, subjects } = useTasks();
     const dateStr = format(day, 'yyyy-MM-dd');
     
@@ -42,7 +43,7 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onS
 
     const handleClick = (e: React.MouseEvent) => {
         if (onSelectDay) {
-            onSelectDay(day);
+            onSelectDay(day, e);
         }
     };
 
@@ -57,7 +58,7 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onS
             `}
         >
             <div className="flex justify-end items-start mb-0.5 relative z-10">
-                <span className={`text-[12px] md:text-[13px] font-medium w-6 h-6 md:w-7 md:h-7 flex items-center justify-center rounded-full transition-all duration-300 ${isToday(day) ? 'bg-white text-slate-900 font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)]' : 'text-slate-300 group-hover:text-white'}`}>
+                <span className={`text-[12px] md:text-[13px] font-medium w-6 h-6 md:w-7 md:h-7 flex items-center justify-center rounded-full transition-[transform,background-color,box-shadow,color] duration-300 ${isToday(day) ? 'bg-white text-slate-900 font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)]' : 'text-slate-300 group-hover:text-white'}`}>
                     {format(day, 'd')}
                 </span>
             </div>
@@ -103,7 +104,7 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onS
     );
 };
 
-const MonthBlock: React.FC<{ monthDate: Date; tasks: Task[]; onSelectDay?: (date: Date) => void }> = ({ monthDate, tasks, onSelectDay }) => {
+const MonthBlock: React.FC<{ monthDate: Date; tasks: Task[]; onSelectDay?: (date: Date, clickEvent?: React.MouseEvent) => void }> = ({ monthDate, tasks, onSelectDay }) => {
     const monthStart = startOfMonth(monthDate);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
@@ -134,13 +135,16 @@ const MonthBlock: React.FC<{ monthDate: Date; tasks: Task[]; onSelectDay?: (date
     );
 };
 
-const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks, onSelectDay }) => {
+const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks, onSelectDay, deferBuffers }) => {
     const weekDays = ['Dll', 'Dmt', 'Dmc', 'Djj', 'Dvv', 'Dss', 'Dmg'];
     
     const [baseDate, setBaseDate] = useState(() => startOfMonth(currentDate));
     
     // Render 21 months (-10 to +10) for a massive scroll buffer
-    const monthsToRender = Array.from({ length: 21 }).map((_, i) => addMonths(baseDate, i - 10));
+    // During transitions: 1 month (~267 nodes). After: 21 months for infinite scroll.
+    const monthsToRender = deferBuffers
+        ? [startOfMonth(currentDate)]
+        : Array.from({ length: 21 }).map((_, i) => addMonths(baseDate, i - 10));
     
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -161,7 +165,22 @@ const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks, onSelectD
         return () => clearTimeout(timer);
     }, [currentDate]);
 
+    // Restore scroll position after deferred buffers load
+    useEffect(() => {
+        if (deferBuffers) return;
+        requestAnimationFrame(() => {
+            if (scrollContainerRef.current) {
+                const centerMonthId = `month-${format(startOfMonth(currentDate), 'yyyy-MM')}`;
+                const centerMonthEl = document.getElementById(centerMonthId);
+                if (centerMonthEl) {
+                    scrollContainerRef.current.scrollTop = centerMonthEl.offsetTop - 60;
+                }
+            }
+        });
+    }, [deferBuffers]);
+
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        if (deferBuffers) return;
         const target = e.currentTarget;
 
         // If scrolling near top (within ~3 months)

@@ -8,10 +8,11 @@ import type { Task } from '../../../types/tasks';
 interface YearlyGridProps {
     currentDate: Date;
     tasks: Task[];
-    onSelectMonth: (date: Date) => void;
+    onSelectMonth: (date: Date, clickEvent?: React.MouseEvent) => void;
+    deferBuffers?: boolean;
 }
 
-const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: () => void }> = ({ monthDate, tasks, onClick }) => {
+const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: (e: React.MouseEvent) => void }> = ({ monthDate, tasks, onClick }) => {
     const daysInMonth = getDaysInMonth(monthDate);
     // getDay returns 0 for Sunday. We want Monday=0
     let firstDayIndex = getDay(new Date(monthDate.getFullYear(), monthDate.getMonth(), 1)) - 1;
@@ -23,10 +24,10 @@ const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: () => void 
     return (
         <div 
             onClick={onClick}
-            className="flex flex-col cursor-pointer group p-4 -m-4 rounded-3xl transition-all duration-500 ease-out border border-transparent hover:bg-white/[0.02] hover:backdrop-blur-xl hover:border-white/[0.06] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-1.5"
+            className="flex flex-col cursor-pointer group p-4 -m-4 rounded-3xl transition-[transform,opacity,background-color,border-color,box-shadow] duration-500 ease-out border border-transparent hover:bg-white/[0.05] hover:border-white/[0.06] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-1.5"
         >
             <h3 
-                className="text-lg font-bold text-slate-400 mb-2 capitalize transition-all duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 group-hover:translate-x-1"
+                className="text-lg font-bold text-slate-400 mb-2 capitalize transition-[transform,color,background] duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 group-hover:translate-x-1"
             >
                 {format(monthDate, 'MMM', { locale: ca })}
             </h3>
@@ -44,7 +45,7 @@ const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: () => void 
                     const isToday = isSameDay(currentDayDate, new Date());
                     
                     return (
-                        <div key={day} className={`aspect-square flex items-center justify-center relative rounded-full transition-all duration-300 ${isToday ? 'bg-white text-slate-900 font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)] scale-110' : hasTasks ? 'bg-white/10 text-white font-bold shadow-[inset_0_1px_3px_rgba(255,255,255,0.2)]' : 'text-slate-500 group-hover:text-slate-300'}`}>
+                        <div key={day} className={`aspect-square flex items-center justify-center relative rounded-full transition-[transform,background-color,box-shadow,color] duration-300 ${isToday ? 'bg-white text-slate-900 font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)] scale-110' : hasTasks ? 'bg-white/10 text-white font-bold shadow-[inset_0_1px_3px_rgba(255,255,255,0.2)]' : 'text-slate-500 group-hover:text-slate-300'}`}>
                             <span className={`text-[11px] sm:text-[10px] z-10 ${isToday ? '' : 'opacity-90'}`}>{day}</span>
                         </div>
                     );
@@ -54,7 +55,7 @@ const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: () => void 
     );
 };
 
-const YearBlock: React.FC<{ year: number; tasks: Task[]; onSelectMonth: (date: Date) => void }> = ({ year, tasks, onSelectMonth }) => {
+const YearBlock: React.FC<{ year: number; tasks: Task[]; onSelectMonth: (date: Date, clickEvent?: React.MouseEvent) => void }> = ({ year, tasks, onSelectMonth }) => {
     const months = Array.from({ length: 12 }).map((_, i) => new Date(year, i, 1));
     
     return (
@@ -72,7 +73,7 @@ const YearBlock: React.FC<{ year: number; tasks: Task[]; onSelectMonth: (date: D
                         key={monthDate.toISOString()} 
                         monthDate={monthDate} 
                         tasks={tasks} 
-                        onClick={() => onSelectMonth(monthDate)} 
+                        onClick={(e) => onSelectMonth(monthDate, e)} 
                     />
                 ))}
             </div>
@@ -80,12 +81,14 @@ const YearBlock: React.FC<{ year: number; tasks: Task[]; onSelectMonth: (date: D
     );
 };
 
-const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMonth }) => {
+const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMonth, deferBuffers }) => {
     const [baseYear, setBaseYear] = useState(() => currentDate.getFullYear());
     const [visibleYear, setVisibleYear] = useState(() => currentDate.getFullYear());
     
-    // Render 11 years (-5 to +5) for a massive scroll buffer
-    const yearsToRender = Array.from({ length: 11 }).map((_, i) => baseYear + (i - 5));
+    // During transitions: 1 year (~960 nodes). After: 11 years for infinite scroll.
+    const yearsToRender = deferBuffers
+        ? [currentDate.getFullYear()]
+        : Array.from({ length: 11 }).map((_, i) => baseYear + (i - 5));
     
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -107,7 +110,19 @@ const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMon
         return () => clearTimeout(timer);
     }, [currentDate]);
 
+    // Restore scroll position after deferred buffers load
+    useEffect(() => {
+        if (deferBuffers) return;
+        requestAnimationFrame(() => {
+            if (scrollContainerRef.current) {
+                const el = document.getElementById(`year-${currentDate.getFullYear()}`);
+                if (el) scrollContainerRef.current.scrollTop = el.offsetTop - 60;
+            }
+        });
+    }, [deferBuffers]);
+
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        if (deferBuffers) return;
         const target = e.currentTarget;
 
         // Update visible year for mobile header

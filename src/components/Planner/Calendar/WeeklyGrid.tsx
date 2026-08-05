@@ -12,6 +12,7 @@ import NavigationPill from '../../ui/NavigationPill';
 interface WeeklyGridProps {
     currentDate: Date;
     tasks: Task[];
+    deferBuffers?: boolean;
 }
 
 const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, updates: Partial<Task>) => void }> = ({ task, day, updateTask }) => {
@@ -346,7 +347,7 @@ const CurrentTimeLine = () => {
 
     return (
         <div 
-            className="absolute left-14 right-0 z-20 pointer-events-none flex items-center transition-all duration-1000 ease-linear"
+            className="absolute left-14 right-0 z-20 pointer-events-none flex items-center transition-[top] duration-1000 ease-linear"
             style={{ top: `${top}px` }}
         >
             <div className="w-3 h-3 rounded-full bg-indigo-400 shadow-[0_0_20px_rgba(129,140,248,1),0_0_10px_rgba(255,255,255,0.8)] -ml-[5px] z-10 animate-pulse"></div>
@@ -403,7 +404,7 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
     );
 };
 
-const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
+const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffers }) => {
     const { active } = useDndContext();
     const isDraggingContext = !!active;
 
@@ -419,9 +420,16 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
         return 140;
     });
 
-    const startDate = subDays(baseDate, 28); // 4 weeks before
-    const endDate = addDays(endOfWeek(baseDate, { weekStartsOn: 1 }), 28); // 4 weeks after (total 9 weeks = 63 days)
-    const days = useMemo(() => eachDayOfInterval({ start: startDate, end: endDate }), [startDate, endDate]);
+    const days = useMemo(() => {
+        if (deferBuffers) {
+            // During animation: only current week (7 days) for instant mount
+            return eachDayOfInterval({ start: baseDate, end: endOfWeek(baseDate, { weekStartsOn: 1 }) });
+        }
+        // After animation: 9 weeks buffer for infinite scroll
+        const startDate = subDays(baseDate, 28);
+        const endDate = addDays(endOfWeek(baseDate, { weekStartsOn: 1 }), 28);
+        return eachDayOfInterval({ start: startDate, end: endDate });
+    }, [baseDate, deferBuffers]);
     
     // O(1) Pre-càlcul per agrupar tasques per dia i evitar el lag en el renderitzat
     const tasksByDay = useMemo(() => {
@@ -488,7 +496,31 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
         }
     }, [currentDate]);
 
+    // Restore scroll position after deferred buffers load
+    useEffect(() => {
+        if (deferBuffers) return;
+        requestAnimationFrame(() => {
+            if (scrollContainerRef.current) {
+                const container = scrollContainerRef.current;
+                const clientWidth = container.clientWidth;
+                const clientHeight = container.clientHeight;
+                const isMobile = window.innerWidth < 768;
+                const actualWidth = isMobile ? (clientWidth - 56) : Math.max(140, (clientWidth - 56) / 7);
+                const dayOffset = (currentDate.getDay() + 6) % 7;
+                const now = new Date();
+                const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                container.scrollTop = Math.max(0, currentMinutes - clientHeight / 2);
+                if (isMobile) {
+                    container.scrollLeft = (28 + dayOffset) * actualWidth;
+                } else {
+                    container.scrollLeft = (28 + dayOffset) * actualWidth - (clientWidth - 56) / 2 + actualWidth / 2;
+                }
+            }
+        });
+    }, [deferBuffers]);
+
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        if (deferBuffers) return;
         const target = e.currentTarget;
 
         // If scrolled to within 14 columns of the left edge (2 full weeks buffer)
@@ -583,12 +615,11 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
 
                         {/* Columnes dels Dies */}
                         <div className="flex flex-1 relative min-w-max bg-slate-900/10">
-                            {/* Línies Horitzontals de Fons */}
-                            <div className="absolute inset-0 pointer-events-none z-0">
-                                {Array.from({ length: 24 }).map((_, i) => (
-                                    <div key={i} className="absolute w-full border-b border-white/[0.03]" style={{ top: `${i * 60}px` }}></div>
-                                ))}
-                            </div>
+                            {/* Línies Horitzontals de Fons — CSS gradient (0 nodes vs 24 divs) */}
+                            <div 
+                                className="absolute inset-0 pointer-events-none z-0"
+                                style={{ backgroundImage: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 59px, rgba(255,255,255,0.03) 59px, rgba(255,255,255,0.03) 60px)' }}
+                            />
 
                             <div className="absolute inset-0 z-20 pointer-events-none">
                                 <CurrentTimeLine />
