@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
-import { useRoadmap, RoadmapProvider } from '../../../contexts/RoadmapContext';
+import { useRoadmap, RoadmapProvider, TargetGradeProvider } from '../../../contexts/RoadmapContext';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
 import SubjectNode from './SubjectNode';
 import SubjectContextMenu from './SubjectContextMenu';
@@ -8,7 +8,7 @@ import SubjectSearchModal from './SubjectSearchModal';
 import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import Spinner from '../../ui/Spinner';
-import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, Redo2, X, Type, StickyNote, MoreHorizontal, CalendarDays } from 'lucide-react';
+import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, Redo2, X, Type, StickyNote, MoreHorizontal, CalendarDays, Target } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { m as motion, AnimatePresence, useIsPresent } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -72,7 +72,7 @@ interface RoadmapViewProps {
 
 const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI = () => { } }) => {
     const { t } = useTranslation();
-    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade, initialStrokes, addAnnotationNode } = useRoadmap();
+    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade, initialStrokes, addAnnotationNode, targetGrade, setTargetGrade, requiredAverageGrade } = useRoadmap();
     const { isDrawMode, setIsDrawMode, currentColor, setCurrentColor, clearStrokes, undoStroke, redoStroke, canUndo, canRedo, strokes, setStrokes } = useDrawContext();
     const reactFlowInstance = useReactFlow();
     const [isSaving, setIsSaving] = useState(false);
@@ -199,33 +199,35 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.06)_0%,rgba(9,9,11,0.6)_60%,rgba(9,9,11,1)_100%)] pointer-events-none z-0" />
 
             <div className="flex-1 relative z-10">
-                <ReactFlow
-                    nodes={typedNodes}
-                    edges={edges}
-                    onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
-                    onConnect={onConnect}
-                    onNodeClick={onNodeClick}
-                    nodeTypes={nodeTypes}
-                    fitView
-                    fitViewOptions={FIT_VIEW_OPTIONS}
-                    proOptions={PRO_OPTIONS}
-                    className="bg-transparent"
-                    minZoom={0.1}
-                    maxZoom={2}
-                    panOnDrag={!isDrawMode}
-                    nodesDraggable={!isDrawMode}
-                    zoomOnScroll={!isDrawMode}
-                    zoomOnPinch={!isDrawMode}
-                    zoomOnDoubleClick={false}
-                    elementsSelectable={!isDrawMode}
-                    nodesConnectable={!isDrawMode}
-                    defaultEdgeOptions={DEFAULT_EDGE_OPTIONS}
-                >
-                    <Background color="#38bdf8" variant={BackgroundVariant.Dots} gap={24} size={2} className="opacity-10" />
-                    <CustomControls />
-                    <DrawLayer />
-                </ReactFlow>
+                <TargetGradeProvider value={requiredAverageGrade}>
+                    <ReactFlow
+                        nodes={typedNodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        onConnect={onConnect}
+                        onNodeClick={onNodeClick}
+                        nodeTypes={nodeTypes}
+                        fitView
+                        fitViewOptions={FIT_VIEW_OPTIONS}
+                        proOptions={PRO_OPTIONS}
+                        className="bg-transparent"
+                        minZoom={0.1}
+                        maxZoom={2}
+                        panOnDrag={!isDrawMode}
+                        nodesDraggable={!isDrawMode}
+                        zoomOnScroll={!isDrawMode}
+                        zoomOnPinch={!isDrawMode}
+                        zoomOnDoubleClick={false}
+                        elementsSelectable={!isDrawMode}
+                        nodesConnectable={!isDrawMode}
+                        defaultEdgeOptions={DEFAULT_EDGE_OPTIONS}
+                    >
+                        <Background color="#38bdf8" variant={BackgroundVariant.Dots} gap={24} size={2} className="opacity-10" />
+                        <CustomControls />
+                        <DrawLayer />
+                    </ReactFlow>
+                </TargetGradeProvider>
 
                 {/* ECTS Circular Glass Widget Bottom Right (Spatial UI) */}
                 <motion.div
@@ -249,6 +251,82 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                     <span className="text-xl font-black text-white tracking-tight">{averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}</span>
                                     <span className="text-xs font-medium text-slate-500">/10</span>
                                 </div>
+                            </div>
+                        </div>
+
+                        {/* Target Grade Widget */}
+                        <div className="flex items-center gap-4 px-2 py-1">
+                            <div className={`relative w-[50px] h-[50px] flex items-center justify-center rounded-full border transition-all duration-500 ${
+                                targetGrade !== null
+                                    ? requiredAverageGrade !== null && requiredAverageGrade > 10
+                                        ? 'bg-gradient-to-br from-red-500/20 to-rose-500/20 border-red-500/30 shadow-[inset_0_0_20px_rgba(239,68,68,0.3),0_0_15px_rgba(239,68,68,0.2)]'
+                                        : 'bg-gradient-to-br from-amber-500/20 to-orange-500/20 border-amber-500/30 shadow-[inset_0_0_20px_rgba(245,158,11,0.3),0_0_15px_rgba(245,158,11,0.2)]'
+                                    : 'bg-gradient-to-br from-slate-500/10 to-slate-600/10 border-slate-700/30'
+                            }`}>
+                                <Target size={20} className={`${
+                                    targetGrade !== null
+                                        ? requiredAverageGrade !== null && requiredAverageGrade > 10
+                                            ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]'
+                                            : 'text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]'
+                                        : 'text-slate-500'
+                                }`} />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">{t('roadmapView.targetGrade', 'Nota Objectiu')}</span>
+                                <div className="flex items-baseline gap-2">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="10"
+                                        step="0.1"
+                                        value={targetGrade !== null ? targetGrade : ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === '') { setTargetGrade(null); return; }
+                                            const num = parseFloat(val);
+                                            if (!isNaN(num) && num >= 0 && num <= 10) setTargetGrade(num);
+                                        }}
+                                        placeholder="-.--"
+                                        className="w-[60px] bg-transparent text-xl font-black text-white tracking-tight border-none outline-none placeholder-slate-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:ring-0"
+                                        onBlur={() => {
+                                            handleSave();
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.currentTarget.blur();
+                                            }
+                                        }}
+                                    />
+                                    <span className="text-xs font-medium text-slate-500">/10</span>
+                                </div>
+                                {/* Required grade indicator */}
+                                <AnimatePresence>
+                                    {targetGrade !== null && requiredAverageGrade !== null && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <span className={`text-[10px] font-bold mt-1 block ${
+                                                requiredAverageGrade > 10
+                                                    ? 'text-red-400'
+                                                    : requiredAverageGrade > 8
+                                                        ? 'text-amber-400'
+                                                        : requiredAverageGrade <= 5
+                                                            ? 'text-emerald-400'
+                                                            : 'text-sky-400'
+                                            }`}>
+                                                {requiredAverageGrade > 10
+                                                    ? `⚠ ${t('roadmapView.targetImpossible', 'Impossible')}`
+                                                    : requiredAverageGrade <= 5
+                                                        ? `✓ ${t('roadmapView.targetGuaranteed', 'Garantit')}`
+                                                        : `🎯 ${t('roadmapView.requiredGrade', 'Cal')}: ${requiredAverageGrade.toFixed(2)}`
+                                                }
+                                            </span>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         </div>
 

@@ -59,9 +59,18 @@ interface RoadmapContextType {
     canStartMaster: boolean;
     averageGrade: number | null;
     initialStrokes: any[];
+    targetGrade: number | null;
+    setTargetGrade: (grade: number | null) => void;
+    requiredAverageGrade: number | null;
 }
 
 const RoadmapContext = createContext<RoadmapContextType | undefined>(undefined);
+
+// Lightweight context so SubjectNode can read requiredAverageGrade without
+// subscribing to the full RoadmapContext (which changes on every drag/zoom).
+const TargetGradeContext = createContext<number | null>(null);
+export const TargetGradeProvider = TargetGradeContext.Provider;
+export const useTargetGrade = () => useContext(TargetGradeContext);
 
 const removeUndefined = (obj: any): any => {
     if (Array.isArray(obj)) return obj.map(removeUndefined);
@@ -73,6 +82,13 @@ const removeUndefined = (obj: any): any => {
         );
     }
     return obj;
+};
+
+/** Returns true if a node contributes to the weighted GPA (nota mitjana ponderada). */
+const isGradableNode = (node: Node<SubjectNodeData>): boolean => {
+    if (node.id.startsWith('CFGS_') || node.id.startsWith('VALIDATION_')) return false;
+    if (node.data.type === 'text' || node.data.type === 'postit') return false;
+    return true;
 };
 
 const createInitialGraph = () => {
@@ -130,6 +146,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
     const [initialStrokes, setInitialStrokes] = useState<any[]>([]);
     const [itinerary, setItinerary] = useState<ItineraryType>('GEI_STANDARD');
     const [isLoading, setIsLoading] = useState(true);
+    const [targetGrade, setTargetGrade] = useState<number | null>(null);
 
     useEffect(() => {
         let isMounted = true;
@@ -178,6 +195,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                         setEdges(data.edges);
                         if (data.itinerary) setItinerary(data.itinerary);
                         if (data.strokes) setInitialStrokes(data.strokes);
+                        if (typeof data.targetGrade === 'number') setTargetGrade(data.targetGrade);
                     }
                 } else if (isMounted) {
                     // Initialize default GEI tree
@@ -217,6 +235,32 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         if (totalGradedCredits === 0) return null;
         return totalGradePoints / totalGradedCredits;
     }, [nodes]);
+
+    // Required average grade to reach targetGrade (excludes non-gradable nodes)
+    const requiredAverageGrade = useMemo(() => {
+        if (targetGrade === null) return null;
+
+        let gradablePassedPoints = 0;
+        let gradablePassedECTS = 0;
+        let gradableRemainingECTS = 0;
+
+        nodes.forEach(node => {
+            if (!isGradableNode(node)) return;
+
+            if (node.data.status === 'passed' && typeof node.data.grade === 'number') {
+                gradablePassedPoints += node.data.grade * node.data.credits;
+                gradablePassedECTS += node.data.credits;
+            } else if (node.data.status !== 'passed') {
+                gradableRemainingECTS += node.data.credits;
+            }
+        });
+
+        if (gradableRemainingECTS === 0) return null;
+
+        const totalGradableECTS = gradablePassedECTS + gradableRemainingECTS;
+        const required = (targetGrade * totalGradableECTS - gradablePassedPoints) / gradableRemainingECTS;
+        return required;
+    }, [targetGrade, nodes]);
 
     // PARS Rule: Can start master if remaining credits < 27 (excluding TFG 18)
     // Degree total is 240. ECTS remaining = 240 - passed. If remaining <= 27 + 18?
@@ -590,21 +634,23 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 edges: cleanEdges,
                 itinerary,
                 strokes,
+                targetGrade,
                 updatedAt: new Date().toISOString()
             }));
         } catch (err) {
             console.error("Error saving roadmap:", err);
             throw err;
         }
-    }, [nodes, edges, itinerary, user]);
+    }, [nodes, edges, itinerary, targetGrade, user]);
 
     const contextValue = useMemo(() => ({
         nodes, edges, itinerary, setItinerary,
         onNodesChange, onEdgesChange, onConnect,
         updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode,
         setSpecialization,
-        isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes
-    }), [nodes, edges, itinerary, isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes, onNodesChange, onEdgesChange, onConnect, updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode, setSpecialization]);
+        isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes,
+        targetGrade, setTargetGrade, requiredAverageGrade
+    }), [nodes, edges, itinerary, isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes, targetGrade, requiredAverageGrade, onNodesChange, onEdgesChange, onConnect, updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode, setSpecialization]);
 
     return (
         <RoadmapContext.Provider value={contextValue}>

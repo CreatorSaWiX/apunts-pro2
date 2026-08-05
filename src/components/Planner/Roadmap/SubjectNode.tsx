@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import type { NodeProps, Node } from '@xyflow/react';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
+import { useTargetGrade } from '../../../contexts/RoadmapContext';
 import { m as motion } from 'framer-motion';
 import Tilt from 'react-parallax-tilt';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +12,10 @@ import { hapticLight } from '../../../lib/haptics';
 const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) => {
     const { t } = useTranslation();
     const isMobile = useIsMobile();
+    const requiredAverageGrade = useTargetGrade();
+
+    // Determine if this node is gradable (contributes to GPA)
+    const isGradable = !id.startsWith('CFGS_') && !id.startsWith('VALIDATION_') && data.type !== 'text' && data.type !== 'postit';
 
     // Hexagonal / Sci-Fi styles
     const getStatusStyles = () => {
@@ -168,6 +173,20 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
                 `}>
                     {data.grade >= 9.0 && <span className="mr-1 drop-shadow-md">⭐</span>}
                     {data.grade.toFixed(1)}
+                </div>
+            )}
+
+            {/* TARGET GRADE BADGE */}
+            {data.status !== 'passed' && isGradable && requiredAverageGrade !== null && (
+                <div className={`absolute -top-2.5 -left-2.5 text-[9px] font-black px-1.5 py-0.5 rounded-md z-20 flex items-center gap-0.5 shadow-lg border transform -rotate-3 cursor-default transition-all hover:scale-110
+                    ${requiredAverageGrade > 10
+                        ? 'bg-gradient-to-br from-red-500/90 to-rose-600/90 text-white border-red-400/50 shadow-[0_0_12px_rgba(239,68,68,0.6)]'
+                        : requiredAverageGrade > 8
+                            ? 'bg-gradient-to-br from-amber-500/90 to-orange-600/90 text-white border-amber-400/50 shadow-[0_0_12px_rgba(245,158,11,0.5)]'
+                            : 'bg-gradient-to-br from-emerald-500/90 to-teal-600/90 text-white border-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.5)]'
+                    }
+                `}>
+                    🎯 {requiredAverageGrade > 10 ? '!' : requiredAverageGrade.toFixed(1)}
                 </div>
             )}
 
