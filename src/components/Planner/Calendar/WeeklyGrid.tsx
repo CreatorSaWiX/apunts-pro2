@@ -179,21 +179,23 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
 
     const visualTop = isResizing ? currentTop : isDragging ? top + snappedY : top;
     
-    const endMinutes = visualTop + height;
+    const endMinutes = Math.round(visualTop + height);
     const endH = Math.floor(endMinutes / 60);
     const endM = endMinutes % 60;
     const endTimeStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-    const startH = Math.floor(visualTop / 60);
-    const startM = visualTop % 60;
+    const startMinutes = Math.round(visualTop);
+    const startH = Math.floor(startMinutes / 60);
+    const startM = startMinutes % 60;
     const startTimeStr = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
 
     // Temps originals per a la còpia fantasma
-    const origEndMinutes = top + baseHeight;
+    const origEndMinutes = Math.round(top + baseHeight);
     const origEndH = Math.floor(origEndMinutes / 60);
     const origEndM = origEndMinutes % 60;
     const origEndTimeStr = `${origEndH.toString().padStart(2, '0')}:${origEndM.toString().padStart(2, '0')}`;
-    const origStartH = Math.floor(top / 60);
-    const origStartM = top % 60;
+    const origStartMinutes = Math.round(top);
+    const origStartH = Math.floor(origStartMinutes / 60);
+    const origStartM = origStartMinutes % 60;
     const origStartTimeStr = `${origStartH.toString().padStart(2, '0')}:${origStartM.toString().padStart(2, '0')}`;
 
     const radiusClass = isContinuingFromPrev && isContinuingToNext ? 'rounded-none border-y-0' 
@@ -579,7 +581,7 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffer
                     </div>
 
                     {/* Time Grid Scrollable */}
-                    <div className="flex relative min-h-[1440px]">
+                    <div className="flex relative h-[1440px] max-md:h-[1640px]">
                         
                         {/* Columna Hores (Sticky Left) */}
                         <div className="w-14 flex-shrink-0 border-r border-white/[0.03] relative bg-transparent z-30 backdrop-blur-2xl sticky left-0">
@@ -595,7 +597,7 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffer
                         <div className="flex flex-1 relative min-w-max bg-slate-900/10">
                             {/* Línies Horitzontals de Fons — CSS gradient (0 nodes vs 24 divs) */}
                             <div 
-                                className="absolute inset-0 pointer-events-none z-0"
+                                className="absolute top-0 left-0 right-0 h-[1440px] pointer-events-none z-0"
                                 style={{ backgroundImage: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 59px, rgba(255,255,255,0.03) 59px, rgba(255,255,255,0.03) 60px)' }}
                             />
 

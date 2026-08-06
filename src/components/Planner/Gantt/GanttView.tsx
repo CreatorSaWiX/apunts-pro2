@@ -41,9 +41,7 @@ const GanttView: React.FC = () => {
     
     // Timeline window: we render a 28-day rolling window
     const [baseDate, setBaseDate] = useState(() => {
-        const d = new Date();
-        d.setHours(0, 0, 0, 0);
-        return d;
+        return new Date();
     });
 
     const clientWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
@@ -251,7 +249,7 @@ const GanttView: React.FC = () => {
             </div>
 
             {/* Floating Zoom Controls */}
-            <div className="absolute bottom-6 right-6 z-40 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl flex items-center gap-4">
+            <div className="hidden md:flex absolute bottom-6 right-6 z-40 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl items-center gap-4">
                 <button type="button" 
                     onClick={() => {
                         flushSync(() => {
