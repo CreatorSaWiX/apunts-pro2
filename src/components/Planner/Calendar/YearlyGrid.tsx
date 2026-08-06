@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { format, getDay, getDaysInMonth, isSameDay } from 'date-fns';
 import { ca } from 'date-fns/locale';
@@ -24,10 +24,14 @@ const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: (e: React.M
     return (
         <div 
             onClick={onClick}
-            className="flex flex-col cursor-pointer group p-4 -m-4 rounded-3xl transition-[transform,opacity,background-color,border-color,box-shadow] duration-500 ease-out border border-transparent hover:bg-white/[0.05] hover:border-white/[0.06] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-1.5"
+            className="flex flex-col cursor-pointer group p-2.5 -m-2.5 rounded-[24px] transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] border border-transparent hover:bg-white/[0.04] hover:backdrop-blur-lg hover:border-white/[0.08] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] hover:-translate-y-1.5 relative"
         >
+            <div className="absolute inset-0 overflow-hidden rounded-[24px] pointer-events-none">
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out bg-[radial-gradient(120%_120%_at_50%_0%,_rgba(255,255,255,0.08)_0%,_transparent_100%)]"></div>
+            </div>
+            
             <h3 
-                className="text-lg font-bold text-slate-400 mb-2 capitalize transition-[transform,color,background] duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 group-hover:translate-x-1"
+                className="text-lg font-bold text-slate-400 mb-2 capitalize transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:text-white group-hover:translate-x-1 relative z-10"
             >
                 {format(monthDate, 'MMM', { locale: ca })}
             </h3>
@@ -85,41 +89,23 @@ const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMon
     const [baseYear, setBaseYear] = useState(() => currentDate.getFullYear());
     const [visibleYear, setVisibleYear] = useState(() => currentDate.getFullYear());
     
-    // During transitions: 1 year (~960 nodes). After: 11 years for infinite scroll.
+    // During transitions: 3 years to prevent visual pop-in. After: 11 years for infinite scroll.
     const yearsToRender = deferBuffers
-        ? [currentDate.getFullYear()]
+        ? [currentDate.getFullYear() - 1, currentDate.getFullYear(), currentDate.getFullYear() + 1]
         : Array.from({ length: 11 }).map((_, i) => baseYear + (i - 5));
     
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-    // Initial scroll to center on load or when currentDate prop changes significantly
-    useEffect(() => {
+    // Initial scroll to center on load, when currentDate prop changes, or buffer restoration
+    useLayoutEffect(() => {
         setBaseYear(currentDate.getFullYear());
         setVisibleYear(currentDate.getFullYear());
         
-        // Use a short timeout to ensure DOM has painted the years
-        const timer = setTimeout(() => {
-            if (scrollContainerRef.current) {
-                const centerYearId = `year-${currentDate.getFullYear()}`;
-                const centerYearEl = document.getElementById(centerYearId);
-                if (centerYearEl) {
-                    scrollContainerRef.current.scrollTop = centerYearEl.offsetTop - 60; // leave some space at top
-                }
-            }
-        }, 50);
-        return () => clearTimeout(timer);
-    }, [currentDate]);
-
-    // Restore scroll position after deferred buffers load
-    useEffect(() => {
-        if (deferBuffers) return;
-        requestAnimationFrame(() => {
-            if (scrollContainerRef.current) {
-                const el = document.getElementById(`year-${currentDate.getFullYear()}`);
-                if (el) scrollContainerRef.current.scrollTop = el.offsetTop - 60;
-            }
-        });
-    }, [deferBuffers]);
+        if (scrollContainerRef.current) {
+            const el = document.getElementById(`year-${currentDate.getFullYear()}`);
+            if (el) scrollContainerRef.current.scrollTop = el.offsetTop - 60;
+        }
+    }, [currentDate, deferBuffers]);
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         if (deferBuffers) return;

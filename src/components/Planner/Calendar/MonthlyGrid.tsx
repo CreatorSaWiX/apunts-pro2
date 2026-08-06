@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { flushSync, createPortal } from 'react-dom';
 import { useDroppable } from '@dnd-kit/core';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, format, isSameMonth, isToday, isSameDay, addMonths, subMonths } from 'date-fns';
@@ -141,43 +141,24 @@ const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks, onSelectD
     const [baseDate, setBaseDate] = useState(() => startOfMonth(currentDate));
     
     // Render 21 months (-10 to +10) for a massive scroll buffer
-    // During transitions: 1 month (~267 nodes). After: 21 months for infinite scroll.
+    // During transitions: 3 months to prevent visual pop-in. After: 21 months for infinite scroll.
     const monthsToRender = deferBuffers
-        ? [startOfMonth(currentDate)]
+        ? [-1, 0, 1].map(i => addMonths(startOfMonth(currentDate), i))
         : Array.from({ length: 21 }).map((_, i) => addMonths(baseDate, i - 10));
     
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-    // Initial scroll to center on load or when currentDate prop changes significantly
-    useEffect(() => {
+    // Initial scroll to center on load, when currentDate prop changes, or buffer restoration
+    useLayoutEffect(() => {
         setBaseDate(startOfMonth(currentDate));
-        
-        // Use a short timeout to ensure DOM has painted the 21 months
-        const timer = setTimeout(() => {
-            if (scrollContainerRef.current) {
-                const centerMonthId = `month-${format(startOfMonth(currentDate), 'yyyy-MM')}`;
-                const centerMonthEl = document.getElementById(centerMonthId);
-                if (centerMonthEl) {
-                    scrollContainerRef.current.scrollTop = centerMonthEl.offsetTop - 60; // leave some space at top
-                }
+        if (scrollContainerRef.current) {
+            const centerMonthId = `month-${format(startOfMonth(currentDate), 'yyyy-MM')}`;
+            const centerMonthEl = document.getElementById(centerMonthId);
+            if (centerMonthEl) {
+                scrollContainerRef.current.scrollTop = centerMonthEl.offsetTop - 60; // leave some space at top
             }
-        }, 50);
-        return () => clearTimeout(timer);
-    }, [currentDate]);
-
-    // Restore scroll position after deferred buffers load
-    useEffect(() => {
-        if (deferBuffers) return;
-        requestAnimationFrame(() => {
-            if (scrollContainerRef.current) {
-                const centerMonthId = `month-${format(startOfMonth(currentDate), 'yyyy-MM')}`;
-                const centerMonthEl = document.getElementById(centerMonthId);
-                if (centerMonthEl) {
-                    scrollContainerRef.current.scrollTop = centerMonthEl.offsetTop - 60;
-                }
-            }
-        });
-    }, [deferBuffers]);
+        }
+    }, [currentDate, deferBuffers]);
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         if (deferBuffers) return;

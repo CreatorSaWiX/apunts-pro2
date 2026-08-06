@@ -63,7 +63,7 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({
                                 color: isFocused ? (theme === 'sky' ? '#38bdf8' : '#34d399') : '#94a3b8'
                             }}
                             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                            className="absolute left-0 origin-left font-semibold tracking-wide pointer-events-none text-sm z-20"
+                            className="absolute left-0 origin-left font-semibold tracking-wide pointer-events-none text-base sm:text-sm z-20"
                             style={{ top: '18px' }}
                         >
                             {label}
@@ -80,7 +80,7 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({
                                 setIsFocused(false);
                                 props.onBlur?.(e);
                             }}
-                            className={`w-full h-full bg-transparent pr-4 pt-5 pb-1 text-white placeholder:text-transparent focus:outline-none text-sm font-medium z-10 relative [&:-webkit-autofill]:[-webkit-text-fill-color:white] [&:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s] ${props.className || ''}`}
+                            className={`w-full h-full bg-transparent pr-4 pt-5 pb-1 text-white placeholder:text-transparent focus:outline-none text-base sm:text-sm font-medium z-10 relative [&:-webkit-autofill]:[-webkit-text-fill-color:white] [&:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s] ${props.className || ''}`}
                         />
                     </div>
                 </div>

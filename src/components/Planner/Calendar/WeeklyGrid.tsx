@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useState, useMemo } from 'react';
 import { flushSync, createPortal } from 'react-dom';
 import { useDroppable, useDraggable, useDndContext } from '@dnd-kit/core';
 import { startOfWeek, endOfWeek, eachDayOfInterval, format, isToday, addDays, subDays } from 'date-fns';
@@ -298,7 +298,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
             {/* Top Resize Handle */}
             {!isContinuingFromPrev && (
                 <div 
-                    className={`absolute top-0 left-0 right-0 h-5 cursor-ns-resize z-20 flex justify-center pt-1 opacity-0 group-hover:opacity-100 ${isSelected ? 'opacity-100 bg-white/[0.05]' : ''} transition-opacity`}
+                    className={`absolute top-0 left-0 right-0 h-5 max-md:h-10 max-md:-translate-y-2.5 cursor-ns-resize z-20 flex justify-center pt-1 opacity-0 group-hover:opacity-100 ${isSelected ? 'opacity-100 bg-white/[0.05]' : ''} transition-opacity`}
                     style={{ touchAction: 'none' }}
                     onPointerDown={handlePointerDown('top')}
                 >
@@ -323,7 +323,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 {/* Bottom Resize Handle */}
                 {!isContinuingToNext && (
                     <div 
-                        className={`absolute bottom-0 left-0 right-0 h-5 cursor-ns-resize z-20 flex justify-center pb-1 items-end opacity-0 group-hover:opacity-100 ${isSelected ? 'opacity-100 bg-white/[0.05]' : ''} transition-opacity`}
+                        className={`absolute bottom-0 left-0 right-0 h-5 max-md:h-10 max-md:translate-y-2.5 cursor-ns-resize z-20 flex justify-center pb-1 items-end opacity-0 group-hover:opacity-100 ${isSelected ? 'opacity-100 bg-white/[0.05]' : ''} transition-opacity`}
                         style={{ touchAction: 'none' }}
                         onPointerDown={handlePointerDown('bottom')}
                     >
@@ -422,8 +422,8 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffer
 
     const days = useMemo(() => {
         if (deferBuffers) {
-            // During animation: only current week (7 days) for instant mount
-            return eachDayOfInterval({ start: baseDate, end: endOfWeek(baseDate, { weekStartsOn: 1 }) });
+            // During animation: 3 weeks (21 days) to prevent pop-in
+            return eachDayOfInterval({ start: subDays(baseDate, 7), end: addDays(endOfWeek(baseDate, { weekStartsOn: 1 }), 7) });
         }
         // After animation: 9 weeks buffer for infinite scroll
         const startDate = subDays(baseDate, 28);
@@ -468,8 +468,8 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffer
         return () => window.removeEventListener('resize', updateWidth);
     }, []);
 
-    // Auto-scroll to current time and current day on load or when external currentDate changes
-    useEffect(() => {
+    // Auto-scroll to current time and current day on load, mode change, or buffer restoration
+    useLayoutEffect(() => {
         setBaseDate(startOfWeek(currentDate, { weekStartsOn: 1 }));
         if (scrollContainerRef.current) {
             const container = scrollContainerRef.current;
@@ -485,39 +485,17 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffer
             const isMobile = window.innerWidth < 768;
             const actualWidth = isMobile ? (clientWidth - 56) : Math.max(140, (clientWidth - 56) / 7);
             const dayOffset = (currentDate.getDay() + 6) % 7;
+            const bufferOffset = deferBuffers ? 7 : 28;
             
             if (isMobile) {
                 // Mòbil: scroll exacte a l'inici de la columna del dia (compensat pels 56px fixed)
-                container.scrollLeft = (28 + dayOffset) * actualWidth;
+                container.scrollLeft = (bufferOffset + dayOffset) * actualWidth;
             } else {
                 // Desktop: centrar el dia a la pantalla
-                container.scrollLeft = (28 + dayOffset) * actualWidth - (clientWidth - 56) / 2 + actualWidth / 2;
+                container.scrollLeft = (bufferOffset + dayOffset) * actualWidth - (clientWidth - 56) / 2 + actualWidth / 2;
             }
         }
-    }, [currentDate]);
-
-    // Restore scroll position after deferred buffers load
-    useEffect(() => {
-        if (deferBuffers) return;
-        requestAnimationFrame(() => {
-            if (scrollContainerRef.current) {
-                const container = scrollContainerRef.current;
-                const clientWidth = container.clientWidth;
-                const clientHeight = container.clientHeight;
-                const isMobile = window.innerWidth < 768;
-                const actualWidth = isMobile ? (clientWidth - 56) : Math.max(140, (clientWidth - 56) / 7);
-                const dayOffset = (currentDate.getDay() + 6) % 7;
-                const now = new Date();
-                const currentMinutes = now.getHours() * 60 + now.getMinutes();
-                container.scrollTop = Math.max(0, currentMinutes - clientHeight / 2);
-                if (isMobile) {
-                    container.scrollLeft = (28 + dayOffset) * actualWidth;
-                } else {
-                    container.scrollLeft = (28 + dayOffset) * actualWidth - (clientWidth - 56) / 2 + actualWidth / 2;
-                }
-            }
-        });
-    }, [deferBuffers]);
+    }, [currentDate, deferBuffers]);
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         if (deferBuffers) return;

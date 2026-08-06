@@ -76,7 +76,7 @@ const PremiumInput = ({ label, type = "text", value, onChange, placeholder, help
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
                 />
             </div>
         </div>
@@ -176,7 +176,7 @@ const PremiumCombobox = ({ label, value, onChange, placeholder, options }: any) 
             </div>
             <div className="relative">
                 <div 
-                    className={`w-full bg-slate-900/50 border ${isOpen ? 'border-sky-500/50 ring-1 ring-sky-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-sm text-white flex items-center gap-3 transition-all font-medium cursor-text`}
+                    className={`w-full bg-slate-900/50 border ${isOpen ? 'border-sky-500/50 ring-1 ring-sky-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-base sm:text-sm text-white flex items-center gap-3 transition-all font-medium cursor-text`}
                     onClick={() => setIsOpen(true)}
                 >
                     <Search size={16} className={isOpen ? 'text-sky-400' : 'text-slate-500'} />
