@@ -34,20 +34,22 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title, subti
     const content = (
         <AnimatePresence>
             {isOpen && (
-                <>
-                    {/* Backdrop */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-[998] bg-[#020617]/20 backdrop-blur-sm"
-                        onClick={onClose}
-                        aria-hidden="true"
-                    />
+                <motion.div
+                    key="backdrop"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="fixed inset-0 z-[998] bg-[#020617]/20 backdrop-blur-sm"
+                    onClick={onClose}
+                    aria-hidden="true"
+                />
+            )}
 
-                    {/* Bottom Sheet Modal */}
-                    <motion.div
+            {/* Bottom Sheet Modal */}
+            {isOpen && (
+                <motion.div
+                    key="modal"
                         initial={{ y: '100%' }}
                         animate={{ y: 0 }}
                         exit={{ y: '100%' }}
@@ -84,7 +86,6 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title, subti
                             {children}
                         </div>
                     </motion.div>
-                </>
             )}
         </AnimatePresence>
     );

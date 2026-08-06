@@ -177,7 +177,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     const colWidth = taskRef.current?.parentElement?.offsetWidth || 0;
     const snappedX = transform && colWidth ? Math.round(transform.x / colWidth) * colWidth : 0;
 
-    const visualTop = isResizing ? currentTop : isDragging ? top + snappedY : top;
+    const visualTop = isResizing ? currentTop : isDragging ? Math.round((top + (transform?.y || 0)) / 5) * 5 : top;
     
     const endMinutes = Math.round(visualTop + height);
     const endH = Math.floor(endMinutes / 60);
@@ -300,11 +300,11 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
             {/* Top Resize Handle */}
             {!isContinuingFromPrev && (
                 <div 
-                    className={`absolute top-0 left-0 right-0 h-5 max-md:h-10 max-md:-translate-y-2.5 cursor-ns-resize z-20 flex justify-center pt-1 opacity-0 group-hover:opacity-100 ${isSelected ? 'opacity-100 bg-white/[0.05]' : ''} transition-opacity`}
+                    className={`absolute top-0 left-0 right-0 h-5 max-md:h-10 max-md:-translate-y-2.5 cursor-ns-resize z-20 flex justify-center pt-[2px] md:pt-[3px] group/handle transition-colors ${isSelected ? 'bg-white/[0.05]' : 'hover:bg-white/[0.05]'}`}
                     style={{ touchAction: 'none' }}
                     onPointerDown={handlePointerDown('top')}
                 >
-                    <div className="w-8 h-1 rounded-full bg-white/20" />
+                    <div className="w-6 h-[3px] bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-x-150 transition-all duration-200" />
                 </div>
             )}
 
@@ -325,11 +325,11 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 {/* Bottom Resize Handle */}
                 {!isContinuingToNext && (
                     <div 
-                        className={`absolute bottom-0 left-0 right-0 h-5 max-md:h-10 max-md:translate-y-2.5 cursor-ns-resize z-20 flex justify-center pb-1 items-end opacity-0 group-hover:opacity-100 ${isSelected ? 'opacity-100 bg-white/[0.05]' : ''} transition-opacity`}
+                        className={`absolute bottom-0 left-0 right-0 h-5 max-md:h-10 max-md:translate-y-2.5 cursor-ns-resize z-20 flex justify-center pb-[2px] md:pb-[3px] items-end group/handle transition-colors ${isSelected ? 'bg-white/[0.05]' : 'hover:bg-white/[0.05]'}`}
                         style={{ touchAction: 'none' }}
                         onPointerDown={handlePointerDown('bottom')}
                     >
-                        <div className="w-8 h-1 rounded-full bg-white/20" />
+                        <div className="w-6 h-[3px] bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-x-150 transition-all duration-200" />
                     </div>
                 )}
             </div>

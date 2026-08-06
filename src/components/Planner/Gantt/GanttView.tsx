@@ -249,7 +249,7 @@ const GanttView: React.FC = () => {
             </div>
 
             {/* Floating Zoom Controls */}
-            <div className="hidden md:flex absolute bottom-6 right-6 z-40 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl items-center gap-4">
+            <div className="hidden lg:flex absolute bottom-6 right-6 z-40 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl items-center gap-4">
                 <button type="button" 
                     onClick={() => {
                         flushSync(() => {
@@ -292,15 +292,46 @@ const GanttView: React.FC = () => {
 };
 
 const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, updateTask: any, subject: any }> = ({ task, zoomLevel, timelineStart, updateTask, subject }) => {
-    const [dragState, setDragState] = useState<{ type: 'left'|'right'|'move', initialX: number, initialLeft: number, initialWidth: number } | null>(null);
+    const [dragState, setDragState] = useState<{ 
+        type: 'left'|'right'|'move', 
+        initialX: number, 
+        initialLeft: number, 
+        initialWidth: number,
+        isTouch?: boolean,
+        touchStartY?: number,
+        hasMoved?: boolean
+    } | null>(null);
     const [optimistic, setOptimistic] = useState<{left: number, width: number} | null>(null);
+    const lastTapRef = useRef<number>(0);
+    const wasDraggedRef = useRef<boolean>(false);
 
     useEffect(() => {
         if (!dragState) return;
         
-        const handleMouseMove = (e: MouseEvent) => {
-            const dx = e.clientX - dragState.initialX;
+        const handleMove = (clientX: number, clientY: number) => {
+            const dx = clientX - dragState.initialX;
             
+            // Check if touch moved significantly (distinguish tap, horizontal drag, vertical scroll)
+            if (dragState.isTouch && !dragState.hasMoved) {
+                const dy = clientY - (dragState.touchStartY || 0);
+                if (Math.abs(dx) > 5) {
+                    // Horizontal swipe: lock as task drag
+                    setDragState(prev => prev ? { ...prev, hasMoved: true } : null);
+                    wasDraggedRef.current = true;
+                } else if (Math.abs(dy) > 5) {
+                    // Vertical swipe: cancel task drag, allow native scrolling
+                    setDragState(null);
+                    return;
+                } else {
+                    return; // Wait for threshold
+                }
+            }
+
+            // Detect desktop drag
+            if (!dragState.isTouch && Math.abs(dx) > 3) {
+                wasDraggedRef.current = true;
+            }
+
             // Snap a 5 minuts
             const snapPixels = 5 * zoomLevel;
             const snappedDx = Math.round(dx / snapPixels) * snapPixels;
@@ -316,7 +347,7 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
             }
         };
 
-        const handleMouseUp = () => {
+        const handleMouseUp = (e: MouseEvent | TouchEvent) => {
             if (optimistic) {
                 const newLeftMins = Math.round(optimistic.left / zoomLevel);
                 const newDurationMins = Math.round(optimistic.width / zoomLevel);
@@ -334,13 +365,30 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
                 setOptimistic(null);
             }
             setDragState(null);
+
+            // Allow click handler to see drag state, then reset
+            setTimeout(() => {
+                wasDraggedRef.current = false;
+            }, 50);
+        };
+
+        const handleMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY);
+        const handleTouchMove = (e: TouchEvent) => {
+            if (dragState.hasMoved || dragState.type !== 'move') {
+                e.preventDefault(); // Prevent scrolling while dragging task
+            }
+            handleMove(e.touches[0].clientX, e.touches[0].clientY);
         };
 
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
+        window.addEventListener('touchmove', handleTouchMove, { passive: false });
+        window.addEventListener('touchend', handleMouseUp);
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
+            window.removeEventListener('touchmove', handleTouchMove);
+            window.removeEventListener('touchend', handleMouseUp);
         };
     }, [dragState, optimistic, zoomLevel, timelineStart, task.id, updateTask]);
 
@@ -362,10 +410,20 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
                     setDragState({ type: 'move', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth });
                 }
             }}
-            onDoubleClick={(e) => {
-                e.preventDefault();
+            onTouchStart={(e) => {
                 e.stopPropagation();
-                window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+                setDragState({ type: 'move', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false });
+            }}
+            onClick={(e) => {
+                if (wasDraggedRef.current) return;
+                
+                const now = Date.now();
+                if (now - lastTapRef.current < 300) {
+                    window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+                    lastTapRef.current = 0;
+                } else {
+                    lastTapRef.current = now;
+                }
             }}
             className={`absolute h-8 rounded-md flex items-center px-2 group overflow-hidden transition duration-200 ${baseColorClass} border border-white/20 shadow-lg ${dragState ? 'z-40 brightness-110' : 'hover:brightness-110 hover:z-30 cursor-pointer'}`}
             style={{
@@ -382,21 +440,27 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
             {/* Left handle */}
             {displayWidth >= 12 && (
                 <div 
-                    className="absolute left-0 top-0 bottom-0 w-3 cursor-col-resize hover:bg-white/30 z-20"
+                    className="absolute left-0 top-0 bottom-0 w-3 max-md:w-6 cursor-col-resize hover:bg-white/20 z-20 flex items-center justify-start pl-[2px] md:pl-[3px] group/handle"
                     onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'left', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth }); }}
-                />
+                    onTouchStart={(e) => { e.stopPropagation(); setDragState({ type: 'left', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false }); }}
+                >
+                    <div className="w-[3px] h-3 bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-y-150 transition-all duration-200" />
+                </div>
             )}
             
             {displayWidth > 50 && (
-                <div className="truncate text-[11px] font-bold text-white drop-shadow-md z-10 px-2 pointer-events-none select-none tracking-wide">{task.title}</div>
+                <div className="truncate text-[11px] font-bold text-white drop-shadow-md z-10 px-2 max-md:px-4 pointer-events-none select-none tracking-wide">{task.title}</div>
             )}
             
             {/* Right handle */}
             {displayWidth >= 12 && (
                 <div 
-                    className="absolute right-0 top-0 bottom-0 w-3 cursor-col-resize hover:bg-white/30 z-20"
+                    className="absolute right-0 top-0 bottom-0 w-3 max-md:w-6 cursor-col-resize hover:bg-white/20 z-20 flex items-center justify-end pr-[2px] md:pr-[3px] group/handle"
                     onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'right', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth }); }}
-                />
+                    onTouchStart={(e) => { e.stopPropagation(); setDragState({ type: 'right', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false }); }}
+                >
+                    <div className="w-[3px] h-3 bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-y-150 transition-all duration-200" />
+                </div>
             )}
         </div>
     );
