@@ -17,6 +17,14 @@ interface SubjectContextMenuProps {
 const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose, nodeId, nodeData, position, onOpenDetails }) => {
     const { t } = useTranslation();
     const { updateNodeStatus, updateNodeGrade, removeNode } = useRoadmap();
+    const [localGrade, setLocalGrade] = React.useState('');
+
+    // Sync local grade state when nodeData changes (e.g., preset buttons or different node)
+    React.useEffect(() => {
+        if (nodeData?.grade !== parseFloat(localGrade.replace(',', '.'))) {
+            setLocalGrade(nodeData?.grade != null ? nodeData.grade.toString() : '');
+        }
+    }, [nodeData?.grade]);
 
     if (!isOpen || !nodeId || !nodeData || !position) return null;
 
@@ -180,12 +188,23 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                                 type="number"
                                                 min="5" max="10" step="0.1"
                                                 placeholder={t('planner.roadmapSubjectContextMenu.exactGradePlaceholder', 'Nota exacta (ex: 8.4)')}
-                                                value={nodeData.grade || ''}
+                                                value={localGrade}
                                                 onChange={(e) => {
-                                                    const val = parseFloat(e.target.value);
-                                                    if (!isNaN(val) && val >= 5 && val <= 10) {
-                                                        updateNodeGrade(nodeId, val);
-                                                    } else if (e.target.value === '') {
+                                                    const text = e.target.value;
+                                                    
+                                                    // Restrict to max 2 decimal places
+                                                    if (text.includes('.') && text.split('.')[1].length > 2) return;
+                                                    if (text.includes(',') && text.split(',')[1].length > 2) return;
+                                                    
+                                                    const parsedVal = parseFloat(text.replace(',', '.'));
+                                                    // Prevent typing numbers larger than 10 or negative
+                                                    if (!isNaN(parsedVal) && (parsedVal > 10 || parsedVal < 0)) return;
+                                                    
+                                                    setLocalGrade(text);
+                                                    
+                                                    if (!isNaN(parsedVal) && parsedVal >= 5 && parsedVal <= 10) {
+                                                        updateNodeGrade(nodeId, parsedVal);
+                                                    } else if (text === '') {
                                                         updateNodeGrade(nodeId, null);
                                                     }
                                                 }}

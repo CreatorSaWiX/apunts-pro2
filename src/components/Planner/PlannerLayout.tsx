@@ -99,9 +99,9 @@ const PlannerLayout: React.FC = () => {
                 setTimeout(() => window.scrollTo({ top: 1, behavior: 'auto' }), 400);
                 try {
                     if (document.documentElement.requestFullscreen) {
-                        document.documentElement.requestFullscreen().catch(() => {});
+                        document.documentElement.requestFullscreen().catch(() => { });
                     }
-                } catch(e) {}
+                } catch (e) { }
             }
         };
         window.addEventListener('orientationchange', attemptFullscreen);

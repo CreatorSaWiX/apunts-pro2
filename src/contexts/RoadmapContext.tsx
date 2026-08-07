@@ -292,7 +292,14 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             nodesChanged = false;
             safetyCounter++;
 
-            const maxPassedSemester = newNodes.reduce((max, n) => n.data.status === 'passed' ? Math.max(max, n.data.semester || getSemesterForSubject(n.id)) : max, 0);
+            const maxPassedSemester = newNodes.reduce((max, n) => {
+                const isPassed = n.data.status === 'passed';
+                const isRegularSubject = !['optional', 'specialization', 'tfg', 'tfm', 'mobility', 'internship'].includes(n.data.type);
+                if (isPassed && isRegularSubject) {
+                    return Math.max(max, n.data.semester || getSemesterForSubject(n.id));
+                }
+                return max;
+            }, 0);
             const allowedSemester = Math.max(1, maxPassedSemester + 1);
             const passedCredits = newNodes.reduce((sum, n) => n.data.status === 'passed' ? sum + n.data.credits : sum, 0);
 

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, ExternalLink, Users, Clock, Target, CheckSquare, Layers, Activity, Book, Key } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
-import DOMPurify from 'dompurify';
+
 import { HtmlRenderer } from '../../ui/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
 
@@ -64,12 +65,10 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isOpen, onClose]);
 
-    if (!isOpen) return null;
-
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
                     {/* Deep Blur Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -426,7 +425,8 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                     </motion.div>
                 </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
 

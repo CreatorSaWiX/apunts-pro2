@@ -2,16 +2,19 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
 import { useRoadmap, RoadmapProvider, TargetGradeProvider } from '../../../contexts/RoadmapContext';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
+
 import SubjectNode from './SubjectNode';
 import SubjectContextMenu from './SubjectContextMenu';
 import SubjectSearchModal from './SubjectSearchModal';
 import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import Spinner from '../../ui/Spinner';
+
 import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, Redo2, X, Type, StickyNote, MoreHorizontal, CalendarDays, Target } from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { m as motion, AnimatePresence, useIsPresent } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+
 import { SpecializationModal } from './SpecializationModal';
 import ExperienceSelectorModal from './ExperienceSelectorModal';
 import ValidationsModal from './ValidationsModal';
@@ -245,88 +248,60 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                     {averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}
                                 </span>
                             </div>
-                            <div className="flex flex-col pr-6">
+                            <div className="flex flex-col pr-4">
                                 <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">{t('roadmapView.averageGrade', 'Mitjana Ponderada')}</span>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-xl font-black text-white tracking-tight">{averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}</span>
-                                    <span className="text-xs font-medium text-slate-500">/10</span>
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-xl font-black text-white tracking-tight">{averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}</span>
+                                        <span className="text-xs font-medium text-slate-500">/10</span>
+                                    </div>
+                                    
+                                    {/* Target Input */}
+                                    <div className="flex items-center bg-white/5 hover:bg-white/10 transition-colors rounded-lg px-2 py-1 border border-white/5 relative group">
+                                        <Target size={12} className={`mr-1.5 transition-colors ${targetGrade !== null ? (requiredAverageGrade !== null && requiredAverageGrade > 10 ? 'text-red-400' : 'text-amber-400') : 'text-slate-500'}`} />
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="10"
+                                            step="0.1"
+                                            value={targetGrade !== null ? targetGrade : ''}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                if (val === '') { setTargetGrade(null); return; }
+                                                const num = parseFloat(val);
+                                                if (!isNaN(num) && num >= 0 && num <= 10) setTargetGrade(num);
+                                            }}
+                                            placeholder="Obj."
+                                            title={t('roadmapView.targetGradeInput', 'Escriu la nota objectiu a la que vols arribar')}
+                                            className="w-8 bg-transparent text-sm font-bold text-slate-300 hover:text-white focus:text-white tracking-tight outline-none placeholder-slate-600 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            onBlur={() => handleSave()}
+                                            onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
+                                        />
+                                        
+                                        {/* Required Indicator (absolute below input) */}
+                                        <AnimatePresence>
+                                            {targetGrade !== null && requiredAverageGrade !== null && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: 5 }}
+                                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap z-50 pointer-events-none"
+                                                >
+                                                    <span className={`text-[9px] font-bold px-1.5 py-1 rounded-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] flex items-center gap-1 backdrop-blur-md ${
+                                                        requiredAverageGrade > 10 ? 'text-red-400 bg-red-950/90 border border-red-500/30' :
+                                                        requiredAverageGrade > 8 ? 'text-amber-400 bg-amber-950/90 border border-amber-500/30' :
+                                                        requiredAverageGrade <= 5 ? 'text-emerald-400 bg-emerald-950/90 border border-emerald-500/30' :
+                                                        'text-sky-400 bg-sky-950/90 border border-sky-500/30'
+                                                    }`}>
+                                                        {requiredAverageGrade > 10 ? '⚠ Impossible' :
+                                                         requiredAverageGrade <= 5 ? '✓ Garantit' :
+                                                         `Cal: ${requiredAverageGrade.toFixed(2)}`}
+                                                    </span>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* Target Grade Widget */}
-                        <div className="flex items-center gap-4 px-2 py-1">
-                            <div className={`relative w-[50px] h-[50px] flex items-center justify-center rounded-full border transition-all duration-500 ${
-                                targetGrade !== null
-                                    ? requiredAverageGrade !== null && requiredAverageGrade > 10
-                                        ? 'bg-gradient-to-br from-red-500/20 to-rose-500/20 border-red-500/30 shadow-[inset_0_0_20px_rgba(239,68,68,0.3),0_0_15px_rgba(239,68,68,0.2)]'
-                                        : 'bg-gradient-to-br from-amber-500/20 to-orange-500/20 border-amber-500/30 shadow-[inset_0_0_20px_rgba(245,158,11,0.3),0_0_15px_rgba(245,158,11,0.2)]'
-                                    : 'bg-gradient-to-br from-slate-500/10 to-slate-600/10 border-slate-700/30'
-                            }`}>
-                                <Target size={20} className={`${
-                                    targetGrade !== null
-                                        ? requiredAverageGrade !== null && requiredAverageGrade > 10
-                                            ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]'
-                                            : 'text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]'
-                                        : 'text-slate-500'
-                                }`} />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">{t('roadmapView.targetGrade', 'Nota Objectiu')}</span>
-                                <div className="flex items-baseline gap-2">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="10"
-                                        step="0.1"
-                                        value={targetGrade !== null ? targetGrade : ''}
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            if (val === '') { setTargetGrade(null); return; }
-                                            const num = parseFloat(val);
-                                            if (!isNaN(num) && num >= 0 && num <= 10) setTargetGrade(num);
-                                        }}
-                                        placeholder="-.--"
-                                        className="w-[60px] bg-transparent text-xl font-black text-white tracking-tight border-none outline-none placeholder-slate-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:ring-0"
-                                        onBlur={() => {
-                                            handleSave();
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter') {
-                                                e.currentTarget.blur();
-                                            }
-                                        }}
-                                    />
-                                    <span className="text-xs font-medium text-slate-500">/10</span>
-                                </div>
-                                {/* Required grade indicator */}
-                                <AnimatePresence>
-                                    {targetGrade !== null && requiredAverageGrade !== null && (
-                                        <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            className="overflow-hidden"
-                                        >
-                                            <span className={`text-[10px] font-bold mt-1 block ${
-                                                requiredAverageGrade > 10
-                                                    ? 'text-red-400'
-                                                    : requiredAverageGrade > 8
-                                                        ? 'text-amber-400'
-                                                        : requiredAverageGrade <= 5
-                                                            ? 'text-emerald-400'
-                                                            : 'text-sky-400'
-                                            }`}>
-                                                {requiredAverageGrade > 10
-                                                    ? `⚠ ${t('roadmapView.targetImpossible', 'Impossible')}`
-                                                    : requiredAverageGrade <= 5
-                                                        ? `✓ ${t('roadmapView.targetGuaranteed', 'Garantit')}`
-                                                        : `🎯 ${t('roadmapView.requiredGrade', 'Cal')}: ${requiredAverageGrade.toFixed(2)}`
-                                                }
-                                            </span>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
                             </div>
                         </div>
 
@@ -403,7 +378,6 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     </AnimatePresence>
                 </motion.div>
 
-                {/* Floating Dock Action Buttons Bottom Center */}
                 {/* Floating Dock Action Buttons Bottom Center */}
                 <LiquidToolbar delay={0.3}>
                     {isDrawMode ? [
