@@ -213,7 +213,7 @@ const CalendarView: React.FC = () => {
             >
                 <div className="flex flex-1 md:gap-4 relative z-10">
                     {/* Floating View Toggle (iPad Dock style) - Hidden on mobile */}
-                    <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-50">
+                    <div className="hidden md:block touch-landscape:hidden absolute bottom-8 left-1/2 -translate-x-1/2 z-50">
                         <div className="bg-[#0f111a]/60 backdrop-blur-3xl p-1.5 rounded-full border border-white/[0.08] flex shadow-[0_30px_60px_-10px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.1)]">
                             {(['week', 'month', 'year'] as CalendarMode[]).map((m) => (
                                 <button type="button"

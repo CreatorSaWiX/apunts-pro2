@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-    DndContext, 
-    DragOverlay, 
-    closestCorners, 
+import {
+    DndContext,
+    DragOverlay,
+    closestCorners,
     KeyboardSensor,
     PointerSensor,
-    useSensor, 
+    useSensor,
     useSensors,
-    type DragStartEvent, 
+    type DragStartEvent,
     type DragOverEvent
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
@@ -39,9 +39,9 @@ const BoardView: React.FC = () => {
     }, [tasks]);
 
     const [activeTask, setActiveTask] = useState<Task | null>(null);
-    const [activeColumn, setActiveColumn] = useState<{id: string, title: string, color?: string} | null>(null);
+    const [activeColumn, setActiveColumn] = useState<{ id: string, title: string, color?: string } | null>(null);
 
-    const [columns, setColumns] = useState<{id: string, title: string, color?: string}[]>(() => {
+    const [columns, setColumns] = useState<{ id: string, title: string, color?: string }[]>(() => {
         const saved = localStorage.getItem('planner_columns');
         if (saved) {
             try { return JSON.parse(saved); } catch (e) { return defaultColumns; }
@@ -104,7 +104,7 @@ const BoardView: React.FC = () => {
 
     const onDragStart = (event: DragStartEvent) => {
         const { active } = event;
-        
+
         if (active.data.current?.type === 'Column') {
             setActiveColumn(active.data.current.column);
             return;
@@ -118,7 +118,7 @@ const BoardView: React.FC = () => {
 
     const onDragOver = (event: DragOverEvent) => {
         const { active, over } = event;
-        
+
         if (active.data.current?.type === 'Column') return;
 
         if (!over) return;
@@ -134,7 +134,7 @@ const BoardView: React.FC = () => {
         setLocalTasks(prev => {
             const activeIndex = prev.findIndex(t => t.id === activeId);
             if (activeIndex === -1) return prev;
-            
+
             const activeTask = prev[activeIndex];
             let newStatus = activeTask.status;
 
@@ -148,14 +148,14 @@ const BoardView: React.FC = () => {
             if (activeTask.status !== newStatus) {
                 const newTasks = [...prev];
                 newTasks[activeIndex] = { ...activeTask, status: newStatus as TaskStatus };
-                
+
                 if (isOverTask) {
                     const overIndex = newTasks.findIndex(t => t.id === overId);
                     return arrayMove(newTasks, activeIndex, overIndex);
                 }
                 return newTasks;
             }
-            
+
             // Reorder within the same column during drag
             if (isOverTask && activeTask.status === newStatus) {
                 const overIndex = prev.findIndex(t => t.id === overId);
@@ -170,7 +170,7 @@ const BoardView: React.FC = () => {
 
     const onDragEnd = (event: any) => {
         const { active, over } = event;
-        
+
         if (active.data.current?.type === 'Column') {
             setActiveColumn(null);
             if (!over) return;
@@ -192,12 +192,12 @@ const BoardView: React.FC = () => {
                 updateTask(activeTask.id, { status: finalTask.status });
             }
         }
-        
+
         setActiveTask(null);
     };
 
     return (
-        <div className="h-full flex overflow-x-auto overflow-y-hidden gap-8 px-4 md:px-8 pt-4 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10 w-full max-md:snap-x max-md:snap-mandatory max-md:scroll-px-4">
+        <div className="h-full flex overflow-x-auto overflow-y-hidden gap-8 px-4 md:px-8 pt-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10 w-full max-md:snap-x max-md:snap-mandatory max-md:scroll-px-4">
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCorners}
@@ -207,11 +207,11 @@ const BoardView: React.FC = () => {
             >
                 <SortableContext items={columns.map(c => c.id)} strategy={horizontalListSortingStrategy}>
                     {columns.map(col => (
-                        <BoardColumn 
-                            key={col.id} 
+                        <BoardColumn
+                            key={col.id}
                             column={col}
                             allColumns={columns}
-                            tasks={tasksByStatus[col.id] || []} 
+                            tasks={tasksByStatus[col.id] || []}
                             onAddTask={(taskData: Partial<Task> = {}) => {
                                 addTask({
                                     title: taskData.title || '',
@@ -231,7 +231,7 @@ const BoardView: React.FC = () => {
                 {/* Add Column UI */}
                 <div className="flex-shrink-0 w-[85vw] max-md:snap-center md:w-[350px] h-full">
                     {!isAddingColumn ? (
-                        <button type="button" 
+                        <button type="button"
                             onClick={() => setIsAddingColumn(true)}
                             className="group flex flex-col items-center justify-center gap-3 text-slate-500 bg-white/[0.01] hover:bg-white/[0.03] border border-dashed border-white/10 hover:border-white/20 rounded-[32px] w-full h-[100px] transition-all duration-300 backdrop-blur-md"
                         >
@@ -244,9 +244,9 @@ const BoardView: React.FC = () => {
                         <div className="bg-[#13131A]/40 backdrop-blur-xl rounded-2xl p-3 border border-white/10 w-[350px] shadow-2xl flex flex-col gap-2">
                             <div className="flex items-center justify-between px-1">
                                 <span className="text-xs font-semibold tracking-widest text-white/50 uppercase">{t('planner.boardView.addList', 'Afegeix llista')}</span>
-                                <button type="button" onClick={() => setIsAddingColumn(false)} className="text-slate-500 hover:text-white transition-colors p-1"><X size={16} strokeWidth={2.5}/></button>
+                                <button type="button" onClick={() => setIsAddingColumn(false)} className="text-slate-500 hover:text-white transition-colors p-1"><X size={16} strokeWidth={2.5} /></button>
                             </div>
-                            
+
                             <div className="flex gap-3 items-center justify-center py-2 bg-white/[0.02] rounded-xl border border-white/[0.02]">
                                 {PRESET_COLORS.map(color => (
                                     <button type="button"

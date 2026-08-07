@@ -374,7 +374,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                         const tempHtml = `> ${processedHtml} <`;
                                                         processedHtml = tempHtml.replace(/>([^<]+)</g, (_, text) => {
                                                             return '>' + text.replace(/\b([A-Z]{1,3}[0-9]+(?:\.[0-9]+)?)\b/g,
-                                                                '<span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[11px] font-black bg-sky-500/10 text-sky-400 border border-sky-500/30 shadow-[0_0_8px_rgba(14,165,233,0.2)] ml-1 mr-0.5">$1</span>'
+                                                                '<span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[11px] font-black bg-sky-500/10 text-sky-400 border border-sky-500/30 shadow-[0_0_8px_#0ea5e933] ml-1 mr-0.5">$1</span>'
                                                             ) + '<';
                                                         }).slice(2, -2);
 

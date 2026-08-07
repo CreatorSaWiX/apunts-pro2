@@ -249,7 +249,7 @@ const GanttView: React.FC = () => {
             </div>
 
             {/* Floating Zoom Controls */}
-            <div className="hidden lg:flex absolute bottom-6 right-6 z-40 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl items-center gap-4">
+            <div className="hidden lg:flex touch-landscape:hidden absolute bottom-6 right-6 z-40 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl items-center gap-4">
                 <button type="button" 
                     onClick={() => {
                         flushSync(() => {

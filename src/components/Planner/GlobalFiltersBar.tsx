@@ -47,7 +47,7 @@ const GlobalFiltersBar: React.FC = () => {
     return (
         <>
         {/* Mobile Filter Button (Top Left) */}
-        <div className="md:hidden touch-landscape:block fixed top-5 left-4 z-50">
+        <div className="md:hidden touch-landscape:hidden fixed top-5 left-4 z-50">
             <NavigationPill>
                 <button type="button"
                     onClick={() => {
