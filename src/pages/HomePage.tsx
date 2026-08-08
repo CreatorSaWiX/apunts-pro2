@@ -66,7 +66,7 @@ const HomePage = () => {
     const displaySubjects = homeSubjects.length > 0 ? homeSubjects : ['PRO2', 'M1', 'M2'];
 
     return (
-        <div className="h-[100dvh] w-full flex flex-col overflow-hidden leading-tight">
+        <div className="h-dvh w-full flex flex-col overflow-hidden leading-tight">
             {/* Mobile Action Menu (Lazy loaded) */}
             {isMobile && (
                 <Suspense fallback={null}>

@@ -229,7 +229,7 @@ const BoardView: React.FC = () => {
                 </SortableContext>
 
                 {/* Add Column UI */}
-                <div className="flex-shrink-0 w-[85vw] max-md:snap-center md:w-[350px] h-full">
+                <div className="flex-shrink-0 w-[85vw] max-md:snap-center md:w-87.5 h-full">
                     {!isAddingColumn ? (
                         <button type="button"
                             onClick={() => setIsAddingColumn(true)}
@@ -276,7 +276,7 @@ const BoardView: React.FC = () => {
                     <DragOverlay dropAnimation={null}>
                         {activeTask ? <TaskCard task={activeTask} isOverlay={true} /> : null}
                         {activeColumn ? (
-                            <div className="w-[85vw] md:w-[350px] h-full bg-[#111115]/50 backdrop-blur border border-white/10 rounded-2xl ring-2 ring-primary/30 flex items-start justify-center pt-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                            <div className="w-[85vw] md:w-87.5 h-full bg-[#111115]/50 backdrop-blur border border-white/10 rounded-2xl ring-2 ring-primary/30 flex items-start justify-center pt-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                                 <span className="font-bold text-sm tracking-widest uppercase text-white/50">{activeColumn.title}</span>
                             </div>
                         ) : null}

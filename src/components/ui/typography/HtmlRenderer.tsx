@@ -1,7 +1,7 @@
 import React from 'react';
 import parse, { type DOMNode, Element, domToReact } from 'html-react-parser';
 import DOMPurify from 'dompurify';
-import { PublishedCodeBlock } from './extensions/PublishedCodeBlock';
+import { PublishedCodeBlock } from '../extensions/PublishedCodeBlock';
 
 interface HtmlRendererProps {
     content: string;

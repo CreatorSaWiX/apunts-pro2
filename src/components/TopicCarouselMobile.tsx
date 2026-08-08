@@ -69,7 +69,7 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
         <div className="w-full flex justify-center mt-4 mb-2 px-6 z-40 touch-none pointer-events-auto">
             <div 
                 ref={trackRef}
-                className="relative w-full max-w-[280px] h-10 flex items-center cursor-grab active:cursor-grabbing group"
+                className="relative w-full max-w-70 h-10 flex items-center cursor-grab active:cursor-grabbing group"
                 onPointerDown={handlePointerDown}
                 onPointerMove={isDragging ? handlePointerMove : undefined}
                 onPointerUp={handlePointerUp}
@@ -154,7 +154,7 @@ const CarouselCard = React.memo(({
         <div style={{ width: `${itemWidth}px` }} className="shrink-0 snap-center flex items-center justify-center h-full px-2 py-4">
             <motion.div 
                 style={{ scale, opacity, WebkitFontSmoothing: "antialiased" }} 
-                className="w-full h-full max-h-[500px] min-h-[420px] relative rounded-[32px] transform-gpu will-change-transform flex flex-col"
+                className="w-full h-full max-h-125 min-h-[420px] relative rounded-[32px] transform-gpu will-change-transform flex flex-col"
                 onClick={(e) => {
                     if (!isActive) {
                         e.preventDefault();

@@ -6,7 +6,7 @@ import { useIsMobile } from '../../../hooks/useIsMobile';
 import { Mafs, Coordinates, Plot, Theme, LaTeX as MafsLaTeX, Circle, Polygon, MovablePoint, Line as MafsLine, Vector } from "mafs";
 import { InlineMath } from 'react-katex';
 import "mafs/core.css";
-import { InteractionLock } from "../InteractionLock";
+import { InteractionLock } from "../system/InteractionLock";
 import { useInteraction } from '../../../contexts/InteractionContext';
 
 interface ThreeVisualizerProps {
@@ -25,7 +25,7 @@ const VisSubespai3D = () => {
     const sum = new THREE.Vector3().addVectors(u, v);
 
     return (
-        <div className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-950 ${isFullScreen ? 'h-screen' : 'h-[500px] rounded-2xl border border-white/10 my-8'}`}>
+        <div className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-950 ${isFullScreen ? 'h-screen' : 'h-125 rounded-2xl border border-white/10 my-8'}`}>
             <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
                 <span className="bg-indigo-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg">Subespai a ℝ³</span>
                 <div className="bg-black/40 backdrop-blur-md p-2 rounded border border-white/10 text-[10px] text-slate-300 font-mono">

@@ -116,7 +116,7 @@ export default function ListVisualizer() {
                         <button type="button" onClick={movePrev} disabled={iteratorPos <= -1} className="flex-1 h-10 hover:bg-slate-800 disabled:opacity-20 rounded-lg flex items-center justify-center transition-all">
                             <ArrowLeft size={18} />
                         </button>
-                        <div className="flex-[2] flex items-center justify-center text-[10px] uppercase tracking-widest text-slate-500 font-bold">
+                        <div className="flex-2 flex items-center justify-center text-[10px] uppercase tracking-widest text-slate-500 font-bold">
                             Iterador
                         </div>
                         <button type="button" onClick={moveNext} disabled={iteratorPos >= nodes.length} className="flex-1 h-10 hover:bg-slate-800 disabled:opacity-20 rounded-lg flex items-center justify-center transition-all">
@@ -196,10 +196,10 @@ function PointerLine() {
     return (
         <div className="w-8 flex flex-col items-center justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity">
             <div className="h-px w-full bg-slate-400 relative">
-                <div className="absolute -right-1 -top-[3px] border-y-[4px] border-y-transparent border-l-[6px] border-l-slate-400" />
+                <div className="absolute -right-1 -top-0.75 border-y-4 border-y-transparent border-l-[6px] border-l-slate-400" />
             </div>
             <div className="h-px w-full bg-slate-400 relative">
-                <div className="absolute -left-1 -top-[3px] border-y-[4px] border-y-transparent border-r-[6px] border-r-slate-400" />
+                <div className="absolute -left-1 -top-0.75 border-y-4 border-y-transparent border-r-[6px] border-r-slate-400" />
             </div>
         </div>
     );

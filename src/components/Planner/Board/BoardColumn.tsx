@@ -137,7 +137,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
         <div
             ref={setNodeRef}
             style={style}
-            className={`relative flex flex-col flex-shrink-0 w-[85vw] max-md:snap-center md:w-[350px] h-full max-h-full transition-colors duration-300 ease-out group/col rounded-2xl ${isOver ? 'bg-white/[0.02] ring-1 ring-primary/30' : 'bg-transparent'}`}
+            className={`relative flex flex-col flex-shrink-0 w-[85vw] max-md:snap-center md:w-87.5 h-full max-h-full transition-colors duration-300 ease-out group/col rounded-2xl ${isOver ? 'bg-white/[0.02] ring-1 ring-primary/30' : 'bg-transparent'}`}
             onDoubleClick={handleDoubleClick}
         >
             {/* Minimalist Header */}

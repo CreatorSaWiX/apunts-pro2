@@ -243,7 +243,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
                         {/* Nota Mitjana Widget */}
                         <div className="flex items-center gap-4 px-2 py-1">
-                            <div className="relative w-[50px] h-[50px] flex items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-500/20 to-purple-500/20 border border-fuchsia-500/30 shadow-[inset_0_0_20px_rgba(217,70,239,0.3),0_0_15px_rgba(217,70,239,0.2)]">
+                            <div className="relative w-[50px] h-[50px] flex items-center justify-center rounded-full bg-linear-to-br from-fuchsia-500/20 to-purple-500/20 border border-fuchsia-500/30 shadow-[inset_0_0_20px_rgba(217,70,239,0.3),0_0_15px_rgba(217,70,239,0.2)]">
                                 <span className="text-[15px] font-black text-white drop-shadow-[0_0_8px_rgba(217,70,239,0.8)] tracking-tight">
                                     {averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}
                                 </span>

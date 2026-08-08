@@ -2,7 +2,7 @@ import React from 'react';
 import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon, MovablePoint, Line, Circle, Vector } from 'mafs';
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
-import { InteractionLock } from "../InteractionLock";
+import { InteractionLock } from "../system/InteractionLock";
 
 type MafsVisualizerProps = {
     type: string;
@@ -10,7 +10,7 @@ type MafsVisualizerProps = {
 
 
 const VisVectorAdditionIntro = () => (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-100">
         <Mafs viewBox={{ x: [-4, 4], y: [-3, 3] }} pan={true} zoom={true}>
             <Coordinates.Cartesian />
             <Vector tail={[0, 0]} tip={[2, 1]} color={Theme.blue} />

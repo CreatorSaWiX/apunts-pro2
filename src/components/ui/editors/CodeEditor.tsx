@@ -1,5 +1,5 @@
 import { lazy, Suspense, forwardRef } from 'react';
-import Spinner from './Spinner';
+import Spinner from '../Spinner';
 
 const CodeEditorImpl = lazy(() => import('./CodeEditorImpl'));
 

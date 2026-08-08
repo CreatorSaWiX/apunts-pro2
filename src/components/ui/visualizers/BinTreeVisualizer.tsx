@@ -130,11 +130,11 @@ export default function BinTreeVisualizer() {
 
     return (
         <>
-            {isFullscreen && <div className="h-[400px] w-full my-16 hidden md:block opacity-0" />}
+            {isFullscreen && <div className="h-100 w-full my-16 hidden md:block opacity-0" />}
 
             <div className={`not-prose font-mono select-none overflow-hidden transition-all duration-300 ease-out origin-center flex flex-col md:flex-row items-center md:items-start justify-center gap-8 md:gap-16
                 ${isFullscreen
-                    ? 'fixed inset-0 z-[99999] h-[100dvh] w-full rounded-none m-0 bg-[#0B0F17] p-8 md:p-16'
+                    ? 'fixed inset-0 z-99999 h-dvh w-full rounded-none m-0 bg-[#0B0F17] p-8 md:p-16'
                     : 'relative w-full z-10 opacity-100 my-16'
                 }`}
             >
@@ -148,7 +148,7 @@ export default function BinTreeVisualizer() {
                 </button>
 
                 {/* Controls (Constructors i Mètodes) */}
-                <div className="flex flex-col gap-6 w-full max-w-[280px] shrink-0">
+                <div className="flex flex-col gap-6 w-full max-w-70 shrink-0">
 
                     {/* Constructors */}
                     <div>
@@ -192,7 +192,7 @@ export default function BinTreeVisualizer() {
 
                 {/* Visualitzador del Graf i Missatges Terminal */}
                 <div className="flex-1 flex flex-col w-full mt-4 md:mt-0">
-                    <div className="min-h-[320px] relative w-full pointer-events-auto flex items-center justify-center">
+                    <div className="min-h-80 relative w-full pointer-events-auto flex items-center justify-center">
                         <GraphVisualizer initialData={graphData} updateTrigger={updateKey} height={320} transparentBg={true} autoCenter={true} />
                     </div>
 

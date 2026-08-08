@@ -3,8 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, ArrowRight, Mail, CheckCircle2, ChevronLeft } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { AuthCanvasBackground } from '../components/ui/AuthCanvasBackground';
-import { PremiumInput } from '../components/ui/PremiumInput';
+import { AuthCanvasBackground } from '../components/ui/system/AuthCanvasBackground';
+import { PremiumInput } from '../components/ui/inputs/PremiumInput';
 import Spinner from '../components/ui/Spinner';
 import { useTranslation } from 'react-i18next';
 
@@ -289,7 +289,7 @@ const LoginPage = () => {
                                         <CheckCircle2 size={40} className="text-emerald-400" />
                                     </motion.div>
                                     <h2 className="text-2xl font-bold text-white mb-3">{t('auth.login.emailSent', 'Correu Enviat!')}</h2>
-                                    <p className="text-slate-400 text-sm font-light mb-8 max-w-[280px]">
+                                    <p className="text-slate-400 text-sm font-light mb-8 max-w-70">
                                         {t('auth.login.emailSentDesc1', "T'hem enviat un correu a ")}<span className="text-white font-medium">{email}</span>{t('auth.login.emailSentDesc2', ' amb instruccions per restablir la teva contrasenya.')}
                                     </p>
                                     <button type="button" 

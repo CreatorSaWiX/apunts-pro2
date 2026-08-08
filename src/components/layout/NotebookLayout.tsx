@@ -354,7 +354,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                     </div>
                                 </>
                             ) : (
-                                <div className="flex items-center justify-center h-full text-slate-500 min-h-[400px]">
+                                <div className="flex items-center justify-center h-full text-slate-500 min-h-100">
                                     <p>{t('notebook.selectToStart', 'Selecciona un exercici per començar')}</p>
                                 </div>
                             )}

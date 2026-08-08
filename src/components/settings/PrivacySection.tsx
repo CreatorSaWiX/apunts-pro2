@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import PrivacyModal from '../ui/PrivacyModal';
+import PrivacyModal from '../ui/modals/PrivacyModal';
 import { useTranslation } from 'react-i18next';
 
 export const PrivacySection = () => {

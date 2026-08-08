@@ -2,7 +2,7 @@ import React from 'react';
 import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon, MovablePoint, Line, Circle, Vector } from 'mafs';
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
-import { InteractionLock } from "../InteractionLock";
+import { InteractionLock } from "../system/InteractionLock";
 
 type MafsVisualizerProps = {
     type: string;
@@ -87,7 +87,7 @@ const VisCanviBaseSandvitx = () => {
                 </div>
             </div>
 
-            <div className="flex-1 relative bg-slate-900/20 min-h-[400px]">
+            <div className="flex-1 relative bg-slate-900/20 min-h-100">
                 <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
                     <Coordinates.Cartesian xAxis={{ lines: 1 }} yAxis={{ lines: 1 }} />
                     

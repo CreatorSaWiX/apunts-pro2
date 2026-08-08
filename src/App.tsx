@@ -2,17 +2,17 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Background from './components/Background';
-// import { PerformanceMonitor } from './components/ui/PerformanceMonitor';
+// import { PerformanceMonitor } from './components/ui/system/PerformanceMonitor';
 // import FeedbackModal from './components/FeedbackModal';
 import HomePage from './pages/HomePage';
-import PageTransition from './components/ui/PageTransition';
+import PageTransition from './components/ui/system/PageTransition';
 import { AnimatePresence, LazyMotion, MotionConfig } from 'framer-motion';
 const loadFeatures = () => import('framer-motion').then(res => res.domMax);
 import { AppProviders } from './contexts/AppProviders';
 import Spinner from './components/ui/Spinner';
 import { Analytics } from "@vercel/analytics/react";
 
-import { UpdateManager } from './components/ui/UpdateManager';
+import { UpdateManager } from './components/ui/system/UpdateManager';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));

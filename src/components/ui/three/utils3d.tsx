@@ -70,7 +70,7 @@ export class ThreeErrorBoundary extends Component<{ children: React.ReactNode },
     render() {
         if (this.state.hasError) {
             return (
-                <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-4 p-8">
+                <div className="w-full h-125 bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-4 p-8">
                     <div className="text-4xl">⚠️</div>
                     <p className="text-amber-400 font-semibold text-center">No s'ha pogut carregar la visualització 3D</p>
                     <p className="text-slate-500 text-sm text-center max-w-sm">

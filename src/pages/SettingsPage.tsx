@@ -66,7 +66,7 @@ const SettingsContent = () => {
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
                 <div className="hidden md:block absolute top-0 right-0 w-[800px] h-[800px] bg-sky-500/10 rounded-full blur-[150px] opacity-70" />
                 <div className="hidden md:block absolute bottom-0 left-0 w-[600px] h-[600px] bg-rose-500/10 rounded-full blur-[150px] opacity-70" />
-                <div className="md:hidden absolute inset-0 bg-gradient-to-br from-sky-900/10 to-rose-900/10" />
+                <div className="md:hidden absolute inset-0 bg-linear-to-br from-sky-900/10 to-rose-900/10" />
                 <div className="noise-bg absolute inset-0 opacity-[0.03]" />
             </div>
 

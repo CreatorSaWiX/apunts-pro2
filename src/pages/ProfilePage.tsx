@@ -9,7 +9,7 @@ import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
 import Spinner from '../components/ui/Spinner';
 
-import FileUploader, { type Attachment } from '../components/ui/FileUploader';
+import FileUploader, { type Attachment } from '../components/ui/inputs/FileUploader';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
 const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
@@ -417,7 +417,7 @@ const ProfilePage = () => {
                                 />
                             </h1>
                             <div className="flex flex-col md:flex-row items-center gap-2.5 md:gap-3 mt-1 w-full justify-center md:justify-start">
-                                <div className="text-[15px] md:text-base text-slate-300 font-medium tracking-wide text-center md:text-left max-w-[280px] md:max-w-none leading-snug">
+                                <div className="text-[15px] md:text-base text-slate-300 font-medium tracking-wide text-center md:text-left max-w-70 md:max-w-none leading-snug">
                                     <InlineEditableText
                                         value={extendedUser?.bio || ''}
                                         placeholder={t('profile.edit.bioPlaceholder', "Creative Developer")}

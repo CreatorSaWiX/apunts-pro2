@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ConfirmModal from '../ui/ConfirmModal';
+import ConfirmModal from '../ui/modals/ConfirmModal';
 import { auth, db } from '../../lib/firebase';
 import { deleteUser } from 'firebase/auth';
 import { doc, deleteDoc } from 'firebase/firestore';

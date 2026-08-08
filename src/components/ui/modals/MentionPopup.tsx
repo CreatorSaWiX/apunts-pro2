@@ -1,5 +1,5 @@
 
-import type { UserMention } from '../../hooks/useMentions';
+import type { UserMention } from '../../../hooks/useMentions';
 
 interface MentionPopupProps {
     users: UserMention[];

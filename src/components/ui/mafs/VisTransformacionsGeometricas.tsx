@@ -2,7 +2,7 @@ import React from 'react';
 import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon, MovablePoint, Line, Circle, Vector } from 'mafs';
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
-import { InteractionLock } from "../InteractionLock";
+import { InteractionLock } from "../system/InteractionLock";
 
 type MafsVisualizerProps = {
     type: string;
@@ -67,7 +67,7 @@ const VisTransformacionsGeometricas = () => {
 
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
                 {/* Visualizer */}
-                <div className="relative bg-slate-900/20 min-h-[400px] border-b md:border-b-0 md:border-r border-white/5">
+                <div className="relative bg-slate-900/20 min-h-100 border-b md:border-b-0 md:border-r border-white/5">
                     <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
                         <Coordinates.Cartesian />
                         {/* Original Shadow */}

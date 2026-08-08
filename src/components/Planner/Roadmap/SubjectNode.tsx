@@ -167,9 +167,9 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             {/* GRADE BADGE */}
             {data.status === 'passed' && typeof data.grade === 'number' && (
                 <div className={`absolute -top-3 -right-3 text-[11px] font-black px-2 py-0.5 rounded-md z-20 flex items-center shadow-lg border transform rotate-6 hover:scale-110 transition-transform cursor-default
-                    ${data.grade >= 9.0 ? 'bg-gradient-to-br from-fuchsia-400 to-fuchsia-600 text-white border-fuchsia-300/50 shadow-[0_0_20px_rgba(217,70,239,0.8)]' :
-                        data.grade >= 7.0 ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white border-emerald-300/50 shadow-[0_0_15px_rgba(16,185,129,0.5)]' :
-                            'bg-gradient-to-br from-sky-400 to-sky-600 text-white border-sky-300/50 shadow-[0_0_10px_rgba(14,165,233,0.5)]'}
+                    ${data.grade >= 9.0 ? 'bg-linear-to-br from-fuchsia-400 to-fuchsia-600 text-white border-fuchsia-300/50 shadow-[0_0_20px_rgba(217,70,239,0.8)]' :
+                        data.grade >= 7.0 ? 'bg-linear-to-br from-emerald-400 to-emerald-600 text-white border-emerald-300/50 shadow-[0_0_15px_rgba(16,185,129,0.5)]' :
+                            'bg-linear-to-br from-sky-400 to-sky-600 text-white border-sky-300/50 shadow-[0_0_10px_rgba(14,165,233,0.5)]'}
                 `}>
                     {data.grade >= 9.0 && <span className="mr-1 drop-shadow-md">⭐</span>}
                     {data.grade.toFixed(1)}
@@ -180,10 +180,10 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             {data.status !== 'passed' && isGradable && requiredAverageGrade !== null && (
                 <div className={`absolute -top-2.5 -left-2.5 text-[9px] font-black px-1.5 py-0.5 rounded-md z-20 flex items-center gap-0.5 shadow-lg border transform -rotate-3 cursor-default transition-all hover:scale-110
                     ${requiredAverageGrade > 10
-                        ? 'bg-gradient-to-br from-red-500/90 to-rose-600/90 text-white border-red-400/50 shadow-[0_0_12px_rgba(239,68,68,0.6)]'
+                        ? 'bg-linear-to-br from-red-500/90 to-rose-600/90 text-white border-red-400/50 shadow-[0_0_12px_rgba(239,68,68,0.6)]'
                         : requiredAverageGrade > 8
-                            ? 'bg-gradient-to-br from-amber-500/90 to-orange-600/90 text-white border-amber-400/50 shadow-[0_0_12px_rgba(245,158,11,0.5)]'
-                            : 'bg-gradient-to-br from-emerald-500/90 to-teal-600/90 text-white border-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.5)]'
+                            ? 'bg-linear-to-br from-amber-500/90 to-orange-600/90 text-white border-amber-400/50 shadow-[0_0_12px_rgba(245,158,11,0.5)]'
+                            : 'bg-linear-to-br from-emerald-500/90 to-teal-600/90 text-white border-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.5)]'
                     }
                 `}>
                     🎯 {requiredAverageGrade > 10 ? '!' : requiredAverageGrade.toFixed(1)}

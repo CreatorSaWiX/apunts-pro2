@@ -51,12 +51,12 @@ export function PlayerShell({
     return (
         <>
             {/* Placeholder to prevent aggressive layout shift when fixed */}
-            {isFullscreen && <div className="h-[500px] lg:h-[550px] w-full my-12 hidden md:block opacity-0" />}
+            {isFullscreen && <div className="h-125 lg:h-[550px] w-full my-12 hidden md:block opacity-0" />}
 
             <div className={`not-prose flex flex-col bg-[#0B0F17] overflow-hidden shadow-2xl font-sans group/player transition-all duration-300 ease-out origin-center
                 ${isFullscreen
-                    ? 'fixed inset-0 z-[99999] h-[100dvh] w-full rounded-none m-0'
-                    : 'relative w-full z-10 rounded-2xl border border-white/10 my-12 h-[500px] lg:h-[550px] max-h-[85vh] xl:max-h-[600px]'
+                    ? 'fixed inset-0 z-99999 h-dvh w-full rounded-none m-0'
+                    : 'relative w-full z-10 rounded-2xl border border-white/10 my-12 h-125 lg:h-[550px] max-h-[85vh] xl:max-h-[600px]'
                 }`}
             >
                 {/* Fullscreen Toggle */}

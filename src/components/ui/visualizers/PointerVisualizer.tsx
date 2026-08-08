@@ -49,7 +49,7 @@ export default function PointerVisualizer() {
             <div className="flex flex-col items-center gap-6 w-full max-w-xs">
                 
                 {/* Línia de Codi actual */}
-                <div className="flex items-center gap-3 text-[11px] min-h-[1.5rem]">
+                <div className="flex items-center gap-3 text-[11px] min-h-6">
                     <span className="text-slate-700 font-black">$</span>
                     <motion.span 
                         key={state}
@@ -135,7 +135,7 @@ function Pointer({ to, active }: { to: 'next' | 'far', active?: boolean }) {
             <motion.div 
                 layout
                 animate={{ color: active ? '#10b981' : '#1e293b' }}
-                className="absolute right-[-6px] flex items-center"
+                className="absolute -right-1.5 flex items-center"
             >
                 <ArrowRight size={14} strokeWidth={2.5} />
             </motion.div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Spinner from './Spinner';
+import Spinner from '../Spinner';
 import { Search, Image as ImageIcon, AlertCircle, X } from 'lucide-react';
 
 // Fallback GIFs in case no API key or error

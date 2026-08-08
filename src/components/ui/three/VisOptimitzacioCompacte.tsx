@@ -6,7 +6,7 @@ import { useIsMobile } from '../../../hooks/useIsMobile';
 import { Mafs, Coordinates, Plot, Theme, LaTeX as MafsLaTeX, Circle, Polygon, MovablePoint, Line as MafsLine, Vector } from "mafs";
 import { InlineMath } from 'react-katex';
 import "mafs/core.css";
-import { InteractionLock } from "../InteractionLock";
+import { InteractionLock } from "../system/InteractionLock";
 import { useInteraction } from '../../../contexts/InteractionContext';
 
 interface ThreeVisualizerProps {
@@ -45,7 +45,7 @@ const VisOptimitzacioCompacte = () => {
                 </div>
             </div>
 
-            <div className={`${isFullScreen ? 'flex-1' : 'h-[500px]'} relative bg-slate-950/50 overflow-hidden border-b border-white/5`}>
+            <div className={`${isFullScreen ? 'flex-1' : 'h-125'} relative bg-slate-950/50 overflow-hidden border-b border-white/5`}>
                 <div className="absolute top-4 left-4 z-10 bg-black/40 px-2 py-1 rounded text-[9px] text-slate-300 font-bold uppercase tracking-widest border border-white/5 italic">Candidats: Interior vs Frontera</div>
                 <Canvas shadows={!isMobile ? { type: THREE.PCFShadowMap } : false} dpr={isMobile ? 1 : [1, 2]}>
                     <PerspectiveCamera makeDefault position={[5, 6, 8]} fov={40} />

@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { ca, es, enUS } from 'date-fns/locale';
-import Modal from '../ui/Modal';
+import Modal from '../ui/modals/Modal';
 import NavigationPill from '../ui/NavigationPill';
 import Spinner from '../ui/Spinner';
 import { useTranslation } from 'react-i18next';
@@ -165,7 +165,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                 
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
                     {isLoading ? (
-                        <div className="flex-1 flex items-center justify-center min-h-[400px]">
+                        <div className="flex-1 flex items-center justify-center min-h-100">
                             <Spinner size="md" variant="indigo" />
                         </div>
                     ) : groupedNotifications.length === 0 ? (

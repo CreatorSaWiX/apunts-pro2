@@ -110,7 +110,7 @@ const CodeViewer = ({ url, filename }: CodeViewerProps) => {
                     {copied ? 'Copiat' : 'Copiar'}
                 </button>
             </div>
-            <div className="max-h-[500px] overflow-auto custom-scrollbar text-sm">
+            <div className="max-h-125 overflow-auto custom-scrollbar text-sm">
                 <CodeMirror
                     value={code}
                     theme={vscodeDark}

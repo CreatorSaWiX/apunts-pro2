@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Globe, Briefcase, ChevronRight, Search, ExternalLink } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
-import Modal from '../../ui/Modal';
+import Modal from '../../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
 
 interface Props {

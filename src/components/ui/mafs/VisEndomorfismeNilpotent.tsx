@@ -2,7 +2,7 @@ import React from 'react';
 import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon, MovablePoint, Line, Circle, Vector } from 'mafs';
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
-import { InteractionLock } from "../InteractionLock";
+import { InteractionLock } from "../system/InteractionLock";
 
 type MafsVisualizerProps = {
     type: string;
@@ -41,7 +41,7 @@ const VisEndomorfismeNilpotent = () => {
                 </div>
             </div>
 
-            <div className="h-[400px] relative bg-slate-900/20">
+            <div className="h-100 relative bg-slate-900/20">
                 <Mafs viewBox={{ x: [-4, 4], y: [-4, 4] }} pan={false} zoom={false}>
                     <Coordinates.Cartesian />
                     

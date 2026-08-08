@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
-import Modal from '../ui/Modal';
+import Modal from '../ui/modals/Modal';
 import { Search, Check } from 'lucide-react';
 import { SUBJECTS } from '../../config/subjects';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -125,7 +125,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                                 </div>
                                                 <div className="text-left">
                                                     <div className={`font-bold transition-colors ${selectedId === subject.id ? 'text-white' : 'text-slate-300'}`}>{subject.label}</div>
-                                                    <div className="text-xs text-slate-500 truncate max-w-[200px] sm:max-w-[280px]">{subject.description}</div>
+                                                    <div className="text-xs text-slate-500 truncate max-w-[200px] sm:max-w-70">{subject.description}</div>
                                                 </div>
                                             </div>
                                             {selectedId === subject.id && <Check size={18} className="text-white" />}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon, MovablePoint, Line, Circle, Vector } from 'mafs';
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
-import { InteractionLock } from "../InteractionLock";
+import { InteractionLock } from "../system/InteractionLock";
 
 type MafsVisualizerProps = {
     type: string;
@@ -38,7 +38,7 @@ const VisInversaAplicacio = () => {
                 </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/5 min-h-[350px]">
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/5 min-h-87.5">
                 {/* 1. DIRECTA */}
                 <div className="relative bg-slate-900/20">
                     <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">

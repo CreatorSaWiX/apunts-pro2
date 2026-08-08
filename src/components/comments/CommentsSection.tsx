@@ -8,11 +8,11 @@ import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import CommentItem, { type Comment } from './CommentItem';
 import { Send, MessageCircle, Info, Image as ImageIcon, Smile } from 'lucide-react';
-import ConfirmModal from '../ui/ConfirmModal';
-import GifPicker from '../ui/GifPicker';
+import ConfirmModal from '../ui/modals/ConfirmModal';
+import GifPicker from '../ui/modals/GifPicker';
 import { AnimatePresence } from 'framer-motion';
 import { useMentions } from '../../hooks/useMentions';
-import MentionPopup from '../ui/MentionPopup';
+import MentionPopup from '../ui/modals/MentionPopup';
 
 import Spinner from '../ui/Spinner';
 
@@ -295,7 +295,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                 </div>
 
                 {/* List */}
-                <div className="flex-1 p-5 min-h-[200px] max-h-[500px] overflow-y-auto custom-scrollbar flex flex-col gap-6">
+                <div className="flex-1 p-5 min-h-[200px] max-h-125 overflow-y-auto custom-scrollbar flex flex-col gap-6">
                     {loading ? (
                         <div className="flex justify-center py-10">
                             <Spinner size="md" variant="sky" />

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Linkedin } from 'lucide-react';
-import Spinner from './Spinner';
+import Spinner from '../Spinner';
 
 interface LinkedInEmbedProps {
     /** Full LinkedIn embed URL (urn:li:ugcPost:...) */

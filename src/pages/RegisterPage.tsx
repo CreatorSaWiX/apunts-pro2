@@ -3,10 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, User, ArrowRight, Mail } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { AuthCanvasBackground } from '../components/ui/AuthCanvasBackground';
-import { PremiumInput } from '../components/ui/PremiumInput';
+import { AuthCanvasBackground } from '../components/ui/system/AuthCanvasBackground';
+import { PremiumInput } from '../components/ui/inputs/PremiumInput';
 import Spinner from '../components/ui/Spinner';
-import PrivacyModal from '../components/ui/PrivacyModal';
+import PrivacyModal from '../components/ui/modals/PrivacyModal';
 import { useTranslation } from 'react-i18next';
 
 const RegisterPage = () => {

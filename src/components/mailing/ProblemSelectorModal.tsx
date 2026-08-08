@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Layers, ChevronRight, Hash } from 'lucide-react';
 import type { TopicDefinition } from '../../content/data/courseStructure';
-import Modal from '../ui/Modal';
+import Modal from '../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
 
 interface Problem {

@@ -34,7 +34,7 @@ export const UpdateManager = () => {
 
         const setupListener = async () => {
             try {
-                const { db } = await import('../../lib/firebase');
+                const { db } = await import('../../../lib/firebase');
                 const { doc, onSnapshot } = await import('firebase/firestore');
                 
                 const docRef = doc(db, 'app', 'metadata');

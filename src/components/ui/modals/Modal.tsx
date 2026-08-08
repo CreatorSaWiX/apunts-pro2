@@ -19,8 +19,8 @@ const SIZE_MAP = {
     'md': 'max-w-md w-full',
     'lg': 'max-w-lg w-full',
     'xl': 'max-w-xl w-full',
-    '2xl': 'max-w-2xl w-full h-[70vh] min-h-[500px]',
-    '3xl': 'max-w-3xl w-full h-[75vh] min-h-[500px]',
+    '2xl': 'max-w-2xl w-full h-[70vh] min-h-125',
+    '3xl': 'max-w-3xl w-full h-[75vh] min-h-125',
     '4xl': 'max-w-4xl w-full h-[80vh] min-h-[600px]',
     '5xl': 'max-w-5xl w-full h-[85vh] min-h-[600px]',
     '6xl': 'max-w-6xl w-full h-[85vh] min-h-[600px]',
@@ -76,7 +76,7 @@ const Modal = ({
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
                         transition={{ layout: { type: "spring", stiffness: 400, damping: 35 }, type: "spring", stiffness: 400, damping: 30 }}
                         style={{ willChange: 'transform, opacity' }}
-                        className={`relative z-10 flex flex-col bg-[#0F172A]/30 backdrop-blur-xl border border-white/12 overflow-hidden shadow-2xl ${SIZE_MAP[size]} ${size === 'screen' ? 'rounded-none max-h-screen border-0' : `rounded-4xl max-h-[85vh] ${fullScreenOnMobile ? 'max-md:!rounded-none max-md:!max-w-none max-md:!w-screen max-md:!h-[100dvh] max-md:!max-h-screen max-md:!border-0' : ''}`} ${className}`}
+                        className={`relative z-10 flex flex-col bg-[#0F172A]/30 backdrop-blur-xl border border-white/12 overflow-hidden shadow-2xl ${SIZE_MAP[size]} ${size === 'screen' ? 'rounded-none max-h-screen border-0' : `rounded-4xl max-h-[85vh] ${fullScreenOnMobile ? 'max-md:!rounded-none max-md:!max-w-none max-md:!w-screen max-md:!h-dvh max-md:!max-h-screen max-md:!border-0' : ''}`} ${className}`}
                     >
                         <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent z-50 pointer-events-none" />
                         {!hideCloseButton && (

@@ -11,28 +11,28 @@ import "mafs/font.css"; // Mafs fonts
 
 import { remarkDirectiveRehype } from "./remarkDirectiveRehype";
 import { remarkCodeMetadata } from "./remarkCodeMetadata";
-import CodeBlock from "../components/ui/CodeBlock";
+import CodeBlock from "../components/ui/editors/CodeBlock";
 import Spinner from "../components/ui/Spinner";
 import Callout from "../components/ui/Callout";
 
-const GraphVisualizer = React.lazy(() => import("../components/ui/GraphVisualizer"));
-const AlgoPlayer = React.lazy(() => import("../components/ui/AlgoPlayer"));
-const OOPPlayer = React.lazy(() => import("../components/ui/OOPPlayer"));
-const StackVisualizer = React.lazy(() => import("../components/ui/StackVisualizer"));
-const QueueVisualizer = React.lazy(() => import("../components/ui/QueueVisualizer"));
-const ListGraphVisualizer = React.lazy(() => import("../components/ui/ListGraphVisualizer"));
-const BinTreeVisualizer = React.lazy(() => import("../components/ui/BinTreeVisualizer"));
-const ProofPlayer = React.lazy(() => import("../components/ui/ProofPlayer"));
-const MafsVisualizer = React.lazy(() => import("../components/ui/MafsVisualizer"));
-const VideoPlayer = React.lazy(() => import("../components/ui/VideoPlayer"));
-const VectorVisualizer = React.lazy(() => import("../components/ui/VectorVisualizer"));
-const ListVisualizer = React.lazy(() => import("../components/ui/ListVisualizer"));
-const PointerVisualizer = React.lazy(() => import("../components/ui/PointerVisualizer"));
-const LinkedInEmbed = React.lazy(() => import("../components/ui/LinkedInEmbed"));
-const YoutubeEmbed = React.lazy(() => import("../components/ui/YoutubeEmbed"));
+const GraphVisualizer = React.lazy(() => import("../components/ui/visualizers/GraphVisualizer"));
+const AlgoPlayer = React.lazy(() => import("../components/ui/players/AlgoPlayer"));
+const OOPPlayer = React.lazy(() => import("../components/ui/players/OOPPlayer"));
+const StackVisualizer = React.lazy(() => import("../components/ui/visualizers/StackVisualizer"));
+const QueueVisualizer = React.lazy(() => import("../components/ui/visualizers/QueueVisualizer"));
+const ListGraphVisualizer = React.lazy(() => import("../components/ui/visualizers/ListGraphVisualizer"));
+const BinTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/BinTreeVisualizer"));
+const ProofPlayer = React.lazy(() => import("../components/ui/players/ProofPlayer"));
+const MafsVisualizer = React.lazy(() => import("../components/ui/visualizers/MafsVisualizer"));
+const VideoPlayer = React.lazy(() => import("../components/ui/players/VideoPlayer"));
+const VectorVisualizer = React.lazy(() => import("../components/ui/visualizers/VectorVisualizer"));
+const ListVisualizer = React.lazy(() => import("../components/ui/visualizers/ListVisualizer"));
+const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/PointerVisualizer"));
+const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
+const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
 const ThreeVisualizer = React.lazy(() =>
-    import("../components/ui/ThreeVisualizer").catch(() => ({
+    import("../components/ui/visualizers/ThreeVisualizer").catch(() => ({
         default: () => (
             <div className="w-full h-64 bg-slate-950 rounded-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-3 p-8">
                 <div className="text-3xl">🧊</div>

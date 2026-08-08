@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, RotateCcw, Info } from 'lucide-react';
-import { proofs } from '../../content/data/proofs';
-import GraphVisualizer from './GraphVisualizer';
+import { proofs } from '../../../content/data/proofs';
+import GraphVisualizer from '../visualizers/GraphVisualizer';
 import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
 
@@ -29,7 +29,7 @@ export default function ProofPlayer(props: any) {
     const reset = () => setCurrentStep(0);
 
     return (
-        <div className="my-8 bg-[#0f172a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-[500px]">
+        <div className="my-8 bg-[#0f172a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-125">
             {/* Visualizer Side */}
             <div className="relative flex-1 bg-slate-950/50 overflow-hidden border-b md:border-b-0 md:border-r border-white/5">
                 <div className="absolute inset-x-0 top-0 h-1 bg-white/5">
@@ -70,7 +70,7 @@ export default function ProofPlayer(props: any) {
             </div>
 
             {/* Explanation Side */}
-            <div className="w-full md:w-[350px] flex flex-col bg-slate-900/30 backdrop-blur-xl">
+            <div className="w-full md:w-87.5 flex flex-col bg-slate-900/30 backdrop-blur-xl">
                 <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
                     <div className="flex items-center gap-2 mb-4">
                         <div className="p-1.5 bg-sky-500/20 rounded-lg">

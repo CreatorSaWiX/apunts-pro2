@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Maximize2, X } from 'lucide-react';
-import Spinner from './Spinner';
-import { InteractionProvider } from '../../contexts/InteractionContext';
+import Spinner from '../Spinner';
+import { InteractionProvider } from '../../../contexts/InteractionContext';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Import assets to ensure Vite bundles them correctly
-import p1 from '../../assets/particles/1.png';
-import p2 from '../../assets/particles/2.png';
-import p3 from '../../assets/particles/3.png';
+import p1 from '../../../assets/particles/1.png';
+import p2 from '../../../assets/particles/2.png';
+import p3 from '../../../assets/particles/3.png';
 
 interface InteractionLockProps {
     children: React.ReactNode;
@@ -217,11 +217,11 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
             >
                 {/* 1. DESKTOP VIEW: Auto-renders when visible in viewport (Lazy Load) */}
                 {!isMobile && !isFullScreen && !disabled && (
-                    <div className="w-full h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-white/5 bg-slate-900/40 relative">
+                    <div className="w-full h-125 rounded-3xl overflow-hidden shadow-2xl border border-white/5 bg-slate-900/40 relative">
                         {shouldMountChildren ? (
                             children
                         ) : (
-                            <div className="w-full h-[500px] bg-slate-950 flex items-center justify-center">
+                            <div className="w-full h-125 bg-slate-950 flex items-center justify-center">
                                 <Spinner size="xl" variant="white" glow={false} />
                             </div>
                         )}
@@ -233,7 +233,7 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
                     <div className={isMobile ? "flex justify-center my-4" : ""}>
                         <div
                             onClick={() => setIsFullScreen(true)}
-                            className="relative w-full max-w-[280px] h-28 overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-black/60 transition-all shadow-2xl group/card"
+                            className="relative w-full max-w-70 h-28 overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-black/60 transition-all shadow-2xl group/card"
                         >
                             {/* Interactive Nebula Background */}
                             <div className="absolute inset-0 opacity-40 pointer-events-none -z-10">

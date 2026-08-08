@@ -4,7 +4,7 @@ import subjectsData from '../../../data/subjects.json';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { specializations } from '../../../data/curriculum';
 import { m as motion } from 'framer-motion';
-import Modal from '../../ui/Modal';
+import Modal from '../../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
 
 interface SubjectSearchModalProps {

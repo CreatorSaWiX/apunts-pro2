@@ -1,12 +1,12 @@
 
 import React, { useRef, useState, useEffect, useCallback, lazy, Suspense } from 'react';
 const ForceGraph2D = lazy(() => import('react-force-graph-2d'));
-import { useSubject } from '../../contexts/SubjectContext';
+import { useSubject } from '../../../contexts/SubjectContext';
 import { RotateCcw } from 'lucide-react';
 import { useInView } from 'framer-motion';
-import { InteractionLock } from './InteractionLock';
-import { useInteraction } from '../../contexts/InteractionContext';
-import Spinner from './Spinner';
+import { InteractionLock } from '../system/InteractionLock';
+import { useInteraction } from '../../../contexts/InteractionContext';
+import Spinner from '../Spinner';
 
 interface GraphVisualizerProps {
     initialData?: {
@@ -309,7 +309,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                         </button>
                         {/* Notice for Brave/Opera GX Users with Canvas Poisoning Active */}
                         {hasCanvasProtection && (
-                            <div className="hidden group-hover:flex items-center text-[10px] text-slate-500 bg-slate-800/80 px-2 rounded-lg border border-slate-700 h-[28px]">
+                            <div className="hidden group-hover:flex items-center text-[10px] text-slate-500 bg-slate-800/80 px-2 rounded-lg border border-slate-700 h-7">
                                 Brave / Escuts actius? Apaga'ls per arrossegar nodes.
                             </div>
                         )}

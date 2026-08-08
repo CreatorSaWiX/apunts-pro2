@@ -14,7 +14,7 @@ import { ca } from 'date-fns/locale';
 import Spinner from '../ui/Spinner';
 import { CUSTOM_EMOJIS } from '../../lib/emojis';
 import { useMentions } from '../../hooks/useMentions';
-import MentionPopup from '../ui/MentionPopup';
+import MentionPopup from '../ui/modals/MentionPopup';
 
 interface ReplySectionProps {
     postId: string;

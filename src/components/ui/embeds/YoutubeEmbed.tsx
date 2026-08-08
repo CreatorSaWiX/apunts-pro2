@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-import Spinner from './Spinner';
+import Spinner from '../Spinner';
 
 interface YoutubeEmbedProps {
     /** Full YouTube URL or video ID */

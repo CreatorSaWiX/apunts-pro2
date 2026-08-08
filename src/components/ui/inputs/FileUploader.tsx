@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { UploadCloud, Paperclip } from 'lucide-react';
 
-import Spinner from '../ui/Spinner';
+import Spinner from '../Spinner';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 

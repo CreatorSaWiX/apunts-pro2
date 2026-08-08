@@ -95,7 +95,7 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
         <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-12 my-16 font-mono select-none not-prose">
 
             {/* Visualitzador del Graf incrustat (Amb Physics!) */}
-            <div className="flex-1 min-h-[350px] relative w-full max-w-lg pointer-events-auto">
+            <div className="flex-1 min-h-87.5 relative w-full max-w-lg pointer-events-auto">
                 {/* Passem el trigger perquè el ForceGraph forci el re-càlcul del Layout als links nous */}
                 <GraphVisualizer initialData={graphData} updateTrigger={updateKey} height={350} transparentBg={true} autoCenter={true} />
             </div>
@@ -156,7 +156,7 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
                 </div>
 
 
-                <div className="w-full mt-4 min-h-[20px] flex items-center justify-center">
+                <div className="w-full mt-4 min-h-5 flex items-center justify-center">
                     {lastAction ? (
                         <span className={`text-xs font-bold text-center ${lastAction.startsWith('Error') ? 'text-rose-400' : 'text-slate-300'}`}>
                             {lastAction}

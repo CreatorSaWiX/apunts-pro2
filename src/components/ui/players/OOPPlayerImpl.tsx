@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Code2, Database, TerminalSquare, ChevronDown, ChevronUp } from 'lucide-react';
-import { pro } from '../../lib/simulations/content/pro';
-import type { Simulation, SimulationStep } from '../../lib/simulations/engine/types';
+import { pro } from '../../../lib/simulations/content/pro';
+import type { Simulation, SimulationStep } from '../../../lib/simulations/engine/types';
 import ReactCodeMirror, { type ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
@@ -163,17 +163,17 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
             onTabChange={(id: string) => setActiveTab(id as 'term' | 'code')}
             leftPanel={
                 <div className={`flex-1 min-w-0 flex flex-col relative bg-[#0d1117] h-full shadow-[15px_0_30px_rgba(0,0,0,0.3)] lg:border-r border-white/5 ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
-                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] overflow-x-auto overflow-y-hidden custom-scrollbar touch-pan-x [-webkit-overflow-scrolling:touch]">
+                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 shrink-0 bg-[#0a0d14] overflow-x-auto overflow-y-hidden custom-scrollbar touch-pan-x [-webkit-overflow-scrolling:touch]">
                         {Object.keys(sim.files || {}).map(filename => (
                             <div key={filename}
                                 onClick={() => setUserSelectedFile(filename)}
-                                className={`px-4 py-2 border-t border-x rounded-t-xl text-[10px] sm:text-[11px] font-mono tracking-wider flex gap-2 items-center shadow-sm relative top-[1px] z-10 transition-colors cursor-pointer whitespace-nowrap shrink-0
-                                ${displayFile === filename ? 'bg-[#0d1117] border-slate-800/80 text-emerald-400 font-bold' : 'bg-[#161b22] border-transparent text-slate-300 border-b-slate-800/80 hover:bg-[#1f262e] hover:text-white'}`}>
+                                className={`px-4 py-2 border-t border-x rounded-t-xl text-[10px] sm:text-[11px] font-mono tracking-wider flex gap-2 items-center shadow-sm relative top-px z-10 transition-colors cursor-pointer whitespace-nowrap shrink-0
+                                    ${displayFile === filename ? 'bg-[#0d1117] border-slate-800/80 text-emerald-400 font-bold' : 'bg-[#161b22] border-transparent text-slate-300 border-b-slate-800/80 hover:bg-[#1f262e] hover:text-white'}`}>
                                 <Code2 size={14} className={displayFile === filename ? "text-emerald-400 shrink-0" : "text-slate-400 shrink-0"} />
                                 <span>{filename}</span>
                             </div>
                         ))}
-                        <div className="flex-1 border-b border-slate-800/80 h-full relative -z-0 min-w-[20px]"></div>
+                        <div className="flex-1 border-b border-slate-800/80 h-full relative z-0 min-w-5"></div>
                     </div>
 
                     <div className="flex-1 relative overflow-hidden flex flex-col bg-[#0d1117] text-[12px] sm:text-[13px] pt-4 pb-6 min-h-[50%]">
@@ -236,8 +236,8 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
                 </div>
             }
             rightPanel={
-                <div className={`lg:w-[450px] xl:w-[480px] shrink-0 flex-col relative z-20 bg-gradient-to-br from-[#0B0F17] via-[#0F1420] to-[#0A0D14] h-full ${activeTab === 'term' ? 'flex' : 'hidden'} lg:flex`}>
-                    <div className="flex-1 flex flex-col p-4 sm:p-6 pb-[160px] relative overflow-hidden">
+                <div className={`lg:w-112.5 xl:w-120 shrink-0 flex-col relative z-20 bg-linear-to-br from-[#0B0F17] via-[#0F1420] to-[#0A0D14] h-full ${activeTab === 'term' ? 'flex' : 'hidden'} lg:flex`}>
+                    <div className="flex-1 flex flex-col p-4 sm:p-6 pb-40 relative overflow-hidden">
                         <div className="flex-1 bg-black/40 border border-white/5 rounded-xl shadow-inner overflow-hidden flex flex-col backdrop-blur-sm relative">
                             <div className="bg-white/5 border-b border-white/5 px-3 py-2 flex items-center gap-2">
                                 <TerminalSquare size={12} className="text-slate-400" />

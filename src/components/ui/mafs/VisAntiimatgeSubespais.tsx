@@ -2,7 +2,7 @@ import React from 'react';
 import { Mafs, Coordinates, Plot, Theme, Text, LaTeX, Polygon, MovablePoint, Line, Circle, Vector } from 'mafs';
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
-import { InteractionLock } from "../InteractionLock";
+import { InteractionLock } from "../system/InteractionLock";
 
 type MafsVisualizerProps = {
     type: string;
@@ -54,7 +54,7 @@ const VisAntiimatgeSubespais = () => {
 
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
                 {/* DOMINI */}
-                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-900/20 overflow-hidden min-h-[350px]">
+                <div className="relative border-b md:border-b-0 md:border-r border-white/5 bg-slate-900/20 overflow-hidden min-h-87.5">
                     <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
                         <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Domini (E)</span>
                         {isCompatible ? (
@@ -91,7 +91,7 @@ const VisAntiimatgeSubespais = () => {
                 </div>
 
                 {/* CODOMINI */}
-                <div className="relative bg-slate-900/10 overflow-hidden min-h-[350px]">
+                <div className="relative bg-slate-900/10 overflow-hidden min-h-87.5">
                     <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
                         <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Codomini (F)</span>
                         <div className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded text-[9px] text-blue-400 font-bold">

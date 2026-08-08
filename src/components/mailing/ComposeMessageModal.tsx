@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 import ProblemSelectorModal from './ProblemSelectorModal';
 import Spinner from '../ui/Spinner';
-import Modal from '../ui/Modal';
+import Modal from '../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
 
 interface ComposeMessageModalProps {

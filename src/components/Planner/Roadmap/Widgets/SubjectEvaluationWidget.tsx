@@ -96,7 +96,7 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
                                 boxShadow: isHovered ? `0 0 20px ${theme.shadow}` : 'none'
                             }}
                         >
-                            <div className={`w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br ${theme.gradient} flex items-center justify-center shadow-lg`}>
+                            <div className={`w-10 h-10 shrink-0 rounded-xl bg-linear-to-br ${theme.gradient} flex items-center justify-center shadow-lg`}>
                                 <span className="text-[11px] font-black text-white">{item.acronym}</span>
                             </div>
                             <div className="flex flex-col">

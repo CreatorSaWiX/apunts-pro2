@@ -434,7 +434,7 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
             title={`${task.title} \n${format(task.start, 'HH:mm')} - ${format(task.end, 'HH:mm')}`}
         >
             {/* Capa de degradat fosc/clar per donar profunditat al color base */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-black/40 pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-br from-white/30 via-transparent to-black/40 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20 pointer-events-none mix-blend-overlay" />
 
             {/* Left handle */}

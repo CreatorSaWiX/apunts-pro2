@@ -2,12 +2,12 @@ import React, { useMemo, Component } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid, Stars, Text, Html, Line } from '@react-three/drei';
 import * as THREE from 'three';
-import { useIsMobile } from '../../hooks/useIsMobile';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import { Mafs, Coordinates, Plot, Theme, LaTeX as MafsLaTeX, Circle, Polygon, MovablePoint, Line as MafsLine, Vector } from "mafs";
 import { InlineMath } from 'react-katex';
 import "mafs/core.css";
-import { InteractionLock } from './InteractionLock';
-import { useInteraction } from '../../contexts/InteractionContext';
+import { InteractionLock } from '../system/InteractionLock';
+import { useInteraction } from '../../../contexts/InteractionContext';
 
 interface ThreeVisualizerProps {
     type: string;
@@ -66,7 +66,7 @@ class ThreeErrorBoundary extends Component<{ children: React.ReactNode }, { hasE
     render() {
         if (this.state.hasError) {
             return (
-                <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-4 p-8">
+                <div className="w-full h-125 bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-4 p-8">
                     <div className="text-4xl">⚠️</div>
                     <p className="text-amber-400 font-semibold text-center">No s'ha pogut carregar la visualització 3D</p>
                     <p className="text-slate-500 text-sm text-center max-w-sm">
@@ -162,36 +162,36 @@ const Point = ({ position, color = "white" }: { position: [number, number, numbe
 
 import { lazy, Suspense } from 'react';
 
-const VisPuntsSella = lazy(() => import('./three/VisPuntsSella'));
-const VisParaboloide = lazy(() => import('./three/VisParaboloide'));
-const VisVectorGradient = lazy(() => import('./three/VisVectorGradient'));
-const VisVectorDirectorAngle = lazy(() => import('./three/VisVectorDirectorAngle'));
-const VisTaylor3d = lazy(() => import('./three/VisTaylor3d'));
-const VisDistancia3D = lazy(() => import('./three/VisDistancia3D'));
-const VisEx76c = lazy(() => import('./three/VisEx76c'));
-const VisSuperficiesBasiques3D = lazy(() => import('./three/VisSuperficiesBasiques3D'));
-const VisCorbesNivell3D2D = lazy(() => import('./three/VisCorbesNivell3D2D'));
-const VisDistanciaSync3D2D = lazy(() => import('./three/VisDistanciaSync3D2D'));
-const VisEx73a = lazy(() => import('./three/VisEx73a'));
-const VisSubespai3D = lazy(() => import('./three/VisSubespai3D'));
-const VisKernelImatge3D = lazy(() => import('./three/VisKernelImatge3D'));
-const VisEx78a = lazy(() => import('./three/VisEx78a'));
-const VisEx78b = lazy(() => import('./three/VisEx78b'));
-const VisEx78c = lazy(() => import('./three/VisEx78c'));
-const VisEx73b = lazy(() => import('./three/VisEx73b'));
-const VisDiferencialIncrement = lazy(() => import('./three/VisDiferencialIncrement'));
-const VisExtremsHessiana = lazy(() => import('./three/VisExtremsHessiana'));
-const VisLagrangeMultiplicadors = lazy(() => import('./three/VisLagrangeMultiplicadors'));
-const VisOptimitzacioCompacte = lazy(() => import('./three/VisOptimitzacioCompacte'));
-const VisFitaErrorLagrange = lazy(() => import('./three/VisFitaErrorLagrange'));
-const VisTaylorGrauN = lazy(() => import('./three/VisTaylorGrauN'));
-const VisTeoremaSchwarz = lazy(() => import('./three/VisTeoremaSchwarz'));
-const VisRegularitatHibrida = lazy(() => import('./three/VisRegularitatHibrida'));
-const VisPlaTangentINormalHibrid = lazy(() => import('./three/VisPlaTangentINormalHibrid'));
-const VisDerivadaDireccionalHibrida = lazy(() => import('./three/VisDerivadaDireccionalHibrida'));
-const VisDerivadesParcialsHibrida = lazy(() => import('./three/VisDerivadesParcialsHibrida'));
-const VisRnDimensionality = lazy(() => import('./three/VisRnDimensionality'));
-const VisTransformacionsHibrida = lazy(() => import('./three/VisTransformacionsHibrida'));
+const VisPuntsSella = lazy(() => import('../three/VisPuntsSella'));
+const VisParaboloide = lazy(() => import('../three/VisParaboloide'));
+const VisVectorGradient = lazy(() => import('../three/VisVectorGradient'));
+const VisVectorDirectorAngle = lazy(() => import('../three/VisVectorDirectorAngle'));
+const VisTaylor3d = lazy(() => import('../three/VisTaylor3d'));
+const VisDistancia3D = lazy(() => import('../three/VisDistancia3D'));
+const VisEx76c = lazy(() => import('../three/VisEx76c'));
+const VisSuperficiesBasiques3D = lazy(() => import('../three/VisSuperficiesBasiques3D'));
+const VisCorbesNivell3D2D = lazy(() => import('../three/VisCorbesNivell3D2D'));
+const VisDistanciaSync3D2D = lazy(() => import('../three/VisDistanciaSync3D2D'));
+const VisEx73a = lazy(() => import('../three/VisEx73a'));
+const VisSubespai3D = lazy(() => import('../three/VisSubespai3D'));
+const VisKernelImatge3D = lazy(() => import('../three/VisKernelImatge3D'));
+const VisEx78a = lazy(() => import('../three/VisEx78a'));
+const VisEx78b = lazy(() => import('../three/VisEx78b'));
+const VisEx78c = lazy(() => import('../three/VisEx78c'));
+const VisEx73b = lazy(() => import('../three/VisEx73b'));
+const VisDiferencialIncrement = lazy(() => import('../three/VisDiferencialIncrement'));
+const VisExtremsHessiana = lazy(() => import('../three/VisExtremsHessiana'));
+const VisLagrangeMultiplicadors = lazy(() => import('../three/VisLagrangeMultiplicadors'));
+const VisOptimitzacioCompacte = lazy(() => import('../three/VisOptimitzacioCompacte'));
+const VisFitaErrorLagrange = lazy(() => import('../three/VisFitaErrorLagrange'));
+const VisTaylorGrauN = lazy(() => import('../three/VisTaylorGrauN'));
+const VisTeoremaSchwarz = lazy(() => import('../three/VisTeoremaSchwarz'));
+const VisRegularitatHibrida = lazy(() => import('../three/VisRegularitatHibrida'));
+const VisPlaTangentINormalHibrid = lazy(() => import('../three/VisPlaTangentINormalHibrid'));
+const VisDerivadaDireccionalHibrida = lazy(() => import('../three/VisDerivadaDireccionalHibrida'));
+const VisDerivadesParcialsHibrida = lazy(() => import('../three/VisDerivadesParcialsHibrida'));
+const VisRnDimensionality = lazy(() => import('../three/VisRnDimensionality'));
+const VisTransformacionsHibrida = lazy(() => import('../three/VisTransformacionsHibrida'));
 
 const VISUALIZERS: Record<string, React.ComponentType<any>> = {
     'vis_transformacions_hibrida': VisTransformacionsHibrida,
@@ -237,7 +237,7 @@ const ThreeVisualizerContent = ({ SurfaceComponent, isHybrid }: { SurfaceCompone
 
     return (
         <ThreeErrorBoundary>
-            <div className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[500px]'}`}>
+            <div className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-125'}`}>
 
                 <div className="flex-1 relative">
                     <Canvas
@@ -315,7 +315,7 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
 
     if (!hasWebGL()) {
         return (
-            <div className="w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-4 p-8">
+            <div className="w-full h-125 bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-4 p-8">
                 <div className="text-4xl">🖥️</div>
                 <p className="text-amber-400 font-semibold text-center">Visualització 3D no disponible</p>
                 <p className="text-slate-500 text-sm text-center max-w-sm">
@@ -327,7 +327,7 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
 
     return (
         <InteractionLock className="my-8" key={type}>
-            <Suspense fallback={<div className="p-4 flex items-center justify-center h-[400px]">Carregant visualització 3D...</div>}><ThreeVisualizerContent SurfaceComponent={SurfaceComponent} isHybrid={isHybrid} /></Suspense>
+            <Suspense fallback={<div className="p-4 flex items-center justify-center h-100">Carregant visualització 3D...</div>}><ThreeVisualizerContent SurfaceComponent={SurfaceComponent} isHybrid={isHybrid} /></Suspense>
         </InteractionLock>
     );
 };

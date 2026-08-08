@@ -8,7 +8,7 @@ import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment, setDoc, serverTimestamp } from 'firebase/firestore';
-import { HtmlRenderer } from '../ui/HtmlRenderer';
+import { HtmlRenderer } from '../ui/typography/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
 import { ca, es, enUS } from 'date-fns/locale';
@@ -274,7 +274,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: "100%", scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className={`relative w-full bg-[#0a0a0a] shadow-2xl overflow-hidden flex flex-col ${isMobile ? 'h-[100dvh] rounded-none border-none' : 'h-[90vh] max-w-7xl border border-white/10 rounded-4xl'}`}
+                        className={`relative w-full bg-[#0a0a0a] shadow-2xl overflow-hidden flex flex-col ${isMobile ? 'h-dvh rounded-none border-none' : 'h-[90vh] max-w-7xl border border-white/10 rounded-4xl'}`}
                     >
                         {/* Top Bar Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0 bg-[#0a0a0a]/90 backdrop-blur-xl z-20">
@@ -371,7 +371,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                                     <div className="flex-1 min-w-0 min-h-[30vh] lg:h-full overflow-y-auto overscroll-contain custom-scrollbar bg-[#060606] flex flex-col">
                                 {/* Visual/Carousel Section (If there are images) */}
                                 {postImages.length > 0 && (
-                                    <div className="w-full h-[450px] sm:h-[500px] lg:h-[540px] bg-[#020202] border-b border-white/10 relative group/carousel select-none flex flex-col items-center justify-center overflow-hidden shrink-0">
+                                    <div className="w-full h-[450px] sm:h-125 lg:h-[540px] bg-[#020202] border-b border-white/10 relative group/carousel select-none flex flex-col items-center justify-center overflow-hidden shrink-0">
                                         <AnimatePresence mode="wait">
                                             <motion.img
                                                 key={currentImageIndex}

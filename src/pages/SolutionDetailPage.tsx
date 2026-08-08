@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, FileText, ChevronLeft, ChevronRight, CheckCircle, Edit, Save, X, ExternalLink } from 'lucide-react';
 import { m as motion } from 'framer-motion';
 import { useSolution, useSolutions } from '../hooks/useSolutions';
-import CodeBlock from '../components/ui/CodeBlock';
+import CodeBlock from '../components/ui/editors/CodeBlock';
 import { useAuth } from '../contexts/AuthContext';
 import type { TopicDefinition } from '../content/data/courseStructure';
 import { Suspense, lazy } from 'react';
@@ -25,7 +25,7 @@ const CodeEditorSkeleton = () => {
 };
 
 import { MarkdownRenderer } from '../markdown/MarkdownRenderer';
-import { HtmlRenderer } from '../components/ui/HtmlRenderer';
+import { HtmlRenderer } from '../components/ui/typography/HtmlRenderer';
 import Spinner from '../components/ui/Spinner';
 
 const SolutionDetailPage = () => {

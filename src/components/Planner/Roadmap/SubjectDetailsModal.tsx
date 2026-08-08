@@ -4,7 +4,7 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, ExternalLink, Users, Clock, Target, CheckSquare, Layers, Activity, Book, Key } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
 
-import { HtmlRenderer } from '../../ui/HtmlRenderer';
+import { HtmlRenderer } from '../../ui/typography/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
 
 interface SubjectDetailsModalProps {
@@ -90,17 +90,17 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                         {/* Immersive Animated Background inside Modal */}
                         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(56,189,248,0.15)_0%,transparent_50%)] pointer-events-none" />
                         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(99,102,241,0.15)_0%,transparent_50%)] pointer-events-none" />
-                        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-fuchsia-500/10 blur-[120px] rounded-full pointer-events-none animate-[pulse_10s_ease-in-out_infinite]" />
+                        <div className="absolute top-1/4 right-1/4 w-[500px] h-125 bg-fuchsia-500/10 blur-[120px] rounded-full pointer-events-none animate-[pulse_10s_ease-in-out_infinite]" />
 
                         {/* Huge Acronym Watermark Integrated */}
                         {data && (
-                            <div className="absolute -top-10 -right-10 text-[250px] leading-none font-black text-transparent bg-clip-text bg-gradient-to-br from-white/[0.05] to-transparent pointer-events-none select-none z-0 transform rotate-12">
+                            <div className="absolute -top-10 -right-10 text-[250px] leading-none font-black text-transparent bg-clip-text bg-linear-to-br from-white/[0.05] to-transparent pointer-events-none select-none z-0 transform rotate-12">
                                 {data.acronim}
                             </div>
                         )}
 
                         {loading ? (
-                            <div className="flex items-center justify-center min-h-[400px] w-full">
+                            <div className="flex items-center justify-center min-h-100 w-full">
                                 <Spinner size="2xl" variant="sky" />
                             </div>
                         ) : !data ? (
@@ -215,7 +215,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                             {data.professors.map((prof: any, i: number) => (
                                                                 <div key={i} className="group p-5 bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] transition-all duration-300 rounded-2xl flex items-start gap-4">
-                                                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center text-sky-400 font-bold text-lg shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center text-sky-400 font-bold text-lg shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                                                                         {prof.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
                                                                     </div>
                                                                     <div className="flex-1 min-w-0">

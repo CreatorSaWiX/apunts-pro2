@@ -7,8 +7,8 @@ import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import ComposeMessageModal from './ComposeMessageModal';
-import CodeBlock from '../ui/CodeBlock';
-import Modal from '../ui/Modal';
+import CodeBlock from '../ui/editors/CodeBlock';
+import Modal from '../ui/modals/Modal';
 import NavigationPill from '../ui/NavigationPill';
 import Spinner from '../ui/Spinner';
 import { useTranslation } from 'react-i18next';
@@ -199,9 +199,9 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                         </div>
                     </Modal.Header>
 
-                    <Modal.Body className="!p-2 relative min-h-[400px] flex flex-col">
+                    <Modal.Body className="!p-2 relative min-h-100 flex flex-col">
                         {isLoading ? (
-                            <div className="flex-1 flex items-center justify-center min-h-[400px]">
+                            <div className="flex-1 flex items-center justify-center min-h-100">
                                 <Spinner size="md" variant="sky" />
                             </div>
                         ) : messages.length === 0 ? (

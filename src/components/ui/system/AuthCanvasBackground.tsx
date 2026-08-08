@@ -3,7 +3,7 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Stars, OrbitControls, Grid, PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
-import GraphVisualizer from './GraphVisualizer';
+import GraphVisualizer from '../visualizers/GraphVisualizer';
 import { Mafs, Coordinates, Plot } from 'mafs';
 import "mafs/core.css";
 
@@ -310,14 +310,13 @@ export const AuthCanvasBackground = ({ variant = 'login' }: AuthCanvasBackground
                     </motion.div>
                 )}
             </AnimatePresence>
-
             {/* Overlays for depth and readability */}
             <div className="absolute inset-0 bg-[#020617]/30 pointer-events-none z-10" />
 
             {/* Dark gradient on the right so the form is readable */}
-            <div className="absolute inset-0 bg-gradient-to-l from-[#020617] via-[#020617]/40 to-transparent pointer-events-none z-10" />
+            <div className="absolute top-0 right-0 h-full w-40 bg-linear-to-l from-[#04080F] to-transparent z-10 pointer-events-none" />
             {/* Dark gradient on the bottom for the story text */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent opacity-60 pointer-events-none z-10" />
+            <div className="absolute inset-0 bg-linear-to-t from-[#020617] via-transparent to-transparent opacity-60 pointer-events-none z-10" />
 
             {/* Storytelling Text based on Phase */}
             <div className="absolute bottom-12 left-12 max-w-sm z-20 hidden lg:block pointer-events-none">

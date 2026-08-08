@@ -1,7 +1,7 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import { Node, mergeAttributes } from '@tiptap/core';
-import { useShortcut } from '../../hooks/useShortcut';
-import { useSettings } from '../../contexts/SettingsContext';
+import { useShortcut } from '../../../hooks/useShortcut';
+import { useSettings } from '../../../contexts/SettingsContext';
 import { useTranslation } from 'react-i18next';
 import { StarterKit } from '@tiptap/starter-kit';
 import { Image } from '@tiptap/extension-image';
@@ -13,13 +13,13 @@ import { TextAlign } from '@tiptap/extension-text-align';
 import { Link } from '@tiptap/extension-link';
 import { TaskList } from '@tiptap/extension-task-list';
 import { TaskItem } from '@tiptap/extension-task-item';
-import { CustomTable } from './extensions/CustomTable';
+import { CustomTable } from '../extensions/CustomTable';
 import { TableRow } from '@tiptap/extension-table-row';
 import { TableHeader } from '@tiptap/extension-table-header';
 import { TableCell } from '@tiptap/extension-table-cell';
-import { LineHeight } from './extensions/LineHeight';
-import TableGlobalResizer from './TableGlobalResizer';
-import { CustomCodeBlock } from './extensions/CustomCodeBlock';
+import { LineHeight } from '../extensions/LineHeight';
+import TableGlobalResizer from '../TableGlobalResizer';
+import { CustomCodeBlock } from '../extensions/CustomCodeBlock';
 import { createLowlight } from 'lowlight';
 import cpp from 'highlight.js/lib/languages/cpp';
 import java from 'highlight.js/lib/languages/java';
@@ -313,7 +313,7 @@ const RichTextEditor = ({ content, onChange, placeholder = 'Comença a escriure.
             CustomCodeBlock.configure({ lowlight }),
             Image.configure({
                 HTMLAttributes: {
-                    class: 'rounded-xl max-h-[400px] object-contain my-4',
+                    class: 'rounded-xl max-h-100 object-contain my-4',
                 },
             }),
             Placeholder.configure({

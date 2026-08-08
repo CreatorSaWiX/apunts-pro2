@@ -6,9 +6,9 @@ import { getSubjectById, type SubjectType } from '../../config/subjects';
 import { AlertCircle, ChevronDown, Paperclip, X, Maximize2, Minimize2, Eye, ChevronLeft } from 'lucide-react';
 
 import SubjectSelectorModal from './SubjectSelectorModal';
-import FileUploader, { type Attachment } from '../ui/FileUploader';
+import FileUploader, { type Attachment } from '../ui/inputs/FileUploader';
 import Spinner from '../ui/Spinner';
-import Modal from '../ui/Modal';
+import Modal from '../ui/modals/Modal';
 import PublicationCard from './PublicationCard';
 import type { CommunityPost } from '../../types/community';
 import { useSettings } from '../../contexts/SettingsContext';

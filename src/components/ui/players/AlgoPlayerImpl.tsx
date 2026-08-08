@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Code2, Database, LayoutTemplate, ChevronDown, ChevronUp } from 'lucide-react';
-import GraphVisualizer from './GraphVisualizer';
-import { graphs as algorithms } from '../../lib/simulations/content/graphs';
+import GraphVisualizer from '../visualizers/GraphVisualizer';
+import { graphs as algorithms } from '../../../lib/simulations/content/graphs';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
@@ -176,7 +176,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
             activeTab={activeTab}
             onTabChange={(id: any) => setActiveTab(id)}
             leftPanel={
-                <div className={`flex-1 flex flex-col relative bg-gradient-to-br from-[#0B0F17] via-[#0F1420] to-[#0A0D14] h-full ${activeTab === 'viz' ? 'flex' : 'hidden'} lg:flex`}>
+                <div className={`flex-1 flex flex-col relative bg-linear-to-br from-[#0B0F17] via-[#0F1420] to-[#0A0D14] h-full ${activeTab === 'viz' ? 'flex' : 'hidden'} lg:flex`}>
                     {/* Mac-style Window Controls & Title */}
                     <div className="absolute top-4 right-4 flex justify-end items-center z-20 pointer-events-none">
                         <div className={`flex items-center gap-2 bg-emerald-500/10 backdrop-blur-md px-3 py-1 rounded-full border border-emerald-500/20 shadow-lg transition-opacity duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0'}`}>
@@ -186,7 +186,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
                     </div>
 
                     {/* Visualizer Canvas */}
-                    <div className="absolute inset-x-0 top-0 bottom-[140px] sm:bottom-[150px] z-10 mix-blend-screen opacity-90">
+                    <div className="absolute inset-x-0 top-0 bottom-35 sm:bottom-37.5 z-10 mix-blend-screen opacity-90">
                         <GraphVisualizer
                             initialData={currentGraphData}
                             showControls={false}
@@ -211,14 +211,14 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
                 </div>
             }
             rightPanel={
-                <div className={`lg:w-[460px] xl:w-[500px] flex-col bg-[#0d1117] relative z-20 shadow-[-15px_0_30px_rgba(0,0,0,0.3)] lg:border-l border-white/5 h-full ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
+                <div className={`lg:w-115 xl:w-125 flex-col bg-[#0d1117] relative z-20 shadow-[-15px_0_30px_rgba(0,0,0,0.3)] lg:border-l border-white/5 h-full ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
                     {/* Code Tab Header */}
-                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] overflow-hidden">
-                        <div className="px-4 py-2 border-t border-x border-slate-800/80 rounded-t-xl text-emerald-400 text-[10px] font-mono tracking-wider flex gap-2 items-center bg-[#0d1117] shadow-sm relative top-[1px] z-10">
+                    <div className="h-10 border-b border-slate-800/80 flex items-end px-3 shrink-0 bg-[#0a0d14] overflow-hidden">
+                        <div className="px-4 py-2 border-t border-x border-slate-800/80 rounded-t-xl text-emerald-400 text-[10px] font-mono tracking-wider flex gap-2 items-center bg-[#0d1117] shadow-sm relative top-px z-10">
                             <Code2 size={12} className="text-emerald-500" />
                             <span>source.cpp</span>
                         </div>
-                        <div className="flex-1 border-b border-slate-800/80 h-full relative -z-0"></div>
+                        <div className="flex-1 border-b border-slate-800/80 h-full relative z-0"></div>
                     </div>
 
                     {/* IDE Viewport */}
@@ -270,7 +270,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
                     </div>
 
                     {/* Environment Variables Panel */}
-                    <div className={`${isMemoryExpanded ? 'h-[35%] min-h-[140px] max-h-[200px]' : 'h-auto'} bg-[#090b10] border-t border-slate-800/80 flex flex-col relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] flex-shrink-0 transition-all duration-300`}>
+                    <div className={`${isMemoryExpanded ? 'h-[35%] min-h-35 max-h-50' : 'h-auto'} bg-[#090b10] border-t border-slate-800/80 flex flex-col relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] shrink-0 transition-all duration-300`}>
                         <div
                             className="px-4 py-1.5 sm:py-2 bg-[#0d1117] border-b border-slate-800/50 flex items-center justify-between cursor-pointer hover:bg-[#161b22] transition-colors"
                             onClick={() => setIsMemoryExpanded(!isMemoryExpanded)}

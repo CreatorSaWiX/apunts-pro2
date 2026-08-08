@@ -2,7 +2,7 @@ import { cpp } from '@codemirror/lang-cpp';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { EditorView } from '@codemirror/view';
-import Spinner from './Spinner';
+import Spinner from '../Spinner';
 import { forwardRef, useEffect, useState } from 'react';
 
 interface CodeEditorProps {
