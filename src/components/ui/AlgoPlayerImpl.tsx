@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Code2, Database, LayoutTemplate, ChevronDown, ChevronUp } from 'lucide-react';
 import GraphVisualizer from './GraphVisualizer';
-import { algorithms } from '../../lib/algorithms';
+import { graphs as algorithms } from '../../lib/simulations/content/graphs';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
@@ -14,14 +15,15 @@ interface AlgoPlayerProps {
 }
 
 export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
+    const { t } = useTranslation();
     const algo = algorithms[algorithm];
-    if (!algo) return <div className="p-4 bg-red-500/10 text-red-500 rounded-lg">Algorisme no trobat: {algorithm}</div>;
+    if (!algo) return <div className="p-4 bg-red-500/10 text-red-500 rounded-lg">{t('player.notFound')}: {algorithm}</div>;
     return <AlgoPlayerContent algo={algo} />;
 }
 
 function AlgoPlayerContent({ algo }: { algo: any }) {
-
-    const [steps] = useState(algo.generateSteps());
+    const { t } = useTranslation();
+    const [steps] = useState<any[]>(() => algo.generateSteps());
     const [currentStep, setCurrentStep] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [activeTab, setActiveTab] = useState<'viz' | 'code'>('viz');
@@ -169,7 +171,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
         <PlayerShell
             tabs={[
                 { id: 'viz', label: 'VIZ', icon: <LayoutTemplate size={14} /> },
-                { id: 'code', label: 'CODI & ESTAT', icon: <Code2 size={14} /> }
+                { id: 'code', label: t('player.codeAndState'), icon: <Code2 size={14} /> }
             ]}
             activeTab={activeTab}
             onTabChange={(id: any) => setActiveTab(id)}
@@ -275,7 +277,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
                         >
                             <div className="flex items-center gap-2">
                                 <Database size={11} className="text-sky-500" />
-                                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400 select-none">Estat de Memòria</span>
+                                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400 select-none">{t('player.memoryObjects')}</span>
                             </div>
                             <button type="button" className="text-slate-500 hover:text-slate-300">
                                 {isMemoryExpanded ? <ChevronDown size={14} /> : <ChevronUp size={14} />}

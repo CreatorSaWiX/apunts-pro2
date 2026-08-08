@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Code2, Database, TerminalSquare, ChevronDown, ChevronUp } from 'lucide-react';
-import { oopSimulations, type OOPStep, type OOPSimulation } from '../../lib/oopSimulations';
+import { pro } from '../../lib/simulations/content/pro';
+import type { Simulation, SimulationStep } from '../../lib/simulations/engine/types';
 import ReactCodeMirror, { type ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
@@ -13,14 +15,14 @@ interface OOPPlayerProps {
 }
 
 export default function OOPPlayer({ simulation }: OOPPlayerProps) {
-    const sim = oopSimulations[simulation];
+    const sim = pro[simulation];
     if (!sim) return <div className="p-4 bg-red-500/10 text-red-500 rounded-lg">Simulació no trobada: {simulation}</div>;
     return <OOPPlayerContent sim={sim} />;
 }
 
-function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
-
-    const [steps] = useState<OOPStep[]>(() => sim.generateSteps());
+function OOPPlayerContent({ sim }: { sim: Simulation }) {
+    const { t } = useTranslation();
+    const [steps] = useState<SimulationStep[]>(() => sim.generateSteps());
     const [currentStep, setCurrentStep] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [activeTab, setActiveTab] = useState<'term' | 'code'>('code');
@@ -48,8 +50,8 @@ function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
         return () => clearInterval(timer);
     }, [isPlaying, currentStep, steps.length, speed]);
 
-    const step: Partial<OOPStep> = steps[currentStep] || {};
-    const displayFile = userSelectedFile || step.activeFile || Object.keys(sim.files)[0];
+    const step: Partial<SimulationStep> = steps[currentStep] || {};
+    const displayFile = userSelectedFile || step.visual?.activeFile || Object.keys(sim.files || {})[0];
 
     const handlePlayPause = () => {
         if (!isPlaying) {
@@ -106,7 +108,7 @@ function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
     const [highlightStyle, setHighlightStyle] = useState<{ top: number; height: number; opacity: number }>({ top: 0, height: 20, opacity: 0 });
 
     useEffect(() => {
-        if (editorRef.current?.view && displayFile === step.activeFile) {
+        if (editorRef.current?.view && displayFile === step.visual?.activeFile) {
             const view = editorRef.current.view;
             const docLines = view.state.doc.lines;
             const lineNum = step.line || 1;
@@ -149,20 +151,20 @@ function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
         } else {
             setHighlightStyle(prev => ({ ...prev, opacity: 0 }));
         }
-    }, [step.line, step.activeFile, activeTab, displayFile]);
+    }, [step.line, step.visual?.activeFile, activeTab, displayFile]);
 
     return (
         <PlayerShell
             tabs={[
-                { id: 'code', label: 'CODI', icon: <Code2 size={14} /> },
-                { id: 'term', label: 'TERMINAL', icon: <TerminalSquare size={14} /> }
+                { id: 'code', label: t('player.code'), icon: <Code2 size={14} /> },
+                { id: 'term', label: t('player.terminal'), icon: <TerminalSquare size={14} /> }
             ]}
             activeTab={activeTab}
             onTabChange={(id: string) => setActiveTab(id as 'term' | 'code')}
             leftPanel={
                 <div className={`flex-1 min-w-0 flex flex-col relative bg-[#0d1117] h-full shadow-[15px_0_30px_rgba(0,0,0,0.3)] lg:border-r border-white/5 ${activeTab === 'code' ? 'flex' : 'hidden'} lg:flex`}>
                     <div className="h-10 border-b border-slate-800/80 flex items-end px-3 flex-shrink-0 bg-[#0a0d14] overflow-x-auto overflow-y-hidden custom-scrollbar touch-pan-x [-webkit-overflow-scrolling:touch]">
-                        {Object.keys(sim.files).map(filename => (
+                        {Object.keys(sim.files || {}).map(filename => (
                             <div key={filename}
                                 onClick={() => setUserSelectedFile(filename)}
                                 className={`px-4 py-2 border-t border-x rounded-t-xl text-[10px] sm:text-[11px] font-mono tracking-wider flex gap-2 items-center shadow-sm relative top-[1px] z-10 transition-colors cursor-pointer whitespace-nowrap shrink-0
@@ -189,7 +191,7 @@ function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
                         />
                         <ReactCodeMirror
                             ref={editorRef}
-                            value={String((displayFile && sim.files[displayFile]) || '')}
+                            value={String((displayFile && sim.files?.[displayFile]) || '')}
                             readOnly={true}
                             editable={false}
                             height="100%"
@@ -199,7 +201,7 @@ function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
                             basicSetup={{
                                 lineNumbers: true,
                                 foldGutter: false,
-                                highlightActiveLine: displayFile === step.activeFile,
+                                highlightActiveLine: displayFile === step.visual?.activeFile,
                                 highlightSelectionMatches: false,
                                 bracketMatching: true,
                                 autocompletion: false,
@@ -214,7 +216,7 @@ function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
                         >
                             <div className="flex items-center gap-2">
                                 <Database size={14} className="text-sky-400 shrink-0" />
-                                <span className="text-[10px] sm:text-xs uppercase font-extrabold tracking-widest text-slate-200">Objectes a Memòria</span>
+                                <span className="text-[10px] sm:text-xs uppercase font-extrabold tracking-widest text-slate-200">{t('player.memoryObjects')}</span>
                             </div>
                             <button type="button" className="text-slate-300 hover:text-white p-1" aria-label={isMemoryExpanded ? "Replegar memòria" : "Desplegar memòria"}>
                                 {isMemoryExpanded ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
@@ -239,12 +241,12 @@ function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
                         <div className="flex-1 bg-black/40 border border-white/5 rounded-xl shadow-inner overflow-hidden flex flex-col backdrop-blur-sm relative">
                             <div className="bg-white/5 border-b border-white/5 px-3 py-2 flex items-center gap-2">
                                 <TerminalSquare size={12} className="text-slate-400" />
-                                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold">Terminal de Sortida</span>
+                                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold">{t('player.terminalOutput')}</span>
                             </div>
                             <div className="flex-1 p-4 overflow-y-auto custom-scrollbar font-mono text-xs sm:text-[13px] text-slate-300 flex flex-col gap-1.5 leading-relaxed">
-                                {(step.terminalOutput || []).map((line: string, i: number) => (
+                                {(step.visual?.terminalOutput || []).map((line: string, i: number) => (
                                     <div key={i} className={`${line.startsWith('>') ? 'text-sky-400 font-bold opacity-70' : 'text-slate-200'} transition-all`}>
-                                        {line}
+                                        {t(line as any)}
                                     </div>
                                 ))}
                                 <div className="w-2 h-4 bg-slate-500 animate-pulse mt-1"></div>
@@ -255,7 +257,7 @@ function OOPPlayerContent({ sim }: { sim: OOPSimulation }) {
                     <PlayerControls
                         currentStep={currentStep}
                         totalSteps={steps.length}
-                        description={step.description || ''}
+                        description={step.description ? (t(step.description, step.variables) as string) : ''}
                         isPlaying={isPlaying}
                         onStepChange={setCurrentStep}
                         onPlayPause={handlePlayPause}
