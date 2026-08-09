@@ -31,10 +31,12 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState<string>('');
+    const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
 
     useEffect(() => {
         if (isOpen && subjectId) {
             setLoading(true);
+            setMobileView('menu');
             // Fetch the JSON dynamically
             fetch(`/data/subjects/${subjectId}.json`)
                 .then(res => {
@@ -68,7 +70,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
     return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 sm:p-6">
                     {/* Deep Blur Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -85,7 +87,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        className="w-[95vw] max-w-6xl h-[90vh] relative z-10 flex bg-slate-950/40 backdrop-blur-3xl border border-white/10 rounded-[32px] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.2)]"
+                        className="w-full h-full sm:w-[95vw] sm:max-w-6xl sm:h-[90vh] relative z-10 flex bg-slate-950/40 backdrop-blur-3xl border-0 sm:border border-white/10 rounded-none sm:rounded-[32px] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.2)]"
                     >
                         {/* Immersive Animated Background inside Modal */}
                         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(56,189,248,0.15)_0%,transparent_50%)] pointer-events-none" />
@@ -113,7 +115,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                         ) : (
                             <>
                                 {/* Sidebar Navigation & Stats */}
-                                <div className="w-80 border-r border-white/5 bg-black/20 shrink-0 relative flex flex-col backdrop-blur-sm z-10">
+                                <div className={`w-full sm:w-80 border-r border-white/5 bg-black/20 shrink-0 relative flex-col backdrop-blur-sm z-10 ${mobileView === 'menu' ? 'flex' : 'hidden sm:flex'}`}>
                                     {/* Close Button Top Left */}
                                     <div className="p-6 pb-2">
                                         <button type="button"
@@ -162,7 +164,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                             return (
                                                 <button type="button"
                                                     key={title}
-                                                    onClick={() => setActiveTab(title)}
+                                                    onClick={() => { setActiveTab(title); setMobileView('content'); }}
                                                     className={`w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-300 group overflow-hidden ${isActive
                                                             ? 'text-white'
                                                             : 'text-slate-400 hover:text-slate-200'
@@ -186,9 +188,13 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                 </div>
 
                                 {/* Main Content Area */}
-                                <div className="flex-1 flex flex-col h-full relative z-10 overflow-hidden bg-white/[0.01]">
+                                <div className={`flex-1 flex-col h-full relative z-10 overflow-hidden bg-white/[0.01] ${mobileView === 'content' ? 'flex' : 'hidden sm:flex'}`}>
                                     {/* Top Area for Summary/Requirements */}
-                                    <div className="p-8 pb-4 shrink-0 border-b border-white/5">
+                                    <div className="p-6 sm:p-8 sm:pb-4 shrink-0 border-b border-white/5 relative flex flex-col sm:block">
+                                        <button type="button" onClick={() => setMobileView('menu')} className="sm:hidden self-start mb-4 flex items-center gap-2 text-sky-400 font-bold hover:text-sky-300 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                                            {t('planner.roadmapSubjectDetails.back', 'Tornar')}
+                                        </button>
                                         <h1 className="text-3xl font-bold text-white mb-4 tracking-tight flex items-center gap-3">
                                             {t(`planner.roadmapSubjectDetails.tabs.${activeTab}`, activeTab)}
                                             <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
@@ -206,10 +212,10 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                             <AnimatePresence mode="wait">
                                                 <motion.div
                                                     key={activeTab}
-                                                    initial={{ opacity: 0, y: 30, filter: 'blur(15px)' }}
+                                                    initial={{ opacity: 0, y: 15, filter: 'blur(8px)' }}
                                                     animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                                                    exit={{ opacity: 0, y: -30, filter: 'blur(15px)' }}
-                                                    transition={{ duration: 0.5, type: "spring", bounce: 0, delay: 0.1 }}
+                                                    exit={{ opacity: 0, transition: { duration: 0 } }}
+                                                    transition={{ duration: 0.3, type: "spring", bounce: 0 }}
                                                 >
                                                     {activeTab === 'Professorat' && data.professors?.length > 0 && (
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

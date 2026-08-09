@@ -20,17 +20,17 @@ export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, classNam
             animate={isSticky ? { y: 0, opacity: 1 } : { y: 0 }}
             transition={{ delay, type: "spring", stiffness: 200, damping: 20 }}
             onAnimationComplete={() => setIsReady(true)}
-            className={`${isSticky ? 'sticky top-24 z-40 mb-8' : 'sticky top-20 mb-8 sm:mb-0 sm:fixed sm:top-auto sm:bottom-10 sm:inset-x-0 z-40 sm:z-50'} flex justify-center pointer-events-none ${isReady ? '!transform-none' : ''}`}
+            className={`${isSticky ? 'sticky top-24 z-40 mb-8' : 'fixed bottom-6 sm:bottom-10 inset-x-0 z-40 sm:z-50'} flex justify-center pointer-events-none ${isReady ? '!transform-none' : ''} px-4`}
         >
             <motion.div 
                 layout
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                className={`relative flex items-center pointer-events-auto ${className}`}
+                className={`relative flex items-center pointer-events-auto max-w-full ${className}`}
             >
                 <motion.div layout className="absolute inset-0 pointer-events-none" style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}>
                     <LiquidPanel className="w-full h-full !rounded-full">{null}</LiquidPanel>
                 </motion.div>
-                <div className="relative flex items-center gap-1 p-2 overflow-visible">
+                <div className="relative flex items-center gap-1 p-2 max-w-full">
                     <AnimatePresence mode="popLayout">
                         {children}
                     </AnimatePresence>
@@ -57,16 +57,26 @@ export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active
             whileTap="tap"
             variants={{ hover: {}, tap: {} }}
             className={`
-                shrink-0 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300
+                relative shrink-0 px-3 sm:px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 group
                 ${variant === 'default' ? (
                     active 
-                        ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.4)]' 
+                        ? 'text-white' 
                         : 'text-slate-400 hover:text-white hover:bg-white/10'
                 ) : ''}
                 ${className}
             `}
             {...(props as any)}
         >
+            {active && variant === 'default' && (
+                <motion.div
+                    layout
+                    className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                >
+                    <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
+                </motion.div>
+            )}
             <motion.div
                 layout="position"
                 variants={{
@@ -74,7 +84,7 @@ export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active
                     tap: { scale: 0.95 }
                 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className="flex items-center gap-2"
+                className="relative z-10 flex items-center gap-2"
             >
                 {children}
             </motion.div>

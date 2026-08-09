@@ -63,7 +63,10 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                         animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
                         exit={{ opacity: 0, scale: 0.9, y: 10, filter: 'blur(10px)' }}
                         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                        style={{ left: position.x, top: position.y }}
+                        style={{ 
+                            left: Math.max(16, Math.min(position.x, typeof window !== 'undefined' ? window.innerWidth - 256 - 16 : position.x)), 
+                            top: Math.max(16, Math.min(position.y, typeof window !== 'undefined' ? window.innerHeight - 450 - 16 : position.y)) 
+                        }}
                         className="fixed z-[110] w-64 bg-slate-900/80 border border-white/10 rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.1)] p-2 backdrop-blur-2xl overflow-hidden"
                     >
                         {/* Glow Behind */}

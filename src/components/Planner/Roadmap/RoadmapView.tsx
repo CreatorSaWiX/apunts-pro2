@@ -25,6 +25,7 @@ import { DrawProvider, useDrawContext } from '../../../contexts/DrawContext';
 import { useCanvasShortcuts } from '../../../hooks/useCanvasShortcuts';
 import LiquidPanel from '../../ui/glass/LiquidPanel';
 import { LiquidToolbar, LiquidToolbarButton } from '../../ui/glass/LiquidToolbar';
+import { FabMenu } from '../../ui/mobile/FabMenu';
 
 const nodeTypes = {
     subjectNode: SubjectNode,
@@ -49,7 +50,7 @@ const CustomControls = () => {
     const { t } = useTranslation();
     const { zoomIn, zoomOut, fitView } = useReactFlow();
     return (
-        <Panel position="bottom-left" className="m-6 z-40 opacity-30 hover:opacity-100 transition-opacity duration-300">
+        <Panel position="bottom-left" className="m-6 z-40 opacity-30 hover:opacity-100 transition-opacity duration-300 hidden lg:block">
             <LiquidPanel className="flex flex-col gap-2 p-2">
                 <button type="button" onClick={() => zoomIn({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title={t('roadmapView.zoomIn', 'Zoom In')}>
                     <ZoomIn size={18} strokeWidth={2.5} />
@@ -88,6 +89,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     const [isExperienceModalOpen, setIsExperienceModalOpen] = useState(false);
     const [isValidationsModalOpen, setIsValidationsModalOpen] = useState(false);
     const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+    const [isColorMenuOpen, setIsColorMenuOpen] = useState(false);
     const isPresent = useIsPresent();
     const [shouldRender, setShouldRender] = useState(true);
 
@@ -107,6 +109,12 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
             setStrokes(initialStrokes);
         }
     }, [initialStrokes, setStrokes]);
+
+    // Dispatch event to hide main navigation when draw mode is active
+    useEffect(() => {
+        window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: isDrawMode }));
+        return () => window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: false }));
+    }, [isDrawMode]);
 
     // Set the node type for all nodes
     const typedNodes = useMemo(() => {
@@ -237,7 +245,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="absolute bottom-6 right-6 z-40 flex flex-col items-end gap-3 pointer-events-none"
+                    className="absolute bottom-6 right-6 z-40 hidden lg:flex flex-col items-end gap-3 pointer-events-none"
                 >
                     <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-3xl p-3 flex flex-col gap-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] pointer-events-auto">
 
@@ -379,23 +387,46 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                 </motion.div>
 
                 {/* Floating Dock Action Buttons Bottom Center */}
-                <LiquidToolbar delay={0.3}>
+                <LiquidToolbar delay={0.3} className={isDrawMode ? "landscape:hidden lg:landscape:flex" : "hidden sm:flex"}>
                     {isDrawMode ? [
-                        <LiquidToolbarButton key="color-red" onClick={() => setCurrentColor('#ef4444')} className={currentColor === '#ef4444' ? 'text-red-500' : 'text-slate-400 hover:text-red-400'} title={t('canvas.colors.red', 'Vermell (R / 4 / C)')}>
-                            <div className="w-4 h-4 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
-                        </LiquidToolbarButton>,
+                        <motion.div layout key="color-selector" className="relative">
+                            <LiquidToolbarButton
+                                onClick={() => setIsColorMenuOpen(!isColorMenuOpen)}
+                                active={false}
+                                title={t('canvas.colors.select', 'Seleccionar Color')}
+                            >
+                                <div className="w-4 h-4 rounded-full border border-white/20" style={{ backgroundColor: currentColor, boxShadow: `0 0 12px ${currentColor}80` }} />
+                            </LiquidToolbarButton>
 
-                        <LiquidToolbarButton key="color-blue" onClick={() => setCurrentColor('#3b82f6')} className={currentColor === '#3b82f6' ? 'text-blue-500' : 'text-slate-400 hover:text-blue-400'} title={t('canvas.colors.blue', 'Blau (B / 5 / C)')}>
-                            <div className="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
-                        </LiquidToolbarButton>,
-
-                        <LiquidToolbarButton key="color-yellow" onClick={() => setCurrentColor('#eab308')} className={currentColor === '#eab308' ? 'text-yellow-500' : 'text-slate-400 hover:text-yellow-400'} title={t('canvas.colors.yellow', 'Groc (Y / 6 / C)')}>
-                            <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
-                        </LiquidToolbarButton>,
-
-                        <LiquidToolbarButton key="color-purple" onClick={() => setCurrentColor('#a855f7')} className={currentColor === '#a855f7' ? 'text-purple-500' : 'text-slate-400 hover:text-purple-400'} title={t('canvas.colors.purple', 'Lila (U / 7 / C)')}>
-                            <div className="w-4 h-4 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
-                        </LiquidToolbarButton>,
+                            <AnimatePresence>
+                                {isColorMenuOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute bottom-full mb-4 left-0 origin-bottom-left flex gap-1 p-2 rounded-[2rem] pointer-events-auto"
+                                    >
+                                        <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
+                                        
+                                        <div className="relative z-10 flex gap-1 px-1">
+                                            <button type="button" onClick={() => { setCurrentColor('#ef4444'); setIsColorMenuOpen(false); }} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-all ${currentColor === '#ef4444' ? 'bg-white/10 scale-110' : ''}`} title={t('canvas.colors.red', 'Vermell')}>
+                                                <div className="w-5 h-5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                                            </button>
+                                            <button type="button" onClick={() => { setCurrentColor('#3b82f6'); setIsColorMenuOpen(false); }} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-all ${currentColor === '#3b82f6' ? 'bg-white/10 scale-110' : ''}`} title={t('canvas.colors.blue', 'Blau')}>
+                                                <div className="w-5 h-5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                                            </button>
+                                            <button type="button" onClick={() => { setCurrentColor('#eab308'); setIsColorMenuOpen(false); }} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-all ${currentColor === '#eab308' ? 'bg-white/10 scale-110' : ''}`} title={t('canvas.colors.yellow', 'Groc')}>
+                                                <div className="w-5 h-5 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
+                                            </button>
+                                            <button type="button" onClick={() => { setCurrentColor('#a855f7'); setIsColorMenuOpen(false); }} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-all ${currentColor === '#a855f7' ? 'bg-white/10 scale-110' : ''}`} title={t('canvas.colors.purple', 'Lila')}>
+                                                <div className="w-5 h-5 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>,
 
                         <motion.div layout key="sep-1" className="w-px h-6 bg-white/10 mx-1" />,
 
@@ -545,6 +576,23 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                         </motion.div>
                     ]}
                 </LiquidToolbar>
+
+                {/* FAB Menu for Mobile (Main Menu only) */}
+                {!isDrawMode && (
+                    <FabMenu
+                        className="bottom-24 right-6"
+                        mainIcon={<Plus size={24} />}
+                        actions={[
+                            { id: 'spec', label: currentSpec ? currentSpec.name : t('roadmapView.specialization', 'Especialitat'), icon: <GraduationCap size={20} />, onClick: () => setIsSpecMenuOpen(true) },
+                            { id: 'elective', label: t('roadmapView.elective', 'Optativa'), icon: <Plus size={20} />, onClick: () => setIsSearchModalOpen(true) },
+                            { id: 'experience', label: t('roadmapView.addExperience', 'Afegir Experiència'), icon: <Sparkles size={20} />, onClick: () => setIsExperienceModalOpen(true) },
+                            { id: 'validations', label: t('roadmapView.validations', 'Convalidacions'), icon: <Award size={20} />, onClick: () => setIsValidationsModalOpen(true) },
+                            { id: 'schedule', label: t('roadmapView.schedulePlanner', 'Planificador horaris'), icon: <CalendarDays size={20} />, onClick: () => window.open('https://www.fib.upc.edu/ca/graus/grau-en-enginyeria-informatica/horaris', '_blank') },
+                            { id: 'save', label: t('roadmapView.saveRoadmap', 'Guardar'), icon: <Save size={20} />, onClick: handleSave },
+                            { id: 'draw', label: t('roadmapView.draw', 'Dibuixar'), icon: <Palette size={20} />, onClick: () => setIsDrawMode(true) }
+                        ]}
+                    />
+                )}
             </div>
 
             <SubjectContextMenu
