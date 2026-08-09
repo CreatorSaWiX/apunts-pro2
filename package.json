@@ -79,7 +79,6 @@
     "react-i18next": "^17.0.9",
     "react-katex": "^3.1.0",
     "react-markdown": "^10.1.0",
-    "react-parallax-tilt": "^1.7.332",
     "react-router-dom": "^7.13.0",
     "rehype-katex": "^7.0.1",
     "rehype-raw": "^7.0.0",
@@ -94,6 +93,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/canvas-confetti": "^1.9.0",
+    "@types/mdast": "^4.0.4",
     "@types/node": "^24.10.1",
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19.2.5",
@@ -101,7 +101,6 @@
     "@types/react-katex": "^3.0.4",
     "@types/three": "^0.183.1",
     "@types/unist": "^3.0.3",
-    "@types/mdast": "^4.0.4",
     "@vitejs/plugin-react": "^5.1.1",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",

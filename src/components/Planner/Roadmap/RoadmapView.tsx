@@ -140,7 +140,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
         return node ? node.data as SubjectNodeData : null;
     }, [selectedNodeId, nodes]);
 
-    const currentSpecNode = nodes.find(n => n.data.type === 'specialization');
+    const currentSpecNode = useMemo(() => nodes.find(n => n.data.type === 'specialization'), [nodes]);
     const currentSpec = useMemo(() => {
         if (!currentSpecNode) return null;
         return specializations.find(s => s.mandatory.includes(currentSpecNode.id));
@@ -556,31 +556,42 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                 onOpenDetails={() => setIsDetailsOpen(true)}
             />
 
-            <SubjectSearchModal
-                isOpen={isSearchModalOpen}
-                onClose={() => setIsSearchModalOpen(false)}
-            />
+            {/* Lazy-mount modals: only mount when open to avoid unnecessary context subscriptions and re-renders */}
+            {isSearchModalOpen && (
+                <SubjectSearchModal
+                    isOpen={isSearchModalOpen}
+                    onClose={() => setIsSearchModalOpen(false)}
+                />
+            )}
 
-            <SubjectDetailsModal
-                isOpen={isDetailsOpen}
-                onClose={() => setIsDetailsOpen(false)}
-                subjectId={selectedNodeId}
-            />
+            {isDetailsOpen && (
+                <SubjectDetailsModal
+                    isOpen={isDetailsOpen}
+                    onClose={() => setIsDetailsOpen(false)}
+                    subjectId={selectedNodeId}
+                />
+            )}
 
-            <ExperienceSelectorModal
-                isOpen={isExperienceModalOpen}
-                onClose={() => setIsExperienceModalOpen(false)}
-            />
+            {isExperienceModalOpen && (
+                <ExperienceSelectorModal
+                    isOpen={isExperienceModalOpen}
+                    onClose={() => setIsExperienceModalOpen(false)}
+                />
+            )}
 
-            <ValidationsModal
-                isOpen={isValidationsModalOpen}
-                onClose={() => setIsValidationsModalOpen(false)}
-            />
+            {isValidationsModalOpen && (
+                <ValidationsModal
+                    isOpen={isValidationsModalOpen}
+                    onClose={() => setIsValidationsModalOpen(false)}
+                />
+            )}
 
-            <RoadmapAIPromptBar
-                isOpen={isOpenAI}
-                onClose={onCloseAI}
-            />
+            {isOpenAI && (
+                <RoadmapAIPromptBar
+                    isOpen={isOpenAI}
+                    onClose={onCloseAI}
+                />
+            )}
         </div>
     );
 };

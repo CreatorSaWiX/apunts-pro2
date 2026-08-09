@@ -1,13 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { NodeToolbar, Position, NodeResizeControl, type NodeProps } from '@xyflow/react';
-import { useRoadmap, type SubjectNodeData } from '../../../../contexts/RoadmapContext';
+import { useRoadmapActions, type SubjectNodeData } from '../../../../contexts/RoadmapContext';
 import { Trash2, Bold, Copy, Type } from 'lucide-react';
 
 const COLORS = ['#fef08a', '#fbcfe8', '#bfdbfe', '#bbf7d0', '#e9d5ff', '#fed7aa']; // Pastel colors for post-its
 
 
 const PostItNode = ({ id, data, selected }: NodeProps<import('@xyflow/react').Node<SubjectNodeData>>) => {
-    const { updateNodeData, duplicateAnnotation, removeNode } = useRoadmap();
+    const { updateNodeData, duplicateAnnotation, removeNode } = useRoadmapActions();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [localText, setLocalText] = useState(data.text || '');
@@ -135,4 +135,4 @@ const PostItNode = ({ id, data, selected }: NodeProps<import('@xyflow/react').No
     );
 };
 
-export default PostItNode;
+export default React.memo(PostItNode);

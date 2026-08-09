@@ -14,6 +14,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ca, es, enUS } from 'date-fns/locale';
 import BottomSheet from '../ui/mobile/BottomSheet';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import ConfirmModal from '../ui/modals/ConfirmModal';
 
 interface PostDetailModalProps {
     post: CommunityPost | null;
@@ -21,12 +22,14 @@ interface PostDetailModalProps {
     onClose: () => void;
     onNext?: () => void;
     onPrev?: () => void;
+    onDelete?: (postId: string) => void;
 }
 
-const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailModalProps) => {
+const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: PostDetailModalProps) => {
     const { t, i18n } = useTranslation();
     const { user } = useAuth();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [direction, setDirection] = useState<'next' | 'prev' | null>(null);
     const isMobile = useIsMobile();
     const [showCommentsMobile, setShowCommentsMobile] = useState(false);
@@ -195,7 +198,6 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
 
     const handleDelete = async () => {
         if (!post) return;
-        if (!confirm(t('community.postDetail.deleteConfirm', 'Segur que vols eliminar aquesta publicació? Aquesta acció no es pot desfer.'))) return;
         try {
             // Eliminar respostes de la subcol·lecció primer
             const repliesRef = collection(db, 'community_posts', post.id, 'replies');
@@ -210,6 +212,10 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'delete', postId: post.id })
             }).catch(console.error);
+
+            if (onDelete) {
+                onDelete(post.id);
+            }
 
             onClose();
         } catch (err) {
@@ -312,7 +318,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
                                 </button>
                                 {user?.id === post.userId && (
                                     <button type="button" aria-label="Compartir"
-                                        onClick={handleDelete}
+                                        onClick={() => setIsDeleteModalOpen(true)}
                                         className="p-2.5 rounded-full bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors"
                                         title={t('community.postDetail.deleteTooltip', "Eliminar publicació")}
                                     >
@@ -507,7 +513,20 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev }: PostDetailMo
     );
 
     if (typeof document === 'undefined') return null;
-    return createPortal(content, document.body);
+    return (
+        <>
+            {createPortal(content, document.body)}
+            <ConfirmModal 
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                title={t('community.postDetail.deleteConfirmTitle', 'Eliminar publicació')}
+                message={t('community.postDetail.deleteConfirm', 'Segur que vols eliminar aquesta publicació? Aquesta acció no es pot desfer.')}
+                confirmText={t('common.delete', 'Eliminar')}
+                isDestructive={true}
+            />
+        </>
+    );
 };
 
 export default PostDetailModal;

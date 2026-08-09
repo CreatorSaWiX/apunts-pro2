@@ -4,7 +4,6 @@ import type { CommunityPost } from '../../types/community';
 import { Heart, Eye, FileCode2, Box, FileVideo, FileText, Archive, Pin } from 'lucide-react';
 import { db } from '../../lib/firebase';
 import { doc, updateDoc, deleteField, deleteDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import Tilt from 'react-parallax-tilt';
 import { renderEmojis } from '../../lib/emojis';
 import DOMPurify from 'dompurify';
 import FileUploader from '../ui/inputs/FileUploader';
@@ -204,22 +203,9 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {isMobile || isHeroMode ? (
-                <div className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 active:scale-[0.98] active:border-white/20 shadow-lg transition-all duration-200">
-                    {cardVisuals}
-                </div>
-            ) : (
-                <Tilt
-                    tiltEnable={true}
-                    tiltMaxAngleX={5}
-                    tiltMaxAngleY={5}
-                    scale={1.02}
-                    transitionSpeed={2000}
-                    className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 group-hover:border-white/20 shadow-lg group-hover:shadow-[0_15px_40px_rgba(255,255,255,0.08)] transition-all duration-500"
-                >
-                    {cardVisuals}
-                </Tilt>
-            )}
+            <div className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 active:scale-[0.98] active:border-white/20 shadow-lg transition-all duration-200 group-hover:border-white/20 group-hover:shadow-[0_15px_40px_rgba(255,255,255,0.08)]">
+                {cardVisuals}
+            </div>
 
             {/* Info Section */}
             <div className="flex flex-col gap-1 px-1 mt-1">

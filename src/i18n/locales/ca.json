@@ -132,6 +132,7 @@
       "title": "Assistent IA",
       "subtitle": "Configura la personalitat i el comportament del teu copilot. Aquesta funcionalitat està inspirat en",
       "identity": "Identitat (Qui soc)",
+      "delete": "Eliminar",
       "change": "Canviar",
       "name": "Nom de la IA",
       "pronouns": "Pronoms",
@@ -173,6 +174,7 @@
     }
   },
   "common": {
+    "delete": "Eliminar",
     "change": "Canviar",
     "clickToEdit": "Fes clic per editar",
     "back": "Tornar",
@@ -310,6 +312,7 @@
       "clearConfirm": "Segur que vols eliminar TOTES les tasques d'aquesta llista?",
       "clearList": "Buidar llista",
       "deleteList": "Eliminar llista",
+      "deleteListConfirm": "Segur que vols eliminar aquesta llista i totes les seves tasques?",
       "addTask": "Afegir tasca",
       "doubleClickToAdd": "Fes doble clic per afegir",
       "newTaskTitle": "Títol de la tasca...",
@@ -565,6 +568,7 @@
       "actionResource": "Ha compartit un recurs",
       "like": "M'agrada",
       "deleteTooltip": "Eliminar publicació",
+      "deleteConfirmTitle": "Eliminar publicació",
       "deleteConfirm": "Segur que vols eliminar aquesta publicació? Aquesta acció no es pot desfer.",
       "deleteError": "Error en eliminar la publicació.",
       "attachmentsTitle": "Fitxers Adjunts i Interacció",

@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { NodeToolbar, Position, NodeResizeControl, type NodeProps } from '@xyflow/react';
-import { useRoadmap, type SubjectNodeData } from '../../../../contexts/RoadmapContext';
+import { useRoadmapActions, type SubjectNodeData } from '../../../../contexts/RoadmapContext';
 import { Trash2, Bold, Copy, Type } from 'lucide-react';
 
 const COLORS = ['#ffffff', '#ef4444', '#3b82f6', '#eab308', '#a855f7', '#22c55e'];
 
 const TextNode = ({ id, data, selected }: NodeProps<import('@xyflow/react').Node<SubjectNodeData>>) => {
-    const { updateNodeData, duplicateAnnotation, removeNode } = useRoadmap();
+    const { updateNodeData, duplicateAnnotation, removeNode } = useRoadmapActions();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [localText, setLocalText] = useState(data.text || '');
@@ -119,4 +119,4 @@ const TextNode = ({ id, data, selected }: NodeProps<import('@xyflow/react').Node
     );
 };
 
-export default TextNode;
+export default React.memo(TextNode);

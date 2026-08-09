@@ -2,7 +2,7 @@ import React from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Clock, XCircle, RefreshCw, X, BookOpen, Edit2, Trash2, Globe, Building2, Briefcase } from 'lucide-react';
 import type { SubjectNodeData, SubjectStatus } from '../../../contexts/RoadmapContext';
-import { useRoadmap } from '../../../contexts/RoadmapContext';
+import { useRoadmapActions } from '../../../contexts/RoadmapContext';
 import { useTranslation } from 'react-i18next';
 
 interface SubjectContextMenuProps {
@@ -16,7 +16,7 @@ interface SubjectContextMenuProps {
 
 const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose, nodeId, nodeData, position, onOpenDetails }) => {
     const { t } = useTranslation();
-    const { updateNodeStatus, updateNodeGrade, removeNode } = useRoadmap();
+    const { updateNodeStatus, updateNodeGrade, removeNode } = useRoadmapActions();
     const [localGrade, setLocalGrade] = React.useState('');
 
     // Sync local grade state when nodeData changes (e.g., preset buttons or different node)

@@ -4,10 +4,19 @@ import type { NodeProps, Node } from '@xyflow/react';
 import type { SubjectNodeData } from '../../../../contexts/RoadmapContext';
 import { useTargetGrade } from '../../../../contexts/RoadmapContext';
 import { m as motion } from 'framer-motion';
-import Tilt from 'react-parallax-tilt';
 import { useTranslation } from 'react-i18next';
 import { useIsMobile } from '../../../../hooks/useIsMobile';
 import { hapticLight } from '../../../../lib/haptics';
+
+const STATUS_STYLES: Record<string, { bg: string, border: string, text: string, shadow: string, glow: string }> = {
+    locked: { bg: 'bg-[#0f1115]/80', border: 'border-slate-800', text: 'text-slate-500', shadow: '', glow: '' },
+    available: { bg: 'bg-slate-800/90', border: 'border-sky-500/30', text: 'text-slate-200', shadow: 'shadow-[0_0_15px_rgba(56,189,248,0.1)]', glow: '' },
+    in_progress: { bg: 'bg-slate-900/95', border: 'border-sky-400', text: 'text-white', shadow: 'shadow-[0_0_20px_rgba(56,189,248,0.3)]', glow: 'shadow-[inset_0_0_20px_rgba(56,189,248,0.2)]' },
+    retaking: { bg: 'bg-slate-900/95', border: 'border-amber-400', text: 'text-white', shadow: 'shadow-[0_0_20px_rgba(251,191,36,0.3)]', glow: 'shadow-[inset_0_0_20px_rgba(251,191,36,0.2)]' },
+    passed: { bg: '', border: '', text: 'text-white', shadow: '', glow: '' },
+    failed: { bg: 'bg-red-950/80', border: 'border-red-500/50', text: 'text-red-100', shadow: 'shadow-[0_0_15px_rgba(239,68,68,0.2)]', glow: '' },
+    default: { bg: 'bg-[#0f1115]/80', border: 'border-white/5', text: 'text-slate-400', shadow: '', glow: '' }
+};
 
 const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) => {
     const { t } = useTranslation();
@@ -17,69 +26,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
     // Determine if this node is gradable (contributes to GPA)
     const isGradable = !id.startsWith('CFGS_') && !id.startsWith('VALIDATION_') && data.type !== 'text' && data.type !== 'postit';
 
-    // Hexagonal / Sci-Fi styles
-    const getStatusStyles = () => {
-        switch (data.status) {
-            case 'locked':
-                return {
-                    bg: 'bg-[#0f1115]/80',
-                    border: 'border-slate-800',
-                    text: 'text-slate-500',
-                    shadow: '',
-                    glow: ''
-                };
-            case 'available':
-                return {
-                    bg: 'bg-slate-800/90',
-                    border: 'border-sky-500/30',
-                    text: 'text-slate-200',
-                    shadow: 'shadow-[0_0_15px_rgba(56,189,248,0.1)]',
-                    glow: ''
-                };
-            case 'in_progress':
-                return {
-                    bg: 'bg-slate-900/95',
-                    border: 'border-sky-400',
-                    text: 'text-white',
-                    shadow: 'shadow-[0_0_20px_rgba(56,189,248,0.3)]',
-                    glow: 'shadow-[inset_0_0_20px_rgba(56,189,248,0.2)]'
-                };
-            case 'retaking':
-                return {
-                    bg: 'bg-slate-900/95',
-                    border: 'border-amber-400',
-                    text: 'text-white',
-                    shadow: 'shadow-[0_0_20px_rgba(251,191,36,0.3)]',
-                    glow: 'shadow-[inset_0_0_20px_rgba(251,191,36,0.2)]'
-                };
-            case 'passed':
-                return {
-                    bg: '',
-                    border: '',
-                    text: 'text-white',
-                    shadow: '',
-                    glow: ''
-                };
-            case 'failed':
-                return {
-                    bg: 'bg-red-950/80',
-                    border: 'border-red-500/50',
-                    text: 'text-red-100',
-                    shadow: 'shadow-[0_0_15px_rgba(239,68,68,0.2)]',
-                    glow: ''
-                };
-            default:
-                return {
-                    bg: 'bg-[#0f1115]/80',
-                    border: 'border-white/5',
-                    text: 'text-slate-400',
-                    shadow: '',
-                    glow: ''
-                };
-        }
-    };
-
-    const s = getStatusStyles();
+    const s = STATUS_STYLES[data.status] || STATUS_STYLES.default;
 
     // Determine specific tailwind classes for passed state dynamically to avoid purge issues
     const getPassedClasses = () => {
@@ -124,7 +71,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             onPointerDown={() => hapticLight()}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             style={{ transformStyle: 'preserve-3d' }}
-            className={`relative min-w-[150px] max-w-[180px] p-0 rounded-lg border-2 transition-colors duration-300 ${containerClasses} ${selected ? 'ring-2 ring-white/70 ring-offset-2 ring-offset-slate-950' : ''}`}
+            className={`relative min-w-[150px] max-w-[180px] p-0 rounded-lg border-2 transition-colors duration-300 cursor-pointer ${containerClasses} ${selected ? 'ring-2 ring-white/70 ring-offset-2 ring-offset-slate-950' : ''}`}
         >
             <Handle type="target" position={Position.Top} className="w-3 h-1 !bg-sky-400 !border-0 !rounded-sm opacity-50" />
 
@@ -152,7 +99,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             {/* Glowing rotating border for in_progress / retaking */}
             {(data.status === 'in_progress' || data.status === 'retaking') && (
                 <div className="absolute inset-[-2px] rounded-lg overflow-hidden pointer-events-none z-0 mix-blend-screen">
-                    <div className={`absolute inset-[-100%] animate-[spin_3s_linear_infinite] ${data.status === 'retaking' ? 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(251,191,36,0.6)_360deg)]' : 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.6)_360deg)]'}`} />
+                    <div className={`absolute inset-[-100%] animate-[spin_3s_linear_infinite] ${data.status === 'retaking' ? 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(251,191,36,0.6)_360deg)]' : 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.6)_360deg)]'}`} style={{ willChange: 'transform' }} />
                     <div className="absolute inset-[2px] bg-slate-900 rounded-lg" />
                 </div>
             )}
@@ -194,28 +141,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
         </motion.div>
     );
 
-    if (isMobile) {
-        return <div className="rounded-lg">{nodeContent}</div>;
-    }
-
-    return (
-        <Tilt
-            tiltMaxAngleX={10}
-            tiltMaxAngleY={10}
-            perspective={800}
-            scale={1.02}
-            transitionSpeed={1500}
-            gyroscope={false}
-            glareEnable={true}
-            glareMaxOpacity={0.1}
-            glareColor="#ffffff"
-            glarePosition="all"
-            glareBorderRadius="8px"
-            className="rounded-lg"
-        >
-            {nodeContent}
-        </Tilt>
-    );
+    return <div className="rounded-lg">{nodeContent}</div>;
 };
 
 export default memo(SubjectNode);

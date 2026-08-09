@@ -6,7 +6,7 @@ import {
     addDoc, serverTimestamp 
 } from 'firebase/firestore';
 import type { PostReply } from '../../types/community';
-import { Send, Smile, ChevronDown, ArrowUp } from 'lucide-react';
+import { Smile, ChevronDown, ArrowUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { formatDistanceToNow } from 'date-fns';

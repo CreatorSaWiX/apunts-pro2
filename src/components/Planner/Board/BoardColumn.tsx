@@ -8,6 +8,7 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { Plus, Calendar, Flag, Play, Trash2, X, Check } from 'lucide-react';
 import { DateTimePicker } from './DateTimePicker';
 import { useTranslation } from 'react-i18next';
+import ConfirmModal from '../../ui/modals/ConfirmModal';
 
 interface BoardColumnProps {
     column: { id: string; title: string; color?: string };
@@ -33,6 +34,8 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
     const [draftSubjectId, setDraftSubjectId] = useState<string | null>(null);
     const [isEditingHeader, setIsEditingHeader] = useState(false);
     const [headerTitle, setHeaderTitle] = useState(column.title);
+    const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+    const [isDeleteColumnModalOpen, setIsDeleteColumnModalOpen] = useState(false);
     const [draftDueDate, setDraftDueDate] = useState<string>('');
     const [draftStartDate, setDraftStartDate] = useState<string>('');
 
@@ -223,9 +226,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                     <button type="button"
                         onClick={(e) => { 
                             e.stopPropagation(); 
-                            if (tasks.length > 0 && window.confirm(t('planner.boardView.clearConfirm', "Segur que vols eliminar TOTES les tasques d'aquesta llista?"))) {
-                                tasks.forEach(t => deleteTask(t.id));
-                            }
+                            if (tasks.length > 0) setIsClearModalOpen(true);
                         }}
                         className="text-slate-500 hover:text-amber-400 transition-all duration-200 pointer-events-auto p-1"
                         title={t('planner.boardView.clearList', "Buidar llista")}
@@ -233,7 +234,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                         <Trash2 size={14} />
                     </button>
                     <button type="button"
-                        onClick={(e) => { e.stopPropagation(); onDeleteColumn?.(); }}
+                        onClick={(e) => { e.stopPropagation(); setIsDeleteColumnModalOpen(true); }}
                         className="text-slate-500 hover:text-red-400 transition-all duration-200 pointer-events-auto p-1"
                         title={t('planner.boardView.deleteList', "Eliminar llista")}
                     >
@@ -419,6 +420,26 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                     </div>
                 )}
             </div>
+            <ConfirmModal 
+                isOpen={isClearModalOpen}
+                onClose={() => setIsClearModalOpen(false)}
+                onConfirm={() => {
+                    tasks.forEach(t => deleteTask(t.id));
+                }}
+                title={t('planner.boardView.clearList', 'Buidar llista')}
+                message={t('planner.boardView.clearConfirm', "Segur que vols eliminar TOTES les tasques d'aquesta llista?")}
+                confirmText={t('common.delete', 'Eliminar')}
+                isDestructive={true}
+            />
+            <ConfirmModal 
+                isOpen={isDeleteColumnModalOpen}
+                onClose={() => setIsDeleteColumnModalOpen(false)}
+                onConfirm={() => onDeleteColumn?.()}
+                title={t('planner.boardView.deleteList', 'Eliminar llista')}
+                message={t('planner.boardView.deleteListConfirm', 'Segur que vols eliminar aquesta llista i totes les seves tasques?')}
+                confirmText={t('common.delete', 'Eliminar')}
+                isDestructive={true}
+            />
         </div>
     );
 };

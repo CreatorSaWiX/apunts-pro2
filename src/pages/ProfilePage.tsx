@@ -541,6 +541,9 @@ const ProfilePage = () => {
                                 post={selectedPost}
                                 onPrev={handlePrevPost}
                                 onNext={handleNextPost}
+                                onDelete={(postId) => {
+                                    setUserPosts(prev => prev.filter(p => p.id !== postId));
+                                }}
                             />
                         </Suspense>
                     );

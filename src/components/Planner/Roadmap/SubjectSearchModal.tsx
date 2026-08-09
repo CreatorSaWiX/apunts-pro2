@@ -16,7 +16,16 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
     const { t } = useTranslation();
     const { nodes, addSubjectNode } = useRoadmap();
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedQuery, setDebouncedQuery] = useState('');
     const [activeFilter, setActiveFilter] = useState('all');
+
+    // Debounce search query
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedQuery(searchQuery.toLowerCase());
+        }, 200);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     const CATEGORIES = useMemo(() => [
         { id: 'all', label: t('planner.roadmapSubjectSearch.categories.all', 'Totes') },
@@ -32,7 +41,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
     const inputRef = useRef<HTMLInputElement>(null);
 
     // Determine current specialization to highlight its complementary subjects
-    const currentSpecNode = nodes.find(n => n.data.type === 'specialization');
+    const currentSpecNode = useMemo(() => nodes.find(n => n.data.type === 'specialization'), [nodes]);
     const currentSpec = useMemo(() => {
         if (!currentSpecNode) return null;
         return specializations.find(s => s.mandatory.includes(currentSpecNode.id));
@@ -50,15 +59,24 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
             const specs = specializations.filter(spec => 
                 spec.mandatory.includes(s.name) || spec.complementary.includes(s.name)
             );
-            return { ...s, specs };
+            return { 
+                ...s, 
+                specs,
+                _searchName: s.name.toLowerCase(),
+                _searchDesc: s.description.toLowerCase()
+            };
         });
     }, [availableSubjects]);
 
     const filteredSubjects = useMemo(() => {
-        let result = subjectsWithTags.filter((s: any) => 
-            s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-            s.description.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        let result = subjectsWithTags;
+        
+        if (debouncedQuery) {
+            result = result.filter((s: any) => 
+                s._searchName.includes(debouncedQuery) || 
+                s._searchDesc.includes(debouncedQuery)
+            );
+        }
 
         if (activeFilter !== 'all') {
             if (activeFilter === 'comp') {
@@ -73,7 +91,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
         }
 
         return result;
-    }, [subjectsWithTags, searchQuery, activeFilter, currentSpec]);
+    }, [subjectsWithTags, debouncedQuery, activeFilter, currentSpec]);
 
     useEffect(() => {
         if (isOpen) {

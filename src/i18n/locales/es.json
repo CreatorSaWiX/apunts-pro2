@@ -132,6 +132,7 @@
       "title": "Asistente IA",
       "subtitle": "Configura la personalidad y el comportamiento de tu copiloto. Esta funcionalidad está inspirada en",
       "identity": "Identidad (Quién soy)",
+      "delete": "Eliminar",
       "change": "Cambiar",
       "name": "Nombre de la IA",
       "pronouns": "Pronombres",
@@ -173,6 +174,7 @@
     }
   },
   "common": {
+    "delete": "Eliminar",
     "change": "Cambiar",
     "clickToEdit": "Haz clic para editar",
     "back": "Volver",
@@ -310,6 +312,7 @@
       "clearConfirm": "¿Seguro que quieres eliminar TODAS las tareas de esta lista?",
       "clearList": "Vaciar lista",
       "deleteList": "Eliminar lista",
+      "deleteListConfirm": "¿Seguro que quieres eliminar esta lista y todas sus tareas?",
       "addTask": "Añadir tarea",
       "doubleClickToAdd": "Haz doble clic para añadir",
       "newTaskTitle": "Título de la tarea...",
@@ -565,6 +568,7 @@
       "actionResource": "Ha compartido un recurso",
       "like": "Me gusta",
       "deleteTooltip": "Eliminar publicación",
+      "deleteConfirmTitle": "Eliminar publicación",
       "deleteConfirm": "¿Seguro que quieres eliminar esta publicación? Esta acción no se puede deshacer.",
       "deleteError": "Error al eliminar la publicación.",
       "attachmentsTitle": "Archivos Adjuntos e Interacción",

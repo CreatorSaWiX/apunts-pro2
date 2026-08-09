@@ -32,8 +32,8 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
 
     // Stable graph initial data to prevent nodes from exploding/remounting
     const [graphData] = useState(() => ({
-        nodes: algo.initialGraph.nodes.map((n: any) => ({ ...n })),
-        links: algo.initialGraph.links.map((l: any) => ({ ...l }))
+        nodes: algo.initialState?.nodes?.map((n: any) => ({ ...n })) || [],
+        links: algo.initialState?.links?.map((l: any) => ({ ...l })) || []
     }));
 
     useEffect(() => {
@@ -63,16 +63,16 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
     // Update node colors and labels dynamically
     // We modify the stable nodes in-place to preserve their physics state (x, y)
     graphData.nodes.forEach((n: any) => {
-        n.color = step.highlights[n.id] || '#334155';
-        if (step.nodeLabels && step.nodeLabels[n.id]) {
-            n.label = step.nodeLabels[n.id];
+        n.color = step?.visual?.highlights?.[n.id] || '#334155';
+        if (step?.visual?.nodeLabels && step.visual.nodeLabels[n.id]) {
+            n.label = step.visual.nodeLabels[n.id];
         }
     });
 
     // Create a new graph data object for the visualizer to trigger its useEffect
     const currentGraphData = {
         nodes: graphData.nodes,
-        links: (step.links || algo.initialGraph.links).map((l: any) => ({ ...l }))
+        links: (step?.visual?.links || algo.initialState?.links || []).map((l: any) => ({ ...l }))
     };
 
     const customTheme = EditorView.theme({
@@ -199,7 +199,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
                     <PlayerControls
                         currentStep={currentStep}
                         totalSteps={steps.length}
-                        description={step.description}
+                        description={step.description ? (t(step.description, step.variables) as string) : ''}
                         isPlaying={isPlaying}
                         onStepChange={setCurrentStep}
                         onPlayPause={handlePlayPause}
@@ -285,7 +285,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
                         </div>
                         {isMemoryExpanded && (
                             <div className="flex-1 overflow-auto custom-scrollbar p-2 mt-1 flex flex-col gap-0.5 content-start">
-                                {Object.entries(step.variables).map(([k, v]) => (
+                                {Object.entries(step.variables || {}).map(([k, v]) => (
                                     <div key={k} className="flex text-[11px] sm:text-xs group hover:bg-[#2a2d2e] px-2 py-1 rounded transition-colors duration-200">
                                         <span className="text-[#9cdcfe] font-mono mr-2 shrink-0">{k}:</span>
                                         <span className="text-[#b5cea8] font-mono break-all">{String(v)}</span>

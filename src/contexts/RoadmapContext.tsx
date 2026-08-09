@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
 import type { Node, Edge, NodeChange, EdgeChange, Connection } from '@xyflow/react';
@@ -34,10 +34,22 @@ export interface SubjectNodeData extends Record<string, unknown> {
     fontWeight?: string;
 }
 
-interface RoadmapContextType {
+// Data context: nodes, edges, derived values. Changes when nodes/edges change.
+interface RoadmapDataContextType {
     nodes: Node<SubjectNodeData>[];
     edges: Edge[];
     itinerary: ItineraryType;
+    isLoading: boolean;
+    totalPassedECTS: number;
+    canStartMaster: boolean;
+    averageGrade: number | null;
+    initialStrokes: any[];
+    targetGrade: number | null;
+    requiredAverageGrade: number | null;
+}
+
+// Actions context: stable callbacks. Does NOT change on drag/position changes.
+interface RoadmapActionsContextType {
     setItinerary: (it: ItineraryType) => void;
     onNodesChange: (changes: NodeChange[]) => void;
     onEdgesChange: (changes: EdgeChange[]) => void;
@@ -54,17 +66,14 @@ interface RoadmapContextType {
     duplicateAnnotation: (nodeId: string) => void;
     removeNode: (nodeId: string) => void;
     setSpecialization: (specializationId: string) => void;
-    isLoading: boolean;
-    totalPassedECTS: number;
-    canStartMaster: boolean;
-    averageGrade: number | null;
-    initialStrokes: any[];
-    targetGrade: number | null;
     setTargetGrade: (grade: number | null) => void;
-    requiredAverageGrade: number | null;
 }
 
-const RoadmapContext = createContext<RoadmapContextType | undefined>(undefined);
+// Backwards-compatible combined type
+type RoadmapContextType = RoadmapDataContextType & RoadmapActionsContextType;
+
+const RoadmapDataContext = createContext<RoadmapDataContextType | undefined>(undefined);
+const RoadmapActionsContext = createContext<RoadmapActionsContextType | undefined>(undefined);
 
 // Lightweight context so SubjectNode can read requiredAverageGrade without
 // subscribing to the full RoadmapContext (which changes on every drag/zoom).
@@ -283,6 +292,14 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
 
 
     const checkPrerequisites = useCallback((currentNodes: Node<SubjectNodeData>[], currentEdges: Edge[]) => {
+        // Pre-compute adjacency map once: O(E)
+        const incomingMap = new Map<string, string[]>();
+        for (const e of currentEdges) {
+            const arr = incomingMap.get(e.target);
+            if (arr) arr.push(e.source);
+            else incomingMap.set(e.target, [e.source]);
+        }
+
         let nodesChanged = true;
         let newNodes = [...currentNodes];
 
@@ -291,6 +308,9 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         while (nodesChanged && safetyCounter < 15) {
             nodesChanged = false;
             safetyCounter++;
+
+            // Pre-compute node lookup map once per iteration: O(N)
+            const nodeMap = new Map(newNodes.map(n => [n.id, n]));
 
             const maxPassedSemester = newNodes.reduce((max, n) => {
                 const isPassed = n.data.status === 'passed';
@@ -304,9 +324,11 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             const passedCredits = newNodes.reduce((sum, n) => n.data.status === 'passed' ? sum + n.data.credits : sum, 0);
 
             newNodes = newNodes.map(node => {
-                const incomingEdges = currentEdges.filter(e => e.target === node.id);
-                const edgePrereqsPassed = incomingEdges.length === 0 || incomingEdges.every(e => {
-                    const sourceNode = newNodes.find(n => n.id === e.source);
+                // O(1) lookup instead of O(E) filter
+                const incoming = incomingMap.get(node.id);
+                const edgePrereqsPassed = !incoming || incoming.every(sourceId => {
+                    // O(1) lookup instead of O(N) find
+                    const sourceNode = nodeMap.get(sourceId);
                     return sourceNode?.data.status === 'passed';
                 });
 
@@ -496,7 +518,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             const newNodes = [...prev, newNode];
             return newNodes as Node<SubjectNodeData>[];
         });
-    }, [edges]);
+    }, []);
 
     const addAnnotationNode = useCallback((type: 'text' | 'postit', x: number, y: number) => {
         const newNode: Node<SubjectNodeData> = {
@@ -556,7 +578,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             return newNodes as Node<SubjectNodeData>[];
         });
         setEdges(prev => prev.filter(e => e.source !== nodeId && e.target !== nodeId));
-    }, [edges]);
+    }, []);
 
     const setSpecialization = useCallback((specializationId: string) => {
         const spec = specializations.find(s => s.id === specializationId);
@@ -602,6 +624,8 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         []
     );
 
+    const lastSavedData = useRef<string | null>(null);
+
     const saveRoadmap = useCallback(async (strokes: any[] = []) => {
         if (!user) return;
         try {
@@ -633,43 +657,83 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 animated: !!e.animated
             }));
 
-            const { db } = await import('../lib/firebase');
-            const { doc, setDoc } = await import('firebase/firestore');
-            const docRef = doc(db, 'users', user.id, 'roadmaps', 'main');
-            await setDoc(docRef, removeUndefined({
+            const payload = removeUndefined({
                 nodes: cleanNodes,
                 edges: cleanEdges,
                 itinerary,
                 strokes,
-                targetGrade,
+                targetGrade
+            });
+
+            const payloadStr = JSON.stringify(payload);
+            if (payloadStr === lastSavedData.current) {
+                // Skip if no actual changes
+                return;
+            }
+
+            const { db } = await import('../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            const docRef = doc(db, 'users', user.id, 'roadmaps', 'main');
+            await setDoc(docRef, {
+                ...payload,
                 updatedAt: new Date().toISOString()
-            }));
+            });
+            
+            lastSavedData.current = payloadStr;
         } catch (err) {
             console.error("Error saving roadmap:", err);
             throw err;
         }
     }, [nodes, edges, itinerary, targetGrade, user]);
 
-    const contextValue = useMemo(() => ({
-        nodes, edges, itinerary, setItinerary,
+    // Data context: re-renders only when nodes/edges/derived data changes
+    const dataValue = useMemo(() => ({
+        nodes, edges, itinerary,
+        isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes,
+        targetGrade, requiredAverageGrade
+    }), [nodes, edges, itinerary, isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes, targetGrade, requiredAverageGrade]);
+
+    // Actions context: stable callbacks, rarely re-created (only when their explicit deps change)
+    const actionsValue = useMemo(() => ({
+        setItinerary,
         onNodesChange, onEdgesChange, onConnect,
         updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode,
-        setSpecialization,
-        isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes,
-        targetGrade, setTargetGrade, requiredAverageGrade
-    }), [nodes, edges, itinerary, isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes, targetGrade, requiredAverageGrade, onNodesChange, onEdgesChange, onConnect, updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode, setSpecialization]);
+        setSpecialization, setTargetGrade
+    }), [onNodesChange, onEdgesChange, onConnect, updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode, setSpecialization]);
 
     return (
-        <RoadmapContext.Provider value={contextValue}>
-            {children}
-        </RoadmapContext.Provider>
+        <RoadmapDataContext.Provider value={dataValue}>
+            <RoadmapActionsContext.Provider value={actionsValue}>
+                {children}
+            </RoadmapActionsContext.Provider>
+        </RoadmapDataContext.Provider>
     );
 };
 
-export const useRoadmap = () => {
-    const context = useContext(RoadmapContext);
-    if (context === undefined) {
+/** Full hook — subscribes to BOTH data + actions (re-renders on node changes). Use when you need nodes/edges. */
+export const useRoadmap = (): RoadmapContextType => {
+    const data = useContext(RoadmapDataContext);
+    const actions = useContext(RoadmapActionsContext);
+    if (data === undefined || actions === undefined) {
         throw new Error('useRoadmap must be used within a RoadmapProvider');
     }
-    return context;
+    return { ...data, ...actions };
+};
+
+/** Actions-only hook — does NOT re-render when nodes/edges change. Use for modals, context menus, etc. */
+export const useRoadmapActions = (): RoadmapActionsContextType => {
+    const actions = useContext(RoadmapActionsContext);
+    if (actions === undefined) {
+        throw new Error('useRoadmapActions must be used within a RoadmapProvider');
+    }
+    return actions;
+};
+
+/** Data-only hook — subscribes to data changes only. */
+export const useRoadmapData = (): RoadmapDataContextType => {
+    const data = useContext(RoadmapDataContext);
+    if (data === undefined) {
+        throw new Error('useRoadmapData must be used within a RoadmapProvider');
+    }
+    return data;
 };

@@ -989,6 +989,9 @@ const CommunityPage = () => {
                             onClose={() => setSelectedPost(null)}
                             onPrev={handlePrevPost}
                             onNext={handleNextPost}
+                            onDelete={(postId) => {
+                                setPosts(prev => prev.filter(p => p.id !== postId));
+                            }}
                         />
                     );
                 })()}

@@ -1,19 +1,33 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useViewport } from '@xyflow/react';
 import { useDrawContext, type Stroke } from '../../../contexts/DrawContext';
 
-// Helper to generate SVG path data from points
+// O(N) path generation using Array.join instead of O(N²) string concatenation
 const getSvgPathFromPoints = (points: { x: number; y: number }[]) => {
     if (points.length === 0) return '';
     if (points.length === 1) return `M ${points[0].x} ${points[0].y} L ${points[0].x} ${points[0].y}`;
     
-    let path = `M ${points[0].x} ${points[0].y}`;
+    const parts = new Array(points.length);
+    parts[0] = `M ${points[0].x} ${points[0].y}`;
     for (let i = 1; i < points.length; i++) {
-        // Simple smoothing can be added here, but linear is fine for performance
-        path += ` L ${points[i].x} ${points[i].y}`;
+        parts[i] = `L ${points[i].x} ${points[i].y}`;
     }
-    return path;
+    return parts.join(' ');
 };
+
+// SVG filter definition — shared by all strokes instead of per-stroke CSS drop-shadow
+const StrokeGlowFilter = React.memo(() => (
+    <defs>
+        <filter id="stroke-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+            <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.4 0" result="glow" />
+            <feMerge>
+                <feMergeNode in="glow" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+));
 
 const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStroke }: { strokes: Stroke[]; currentTool: string; removeStroke: (id: string) => void }) => {
     return (
@@ -27,7 +41,6 @@ const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStrok
                     fill="none"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    style={{ filter: `drop-shadow(0px 0px 6px ${stroke.color}66)` }}
                     pointerEvents={currentTool === 'eraser' ? 'stroke' : 'none'}
                     onPointerDown={(e) => {
                         if (currentTool === 'eraser') {
@@ -50,10 +63,12 @@ const DrawLayer: React.FC = () => {
     const { x, y, zoom } = useViewport();
     const { isDrawMode, currentTool, currentColor, currentWidth, strokes, addStroke, removeStroke } = useDrawContext();
     
-    const [currentStroke, setCurrentStroke] = useState<Stroke | null>(null);
+    // Use refs for mutable drawing state to avoid O(N) array spreads per pointerMove frame
+    const currentStrokeRef = useRef<Stroke | null>(null);
+    const currentPathRef = useRef<SVGPathElement | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
 
-    const getMouseCoords = (e: React.PointerEvent<SVGSVGElement>) => {
+    const getMouseCoords = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
         if (!svgRef.current) return { x: 0, y: 0 };
         const rect = svgRef.current.getBoundingClientRect();
         // Convert screen coordinates to ReactFlow viewport coordinates
@@ -63,46 +78,61 @@ const DrawLayer: React.FC = () => {
             x: (clientX - x) / zoom,
             y: (clientY - y) / zoom
         };
-    };
+    }, [x, y, zoom]);
 
-    const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    const handlePointerDown = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
         if (!isDrawMode || currentTool !== 'pen') return;
         e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);
         
         const coords = getMouseCoords(e);
-        setCurrentStroke({
+        currentStrokeRef.current = {
             id: Date.now().toString(),
             points: [coords],
             color: currentColor,
             width: currentWidth
-        });
-    };
+        };
+        
+        // Direct DOM manipulation for the active stroke — zero React re-renders during drawing
+        if (currentPathRef.current) {
+            currentPathRef.current.setAttribute('d', `M ${coords.x} ${coords.y}`);
+            currentPathRef.current.setAttribute('stroke', currentColor);
+            currentPathRef.current.setAttribute('stroke-width', String(currentWidth));
+            currentPathRef.current.style.display = '';
+        }
+    }, [isDrawMode, currentTool, currentColor, currentWidth, getMouseCoords]);
 
-    const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
-        if (!isDrawMode || currentTool !== 'pen' || !currentStroke) return;
+    const handlePointerMove = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+        if (!isDrawMode || currentTool !== 'pen' || !currentStrokeRef.current) return;
         e.preventDefault();
         
         const coords = getMouseCoords(e);
-        setCurrentStroke(prev => {
-            if (!prev) return prev;
-            return {
-                ...prev,
-                points: [...prev.points, coords]
-            };
-        });
-    };
+        // O(1) mutable push instead of O(N) immutable array spread
+        currentStrokeRef.current.points.push(coords);
+        
+        // Direct DOM update — no React setState, no reconciliation, no GC pressure
+        if (currentPathRef.current) {
+            const d = currentPathRef.current.getAttribute('d') || '';
+            currentPathRef.current.setAttribute('d', `${d} L ${coords.x} ${coords.y}`);
+        }
+    }, [isDrawMode, currentTool, getMouseCoords]);
 
-    const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
-        if (!isDrawMode || currentTool !== 'pen' || !currentStroke) return;
+    const handlePointerUp = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+        if (!isDrawMode || currentTool !== 'pen' || !currentStrokeRef.current) return;
         e.preventDefault();
         e.currentTarget.releasePointerCapture(e.pointerId);
         
-        if (currentStroke.points.length > 0) {
-            addStroke(currentStroke);
+        if (currentStrokeRef.current.points.length > 0) {
+            addStroke(currentStrokeRef.current);
         }
-        setCurrentStroke(null);
-    };
+        currentStrokeRef.current = null;
+        
+        // Hide the active stroke path
+        if (currentPathRef.current) {
+            currentPathRef.current.setAttribute('d', '');
+            currentPathRef.current.style.display = 'none';
+        }
+    }, [isDrawMode, currentTool, addStroke]);
 
     return (
         <svg
@@ -114,20 +144,18 @@ const DrawLayer: React.FC = () => {
             onPointerCancel={handlePointerUp}
             style={{ touchAction: 'none' }}
         >
-            <g transform={`translate(${x}, ${y}) scale(${zoom})`}>
+            <StrokeGlowFilter />
+            <g transform={`translate(${x}, ${y}) scale(${zoom})`} filter="url(#stroke-glow)">
                 <MemoizedCompletedStrokes strokes={strokes} currentTool={currentTool} removeStroke={removeStroke} />
                 
-                {currentStroke && (
-                    <path
-                        d={getSvgPathFromPoints(currentStroke.points)}
-                        stroke={currentStroke.color}
-                        strokeWidth={currentStroke.width}
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{ filter: `drop-shadow(0px 0px 6px ${currentStroke.color}66)` }}
-                    />
-                )}
+                {/* Active stroke: rendered via direct DOM manipulation, no React re-renders */}
+                <path
+                    ref={currentPathRef}
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ display: 'none' }}
+                />
             </g>
         </svg>
     );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Globe, Briefcase, ChevronRight, Search, ExternalLink } from 'lucide-react';
-import { useRoadmap } from '../../../contexts/RoadmapContext';
+import { useRoadmapActions } from '../../../contexts/RoadmapContext';
 import Modal from '../../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
 
@@ -252,18 +252,25 @@ const PremiumCombobox = ({ label, value, onChange, placeholder, options }: any) 
 };
 
 
+let cachedUniversities: any[] | null = null;
+
 const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
-    const { addExperienceNode } = useRoadmap();
+    const { addExperienceNode } = useRoadmapActions();
     const [selectedType, setSelectedType] = useState<ExpType>('mobility');
     const [details, setDetails] = useState<any>({});
-    const [universities, setUniversities] = useState<any[]>([]);
+    const [universities, setUniversities] = useState<any[]>(cachedUniversities || []);
 
     useEffect(() => {
-        fetch('/data/universities.json')
-            .then(res => res.json())
-            .then(data => setUniversities(data))
-            .catch(err => console.error("Error loading universities:", err));
+        if (!cachedUniversities) {
+            fetch('/data/universities.json')
+                .then(res => res.json())
+                .then(data => {
+                    cachedUniversities = data;
+                    setUniversities(data);
+                })
+                .catch(err => console.error("Error loading universities:", err));
+        }
     }, []);
 
     // Reset state when opening/closing
