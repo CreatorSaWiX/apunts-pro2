@@ -7,7 +7,7 @@ import { Suspense, lazy } from 'react';
 import Spinner from '../components/ui/Spinner';
 import { useTranslation } from 'react-i18next';
 
-const CodeEditor = lazy(() => import('../components/ui/CodeEditor'));
+const CodeEditor = lazy(() => import('../components/ui/editors/CodeEditor'));
 
 const CodeEditorSkeleton = () => {
     const { t } = useTranslation();

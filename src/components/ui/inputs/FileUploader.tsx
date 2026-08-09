@@ -90,7 +90,7 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
                 setProgress(((i) / acceptedFiles.length) * 100);
                 
                 // 1. Generate preview
-                const { generatePreview } = await import('../../lib/previewGenerator');
+                const { generatePreview } = await import('../../../lib/previewGenerator');
                 const previewUrl = await generatePreview(file);
                 
                 // 2. Upload main file

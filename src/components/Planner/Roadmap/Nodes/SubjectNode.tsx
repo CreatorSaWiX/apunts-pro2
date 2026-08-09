@@ -1,13 +1,13 @@
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import type { NodeProps, Node } from '@xyflow/react';
-import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
-import { useTargetGrade } from '../../../contexts/RoadmapContext';
+import type { SubjectNodeData } from '../../../../contexts/RoadmapContext';
+import { useTargetGrade } from '../../../../contexts/RoadmapContext';
 import { m as motion } from 'framer-motion';
 import Tilt from 'react-parallax-tilt';
 import { useTranslation } from 'react-i18next';
-import { useIsMobile } from '../../../hooks/useIsMobile';
-import { hapticLight } from '../../../lib/haptics';
+import { useIsMobile } from '../../../../hooks/useIsMobile';
+import { hapticLight } from '../../../../lib/haptics';
 
 const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) => {
     const { t } = useTranslation();

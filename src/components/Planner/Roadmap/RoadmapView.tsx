@@ -3,7 +3,7 @@ import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow, ReactFlo
 import { useRoadmap, RoadmapProvider, TargetGradeProvider } from '../../../contexts/RoadmapContext';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
 
-import SubjectNode from './SubjectNode';
+import SubjectNode from './Nodes/SubjectNode';
 import SubjectContextMenu from './SubjectContextMenu';
 import SubjectSearchModal from './SubjectSearchModal';
 import SubjectDetailsModal from './SubjectDetailsModal';

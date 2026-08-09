@@ -7,7 +7,6 @@ import { doc, updateDoc, deleteField, deleteDoc, setDoc, serverTimestamp } from 
 import Tilt from 'react-parallax-tilt';
 import { renderEmojis } from '../../lib/emojis';
 import DOMPurify from 'dompurify';
-import Spinner from '../ui/Spinner';
 import FileUploader from '../ui/inputs/FileUploader';
 import { ImagePlus } from 'lucide-react';
 import subjectsData from '../../data/subjects.json';

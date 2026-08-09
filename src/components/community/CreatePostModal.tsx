@@ -15,7 +15,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import { tailwindColors } from '../../contexts/SubjectContext';
 import { useTranslation } from 'react-i18next';
 
-const RichTextEditor = lazy(() => import('../ui/RichTextEditor'));
+const RichTextEditor = lazy(() => import('../ui/editors/RichTextEditor'));
 
 interface CreatePostModalProps {
     isOpen: boolean;

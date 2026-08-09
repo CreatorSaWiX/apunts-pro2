@@ -10,7 +10,7 @@ import { Suspense, lazy } from 'react';
 import CommentsSection from '../components/comments/CommentsSection';
 import { useTranslation } from 'react-i18next';
 
-const CodeEditor = lazy(() => import('../components/ui/CodeEditor'));
+const CodeEditor = lazy(() => import('../components/ui/editors/CodeEditor'));
 
 const CodeEditorSkeleton = () => {
     const { t } = useTranslation();
