@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, lazy, Suspense } from 'react';
-import { useSubject } from '../contexts/SubjectContext';
-import { useSettings } from '../contexts/SettingsContext';
+import { useSubjectStore } from '../stores/useSubjectStore';
+import { useSettingsStore } from '../stores/useSettingsStore';
 import Hero from '../components/Hero';
 import { m as motion } from 'framer-motion';
 import TopicCarousel from '../components/TopicCarousel';
@@ -10,8 +10,8 @@ import { useIsMobile } from '../hooks/useIsMobile';
 const MobileActionMenu = lazy(() => import('../components/MobileActionMenu'));
 
 const HomePage = () => {
-    const { subject, setSubject } = useSubject();
-    const { homeSubjects } = useSettings();
+    const { subject, setSubject } = useSubjectStore();
+    const { homeSubjects } = useSettingsStore();
     const [displaySubject, setDisplaySubject] = useState(subject);
     const [prevSubject, setPrevSubject] = useState(subject);
     const [isExiting, setIsExiting] = useState(false);

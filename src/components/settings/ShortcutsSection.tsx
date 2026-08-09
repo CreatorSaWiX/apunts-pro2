@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSettings } from '../../contexts/SettingsContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import { Keyboard, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
 
 export const ShortcutsSection = () => {
     const { t } = useTranslation();
-    const { shortcuts, setShortcuts } = useSettings();
+    const { shortcuts, setShortcuts } = useSettingsStore();
     const [listeningAction, setListeningAction] = useState<string | null>(null);
     const [showOnMobile, setShowOnMobile] = useState<boolean>(false);
 

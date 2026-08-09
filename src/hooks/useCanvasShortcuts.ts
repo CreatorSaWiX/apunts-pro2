@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useDrawContext, type DrawTool } from '../contexts/DrawContext';
-import { useSettings } from '../contexts/SettingsContext';
+import { useSettingsStore } from '../stores/useSettingsStore';
 import { useTranslation } from 'react-i18next';
 
 interface UseCanvasShortcutsOptions {
@@ -11,7 +11,7 @@ interface UseCanvasShortcutsOptions {
 
 export const useCanvasShortcuts = ({ onClose, onClearBroadcast, enabled = true }: UseCanvasShortcutsOptions = {}) => {
     const { t } = useTranslation();
-    const { shortcuts } = useSettings();
+    const { shortcuts } = useSettingsStore();
     const {
         currentTool,
         currentColor,

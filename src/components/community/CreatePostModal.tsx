@@ -11,8 +11,8 @@ import Spinner from '../ui/Spinner';
 import Modal from '../ui/modals/Modal';
 import PublicationCard from './PublicationCard';
 import type { CommunityPost } from '../../types/community';
-import { useSettings } from '../../contexts/SettingsContext';
-import { tailwindColors } from '../../contexts/SubjectContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
+import { tailwindColors } from '../../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 
 const RichTextEditor = lazy(() => import('../ui/editors/RichTextEditor'));
@@ -32,7 +32,7 @@ interface TiptapEditor {
 export default function CreatePostModal({ isOpen, onClose, initialSubject }: CreatePostModalProps) {
     const { t } = useTranslation();
     const { user } = useAuth();
-    const { customSubjectColors } = useSettings();
+    const { customSubjectColors } = useSettingsStore();
     const [subject, setSubject] = useState<SubjectType>(initialSubject || 'General');
     const [content, setContent] = useState('');
     const [debouncedContent, setDebouncedContent] = useState('');

@@ -1,5 +1,5 @@
 import React from 'react';
-import { tailwindColors } from '../../contexts/SubjectContext';
+import { tailwindColors } from '../../stores/useSubjectStore';
 
 type SpinnerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 type SpinnerVariant = 'primary' | 'white' | 'black' | 'linkedin' | 'youtube' | string;

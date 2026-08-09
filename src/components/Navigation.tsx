@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
-import { useSubject } from '../contexts/SubjectContext';
+import { useSubjectStore } from '../stores/useSubjectStore';
 import { Link, useLocation } from 'react-router-dom';
 import { Users, Home, LogIn, CalendarDays, Settings } from 'lucide-react';
 import { AnimatePresence, m as motion } from 'framer-motion';
@@ -91,7 +91,7 @@ const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, classNam
 };
 
 const Navigation: React.FC = () => {
-    const { subject, theme } = useSubject();
+    const { subject, theme } = useSubjectStore();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const location = useLocation();

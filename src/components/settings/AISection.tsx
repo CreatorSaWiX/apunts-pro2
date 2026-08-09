@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Bot, Trash2, Save } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useSettings } from '../../contexts/SettingsContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import FileUploader from '../ui/inputs/FileUploader';
 import Modal from '../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,7 @@ import { InputField, TextAreaField } from './SharedFields';
 export const AISection = () => {
     const { t } = useTranslation();
     const { user } = useAuth();
-    const { aiSettings, setAiSettings } = useSettings();
+    const { aiSettings, setAiSettings } = useSettingsStore();
     const [editingSoulField, setEditingSoulField] = useState<'rules' | 'boundaries' | 'customDirectives' | null>(null);
 
     return (

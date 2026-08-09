@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { m as motion, AnimatePresence, Reorder } from 'framer-motion';
 import { Search, Command, ChevronRight, X } from 'lucide-react';
-import { useSettings } from '../../contexts/SettingsContext';
-import { tailwindColors } from '../../contexts/SubjectContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
+import { tailwindColors } from '../../stores/useSubjectStore';
 import subjectsData from '../../data/subjects.json';
 import NavigationPill from '../ui/NavigationPill';
 import Modal from '../ui/modals/Modal';
@@ -13,7 +13,7 @@ import { useShortcut } from '../../hooks/useShortcut';
 
 export const SubjectsSection = () => {
     const { t } = useTranslation();
-    const { homeSubjects, setHomeSubjects, customSubjectColors, setCustomSubjectColors, shortcuts } = useSettings();
+    const { homeSubjects, setHomeSubjects, customSubjectColors, setCustomSubjectColors, shortcuts } = useSettingsStore();
     const searchShortcut = shortcuts?.searchSubjects || { key: 'k', meta: true };
     const [searchQuery, setSearchQuery] = useState('');
     const [isCommandOpen, setIsCommandOpen] = useState(false);

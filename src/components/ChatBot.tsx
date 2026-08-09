@@ -7,7 +7,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { useAuth } from '../contexts/AuthContext';
-import { useSettings } from '../contexts/SettingsContext';
+import { useSettingsStore } from '../stores/useSettingsStore';
 import { useLocation } from 'react-router-dom';
 import bgImage from '../assets/bg.webp';
 import AIStreamingIndicator from './AIStreamingIndicator';
@@ -85,7 +85,7 @@ const SendButton = ({
 
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
-  const { aiSettings, setAiSettings } = useSettings();
+  const { aiSettings, setAiSettings } = useSettingsStore();
   const { t, i18n } = useTranslation();
   const aiName = aiSettings?.identity?.name;
   

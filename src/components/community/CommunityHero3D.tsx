@@ -3,11 +3,11 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial, PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
 
-import { useSubject } from '../../contexts/SubjectContext';
+import { useSubjectStore } from '../../stores/useSubjectStore';
 import { useIsMobile } from '../../hooks/useIsMobile';
 
 const ParticleNetwork = ({ count }: { count: number }) => {
-    const { theme } = useSubject();
+    const { theme } = useSubjectStore();
     const ref = useRef<THREE.Points>(null);
 
     const positions = useMemo(() => {
@@ -49,7 +49,7 @@ const ParticleNetwork = ({ count }: { count: number }) => {
 };
 
 const LiteHeroBanner = () => {
-    const { theme } = useSubject();
+    const { theme } = useSubjectStore();
     return (
         <div 
             className="absolute inset-0 top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10 opacity-80 transition-opacity duration-1000"

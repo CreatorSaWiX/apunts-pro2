@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRoadmapAI } from '../../../hooks/useRoadmapAI';
 import { ArrowUp, Sparkles, StopCircle, CheckCircle2, Plus, X } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
-import { useSettings } from '../../../contexts/SettingsContext';
+import { useSettingsStore } from '../../../stores/useSettingsStore';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -26,7 +26,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
     const { t } = useTranslation();
     const [prompt, setPrompt] = useState('');
     const { nodes, addSubjectNode } = useRoadmap();
-    const { aiSettings } = useSettings();
+    const { aiSettings } = useSettingsStore();
     const {
         messages,
         isGenerating,

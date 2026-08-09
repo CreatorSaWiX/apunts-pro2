@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
-import { useSubject } from '../contexts/SubjectContext';
+import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
@@ -7,7 +7,7 @@ import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, Refr
 import { m as motion, useMotionTemplate, useMotionValue, MotionConfig } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useShortcut } from '../hooks/useShortcut';
-import { useSettings } from '../contexts/SettingsContext';
+import { useSettingsStore } from '../stores/useSettingsStore';
 
 const SpotlightCard = React.memo(({
     children,
@@ -72,11 +72,11 @@ interface TopicCarouselProps {
 const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = false, subjectOverride }) => {
     const isMobile = useIsMobile();
     const navigate = useNavigate();
-    const { subject: contextSubject } = useSubject();
+    const { subject: contextSubject } = useSubjectStore();
     const subject = (subjectOverride || contextSubject || '').toLowerCase();
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
-    const { shortcuts } = useSettings();
+    const { shortcuts } = useSettingsStore();
     const [activeIndex, setActiveIndex] = useState(0);
 
     const enterShortcut = shortcuts?.carouselEnter || { key: 'Enter', meta: false };

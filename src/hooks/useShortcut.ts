@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { useSettings } from '../contexts/SettingsContext';
+import { useSettingsStore } from '../stores/useSettingsStore';
 
 export const useShortcut = (actionName: string, callback: () => void) => {
-    const { shortcuts } = useSettings();
+    const { shortcuts } = useSettingsStore();
     const shortcut = shortcuts?.[actionName];
     const callbackRef = useRef(callback);
 

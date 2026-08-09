@@ -1,7 +1,7 @@
 
 import React, { useRef, useState, useEffect, useCallback, lazy, Suspense } from 'react';
 const ForceGraph2D = lazy(() => import('react-force-graph-2d'));
-import { useSubject } from '../../../contexts/SubjectContext';
+import { useSubjectStore } from '../../../stores/useSubjectStore';
 import { RotateCcw } from 'lucide-react';
 import { useInView } from 'framer-motion';
 import { InteractionLock } from '../system/InteractionLock';
@@ -68,7 +68,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     const fgRef = useRef<any>(null);
     const numericHeight = Number(height);
     const [dimensions, setDimensions] = useState({ width: 0, height: numericHeight });
-    const { theme } = useSubject();
+    const { theme } = useSubjectStore();
     const [graphData, setGraphData] = useState<NonNullable<GraphVisualizerProps['initialData']>>(defaultData);
     const [isHovered, setIsHovered] = useState(false);
 

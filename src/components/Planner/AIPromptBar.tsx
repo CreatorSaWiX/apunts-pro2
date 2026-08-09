@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, StopCircle, Plus, X } from 'lucide-react';
 import { useTasks } from '../../contexts/TasksContext';
-import { useSettings } from '../../contexts/SettingsContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import AIStreamingIndicator, { type StreamPhase } from '../AIStreamingIndicator';
@@ -19,7 +19,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
     const [thoughtText, setThoughtText] = useState('');
     const [error, setError] = useState<string | null>(null);
     const { tasks, addTask, updateTask, deleteTask, subjects } = useTasks();
-    const { aiSettings } = useSettings();
+    const { aiSettings } = useSettingsStore();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const abortControllerRef = useRef<AbortController | null>(null);

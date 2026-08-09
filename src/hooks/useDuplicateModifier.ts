@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useSettings } from '../contexts/SettingsContext';
+import { useSettingsStore } from '../stores/useSettingsStore';
 
 export const useDuplicateModifier = () => {
-    const { shortcuts, isSettingsLoaded } = useSettings();
+    const { shortcuts, isSettingsLoaded } = useSettingsStore();
     const [isModifierPressed, setIsModifierPressed] = useState(false);
 
     useEffect(() => {

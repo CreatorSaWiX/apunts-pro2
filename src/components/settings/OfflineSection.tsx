@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Download, Check, Trash2, FileText, ChevronDown, ChevronUp, Database, Info } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { useSettings } from '../../contexts/SettingsContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import subjectsData from '../../data/subjects.json';
 import { useTranslation } from 'react-i18next';
-import { tailwindColors } from '../../contexts/SubjectContext';
+import { tailwindColors } from '../../stores/useSubjectStore';
 
 const CORE_APP_SIZE = 3 * 1024 * 1024; // 3 MB
 
 export const OfflineSection = () => {
     const { t } = useTranslation();
-    const { offlineStorage, setOfflineStorage, customSubjectColors } = useSettings();
+    const { offlineStorage, setOfflineStorage, customSubjectColors } = useSettingsStore();
     const [storageDetails, setStorageDetails] = useState<{
         quota: number;
         usage: number;

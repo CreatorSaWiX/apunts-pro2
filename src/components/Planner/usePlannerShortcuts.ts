@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { useSettings } from '../../contexts/SettingsContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 
 export const usePlannerShortcuts = () => {
-    const { shortcuts, isSettingsLoaded } = useSettings();
+    const { shortcuts, isSettingsLoaded } = useSettingsStore();
 
     useEffect(() => {
         if (!isSettingsLoaded) return;

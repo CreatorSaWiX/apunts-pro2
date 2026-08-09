@@ -1,11 +1,11 @@
 import { m as motion } from 'framer-motion';
-import { LayoutGrid, Calendar, CalendarDays, Route } from 'lucide-react';
-import { useSettings, type PlannerViewMode } from '../../contexts/SettingsContext';
+import { CalendarDays, Kanban, FileText, CheckSquare, Plus, Trash2, Maximize2, Settings2, HelpCircle, Map, LayoutGrid, Calendar, Route } from 'lucide-react';
+import { useSettingsStore, type PlannerViewMode } from '../../stores/useSettingsStore';
 import { useTranslation } from 'react-i18next';
 
 export const PlannerSection = () => {
     const { t } = useTranslation();
-    const { defaultPlannerView, setDefaultPlannerView } = useSettings();
+    const { defaultPlannerView, setDefaultPlannerView } = useSettingsStore();
     const plannerViews: { id: PlannerViewMode, icon: any, label: string }[] = [
         { id: 'board', icon: LayoutGrid, label: t('planner.board', 'Tauler') },
         { id: 'calendar', icon: Calendar, label: t('planner.calendar', 'Calendari') },

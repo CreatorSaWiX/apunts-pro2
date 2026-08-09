@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from 'react';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import subjectsData from '../data/subjects.json';
-import { useSettings } from './SettingsContext';
 
 interface Theme {
     primary: string;
@@ -11,7 +11,6 @@ interface Theme {
     label: string;
 }
 
-// Map Tailwind color names to Hex and RGB
 export const tailwindColors: Record<string, { primary: string, primary_rgb: string, accent: string, accent_rgb: string }> = {
     'slate':   { primary: '#64748b', primary_rgb: '100, 116, 139', accent: '#94a3b8', accent_rgb: '148, 163, 184' },
     'red':     { primary: '#ef4444', primary_rgb: '239, 68, 68',   accent: '#f87171', accent_rgb: '248, 113, 113' },
@@ -33,71 +32,70 @@ export const tailwindColors: Record<string, { primary: string, primary_rgb: stri
     'rose':    { primary: '#f43f5e', primary_rgb: '244, 63, 94',   accent: '#fb7185', accent_rgb: '251, 113, 133' },
 };
 
-interface SubjectContextType {
-    subject: string;
-    setSubject: (subject: string) => void;
-    theme: Theme;
-}
+const calculateTheme = (subject: string, customSubjectColors: Record<string, string> = {}): Theme => {
+    const subjectInfo = subjectsData.find((s: any) => s.name.toUpperCase() === subject.toUpperCase());
+    
+    let colorFamily = 'sky';
+    if (customSubjectColors && customSubjectColors[subject.toUpperCase()]) {
+        colorFamily = customSubjectColors[subject.toUpperCase()];
+    } else if (subjectInfo?.colorToken) {
+        colorFamily = subjectInfo.colorToken.split('-')[0];
+    }
 
-const SubjectContext = createContext<SubjectContextType | undefined>(undefined);
+    const colors = tailwindColors[colorFamily] || tailwindColors['sky'];
 
-export function SubjectProvider({ children }: { children: ReactNode }) {
-    const { customSubjectColors } = useSettings();
+    return {
+        ...colors,
+        background: '#0f172a',
+        label: subjectInfo?.name || subject.toUpperCase()
+    };
+};
 
-    const [subject, setSubject] = useState<string>(() => {
-        return localStorage.getItem('app-subject') || 'PRO2';
-    });
-
-    useEffect(() => {
-        localStorage.setItem('app-subject', subject);
-    }, [subject]);
-
-    const theme = useMemo<Theme>(() => {
-        const subjectInfo = subjectsData.find((s: any) => s.name.toUpperCase() === subject.toUpperCase());
-        
-        let colorFamily = 'sky'; // default
-        if (customSubjectColors && customSubjectColors[subject.toUpperCase()]) {
-            colorFamily = customSubjectColors[subject.toUpperCase()];
-        } else if (subjectInfo?.colorToken) {
-            colorFamily = subjectInfo.colorToken.split('-')[0];
-        }
-
-        const colors = tailwindColors[colorFamily] || tailwindColors['sky'];
-
-        return {
-            ...colors,
-            background: '#0f172a', // slate-900
-            label: subjectInfo?.name || subject.toUpperCase()
-        };
-    }, [subject, customSubjectColors]);
-
-    // Apply theme colors to CSS variables for global transition
-    useEffect(() => {
+const applyThemeToDocument = (theme: Theme) => {
+    if (typeof window !== 'undefined') {
         const root = document.documentElement;
-
         root.style.setProperty('--primary', theme.primary);
         root.style.setProperty('--primary-rgb', theme.primary_rgb);
         root.style.setProperty('--accent', theme.accent);
         root.style.setProperty('--accent-rgb', theme.accent_rgb);
-
-        // Ensure body background transition
         document.body.style.transition = 'background-color 0.5s ease, color 0.5s ease';
-
-    }, [theme]);
-
-    const contextValue = useMemo(() => ({ subject, setSubject, theme }), [subject, theme]);
-
-    return (
-        <SubjectContext.Provider value={contextValue}>
-            {children}
-        </SubjectContext.Provider>
-    );
-}
-
-export function useSubject() {
-    const context = useContext(SubjectContext);
-    if (context === undefined) {
-        throw new Error('useSubject must be used within a SubjectProvider');
     }
-    return context;
 }
+
+interface SubjectState {
+    subject: string;
+    theme: Theme;
+    setSubject: (subject: string) => void;
+    updateTheme: (customSubjectColors: Record<string, string>) => void;
+}
+
+export const useSubjectStore = create<SubjectState>()(
+    persist(
+        (set, get) => ({
+            subject: 'PRO2',
+            theme: calculateTheme('PRO2'),
+            setSubject: (subject) => {
+                const newTheme = calculateTheme(subject);
+                set({ subject, theme: newTheme });
+                applyThemeToDocument(newTheme);
+            },
+            updateTheme: (customSubjectColors) => {
+                const newTheme = calculateTheme(get().subject, customSubjectColors);
+                set({ theme: newTheme });
+                applyThemeToDocument(newTheme);
+            }
+        }),
+        {
+            name: 'app-subject',
+            partialize: (state) => ({ subject: state.subject }),
+            onRehydrateStorage: () => (state) => {
+                if (state) {
+                    // Timeout to ensure it runs after hydration
+                    setTimeout(() => {
+                        applyThemeToDocument(state.theme);
+                    }, 0);
+                }
+            }
+        }
+    )
+);

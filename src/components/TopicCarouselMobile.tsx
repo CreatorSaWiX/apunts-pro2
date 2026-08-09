@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useSubject } from '../contexts/SubjectContext';
+import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { allPersonalNotes } from 'content-collections';
@@ -336,7 +336,7 @@ interface TopicCarouselProps {
 const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: any) => {
     const isMobile = useIsMobile();
     const navigate = useNavigate();
-    const { subject: contextSubject } = useSubject();
+    const { subject: contextSubject } = useSubjectStore();
     const subject = (subjectOverride || contextSubject || '').toLowerCase();
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
@@ -554,7 +554,7 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
 
 const LandscapeView = React.memo(({ subjectOverride }: any) => {
     const navigate = useNavigate();
-    const { subject: contextSubject } = useSubject();
+    const { subject: contextSubject } = useSubjectStore();
     const subject = (subjectOverride || contextSubject || '').toLowerCase();
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;

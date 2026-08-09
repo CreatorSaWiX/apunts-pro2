@@ -1,7 +1,7 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import { Node, mergeAttributes } from '@tiptap/core';
 import { useShortcut } from '../../../hooks/useShortcut';
-import { useSettings } from '../../../contexts/SettingsContext';
+import { useSettingsStore } from '../../../stores/useSettingsStore';
 import { useTranslation } from 'react-i18next';
 import { StarterKit } from '@tiptap/starter-kit';
 import { Image } from '@tiptap/extension-image';
@@ -144,7 +144,7 @@ const DropdownItem = ({ onClick, isActive, icon: Icon, label }: any) => (
 
 const MenuBar = ({ editor }: { editor: any }) => {
     const { t } = useTranslation();
-    const { shortcuts } = useSettings();
+    const { shortcuts } = useSettingsStore();
     const [, forceUpdate] = useState({});
 
     const handleEmojiSelect = (emojiUrl: string) => {

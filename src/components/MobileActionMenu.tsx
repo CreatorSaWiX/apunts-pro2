@@ -1,7 +1,7 @@
 import React, { useState, useTransition } from 'react';
 import { m as motion } from 'framer-motion';
 import { Settings, Github, Heart } from 'lucide-react';
-import { useSubject } from '../contexts/SubjectContext';
+import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 
 import { Link } from 'react-router-dom';
@@ -19,7 +19,7 @@ const MobileActionMenu: React.FC<{
     isOpen: boolean;
     setIsOpen: (val: boolean) => void;
 }> = ({ isOpen, setIsOpen }) => {
-    const { subject, setSubject } = useSubject();
+    const { subject, setSubject } = useSubjectStore();
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
     const [, startTransition] = useTransition();

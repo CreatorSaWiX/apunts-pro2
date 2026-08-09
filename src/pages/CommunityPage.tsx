@@ -11,7 +11,7 @@ import { lazy, Suspense } from 'react';
 
 import Spinner from '../components/ui/Spinner';
 import BottomSheet from '../components/ui/mobile/BottomSheet';
-import { useSettings } from '../contexts/SettingsContext';
+import { useSettingsStore } from '../stores/useSettingsStore';
 import { getSubjectById } from '../config/subjects';
 import { useTranslation } from 'react-i18next';
 import { useShortcut } from '../hooks/useShortcut';
@@ -91,7 +91,7 @@ const CommunityPage = () => {
     const [showMobileFiltersMenu, setShowMobileFiltersMenu] = useState(false);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
-    const { customSubjectColors } = useSettings();
+    const { customSubjectColors } = useSettingsStore();
 
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');

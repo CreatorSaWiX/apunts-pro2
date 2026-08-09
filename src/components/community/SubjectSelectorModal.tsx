@@ -2,8 +2,8 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import Modal from '../ui/modals/Modal';
 import { Search, Check } from 'lucide-react';
 import { SUBJECTS } from '../../config/subjects';
-import { useSettings } from '../../contexts/SettingsContext';
-import { tailwindColors } from '../../contexts/SubjectContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
+import { tailwindColors } from '../../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 
 interface SubjectSelectorModalProps {
@@ -19,7 +19,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
     const { t } = useTranslation();
     const [search, setSearch] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
-    const { customSubjectColors } = useSettings();
+    const { customSubjectColors } = useSettingsStore();
 
     useEffect(() => {
         if (isOpen) {

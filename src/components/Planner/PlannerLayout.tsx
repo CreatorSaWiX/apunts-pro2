@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, Suspense, lazy, useTransition } from 'react';
 import { useTasks } from '../../contexts/TasksContext';
-import { useSettings } from '../../contexts/SettingsContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import NavigationPill from '../ui/NavigationPill';
 import { Calendar, LayoutDashboard, GanttChartSquare, Sparkles, Route } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
@@ -68,7 +68,7 @@ const FallbackSpinner = () => (
 const PlannerLayout: React.FC = () => {
     const { t } = useTranslation();
     const { isLoading, error, subjects, filters, tasks } = useTasks();
-    const { defaultPlannerView } = useSettings();
+    const { defaultPlannerView } = useSettingsStore();
     const [activeTab, setActiveTab] = useState<ViewMode>(defaultPlannerView || 'board');
     const [view, setView] = useState<ViewMode>(defaultPlannerView || 'board');
     const [, startTransition] = useTransition();

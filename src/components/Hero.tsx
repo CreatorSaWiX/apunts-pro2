@@ -1,7 +1,7 @@
 import React from 'react';
 import { m as motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { RefreshCw, GitCommitVertical } from 'lucide-react';
-import { useSubject } from '../contexts/SubjectContext';
+import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 // import { Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExiting = false }) => {
-    const { subject: contextSubject, theme } = useSubject();
+    const { subject: contextSubject, theme } = useSubjectStore();
     const subject = subjectOverride || contextSubject;
     const isMobile = useIsMobile();
     const { t } = useTranslation();

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { useAuth } from './AuthContext';
 import type { Task, Subject, TaskPriority } from '../types/tasks';
 import subjectsData from '../data/subjects.json';
-import { useSettings } from './SettingsContext';
+import { useSettingsStore } from '../stores/useSettingsStore';
 
 export type DateRangeFilter = 'ALL' | 'TODAY' | 'THIS_WEEK' | 'THIS_MONTH' | 'THIS_TERM';
 
@@ -32,7 +32,7 @@ const TasksContext = createContext<TasksContextType | undefined>(undefined);
 
 export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { user } = useAuth();
-    const { customSubjectColors } = useSettings();
+    const { customSubjectColors } = useSettingsStore();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
