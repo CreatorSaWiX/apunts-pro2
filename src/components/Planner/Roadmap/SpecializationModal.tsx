@@ -12,6 +12,7 @@ interface SpecializationModalProps {
     onSelect: (id: string) => void;
 }
 
+
 const themeColorMap = {
     indigo: {
         bg: 'bg-indigo-500/10',
@@ -58,10 +59,17 @@ const themeColorMap = {
 export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen, onClose, currentSpecId, onSelect }) => {
     const { t } = useTranslation();
     const [previewSpecId, setPreviewSpecId] = useState<string | null>(null);
+    const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
+
+    React.useEffect(() => {
+        if (isOpen) {
+            setMobileView('menu');
+        }
+    }, [isOpen]);
 
     const activeSpecId = previewSpecId || currentSpecId || specializations[0].id;
     const activeSpec = specializations.find(s => s.id === activeSpecId) as SpecializationData;
-    
+
     const theme = themeColorMap[activeSpec.themeColor];
 
     return (
@@ -70,15 +78,16 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
             onClose={onClose}
             size="4xl"
             className="bg-(--glass-bg-darker) border border-(--glass-border) shadow-2xl rounded-4xl overflow-hidden backdrop-blur-3xl backdrop-saturate-150"
-            hideCloseButton
+            fullScreenOnMobile
         >
-            <div className="flex flex-col md:flex-row flex-1 w-full h-full min-h-125 md:min-h-150 relative overflow-hidden">
-                
+
+            <div className="flex flex-col md:flex-row flex-1 w-full h-full relative overflow-hidden">
+
                 {/* Dynamic Background Gradient */}
                 <div className={`absolute inset-0 bg-linear-to-br ${theme.gradient} opacity-50 transition-colors duration-500 pointer-events-none`} />
 
                 {/* Left Column: List */}
-                <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0">
+                <div className={`w-full md:w-1/3 border-b md:border-b-0 md:border-r border-white/10 p-6 flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0 ${mobileView === 'menu' ? 'flex flex-1 md:flex-none' : 'hidden md:flex'}`}>
                     <div className="mb-6 shrink-0">
                         <h3 className="text-2xl font-bold text-white mb-2">{t('planner.roadmapSpecialization.specializationsTitle', 'Mencions')}</h3>
                         <p className="text-sm text-slate-400">{t('planner.roadmapSpecialization.chooseYourPath', 'Tria el teu camí cap a l\'excel·lència professional.')}</p>
@@ -91,7 +100,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                             const specTheme = themeColorMap[spec.themeColor];
 
                             return (
-                                <div 
+                                <div
                                     key={spec.id}
                                     className="relative shrink-0"
                                 >
@@ -106,7 +115,10 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                     )}
 
                                     <button type="button"
-                                        onClick={() => setPreviewSpecId(spec.id)}
+                                        onClick={() => {
+                                            setPreviewSpecId(spec.id);
+                                            setMobileView('content');
+                                        }}
                                         className="w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group hover:bg-white/5"
                                     >
                                         <div className={`w-2 h-2 rounded-full transition-all duration-300 ${isPreviewed ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
@@ -121,8 +133,14 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                 </div>
 
                 {/* Right Column: Details View */}
-                <div className="w-full md:w-2/3 py-6 md:py-8 pr-6 md:pr-8 pl-4 md:pl-6 flex flex-col z-10 relative min-h-0 h-full">
-                    
+                <div className={`w-full md:w-2/3 py-6 md:py-8 pr-6 md:pr-8 pl-4 md:pl-6 flex-col z-10 relative min-h-0 h-full ${mobileView === 'content' ? 'flex flex-1 md:flex-none' : 'hidden md:flex'}`}>
+
+                    {/* Mobile Back Button */}
+                    <button type="button" onClick={() => setMobileView('menu')} className="md:hidden self-start mb-4 flex items-center gap-2 text-white font-bold hover:text-slate-300 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        {t('common.back', 'Tornar')}
+                    </button>
+
                     {/* Scrollable Content Area */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar pl-2 pr-2 md:pr-4 mb-4 min-h-0">
                         <AnimatePresence mode="wait">
@@ -143,67 +161,67 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                 </p>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                {/* Why Choose */}
-                                <div>
-                                    <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
-                                        <Star size={16} className={theme.text} />
-                                        {t('planner.roadmapSpecialization.whyChooseIt', 'Per què triar-la?')}
-                                    </h4>
-                                    <p className="text-sm text-slate-400 leading-relaxed">
-                                        {t(`curriculum.specializations.${activeSpec.id}.whyChoose`, activeSpec.whyChoose)}
-                                    </p>
-                                </div>
+                                    {/* Why Choose */}
+                                    <div>
+                                        <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
+                                            <Star size={16} className={theme.text} />
+                                            {t('planner.roadmapSpecialization.whyChooseIt', 'Per què triar-la?')}
+                                        </h4>
+                                        <p className="text-sm text-slate-400 leading-relaxed">
+                                            {t(`curriculum.specializations.${activeSpec.id}.whyChoose`, activeSpec.whyChoose)}
+                                        </p>
+                                    </div>
 
-                                {/* Mandatory Subjects */}
-                                <div>
-                                    <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
-                                        <BookOpen size={16} className={theme.text} />
-                                        {t('planner.roadmapSpecialization.mandatory', 'Obligatòries')}
-                                    </h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {activeSpec.mandatory.map(sub => (
-                                            <span key={sub} className="px-2.5 py-1 text-xs font-bold bg-white/5 border border-white/10 text-slate-300 rounded-lg shadow-sm">
-                                                {sub}
-                                            </span>
-                                        ))}
+                                    {/* Mandatory Subjects */}
+                                    <div>
+                                        <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
+                                            <BookOpen size={16} className={theme.text} />
+                                            {t('planner.roadmapSpecialization.mandatory', 'Obligatòries')}
+                                        </h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {activeSpec.mandatory.map(sub => (
+                                                <span key={sub} className="px-2.5 py-1 text-xs font-bold bg-white/5 border border-white/10 text-slate-300 rounded-lg shadow-sm">
+                                                    {sub}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Roles & Benefits */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4">
-                                <div>
-                                    <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
-                                        <Briefcase size={16} className={theme.text} />
-                                        {t('planner.roadmapSpecialization.careerPaths', 'Sortides Professionals')}
-                                    </h4>
-                                    <ul className="space-y-3">
-                                        {(t(`curriculum.specializations.${activeSpec.id}.roles`, { returnObjects: true, defaultValue: activeSpec.roles }) as string[]).map(role => (
-                                            <li key={role} className="flex items-center gap-3 text-sm text-slate-300">
-                                                <div className={`w-1.5 h-1.5 rounded-full ${theme.dot} shadow-[0_0_8px_currentColor] ${theme.text}`} />
-                                                {role}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
+                                {/* Roles & Benefits */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4">
+                                    <div>
+                                        <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
+                                            <Briefcase size={16} className={theme.text} />
+                                            {t('planner.roadmapSpecialization.careerPaths', 'Sortides Professionals')}
+                                        </h4>
+                                        <ul className="space-y-3">
+                                            {(t(`curriculum.specializations.${activeSpec.id}.roles`, { returnObjects: true, defaultValue: activeSpec.roles }) as string[]).map(role => (
+                                                <li key={role} className="flex items-center gap-3 text-sm text-slate-300">
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${theme.dot} shadow-[0_0_8px_currentColor] ${theme.text}`} />
+                                                    {role}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
 
-                                <div>
-                                    <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
-                                        <Star size={16} className={theme.text} />
-                                        {t('planner.roadmapSpecialization.keyBenefits', 'Beneficis Clau')}
-                                    </h4>
-                                    <ul className="space-y-3">
-                                        {(t(`curriculum.specializations.${activeSpec.id}.benefits`, { returnObjects: true, defaultValue: activeSpec.benefits }) as string[]).map(benefit => (
-                                            <li key={benefit} className="flex items-center gap-3 text-sm text-slate-300">
-                                                <div className={`w-1.5 h-1.5 rounded-full ${theme.dot} shadow-[0_0_8px_currentColor] ${theme.text}`} />
-                                                {benefit}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <div>
+                                        <h4 className="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider mb-4 opacity-80">
+                                            <Star size={16} className={theme.text} />
+                                            {t('planner.roadmapSpecialization.keyBenefits', 'Beneficis Clau')}
+                                        </h4>
+                                        <ul className="space-y-3">
+                                            {(t(`curriculum.specializations.${activeSpec.id}.benefits`, { returnObjects: true, defaultValue: activeSpec.benefits }) as string[]).map(benefit => (
+                                                <li key={benefit} className="flex items-center gap-3 text-sm text-slate-300">
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${theme.dot} shadow-[0_0_8px_currentColor] ${theme.text}`} />
+                                                    {benefit}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    </AnimatePresence>
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
 
                     {/* Fixed Action Button */}

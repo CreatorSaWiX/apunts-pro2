@@ -27,7 +27,7 @@ export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, classNam
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 className={`relative flex items-center pointer-events-auto max-w-full ${className}`}
             >
-                <motion.div layout className="absolute inset-0 pointer-events-none" style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}>
+                <motion.div className="absolute inset-0 pointer-events-none" style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}>
                     <LiquidPanel className="w-full h-full !rounded-full">{null}</LiquidPanel>
                 </motion.div>
                 <div className="relative flex items-center gap-1 p-2 max-w-full">
@@ -69,7 +69,7 @@ export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active
         >
             {active && variant === 'default' && (
                 <motion.div
-                    layout
+                    layout="position"
                     className="absolute inset-0 bg-white/[0.12] border border-white/[0.15] rounded-full z-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_0_20px_rgba(255,255,255,0.1),0_0_8px_rgba(255,255,255,0.05)]"
                     initial={false}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}

@@ -3,10 +3,15 @@ import { Handle, Position } from '@xyflow/react';
 import type { NodeProps, Node } from '@xyflow/react';
 import type { SubjectNodeData } from '../../../../contexts/RoadmapContext';
 import { useTargetGrade } from '../../../../contexts/RoadmapContext';
-import { m as motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
-import { useIsMobile } from '../../../../hooks/useIsMobile';
 import { hapticLight } from '../../../../lib/haptics';
+
+// Static tag labels — avoids useTranslation() per node (60 i18n subscribers eliminated)
+const TAG_LABELS: Record<string, string> = {
+    mobility: 'MOBILITAT',
+    internship: 'PRÀCTIQUES',
+    tfg: 'TFG',
+    tfm: 'TFM',
+};
 
 const STATUS_STYLES: Record<string, { bg: string, border: string, text: string, shadow: string, glow: string }> = {
     locked: { bg: 'bg-[#0f1115]/80', border: 'border-slate-800', text: 'text-slate-500', shadow: '', glow: '' },
@@ -19,8 +24,6 @@ const STATUS_STYLES: Record<string, { bg: string, border: string, text: string, 
 };
 
 const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) => {
-    const { t } = useTranslation();
-    const isMobile = useIsMobile();
     const requiredAverageGrade = useTargetGrade();
 
     // Determine if this node is gradable (contributes to GPA)
@@ -54,24 +57,16 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
     };
 
     const getBottomTag = () => {
-        if (data.type === 'mobility') return t('planner.roadmapSubjectNode.tags.mobility', 'MOBILITAT');
-        if (data.type === 'internship') return t('planner.roadmapSubjectNode.tags.internship', 'PRÀCTIQUES');
-        if (data.type === 'tfg') return t('planner.roadmapSubjectNode.tags.tfg', 'TFG');
-        if (data.type === 'tfm') return t('planner.roadmapSubjectNode.tags.tfm', 'TFM');
-        if (id.startsWith('VALIDATION_')) return t('planner.roadmapSubjectNode.tags.activities', 'ACTIVITATS');
-        if (id.startsWith('CFGS_')) return t('planner.roadmapSubjectNode.tags.cfgs', 'CFGS');
+        if (TAG_LABELS[data.type]) return TAG_LABELS[data.type];
+        if (id.startsWith('VALIDATION_')) return 'ACTIVITATS';
+        if (id.startsWith('CFGS_')) return 'CFGS';
         return id;
     };
 
     const nodeContent = (
-        <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            whileTap={{ scale: 0.95 }}
+        <div
             onPointerDown={() => hapticLight()}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            style={{ transformStyle: 'preserve-3d' }}
-            className={`relative min-w-[150px] max-w-[180px] p-0 rounded-lg border-2 transition-colors duration-300 cursor-pointer ${containerClasses} ${selected ? 'ring-2 ring-white/70 ring-offset-2 ring-offset-slate-950' : ''}`}
+            className={`roadmap-node-enter relative min-w-[150px] max-w-[180px] p-0 rounded-lg border-2 transition-colors duration-300 cursor-pointer active:scale-95 ${containerClasses} ${selected ? 'ring-2 ring-white/70 ring-offset-2 ring-offset-slate-950' : ''}`}
         >
             <Handle type="target" position={Position.Top} className="w-3 h-1 !bg-sky-400 !border-0 !rounded-sm opacity-50" />
 
@@ -96,10 +91,10 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
                 </div>
             </div>
 
-            {/* Glowing rotating border for in_progress / retaking */}
+            {/* Glowing rotating border for in_progress / retaking — disabled on mobile via CSS */}
             {(data.status === 'in_progress' || data.status === 'retaking') && (
                 <div className="absolute inset-[-2px] rounded-lg overflow-hidden pointer-events-none z-0 mix-blend-screen">
-                    <div className={`absolute inset-[-100%] animate-[spin_3s_linear_infinite] ${data.status === 'retaking' ? 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(251,191,36,0.6)_360deg)]' : 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.6)_360deg)]'}`} style={{ willChange: 'transform' }} />
+                    <div className={`roadmap-spin-border absolute inset-[-50%] animate-[spin_3s_linear_infinite] ${data.status === 'retaking' ? 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(251,191,36,0.6)_360deg)]' : 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.6)_360deg)]'}`} style={{ willChange: 'transform' }} />
                     <div className="absolute inset-[2px] bg-slate-900 rounded-lg" />
                 </div>
             )}
@@ -107,7 +102,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             {/* ATTEMPTS BADGE */}
             {data.attempts > 1 && data.status !== 'passed' && (
                 <div className="absolute -top-2 -right-2 bg-amber-500 text-amber-950 text-[9px] font-black px-1.5 py-0.5 rounded-sm shadow-[0_0_10px_rgba(245,158,11,0.6)] border border-amber-300 z-20 flex items-center gap-1 transform rotate-3">
-                    <span className="animate-pulse">⚠️</span> {t('planner.roadmapSubjectNode.attempt', 'INTENT')} {data.attempts}
+                    <span>⚠️</span> INTENT {data.attempts}
                 </div>
             )}
 
@@ -138,10 +133,11 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             )}
 
             <Handle type="source" position={Position.Bottom} className="w-3 h-1 !bg-sky-400 !border-0 !rounded-sm opacity-50" />
-        </motion.div>
+        </div>
     );
 
     return <div className="rounded-lg">{nodeContent}</div>;
 };
 
 export default memo(SubjectNode);
+

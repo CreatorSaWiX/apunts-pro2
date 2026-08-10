@@ -41,6 +41,7 @@ const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStrok
                     fill="none"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    filter="url(#stroke-glow)"
                     pointerEvents={currentTool === 'eraser' ? 'stroke' : 'none'}
                     onPointerDown={(e) => {
                         if (currentTool === 'eraser') {
@@ -145,7 +146,7 @@ const DrawLayer: React.FC = () => {
             style={{ touchAction: 'none' }}
         >
             <StrokeGlowFilter />
-            <g transform={`translate(${x}, ${y}) scale(${zoom})`} filter="url(#stroke-glow)">
+            <g transform={`translate(${x}, ${y}) scale(${zoom})`}>
                 <MemoizedCompletedStrokes strokes={strokes} currentTool={currentTool} removeStroke={removeStroke} />
                 
                 {/* Active stroke: rendered via direct DOM manipulation, no React re-renders */}

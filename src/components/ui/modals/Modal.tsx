@@ -19,11 +19,11 @@ const SIZE_MAP = {
     'md': 'max-w-md w-full',
     'lg': 'max-w-lg w-full',
     'xl': 'max-w-xl w-full',
-    '2xl': 'max-w-2xl w-full h-[70vh] min-h-125',
-    '3xl': 'max-w-3xl w-full h-[75vh] min-h-125',
-    '4xl': 'max-w-4xl w-full h-[80vh] min-h-[600px]',
-    '5xl': 'max-w-5xl w-full h-[85vh] min-h-[600px]',
-    '6xl': 'max-w-6xl w-full h-[85vh] min-h-[600px]',
+    '2xl': 'max-w-2xl w-full h-[70vh] min-h-[min(100dvh,500px)]',
+    '3xl': 'max-w-3xl w-full h-[75vh] min-h-[min(100dvh,500px)]',
+    '4xl': 'max-w-4xl w-full h-[80vh] min-h-[min(100dvh,600px)]',
+    '5xl': 'max-w-5xl w-full h-[85vh] min-h-[min(100dvh,600px)]',
+    '6xl': 'max-w-6xl w-full h-[85vh] min-h-[min(100dvh,600px)]',
     'full': 'w-[95vw] max-w-7xl h-[90vh]',
     'screen': 'w-screen h-screen max-w-none rounded-none',
     'auto': 'w-auto'
@@ -60,7 +60,7 @@ const Modal = ({
     const content = (
         <AnimatePresence>
             {isOpen && (
-                <div className={`fixed inset-0 z-[1000] flex items-center justify-center ${size === 'screen' ? 'p-0' : `p-4 sm:p-6 ${fullScreenOnMobile ? 'max-md:p-0' : ''}`}`}>
+                <div className={`fixed inset-0 z-[1000] flex items-center justify-center ${size === 'screen' ? 'p-0' : `p-4 sm:p-6 ${fullScreenOnMobile ? 'max-md:p-0 [@media(max-height:600px)]:p-0' : ''}`}`}>
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -76,7 +76,7 @@ const Modal = ({
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
                         transition={{ layout: { type: "spring", stiffness: 400, damping: 35 }, type: "spring", stiffness: 400, damping: 30 }}
                         style={{ willChange: 'transform, opacity' }}
-                        className={`relative z-10 flex flex-col bg-[#0F172A]/30 backdrop-blur-xl border border-white/12 overflow-hidden shadow-2xl ${SIZE_MAP[size]} ${size === 'screen' ? 'rounded-none max-h-screen border-0' : `rounded-4xl max-h-[85vh] ${fullScreenOnMobile ? 'max-md:!rounded-none max-md:!max-w-none max-md:!w-screen max-md:!h-dvh max-md:!max-h-screen max-md:!border-0' : ''}`} ${className}`}
+                        className={`relative z-10 flex flex-col bg-[#0F172A]/30 backdrop-blur-xl border border-white/12 overflow-hidden shadow-2xl ${SIZE_MAP[size]} ${size === 'screen' ? 'rounded-none max-h-screen border-0' : `rounded-4xl max-h-[85vh] ${fullScreenOnMobile ? 'max-md:!rounded-none max-md:!max-w-none max-md:!w-screen max-md:!h-dvh max-md:!max-h-screen max-md:!border-0 [@media(max-height:600px)]:!rounded-none [@media(max-height:600px)]:!max-w-none [@media(max-height:600px)]:!w-screen [@media(max-height:600px)]:!h-dvh [@media(max-height:600px)]:!max-h-screen [@media(max-height:600px)]:!border-0' : ''}`} ${className}`}
                     >
                         <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent z-50 pointer-events-none" />
                         {!hideCloseButton && (

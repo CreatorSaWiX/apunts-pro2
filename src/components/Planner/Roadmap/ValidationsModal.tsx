@@ -25,6 +25,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
     const { t } = useTranslation();
     const { nodes, addCFGSValidations, addCustomValidation } = useRoadmap();
     const [activeTab, setActiveTab] = useState<Tab>('cfgs');
+    const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
     
     // Determinar quin CFGS està aplicat actualment mirant els nodes
     const currentAppliedCFGSId = useMemo(() => {
@@ -46,6 +47,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
             if (activeTab === 'cfgs' && currentAppliedCFGSId && !selectedId) {
                 setSelectedId(currentAppliedCFGSId);
             }
+            setMobileView('menu');
         } else {
             // Reset state when closed
             setSelectedId(null);
@@ -81,15 +83,15 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
             isOpen={isOpen}
             onClose={onClose}
             size="5xl"
-            className="bg-(--glass-bg-darker)er border-(--glass-border)ow-2xl rounded-4xlxlflow-hidden backdrop-blur-3xl backdrop-saturate-150"
-            hideCloseButton
+            className="bg-(--glass-bg-darker) border border-(--glass-border) shadow-2xl rounded-4xl overflow-hidden backdrop-blur-3xl backdrop-saturate-150"
+            fullScreenOnMobile
         >
-            <div className="flex flex-col md:flex-row flex-1 w-full h-full min-h-150 md:h-[75vh] relative overflow-hidden">
+            <div className="flex flex-col md:flex-row flex-1 w-full h-full relative overflow-hidden">
                 
                 {/* No background gradient to match ExperienceSelectorModal */}
 
                 {/* Left Column: Sidebar List */}
-                <div className="w-full md:w-90 border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0 shrink-0">
+                <div className={`w-full md:w-90 border-b md:border-b-0 md:border-r border-white/10 p-6 flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0 shrink-0 ${mobileView === 'menu' ? 'flex flex-1 md:flex-none' : 'hidden md:flex'}`}>
                     <div className="mb-8 shrink-0">
                         <h3 className="text-2xl font-bold text-white mb-2">{t('planner.roadmapValidations.title', 'Convalidacions')}</h3>
                         <p className="text-sm text-slate-400">{t('planner.roadmapValidations.subtitle', 'Afegeix crèdits a la teva motxilla a través de cicles formatius o activitats extraescolars.')}</p>
@@ -109,7 +111,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                     />
                                 )}
                                 <button type="button"
-                                    onClick={() => setActiveTab('custom')}
+                                    onClick={() => { setActiveTab('custom'); setMobileView('content'); }}
                                     className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group ${activeTab === 'custom' ? 'bg-white/4' : 'hover:bg-white/2'}`}
                                 >
                                     <div className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${activeTab === 'custom' ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
@@ -141,7 +143,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                                 />
                                             )}
                                             <button type="button"
-                                                onClick={() => { setActiveTab('cfgs'); setSelectedId(cfgs.id); }}
+                                                onClick={() => { setActiveTab('cfgs'); setSelectedId(cfgs.id); setMobileView('content'); }}
                                                 className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group pr-4 ${isSelected ? 'bg-white/4' : 'hover:bg-white/2'}`}
                                             >
                                                 <div className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${isSelected ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
@@ -169,8 +171,14 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                 </div>
 
                 {/* Right Column: Main Content */}
-                <div className="flex-1 py-6 md:py-8 pr-6 md:pr-8 pl-4 md:pl-8 flex flex-col z-10 relative min-h-0 h-full">
+                <div className={`flex-1 py-6 md:py-8 pr-6 md:pr-8 pl-4 md:pl-8 flex-col z-10 relative min-h-0 h-full ${mobileView === 'content' ? 'flex' : 'hidden md:flex'}`}>
                     
+                    {/* Mobile Back Button */}
+                    <button type="button" onClick={() => setMobileView('menu')} className="md:hidden shrink-0 self-start mb-6 flex items-center gap-2 text-white font-bold hover:text-slate-300 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        {t('common.back', 'Tornar')}
+                    </button>
+
                     <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 min-h-0">
                         <AnimatePresence mode="wait">
                             {activeTab === 'cfgs' && selectedId && selectedCFGS ? (

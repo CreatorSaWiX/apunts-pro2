@@ -191,9 +191,9 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                 <div className={`flex-1 flex-col h-full relative z-10 overflow-hidden bg-white/[0.01] ${mobileView === 'content' ? 'flex' : 'hidden sm:flex'}`}>
                                     {/* Top Area for Summary/Requirements */}
                                     <div className="p-6 sm:p-8 sm:pb-4 shrink-0 border-b border-white/5 relative flex flex-col sm:block">
-                                        <button type="button" onClick={() => setMobileView('menu')} className="sm:hidden self-start mb-4 flex items-center gap-2 text-sky-400 font-bold hover:text-sky-300 transition-colors">
+                                        <button type="button" onClick={() => setMobileView('menu')} className="sm:hidden self-start mb-4 flex items-center gap-2 text-white font-bold hover:text-slate-300 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                                            {t('planner.roadmapSubjectDetails.back', 'Tornar')}
+                                            {t('common.back', 'Tornar')}
                                         </button>
                                         <h1 className="text-3xl font-bold text-white mb-4 tracking-tight flex items-center gap-3">
                                             {t(`planner.roadmapSubjectDetails.tabs.${activeTab}`, activeTab)}

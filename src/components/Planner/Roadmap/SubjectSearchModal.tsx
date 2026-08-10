@@ -119,19 +119,19 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
     });
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+        <Modal isOpen={isOpen} onClose={onClose} size="4xl" fullScreenOnMobile>
             <Modal.Layout className="flex-col h-full w-full">
                 {/* Inner Glow Line */}
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-400/40 to-transparent z-50 pointer-events-none" />
 
-                <Modal.Header>
+                <Modal.Header className="[@media(max-height:600px)]:hidden">
                     <div className="flex flex-col">
                         <span className="text-xl font-bold text-white tracking-tight">{t('planner.roadmapSubjectSearch.searchSubject', 'Buscar Assignatura')}</span>
                     </div>
                 </Modal.Header>
 
                 {/* Search Bar */}
-                <div className="p-4 border-b border-white/[0.08] bg-white/[0.02] shrink-0">
+                <div className="p-4 [@media(max-height:600px)]:pr-16 border-b border-white/[0.08] bg-white/[0.02] shrink-0">
                     <div className="relative group">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-sky-400 transition-colors" size={18} />
                         <input
@@ -146,7 +146,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                     </div>
                 </div>
 
-                <div className="px-4 py-4 border-b border-white/[0.08] flex gap-2 overflow-x-auto custom-scrollbar bg-white/[0.02] shrink-0">
+                <div className="px-4 py-4 [@media(max-height:600px)]:py-2 border-b border-white/[0.08] flex gap-2 overflow-x-auto custom-scrollbar bg-white/[0.02] shrink-0">
                     <div className="bg-[#0F172A]/80 backdrop-blur-[40px] p-1.5 rounded-full border border-white/[0.12] flex items-center shrink-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_40px_rgba(0,0,0,0.5)]">
                         {visibleCategories.map(cat => {
                             const isActive = activeFilter === cat.id;
@@ -176,7 +176,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                     </div>
                 </div>
 
-                <Modal.Body className="!p-6 bg-transparent custom-scrollbar">
+                <Modal.Body className="!p-6 [@media(max-height:600px)]:!p-4 bg-transparent custom-scrollbar">
                                 {filteredSubjects.length === 0 ? (
                                     <motion.div 
                                         initial={{ opacity: 0, scale: 0.9 }}
