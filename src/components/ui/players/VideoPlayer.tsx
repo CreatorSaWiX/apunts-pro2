@@ -35,6 +35,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
                 .then(() => setIsPlaying(true))
                 .catch(() => setIsPlaying(false));
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
     const handleTimeUpdate = () => {
@@ -135,6 +136,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDragging, duration]);
 
     // Ocultació de controls

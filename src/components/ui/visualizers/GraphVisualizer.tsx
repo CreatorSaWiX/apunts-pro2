@@ -267,7 +267,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                 needsFit.current = false;
             }
         }
-    }, []);
+    }, [numericHeight]);
 
     const handleReset = () => {
         if (fgRef.current) {

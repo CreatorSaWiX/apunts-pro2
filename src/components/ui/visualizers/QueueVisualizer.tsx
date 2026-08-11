@@ -7,7 +7,7 @@ import { Plus, Minus } from 'lucide-react';
 const MAX_CAPACITY = 5;
 
 export default function QueueVisualizer() {
-    const [queue, setQueue] = useState<number[]>([]);
+    const [queue, setQueue] = useState<{ id: string; val: number }[]>([]);
     const [inputValue, setInputValue] = useState<string>('20');
     const [lastAction, setLastAction] = useState<string>('');
 
@@ -19,7 +19,7 @@ export default function QueueVisualizer() {
             setLastAction("Error: Cua plena (Overflow)");
             return;
         }
-        setQueue([...queue, val]);
+        setQueue([...queue, { id: crypto.randomUUID(), val }]);
         setInputValue(Math.floor(Math.random() * 100).toString());
         setLastAction(`Q.push(${val})`);
     };
@@ -29,7 +29,7 @@ export default function QueueVisualizer() {
             setLastAction("Error: Cua buida (Underflow)");
             return;
         }
-        const popped = queue[0]; // Cua: Surt el primer Element davanter!
+        const popped = queue[0].val; // Cua: Surt el primer Element davanter!
         setQueue(queue.slice(1));
         setLastAction(`Q.pop() -> S'extreu el ${popped}`);
     };
@@ -86,9 +86,9 @@ export default function QueueVisualizer() {
                 {/* Els blocs de dades reals (FIFO) */}
                 <div className="absolute inset-0 flex flex-row gap-2 z-10 pointer-events-none">
                     <AnimatePresence mode="popLayout">
-                        {queue.map((item, i) => (
+                        {queue.map((item) => (
                             <motion.div
-                                key={`item-${item}-${i}`}
+                                key={item.id}
                                 layout
                                 initial={{ opacity: 0, x: 40, scale: 0.95 }}
                                 animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -101,7 +101,7 @@ export default function QueueVisualizer() {
                                 }}
                                 className="w-16 h-12 shrink-0 bg-[#0a0d14] border border-fuchsia-800/80 rounded-xl flex items-center justify-center text-fuchsia-400 font-bold text-lg shadow-[0_0_15px_rgba(192,38,211,0.15)] pointer-events-auto"
                             >
-                                {item}
+                                {item.val}
                             </motion.div>
                         ))}
                     </AnimatePresence>
@@ -134,7 +134,7 @@ export default function QueueVisualizer() {
                     </button>
                 </div>
 
-                <div className="w-full text-center text-[11px] h-4">
+                <div className="w-full text-center text-[11px] h-4" aria-live="polite" aria-atomic="true">
                     {lastAction ? (
                         <span className={`${lastAction.startsWith('Error') ? 'text-rose-400/80 font-bold' : 'text-slate-500'}`}>
                             {lastAction}

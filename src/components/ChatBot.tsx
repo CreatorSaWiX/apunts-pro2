@@ -103,7 +103,7 @@ export const ChatBot: React.FC = () => {
   const [isResizing, setIsResizing] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentChatId, setCurrentChatId] = useState('');
-  const [currentChatTitle, setCurrentChatTitle] = useState(t('chat.newChat', 'Nou Xat'));
+  const [currentChatTitle, setCurrentChatTitle] = useState(() => t('chat.newChat', 'Nou Xat'));
   const [chatList, setChatList] = useState<ChatMeta[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
@@ -450,7 +450,7 @@ export const ChatBot: React.FC = () => {
       setStreamPhase('done');
 
       await saveChat(currentChatId, final, autoTitle);
-      fetchChatList().then(setChatList);
+      fetchChatList().then(setChatList).catch(console.error);
 
       if (metadata.memories_to_add && metadata.memories_to_add.length > 0) {
         setAiSettings({
@@ -619,6 +619,7 @@ export const ChatBot: React.FC = () => {
                 </div>
               )}
               {messages.map((msg, idx) => (
+                {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                 <div key={msg.id || `msg-${idx}-${msg.content.substring(0,10)}`} className={`flex w-full items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.role === 'model' && (
                     <div className="w-6 h-6 rounded-md bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0 mt-1 overflow-hidden">
@@ -726,7 +727,7 @@ export const ChatBot: React.FC = () => {
                   <textarea
                     ref={textareaRef} value={input}
                     onChange={e => setInput(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                    onKeyDown={e => { if (e.nativeEvent.isComposing) return; if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                     placeholder={t('chat.placeholder', 'Escriu a {{aiName}}...', { aiName })}
                     className="flex-1 bg-transparent px-1 py-2.5 text-[15px] text-slate-200 placeholder-slate-400 focus:outline-none resize-none min-h-[44px] max-h-[250px] custom-scrollbar"
                     rows={1}

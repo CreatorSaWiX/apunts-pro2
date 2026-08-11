@@ -33,7 +33,7 @@ const ParticlePortal = () => {
                 pos[i * 3 + 1] = (Math.random() - 0.5) * 8;
                 pos[i * 3 + 2] = (Math.random() - 0.5) * 4;
             }
-            groups.push(pos);
+            groups.push({ id: crypto.randomUUID(), pos });
         }
         return groups;
     });
@@ -52,8 +52,8 @@ const ParticlePortal = () => {
 
     return (
         <group ref={pointsRef}>
-            {particleGroups.map((pos, idx) => (
-                <Points key={idx} positions={pos} stride={3}>
+            {particleGroups.map(({ id, pos }, idx) => (
+                <Points key={id} positions={pos} stride={3}>
                     <PointMaterial
                         transparent
                         map={textures[idx]}

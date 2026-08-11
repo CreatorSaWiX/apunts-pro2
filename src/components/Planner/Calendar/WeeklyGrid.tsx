@@ -57,6 +57,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
             setCurrentHeight(baseHeight);
             setCurrentTop(top);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [task.estimatedMinutes, task.startDate, isResizing, day]);
 
     React.useEffect(() => {
@@ -88,6 +89,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
             window.removeEventListener('click', handleGlobalClick);
             window.removeEventListener('planner-action', handlePlannerAction);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSelected, task.id, deleteTask]);
 
     React.useEffect(() => {

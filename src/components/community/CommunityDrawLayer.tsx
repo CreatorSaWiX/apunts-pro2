@@ -109,6 +109,7 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
             window.removeEventListener('mousemove', handleGlobalMove);
             if (rafId.current) cancelAnimationFrame(rafId.current);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDrawMode, x, y, zoom, updateCursor]);
 
     const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {

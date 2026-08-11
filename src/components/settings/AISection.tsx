@@ -162,6 +162,7 @@ export const AISection = () => {
                         ) : (
                             <div className="grid gap-3">
                                 {aiSettings.userContext.memories.map((mem, idx) => (
+                                    {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                     <div key={idx} className="flex items-start justify-between gap-4 p-4 bg-white/3 border border-white/5 rounded-xl hover:border-white/10 transition-colors group">
                                         <span className="text-sm text-slate-300 font-medium leading-relaxed">{mem}</span>
                                         <button

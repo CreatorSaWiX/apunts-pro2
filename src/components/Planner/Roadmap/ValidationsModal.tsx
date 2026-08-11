@@ -43,7 +43,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
     const [customCredits, setCustomCredits] = useState<number | ''>('');
 
     // Auto-seleccionar el CFGS actual en obrir el modal
-    // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change
     React.useEffect(() => {
         if (isOpen) {
             if (activeTab === 'cfgs' && currentAppliedCFGSId && !selectedId) {
@@ -57,6 +57,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
             setCustomName('');
             setCustomCredits('');
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, currentAppliedCFGSId]);
 
     const handleApplyCFGS = () => {

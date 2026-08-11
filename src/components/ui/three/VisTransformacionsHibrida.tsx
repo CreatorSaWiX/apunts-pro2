@@ -54,7 +54,7 @@ const VisTransformacionsHibrida = () => {
                 break;
         }
         return m;
-    }, [type, alpha, k, axis]);
+    }, [type, alpha, k, axis, rad]);
 
     const shape2D = [
         [0, 0], [0, 3], [2, 3], [2, 2.5], [0.5, 2.5], [0.5, 1.8], [1.5, 1.8], [1.5, 1.3], [0.5, 1.3], [0.5, 0], [0, 0]
@@ -198,11 +198,14 @@ const VisTransformacionsHibrida = () => {
                     <div className="flex items-center gap-3 font-mono text-sm">
                         <span className="text-3xl font-light text-slate-800 leading-none">[</span>
                         <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-center">
-                            {matrix.elements.map((val, i) => (
-                                <span key={i} className={`transition duration-300 ${val === 0 ? 'text-slate-700' : 'text-indigo-400 font-bold'}`}>
-                                    {val.toFixed(2)}
-                                </span>
-                            ))}
+                            {['m00', 'm01', 'm02', 'm10', 'm11', 'm12', 'm20', 'm21', 'm22'].map((id, i) => {
+                                const val = matrix.elements[i];
+                                return (
+                                    <span key={id} className={`transition duration-300 ${val === 0 ? 'text-slate-700' : 'text-indigo-400 font-bold'}`}>
+                                        {val.toFixed(2)}
+                                    </span>
+                                );
+                            })}
                         </div>
                         <span className="text-3xl font-light text-slate-800 leading-none">]</span>
                     </div>

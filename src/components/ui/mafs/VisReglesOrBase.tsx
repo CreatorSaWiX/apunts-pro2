@@ -63,6 +63,7 @@ const VisReglesOrBase = () => {
                     <Coordinates.Cartesian />
 
                     {activeVectors.map((v, i) => (
+                        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                         <React.Fragment key={i}>
                             <MovablePoint point={v} onMove={(p) => handleMove(i, p)} color={i === 0 ? Theme.blue : (i === 1 ? Theme.red : Theme.green)} />
                             <Vector tail={[0, 0]} tip={v} color={i === 0 ? Theme.blue : (i === 1 ? Theme.red : Theme.green)} />

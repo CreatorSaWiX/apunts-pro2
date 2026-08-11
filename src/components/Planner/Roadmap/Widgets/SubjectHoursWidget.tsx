@@ -61,7 +61,8 @@ const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) =>
                     const percentage = Math.min((hour.value / maxHours) * 100, 100) || 0;
 
                     return (
-                        <div key={i} className="flex flex-col items-center justify-center w-24">
+                        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
+                        <div key={hour.type || i} className="flex flex-col items-center justify-center w-24">
                             <div className="relative w-16 h-16 flex items-center justify-center mb-2">
                                 <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                                     <circle

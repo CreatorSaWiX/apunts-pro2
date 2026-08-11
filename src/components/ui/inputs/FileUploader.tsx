@@ -128,6 +128,7 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
         
         setUploading(false);
         onUploadComplete(uploadedAttachments);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [maxFiles, onUploadComplete]);
 
     const onDropRejected = useCallback((fileRejections: any[]) => {

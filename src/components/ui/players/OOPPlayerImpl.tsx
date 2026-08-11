@@ -34,20 +34,19 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
     const setUserSelectedFile = (file: string | null) => setSelectedFileObj(file ? { step: currentStep, file } : null);
 
     useEffect(() => {
-        let timer: ReturnType<typeof setInterval>;
+        let timer: ReturnType<typeof setTimeout>;
         if (isPlaying && currentStep < steps.length - 1) {
-            timer = setInterval(() => {
-                setCurrentStep(prev => {
-                    const next = prev + 1;
-                    if (next >= steps.length - 1) {
-                        setIsPlaying(false);
-                        return steps.length - 1;
-                    }
-                    return next;
-                });
+            timer = setTimeout(() => {
+                const next = currentStep + 1;
+                setCurrentStep(next);
+                if (next >= steps.length - 1) {
+                    setIsPlaying(false);
+                }
             }, speed);
+        } else if (isPlaying && currentStep >= steps.length - 1) {
+            setIsPlaying(false);
         }
-        return () => clearInterval(timer);
+        return () => clearTimeout(timer);
     }, [isPlaying, currentStep, steps.length, speed]);
 
     const step: Partial<SimulationStep> = steps[currentStep] || {};
@@ -245,7 +244,9 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
                             </div>
                             <div className="flex-1 p-4 overflow-y-auto custom-scrollbar font-mono text-xs sm:text-[13px] text-slate-300 flex flex-col gap-1.5 leading-relaxed">
                                 {(step.visual?.terminalOutput || []).map((line: string, i: number) => (
+                                    {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                     <div key={i} className={`${line.startsWith('>') ? 'text-sky-400 font-bold opacity-70' : 'text-slate-200'} transition`}>
+                                        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                         {t(line as any)}
                                     </div>
                                 ))}

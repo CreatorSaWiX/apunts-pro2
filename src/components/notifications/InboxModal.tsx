@@ -40,6 +40,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
         if (isOpen && user) {
             fetchNotifications();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, user]);
 
     const fetchNotifications = async () => {

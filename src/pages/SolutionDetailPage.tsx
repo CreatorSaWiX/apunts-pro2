@@ -38,7 +38,9 @@ const SolutionDetailPage = () => {
     const [courseStructure, setCourseStructure] = useState<TopicDefinition[]>([]);
 
     useEffect(() => {
-        import('../content/data/courseStructure').then(m => setCourseStructure(m.courseStructure));
+        import('../content/data/courseStructure')
+            .then(m => setCourseStructure(m.courseStructure))
+            .catch(console.error);
     }, []);
 
     // Edit logic

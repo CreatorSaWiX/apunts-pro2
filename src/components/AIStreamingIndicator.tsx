@@ -35,7 +35,8 @@ const AIStreamingIndicator: React.FC<AIStreamingIndicatorProps> = ({
     renderAvatar,
     hideAvatar = false
 }) => {
-    const thinkStartRef = useRef<number>(Date.now());
+    const [initialTime] = useState(() => Date.now());
+    const thinkStartRef = useRef<number>(initialTime);
     const thoughtPanelRef = useRef<HTMLDivElement>(null);
 
     // Reset timer when entering thinking phase

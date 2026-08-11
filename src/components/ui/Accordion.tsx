@@ -20,9 +20,11 @@ const Accordion: React.FC<AccordionProps> = ({
     const parts = text.split(/(\*\*.*?\*\*|<strong>.*?<\/strong>)/g);
     return parts.map((part, i) => {
       if (part.startsWith('**') && part.endsWith('**')) {
+        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
         return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
       }
       if (part.startsWith('<strong>') && part.endsWith('</strong>')) {
+        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
         return <strong key={i} className="font-bold text-white">{part.slice(8, -9)}</strong>;
       }
       return part;

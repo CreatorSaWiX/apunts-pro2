@@ -191,6 +191,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             }
         }
         metricsRef.current = newMetrics;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Initialize layout scales on mount & restore saved position
@@ -243,6 +244,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             if (requestRef.current) cancelAnimationFrame(requestRef.current);
             if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [subject, updateMetrics, isMobile, isMenuOpen]);
 
     const scrollTo = useCallback((index: number) => {
@@ -293,6 +295,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             markAsSeen(activeTopic.slug, newestUpdate);
             navigate(`/tema/${activeTopic.slug}`);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMobile, isMenuOpen, sortedTopics, activeIndex, navigate, allPersonalNotes, markAsSeen]);
 
     useShortcut('carouselEnter', handleCarouselEnter);
@@ -551,10 +554,11 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 </div>
 
                 {/* Elegant Pagination Indicators */}
+                {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                 <div className="absolute bottom-[calc(1.5rem+env(safe-area-inset-bottom))] md:bottom-6 left-0 right-0 flex justify-center gap-2 z-50">
                     {sortedTopics.map((_, i) => (
                         <button type="button"
-                            key={i}
+                            key={sortedTopics[i]?.slug || i}
                             onClick={() => scrollTo(i)}
                             className="group p-2 cursor-pointer focus:outline-none"
                             aria-label={`Go to slide ${i + 1}`}

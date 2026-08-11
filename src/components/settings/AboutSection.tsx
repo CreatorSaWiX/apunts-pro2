@@ -139,6 +139,7 @@ export const AboutSection = () => {
                                     contributors.map((user, i) => (
                                         <Link
                                             to={`/profile/${user.uid}`}
+                                            {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                             key={i}
                                             onClick={() => setIsModalOpen(false)}
                                             className="block no-underline outline-none"

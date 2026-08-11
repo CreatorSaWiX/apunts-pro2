@@ -232,7 +232,7 @@ const CommunityPage = () => {
             setHeroWordIndex((prev) => (prev + 1) % heroWords.length);
         }, 3000);
         return () => clearInterval(interval);
-    }, []);
+    }, [heroWords.length]);
 
     const handleUploadClick = () => {
         if (!user) {
@@ -305,7 +305,7 @@ const CommunityPage = () => {
 
             unsubscribe = onSnapshot(q, (snapshot) => {
                 if (isCancelled) return;
-                let rawPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
+                const rawPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
 
                 // Restaurem l'ordre de rellevància d'Algolia si estem cercant
                 if (debouncedSearch.trim()) {
@@ -352,7 +352,7 @@ const CommunityPage = () => {
         }
 
         const snapshot = await getDocs(q);
-        let newPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
+        const newPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
 
         setPosts(prev => {
             const existingIds = new Set(prev.map(p => p.id));

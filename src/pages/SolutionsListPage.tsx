@@ -20,9 +20,11 @@ const SolutionsListPage = () => {
     const [topicDefinition, setTopicDefinition] = useState<TopicDefinition | undefined>(undefined);
     
     useEffect(() => {
-        import('../content/data/courseStructure').then(m => {
-            setTopicDefinition(m.courseStructure.find(t => t.id === topicId));
-        });
+        import('../content/data/courseStructure')
+            .then(m => {
+                setTopicDefinition(m.courseStructure.find((t: TopicDefinition) => t.id === topicId));
+            })
+            .catch(console.error);
     }, [topicId]);
     
     // We pass the explicit problem IDs so they are searched globally (not just constrained by topicId namespace)

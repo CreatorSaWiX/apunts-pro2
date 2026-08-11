@@ -140,7 +140,7 @@ const NetworkBackground = ({ variant }: { variant: 'login' | 'register' }) => {
             }
         }
         return { nodes, links };
-    }, []);
+    }, [variant]);
 
     return (
         <div className="absolute inset-0 w-full h-full bg-[#020617] pointer-events-auto">

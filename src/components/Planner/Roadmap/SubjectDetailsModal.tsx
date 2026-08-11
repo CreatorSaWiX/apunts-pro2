@@ -226,7 +226,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                     {activeTab === 'Professorat' && data.professors?.length > 0 && (
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                             {data.professors.map((prof: any, i: number) => (
-                                                                <div key={i} className="group p-5 bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] transition duration-300 rounded-2xl flex items-start gap-4">
+                                                                <div key={prof.email || prof.name} className="group p-5 bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] transition duration-300 rounded-2xl flex items-start gap-4">
                                                                     <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center text-sky-400 font-bold text-lg shrink-0 group-hover:scale-110 group-hover:rotate-6 transition duration-300">
                                                                         {prof.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
                                                                     </div>
@@ -250,7 +250,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                     {activeTab === 'Activitats' && data.activities?.filter((a: any) => a.title).length > 0 && (
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                             {data.activities.filter((a: any) => a.title).map((act: any, i: number) => (
-                                                                <div key={i} className={`p-6 bg-[#0a0f1c]/80 border ${act.isEvaluative ? 'border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] bg-amber-500/[0.02]' : 'border-white/5 shadow-xl'} rounded-3xl relative overflow-hidden group hover:bg-[#0f172a] transition duration-300`}>
+                                                                <div key={act.title} className={`p-6 bg-[#0a0f1c]/80 border ${act.isEvaluative ? 'border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] bg-amber-500/[0.02]' : 'border-white/5 shadow-xl'} rounded-3xl relative overflow-hidden group hover:bg-[#0f172a] transition duration-300`}>
                                                                     {act.isEvaluative && (
                                                                         <div className="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 text-[10px] font-black uppercase tracking-widest rounded-bl-2xl border-l border-b border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
                                                                             {t('planner.roadmapSubjectDetails.evaluativeAct', 'Acte Avaluatiu')}
@@ -315,7 +315,8 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                 const percentage = Math.min((hour.value / maxHours) * 100, 100) || 0;
 
                                                                 return (
-                                                                    <div key={i} className="p-6 bg-slate-900/40 border border-white/5 rounded-3xl flex flex-col items-center justify-center relative group">
+                                                                    {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
+                                                                    <div key={hour.type || i} className="p-6 bg-slate-900/40 border border-white/5 rounded-3xl flex flex-col items-center justify-center relative group">
                                                                         {/* SVG Speedometer/Ring */}
                                                                         <div className="relative w-32 h-32 flex items-center justify-center mb-4">
                                                                             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">

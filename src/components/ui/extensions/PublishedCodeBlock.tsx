@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
 import hljs from 'highlight.js/lib/core';
+import DOMPurify from 'dompurify';
 import javascript from 'highlight.js/lib/languages/javascript';
 import typescript from 'highlight.js/lib/languages/typescript';
 import python from 'highlight.js/lib/languages/python';
@@ -83,8 +84,7 @@ export const PublishedCodeBlock = ({ language, code }: PublishedCodeBlockProps) 
 
                 {/* Code Content */}
                 <pre className="!m-0 !bg-transparent p-5 pt-12 custom-scrollbar overflow-x-auto text-[14px] leading-relaxed font-mono">
-                    {/* eslint-disable-next-line react-doctor/dangerous-html-sink */}
-                    <code className={`language-${displayLanguage}`} dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+                    <code className={`language-${displayLanguage}`} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlightedCode) }} />
                 </pre>
             </div>
         </div>

@@ -1,6 +1,8 @@
 import React from "react";
+
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkDirective from "remark-directive";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
@@ -281,8 +283,17 @@ export function MarkdownRenderer({ content, components: customComponents }: Mark
 
     return (
         <ReactMarkdown
-            // eslint-disable-next-line react-doctor/react-markdown-unsanitized-raw-html
-            rehypePlugins={[rehypeRaw, rehypeKatex]}
+            rehypePlugins={[
+                rehypeRaw,
+                [rehypeSanitize, {
+                    ...defaultSchema,
+                    attributes: {
+                        ...defaultSchema.attributes,
+                        '*': ['className', 'style'],
+                    }
+                }],
+                rehypeKatex
+            ]}
             remarkPlugins={[remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMath]}
             components={mergedComponents as any}
         >

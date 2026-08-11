@@ -7,7 +7,7 @@ import { Plus, Minus } from 'lucide-react';
 const MAX_CAPACITY = 5;
 
 export default function StackVisualizer() {
-    const [stack, setStack] = useState<number[]>([]);
+    const [stack, setStack] = useState<{ id: string; val: number }[]>([]);
     const [inputValue, setInputValue] = useState<string>('20');
     const [lastAction, setLastAction] = useState<string>('');
 
@@ -19,7 +19,7 @@ export default function StackVisualizer() {
             setLastAction("Error: Pila plena (Overflow)");
             return;
         }
-        setStack([...stack, val]);
+        setStack([...stack, { id: crypto.randomUUID(), val }]);
         setInputValue(Math.floor(Math.random() * 100).toString());
         setLastAction(`S.push(${val})`);
     };
@@ -29,7 +29,7 @@ export default function StackVisualizer() {
             setLastAction("Error: Pila buida (Underflow)");
             return;
         }
-        const popped = stack[stack.length - 1];
+        const popped = stack[stack.length - 1].val;
         setStack(stack.slice(0, -1));
         setLastAction(`S.pop() -> S'extreu el ${popped}`);
     };
@@ -58,7 +58,7 @@ export default function StackVisualizer() {
                                 const isTop = i === stack.length - 1;
                                 return (
                                     <motion.div
-                                        key={`item-${i}-${item}`}
+                                        key={item.id}
                                         layout
                                         initial={{ opacity: 0, x: 40, scale: 0.95 }}
                                         animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -71,7 +71,7 @@ export default function StackVisualizer() {
                                         }}
                                         className="w-full shrink-0 h-12 bg-[#0a0d14] border border-sky-800/80 rounded-xl flex items-center justify-center text-sky-400 font-bold text-lg shadow-[0_0_15px_rgba(2,132,199,0.15)] relative pointer-events-auto"
                                     >
-                                        {item}
+                                        {item.val}
 
                                         {/* Apuntador TOP independent i suavitzat */}
                                         {isTop && (
@@ -124,7 +124,7 @@ export default function StackVisualizer() {
                     </button>
                 </div>
 
-                <div className="h-4 text-center text-[11px]">
+                <div className="h-4 text-center text-[11px]" aria-live="polite" aria-atomic="true">
                     {lastAction ? (
                         <span className={`${lastAction.startsWith('Error') ? 'text-rose-400/80 font-bold' : 'text-slate-500'}`}>
                             {lastAction}

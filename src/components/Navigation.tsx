@@ -26,21 +26,19 @@ const TooltipItem = ({ children, text, disabled = false, tooltipPosition = "bott
             className="relative flex items-center justify-center z-10"
         >
             {children}
-            {text && !disabled && (
-                <AnimatePresence>
-                    {isHovered && (
-                        <motion.div
-                            initial={{ opacity: 0, y: tooltipYOffset, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: tooltipYOffset, scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                            className={`absolute ${tooltipPositionClass} left-1/2 -translate-x-1/2 px-2.5 py-1.5 bg-[#0F172A]/90 backdrop-blur-md text-slate-200 text-xs font-semibold rounded-lg whitespace-nowrap shadow-[0_10px_30px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/10 z-[100] pointer-events-none`}
-                        >
-                            {text}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            )}
+            <AnimatePresence>
+                {text && !disabled && isHovered && (
+                    <motion.div
+                        initial={{ opacity: 0, y: tooltipYOffset, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: tooltipYOffset, scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className={`absolute ${tooltipPositionClass} left-1/2 -translate-x-1/2 px-2.5 py-1.5 bg-[#0F172A]/90 backdrop-blur-md text-slate-200 text-xs font-semibold rounded-lg whitespace-nowrap shadow-[0_10px_30px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/10 z-[100] pointer-events-none`}
+                    >
+                        {text}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

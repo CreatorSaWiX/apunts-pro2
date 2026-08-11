@@ -52,7 +52,8 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
 
                     return (
                         <motion.div
-                            key={i}
+                            // eslint-disable-next-line react-doctor/no-array-index-as-key
+                            key={item.name || i}
                             className={`h-full bg-gradient-to-r ${theme.gradient} relative group flex items-center justify-center border-r border-slate-900/50 last:border-r-0 transition-opacity duration-300 origin-left ${hoveredIndex !== null && hoveredIndex !== i ? 'opacity-30' : 'opacity-100'}`}
                             style={{ width: `${percentage}%`, boxShadow: hoveredIndex === i ? `0 0 15px ${theme.shadow}` : 'none' }}
                             initial={{ scaleX: 0 }}
@@ -86,7 +87,7 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
 
                     return (
                         <div
-                            key={i}
+                            key={item.name || i}
                             className={`flex items-start gap-3 p-3 rounded-2xl transition duration-300 cursor-pointer ${isHovered ? 'bg-white/10 scale-105' : 'bg-white/5 hover:bg-white/[0.07]'}`}
                             onMouseEnter={() => setHoveredIndex(i)}
                             onMouseLeave={() => setHoveredIndex(null)}

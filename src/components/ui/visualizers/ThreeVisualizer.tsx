@@ -125,7 +125,7 @@ const FunctionSurface = ({ f, colorScale = 5, showWireframe = false, opacity = 1
         geo.setIndex(indices);
         geo.computeVertexNormals();
         return geo;
-    }, [f]);
+    }, [f, isMobile, colorScale]);
 
     return (
         <group>

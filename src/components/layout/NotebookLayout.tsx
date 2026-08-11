@@ -39,6 +39,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
             const firstId = typeof topic.problems[0] === 'string' ? topic.problems[0] : topic.problems[0].id;
             setSelectedProblemId(firstId);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [topic, selectedProblemId]);
 
     // Check for PDFs

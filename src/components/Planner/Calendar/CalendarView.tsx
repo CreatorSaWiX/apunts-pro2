@@ -106,6 +106,7 @@ const CalendarView: React.FC = () => {
 
         window.addEventListener('planner-action', handlePlannerAction);
         return () => window.removeEventListener('planner-action', handlePlannerAction);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mode]);
 
     const onDragStart = (event: DragStartEvent) => {

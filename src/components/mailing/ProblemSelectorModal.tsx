@@ -26,9 +26,10 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
 
     useEffect(() => {
         import('../../content/data/courseStructure').then(m => {
-            setCourseStructure(m.courseStructure);
+            setCourseStructure(m.courseStructure).catch(console.error);
             if (!selectedTopicId) setSelectedTopicId(m.courseStructure[0]?.id || '');
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Reset when opening
@@ -76,6 +77,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
             }
             setResults(found);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search, selectedTopicId]);
 
     if (!isOpen) return null;

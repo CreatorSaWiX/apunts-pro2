@@ -435,6 +435,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                                                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 shadow-md">
                                                     {postImages.map((_, idx) => (
                                                         <button
+                                                            {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                                             key={idx}
                                                             type="button"
                                                             onClick={() => setCurrentImageIndex(idx)}
@@ -461,6 +462,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                                             <div className="flex flex-col gap-6">
                                                 {postFiles.map((file, i) => (
                                                     <FileViewerRenderer
+                                                        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                                         key={i}
                                                         url={file.url}
                                                         filename={file.name}

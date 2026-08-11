@@ -150,6 +150,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                                 <span className="inline-block mr-4">
                                     {"APUNTS".split("").map((char, i) => (
                                         <motion.span
+                                            {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                             key={`static-${char}-${i}`}
                                             variants={letterVariants}
                                             className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
@@ -162,6 +163,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                                 <span className="inline-block">
                                     {theme.label.split("").map((char, i) => (
                                         <motion.span
+                                            {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                             key={`dynamic-${subject}-${char}-${i}`}
                                             variants={letterVariants}
                                             className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"

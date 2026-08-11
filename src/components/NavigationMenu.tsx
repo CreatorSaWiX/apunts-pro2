@@ -21,7 +21,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
     
     React.useEffect(() => {
         if (isMenuOpen) {
-            import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes));
+            import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes).catch(console.error));
         }
     }, [isMenuOpen]);
     

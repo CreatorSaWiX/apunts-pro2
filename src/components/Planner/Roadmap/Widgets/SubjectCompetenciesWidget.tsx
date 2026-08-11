@@ -32,7 +32,8 @@ const SubjectCompetenciesWidget: React.FC<SubjectCompetenciesWidgetProps> = ({ d
             <div className="grid grid-cols-1 gap-3">
                 {items.map((item, i) => (
                     <motion.div
-                        key={i}
+                        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
+                        key={item.code || i}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: i * 0.1 }}

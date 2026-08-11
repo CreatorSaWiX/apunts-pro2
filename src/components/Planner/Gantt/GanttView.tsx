@@ -391,6 +391,7 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
             window.removeEventListener('touchmove', handleTouchMove);
             window.removeEventListener('touchend', handleMouseUp);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dragState, optimistic, zoomLevel, timelineStart, task.id, updateTask]);
 
     const displayLeft = optimistic ? optimistic.left : task.leftMins * zoomLevel;

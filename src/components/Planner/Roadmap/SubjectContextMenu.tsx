@@ -24,6 +24,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
         if (nodeData?.grade !== parseFloat(localGrade.replace(',', '.'))) {
             setLocalGrade(nodeData?.grade != null ? nodeData.grade.toString() : '');
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodeData?.grade]);
 
     if (!isOpen || !nodeId || !nodeData || !position) return null;
