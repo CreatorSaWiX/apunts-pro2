@@ -17,13 +17,11 @@ const renderInlineCode = (text: string) => {
     return parts.map((part, i) => {
         if (i % 2 === 1) {
             return (
-                // eslint-disable-next-line react-doctor/no-array-index-as-key
                 <code key={i} className="font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20 shadow-[0_0_10px_rgba(14,165,233,0.15)] mx-0.5 leading-none text-[0.85em]">
                     {part}
                 </code>
             );
         }
-        // eslint-disable-next-line react-doctor/no-array-index-as-key
         return <span key={i}>{part}</span>;
     });
 };

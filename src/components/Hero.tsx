@@ -148,29 +148,31 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                             >
                             <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
                                 <span className="inline-block mr-4">
-                                    {"APUNTS".split("").map((char, i) => (
-                                        <motion.span
-                                            {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
-                                            key={`static-${char}-${i}`}
-                                            variants={letterVariants}
-                                            className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
-                                        >
-                                            {char}
-                                        </motion.span>
-                                    ))}
+                                    {"APUNTS".split("").map((char, i) => {
+                                        return (
+                                            <motion.span
+                                                key={`static-${char}-${i}`}
+                                                variants={letterVariants}
+                                                className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
+                                            >
+                                                {char}
+                                            </motion.span>
+                                        );
+                                    })}
                                 </span>
 
                                 <span className="inline-block">
-                                    {theme.label.split("").map((char, i) => (
-                                        <motion.span
-                                            {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
-                                            key={`dynamic-${subject}-${char}-${i}`}
-                                            variants={letterVariants}
-                                            className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
-                                        >
-                                            {char}
-                                        </motion.span>
-                                    ))}
+                                    {theme.label.split("").map((char, i) => {
+                                        return (
+                                            <motion.span
+                                                key={`dynamic-${subject}-${char}-${i}`}
+                                                variants={letterVariants}
+                                                className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl"
+                                            >
+                                                {char}
+                                            </motion.span>
+                                        );
+                                    })}
                                 </span>
                             </h1>
                         </motion.div>

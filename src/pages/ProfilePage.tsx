@@ -292,7 +292,7 @@ const ProfilePage = () => {
 
     const handleUpdateProfile = async (data: Partial<ExtendedUser>) => {
         if (!authUser?.id) return;
-        const [{ db, auth }, { doc, setDoc }, { updateProfile }] = await Promise.all([
+        const [{ db, auth }, { doc, setDoc, collection, query, where, getDocs, writeBatch }, { updateProfile }] = await Promise.all([
             import('../lib/firebase'),
             import('firebase/firestore'),
             import('firebase/auth')
@@ -303,6 +303,27 @@ const ProfilePage = () => {
             if (auth.currentUser && data.username) {
                 await updateProfile(auth.currentUser, { displayName: data.username, photoURL: data.avatar || auth.currentUser.photoURL });
             }
+
+            if (data.avatar || data.username) {
+                try {
+                    const batch = writeBatch(db);
+                    const postsQuery = query(collection(db, 'community_posts'), where('userId', '==', authUser.id));
+                    const postsSnapshot = await getDocs(postsQuery);
+
+                    const updateData: any = {};
+                    if (data.avatar) updateData.userAvatar = data.avatar;
+                    if (data.username) updateData.username = data.username;
+
+                    postsSnapshot.forEach((postDoc) => {
+                        batch.update(postDoc.ref, updateData);
+                    });
+
+                    await batch.commit();
+                } catch (batchError) {
+                    console.error("Error updating past posts:", batchError);
+                }
+            }
+
             setExtendedUser((prev: ExtendedUser | null) => prev ? { ...prev, ...data } : null);
             if (data.username !== authUser.username && data.username) window.location.reload();
         } catch (error) {

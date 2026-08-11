@@ -52,7 +52,6 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
 
                     return (
                         <motion.div
-                            // eslint-disable-next-line react-doctor/no-array-index-as-key
                             key={item.name || i}
                             className={`h-full bg-gradient-to-r ${theme.gradient} relative group flex items-center justify-center border-r border-slate-900/50 last:border-r-0 transition-opacity duration-300 origin-left ${hoveredIndex !== null && hoveredIndex !== i ? 'opacity-30' : 'opacity-100'}`}
                             style={{ width: `${percentage}%`, boxShadow: hoveredIndex === i ? `0 0 15px ${theme.shadow}` : 'none' }}

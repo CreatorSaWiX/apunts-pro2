@@ -53,7 +53,6 @@ const VisExemplesEspais = () => {
                             <div className="flex flex-col items-center gap-2">
                                 <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Matriu <InlineMath math="A" /></span>
                                 <div className="grid grid-cols-2 gap-2 p-3 bg-slate-900 rounded-lg border border-white/5 font-mono text-sm">
-                                    {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                     {m.flat().map((v, i) => <div key={i} className="w-10 h-10 flex items-center justify-center bg-black/40 rounded border border-white/5 text-blue-400">{v}</div>)}
                                 </div>
                             </div>
@@ -61,7 +60,6 @@ const VisExemplesEspais = () => {
                             <div className="flex flex-col items-center gap-2">
                                 <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">λ · A</span>
                                 <div className="grid grid-cols-2 gap-2 p-3 bg-slate-900 rounded-lg border border-emerald-500/30 font-mono text-sm">
-                                    {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                     {m.flat().map((v, i) => <div key={i} className="w-10 h-10 flex items-center justify-center bg-emerald-950/40 rounded border border-emerald-500/10 text-emerald-400">{(v * scalar).toFixed(1)}</div>)}
                                 </div>
                             </div>

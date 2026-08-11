@@ -133,9 +133,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                 const lines = part.split('\n');
                 const lang = lines[0].replace('```', '').trim() || 'cpp';
                 const code = lines.slice(1, -1).join('\n');
-                {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                 return (
-                    {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                     <div key={index} className="my-2 -mx-2">
                         <CodeBlock code={code} language={lang} />
                     </div>
@@ -144,9 +142,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
             
             if (!part) return null;
 
-            {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
             return (
-                {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                 <p key={index} className="text-slate-300 whitespace-pre-wrap leading-relaxed font-light text-base mb-4 last:mb-0">
                     {part.replace(/^\n+/, '')}
                 </p>

@@ -40,9 +40,7 @@ export const MessageList: React.FC<MessageListProps> = ({
           </div>
         </div>
       )}
-      {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
       {messages.map((msg, idx) => (
-        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
         <div key={msg.id || `msg-${idx}-${msg.content.substring(0, 10)}`} className={`flex w-full items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
           {msg.role === 'model' && (
             <div className="w-6 h-6 rounded-md bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0 mt-1 overflow-hidden">

@@ -26,9 +26,9 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
 
     useEffect(() => {
         import('../../content/data/courseStructure').then(m => {
-            setCourseStructure(m.courseStructure).catch(console.error);
+            setCourseStructure(m.courseStructure);
             if (!selectedTopicId) setSelectedTopicId(m.courseStructure[0]?.id || '');
-        });
+        }).catch(console.error);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

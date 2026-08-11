@@ -247,9 +247,8 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
 
                                 {attachments.length > 0 && (
                                     <div className="flex flex-col gap-3 mt-4">
-                                        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                         {attachments.map((att, i) => (
-                                            <div key={file.name || i} className="flex items-center justify-between bg-white/3 border border-white/10 p-3 rounded-2xl group hover:border-white/20 transition-colors">
+                                            <div key={att.name || i} className="flex items-center justify-between bg-white/3 border border-white/10 p-3 rounded-2xl group hover:border-white/20 transition-colors">
                                                 <div className="flex items-center gap-4 overflow-hidden">
                                                     <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-black/50 border border-white/5 flex items-center justify-center group/thumb">
                                                         {att.thumbnailUrl ? (

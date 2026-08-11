@@ -250,7 +250,6 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                                 {msg.changes && msg.changes.length > 0 && (
                                                     <div className="flex flex-wrap gap-2 mt-1">
                                                         {msg.changes.map((change, i) => (
-                                                            {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                                             <div key={`${change.subject}-${i}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wide shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
                                                                 <CheckCircle2 size={12} />
                                                                 {change.type === 'add' ? t('planner.roadmapAI.added', 'Afegit') : t('planner.roadmapAI.removed', 'Eliminat')} {change.subject}

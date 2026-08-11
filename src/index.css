@@ -460,7 +460,7 @@ canvas {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Custom SSL Platinum Rank Styling & Animations */
+/* Custom SSL Platinum Rank Styling & Animations
 .ssl-platinum-rank {
   background: linear-gradient(90deg,
       #94a3b8 0%,
@@ -532,7 +532,7 @@ canvas {
   from {
     transform: rotate(0deg);
   }
-}
+} */
 
 /* Community Glassmorphism & Effects */
 .glass-panel {

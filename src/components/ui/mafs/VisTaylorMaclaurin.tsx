@@ -78,7 +78,6 @@ const VisTaylorMaclaurin = () => {
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {configs.map((c, i) => (
-                    {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                     <button type="button" key={i} onClick={() => setMode(i)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition ${mode === i ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-700'}`}>{c.label}</button>
                 ))}
             </div>

@@ -618,9 +618,9 @@ export const ChatBot: React.FC = () => {
                   </div>
                 </div>
               )}
-              {messages.map((msg, idx) => (
-                {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
-                <div key={msg.id || `msg-${idx}-${msg.content.substring(0,10)}`} className={`flex w-full items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              {messages.map((msg, idx) => {
+                return (
+                  <div key={msg.id || `msg-${idx}-${msg.content.substring(0,10)}`} className={`flex w-full items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.role === 'model' && (
                     <div className="w-6 h-6 rounded-md bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0 mt-1 overflow-hidden">
                       {renderAIAvatar(14, "text-slate-400")}
@@ -666,7 +666,8 @@ export const ChatBot: React.FC = () => {
                     />
                   )}
                 </div>
-              ))}
+                );
+              })}
               {/* AI Streaming Indicator (connecting / thinking) */}
               {(streamPhase === 'connecting' || streamPhase === 'thinking') && (
                 <AIStreamingIndicator

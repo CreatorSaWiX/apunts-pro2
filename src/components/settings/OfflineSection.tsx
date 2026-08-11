@@ -452,7 +452,6 @@ export const OfflineSection = () => {
                                                 {manifest[cat.id]?.map((fileUrl, idx) => {
                                                     const fileName = decodeURIComponent(fileUrl.split('/').pop() || '');
                                                     return (
-                                                        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                                         <div key={idx} className="flex items-center justify-between py-2.5 px-4 rounded-xl bg-white/2 hover:bg-white/4 transition-colors border border-white/5">
                                                             <div className="flex items-center gap-3 min-w-0">
                                                                 <FileText size={16} className="text-slate-500 shrink-0" />
@@ -501,7 +500,6 @@ export const OfflineSection = () => {
                         <div className="flex flex-col gap-4">
                             {/* CACHES */}
                             {detailedCaches.map((cache, idx) => (
-                                {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                 <div key={`cache-${idx}`} className="flex flex-col p-5 rounded-2xl bg-white/2 border border-white/5 relative overflow-hidden transition-colors">
                                     <div className="flex items-center justify-between">
                                         <div 
@@ -564,7 +562,6 @@ export const OfflineSection = () => {
 
                             {/* INDEXEDDBS */}
                             {indexedDBs.map((dbName, idx) => (
-                                {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                 <div key={`db-${idx}`} className="flex items-center justify-between p-5 rounded-2xl bg-white/2 border border-white/5">
                                     <div className="flex items-center gap-4 min-w-0">
                                         <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10">

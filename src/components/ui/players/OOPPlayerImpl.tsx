@@ -244,9 +244,7 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
                             </div>
                             <div className="flex-1 p-4 overflow-y-auto custom-scrollbar font-mono text-xs sm:text-[13px] text-slate-300 flex flex-col gap-1.5 leading-relaxed">
                                 {(step.visual?.terminalOutput || []).map((line: string, i: number) => (
-                                    {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                     <div key={i} className={`${line.startsWith('>') ? 'text-sky-400 font-bold opacity-70' : 'text-slate-200'} transition`}>
-                                        {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                         {t(line as any)}
                                     </div>
                                 ))}

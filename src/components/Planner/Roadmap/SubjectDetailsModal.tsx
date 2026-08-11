@@ -315,7 +315,6 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                 const percentage = Math.min((hour.value / maxHours) * 100, 100) || 0;
 
                                                                 return (
-                                                                    {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                                                                     <div key={hour.type || i} className="p-6 bg-slate-900/40 border border-white/5 rounded-3xl flex flex-col items-center justify-center relative group">
                                                                         {/* SVG Speedometer/Ring */}
                                                                         <div className="relative w-32 h-32 flex items-center justify-center mb-4">

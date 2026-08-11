@@ -554,7 +554,6 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 </div>
 
                 {/* Elegant Pagination Indicators */}
-                {/* eslint-disable-next-line react-doctor/no-array-index-as-key */}
                 <div className="absolute bottom-[calc(1.5rem+env(safe-area-inset-bottom))] md:bottom-6 left-0 right-0 flex justify-center gap-2 z-50">
                     {sortedTopics.map((_, i) => (
                         <button type="button"

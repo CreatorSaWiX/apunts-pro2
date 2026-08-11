@@ -243,6 +243,8 @@ export default memo(PublicationCard, (prev, next) => {
     // Custom comparison to ensure it only re-renders if post data has actually changed
     return prev.post.id === next.post.id &&
         prev.isHeroMode === next.isHeroMode &&
+        prev.post.userAvatar === next.post.userAvatar &&
+        prev.post.username === next.post.username &&
         JSON.stringify(prev.post.reactions) === JSON.stringify(next.post.reactions) &&
         prev.post.views === next.post.views;
 });
