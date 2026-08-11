@@ -110,16 +110,16 @@ export default function StackVisualizer() {
                         />
                         <button type="button"
                             onClick={handlePush}
-                            className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-emerald-500/20"
-                        >
+                            className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition active:scale-[0.98] border border-emerald-500/20"
+                         aria-label="Botó interactiu">
                             <Plus size={16} /> push( )
                         </button>
                     </div>
 
                     <button type="button"
                         onClick={handlePop}
-                        className="w-full h-10 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-rose-500/20"
-                    >
+                        className="w-full h-10 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition active:scale-[0.98] border border-rose-500/20"
+                     aria-label="Botó interactiu">
                         <Minus size={16} /> pop( )
                     </button>
                 </div>

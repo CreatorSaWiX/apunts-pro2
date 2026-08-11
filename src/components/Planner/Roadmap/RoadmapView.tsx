@@ -52,15 +52,30 @@ const CustomControls = () => {
     return (
         <Panel position="bottom-left" className="m-6 z-40 opacity-30 hover:opacity-100 transition-opacity duration-300 hidden lg:block">
             <LiquidPanel className="flex flex-col gap-2 p-2">
-                <button type="button" onClick={() => zoomIn({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title={t('roadmapView.zoomIn', 'Zoom In')}>
+                <button
+                    type="button"
+                    onClick={() => zoomIn({ duration: 400 })}
+                    className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition hover:scale-110 active:scale-95"
+                    title={t('roadmapView.zoomIn', 'Zoom In')}
+                    aria-label="Acció ZoomIn">
                     <ZoomIn size={18} strokeWidth={2.5} />
                 </button>
                 <div className="w-full h-px bg-white/5" />
-                <button type="button" onClick={() => zoomOut({ duration: 400 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title={t('roadmapView.zoomOut', 'Zoom Out')}>
+                <button
+                    type="button"
+                    onClick={() => zoomOut({ duration: 400 })}
+                    className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition hover:scale-110 active:scale-95"
+                    title={t('roadmapView.zoomOut', 'Zoom Out')}
+                    aria-label="Acció ZoomOut">
                     <ZoomOut size={18} strokeWidth={2.5} />
                 </button>
                 <div className="w-full h-px bg-white/5" />
-                <button type="button" onClick={() => fitView({ padding: 0.2, duration: 800 })} className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition-all hover:scale-110 active:scale-95" title={t('roadmapView.fitView', 'Fit View')}>
+                <button
+                    type="button"
+                    onClick={() => fitView({ padding: 0.2, duration: 800 })}
+                    className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition hover:scale-110 active:scale-95"
+                    title={t('roadmapView.fitView', 'Fit View')}
+                    aria-label="Acció Maximize">
                     <Maximize size={18} strokeWidth={2.5} />
                 </button>
             </LiquidPanel>
@@ -325,7 +340,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                         cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent"
                                         strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
                                         strokeLinecap="round"
-                                        className="text-sky-500 transition-all duration-1000 ease-out drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]"
+                                        className="text-sky-500 transition duration-1000 ease-out drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]"
                                     />
                                 </svg>
                                 <span className="text-[10px] font-bold text-sky-400 mt-0.5">{Math.round(percentage * 100)}%</span>
@@ -351,7 +366,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                         cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent"
                                         strokeDasharray={circumference} strokeDashoffset={plannedStrokeDashoffset}
                                         strokeLinecap="round"
-                                        className="text-violet-500 transition-all duration-1000 ease-out drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]"
+                                        className="text-violet-500 transition duration-1000 ease-out drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]"
                                     />
                                 </svg>
                                 <span className="text-[10px] font-bold text-violet-400 mt-0.5">{Math.round(plannedPercentage * 100)}%</span>
@@ -410,16 +425,36 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                         <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
                                         
                                         <div className="relative z-10 flex gap-1 px-1">
-                                            <button type="button" onClick={() => { setCurrentColor('#ef4444'); setIsColorMenuOpen(false); }} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-all ${currentColor === '#ef4444' ? 'bg-white/10 scale-110' : ''}`} title={t('canvas.colors.red', 'Vermell')}>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setCurrentColor('#ef4444'); setIsColorMenuOpen(false); }}
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === '#ef4444' ? 'bg-white/10 scale-110' : ''}`}
+                                                title={t('canvas.colors.red', 'Vermell')}
+                                                aria-label="Obrir panell">
                                                 <div className="w-5 h-5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                                             </button>
-                                            <button type="button" onClick={() => { setCurrentColor('#3b82f6'); setIsColorMenuOpen(false); }} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-all ${currentColor === '#3b82f6' ? 'bg-white/10 scale-110' : ''}`} title={t('canvas.colors.blue', 'Blau')}>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setCurrentColor('#3b82f6'); setIsColorMenuOpen(false); }}
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === '#3b82f6' ? 'bg-white/10 scale-110' : ''}`}
+                                                title={t('canvas.colors.blue', 'Blau')}
+                                                aria-label="Obrir panell">
                                                 <div className="w-5 h-5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
                                             </button>
-                                            <button type="button" onClick={() => { setCurrentColor('#eab308'); setIsColorMenuOpen(false); }} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-all ${currentColor === '#eab308' ? 'bg-white/10 scale-110' : ''}`} title={t('canvas.colors.yellow', 'Groc')}>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setCurrentColor('#eab308'); setIsColorMenuOpen(false); }}
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === '#eab308' ? 'bg-white/10 scale-110' : ''}`}
+                                                title={t('canvas.colors.yellow', 'Groc')}
+                                                aria-label="Obrir panell">
                                                 <div className="w-5 h-5 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
                                             </button>
-                                            <button type="button" onClick={() => { setCurrentColor('#a855f7'); setIsColorMenuOpen(false); }} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-all ${currentColor === '#a855f7' ? 'bg-white/10 scale-110' : ''}`} title={t('canvas.colors.purple', 'Lila')}>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setCurrentColor('#a855f7'); setIsColorMenuOpen(false); }}
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === '#a855f7' ? 'bg-white/10 scale-110' : ''}`}
+                                                title={t('canvas.colors.purple', 'Lila')}
+                                                aria-label="Obrir panell">
                                                 <div className="w-5 h-5 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
                                             </button>
                                         </div>

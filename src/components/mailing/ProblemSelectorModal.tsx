@@ -99,7 +99,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder={t('mailing.problemSelector.searchPlaceholder', "Buscar per codi (P37500) o títol...")}
-                            className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
+                            className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition font-medium"
                             autoFocus
                         />
                     </div>
@@ -112,7 +112,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                             <button type="button"
                                 key={topic.id}
                                 onClick={() => setSelectedTopicId(topic.id)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border ${selectedTopicId === topic.id
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition border ${selectedTopicId === topic.id
                                     ? 'bg-sky-500/10 border-sky-500/30 text-sky-400'
                                     : 'bg-white/5 border-transparent text-slate-400 hover:bg-white/10 hover:text-slate-200'
                                     }`}
@@ -128,11 +128,12 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                     {results.length > 0 ? (
                         <div className="grid grid-cols-1 gap-2">
                             {results.map((problem) => (
-                                <button type="button"
+                                <button
+                                    type="button"
                                     key={problem.id}
                                     onClick={() => onSelect(problem)}
-                                    className="w-full text-left p-4 rounded-xl bg-slate-800/30 hover:bg-sky-500/10 border border-white/5 hover:border-sky-500/30 transition-all group flex items-center justify-between"
-                                >
+                                    className="w-full text-left p-4 rounded-xl bg-slate-800/30 hover:bg-sky-500/10 border border-white/5 hover:border-sky-500/30 transition group flex items-center justify-between"
+                                    aria-label="Obrir panell">
                                     <div className="flex items-start gap-4">
                                         <div className="w-10 h-10 rounded-lg bg-slate-900 border border-white/5 flex items-center justify-center text-xs font-bold text-slate-400 font-mono group-hover:text-sky-400 group-hover:border-sky-500/30 transition-colors">
                                             {problem.id.substring(0, 3)}
@@ -150,7 +151,7 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-500 opacity-0 group-hover:opacity-100 transition-all group-hover:bg-sky-500 group-hover:text-white transform group-hover:translate-x-0 translate-x-4">
+                                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-500 opacity-0 group-hover:opacity-100 transition group-hover:bg-sky-500 group-hover:text-white transform group-hover:translate-x-0 translate-x-4">
                                         <ChevronRight size={16} />
                                     </div>
                                 </button>

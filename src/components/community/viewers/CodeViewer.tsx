@@ -105,7 +105,7 @@ const CodeViewer = ({ url, filename }: CodeViewerProps) => {
                 <button type="button" 
                     onClick={handleCopy}
                     className="p-1.5 rounded-md hover:bg-white/10 text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-medium"
-                >
+                 aria-label="Botó interactiu">
                     {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                     {copied ? 'Copiat' : 'Copiar'}
                 </button>

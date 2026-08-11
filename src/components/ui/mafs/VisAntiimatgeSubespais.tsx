@@ -44,8 +44,8 @@ const VisAntiimatgeSubespais = () => {
                     {!isCompatible && (
                         <button type="button" 
                             onClick={snapToImage}
-                            className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-black uppercase rounded-lg shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
-                        >
+                            className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-black uppercase rounded-lg shadow-lg shadow-indigo-500/20 transition active:scale-95"
+                         aria-label="Botó interactiu">
                             Ajustar a la Imatge
                         </button>
                     )}

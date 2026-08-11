@@ -304,7 +304,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                     style={{ touchAction: 'none' }}
                     onPointerDown={handlePointerDown('top')}
                 >
-                    <div className="w-6 h-[3px] bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-x-150 transition-all duration-200" />
+                    <div className="w-6 h-[3px] bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-x-150 transition duration-200" />
                 </div>
             )}
 
@@ -329,7 +329,7 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                         style={{ touchAction: 'none' }}
                         onPointerDown={handlePointerDown('bottom')}
                     >
-                        <div className="w-6 h-[3px] bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-x-150 transition-all duration-200" />
+                        <div className="w-6 h-[3px] bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-x-150 transition duration-200" />
                     </div>
                 )}
             </div>

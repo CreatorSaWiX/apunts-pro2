@@ -97,7 +97,7 @@ const VisCheatSheetConiques = () => {
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {['ellipse', 'hiperbola', 'hiperbola_equilatera', 'parabola', 'rectes', 'diamant', 'quadrat'].map((m) => (
-                    <button type="button" key={m} onClick={() => setMode(m as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition-all ${mode === m ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:bg-slate-700'}`}>
+                    <button type="button" key={m} onClick={() => setMode(m as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-bold transition ${mode === m ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:bg-slate-700'}`}>
                         {m === 'ellipse' ? 'El·lipse' : 
                          m === 'hiperbola' ? 'Hipèrbola' : 
                          m === 'hiperbola_equilatera' ? 'H. Equilàtera' :

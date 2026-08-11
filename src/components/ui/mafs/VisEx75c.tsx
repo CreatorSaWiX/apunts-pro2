@@ -21,7 +21,7 @@ const VisEx75c = () => {
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt C: <InlineMath math="x^2+y^2 \le 1, x < y" /></span>
                     <span className="text-xs font-mono text-white">Disc unitat tallat per $y=x$</span>
                 </div>
-                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
                     {isIn ? '✓ Punt de C' : '✗ Fora de C'}
                 </div>
             </div>

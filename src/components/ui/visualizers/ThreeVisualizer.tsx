@@ -237,7 +237,7 @@ const ThreeVisualizerContent = ({ SurfaceComponent, isHybrid }: { SurfaceCompone
 
     return (
         <ThreeErrorBoundary>
-            <div className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-125'}`}>
+            <div className={`w-full overflow-hidden relative group transition duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-125'}`}>
 
                 <div className="flex-1 relative">
                     <Canvas

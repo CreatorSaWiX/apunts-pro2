@@ -65,7 +65,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, extension }: any) =
                         onClick={() => setIsOpen(!isOpen)}
                         className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md text-[11px] font-mono text-white/90 tracking-wider px-2.5 py-1.5 rounded-lg border border-white/10 outline-none hover:bg-white/10 transition-colors h-7"
                         title="Change language"
-                    >
+                        aria-label="Change language">
                         <span>{currentLabel}</span>
                         <ChevronDown size={12} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                     </button>
@@ -100,7 +100,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, extension }: any) =
                 <button 
                     type="button"
                     onClick={copyToClipboard}
-                    className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-200 ${copied ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20' : 'bg-black/50 backdrop-blur-md text-white/90 hover:bg-white/20 hover:text-white border border-white/10'}`}
+                    className={`flex items-center justify-center w-7 h-7 rounded-lg transition duration-200 ${copied ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20' : 'bg-black/50 backdrop-blur-md text-white/90 hover:bg-white/20 hover:text-white border border-white/10'}`}
                     title="Copy code"
                 >
                     {copied ? <Check size={14} /> : <Copy size={14} />}

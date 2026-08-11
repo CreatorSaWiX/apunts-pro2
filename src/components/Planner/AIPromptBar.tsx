@@ -12,6 +12,7 @@ interface AIPromptBarProps {
 }
 
 const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
+    const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
     const { t, i18n } = useTranslation();
     const [prompt, setPrompt] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
@@ -60,12 +61,17 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
         }
     }, [prompt]);
 
+    if (isOpen !== prevIsOpen) {
+        setPrevIsOpen(isOpen);
+        if (!isOpen) {
+            setPrompt('');
+            setError(null);
+        }
+    }
+
     useEffect(() => {
         if (isOpen && textareaRef.current) {
             textareaRef.current.focus();
-        } else {
-            setPrompt('');
-            setError(null);
         }
     }, [isOpen]);
 
@@ -236,7 +242,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                     >
                         {/* Glowing Aura (Apple Intelligence Style) */}
                         <div
-                            className={`absolute -inset-[1px] rounded-[32px] blur-md transition-all duration-700 pointer-events-none
+                            className={`absolute -inset-[1px] rounded-[32px] blur-md transition duration-700 pointer-events-none
                             ${isGenerating
                                     ? 'bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 opacity-50 animate-[pulse_1s_ease-in-out_infinite]'
                                     : 'bg-gradient-to-r from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 opacity-20'}
@@ -322,7 +328,7 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                                     <button type="button"
                                         onClick={isGenerating ? handleStop : handleGenerate}
                                         disabled={(!prompt.trim() && !attachedFile && !isGenerating)}
-                                        className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 
+                                        className={`relative flex items-center justify-center w-8 h-8 rounded-full transition duration-300 
                                         ${(!prompt.trim() && !attachedFile && !isGenerating)
                                                 ? 'bg-white/5 text-white/30 cursor-not-allowed'
                                                 : isGenerating

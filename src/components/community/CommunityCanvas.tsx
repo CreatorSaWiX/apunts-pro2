@@ -102,10 +102,10 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                         type="button"
                                         onClick={() => setCurrentWidth(size)}
                                         title={t('canvas.tools.size', 'Mida {{size}}px ([ / ])', { size })}
-                                        className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition-all duration-300 ${currentWidth === size ? 'bg-white/20 shadow-inner' : 'hover:bg-white/10 opacity-70 hover:opacity-100'}`}
-                                    >
+                                        className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition duration-300 ${currentWidth === size ? 'bg-white/20 shadow-inner' : 'hover:bg-white/10 opacity-70 hover:opacity-100'}`}
+                                        aria-label="Obrir panell">
                                         <div 
-                                            className="rounded-full bg-white transition-all duration-300"
+                                            className="rounded-full bg-white transition duration-300"
                                             style={{ width: size + 2, height: size + 2 }}
                                         />
                                     </button>
@@ -127,9 +127,9 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                             type="button"
                                             onClick={() => setCurrentColor(c.value)}
                                             title={colorTitles[c.id] || t('canvas.colors.cycle', 'Canviar color (C)')}
-                                            className={`w-8 h-8 shrink-0 rounded-full transition-all duration-300 relative ${currentColor === c.value ? 'scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)] z-10' : 'scale-90 hover:scale-100 opacity-70 hover:opacity-100'}`}
+                                            className={`w-8 h-8 shrink-0 rounded-full transition duration-300 relative ${currentColor === c.value ? 'scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)] z-10' : 'scale-90 hover:scale-100 opacity-70 hover:opacity-100'}`}
                                             style={{ backgroundColor: c.value, boxShadow: currentColor === c.value ? `0 0 20px ${c.value}66` : 'none' }}
-                                        />
+                                            aria-label="Botó" />
                                     );
                                 })}
 

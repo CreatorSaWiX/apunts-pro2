@@ -74,7 +74,7 @@ export const PublishedCodeBlock = ({ language, code }: PublishedCodeBlockProps) 
 
                     <button 
                         onClick={copyToClipboard}
-                        className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-200 ${copied ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20' : 'bg-black/50 backdrop-blur-md text-white/90 hover:bg-white/20 hover:text-white border border-white/10'}`}
+                        className={`flex items-center justify-center w-7 h-7 rounded-lg transition duration-200 ${copied ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20' : 'bg-black/50 backdrop-blur-md text-white/90 hover:bg-white/20 hover:text-white border border-white/10'}`}
                         title="Copy code"
                     >
                         {copied ? <Check size={14} /> : <Copy size={14} />}
@@ -83,6 +83,7 @@ export const PublishedCodeBlock = ({ language, code }: PublishedCodeBlockProps) 
 
                 {/* Code Content */}
                 <pre className="!m-0 !bg-transparent p-5 pt-12 custom-scrollbar overflow-x-auto text-[14px] leading-relaxed font-mono">
+                    {/* eslint-disable-next-line react-doctor/dangerous-html-sink */}
                     <code className={`language-${displayLanguage}`} dangerouslySetInnerHTML={{ __html: highlightedCode }} />
                 </pre>
             </div>

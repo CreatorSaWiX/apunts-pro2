@@ -258,8 +258,10 @@ const CommunityPage = () => {
         let unsubscribe = () => { };
 
         const setup = async () => {
-            const { db } = await import('../lib/firebase');
-            const { collection, query, orderBy, onSnapshot, where, limit, documentId } = await import('firebase/firestore');
+            const [{ db }, { collection, query, orderBy, onSnapshot, where, limit, documentId }] = await Promise.all([
+                import('../lib/firebase'),
+                import('firebase/firestore')
+            ]);
 
             if (isCancelled) return;
 
@@ -330,8 +332,10 @@ const CommunityPage = () => {
 
         setLoadingMore(true);
 
-        const { db } = await import('../lib/firebase');
-        const { collection, query, orderBy, getDocs, where, limit, startAfter } = await import('firebase/firestore');
+        const [{ db }, { collection, query, orderBy, getDocs, where, limit, startAfter }] = await Promise.all([
+            import('../lib/firebase'),
+            import('firebase/firestore')
+        ]);
 
         const currentLimit = POSTS_PER_PAGE;
 
@@ -407,7 +411,10 @@ const CommunityPage = () => {
                     <div className="flex flex-col gap-6">
                         <div>
                             <h4 className="text-[11px] font-bold text-slate-400 mb-3 uppercase tracking-widest">{t('community.subjects', 'Assignatures')}</h4>
-                            <button onClick={() => { setShowSubjectFilter(true); setShowMobileFiltersMenu(false); }} className="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-medium transition-colors border border-white/5">
+                            <button
+                                onClick={() => { setShowSubjectFilter(true); setShowMobileFiltersMenu(false); }}
+                                className="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-medium transition-colors border border-white/5"
+                                aria-label="Obrir panell">
                                 <div className="flex items-center gap-3">
                                     <BookOpen size={18} className="text-primary" />
                                     <span>{activeSubject === 'all' ? t('community.allSubjects', 'Totes les assignatures') : activeSubject.toUpperCase()}</span>
@@ -431,7 +438,7 @@ const CommunityPage = () => {
                                             setFilterType(type as any);
                                             setTimeout(() => setShowMobileFiltersMenu(false), 200);
                                         }}
-                                        className={`p-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${filterType === type ? 'bg-primary text-white shadow-[0_0_20px_rgba(0,0,0,0.2)] scale-[1.02]' : 'bg-white/5 text-slate-300 border border-white/5'}`}
+                                        className={`p-3.5 rounded-2xl text-sm font-semibold transition duration-300 flex items-center justify-center gap-2 ${filterType === type ? 'bg-primary text-white shadow-[0_0_20px_rgba(0,0,0,0.2)] scale-[1.02]' : 'bg-white/5 text-slate-300 border border-white/5'}`}
                                     >
                                         {type === 'all' ? <BookOpen size={16} /> : type === 'pdf' ? <FileTextIcon size={16} /> : type === 'image' ? <Image size={16} /> : <Code2 size={16} />}
                                         {type === 'all' ? 'Tots' : type === 'pdf' ? 'PDFs' : type === 'image' ? 'Imatges' : 'Codi'}
@@ -453,7 +460,7 @@ const CommunityPage = () => {
                                             setSortBy(sort as any);
                                             setTimeout(() => setShowMobileFiltersMenu(false), 200);
                                         }}
-                                        className={`p-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${sortBy === sort ? 'bg-primary text-white shadow-[0_0_20px_rgba(0,0,0,0.2)] scale-[1.02]' : 'bg-white/5 text-slate-300 border border-white/5'}`}
+                                        className={`p-3.5 rounded-2xl text-sm font-semibold transition duration-300 flex items-center justify-center gap-2 ${sortBy === sort ? 'bg-primary text-white shadow-[0_0_20px_rgba(0,0,0,0.2)] scale-[1.02]' : 'bg-white/5 text-slate-300 border border-white/5'}`}
                                     >
                                         {sort === 'recent' ? <Clock size={16} /> : sort === 'popular' ? <Flame size={16} /> : sort === 'views' ? <Eye size={16} /> : <Heart size={16} />}
                                         {sort === 'recent' ? t('community.recent', 'Recents') : sort === 'popular' ? t('community.popular', 'Populars') : sort === 'views' ? t('community.views', 'Vistos') : t('community.liked', "M'agrada")}
@@ -474,7 +481,7 @@ const CommunityPage = () => {
                             handleCloseCanvas();
                         }}
                         aria-label={t('community.resources', 'Recursos')}
-                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${!isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${!isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                     >
                         {!isCanvasOpen && (
                             <motion.div
@@ -498,7 +505,7 @@ const CommunityPage = () => {
                             handleOpenCanvas();
                         }}
                         aria-label={t('community.canvas', 'Llenç')}
-                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                        className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                     >
                         {isCanvasOpen && (
                             <motion.div
@@ -517,7 +524,7 @@ const CommunityPage = () => {
             </div>
 
             {/* Fons intel·ligent: L'ocultem amb CSS per evitar problemes de remounting. Fem servir visibility per no perdre l'scroll i el layout, i pausem WebGL. */}
-            <div className={`w-full transition-all duration-700 ease-in-out ${isBackgroundHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}`}>
+            <div className={`w-full transition duration-700 ease-in-out ${isBackgroundHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}`}>
                 {/* Awwwards Hero Section */}
                 <section className="hidden md:flex touch-landscape:hidden relative w-full min-h-[55vh] items-center justify-center z-10 overflow-hidden pt-28 pb-8">
                     <Suspense fallback={null}>
@@ -576,10 +583,11 @@ const CommunityPage = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
                             >
-                                <button type="button"
+                                <button
+                                    type="button"
                                     onClick={handleUploadClick}
-                                    className="group relative px-8 py-4 bg-(--glass-bg) backdrop-blur-3xl backdrop-saturate-150 border border-(--glass-border) border-t-(--glass-border-light) border-l-(--glass-border-light) shadow-[var(--glass-shadow-inner),0_0_40px_rgba(255,255,255,0.05)] text-white font-bold text-lg rounded-full flex items-center gap-3 transition-all duration-500 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] active:scale-95 hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] overflow-hidden"
-                                >
+                                    className="group relative px-8 py-4 bg-(--glass-bg) backdrop-blur-3xl backdrop-saturate-150 border border-(--glass-border) border-t-(--glass-border-light) border-l-(--glass-border-light) shadow-[var(--glass-shadow-inner),0_0_40px_rgba(255,255,255,0.05)] text-white font-bold text-lg rounded-full flex items-center gap-3 transition duration-500 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] active:scale-95 hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] overflow-hidden"
+                                    aria-label="Obrir panell">
                                     <div className="absolute inset-0 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out opacity-0 group-hover:opacity-100" />
                                     <Plus size={20} className="transition-transform group-hover:rotate-90 duration-300 relative z-10" />
                                     <span className="relative z-10">{t('hero.uploadResource', 'Pujar Recurs')}</span>
@@ -661,10 +669,11 @@ const CommunityPage = () => {
 
                     {/* Mobile Upload FAB */}
                     <div className="md:hidden touch-landscape:block fixed bottom-28 right-4 z-50">
-                        <button type="button"
+                        <button
+                            type="button"
                             onClick={handleUploadClick}
-                            className="group relative w-14 h-14 bg-[#0a0a0a]/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition-all duration-300 active:scale-95 overflow-hidden"
-                        >
+                            className="group relative w-14 h-14 bg-[#0a0a0a]/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition duration-300 active:scale-95 overflow-hidden"
+                            aria-label="Obrir panell">
                             <div className="absolute inset-0 rounded-full border border-white/20" />
                             <Plus size={24} className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
                         </button>
@@ -703,31 +712,35 @@ const CommunityPage = () => {
                                 <AnimatePresence>
                                     {showTypeDropdown && (
                                         <LiquidDropdown className="min-w-52.5">
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => { setFilterType('all'); setShowTypeDropdown(false); }}
                                                 className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'all' ? 'bg-white/10' : ''}`}
-                                            >
+                                                aria-label="Obrir material">
                                                 <BookOpen size={16} className="text-white shrink-0" />
                                                 <span>{t('community.filterAll', 'Tots els recursos')}</span>
                                             </button>
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => { setFilterType('pdf'); setShowTypeDropdown(false); }}
                                                 className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'pdf' ? 'bg-white/10' : ''}`}
-                                            >
+                                                aria-label="Arxiu de text">
                                                 <FileTextIcon size={16} className="text-white shrink-0" />
                                                 <span>{t('community.filterPdf', 'Documents PDF')}</span>
                                             </button>
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => { setFilterType('image'); setShowTypeDropdown(false); }}
                                                 className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'image' ? 'bg-white/10' : ''}`}
-                                            >
+                                                aria-label="Veure imatge">
                                                 <Image size={16} className="text-white shrink-0" />
                                                 <span>{t('community.filterImage', 'Imatges / Fotos')}</span>
                                             </button>
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => { setFilterType('code'); setShowTypeDropdown(false); }}
                                                 className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${filterType === 'code' ? 'bg-white/10' : ''}`}
-                                            >
+                                                aria-label="Veure codi">
                                                 <Code2 size={16} className="text-white shrink-0" />
                                                 <span>{t('community.filterCode', 'Codi Font')}</span>
                                             </button>
@@ -756,31 +769,35 @@ const CommunityPage = () => {
                                 <AnimatePresence>
                                     {showSortDropdown && (
                                         <LiquidDropdown className="min-w-47.5">
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => { setSortBy('recent'); setShowSortDropdown(false); }}
                                                 className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'recent' ? 'bg-white/10' : ''}`}
-                                            >
+                                                aria-label="Historial">
                                                 <Clock size={16} className="text-white shrink-0" />
                                                 <span>{t('community.sortRecent', 'Més recents')}</span>
                                             </button>
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => { setSortBy('popular'); setShowSortDropdown(false); }}
                                                 className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'popular' ? 'bg-white/10' : ''}`}
-                                            >
+                                                aria-label="Destacat">
                                                 <Flame size={16} className="text-white shrink-0" />
                                                 <span>{t('community.sortPopular', 'Més populars')}</span>
                                             </button>
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => { setSortBy('views'); setShowSortDropdown(false); }}
                                                 className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'views' ? 'bg-white/10' : ''}`}
-                                            >
+                                                aria-label="Veure">
                                                 <Eye size={16} className="text-white shrink-0" />
                                                 <span>{t('community.sortViews', 'Més vistos')}</span>
                                             </button>
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => { setSortBy('liked'); setShowSortDropdown(false); }}
                                                 className={`relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium ${sortBy === 'liked' ? 'bg-white/10' : ''}`}
-                                            >
+                                                aria-label="M'agrada">
                                                 <Heart size={16} className="text-white shrink-0" />
                                                 <span>{t('community.sortLiked', "Els meus m'agrada")}</span>
                                             </button>
@@ -792,7 +809,7 @@ const CommunityPage = () => {
                             <div key="divider-3" className="w-px h-6 bg-white/10 mx-1" />
 
                             {/* Buscar */}
-                            <div key="buscar" className={`flex items-center transition-all duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-45 sm:w-70 ml-1' : 'w-10 ml-0'}`}>
+                            <div key="buscar" className={`flex items-center transition duration-500 overflow-hidden ${isSearchOpen || searchQuery ? 'w-45 sm:w-70 ml-1' : 'w-10 ml-0'}`}>
                                 <button type="button"
                                     onClick={() => {
                                         if (isSearchOpen && !searchQuery) setIsSearchOpen(false);
@@ -892,8 +909,8 @@ const CommunityPage = () => {
 
                                         <button type="button"
                                             onClick={handleUploadClick}
-                                            className="relative px-8 py-3.5 bg-white text-black hover:bg-slate-200 font-bold rounded-2xl transition-all hover:-translate-y-1 flex items-center gap-2 shadow-[0_10px_40px_rgba(255,255,255,0.2)] hover:shadow-[0_15px_50px_rgba(255,255,255,0.3)] z-10 overflow-hidden"
-                                        >
+                                            className="relative px-8 py-3.5 bg-white text-black hover:bg-slate-200 font-bold rounded-2xl transition hover:-translate-y-1 flex items-center gap-2 shadow-[0_10px_40px_rgba(255,255,255,0.2)] hover:shadow-[0_15px_50px_rgba(255,255,255,0.3)] z-10 overflow-hidden"
+                                         aria-label="Botó interactiu">
                                             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/50 to-transparent -translate-x-full animate-[shine_3s_infinite]" />
                                             <Plus size={20} className="text-black" />
                                             {t('community.uploadFirst', 'Pujar el primer recurs')}

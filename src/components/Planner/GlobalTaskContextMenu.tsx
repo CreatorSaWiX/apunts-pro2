@@ -149,28 +149,31 @@ const GlobalTaskContextMenu: React.FC = () => {
                         <p className="text-[10px] font-bold tracking-widest uppercase text-slate-400 truncate">{task.title}</p>
                     </div>
 
-                    <button type="button" 
+                    <button
+                        type="button"
                         onClick={handleCyclePriority}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
-                    >
+                        aria-label="Marcar prioritat">
                         <Flag size={14} className={task.priority === 'HIGH' ? 'text-red-400' : task.priority === 'MEDIUM' ? 'text-amber-400' : 'text-slate-400'} />
                         <span>{t('planner.contextMenu.changePriority', 'Canviar Prioritat')}</span>
                     </button>
                     
-                    <button type="button" 
+                    <button
+                        type="button"
                         onClick={handleDuplicate}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-slate-300 hover:bg-white/5 hover:text-white transition-colors group"
-                    >
+                        aria-label="Copiar">
                         <Copy size={14} className="text-slate-400 group-hover:text-white transition-colors" />
                         <span>{t('planner.contextMenu.duplicate', 'Duplicar')}</span>
                     </button>
                     
                     <div className="h-px bg-white/5 my-1 mx-1" />
                     
-                    <button type="button" 
+                    <button
+                        type="button"
                         onClick={handleDelete}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left text-[12px] font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors group"
-                    >
+                        aria-label="Eliminar">
                         <Trash2 size={14} />
                         <span>{t('planner.contextMenu.delete', 'Eliminar')}</span>
                     </button>

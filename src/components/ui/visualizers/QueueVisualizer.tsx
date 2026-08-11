@@ -121,15 +121,15 @@ export default function QueueVisualizer() {
                     />
                     <button type="button"
                         onClick={handlePush}
-                        className="h-10 px-4 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 text-fuchsia-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-fuchsia-500/20"
-                    >
+                        className="h-10 px-4 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 text-fuchsia-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition active:scale-[0.98] border border-fuchsia-500/20"
+                     aria-label="Botó interactiu">
                         <Plus size={16} /> push( )
                     </button>
 
                     <button type="button"
                         onClick={handlePop}
-                        className="h-10 px-4 ml-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-rose-500/20"
-                    >
+                        className="h-10 px-4 ml-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-sm tracking-wide rounded-lg flex items-center justify-center gap-2 transition active:scale-[0.98] border border-rose-500/20"
+                     aria-label="Botó interactiu">
                         <Minus size={16} /> pop( )
                     </button>
                 </div>

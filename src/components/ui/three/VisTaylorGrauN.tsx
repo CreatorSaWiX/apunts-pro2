@@ -48,7 +48,7 @@ const VisTaylorGrauN = () => {
     };
 
     return (
-        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : ''}`}>
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : ''}`}>
             {/* Control Panel */}
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
@@ -56,7 +56,7 @@ const VisTaylorGrauN = () => {
                         <button type="button"
                             key={g}
                             onClick={() => setGrau(g)}
-                            className={`px-5 py-2 rounded-lg text-xs font-black transition-all ${grau === g ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                            className={`px-5 py-2 rounded-lg text-xs font-black transition ${grau === g ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                         >
                             Grau {g}
                         </button>

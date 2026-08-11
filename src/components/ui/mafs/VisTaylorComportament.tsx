@@ -28,8 +28,8 @@ const VisTaylorComportament = () => {
             </Mafs>
             <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="flex justify-center gap-4 mb-3">
-                    <button type="button" onClick={() => setN(2)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 2 ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 2 (Parell)</button>
-                    <button type="button" onClick={() => setN(3)} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${n === 3 ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 3 (Senar)</button>
+                    <button type="button" onClick={() => setN(2)} className={`px-4 py-2 rounded-lg text-xs font-bold transition ${n === 2 ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 2 (Parell)</button>
+                    <button type="button" onClick={() => setN(3)} className={`px-4 py-2 rounded-lg text-xs font-bold transition ${n === 3 ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>Grau 3 (Senar)</button>
                 </div>
                 <p className="text-xs text-slate-400 text-center italic">
                     {n === 2

@@ -219,7 +219,7 @@ const CalendarView: React.FC = () => {
                                 <button type="button"
                                     key={m}
                                     onClick={() => handleSetMode(m)}
-                                    className={`relative px-6 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all duration-300 rounded-full outline-none hover:scale-[1.02] active:scale-95 ${
+                                    className={`relative px-6 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition duration-300 rounded-full outline-none hover:scale-[1.02] active:scale-95 ${
                                         mode === m ? 'text-white' : 'text-slate-400 hover:text-slate-200'
                                     }`}
                                 >

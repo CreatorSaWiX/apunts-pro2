@@ -134,12 +134,12 @@ const TaskPopover: React.FC = () => {
                             {/* Sense Assignatura */}
                             <button
                                 onClick={() => updateTask(task.id, { subjectId: undefined })}
-                                className={`flex items-center gap-3.5 p-4 rounded-[14px] border text-left transition-all ${
+                                className={`flex items-center gap-3.5 p-4 rounded-[14px] border text-left transition ${
                                     !task.subjectId 
                                         ? 'bg-white/[0.08] border-white/[0.12]' 
                                         : 'bg-white/[0.02] border-white/[0.03] hover:bg-white/[0.04]'
                                 }`}
-                            >
+                                aria-label="Obrir panell">
                                 <div className="w-3 h-3 rounded-full bg-slate-600" />
                                 <span className={`text-[15px] font-medium ${!task.subjectId ? 'text-white' : 'text-slate-300'}`}>Sense Assignatura</span>
                             </button>
@@ -151,12 +151,12 @@ const TaskPopover: React.FC = () => {
                                     <button
                                         key={s.id}
                                         onClick={() => updateTask(task.id, { subjectId: s.id })}
-                                        className={`flex items-center gap-3.5 p-4 rounded-[14px] border text-left transition-all ${
+                                        className={`flex items-center gap-3.5 p-4 rounded-[14px] border text-left transition ${
                                             isSelected 
                                                 ? `bg-${s.colorToken}/15 border-${s.colorToken}/30 shadow-[inset_0_1px_3px_rgba(255,255,255,0.1)]` 
                                                 : 'bg-white/[0.02] border-white/[0.03] hover:bg-white/[0.04]'
                                         }`}
-                                    >
+                                        aria-label="Obrir panell">
                                         <div className={`w-3 h-3 rounded-full bg-${s.colorToken} shadow-[0_0_10px_currentColor]`} />
                                         <span className={`text-[15px] font-medium ${isSelected ? 'text-white' : 'text-slate-300'}`}>{s.name}</span>
                                     </button>
@@ -188,12 +188,12 @@ const TaskPopover: React.FC = () => {
                                     <button
                                         key={p}
                                         onClick={() => updateTask(task.id, { priority: p })}
-                                        className={`flex flex-col gap-3 p-4 rounded-[16px] border text-left transition-all ${
+                                        className={`flex flex-col gap-3 p-4 rounded-[16px] border text-left transition ${
                                             isSelected
                                                 ? `bg-${colors[p]}/15 border-${colors[p]}/30 shadow-[inset_0_1px_3px_rgba(255,255,255,0.1)]`
                                                 : 'bg-white/[0.02] border-white/[0.04] hover:bg-white/[0.06]'
                                         }`}
-                                    >
+                                        aria-label="Obrir panell">
                                         <div className={`w-3 h-3 rounded-full ${dotColor} ${isSelected ? 'shadow-[0_0_12px_currentColor]' : ''}`} />
                                         <span className={`text-[15px] font-medium ${isSelected ? 'text-white' : 'text-slate-400'}`}>{labels[p]}</span>
                                     </button>
@@ -265,7 +265,7 @@ const TaskPopover: React.FC = () => {
                                     <button type="button"
                                         key={p}
                                         onClick={() => updateTask(task.id, { priority: p })}
-                                        className={`flex-1 py-1.5 rounded text-[9px] font-bold tracking-wider transition-all ${
+                                        className={`flex-1 py-1.5 rounded text-[9px] font-bold tracking-wider transition ${
                                             isSelected ? colors[p] : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                         }`}
                                     >

@@ -24,9 +24,9 @@ const VisM1T6Ex6_3 = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex justify-center gap-2 bg-slate-900/40 border-b border-white/5">
-                <button type="button" onClick={() => setOp('sum')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sum' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 + v2</button>
-                <button type="button" onClick={() => setOp('sub1')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sub1' ? 'bg-green-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 - v3</button>
-                <button type="button" onClick={() => setOp('sub2')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${op === 'sub2' ? 'bg-orange-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v2 - v4</button>
+                <button type="button" onClick={() => setOp('sum')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition ${op === 'sum' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 + v2</button>
+                <button type="button" onClick={() => setOp('sub1')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition ${op === 'sub1' ? 'bg-green-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v1 - v3</button>
+                <button type="button" onClick={() => setOp('sub2')} className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition ${op === 'sub2' ? 'bg-orange-500 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>v2 - v4</button>
             </div>
             <Mafs viewBox={{ x: [-8, 5], y: [-10, 8] }} pan={true} zoom={true}>
                 <Coordinates.Cartesian subdivisions={5} />

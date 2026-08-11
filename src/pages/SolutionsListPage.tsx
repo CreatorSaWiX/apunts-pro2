@@ -132,10 +132,11 @@ const SolutionsListPage = () => {
                     {/* PDF Large Square Button - Right Aligned */}
                     {(availablePdfs.ca || availablePdfs.es) && (
                         <div className="relative shrink-0 self-center md:self-stretch flex items-center">
-                            <button type="button" 
+                            <button
+                                type="button"
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
-                                className="flex flex-col items-center justify-center gap-2 px-8 py-6 text-xs font-black uppercase tracking-[0.2em] rounded-2xl border transition-all select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-30 h-full max-h-30"
-                            >
+                                className="flex flex-col items-center justify-center gap-2 px-8 py-6 text-xs font-black uppercase tracking-[0.2em] rounded-2xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-30 h-full max-h-30"
+                                aria-label="Veure document">
                                 <FileText size={32} className="group-hover:scale-110 transition-transform duration-300" />
                                 <span>PDF</span>
                             </button>
@@ -151,19 +152,23 @@ const SolutionsListPage = () => {
                                     >
                                         <div className="p-4 border-b border-red-500/10 flex justify-between items-center">
                                             <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">{t('solutionsList.pdfLanguage', 'Idioma Solucionari')}</span>
-                                            <button type="button" onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsPdfMenuOpen(false)}
+                                                className="text-slate-500 hover:text-white transition-colors"
+                                                aria-label="Tancar">
                                                 <X size={16} />
                                             </button>
                                         </div>
                                         <div className="p-2">
                                             {availablePdfs.ca && topicId && (
-                                                <a 
+                                                <a
                                                     href={`/pdfs/solucionaris/${topicId.split('-')[0]}/ca/solucionari-${topicId}.pdf`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     onClick={() => setIsPdfMenuOpen(false)}
-                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition-all group"
-                                                >
+                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition group"
+                                                    aria-label="Obrir panell">
                                                     <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
                                                         <span className="text-xs font-bold text-red-400">CA</span>
                                                     </div>
@@ -171,13 +176,13 @@ const SolutionsListPage = () => {
                                                 </a>
                                             )}
                                             {availablePdfs.es && topicId && (
-                                                <a 
+                                                <a
                                                     href={`/pdfs/solucionaris/${topicId.split('-')[0]}/es/solucionari-${topicId}.pdf`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     onClick={() => setIsPdfMenuOpen(false)}
-                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition-all group"
-                                                >
+                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition group"
+                                                    aria-label="Obrir panell">
                                                     <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
                                                         <span className="text-xs font-bold text-red-400">ES</span>
                                                     </div>
@@ -234,7 +239,7 @@ const SolutionsListPage = () => {
                                     to={`/tema/${topicId}/solucionaris/${problemId}`}
                                     className="group relative block h-full"
                                 >
-                                    <div className={`h-full backdrop-blur-sm rounded-3xl border p-6 transition-all duration-300 relative overflow-hidden group-hover:shadow-2xl group-hover:-translate-y-1 group-active:scale-95
+                                    <div className={`h-full backdrop-blur-sm rounded-3xl border p-6 transition duration-300 relative overflow-hidden group-hover:shadow-2xl group-hover:-translate-y-1 group-active:scale-95
                                         ${isSolved
                                             ? 'bg-linear-to-br from-slate-900/80 to-slate-800/80 border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-emerald-500/10'
                                             : 'bg-slate-900/40 border-white/5 hover:border-white/20 hover:bg-slate-800/40 opacity-90 hover:opacity-100'
@@ -257,7 +262,7 @@ const SolutionsListPage = () => {
                                                                 e.preventDefault(); 
                                                                 window.open(jutgeUrl, '_blank', 'noopener,noreferrer');
                                                             }}
-                                                            className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition-all shadow-sm flex items-center gap-1.5 hover:-translate-y-0.5
+                                                            className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition shadow-sm flex items-center gap-1.5 hover:-translate-y-0.5
                                                                 ${isSolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-400' : 'bg-slate-800 text-slate-400 border-white/10 hover:bg-slate-700 hover:text-white'}
                                                             `}
                                                             title={t('solutionsList.openJutge', "Obrir problema al Jutge")}

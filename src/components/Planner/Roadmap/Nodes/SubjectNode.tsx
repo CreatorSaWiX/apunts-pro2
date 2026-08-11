@@ -120,7 +120,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
 
             {/* TARGET GRADE BADGE */}
             {data.status !== 'passed' && isGradable && requiredAverageGrade !== null && (
-                <div className={`absolute -top-2.5 -left-2.5 text-[9px] font-black px-1.5 py-0.5 rounded-md z-20 flex items-center gap-0.5 shadow-lg border transform -rotate-3 cursor-default transition-all hover:scale-110
+                <div className={`absolute -top-2.5 -left-2.5 text-[9px] font-black px-1.5 py-0.5 rounded-md z-20 flex items-center gap-0.5 shadow-lg border transform -rotate-3 cursor-default transition hover:scale-110
                     ${requiredAverageGrade > 10
                         ? 'bg-linear-to-br from-red-500/90 to-rose-600/90 text-white border-red-400/50 shadow-[0_0_12px_rgba(239,68,68,0.6)]'
                         : requiredAverageGrade > 8

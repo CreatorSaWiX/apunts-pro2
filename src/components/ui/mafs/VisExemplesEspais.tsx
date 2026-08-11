@@ -26,10 +26,10 @@ const VisExemplesEspais = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
-                <button type="button" onClick={() => setView('polys')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'polys' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Polinomis</button>
-                <button type="button" onClick={() => setView('matrius')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'matrius' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Matrius</button>
-                <button type="button" onClick={() => setView('trivial')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'trivial' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Espai Trivial</button>
-                <button type="button" onClick={() => setView('propietats')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${view === 'propietats' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Propietats</button>
+                <button type="button" onClick={() => setView('polys')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition ${view === 'polys' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Polinomis</button>
+                <button type="button" onClick={() => setView('matrius')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition ${view === 'matrius' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Matrius</button>
+                <button type="button" onClick={() => setView('trivial')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition ${view === 'trivial' ? 'bg-emerald-600 text-white shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Espai Trivial</button>
+                <button type="button" onClick={() => setView('propietats')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition ${view === 'propietats' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Propietats</button>
             </div>
 
             <div className="relative flex-1 overflow-hidden bg-slate-950/40">
@@ -115,10 +115,10 @@ const VisExemplesEspais = () => {
                                     </div>
                                 </div>
                                 <div className="pt-2 border-t border-white/5 space-y-1.5">
-                                    <p className={`text-[9px] transition-all ${scalarProp === 0 ? 'text-yellow-400 font-bold' : 'text-slate-500'}`}>
+                                    <p className={`text-[9px] transition ${scalarProp === 0 ? 'text-yellow-400 font-bold' : 'text-slate-500'}`}>
                                         {scalarProp === 0 ? <span>✓ <InlineMath math="0 \cdot v = 0_E" /></span> : <InlineMath math="0 \cdot v = 0_E" />}
                                     </p>
-                                    <p className={`text-[9px] transition-all ${scalarProp === -1 ? 'text-indigo-400 font-bold' : 'text-slate-500'}`}>
+                                    <p className={`text-[9px] transition ${scalarProp === -1 ? 'text-indigo-400 font-bold' : 'text-slate-500'}`}>
                                         {scalarProp === -1 ? <span>✓ <InlineMath math="(-1)v = -v" /></span> : <InlineMath math="(-1)v = -v" />}
                                     </p>
                                 </div>

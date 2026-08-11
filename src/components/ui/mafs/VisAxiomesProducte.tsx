@@ -19,10 +19,10 @@ const VisAxiomesProducte = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap justify-center gap-1.5 bg-slate-900/60 border-b border-white/5">
-                <button type="button" onClick={() => setAxiom('e6')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e6' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e6 Distr u+v</button>
-                <button type="button" onClick={() => setAxiom('e7')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e7' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e7 Distr λ+μ</button>
-                <button type="button" onClick={() => setAxiom('e5')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e5' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e5 Pseudo-assoc</button>
-                <button type="button" onClick={() => setAxiom('e8')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition-all ${axiom === 'e8' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e8 Neutre K</button>
+                <button type="button" onClick={() => setAxiom('e6')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition ${axiom === 'e6' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e6 Distr u+v</button>
+                <button type="button" onClick={() => setAxiom('e7')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition ${axiom === 'e7' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e7 Distr λ+μ</button>
+                <button type="button" onClick={() => setAxiom('e5')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition ${axiom === 'e5' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e5 Pseudo-assoc</button>
+                <button type="button" onClick={() => setAxiom('e8')} className={`px-2.5 py-1 rounded text-[9px] font-black uppercase transition ${axiom === 'e8' ? 'bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>e8 Neutre K</button>
             </div>
 
             <div className="flex-1 relative overflow-hidden">

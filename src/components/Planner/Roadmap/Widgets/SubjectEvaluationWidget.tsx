@@ -87,7 +87,7 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
                     return (
                         <div
                             key={i}
-                            className={`flex items-start gap-3 p-3 rounded-2xl transition-all duration-300 cursor-pointer ${isHovered ? 'bg-white/10 scale-105' : 'bg-white/5 hover:bg-white/[0.07]'}`}
+                            className={`flex items-start gap-3 p-3 rounded-2xl transition duration-300 cursor-pointer ${isHovered ? 'bg-white/10 scale-105' : 'bg-white/5 hover:bg-white/[0.07]'}`}
                             onMouseEnter={() => setHoveredIndex(i)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             style={{

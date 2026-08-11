@@ -67,7 +67,7 @@ const VisTransformacionsHibrida = () => {
     };
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-950 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[700px]'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-950 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[700px]'}`}>
             {/* Header Control Panel */}
             <div className="p-4 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
@@ -80,7 +80,7 @@ const VisTransformacionsHibrida = () => {
                         <button type="button"
                             key={btn.id}
                             onClick={() => setType(btn.id as any)}
-                            className={`px-3 py-1.5 text-[9px] font-black uppercase rounded-lg transition-all ${type === btn.id ? `${btn.color} text-white shadow-lg` : 'text-slate-500 hover:text-slate-300'}`}
+                            className={`px-3 py-1.5 text-[9px] font-black uppercase rounded-lg transition ${type === btn.id ? `${btn.color} text-white shadow-lg` : 'text-slate-500 hover:text-slate-300'}`}
                         >
                             {btn.label}
                         </button>
@@ -110,7 +110,7 @@ const VisTransformacionsHibrida = () => {
                                 <button type="button"
                                     key={a}
                                     onClick={() => setAxis(a)}
-                                    className={`w-6 h-6 flex items-center justify-center text-[9px] font-black uppercase rounded transition-all ${axis === a ? 'bg-slate-700 text-white' : 'text-slate-600 hover:text-slate-400'}`}
+                                    className={`w-6 h-6 flex items-center justify-center text-[9px] font-black uppercase rounded transition ${axis === a ? 'bg-slate-700 text-white' : 'text-slate-600 hover:text-slate-400'}`}
                                 >
                                     {a}
                                 </button>
@@ -119,10 +119,11 @@ const VisTransformacionsHibrida = () => {
                     )}
                 </div>
 
-                <button type="button"
+                <button
+                    type="button"
                     onClick={() => setShowWireframe(!showWireframe)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all ${showWireframe ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300' : 'bg-slate-800/50 border-white/5 text-slate-500'}`}
-                >
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition ${showWireframe ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300' : 'bg-slate-800/50 border-white/5 text-slate-500'}`}
+                    aria-label="Obrir panell">
                     <div className={`w-2 h-2 rounded-sm border ${showWireframe ? 'bg-indigo-400 border-indigo-300' : 'border-slate-500'}`} />
                     <span className="text-[9px] font-black uppercase tracking-widest">Wireframe</span>
                 </button>
@@ -198,7 +199,7 @@ const VisTransformacionsHibrida = () => {
                         <span className="text-3xl font-light text-slate-800 leading-none">[</span>
                         <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-center">
                             {matrix.elements.map((val, i) => (
-                                <span key={i} className={`transition-all duration-300 ${val === 0 ? 'text-slate-700' : 'text-indigo-400 font-bold'}`}>
+                                <span key={i} className={`transition duration-300 ${val === 0 ? 'text-slate-700' : 'text-indigo-400 font-bold'}`}>
                                     {val.toFixed(2)}
                                 </span>
                             ))}

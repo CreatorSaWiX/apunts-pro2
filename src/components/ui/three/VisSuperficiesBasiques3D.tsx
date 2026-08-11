@@ -74,7 +74,7 @@ const VisSuperficiesBasiques3D = () => {
                         <button type="button"
                             key={m}
                             onClick={() => setMode(m)}
-                            className={`px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold transition-all ${mode === m ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
+                            className={`px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold transition ${mode === m ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
                         >
                             {m}
                         </button>

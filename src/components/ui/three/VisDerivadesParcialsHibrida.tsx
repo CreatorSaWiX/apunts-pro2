@@ -27,12 +27,12 @@ const VisDerivadesParcialsHibrida = () => {
     const currentSlope = mode === 'x' ? -0.2 * a[0] : -0.2 * a[1];
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'relative h-dvh' : ''}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col ${isFullScreen ? 'relative h-dvh' : ''}`}>
             <div className={`${isFullScreen ? 'absolute top-0 left-0 right-0 z-20 h-[14dvh] landscape:h-[20dvh] px-2 py-1 bg-black/60 backdrop-blur-md border-b border-white/5 flex flex-wrap justify-start items-center gap-x-4 gap-y-0.5 pr-16' : 'p-4 bg-slate-800/50 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4'}`}>
                 <div className="flex gap-3 items-center">
                     <div className="flex bg-black/40 p-0.5 rounded border border-white/5">
-                        <button type="button" onClick={() => setMode('x')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition-all ${mode === 'x' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>X</button>
-                        <button type="button" onClick={() => setMode('y')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition-all ${mode === 'y' ? 'bg-rose-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>Y</button>
+                        <button type="button" onClick={() => setMode('x')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition ${mode === 'x' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>X</button>
+                        <button type="button" onClick={() => setMode('y')} className={`${isFullScreen ? 'px-2 py-0.5 text-[8px]' : 'px-4 py-1.5 text-[10px]'} rounded font-bold tracking-wider transition ${mode === 'y' ? 'bg-rose-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>Y</button>
                     </div>
                 </div>
                 <div className={`${isFullScreen ? 'px-1.5 py-0 text-[10px]' : 'px-3 py-1 text-xs md:text-sm'} bg-black/30 rounded-full border border-white/5 font-mono text-white whitespace-nowrap`}>

@@ -28,7 +28,7 @@ const VisOptimitzacioCompacte = () => {
     const radius = 2;
 
     return (
-        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex flex-col">
                     <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest">Optimització en Dominis Compactes</span>
@@ -38,7 +38,7 @@ const VisOptimitzacioCompacte = () => {
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
                     <button type="button"
                         onClick={() => setShowCandidates(!showCandidates)}
-                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${showCandidates ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition ${showCandidates ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                     >
                         {showCandidates ? 'Amagar Candidats' : 'Mostrar Candidats'}
                     </button>

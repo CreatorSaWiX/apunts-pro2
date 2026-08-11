@@ -260,7 +260,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
             />
 
             <div 
-                className={`flex items-center overflow-hidden origin-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+                className={`flex items-center overflow-hidden origin-left transition duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                     editor.isActive('table') ? 'max-w-[500px] opacity-100 scale-100 ml-1' : 'max-w-0 opacity-0 scale-95 ml-0'
                 }`}
             >

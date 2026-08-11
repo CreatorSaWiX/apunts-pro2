@@ -114,14 +114,15 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                         />
                                     )}
 
-                                    <button type="button"
+                                    <button
+                                        type="button"
                                         onClick={() => {
                                             setPreviewSpecId(spec.id);
                                             setMobileView('content');
                                         }}
                                         className="w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group hover:bg-white/5"
-                                    >
-                                        <div className={`w-2 h-2 rounded-full transition-all duration-300 ${isPreviewed ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
+                                        aria-label="Obrir panell">
+                                        <div className={`w-2 h-2 rounded-full transition duration-300 ${isPreviewed ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
                                         <span className={`transition-colors duration-300 ${isSelected ? 'text-white font-bold' : isPreviewed ? 'text-slate-200' : 'text-slate-400'}`}>
                                             {t(`curriculum.specializations.${spec.id}.name`, spec.name)}
                                         </span>
@@ -231,7 +232,7 @@ export const SpecializationModal: React.FC<SpecializationModalProps> = ({ isOpen
                                 onSelect(activeSpec.id);
                                 onClose();
                             }}
-                            className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all ${currentSpecId === activeSpec.id ? 'bg-white/10 text-white cursor-default opacity-50' : `bg-white text-black hover:scale-105 active:scale-95 ${theme.shadow}`}`}
+                            className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition ${currentSpecId === activeSpec.id ? 'bg-white/10 text-white cursor-default opacity-50' : `bg-white text-black hover:scale-105 active:scale-95 ${theme.shadow}`}`}
                             disabled={currentSpecId === activeSpec.id}
                         >
                             {currentSpecId === activeSpec.id ? t('planner.roadmapSpecialization.alreadySelected', 'Ja Seleccionada') : t('planner.roadmapSpecialization.selectSpecialization', 'Seleccionar Especialitat')}

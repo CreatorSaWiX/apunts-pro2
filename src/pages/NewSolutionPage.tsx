@@ -107,7 +107,7 @@ const NewSolutionPage = () => {
                             <select
                                 value={topicId}
                                 onChange={(e) => setTopicId(e.target.value)}
-                                className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all appearance-none"
+                                className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition appearance-none"
                                 required
                             >
                                 <option value="" disabled>{t('newSolution.selectTopic', 'Selecciona un tema')}</option>
@@ -124,7 +124,7 @@ const NewSolutionPage = () => {
                                 value={problemId}
                                 onChange={(e) => setProblemId(e.target.value)}
                                 placeholder={t('newSolution.problemIdPlaceholder', 'ex: P37500')}
-                                className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-mono"
+                                className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition font-mono"
                                 required
                             />
                         </div>
@@ -137,7 +137,7 @@ const NewSolutionPage = () => {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder={t('newSolution.problemTitlePlaceholder', 'ex: Primers nombres')}
-                            className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all"
+                            className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition"
                             required
                         />
                     </div>
@@ -175,7 +175,7 @@ const NewSolutionPage = () => {
                         <textarea
                             value={statement}
                             onChange={(e) => setStatement(e.target.value)}
-                            className="w-full h-40 bg-slate-950/50 border border-white/10 rounded-xl p-4 text-sm font-mono text-slate-300 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all resize-none leading-relaxed"
+                            className="w-full h-40 bg-slate-950/50 border border-white/10 rounded-xl p-4 text-sm font-mono text-slate-300 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition resize-none leading-relaxed"
                             placeholder={t('newSolution.statementPlaceholder', '<p>Descripció del problema...</p>')}
                             spellCheck={false}
                         />
@@ -188,7 +188,7 @@ const NewSolutionPage = () => {
                         type="submit"
                         disabled={isLoading}
                         className="px-8 py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-200 transition-colors shadow-lg shadow-white/5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
+                     aria-label="Botó interactiu">
                         {isLoading ? (
                             t('newSolution.uploading', 'Pujant...')
                         ) : (

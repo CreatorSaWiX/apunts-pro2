@@ -165,7 +165,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                             <NavigationPill className="w-full flex !p-1.5">
                                 <button type="button"
                                     onClick={() => setActiveTab('inbox')}
-                                    className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition-all duration-300 ${activeTab === 'inbox' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                                    className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition duration-300 ${activeTab === 'inbox' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     {activeTab === 'inbox' && (
                                         <motion.div
@@ -181,7 +181,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                 </button>
                                 <button type="button"
                                     onClick={() => setActiveTab('sent')}
-                                    className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition-all duration-300 ${activeTab === 'sent' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                                    className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition duration-300 ${activeTab === 'sent' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     {activeTab === 'sent' && (
                                         <motion.div
@@ -220,7 +220,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                         key={msg.id}
                                         layoutId={msg.id}
                                         onClick={() => handleReadMessage(msg)}
-                                        className={`group relative p-4 rounded-xl cursor-pointer transition-all border ${selectedMessage?.id === msg.id
+                                        className={`group relative p-4 rounded-xl cursor-pointer transition border ${selectedMessage?.id === msg.id
                                             ? 'bg-white/[0.08] border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]'
                                             : 'border-transparent hover:bg-white/[0.04] hover:border-white/10 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]'
                                             }`}
@@ -302,13 +302,13 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                                 {activeTab === 'inbox' ? (
                                                     <img loading="lazy"
                                                         src={selectedMessage.senderAvatar}
-                                                        className="w-12 h-12 rounded-full bg-slate-800 ring-2 ring-slate-800 group-hover/profile:ring-sky-500 transition-all object-cover"
+                                                        className="w-12 h-12 rounded-full bg-slate-800 ring-2 ring-slate-800 group-hover/profile:ring-sky-500 transition object-cover"
                                                         alt=""
                                                     />
                                                 ) : (
                                                     <img loading="lazy"
                                                         src={receiverProfile?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${selectedMessage.receiverName || t('mailing.mailbox.user', 'Usuari')}`}
-                                                        className="w-12 h-12 rounded-full bg-slate-800 ring-2 ring-slate-800 group-hover/profile:ring-sky-500 transition-all object-cover"
+                                                        className="w-12 h-12 rounded-full bg-slate-800 ring-2 ring-slate-800 group-hover/profile:ring-sky-500 transition object-cover"
                                                         alt=""
                                                     />
                                                 )}
@@ -334,18 +334,18 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                         {selectedMessage.relatedProblemId && (
                                             <Link
                                                 to={`/tema/${selectedMessage.relatedTopicId}/solucionaris/${selectedMessage.relatedProblemId}`}
-                                                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-all border border-emerald-500/20 group"
+                                                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition border border-emerald-500/20 group"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <ExternalLink size={16} />
                                                 <span>{t('mailing.mailbox.viewExercise', 'Veure Exercici {{id}}', { id: selectedMessage.relatedProblemId })}</span>
-                                                <ChevronRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                                                <ChevronRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition" />
                                             </Link>
                                         )}
 
                                         <button type="button"
                                             onClick={() => setIsReplyOpen(true)}
-                                            className="flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 rounded-xl text-sm font-bold text-white transition-all shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 transform hover:-translate-y-0.5"
+                                            className="flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 rounded-xl text-sm font-bold text-white transition shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 transform hover:-translate-y-0.5"
                                         >
                                             {activeTab === 'inbox' ? (
                                                 <><Reply size={18} /> {t('mailing.mailbox.reply', 'Respondre al missatge')}</>

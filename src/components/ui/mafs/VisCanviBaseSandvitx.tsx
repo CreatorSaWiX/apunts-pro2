@@ -79,7 +79,7 @@ const VisCanviBaseSandvitx = () => {
                         <button type="button"
                             key={s}
                             onClick={() => setStep(s)}
-                            className={`px-3 py-1.5 text-[9px] font-black uppercase rounded-lg transition-all ${step === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                            className={`px-3 py-1.5 text-[9px] font-black uppercase rounded-lg transition ${step === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
                             Pas {s+1}
                         </button>
@@ -134,8 +134,8 @@ const VisCanviBaseSandvitx = () => {
                 <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/40 backdrop-blur-md px-6 py-2 rounded-full border border-white/5">
                     {[0, 1, 2, 3].map((s) => (
                         <React.Fragment key={s}>
-                            <div className={`w-2.5 h-2.5 rounded-full transition-all duration-700 ${step >= s ? 'bg-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.6)] scale-110' : 'bg-slate-800'}`} />
-                            {s < 3 && <div className={`h-0.5 w-10 rounded-full transition-all duration-700 ${step > s ? 'bg-indigo-500' : 'bg-slate-800'}`} />}
+                            <div className={`w-2.5 h-2.5 rounded-full transition duration-700 ${step >= s ? 'bg-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.6)] scale-110' : 'bg-slate-800'}`} />
+                            {s < 3 && <div className={`h-0.5 w-10 rounded-full transition duration-700 ${step > s ? 'bg-indigo-500' : 'bg-slate-800'}`} />}
                         </React.Fragment>
                     ))}
                 </div>

@@ -201,7 +201,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                 </div>
                 <div className="relative h-[2px] w-full bg-white/[0.04] rounded-full">
                     <div
-                        className={`absolute top-0 left-0 h-full rounded-full ${color} transition-all duration-1000 ease-out`}
+                        className={`absolute top-0 left-0 h-full rounded-full ${color} transition duration-1000 ease-out`}
                         style={{ width: `${percentage}%` }}
                     />
                 </div>
@@ -240,7 +240,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                     }
                 }}
                 onMouseMove={handleMouseMove}
-                className={`group bg-[#111115]/80 border border-white/[0.04] rounded-[16px] p-3.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_4px_16px_rgba(0,0,0,0.5)] hover:border-white/[0.1] hover:bg-[#111115]/90 hover:shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-[20px] transition-all duration-300 flex flex-col gap-2 relative transform-gpu ${isDragging ? 'shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-white/[0.15] opacity-100 scale-105 rotate-2' : ''}`}
+                className={`group bg-[#111115]/80 border border-white/[0.04] rounded-[16px] p-3.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_4px_16px_rgba(0,0,0,0.5)] hover:border-white/[0.1] hover:bg-[#111115]/90 hover:shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-[20px] transition duration-300 flex flex-col gap-2 relative transform-gpu ${isDragging ? 'shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-white/[0.15] opacity-100 scale-105 rotate-2' : ''}`}
             >
                 <motion.div
                     className="pointer-events-none absolute -inset-px rounded-[16px] opacity-0 transition duration-300 group-hover:opacity-100 z-0 max-md:hidden"
@@ -268,7 +268,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                                 }}
                                 className="bg-transparent text-sm font-medium text-white p-1 focus:outline-none flex-1 border-b border-indigo-500/50"
                             />
-                            <button type="button"
+                            <button
+                                type="button"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setEditTitle(task.title);
@@ -281,14 +282,15 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                                 }}
                                 className="flex items-center justify-center p-1.5 rounded-md text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
                                 title={t('common.cancel', 'Cancel·lar')}
-                            >
+                                aria-label="Tancar">
                                 <X size={16} strokeWidth={2.5} />
                             </button>
-                            <button type="button"
+                            <button
+                                type="button"
                                 onClick={(e) => { e.stopPropagation(); handleSave(); }}
                                 className="flex items-center justify-center p-1.5 rounded-md text-emerald-400 hover:text-white hover:bg-emerald-500 transition-colors"
                                 title={t('common.save', 'Guardar')}
-                            >
+                                aria-label="Acció Check">
                                 <Check size={16} strokeWidth={2.5} />
                             </button>
                         </div>
@@ -302,7 +304,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                                 />
                             )}
 
-                            <button type="button"
+                            <button
+                                type="button"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -314,7 +317,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                                         'text-slate-400 bg-slate-500/10 border-slate-500/20'
                                     }`}
                                 title={t('planner.boardView.priority', 'Priority')}
-                            >
+                                aria-label="Marcar prioritat">
                                 <Flag size={12} className={editPriority === 'HIGH' ? 'fill-current' : ''} />
                                 <span className="hidden sm:inline font-medium">{t('planner.boardView.priority', 'Priority')}</span>
                             </button>
@@ -351,18 +354,20 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                                 {task.title}
                             </h4>
                             <div className="flex gap-1 opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity pointer-events-auto">
-                                <button type="button"
+                                <button
+                                    type="button"
                                     onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
                                     className="text-slate-500 hover:text-white p-1 md:hidden"
                                     title="Editar tasca"
-                                >
+                                    aria-label="Editar tasca">
                                     <Pencil size={14} />
                                 </button>
-                                <button type="button"
+                                <button
+                                    type="button"
                                     onClick={(e) => { e.stopPropagation(); deleteTask(task.id); }}
                                     className="text-slate-500 hover:text-red-400 p-1"
                                     title="Eliminar tasca"
-                                >
+                                    aria-label="Eliminar tasca">
                                     <Trash2 size={14} />
                                 </button>
                             </div>
@@ -372,16 +377,17 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
 
                         <div className="flex items-center gap-1.5 mt-1 pointer-events-auto relative z-10" onPointerDown={(e) => e.stopPropagation()}>
                             {/* Priority Toggle Pill */}
-                            <button type="button"
+                            <button
+                                type="button"
                                 onClick={togglePriority}
                                 className={`flex items-center justify-center w-6 h-6 md:w-5 md:h-5 rounded-md border transition-colors ${getPriorityStyle(task.priority)}`}
                                 title={`Priority: ${task.priority}`}
-                            >
+                                aria-label="Marcar prioritat">
                                 <Flag size={10} className={task.priority === 'HIGH' ? 'fill-current' : ''} />
                             </button>
 
                             {/* Date Display Pill */}
-                            <button type="button" className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-semibold tracking-widest uppercase border transition-colors ${task.dueDate ? 'bg-white/[0.03] text-slate-300 border-white/[0.05] hover:bg-white/[0.08]' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/5'}`}>
+                            <button type="button" className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-semibold tracking-widest uppercase border transition-colors ${task.dueDate ? 'bg-white/[0.03] text-slate-300 border-white/[0.05] hover:bg-white/[0.08]' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/5'}`} aria-label="Botó interactiu">
                                 <Calendar size={10} />
                                 {task.dueDate ? format(new Date(task.dueDate), 'MMM d', { locale: preferredLang === 'es' ? es : preferredLang === 'en' ? enUS : ca }).replace('.', '') : 'No date'}
                             </button>

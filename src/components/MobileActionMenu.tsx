@@ -92,7 +92,7 @@ const MobileActionMenu: React.FC<{
                                     <button type="button"
                                         key={sub}
                                         onClick={() => startTransition(() => setSubject(sub))}
-                                        className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${safeSubject === sub
+                                        className={`relative py-2 px-1 rounded-xl text-xs font-bold transition duration-300 z-10 ${safeSubject === sub
                                             ? 'text-white'
                                             : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                                             }`}
@@ -123,7 +123,7 @@ const MobileActionMenu: React.FC<{
                                     <button type="button"
                                         key={lang}
                                         onClick={() => i18n.changeLanguage(lang)}
-                                        className={`relative py-2 px-1 rounded-xl text-xs font-bold transition-all duration-300 z-10 ${preferredLang === lang
+                                        className={`relative py-2 px-1 rounded-xl text-xs font-bold transition duration-300 z-10 ${preferredLang === lang
                                             ? 'text-slate-900'
                                             : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                                             }`}
@@ -147,11 +147,20 @@ const MobileActionMenu: React.FC<{
                                 {t('settings.links', 'Enllaços')}
                             </label>
                             <div className="flex flex-col gap-2">
-                                <a href="https://github.com/CreatorSaWiX/apunts-pro2" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-800/50 border border-white/5 hover:bg-slate-700/50 hover:border-white/10 transition-all text-sm text-slate-300 hover:text-white">
+                                <a
+                                    href="https://github.com/CreatorSaWiX/apunts-pro2"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-800/50 border border-white/5 hover:bg-slate-700/50 hover:border-white/10 transition text-sm text-slate-300 hover:text-white"
+                                    aria-label="Veure repositori a Github">
                                     <Github size={18} />
                                     <span className="font-medium">Source Code</span>
                                 </a>
-                                <button type="button" onClick={handleContributorsClick} className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-800/50 border border-white/5 hover:bg-slate-700/50 hover:border-white/10 transition-all text-sm text-slate-300 hover:text-white text-left w-full">
+                                <button
+                                    type="button"
+                                    onClick={handleContributorsClick}
+                                    className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-800/50 border border-white/5 hover:bg-slate-700/50 hover:border-white/10 transition text-sm text-slate-300 hover:text-white text-left w-full"
+                                    aria-label="M'agrada">
                                     <Heart size={18} />
                                     <span className="font-medium">Contributors</span>
                                 </button>

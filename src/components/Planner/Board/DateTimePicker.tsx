@@ -201,7 +201,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                                             key={day.toISOString()}
                                             onClick={() => handleDayClick(day)}
                                             className={`
-                                                h-8 w-8 rounded-full flex items-center justify-center text-[13px] font-semibold transition-all
+                                                h-8 w-8 rounded-full flex items-center justify-center text-[13px] font-semibold transition
                                                 ${!isCurrentMonth ? 'text-slate-600' : 'text-slate-300 hover:bg-white/10'}
                                                 ${isSelected ? 'bg-primary text-white shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]' : ''}
                                                 ${isTodayDate && !isSelected ? 'text-primary ring-1 ring-primary/50' : ''}

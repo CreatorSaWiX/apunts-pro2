@@ -46,19 +46,19 @@ const VisPropietatsLineals = () => {
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
                     <button type="button" 
                         onClick={() => setIsLinear(true)}
-                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${isLinear ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${isLinear ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
                     >
                         Lineal
                     </button>
                     <button type="button" 
                         onClick={() => setIsLinear(false)}
-                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${!isLinear ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${!isLinear ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/20' : 'text-slate-500 hover:text-slate-300'}`}
                     >
                         No Lineal
                     </button>
                 </div>
                 
-                <div className={`px-3 py-1.5 rounded-lg border font-mono text-[10px] transition-all duration-500 ${isLinear ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-400'}`}>
+                <div className={`px-3 py-1.5 rounded-lg border font-mono text-[10px] transition duration-500 ${isLinear ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-400'}`}>
                     {isLinear ? "f(u + v) = f(u) + f(v)" : "f(u + v) ≠ f(u) + f(v)"}
                 </div>
             </div>

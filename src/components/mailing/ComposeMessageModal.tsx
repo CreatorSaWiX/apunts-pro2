@@ -160,7 +160,7 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
                                     type="button"
                                     onClick={() => { setSelectedProblem(null); setSubject(prev => prev.replace(`[${selectedProblem.id}]`, '').trim()); }}
                                     className="p-2 hover:bg-sky-500/20 rounded-lg text-sky-400 hover:text-sky-200 transition-colors"
-                                >
+                                    aria-label="Tancar">
                                     <X size={16} />
                                 </button>
                             </motion.div>

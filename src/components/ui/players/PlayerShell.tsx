@@ -53,7 +53,7 @@ export function PlayerShell({
             {/* Placeholder to prevent aggressive layout shift when fixed */}
             {isFullscreen && <div className="h-125 lg:h-[550px] w-full my-12 hidden md:block opacity-0" />}
 
-            <div className={`not-prose flex flex-col bg-[#0B0F17] overflow-hidden shadow-2xl font-sans group/player transition-all duration-300 ease-out origin-center
+            <div className={`not-prose flex flex-col bg-[#0B0F17] overflow-hidden shadow-2xl font-sans group/player transition duration-300 ease-out origin-center
                 ${isFullscreen
                     ? 'fixed inset-0 z-99999 h-dvh w-full rounded-none m-0'
                     : 'relative w-full z-10 rounded-2xl border border-white/10 my-12 h-125 lg:h-[550px] max-h-[85vh] xl:max-h-[600px]'
@@ -62,7 +62,7 @@ export function PlayerShell({
                 {/* Fullscreen Toggle */}
                 <button type="button"
                     onClick={() => setIsFullscreen(!isFullscreen)}
-                    className="absolute top-2 right-2 md:top-3 md:right-3 z-50 p-2 text-slate-400 hover:text-white bg-[#1a212e]/80 hover:bg-[#232c3d]/90 backdrop-blur-md rounded-lg transition-all border border-white/10 shadow-lg active:scale-95"
+                    className="absolute top-2 right-2 md:top-3 md:right-3 z-50 p-2 text-slate-400 hover:text-white bg-[#1a212e]/80 hover:bg-[#232c3d]/90 backdrop-blur-md rounded-lg transition border border-white/10 shadow-lg active:scale-95"
                     title={isFullscreen ? "Minimitza (Esc)" : "Pantalla completa"}
                 >
                     {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}

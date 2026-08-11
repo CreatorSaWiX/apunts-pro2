@@ -32,7 +32,7 @@ const VisVectorDirectorAngle = () => {
     const gradNorm = Math.sqrt(grad.x ** 2 + grad.y ** 2);
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[650px]'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[650px]'}`}>
             {/* Header Control Panel */}
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex-1 w-full max-w-sm">

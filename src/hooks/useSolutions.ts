@@ -10,6 +10,7 @@ export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchSolutions = async () => {
             setLoading(true);
             try {
@@ -83,22 +84,23 @@ export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
                 // Add firestore (overwriting static if exists, or adding new)
                 firestoreSolutions.forEach(s => solutionsMap.set(s.id, s));
 
-                setSolutions(Array.from(solutionsMap.values()));
+                if (isMounted) setSolutions(Array.from(solutionsMap.values()));
 
             } catch (error) {
                 console.error("Error fetching solutions:", error);
                 // Fallback to static
                 const staticSolutions = getSolutionsByTopic(topicId);
-                setSolutions(staticSolutions);
+                if (isMounted) setSolutions(staticSolutions);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         if (topicId || (problemIdsToCheck && problemIdsToCheck.length > 0)) {
             fetchSolutions();
         }
-    }, [topicId, JSON.stringify(problemIdsToCheck)]);
+        return () => { isMounted = false; };
+    }, [topicId, problemIdsToCheck]);
 
     return { solutions, loading };
 };
@@ -108,6 +110,7 @@ export const useSolution = (topicId: string, problemId: string, lang: string = '
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchSolution = async () => {
             // ... logic ...
             setLoading(true);
@@ -165,16 +168,17 @@ export const useSolution = (topicId: string, problemId: string, lang: string = '
                     };
                 }
 
-                setSolution(foundSolution);
+                if (isMounted) setSolution(foundSolution);
 
             } catch (error) {
                 console.error(error);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         if (topicId && problemId) fetchSolution();
+        return () => { isMounted = false; };
     }, [topicId, problemId, lang]);
 
     return { solution, loading, setSolution };
@@ -185,6 +189,7 @@ export const useUserSolutions = (userId: string) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchUserSolutions = async () => {
             setLoading(true);
             try {
@@ -210,17 +215,18 @@ export const useUserSolutions = (userId: string) => {
                     } as any);
                 });
 
-                setSolutions(userSolutions);
+                if (isMounted) setSolutions(userSolutions);
             } catch (error) {
                 console.error("Error fetching user solutions:", error);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         if (userId) {
             fetchUserSolutions();
         }
+        return () => { isMounted = false; };
     }, [userId]);
 
     return { solutions, loading };

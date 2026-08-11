@@ -37,7 +37,7 @@ const VisDiferencialIncrement = () => {
     const error = Math.abs(incrementReal - diferencialLineal);
 
     return (
-        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex flex-col">
                     <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest text-slate-500">Diferencial vs Increment</span>

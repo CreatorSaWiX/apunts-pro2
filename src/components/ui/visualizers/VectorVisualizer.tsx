@@ -51,7 +51,7 @@ export default function VectorVisualizer() {
 
     return (
         <div className="w-full flex flex-col items-center justify-center gap-10 my-16 font-mono select-none not-prose px-4">
-            
+
             {/* Visual Array */}
             <div className="relative flex flex-col items-center w-full max-w-2xl">
                 {/* Stats subtle labels */}
@@ -70,7 +70,7 @@ export default function VectorVisualizer() {
                             return (
                                 <div 
                                     key={`slot-${i}`} 
-                                    className={`w-12 h-12 shrink-0 border-2 rounded-xl flex items-center justify-center relative transition-all duration-500 
+                                    className={`w-12 h-12 shrink-0 border-2 rounded-xl flex items-center justify-center relative transition duration-500 
                                         ${isSlotVisible ? 'border-dashed border-slate-800' : 'border-transparent'}`} 
                                 >
                                     {isOccupied && (
@@ -110,23 +110,24 @@ export default function VectorVisualizer() {
                     <button type="button"
                         onClick={handlePush}
                         disabled={isReallocating}
-                        className="flex-1 h-10 bg-blue-500/10 hover:bg-blue-500/20 disabled:opacity-30 text-blue-400 font-bold text-sm rounded-lg border border-blue-500/20 flex items-center justify-center gap-2 transition-all active:scale-95"
-                    >
+                        className="flex-1 h-10 bg-blue-500/10 hover:bg-blue-500/20 disabled:opacity-30 text-blue-400 font-bold text-sm rounded-lg border border-blue-500/20 flex items-center justify-center gap-2 transition active:scale-95"
+                     aria-label="Botó interactiu">
                         <Plus size={16} /> push_back()
                     </button>
                     
                     <button type="button"
                         onClick={handlePop}
                         disabled={isReallocating || elements.length === 0}
-                        className="flex-1 h-10 bg-rose-500/10 hover:bg-rose-500/20 disabled:opacity-30 text-rose-400 font-bold text-sm rounded-lg border border-rose-500/20 flex items-center justify-center gap-2 transition-all active:scale-95"
-                    >
+                        className="flex-1 h-10 bg-rose-500/10 hover:bg-rose-500/20 disabled:opacity-30 text-rose-400 font-bold text-sm rounded-lg border border-rose-500/20 flex items-center justify-center gap-2 transition active:scale-95"
+                     aria-label="Botó interactiu">
                         <Minus size={16} /> pop_back()
                     </button>
 
-                    <button type="button"
+                    <button
+                        type="button"
                         onClick={handleClear}
-                        className="w-10 h-10 bg-slate-800/30 hover:bg-slate-800/50 text-slate-500 rounded-lg flex items-center justify-center transition-all border border-slate-800/50"
-                    >
+                        className="w-10 h-10 bg-slate-800/30 hover:bg-slate-800/50 text-slate-500 rounded-lg flex items-center justify-center transition border border-slate-800/50"
+                        aria-label="Eliminar">
                         <Trash2 size={16} />
                     </button>
                 </div>

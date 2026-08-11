@@ -78,25 +78,34 @@ const PlannerLayout: React.FC = () => {
     usePlannerShortcuts();
 
     useEffect(() => {
+        let timer: ReturnType<typeof setTimeout> | null = null;
         const handleMagic = () => {
             setScreenGlow(true);
-            setTimeout(() => setScreenGlow(false), 2000); // fade out after 2s
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => setScreenGlow(false), 2000); // fade out after 2s
         };
         window.addEventListener('ai-magic-done', handleMagic);
-        return () => window.removeEventListener('ai-magic-done', handleMagic);
+        return () => {
+            window.removeEventListener('ai-magic-done', handleMagic);
+            if (timer) clearTimeout(timer);
+        };
     }, []);
 
     // Fullscreen HUD removal on landscape mobile devices
     useEffect(() => {
+        let t1: ReturnType<typeof setTimeout> | null = null;
+        let t2: ReturnType<typeof setTimeout> | null = null;
+        let t3: ReturnType<typeof setTimeout> | null = null;
         const attemptFullscreen = () => {
             const isLandscape = window.matchMedia('(orientation: landscape) and (max-height: 600px) and (pointer: coarse)').matches;
             if (isLandscape) {
-                // Execute immediately and with short fallbacks to avoid the visible delay.
-                // We use auto behavior so there is no scroll animation of the margin disappearing.
                 window.scrollTo({ top: 1, behavior: 'auto' });
-                setTimeout(() => window.scrollTo({ top: 1, behavior: 'auto' }), 50);
-                setTimeout(() => window.scrollTo({ top: 1, behavior: 'auto' }), 150);
-                setTimeout(() => window.scrollTo({ top: 1, behavior: 'auto' }), 400);
+                if (t1) clearTimeout(t1);
+                if (t2) clearTimeout(t2);
+                if (t3) clearTimeout(t3);
+                t1 = setTimeout(() => window.scrollTo({ top: 1, behavior: 'auto' }), 50);
+                t2 = setTimeout(() => window.scrollTo({ top: 1, behavior: 'auto' }), 150);
+                t3 = setTimeout(() => window.scrollTo({ top: 1, behavior: 'auto' }), 400);
                 try {
                     if (document.documentElement.requestFullscreen) {
                         document.documentElement.requestFullscreen().catch(() => { });
@@ -106,7 +115,12 @@ const PlannerLayout: React.FC = () => {
         };
         window.addEventListener('orientationchange', attemptFullscreen);
         attemptFullscreen();
-        return () => window.removeEventListener('orientationchange', attemptFullscreen);
+        return () => {
+            window.removeEventListener('orientationchange', attemptFullscreen);
+            if (t1) clearTimeout(t1);
+            if (t2) clearTimeout(t2);
+            if (t3) clearTimeout(t3);
+        };
     }, []);
 
     useEffect(() => {
@@ -183,7 +197,7 @@ const PlannerLayout: React.FC = () => {
                                         setView(tab.id as ViewMode);
                                     });
                                 }}
-                                className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition-all duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'
+                                className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'
                                     }`}
                             >
                                 {isActive && (
@@ -209,11 +223,12 @@ const PlannerLayout: React.FC = () => {
 
                     <div className="w-px h-6 bg-white/[0.1] mx-1"></div>
 
-                    <button type="button"
+                    <button
+                        type="button"
                         onClick={() => setIsAIModalOpen(true)}
-                        className="group relative flex items-center justify-center w-11 h-11 md:w-10 md:h-10 rounded-full transition-all duration-500 shrink-0 hover:scale-[1.05] active:scale-[0.95] overflow-hidden"
+                        className="group relative flex items-center justify-center w-11 h-11 md:w-10 md:h-10 rounded-full transition duration-500 shrink-0 hover:scale-[1.05] active:scale-[0.95] overflow-hidden"
                         title="IA Planner"
-                    >
+                        aria-label="IA Planner">
                         <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
                             <div className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(217,70,239,0.5)_360deg)] animate-[spin_3s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             <div className="absolute inset-[1px] bg-slate-900/90 backdrop-blur-3xl rounded-full" />
@@ -223,7 +238,7 @@ const PlannerLayout: React.FC = () => {
 
                         <AIParticles />
 
-                        <Sparkles size={18} strokeWidth={2.5} className="relative z-10 text-fuchsia-400 group-hover:text-fuchsia-300 transition-all duration-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.6)]" />
+                        <Sparkles size={18} strokeWidth={2.5} className="relative z-10 text-fuchsia-400 group-hover:text-fuchsia-300 transition duration-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.6)]" />
                     </button>
                 </NavigationPill>
             </div>

@@ -8,7 +8,7 @@ interface NavigationPillProps {
 const NavigationPill: React.FC<NavigationPillProps> = ({ children, className = '' }) => {
     return (
         <div 
-            className={`bg-[#0F172A]/70 backdrop-blur-[40px] p-1.5 rounded-full border border-white/[0.12] flex items-center shrink-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_40px_rgba(0,0,0,0.5)] relative overflow-hidden transition-all hover:bg-[#0F172A]/80 hover:border-white/20 ${className}`}
+            className={`bg-[#0F172A]/70 backdrop-blur-[40px] p-1.5 rounded-full border border-white/[0.12] flex items-center shrink-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_40px_rgba(0,0,0,0.5)] relative overflow-hidden transition hover:bg-[#0F172A]/80 hover:border-white/20 ${className}`}
             style={{ 
                 WebkitBackdropFilter: 'blur(40px)', 
                 WebkitTransform: 'translateZ(0)', 

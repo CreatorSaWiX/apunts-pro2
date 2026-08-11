@@ -110,7 +110,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                 <BookOpen size={48} className="text-slate-600 mb-4" />
                                 <h3 className="text-xl font-bold text-slate-300 mb-2">{t('planner.roadmapSubjectDetails.infoNotAvailable', 'Informació no disponible')}</h3>
                                 <p className="text-slate-500 max-w-md">{t('planner.roadmapSubjectDetails.infoNotAvailableDesc', 'No s\'han pogut descarregar les dades de la FIB per aquesta assignatura. És possible que no estigui disponible al pla d\'estudis actual.')}</p>
-                                <button type="button" onClick={onClose} className="mt-6 px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors font-medium">{t('planner.roadmapSubjectDetails.close', 'Tancar')}</button>
+                                <button type="button" onClick={onClose} className="mt-6 px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors font-medium" aria-label="Botó interactiu">{t('planner.roadmapSubjectDetails.close', 'Tancar')}</button>
                             </div>
                         ) : (
                             <>
@@ -118,10 +118,11 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                 <div className={`w-full sm:w-80 border-r border-white/5 bg-black/20 shrink-0 relative flex-col backdrop-blur-sm z-10 ${mobileView === 'menu' ? 'flex' : 'hidden sm:flex'}`}>
                                     {/* Close Button Top Left */}
                                     <div className="p-6 pb-2">
-                                        <button type="button"
+                                        <button
+                                            type="button"
                                             onClick={onClose}
-                                            className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-all hover:scale-110 text-slate-400 hover:text-white group flex items-center justify-center border border-white/10 hover:border-white/20"
-                                        >
+                                            className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition hover:scale-110 text-slate-400 hover:text-white group flex items-center justify-center border border-white/10 hover:border-white/20"
+                                            aria-label="Tancar">
                                             <X size={18} strokeWidth={2.5} className="group-hover:rotate-90 transition-transform duration-300" />
                                         </button>
                                     </div>
@@ -132,7 +133,12 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                             {data.acronim}
                                         </h2>
                                         {data.web && (
-                                            <a href={data.web} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-sky-400 hover:text-sky-300 transition-colors">
+                                            <a
+                                                href={data.web}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-sky-400 hover:text-sky-300 transition-colors"
+                                                aria-label="Element interactiu">
                                                 <span>{t('planner.roadmapSubjectDetails.officialFib', 'FIB Oficial')}</span>
                                                 <ExternalLink size={10} />
                                             </a>
@@ -165,7 +171,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                 <button type="button"
                                                     key={title}
                                                     onClick={() => { setActiveTab(title); setMobileView('content'); }}
-                                                    className={`w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-300 group overflow-hidden ${isActive
+                                                    className={`w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition duration-300 group overflow-hidden ${isActive
                                                             ? 'text-white'
                                                             : 'text-slate-400 hover:text-slate-200'
                                                         }`}
@@ -220,8 +226,8 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                     {activeTab === 'Professorat' && data.professors?.length > 0 && (
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                             {data.professors.map((prof: any, i: number) => (
-                                                                <div key={i} className="group p-5 bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] transition-all duration-300 rounded-2xl flex items-start gap-4">
-                                                                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center text-sky-400 font-bold text-lg shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                                <div key={i} className="group p-5 bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] transition duration-300 rounded-2xl flex items-start gap-4">
+                                                                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center text-sky-400 font-bold text-lg shrink-0 group-hover:scale-110 group-hover:rotate-6 transition duration-300">
                                                                         {prof.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
                                                                     </div>
                                                                     <div className="flex-1 min-w-0">
@@ -244,7 +250,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                     {activeTab === 'Activitats' && data.activities?.filter((a: any) => a.title).length > 0 && (
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                             {data.activities.filter((a: any) => a.title).map((act: any, i: number) => (
-                                                                <div key={i} className={`p-6 bg-[#0a0f1c]/80 border ${act.isEvaluative ? 'border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] bg-amber-500/[0.02]' : 'border-white/5 shadow-xl'} rounded-3xl relative overflow-hidden group hover:bg-[#0f172a] transition-all duration-300`}>
+                                                                <div key={i} className={`p-6 bg-[#0a0f1c]/80 border ${act.isEvaluative ? 'border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] bg-amber-500/[0.02]' : 'border-white/5 shadow-xl'} rounded-3xl relative overflow-hidden group hover:bg-[#0f172a] transition duration-300`}>
                                                                     {act.isEvaluative && (
                                                                         <div className="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 text-[10px] font-black uppercase tracking-widest rounded-bl-2xl border-l border-b border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
                                                                             {t('planner.roadmapSubjectDetails.evaluativeAct', 'Acte Avaluatiu')}
@@ -400,8 +406,8 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                     [&_ol]:list-none [&_ol]:pl-0 [&_ol]:[counter-reset:item]
                                                                     
                                                                     /* Level 1 List Items (Main Cards) */
-                                                                    [&>ul>li]:bg-[#0f172a]/80 [&>ul>li]:border [&>ul>li]:border-white/5 [&>ul>li]:rounded-3xl [&>ul>li]:p-6 [&>ul>li]:my-6 [&>ul>li]:shadow-xl [&>ul>li]:transition-all [&>ul>li]:duration-300 hover:[&>ul>li]:bg-[#1e293b]/80 hover:[&>ul>li]:border-sky-500/20 hover:[&>ul>li]:shadow-[0_0_30px_rgba(14,165,233,0.1)]
-                                                                    [&>ol>li]:bg-[#0f172a]/80 [&>ol>li]:border [&>ol>li]:border-white/5 [&>ol>li]:rounded-3xl [&>ol>li]:p-6 [&>ol>li]:my-6 [&>ol>li]:shadow-xl [&>ol>li]:transition-all [&>ol>li]:duration-300 hover:[&>ol>li]:bg-[#1e293b]/80 hover:[&>ol>li]:border-sky-500/20 hover:[&>ol>li]:shadow-[0_0_30px_rgba(14,165,233,0.1)]
+                                                                    [&>ul>li]:bg-[#0f172a]/80 [&>ul>li]:border [&>ul>li]:border-white/5 [&>ul>li]:rounded-3xl [&>ul>li]:p-6 [&>ul>li]:my-6 [&>ul>li]:shadow-xl [&>ul>li]:transition [&>ul>li]:duration-300 hover:[&>ul>li]:bg-[#1e293b]/80 hover:[&>ul>li]:border-sky-500/20 hover:[&>ul>li]:shadow-[0_0_30px_rgba(14,165,233,0.1)]
+                                                                    [&>ol>li]:bg-[#0f172a]/80 [&>ol>li]:border [&>ol>li]:border-white/5 [&>ol>li]:rounded-3xl [&>ol>li]:p-6 [&>ol>li]:my-6 [&>ol>li]:shadow-xl [&>ol>li]:transition [&>ol>li]:duration-300 hover:[&>ol>li]:bg-[#1e293b]/80 hover:[&>ol>li]:border-sky-500/20 hover:[&>ol>li]:shadow-[0_0_30px_rgba(14,165,233,0.1)]
                                                                     
                                                                     /* Flexbox layout for OL to align the Custom Counter */
                                                                     [&>ol>li]:flex [&>ol>li]:gap-6 [&>ol>li]:items-start

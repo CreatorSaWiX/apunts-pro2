@@ -112,7 +112,7 @@ const VisIndependenciaLineal = () => {
 
                         <button type="button"
                             onClick={() => setShowSpan(!showSpan)}
-                            className={`w-full py-2 rounded-lg text-[9px] font-bold uppercase transition-all border ${showSpan ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-transparent border-slate-700 text-slate-400 hover:border-indigo-500 hover:text-indigo-400'}`}
+                            className={`w-full py-2 rounded-lg text-[9px] font-bold uppercase transition border ${showSpan ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-transparent border-slate-700 text-slate-400 hover:border-indigo-500 hover:text-indigo-400'}`}
                         >
                             {showSpan ? 'Amagar Subespai Generat' : 'Mostrar Subespai Generat (Span)'}
                         </button>

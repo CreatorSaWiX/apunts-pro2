@@ -39,7 +39,7 @@ const VisLagrangeMultiplicadors = () => {
     const isParallel = Math.abs(Math.abs(dot) - 1) < 0.05;
 
     return (
-        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex flex-col">
                     <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Multiplicadors de Lagrange</span>
@@ -112,6 +112,7 @@ const VisLagrangeMultiplicadors = () => {
                                 const angle = (i / 99) * Math.PI * 2;
                                 const px = Math.cos(angle) * radius;
                                 const py = Math.sin(angle) * radius;
+                                // eslint-disable-next-line react-doctor/three-no-object-construction-in-render
                                 return new THREE.Vector3(px, f(px, py), py);
                             });
                             return <Line points={points} color="#6366f1" lineWidth={3} />;

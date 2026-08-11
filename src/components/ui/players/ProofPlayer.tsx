@@ -102,30 +102,33 @@ export default function ProofPlayer(props: any) {
 
                 {/* Controls */}
                 <div className="p-4 bg-black/20 border-t border-white/5 flex items-center justify-between">
-                    <button type="button"
+                    <button
+                        type="button"
                         onClick={reset}
                         className="p-2 text-slate-500 hover:text-white transition-colors"
                         title="Reiniciar"
-                    >
+                        aria-label="Reiniciar">
                         <RotateCcw size={18} />
                     </button>
 
                     <div className="flex items-center gap-2">
-                        <button type="button"
+                        <button
+                            type="button"
                             onClick={prev}
                             disabled={currentStep === 0}
-                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white disabled:opacity-20 hover:bg-white/10 transition-all border border-white/10"
-                        >
+                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white disabled:opacity-20 hover:bg-white/10 transition border border-white/10"
+                            aria-label="Enrere">
                             <ChevronLeft size={20} />
                         </button>
-                        <button type="button"
+                        <button
+                            type="button"
                             onClick={next}
                             disabled={currentStep === proof.steps.length - 1}
-                            className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all border ${currentStep === proof.steps.length - 1
+                            className={`w-10 h-10 flex items-center justify-center rounded-xl transition border ${currentStep === proof.steps.length - 1
                                 ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
                                 : 'bg-sky-500 border-sky-400 text-white shadow-lg shadow-sky-500/20'
                                 }`}
-                        >
+                            aria-label="Endavant">
                             <ChevronRight size={20} />
                         </button>
                     </div>

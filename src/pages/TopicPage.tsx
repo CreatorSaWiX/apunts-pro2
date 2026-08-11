@@ -116,10 +116,11 @@ const TopicPage: React.FC = () => {
                     {/* PDF Download Button UI - Absolute Floating */}
                     {(availablePdfs.ca || availablePdfs.es) && (
                         <div className="absolute top-0 right-0 z-20">
-                            <button type="button" 
+                            <button
+                                type="button"
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
-                                className="flex flex-col items-center justify-center gap-1 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl border transition-all select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-lg shadow-red-950/10 group min-w-[60px]"
-                            >
+                                className="flex flex-col items-center justify-center gap-1 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-lg shadow-red-950/10 group min-w-[60px]"
+                                aria-label="Veure document">
                                 <FileText size={18} className="group-hover:scale-110 transition-transform duration-300" />
                                 <span>PDF</span>
                             </button>
@@ -135,7 +136,11 @@ const TopicPage: React.FC = () => {
                                     >
                                         <div className="p-2 border-b border-red-500/10 flex justify-between items-center text-[10px] text-red-400/70 font-bold uppercase tracking-widest">
                                             {t('topic.pdfLanguage', 'Idioma')}
-                                            <button type="button" onClick={() => setIsPdfMenuOpen(false)} className="hover:text-red-300 p-1 rounded-md hover:bg-red-500/10 transition-colors">
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsPdfMenuOpen(false)}
+                                                className="hover:text-red-300 p-1 rounded-md hover:bg-red-500/10 transition-colors"
+                                                aria-label="Tancar">
                                                 <X size={12} />
                                             </button>
                                         </div>
@@ -194,10 +199,10 @@ const TopicPage: React.FC = () => {
                     {prevTopic ? (
                         <Link
                             to={`/tema/${prevTopic.slug}`}
-                            className="group relative p-6 rounded-3xl border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition-all overflow-hidden"
+                            className="group relative p-6 rounded-3xl border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition overflow-hidden"
                         >
                             <div
-                                className="absolute inset-0 bg-linear-to-r from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500" />
+                                className="absolute inset-0 bg-linear-to-r from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition duration-500" />
                             <div className="relative z-10">
                                 <div
                                     className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
@@ -214,10 +219,10 @@ const TopicPage: React.FC = () => {
                     {nextTopic ? (
                         <Link
                             to={`/tema/${nextTopic.slug}`}
-                            className="group relative p-6 rounded-3xl border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition-all overflow-hidden text-right"
+                            className="group relative p-6 rounded-3xl border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition overflow-hidden text-right"
                         >
                             <div
-                                className="absolute inset-0 bg-linear-to-l from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition-all duration-500" />
+                                className="absolute inset-0 bg-linear-to-l from-sky-500/0 via-sky-500/0 to-sky-500/0 group-hover:via-sky-500/5 transition duration-500" />
                             <div className="relative z-10">
                                 <div
                                     className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-end gap-2">

@@ -59,7 +59,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                 {allowAll && (
                                     <button type="button"
                                         onClick={() => { onSelect('all'); onClose(); }}
-                                        className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${selectedId === 'all' ? 'bg-white/10 border-white/20' : 'border-transparent hover:bg-white/5'}`}
+                                        className={`w-full flex items-center justify-between p-4 rounded-2xl transition border ${selectedId === 'all' ? 'bg-white/10 border-white/20' : 'border-transparent hover:bg-white/5'}`}
                                     >
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-black/50 flex items-center justify-center shrink-0 border border-white/5">
@@ -77,7 +77,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                 {allowNone && (
                                     <button type="button"
                                         onClick={() => { onSelect(''); onClose(); }}
-                                        className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${!selectedId || selectedId === '' ? 'bg-white/10 border-white/20 shadow-inner' : 'border-transparent hover:bg-white/5'}`}
+                                        className={`w-full flex items-center justify-between p-4 rounded-2xl transition border ${!selectedId || selectedId === '' ? 'bg-white/10 border-white/20 shadow-inner' : 'border-transparent hover:bg-white/5'}`}
                                     >
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-black/50 flex items-center justify-center shrink-0 border border-white/5 relative overflow-hidden">
@@ -106,7 +106,7 @@ const SubjectSelectorModal = ({ isOpen, onClose, onSelect, selectedId, allowAll 
                                         <button type="button"
                                             key={subject.id}
                                             onClick={() => { onSelect(subject.id); onClose(); }}
-                                            className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${selectedId === subject.id ? 'bg-white/10 border-white/20 shadow-inner' : 'border-transparent hover:bg-white/5'}`}
+                                            className={`w-full flex items-center justify-between p-4 rounded-2xl transition border ${selectedId === subject.id ? 'bg-white/10 border-white/20 shadow-inner' : 'border-transparent hover:bg-white/5'}`}
                                         >
                                             <div className="flex items-center gap-4">
                                                 <div 

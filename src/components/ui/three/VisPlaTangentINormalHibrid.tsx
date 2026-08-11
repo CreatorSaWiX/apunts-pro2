@@ -33,10 +33,10 @@ const VisPlaTangentINormalHibrid = () => {
     const db = dfy(a, b);
 
     // Vector normal en (da, 1, db) - R3F usa Y com a vertical
-    const normalDir = new THREE.Vector3(da, 1, db).normalize();
+    const normalDir = React.useMemo(() => new THREE.Vector3(da, 1, db).normalize(), [da, db]);
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[600px]'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900' : 'h-[600px]'}`}>
             <div className={`p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center ${isFullScreen ? 'justify-start pr-16' : 'justify-between'} gap-4`}>
                 <div className="flex flex-col">
                     <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Pla Tangent i Vector Normal</span>

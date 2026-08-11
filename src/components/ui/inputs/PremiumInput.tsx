@@ -33,14 +33,14 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({
             <div className="relative">
                 {/* Glow Background */}
                 <div 
-                    className={`absolute inset-0 bg-gradient-to-r ${gradients[theme]} rounded-xl blur transition-all duration-500 ${
+                    className={`absolute inset-0 bg-gradient-to-r ${gradients[theme]} rounded-xl blur transition duration-500 ${
                         isFocused ? 'opacity-30 scale-105' : 'opacity-0 scale-100'
                     }`} 
                 />
                 
                 {/* Main Input Container */}
                 <div 
-                    className={`relative flex items-center bg-slate-950/80 border border-slate-800 rounded-xl overflow-hidden transition-all duration-500 ${borderColors[theme]} focus-within:bg-slate-900/90 focus-within:shadow-[0_0_15px_rgba(0,0,0,0.5)] z-10 h-[56px]`}
+                    className={`relative flex items-center bg-slate-950/80 border border-slate-800 rounded-xl overflow-hidden transition duration-500 ${borderColors[theme]} focus-within:bg-slate-900/90 focus-within:shadow-[0_0_15px_rgba(0,0,0,0.5)] z-10 h-[56px]`}
                 >
                     <div className="pl-4 pr-3 flex items-center justify-center h-full">
                         <motion.div

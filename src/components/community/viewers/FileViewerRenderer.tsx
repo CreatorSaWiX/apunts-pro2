@@ -62,7 +62,7 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
     return (
         <div className="w-full p-6 rounded-2xl border border-white/10 bg-linear-to-br from-white/5 to-white/[0.01] flex flex-col sm:flex-row items-center gap-6 justify-between group hover:border-primary/50 transition-colors shadow-xl">
             <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-black/50 border border-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-primary/20 transition-all">
+                <div className="w-16 h-16 rounded-2xl bg-black/50 border border-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-primary/20 transition">
                     {ext === 'zip' || ext === 'rar' || ext === 'tar' ? (
                         <Box size={32} className="text-slate-400 group-hover:text-primary transition-colors" />
                     ) : (
@@ -81,7 +81,7 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
                 href={url} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="px-6 py-3 rounded-xl bg-white/10 hover:bg-primary text-white font-bold text-sm flex items-center gap-2 transition-all active:scale-95 shadow-lg shrink-0"
+                className="px-6 py-3 rounded-xl bg-white/10 hover:bg-primary text-white font-bold text-sm flex items-center gap-2 transition active:scale-95 shadow-lg shrink-0"
             >
                 <Download size={18} />
                 Descarregar

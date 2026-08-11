@@ -168,7 +168,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
                     />
 
                     {/* Controls Overlay - Floating Island */}
-                    <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 flex flex-row items-center gap-3 md:gap-4 transition-all duration-500 ease-out transform ${isHovering || isDragging || !isPlaying
+                    <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 flex flex-row items-center gap-3 md:gap-4 transition duration-500 ease-out transform ${isHovering || isDragging || !isPlaying
                         ? 'opacity-100 translate-y-0 scale-100 shadow-[0_20px_40px_rgba(0,0,0,0.5)]'
                         : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
                         }`}>
@@ -176,16 +176,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
                         {/* Play/Pause */}
                         <button type="button"
                             onClick={togglePlay}
-                            className="p-1.5 md:p-2 rounded-xl bg-white/5 hover:bg-white/15 border border-transparent hover:border-white/10 text-white transition-all hover:scale-105 active:scale-95 shrink-0"
-                        >
+                            className="p-1.5 md:p-2 rounded-xl bg-white/5 hover:bg-white/15 border border-transparent hover:border-white/10 text-white transition hover:scale-105 active:scale-95 shrink-0"
+                         aria-label="Botó interactiu">
                             {isPlaying ? <Pause size={18} /> : <Play size={18} fill="white" />}
                         </button>
 
                         {/* Restart */}
-                        <button type="button"
+                        <button
+                            type="button"
                             onClick={handleRestart}
-                            className="p-1.5 md:p-2 rounded-xl bg-white/5 hover:bg-white/15 border border-transparent hover:border-white/10 text-white transition-all hover:scale-105 active:scale-95 shrink-0 hidden sm:block"
-                        >
+                            className="p-1.5 md:p-2 rounded-xl bg-white/5 hover:bg-white/15 border border-transparent hover:border-white/10 text-white transition hover:scale-105 active:scale-95 shrink-0 hidden sm:block"
+                            aria-label="Acció RotateCcw">
                             <RotateCcw size={18} />
                         </button>
 
@@ -199,7 +200,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
                                 ref={progressRef}
                             >
                                 {/* Track background */}
-                                <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden transition-all duration-300 group-hover/timeline:h-2">
+                                <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden transition duration-300 group-hover/timeline:h-2">
                                     {/* Progress fill (White) */}
                                     <div
                                         className="h-full bg-white rounded-full relative"
@@ -220,17 +221,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
                         {/* Speed */}
                         <button type="button"
                             onClick={cyclePlaybackRate}
-                            className="px-2 md:px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 border border-transparent hover:border-white/10 text-white transition-all flex items-center gap-1.5 text-[10px] md:text-xs font-mono font-bold shrink-0"
-                        >
+                            className="px-2 md:px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 border border-transparent hover:border-white/10 text-white transition flex items-center gap-1.5 text-[10px] md:text-xs font-mono font-bold shrink-0"
+                         aria-label="Botó interactiu">
                             <Gauge size={14} className="opacity-70" />
                             {playbackRate}x
                         </button>
 
                         {/* Fullscreen */}
-                        <button type="button"
+                        <button
+                            type="button"
                             onClick={handleFullscreen}
-                            className="p-1.5 md:p-2 rounded-xl bg-white/5 hover:bg-white/15 border border-transparent hover:border-white/10 text-white transition-all hover:scale-105 active:scale-95 shrink-0"
-                        >
+                            className="p-1.5 md:p-2 rounded-xl bg-white/5 hover:bg-white/15 border border-transparent hover:border-white/10 text-white transition hover:scale-105 active:scale-95 shrink-0"
+                            aria-label="Acció Maximize">
                             <Maximize size={18} />
                         </button>
 

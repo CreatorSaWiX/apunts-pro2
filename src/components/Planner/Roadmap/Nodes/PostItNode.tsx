@@ -94,7 +94,7 @@ const PostItNode = ({ id, data, selected }: NodeProps<import('@xyflow/react').No
                         <button type="button"
                             key={c}
                             onClick={() => updateNodeData(id, { color: c })}
-                            className={`w-5 h-5 rounded-full border-2 transition-all ${data.color === c ? 'border-white scale-110' : 'border-black/10 hover:scale-110'}`}
+                            className={`w-5 h-5 rounded-full border-2 transition ${data.color === c ? 'border-white scale-110' : 'border-black/10 hover:scale-110'}`}
                             style={{ backgroundColor: c }}
                         />
                     ))}

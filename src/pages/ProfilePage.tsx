@@ -198,8 +198,10 @@ const ProfilePage = () => {
         const fetchUserData = async () => {
             if (userIdToFetch) {
                 setIsFetchingUser(true);
-                const { db } = await import('../lib/firebase');
-                const { doc, getDoc } = await import('firebase/firestore');
+                const [{ db }, { doc, getDoc }] = await Promise.all([
+                    import('../lib/firebase'),
+                    import('firebase/firestore')
+                ]);
                 if (!isMounted) return;
                 
                 const docRef = doc(db, 'users', userIdToFetch);
@@ -232,8 +234,10 @@ const ProfilePage = () => {
         const fetchPosts = async () => {
             setIsFetchingPosts(true);
             try {
-                const { db } = await import('../lib/firebase');
-                const { collection, query, where, getDocs } = await import('firebase/firestore');
+                const [{ db }, { collection, query, where, getDocs }] = await Promise.all([
+                    import('../lib/firebase'),
+                    import('firebase/firestore')
+                ]);
                 if (!isMounted) return;
 
                 const q = query(collection(db, 'community_posts'), where('userId', '==', userIdToFetch));
@@ -264,8 +268,10 @@ const ProfilePage = () => {
         let unsubscribeNotif: (() => void) | undefined;
 
         const setup = async () => {
-            const { db } = await import('../lib/firebase');
-            const { collection, query, where, onSnapshot } = await import('firebase/firestore');
+            const [{ db }, { collection, query, where, onSnapshot }] = await Promise.all([
+                import('../lib/firebase'),
+                import('firebase/firestore')
+            ]);
             
             if (!isMounted) return;
 
@@ -286,9 +292,11 @@ const ProfilePage = () => {
 
     const handleUpdateProfile = async (data: Partial<ExtendedUser>) => {
         if (!authUser?.id) return;
-        const { db, auth } = await import('../lib/firebase');
-        const { doc, setDoc } = await import('firebase/firestore');
-        const { updateProfile } = await import('firebase/auth');
+        const [{ db, auth }, { doc, setDoc }, { updateProfile }] = await Promise.all([
+            import('../lib/firebase'),
+            import('firebase/firestore'),
+            import('firebase/auth')
+        ]);
         const userRef = doc(db, 'users', authUser.id);
         try {
             await setDoc(userRef, data, { merge: true });
@@ -366,7 +374,7 @@ const ProfilePage = () => {
                     {isOwnProfile && (
                         <div className="absolute top-20 right-4 z-30 opacity-0 group-hover/hero:opacity-100 transition-opacity duration-300 pointer-events-auto">
                             <div className="relative overflow-hidden rounded-xl">
-                                <button type="button" className="flex items-center gap-2 bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 px-3 py-2 text-white transition-all font-medium shadow-lg text-xs cursor-pointer">
+                                <button type="button" className="flex items-center gap-2 bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 px-3 py-2 text-white transition font-medium shadow-lg text-xs cursor-pointer">
                                     <Upload size={14} />
                                     <span className="hidden sm:inline">{t('profile.bannerFormatHint', '2MB max (WebP/WebM recomanat)')}</span>
                                 </button>
@@ -453,7 +461,7 @@ const ProfilePage = () => {
                         <div className="flex items-center justify-center gap-3 shrink-0 mt-2 md:mt-0 pb-2 md:pb-0">
                             {isOwnProfile ? (
                                 <>
-                                    <button type="button" onClick={() => setIsMailboxOpen(true)} className="relative p-3 md:p-2.5 rounded-full md:rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-all border border-white/10 shadow-lg" title={t('profile.inbox.privateMailbox', 'Bústia Privada')}>
+                                    <button type="button" onClick={() => setIsMailboxOpen(true)} className="relative p-3 md:p-2.5 rounded-full md:rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition border border-white/10 shadow-lg" title={t('profile.inbox.privateMailbox', 'Bústia Privada')}>
                                         <Mail size={18} strokeWidth={2.5} className="md:w-4 md:h-4" />
                                         {unreadCount > 0 && (
                                             <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] font-bold text-white shadow-lg border border-[#0d0f17]">
@@ -461,7 +469,7 @@ const ProfilePage = () => {
                                             </span>
                                         )}
                                     </button>
-                                    <button type="button" onClick={() => setIsInboxOpen(true)} className="relative p-3 md:p-2.5 rounded-full md:rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-all border border-white/10 shadow-lg" title={t('profile.notifications.title', 'Notificacions')}>
+                                    <button type="button" onClick={() => setIsInboxOpen(true)} className="relative p-3 md:p-2.5 rounded-full md:rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition border border-white/10 shadow-lg" title={t('profile.notifications.title', 'Notificacions')}>
                                         <Bell size={18} strokeWidth={2.5} className="md:w-4 md:h-4" />
                                         {unreadNotificationsCount > 0 && (
                                             <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary rounded-full flex items-center justify-center text-[9px] font-bold text-white shadow-lg border border-[#0d0f17]">
@@ -469,12 +477,12 @@ const ProfilePage = () => {
                                             </span>
                                         )}
                                     </button>
-                                    <button type="button" onClick={logout} className="p-3 md:p-2.5 rounded-full md:rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 shadow-lg" title={t('common.logout', 'Tancar sessió')}>
+                                    <button type="button" onClick={logout} className="p-3 md:p-2.5 rounded-full md:rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition border border-red-500/20 shadow-lg" title={t('common.logout', 'Tancar sessió')}>
                                         <LogOut size={18} strokeWidth={2.5} className="md:w-4 md:h-4" />
                                     </button>
                                 </>
                             ) : (
-                                <button type="button" onClick={() => { if (!authUser) return window.location.href = '/login'; setIsComposeOpen(true); }} className="flex items-center gap-2 bg-white hover:bg-slate-200 text-black px-6 md:px-5 py-3 md:py-2.5 rounded-full md:rounded-xl transition-all font-bold shadow-lg text-sm md:text-sm">
+                                <button type="button" onClick={() => { if (!authUser) return window.location.href = '/login'; setIsComposeOpen(true); }} className="flex items-center gap-2 bg-white hover:bg-slate-200 text-black px-6 md:px-5 py-3 md:py-2.5 rounded-full md:rounded-xl transition font-bold shadow-lg text-sm md:text-sm">
                                     <Send size={16} strokeWidth={2.5} /> <span>{t('profile.contact', 'Contactar')}</span>
                                 </button>
                             )}

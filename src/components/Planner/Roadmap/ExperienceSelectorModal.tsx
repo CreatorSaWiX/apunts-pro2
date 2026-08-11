@@ -30,7 +30,7 @@ const SidebarItem = ({
     return (
         <button type="button"
             onClick={onClick}
-            className={`relative w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all duration-300 group overflow-hidden
+            className={`relative w-full flex items-center gap-4 p-4 rounded-2xl text-left transition duration-300 group overflow-hidden
                 ${active ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'}`}
         >
             {active && (
@@ -76,7 +76,7 @@ const PremiumInput = ({ label, type = "text", value, onChange, placeholder, help
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition font-medium"
                 />
             </div>
         </div>
@@ -100,7 +100,7 @@ const PremiumSelect = ({ label, value, onChange, options = [], helpLink }: any) 
                 <button
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
-                    className="w-full text-left bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium flex justify-between items-center"
+                    className="w-full text-left bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition font-medium flex justify-between items-center"
                 >
                     {value}
                     <ChevronRight size={16} className={`text-slate-500 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
@@ -176,7 +176,7 @@ const PremiumCombobox = ({ label, value, onChange, placeholder, options }: any) 
             </div>
             <div className="relative">
                 <div
-                    className={`w-full bg-slate-900/50 border ${isOpen ? 'border-sky-500/50 ring-1 ring-sky-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-base sm:text-sm text-white flex items-center gap-3 transition-all font-medium cursor-text`}
+                    className={`w-full bg-slate-900/50 border ${isOpen ? 'border-sky-500/50 ring-1 ring-sky-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-base sm:text-sm text-white flex items-center gap-3 transition font-medium cursor-text`}
                     onClick={() => setIsOpen(true)}
                 >
                     <Search size={16} className={isOpen ? 'text-sky-400' : 'text-slate-500'} />
@@ -222,7 +222,7 @@ const PremiumCombobox = ({ label, value, onChange, placeholder, options }: any) 
                                                 setQuery('');
                                                 setIsOpen(false);
                                             }}
-                                            className={`w-full text-left px-3 py-2.5 text-sm transition-all rounded-lg flex items-center justify-between group/item
+                                            className={`w-full text-left px-3 py-2.5 text-sm transition rounded-lg flex items-center justify-between group/item
                                                 ${value === opt.name ? 'bg-sky-500/10 text-sky-400' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}
                                         >
                                             <div className="flex items-center gap-3">
@@ -444,7 +444,7 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                 <div className="pt-8 flex justify-end w-full">
                                     <button type="button"
                                         onClick={handleAdd}
-                                        className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white text-slate-900 rounded-2xl font-bold hover:bg-slate-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98]"
+                                        className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white text-slate-900 rounded-2xl font-bold hover:bg-slate-200 transition shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98]"
                                     >
                                         <span>{t('planner.roadmapExperienceSelector.addToRoadmap', 'Afegeix al Roadmap')}</span>
                                         <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />

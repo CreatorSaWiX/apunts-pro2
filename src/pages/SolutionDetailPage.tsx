@@ -178,7 +178,7 @@ const SolutionDetailPage = () => {
                 <div className="flex items-center gap-4">
                     <Link
                         to={`/tema/${topicId}/solucionaris`}
-                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white transition-all border border-white/5 hover:border-white/20"
+                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white transition border border-white/5 hover:border-white/20"
                         title={t('solutionDetail.backToList', 'Tornar a la llista')}
                     >
                         <ArrowLeft size={18} />
@@ -241,7 +241,7 @@ const SolutionDetailPage = () => {
                 <div className="flex items-center gap-2">
                     <Link
                         to={prevSolution ? `/tema/${topicId}/solucionaris/${prevSolution.id}` : '#'}
-                        className={`p-2.5 rounded-lg border border-white/5 transition-all flex items-center gap-2 ${prevSolution
+                        className={`p-2.5 rounded-lg border border-white/5 transition flex items-center gap-2 ${prevSolution
                             ? 'bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white hover:border-white/10'
                             : 'bg-transparent text-slate-800 border-transparent cursor-not-allowed hidden sm:flex'
                             }`}
@@ -252,7 +252,7 @@ const SolutionDetailPage = () => {
                     </Link>
                     <Link
                         to={nextSolution ? `/tema/${topicId}/solucionaris/${nextSolution.id}` : '#'}
-                        className={`p-2.5 rounded-lg border border-white/5 transition-all flex items-center gap-2 ${nextSolution
+                        className={`p-2.5 rounded-lg border border-white/5 transition flex items-center gap-2 ${nextSolution
                             ? 'bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white hover:border-white/10'
                             : 'bg-transparent text-slate-800 border-transparent cursor-not-allowed hidden sm:flex'
                             }`}
@@ -274,7 +274,7 @@ const SolutionDetailPage = () => {
                     transition={{ duration: 0.5, delay: 0.1 }}
                     className="flex flex-col gap-6"
                 >
-                    <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm transition-all duration-500 hover:border-white/10 hover:shadow-2xl hover:-translate-y-1">
+                    <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm transition duration-500 hover:border-white/10 hover:shadow-2xl hover:-translate-y-1">
                         <div className="px-5 py-3 bg-white/5 border-b border-white/5 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <FileText size={16} className="text-indigo-400" />
@@ -290,7 +290,7 @@ const SolutionDetailPage = () => {
                                     <button type="button"
                                         key={l}
                                         onClick={() => setLang(l)}
-                                        className={`px-2 py-1 rounded-md transition-all ${lang === l
+                                        className={`px-2 py-1 rounded-md transition ${lang === l
                                             ? 'bg-indigo-500 text-white shadow-sm'
                                             : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                             }`}
@@ -319,7 +319,7 @@ const SolutionDetailPage = () => {
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="relative lg:col-span-1 h-full flex flex-col"
                 >
-                    <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden shadow-xl flex-1 flex flex-col min-h-125 backdrop-blur-sm transition-all duration-500 hover:border-white/10 hover:shadow-2xl hover:-translate-y-1">
+                    <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden shadow-xl flex-1 flex flex-col min-h-125 backdrop-blur-sm transition duration-500 hover:border-white/10 hover:shadow-2xl hover:-translate-y-1">
                         <div className="relative flex-1 bg-transparent overflow-hidden flex flex-col p-px">
                             {solution.type === 'notebook' ? (
                                 <div className="p-8 md:p-10 h-full overflow-y-auto custom-scrollbar">
@@ -342,17 +342,18 @@ const SolutionDetailPage = () => {
                                             <span className="text-xs font-medium text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">C++</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => setIsEditing(false)}
                                                 className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                                                 title={t('solutionDetail.cancel', 'Cancel·lar')}
-                                            >
+                                                aria-label="Tancar">
                                                 <X size={16} />
                                             </button>
                                             <button type="button"
                                                 onClick={handleSave}
                                                 className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
-                                            >
+                                             aria-label="Botó interactiu">
                                                 <Save size={14} /> {t('solutionDetail.save', 'Guardar')}
                                             </button>
                                         </div>

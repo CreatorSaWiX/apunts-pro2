@@ -37,10 +37,10 @@ const VisTransformacionsGeometricas = () => {
             {/* Control Header */}
             <div className="p-6 bg-slate-900/80 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
-                    <button type="button" onClick={() => setType('rot')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'rot' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Rotació</button>
-                    <button type="button" onClick={() => setType('ref')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'ref' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Reflexió</button>
-                    <button type="button" onClick={() => setType('proj')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'proj' ? 'bg-amber-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Projecció</button>
-                    <button type="button" onClick={() => setType('esc')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${type === 'esc' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Escalat</button>
+                    <button type="button" onClick={() => setType('rot')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${type === 'rot' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Rotació</button>
+                    <button type="button" onClick={() => setType('ref')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${type === 'ref' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Reflexió</button>
+                    <button type="button" onClick={() => setType('proj')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${type === 'proj' ? 'bg-amber-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Projecció</button>
+                    <button type="button" onClick={() => setType('esc')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${type === 'esc' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Escalat</button>
                 </div>
 
                 <div className="flex gap-8 min-w-[200px]">
@@ -93,12 +93,12 @@ const VisTransformacionsGeometricas = () => {
                             <div className="absolute right-0 top-0 bottom-0 w-4 border-r-2 border-t-2 border-b-2 border-white/20 rounded-r-2xl" />
                             
                             <div className="flex gap-16">
-                                <span className="w-16 text-center text-white transition-all hover:scale-125 hover:text-indigo-400">{m[0].toFixed(2)}</span>
-                                <span className="w-16 text-center text-white transition-all hover:scale-125 hover:text-indigo-400">{m[1].toFixed(2)}</span>
+                                <span className="w-16 text-center text-white transition hover:scale-125 hover:text-indigo-400">{m[0].toFixed(2)}</span>
+                                <span className="w-16 text-center text-white transition hover:scale-125 hover:text-indigo-400">{m[1].toFixed(2)}</span>
                             </div>
                             <div className="flex gap-16">
-                                <span className="w-16 text-center text-white transition-all hover:scale-125 hover:text-indigo-400">{m[2].toFixed(2)}</span>
-                                <span className="w-16 text-center text-white transition-all hover:scale-125 hover:text-indigo-400">{m[3].toFixed(2)}</span>
+                                <span className="w-16 text-center text-white transition hover:scale-125 hover:text-indigo-400">{m[2].toFixed(2)}</span>
+                                <span className="w-16 text-center text-white transition hover:scale-125 hover:text-indigo-400">{m[3].toFixed(2)}</span>
                             </div>
                         </div>
                     </div>

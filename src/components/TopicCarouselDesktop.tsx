@@ -349,7 +349,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 {activeIndex > 0 && (
                     <button type="button"
                         onClick={handlePrev}
-                        className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 group/navleft"
+                        className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 group/navleft"
                         aria-label="Previous topic"
                     >
                         <ChevronLeft size={28} className="group-hover/navleft:-translate-x-1 transition-transform" />
@@ -364,7 +364,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 {activeIndex < sortedTopics.length - 1 && (
                     <button type="button"
                         onClick={handleNext}
-                        className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 group/navright"
+                        className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 group/navright"
                         aria-label="Next topic"
                     >
                         <ChevronRight size={28} className="group-hover/navright:translate-x-1 transition-transform" />
@@ -430,7 +430,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
                                     {/* "New" Badge */}
                                     {isTopicNew && (
-                                        <div className={`absolute top-6 right-6 md:top-8 md:right-8 z-30 transition-all duration-300 ${isActive ? 'opacity-100 scale-100' : 'opacity-60 scale-90'}`}>
+                                        <div className={`absolute top-6 right-6 md:top-8 md:right-8 z-30 transition duration-300 ${isActive ? 'opacity-100 scale-100' : 'opacity-60 scale-90'}`}>
                                             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-linear-to-r from-rose-500/90 to-pink-500/90 border border-rose-300/30 shadow-[0_0_20px_rgba(244,63,94,0.4)] backdrop-blur-md">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_5px_white]" />
                                                 <span className="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider drop-shadow-sm">
@@ -442,7 +442,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
                                     {/* "Updated" Badge */}
                                     {isTopicUpdated && (
-                                        <div className={`absolute top-6 right-6 md:top-8 md:right-8 z-30 transition-all duration-300 ${isActive ? 'opacity-100 scale-100' : 'opacity-60 scale-90'}`}>
+                                        <div className={`absolute top-6 right-6 md:top-8 md:right-8 z-30 transition duration-300 ${isActive ? 'opacity-100 scale-100' : 'opacity-60 scale-90'}`}>
                                             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-linear-to-r from-emerald-500/90 to-teal-500/90 border border-emerald-300/30 shadow-[0_0_20px_rgba(16,185,129,0.4)] backdrop-blur-md">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_5px_white]" />
                                                 <span className="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider drop-shadow-sm">
@@ -486,7 +486,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                         </h3>
 
                                         <div className="flex items-center gap-2.5">
-                                            <div className={`h-px transition-all duration-200 ${isActive ? 'w-12 bg-primary' : 'w-6 bg-slate-700'}`} />
+                                            <div className={`h-px transition duration-200 ${isActive ? 'w-12 bg-primary' : 'w-6 bg-slate-700'}`} />
                                             <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">
                                                 {topic.readTime || '10 Min'}
                                             </span>
@@ -502,14 +502,14 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
                                     {/* Link / Action */}
                                     <div className={`
-                                        px-5 md:px-10 pb-5 md:pb-8 mt-auto relative z-20 transition-all duration-200
+                                        px-5 md:px-10 pb-5 md:pb-8 mt-auto relative z-20 transition duration-200
                                         ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
                                     `}>
                                         <div className="flex flex-col gap-3 md:gap-4">
                                             <Link
                                                 to={`/tema/${topic.slug}`}
                                                 onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                                className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-3.5 py-2 md:px-4 md:py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0 text-[13px] md:text-sm"
+                                                className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-3.5 py-2 md:px-4 md:py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition duration-300 transform hover:-translate-y-1 active:translate-y-0 text-[13px] md:text-sm"
                                             >
                                                 <div className="flex items-center gap-2.5">
                                                     <span>{t('topics.explore', 'Explorar tema')}</span>
@@ -517,7 +517,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                                         {formatShortcut(enterShortcut)}
                                                     </span>
                                                 </div>
-                                                <ArrowRight size={16} className="group-hover/btn:translate-x-1 group-hover/btn:scale-110 transition-all duration-300" />
+                                                <ArrowRight size={16} className="group-hover/btn:translate-x-1 group-hover/btn:scale-110 transition duration-300" />
                                             </Link>
 
                                             <Link
@@ -560,7 +560,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                             aria-label={`Go to slide ${i + 1}`}
                         >
                             <div className={`
-                                transition-all duration-500 rounded-full
+                                transition duration-500 rounded-full
                                 ${activeIndex === i
                                     ? 'w-12 h-1.5 bg-accent shadow-[0_0_15px_rgba(56,189,248,0.6)]'
                                     : 'w-2 h-2 bg-slate-600 group-hover:bg-slate-400'

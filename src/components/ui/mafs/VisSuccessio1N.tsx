@@ -36,7 +36,7 @@ const VisSuccessio1N = () => {
                         fill={Theme.red}
                         stroke="white"
                         strokeWidth={0.02}
-                        className="transition-all duration-300"
+                        className="transition duration-300"
                     />
                 ))}
                 {/* Marques Canvas */}

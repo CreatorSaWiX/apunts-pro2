@@ -23,7 +23,7 @@ const VisEx72a = () => {
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Condició: $1 + xy &gt; 0$</span>
                     <span className="text-sm font-mono text-white">$1 + ({point[0].toFixed(2)}) \\cdot ({point[1].toFixed(2)}) = {val.toFixed(2)}$</span>
                 </div>
-                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isInDomain ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition shadow-lg ${isInDomain ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
                     {isInDomain ? '✓ Dins del Domini' : '✗ Fora del Domini'}
                 </div>
             </div>

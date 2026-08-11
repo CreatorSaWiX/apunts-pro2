@@ -76,7 +76,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title, subti
                                 type="button"
                                 onClick={onClose}
                                 className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors ml-4 shrink-0"
-                            >
+                                aria-label="Tancar">
                                 <X size={20} />
                             </button>
                         </div>

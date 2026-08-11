@@ -17,7 +17,7 @@ export default function PointerVisualizer() {
 
     return (
         <div className="w-full flex flex-col items-center justify-center gap-10 my-16 font-mono select-none not-prose">
-            
+
             {/* Visualització Nodes */}
             <div className="flex items-center justify-center h-24 gap-4 md:gap-12 relative">
                 
@@ -65,11 +65,12 @@ export default function PointerVisualizer() {
 
                 {/* Nav Arrows */}
                 <div className="flex items-center gap-8">
-                    <button type="button" 
+                    <button
+                        type="button"
                         onClick={prev}
                         disabled={stepIdx === 0}
-                        className="p-3 border border-slate-800 rounded-full hover:border-slate-500 hover:text-slate-300 transition-all disabled:opacity-5 text-slate-600"
-                    >
+                        className="p-3 border border-slate-800 rounded-full hover:border-slate-500 hover:text-slate-300 transition disabled:opacity-5 text-slate-600"
+                        aria-label="Enrere">
                         <ChevronLeft size={20} />
                     </button>
 
@@ -77,16 +78,17 @@ export default function PointerVisualizer() {
                         {steps.map((_, i) => (
                             <div 
                                 key={i} 
-                                className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${i === stepIdx ? 'bg-emerald-500 w-4' : 'bg-slate-800'}`} 
+                                className={`w-1.5 h-1.5 rounded-full transition duration-500 ${i === stepIdx ? 'bg-emerald-500 w-4' : 'bg-slate-800'}`} 
                             />
                         ))}
                     </div>
 
-                    <button type="button" 
+                    <button
+                        type="button"
                         onClick={next}
                         disabled={stepIdx === steps.length - 1}
-                        className="p-3 border border-slate-800 rounded-full hover:border-emerald-500 hover:text-emerald-500 transition-all disabled:opacity-5 text-slate-600"
-                    >
+                        className="p-3 border border-slate-800 rounded-full hover:border-emerald-500 hover:text-emerald-500 transition disabled:opacity-5 text-slate-600"
+                        aria-label="Endavant">
                         <ChevronRight size={20} />
                     </button>
                 </div>
@@ -95,7 +97,7 @@ export default function PointerVisualizer() {
                     <button type="button" 
                         onClick={reset}
                         className="flex items-center gap-2 text-[9px] text-slate-700 hover:text-slate-400 transition-colors uppercase font-black tracking-[0.3em]"
-                    >
+                     aria-label="Botó interactiu">
                         <RotateCcw size={10} /> Reset
                     </button>
                 )}
@@ -114,7 +116,7 @@ function Node({ label, value, highlight }: any) {
                     color: highlight ? '#10b981' : '#475569',
                     scale: highlight ? 1.05 : 1
                 }}
-                className="w-12 h-12 border-2 rounded-2xl flex items-center justify-center font-bold text-lg bg-transparent transition-all duration-500"
+                className="w-12 h-12 border-2 rounded-2xl flex items-center justify-center font-bold text-lg bg-transparent transition duration-500"
             >
                 {value}
             </motion.div>

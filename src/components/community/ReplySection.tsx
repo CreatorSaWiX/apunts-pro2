@@ -185,7 +185,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                             alt={user.username} 
                             className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10 bg-slate-800 mb-0.5"
                         />
-                        <div className="relative flex-1 flex items-end bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-white/30 focus-within:bg-white/10 rounded-[1.25rem] p-1 transition-all">
+                        <div className="relative flex-1 flex items-end bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-white/30 focus-within:bg-white/10 rounded-[1.25rem] p-1 transition">
                             
                             <div className="relative flex-1">
                                 {mentionSearch && (
@@ -238,7 +238,7 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                                 <button 
                                     type="submit"
                                     disabled={!newReply.trim()}
-                                    className={`p-1.5 rounded-full transition-all flex items-center justify-center mr-1 ${newReply.trim() ? 'bg-primary text-white shadow-md shadow-primary/30' : 'bg-transparent text-slate-600'}`}
+                                    className={`p-1.5 rounded-full transition flex items-center justify-center mr-1 ${newReply.trim() ? 'bg-primary text-white shadow-md shadow-primary/30' : 'bg-transparent text-slate-600'}`}
                                 >
                                     <ArrowUp size={20} strokeWidth={3} />
                                 </button>

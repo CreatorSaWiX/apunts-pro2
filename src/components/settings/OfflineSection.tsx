@@ -315,17 +315,17 @@ export const OfflineSection = () => {
 
                     <div className="w-full flex flex-col gap-3">
                         <div className="w-full h-4 rounded-full bg-white/5 overflow-hidden flex">
-                            <div style={{ width: `${corePercentage}%` }} className="h-full bg-slate-500 transition-all duration-700" title="App Shell (JS/CSS/HTML)" />
+                            <div style={{ width: `${corePercentage}%` }} className="h-full bg-slate-500 transition duration-700" title="App Shell (JS/CSS/HTML)" />
                             {availableCategories.map(cat => {
                                 if (!isDownloaded[cat.id]) return null;
                                 const size = cacheSizes[cat.id] || 0;
                                 const pct = (size / currentUsage) * 100;
                                 return (
-                                    <div key={cat.id} style={{ width: `${pct}%`, backgroundColor: cat.hexColor }} className="h-full transition-all duration-700 border-l border-black/20" title={cat.title} />
+                                    <div key={cat.id} style={{ width: `${pct}%`, backgroundColor: cat.hexColor }} className="h-full transition duration-700 border-l border-black/20" title={cat.title} />
                                 );
                             })}
                             {otherPercentage > 0 && (
-                                <div style={{ width: `${otherPercentage}%` }} className="h-full bg-slate-700 transition-all duration-700 border-l border-black/20" title="IndexedDB / Metadades" />
+                                <div style={{ width: `${otherPercentage}%` }} className="h-full bg-slate-700 transition duration-700 border-l border-black/20" title="IndexedDB / Metadades" />
                             )}
                         </div>
 
@@ -367,7 +367,7 @@ export const OfflineSection = () => {
                                         onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
                                     >
                                         <div
-                                            className="w-12 h-12 rounded-xl flex flex-col items-center justify-center shrink-0 border transition-all duration-300"
+                                            className="w-12 h-12 rounded-xl flex flex-col items-center justify-center shrink-0 border transition duration-300"
                                             style={{
                                                 backgroundColor: downloaded ? `${cat.hexColor}20` : 'rgba(255,255,255,0.05)',
                                                 borderColor: downloaded ? `${cat.hexColor}40` : 'rgba(255,255,255,0.05)'
@@ -404,7 +404,7 @@ export const OfflineSection = () => {
                                                 <button type="button"
                                                     disabled={processing}
                                                     onClick={() => handleDelete(cat.id)}
-                                                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 text-slate-300 font-bold text-sm transition-all disabled:opacity-50"
+                                                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 text-slate-300 font-bold text-sm transition disabled:opacity-50"
                                                 >
                                                     {processing ? <div className="w-4 h-4 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" /> : <Trash2 size={16} />}
                                                     {t('settings.offline.delete', 'Eliminar')}
@@ -413,7 +413,7 @@ export const OfflineSection = () => {
                                                 <button type="button"
                                                     disabled={processing || !isOnline}
                                                     onClick={() => handleDownload(cat.id)}
-                                                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-white text-slate-900 font-bold text-sm transition-all disabled:opacity-50"
+                                                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-white text-slate-900 font-bold text-sm transition disabled:opacity-50"
                                                 >
                                                     {processing ? <div className="w-4 h-4 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" /> : <Download size={16} />}
                                                     {t('settings.offline.download', 'Descarregar')}
@@ -547,7 +547,7 @@ export const OfflineSection = () => {
                                                                         <span title={t('settings.offline.opaqueTooltip', 'Resposta Opaca (Amagada per CORS). El navegador li suma ~7MB artificialment.')} className="text-amber-500/80 cursor-help border-b border-dashed border-amber-500/30 pb-0.5">Opaque</span>
                                                                     ) : formatBytes(file.size)}
                                                                 </span>
-                                                                <button type="button" onClick={() => handleDeleteCacheFile(cache.name, file.url)} className="p-1.5 rounded-md hover:bg-rose-500/20 text-slate-600 hover:text-rose-400 opacity-0 group-hover/file:opacity-100 transition-all">
+                                                                <button type="button" onClick={() => handleDeleteCacheFile(cache.name, file.url)} className="p-1.5 rounded-md hover:bg-rose-500/20 text-slate-600 hover:text-rose-400 opacity-0 group-hover/file:opacity-100 transition">
                                                                     <Trash2 size={14} />
                                                                 </button>
                                                             </div>

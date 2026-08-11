@@ -20,14 +20,17 @@ const Model3DViewer = ({ url, filename }: Model3DViewerProps) => {
 
     return (
         <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-white/10 bg-linear-to-b from-[#111] to-[#050505] shadow-[0_0_40px_rgba(0,0,0,0.5)] group">
-            
+
             <div className="absolute top-4 left-4 z-10 px-3 py-1.5 bg-black/50 backdrop-blur-md rounded-lg border border-white/10 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs font-bold text-slate-200">Interactive 3D</span>
                 <span className="text-xs text-slate-400 ml-1">({filename})</span>
             </div>
 
-            <button type="button" className="absolute bottom-4 right-4 z-10 p-2 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10">
+            <button
+                type="button"
+                className="absolute bottom-4 right-4 z-10 p-2 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10"
+                aria-label="Maximitzar">
                 <Maximize2 size={16} />
             </button>
 
@@ -45,7 +48,7 @@ const Model3DViewer = ({ url, filename }: Model3DViewerProps) => {
                     <OrbitControls makeDefault autoRotate autoRotateSpeed={1} enableZoom={true} />
                 </Canvas>
             </Suspense>
-            
+
             <div className="absolute bottom-4 left-4 z-10 pointer-events-none">
                 <p className="text-[10px] text-white/50 bg-black/30 px-2 py-1 rounded backdrop-blur-sm">Clica i arrossega per rotar • Fes scroll per zoom</p>
             </div>

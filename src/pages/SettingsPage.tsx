@@ -82,7 +82,7 @@ const SettingsContent = () => {
                                     <button type="button"
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`shrink-0 group relative flex items-center px-4 py-3 transition-all duration-300 outline-none text-left rounded-xl`}
+                                        className={`shrink-0 group relative flex items-center px-4 py-3 transition duration-300 outline-none text-left rounded-xl`}
                                     >
                                         {isActive && (
                                             <motion.div

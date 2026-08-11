@@ -182,7 +182,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                                 onMouseEnter={() => setShowReactorTooltip(emoji)}
                                 onMouseLeave={() => setShowReactorTooltip(null)}
                                 className={`
-                                    relative group flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-medium transition-all border border-transparent
+                                    relative group flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-medium transition border border-transparent
                                     ${userReaction === emoji
                                         ? 'bg-sky-500/10 text-sky-400 border-sky-500/20'
                                         : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:border-slate-700'

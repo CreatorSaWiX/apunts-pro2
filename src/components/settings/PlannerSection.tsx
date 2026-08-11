@@ -27,7 +27,7 @@ export const PlannerSection = () => {
                         <button type="button"
                             key={view.id}
                             onClick={() => setDefaultPlannerView(view.id)}
-                            className={`relative group flex items-center justify-center gap-3 px-6 py-4 rounded-xl transition-all duration-300 border outline-none flex-1 sm:flex-none ${isActive ? 'bg-white/10 border-white/20' : 'bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]'}`}
+                            className={`relative group flex items-center justify-center gap-3 px-6 py-4 rounded-xl transition duration-300 border outline-none flex-1 sm:flex-none ${isActive ? 'bg-white/10 border-white/20' : 'bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]'}`}
                         >
                             <view.icon size={20} className={`transition-colors duration-300 z-10 relative ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
                             <span className={`text-sm font-semibold transition-colors duration-300 z-10 relative ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}>

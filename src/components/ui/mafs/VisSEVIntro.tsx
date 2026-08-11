@@ -42,8 +42,8 @@ const VisSEVIntro = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-2 flex justify-center gap-2 bg-slate-900/60 border-b border-white/5">
-                <button type="button" onClick={() => setMode('sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'sev' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Recta SEV (y = x)</button>
-                <button type="button" onClick={() => setMode('non_sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${mode === 'non_sev' ? 'bg-rose-600 text-white shadow-[0_0_10px_rgba(225,29,72,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>No és SEV (y = x + 1)</button>
+                <button type="button" onClick={() => setMode('sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition ${mode === 'sev' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>Recta SEV (y = x)</button>
+                <button type="button" onClick={() => setMode('non_sev')} className={`px-3 py-1 rounded text-[10px] font-black uppercase transition ${mode === 'non_sev' ? 'bg-rose-600 text-white shadow-[0_0_10px_rgba(225,29,72,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}>No és SEV (y = x + 1)</button>
             </div>
 
             <div className="flex-1 relative overflow-hidden bg-slate-950/40">

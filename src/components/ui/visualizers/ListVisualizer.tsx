@@ -113,23 +113,23 @@ export default function ListVisualizer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                     {/* Position Controls */}
                     <div className="flex gap-2 p-1 bg-slate-900/50 rounded-xl border border-slate-800/50">
-                        <button type="button" onClick={movePrev} disabled={iteratorPos <= -1} className="flex-1 h-10 hover:bg-slate-800 disabled:opacity-20 rounded-lg flex items-center justify-center transition-all">
+                        <button type="button" onClick={movePrev} disabled={iteratorPos <= -1} className="flex-1 h-10 hover:bg-slate-800 disabled:opacity-20 rounded-lg flex items-center justify-center transition">
                             <ArrowLeft size={18} />
                         </button>
                         <div className="flex-2 flex items-center justify-center text-[10px] uppercase tracking-widest text-slate-500 font-bold">
                             Iterador
                         </div>
-                        <button type="button" onClick={moveNext} disabled={iteratorPos >= nodes.length} className="flex-1 h-10 hover:bg-slate-800 disabled:opacity-20 rounded-lg flex items-center justify-center transition-all">
+                        <button type="button" onClick={moveNext} disabled={iteratorPos >= nodes.length} className="flex-1 h-10 hover:bg-slate-800 disabled:opacity-20 rounded-lg flex items-center justify-center transition">
                             <ArrowRight size={18} />
                         </button>
                     </div>
 
                     {/* Standard Ops */}
                     <div className="flex gap-2">
-                        <button type="button" onClick={handlePushFront} className="flex-1 h-10 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded-xl border border-emerald-500/20 transition-all">
+                        <button type="button" onClick={handlePushFront} className="flex-1 h-10 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded-xl border border-emerald-500/20 transition">
                             push_front()
                         </button>
-                        <button type="button" onClick={handlePushBack} className="flex-1 h-10 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded-xl border border-emerald-500/20 transition-all">
+                        <button type="button" onClick={handlePushBack} className="flex-1 h-10 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded-xl border border-emerald-500/20 transition">
                             push_back()
                         </button>
                     </div>
@@ -138,13 +138,13 @@ export default function ListVisualizer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                     {/* Iterator Ops */}
                     <div className="flex gap-2">
-                        <button type="button" onClick={handleInsert} className="flex-1 h-10 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-xs font-bold rounded-xl border border-blue-500/20 transition-all">
+                        <button type="button" onClick={handleInsert} className="flex-1 h-10 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-xs font-bold rounded-xl border border-blue-500/20 transition">
                             insert(it, val)
                         </button>
                         <button type="button" 
                             onClick={handleErase} 
                             disabled={iteratorPos < 0 || iteratorPos >= nodes.length}
-                            className="flex-1 h-10 bg-rose-500/10 hover:bg-rose-500/20 disabled:opacity-20 text-rose-400 text-xs font-bold rounded-xl border border-rose-500/20 transition-all"
+                            className="flex-1 h-10 bg-rose-500/10 hover:bg-rose-500/20 disabled:opacity-20 text-rose-400 text-xs font-bold rounded-xl border border-rose-500/20 transition"
                         >
                             erase(it)
                         </button>
@@ -173,7 +173,7 @@ export default function ListVisualizer() {
 
 function SentinelNode({ label, isTarget }: { label: string; isTarget: boolean }) {
     return (
-        <div className={`relative w-14 h-14 border-2 rounded-xl flex flex-col items-center justify-center transition-all duration-300
+        <div className={`relative w-14 h-14 border-2 rounded-xl flex flex-col items-center justify-center transition duration-300
             ${isTarget ? 'border-blue-500 bg-blue-500/5' : 'border-slate-800/50 bg-slate-900/20'}`}
         >
             <span className="text-[9px] text-slate-500 uppercase font-black">{label}</span>

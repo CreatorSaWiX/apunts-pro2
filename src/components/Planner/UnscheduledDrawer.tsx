@@ -51,10 +51,11 @@ const UnscheduledDrawer: React.FC<UnscheduledDrawerProps> = ({ tasks }) => {
         <>
             {/* Floating Button */}
             <div className="absolute bottom-6 left-6 z-50">
-                <button type="button"
+                <button
+                    type="button"
                     onClick={() => setIsOpen(true)}
-                    className="group relative flex items-center gap-3 px-5 py-3 rounded-full bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition-all hover:scale-105 active:scale-95"
-                >
+                    className="group relative flex items-center gap-3 px-5 py-3 rounded-full bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition hover:scale-105 active:scale-95"
+                    aria-label="Obrir panell">
                     <div className="relative">
                         <Archive size={20} className="text-slate-300 group-hover:text-white transition-colors" />
                         <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-slate-900">
@@ -82,10 +83,11 @@ const UnscheduledDrawer: React.FC<UnscheduledDrawerProps> = ({ tasks }) => {
                                 <Archive size={16} className="text-slate-400" />
                                 <span className="font-extrabold text-xs tracking-widest text-slate-300 uppercase">{t('planner.unscheduled.toPlan', 'Per planificar')}</span>
                             </div>
-                            <button type="button" 
+                            <button
+                                type="button"
                                 onClick={() => setIsOpen(false)}
                                 className="p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
-                            >
+                                aria-label="Tancar">
                                 <X size={16} strokeWidth={2.5} />
                             </button>
                         </div>

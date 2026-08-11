@@ -103,7 +103,7 @@ export const SubjectsSection = () => {
             {/* Premium Command Palette */}
             <div className="w-full relative z-40" ref={searchRef}>
                 <div
-                    className={`relative flex items-center w-full bg-white/3 border rounded-xl transition-all duration-300 overflow-hidden ${isCommandOpen ? 'border-white/30 bg-white/6' : 'border-white/10 hover:border-white/20 hover:bg-white/5'}`}
+                    className={`relative flex items-center w-full bg-white/3 border rounded-xl transition duration-300 overflow-hidden ${isCommandOpen ? 'border-white/30 bg-white/6' : 'border-white/10 hover:border-white/20 hover:bg-white/5'}`}
                 >
                     <Search size={20} className={`ml-4 mr-3 ${isCommandOpen ? 'text-white' : 'text-slate-500'} transition-colors duration-300`} />
                     <input
@@ -151,7 +151,8 @@ export const SubjectsSection = () => {
                                         const defaultColor = subject.colorToken ? subject.colorToken.split('-')[0] : 'sky';
                                         const colorFamily = customSubjectColors[subject.name] || defaultColor;
                                         return (
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 key={subject.id}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -166,15 +167,15 @@ export const SubjectsSection = () => {
                                                     setIsCommandOpen(false);
                                                     setSubjectError(null);
                                                 }}
-                                                className="flex items-center justify-between px-4 py-3 rounded-xl transition-all text-left group/item hover:bg-white/5"
-                                            >
+                                                className="flex items-center justify-between px-4 py-3 rounded-xl transition text-left group/item hover:bg-white/5"
+                                                aria-label="Obrir panell">
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-2.5 h-2.5 rounded-full bg-${colorFamily}-500`} />
                                                     <span className="font-bold text-slate-200">{subject.name}</span>
                                                 </div>
                                                 <ChevronRight size={18} className="text-slate-600 group-hover/item:text-white transition-colors" />
                                             </button>
-                                        )
+                                        );
                                     })}
                                 </div>
                             ) : (
@@ -187,7 +188,7 @@ export const SubjectsSection = () => {
             </div>
 
             {/* Selected Subjects - Glass Pills Preview */}
-            <div className={`w-full transition-all duration-300 ${isCommandOpen ? 'opacity-30 blur-sm pointer-events-none' : ''}`}>
+            <div className={`w-full transition duration-300 ${isCommandOpen ? 'opacity-30 blur-sm pointer-events-none' : ''}`}>
                 <Reorder.Group
                     axis="x"
                     values={homeSubjects}
@@ -214,26 +215,28 @@ export const SubjectsSection = () => {
                                     onDragEnd={() => { setTimeout(() => { isDraggingRef.current = false; }, 150); }}
                                     className="cursor-grab active:cursor-grabbing outline-none"
                                 >
-                                    <div className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/3 border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all duration-300 shadow-sm pointer-events-auto">
-                                        <button type="button"
+                                    <div className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/3 border border-white/10 hover:border-white/20 hover:bg-white/5 transition duration-300 shadow-sm pointer-events-auto">
+                                        <button
+                                            type="button"
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();
                                                 if (!isDraggingRef.current) setEditingSubjectColor(subject.name);
                                             }}
                                             className="flex items-center gap-2.5 outline-none group/btn cursor-pointer"
-                                        >
+                                            aria-label="Obrir panell">
                                             <div
-                                                className="w-2.5 h-2.5 rounded-full transition-all duration-300 group-hover/btn:scale-125"
+                                                className="w-2.5 h-2.5 rounded-full transition duration-300 group-hover/btn:scale-125"
                                                 style={{ backgroundColor: colorHex }}
                                             />
                                             <span className="font-bold text-sm text-slate-200 transition-colors duration-300 pointer-events-none">{subject.name}</span>
                                         </button>
                                         <div className="w-px h-3 bg-white/10 mx-1 pointer-events-none" />
-                                        <button type="button"
+                                        <button
+                                            type="button"
                                             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleSubject(subject.name); }}
                                             className="text-slate-500 hover:text-rose-400 transition-colors duration-300 outline-none cursor-pointer"
-                                        >
+                                            aria-label="Tancar">
                                             <X size={14} strokeWidth={2.5} className="pointer-events-none" />
                                         </button>
                                     </div>
@@ -344,7 +347,7 @@ export const SubjectsSection = () => {
                                         className="group relative flex items-center justify-center w-full aspect-square rounded-full outline-none"
                                     >
                                         <div
-                                            className={`w-10 h-10 rounded-full transition-all duration-300 ${isSelected ? 'scale-110' : 'scale-100 group-hover:scale-110 group-hover:opacity-80'}`}
+                                            className={`w-10 h-10 rounded-full transition duration-300 ${isSelected ? 'scale-110' : 'scale-100 group-hover:scale-110 group-hover:opacity-80'}`}
                                             style={{
                                                 backgroundColor: tailwindColors[colorKey].primary,
                                                 boxShadow: isSelected ? `0 0 20px rgba(${tailwindColors[colorKey].primary_rgb}, 0.7)` : 'none'

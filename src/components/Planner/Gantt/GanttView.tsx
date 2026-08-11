@@ -250,7 +250,8 @@ const GanttView: React.FC = () => {
 
             {/* Floating Zoom Controls */}
             <div className="hidden lg:flex touch-landscape:hidden absolute bottom-6 right-6 z-40 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl items-center gap-4">
-                <button type="button" 
+                <button
+                    type="button"
                     onClick={() => {
                         flushSync(() => {
                             setBaseDate(new Date(now.getTime()));
@@ -261,7 +262,7 @@ const GanttView: React.FC = () => {
                     }}
                     className="p-1.5 rounded-full bg-primary/20 hover:bg-primary/30 text-primary transition-colors cursor-pointer mr-2"
                     title="Vés a l'hora actual"
-                >
+                    aria-label="Vés a l'hora actual">
                     <Maximize size={16} />
                 </button>
                 <ZoomOut size={18} className="text-slate-400" />
@@ -444,7 +445,7 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
                     onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'left', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth }); }}
                     onTouchStart={(e) => { e.stopPropagation(); setDragState({ type: 'left', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false }); }}
                 >
-                    <div className="w-[3px] h-3 bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-y-150 transition-all duration-200" />
+                    <div className="w-[3px] h-3 bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-y-150 transition duration-200" />
                 </div>
             )}
             
@@ -459,7 +460,7 @@ const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, upd
                     onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'right', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth }); }}
                     onTouchStart={(e) => { e.stopPropagation(); setDragState({ type: 'right', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false }); }}
                 >
-                    <div className="w-[3px] h-3 bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-y-150 transition-all duration-200" />
+                    <div className="w-[3px] h-3 bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-y-150 transition duration-200" />
                 </div>
             )}
         </div>

@@ -237,7 +237,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     useEffect(() => {
         const checkBrowser = async () => {
             // Detect Brave
-            if ((window.navigator as any).brave && await (window.navigator as any).brave.isBrave()) {
+            if ((window.navigator as any).brave && (await (window.navigator as any).brave.isBrave())) {
                 setHasCanvasProtection(true);
                 return;
             }
@@ -291,7 +291,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     return (
         <InteractionLock disabled className={transparentBg ? 'h-full w-full' : 'my-8'}>
             <div
-                className={`relative group overflow-hidden ${transparentBg ? 'h-full w-full' : 'bg-slate-900/40 rounded-2xl'} transition-all duration-500 ${isFullScreen ? 'h-full bg-slate-900' : ''}`}
+                className={`relative group overflow-hidden ${transparentBg ? 'h-full w-full' : 'bg-slate-900/40 rounded-2xl'} transition duration-500 ${isFullScreen ? 'h-full bg-slate-900' : ''}`}
                 style={transparentBg ? {} : { height: isFullScreen ? '100%' : numericHeight }}
                 ref={containerRef}
                 onMouseEnter={() => setIsHovered(true)}
@@ -300,11 +300,12 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                 {/* Controls */}
                 {showControls && (
                     <div className={`absolute bottom-2 right-2 z-10 flex gap-2 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'} pointer-events-none`}>
-                        <button type="button"
+                        <button
+                            type="button"
                             onClick={handleReset}
                             className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 hover:border-slate-600 transition-colors pointer-events-auto"
                             title="Reset View"
-                        >
+                            aria-label="Reset View">
                             <RotateCcw size={14} />
                         </button>
                         {/* Notice for Brave/Opera GX Users with Canvas Poisoning Active */}

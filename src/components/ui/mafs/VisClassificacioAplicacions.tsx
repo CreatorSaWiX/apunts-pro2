@@ -33,20 +33,20 @@ const VisClassificacioAplicacions = () => {
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
                     <button type="button" 
                         onClick={() => setMode('injective')} 
-                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${mode === 'injective' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${mode === 'injective' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                     >
                         Bijectiva
                     </button>
                     <button type="button" 
                         onClick={() => setMode('singular')} 
-                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${mode === 'singular' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                        className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${mode === 'singular' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                     >
                         No Injectiva
                     </button>
                 </div>
                 
                 <div className="flex items-center gap-3">
-                    <div className={`px-3 py-1.5 rounded-lg border font-mono text-[10px] transition-all duration-500 ${mode === 'injective' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-400'}`}>
+                    <div className={`px-3 py-1.5 rounded-lg border font-mono text-[10px] transition duration-500 ${mode === 'injective' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-400'}`}>
                         {mode === 'injective' ? "Isomorfisme: Det ≠ 0" : "Singular: Det = 0"}
                     </div>
                 </div>

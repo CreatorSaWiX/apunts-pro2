@@ -78,7 +78,7 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
                 {/* Ultra-sleek Track */}
                 <div className="absolute left-0 right-0 h-1.5 bg-slate-800/80 rounded-full overflow-hidden backdrop-blur-md border border-white/5">
                      <motion.div 
-                        className="absolute top-0 bottom-0 left-0 bg-linear-to-r from-primary to-accent rounded-full will-change-transform"
+                        className="absolute top-0 bottom-0 left-0 bg-linear-to-r from-primary to-accent rounded-full"
                         style={{ width: scrollTooltipX }}
                      />
                 </div>
@@ -92,7 +92,7 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
 
                 {/* Invisible, larger hit area for thumb */}
                 <motion.div 
-                    className="absolute top-1/2 -mt-4 -ml-4 w-8 h-8 z-20 flex items-center justify-center pointer-events-none will-change-transform"
+                    className="absolute top-1/2 -mt-4 -ml-4 w-8 h-8 z-20 flex items-center justify-center pointer-events-none"
                     style={{ left: scrollTooltipX }}
                 >
                     {/* Minimalist dot indicator instead of the bulky handle */}
@@ -154,7 +154,10 @@ const CarouselCard = React.memo(({
         <div style={{ width: `${itemWidth}px` }} className="shrink-0 snap-center flex items-center justify-center h-full px-2 py-4">
             <motion.div 
                 style={{ scale, opacity, WebkitFontSmoothing: "antialiased" }} 
-                className="w-full h-full max-h-125 min-h-[420px] relative rounded-[32px] transform-gpu will-change-transform flex flex-col"
+                className="w-full h-full max-h-125 min-h-[420px] relative rounded-[32px] transform-gpu flex flex-col"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
                 onClick={(e) => {
                     if (!isActive) {
                         e.preventDefault();
@@ -167,7 +170,7 @@ const CarouselCard = React.memo(({
             >
                 {/* Premium Glassmorphism Background */}
                 <div 
-                    className={`absolute inset-0 rounded-[32px] overflow-hidden transform-gpu border transition-all duration-700 ${isActive ? 'bg-slate-900/80 border-primary/30 shadow-[0_20px_50px_rgba(var(--primary-rgb),0.2)] ring-1 ring-primary/20 backdrop-blur-xl' : 'bg-slate-900/40 border-white/5 shadow-none backdrop-blur-md cursor-pointer'}`}
+                    className={`absolute inset-0 rounded-[32px] overflow-hidden transform-gpu border transition duration-700 ${isActive ? 'bg-slate-900/80 border-primary/30 shadow-[0_20px_50px_rgba(var(--primary-rgb),0.2)] ring-1 ring-primary/20 backdrop-blur-xl' : 'bg-slate-900/40 border-white/5 shadow-none backdrop-blur-md cursor-pointer'}`}
                     style={{
                         WebkitMaskImage: '-webkit-radial-gradient(white, black)',
                         WebkitTransform: 'translateZ(0)',
@@ -176,16 +179,16 @@ const CarouselCard = React.memo(({
                 >
                     
                     {/* Glowing Accent Orb */}
-                    <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full blur-3xl pointer-events-none transition-all duration-700 delay-100 ${isActive ? 'bg-primary/20 opacity-100 scale-100' : 'bg-transparent opacity-0 scale-50'}`} />
+                    <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full blur-3xl pointer-events-none transition duration-700 delay-100 ${isActive ? 'bg-primary/20 opacity-100 scale-100' : 'bg-transparent opacity-0 scale-50'}`} />
                     
                     <div className="relative z-10 h-full flex flex-col p-6 min-[390px]:p-8 pointer-events-none">
                         
                         {/* Header Area */}
                         <div className="flex justify-between items-start mb-4">
-                            <div className={`p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-500 shadow-md ${isActive ? 'bg-primary/10 border-primary/20 text-accent shadow-[0_0_20px_rgba(56,189,248,0.2)]' : 'bg-white/5 border-white/5 text-slate-500'}`}>
+                            <div className={`p-3.5 rounded-2xl border backdrop-blur-md transition duration-500 shadow-md ${isActive ? 'bg-primary/10 border-primary/20 text-accent shadow-[0_0_20px_rgba(56,189,248,0.2)]' : 'bg-white/5 border-white/5 text-slate-500'}`}>
                                 <Book size={24} strokeWidth={1.5} />
                             </div>
-                            <span className={`font-mono text-6xl font-black transition-all duration-500 tracking-tighter ${isActive ? 'text-white/10' : 'text-white/5'}`}>
+                            <span className={`font-mono text-6xl font-black transition duration-500 tracking-tighter ${isActive ? 'text-white/10' : 'text-white/5'}`}>
                                 {(() => {
                                     const match = topic.title.match(/^Tema (\d+)/);
                                     if (match) return match[1].padStart(2, '0');
@@ -198,7 +201,7 @@ const CarouselCard = React.memo(({
 
                         {/* Status Badges */}
                         {(isTopicNew || isTopicUpdated) && (
-                            <div className={`absolute top-6 right-6 z-30 transition-all duration-500 ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+                            <div className={`absolute top-6 right-6 z-30 transition duration-500 ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
                                 <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-lg backdrop-blur-md ${isTopicNew ? 'bg-linear-to-r from-rose-500/90 to-pink-500/90 border-rose-300/30 shadow-rose-500/40' : 'bg-linear-to-r from-emerald-500/90 to-teal-500/90 border-emerald-300/30 shadow-emerald-500/40'}`}>
                                     <Sparkles size={10} className="text-white animate-pulse" />
                                     <span className="text-[9px] font-extrabold text-white uppercase tracking-wider drop-shadow-sm">
@@ -213,7 +216,7 @@ const CarouselCard = React.memo(({
                         </h3>
 
                         <div className="flex items-center gap-3 mb-4">
-                            <div className={`h-[2px] rounded-full transition-all duration-500 ${isActive ? 'w-10 bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.8)]' : 'w-6 bg-slate-700'}`} />
+                            <div className={`h-[2px] rounded-full transition duration-500 ${isActive ? 'w-10 bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.8)]' : 'w-6 bg-slate-700'}`} />
                             <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest font-bold">
                                 {topic.readTime || '10 Min'}
                             </span>
@@ -224,9 +227,12 @@ const CarouselCard = React.memo(({
                         </p>
 
                         {/* Interactive Buttons Footer */}
-                        <div className={`pt-5 mt-auto transition-all duration-500 transform-gpu ${isActive ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
+                        <div className={`pt-5 mt-auto transition duration-500 transform-gpu ${isActive ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
                             <div className="flex flex-col gap-3">
                                 <motion.div
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
                                     whileTap={{ scale: 0.96 }}
                                     onClick={(e) => { 
                                         e.stopPropagation(); 
@@ -244,6 +250,9 @@ const CarouselCard = React.memo(({
 
                                 <div className="flex items-center gap-2.5">
                                     <motion.div
+                                        role="button"
+                                        tabIndex={0}
+                                        onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
                                         whileTap={{ scale: 0.96 }}
                                         onClick={(e) => { 
                                             e.stopPropagation(); 
@@ -257,6 +266,9 @@ const CarouselCard = React.memo(({
                                     </motion.div>
 
                                     <motion.div
+                                        role="button"
+                                        tabIndex={0}
+                                        onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
                                         whileTap={{ scale: 0.96 }}
                                         onClick={(e) => { 
                                             e.stopPropagation(); 
@@ -288,6 +300,9 @@ const LandscapeTopicCard = React.memo(({ topic, index, subject, navigate, markAs
 
     return (
         <motion.div 
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
             whileTap={{ scale: 0.96 }}
             onClick={(e) => {
                 e.stopPropagation();
@@ -320,7 +335,7 @@ const LandscapeTopicCard = React.memo(({ topic, index, subject, navigate, markAs
                         {topic.readTime || '10 Min'}
                     </span>
                     <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <ArrowRight size={12} className="text-slate-400 group-hover:text-accent group-hover:translate-x-0.5 transition-all" />
+                        <ArrowRight size={12} className="text-slate-400 group-hover:text-accent group-hover:translate-x-0.5 transition" />
                     </div>
                 </div>
             </div>
@@ -440,6 +455,7 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: an
                 setActiveIndex(newIndex);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [subject, itemWidth, sortedTopics.length]); // removed isLandscape
 
     useEffect(() => {
@@ -448,28 +464,28 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: an
 
     useEffect(() => {
         try {
-            const savedNew = localStorage.getItem('seen-new-topics');
+            const savedNew = localStorage.getItem('v1_seen-new-topics');
             if (savedNew) setSeenNewTopics(JSON.parse(savedNew));
-            const savedVersions = localStorage.getItem('seen-topic-versions');
+            const savedVersions = localStorage.getItem('v1_seen-topic-versions');
             if (savedVersions) setSeenVersions(JSON.parse(savedVersions));
         } catch (e) { }
     }, []);
 
     const markAsSeen = useCallback((slug: string, version?: number) => {
         try {
-            const savedNew = localStorage.getItem('seen-new-topics');
+            const savedNew = localStorage.getItem('v1_seen-new-topics');
             const prevNew = savedNew ? JSON.parse(savedNew) : [];
             if (!prevNew.includes(slug)) {
                 const updatedNew = [...prevNew, slug];
-                localStorage.setItem('seen-new-topics', JSON.stringify(updatedNew));
+                localStorage.setItem('v1_seen-new-topics', JSON.stringify(updatedNew));
             }
 
             if (version !== undefined) {
-                const savedVersions = localStorage.getItem('seen-topic-versions');
+                const savedVersions = localStorage.getItem('v1_seen-topic-versions');
                 const prevVersions = savedVersions ? JSON.parse(savedVersions) : {};
                 if (prevVersions[slug] !== version) {
                     const updatedVersions = { ...prevVersions, [slug]: version };
-                    localStorage.setItem('seen-topic-versions', JSON.stringify(updatedVersions));
+                    localStorage.setItem('v1_seen-topic-versions', JSON.stringify(updatedVersions));
                 }
             }
         } catch (e) { }

@@ -130,7 +130,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
 
             if (matchClass) {
                 if (matchClass[1] === 'subject-stats') {
-                    return <SubjectHoursWidget subjectId={text.replace(/\n$/, '')} />
+                    return <SubjectHoursWidget subjectId={text.replace(/\n$/, '')} />;
                 }
                 if (matchClass[1] === 'subject-evaluation') {
                     return <SubjectEvaluationWidget dataString={text} />
@@ -306,7 +306,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                             <div className="relative w-full">
                                 {/* Glowing Aura (Apple Intelligence Style) */}
                                 <div
-                                    className={`absolute -inset-[1px] rounded-[32px] blur-xl transition-all duration-1000 pointer-events-none
+                                    className={`absolute -inset-[1px] rounded-[32px] blur-xl transition duration-1000 pointer-events-none
                                         ${isGenerating
                                             ? 'bg-gradient-to-r from-[#8b5cf6] via-[#d946ef] to-[#06b6d4] bg-[length:200%_auto] animate-[gradient-x_2s_linear_infinite] opacity-60'
                                             : 'bg-gradient-to-r from-violet-500/30 via-fuchsia-500/30 to-cyan-500/30 opacity-30'}
@@ -335,7 +335,11 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                                     ) : (
                                                         <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg"><span className="text-xs font-bold text-slate-300">PDF</span></div>
                                                     )}
-                                                    <button type="button" onClick={() => setAttachedFile(null)} className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setAttachedFile(null)}
+                                                        className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20"
+                                                        aria-label="Tancar">
                                                         <X size={14} />
                                                     </button>
                                                 </div>
@@ -348,7 +352,13 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                         {/* Actions Left */}
                                         <div className="flex items-center pb-1.5 pl-1 gap-1">
                                             <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf" onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
-                                            <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isGenerating} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors" title={t('planner.roadmapAI.attachTooltip', 'Adjuntar imatge o PDF')}>
+                                            <button
+                                                type="button"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                disabled={isGenerating}
+                                                className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors"
+                                                title={t('planner.roadmapAI.attachTooltip', 'Adjuntar imatge o PDF')}
+                                                aria-label="Acció Plus">
                                                 <Plus size={20} />
                                             </button>
 
@@ -371,14 +381,14 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                                             <button type="button"
                                                 onClick={handleGenerate}
                                                 disabled={(!prompt.trim() && !attachedFile) || isGenerating}
-                                                className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 
+                                                className={`relative flex items-center justify-center w-8 h-8 rounded-full transition duration-300 
                                                 ${(!prompt.trim() && !attachedFile && !isGenerating)
                                                         ? 'bg-white/5 text-white/30 cursor-not-allowed'
                                                         : isGenerating
                                                             ? 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/50'
                                                             : 'bg-white text-black hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.2)]'
                                                     }`}
-                                            >
+                                             aria-label="Botó interactiu">
                                                 {isGenerating ? (
                                                     <StopCircle size={16} strokeWidth={2.5} className="animate-pulse" />
                                                 ) : (

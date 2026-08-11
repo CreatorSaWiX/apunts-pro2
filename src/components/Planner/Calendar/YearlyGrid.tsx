@@ -24,14 +24,14 @@ const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: (e: React.M
     return (
         <div 
             onClick={onClick}
-            className="flex flex-col cursor-pointer group p-2.5 -m-2.5 rounded-[24px] transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] border border-transparent hover:bg-white/[0.04] hover:backdrop-blur-lg hover:border-white/[0.08] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] hover:-translate-y-1.5 relative"
+            className="flex flex-col cursor-pointer group p-2.5 -m-2.5 rounded-[24px] transition duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] border border-transparent hover:bg-white/[0.04] hover:backdrop-blur-lg hover:border-white/[0.08] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] hover:-translate-y-1.5 relative"
         >
             <div className="absolute inset-0 overflow-hidden rounded-[24px] pointer-events-none">
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out bg-[radial-gradient(120%_120%_at_50%_0%,_rgba(255,255,255,0.08)_0%,_transparent_100%)]"></div>
             </div>
             
             <h3 
-                className="text-lg font-bold text-slate-400 mb-2 capitalize transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:text-white group-hover:translate-x-1 relative z-10"
+                className="text-lg font-bold text-slate-400 mb-2 capitalize transition duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:text-white group-hover:translate-x-1 relative z-10"
             >
                 {format(monthDate, 'MMM', { locale: ca })}
             </h3>

@@ -159,7 +159,7 @@ export const ShortcutsSection = () => {
                     <p className="text-xs text-slate-400 font-medium max-w-sm leading-relaxed mb-3">Les dreceres estan pensades per a teclats físics, però si tens un teclat Bluetooth connectat al teu mòbil o tauleta, pots utilitzar-les.</p>
                     <button type="button"
                         onClick={() => setShowOnMobile(!showOnMobile)}
-                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition-all active:scale-95 border border-white/10 min-h-[44px]"
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition active:scale-95 border border-white/10 min-h-[44px]"
                     >
                         <span>{showOnMobile ? "Amagar dreceres" : "Configurar amb teclat extern"}</span>
                         {showOnMobile ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -195,7 +195,7 @@ export const ShortcutsSection = () => {
                                         <div className="flex items-center gap-3 self-end sm:self-auto">
                                             <button
                                                 onClick={() => setListeningAction(action.id)}
-                                                className={`px-4 py-2 rounded-lg font-mono text-sm font-bold transition-all border min-w-[120px] ${isListening
+                                                className={`px-4 py-2 rounded-lg font-mono text-sm font-bold transition border min-w-[120px] ${isListening
                                                         ? 'bg-primary/20 border-primary text-primary animate-pulse'
                                                         : 'bg-black/50 border-white/10 text-slate-300 hover:border-white/30 hover:text-white'
                                                     }`}
@@ -210,7 +210,7 @@ export const ShortcutsSection = () => {
                                                     [action.id]: action.default
                                                 }))}
                                                 className="p-2 text-slate-500 hover:text-rose-400 transition-colors bg-white/5 rounded-lg hover:bg-white/10"
-                                            >
+                                                aria-label="Acció RotateCcw">
                                                 <RotateCcw size={16} />
                                             </button>
                                         </div>

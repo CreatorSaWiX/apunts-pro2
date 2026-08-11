@@ -60,8 +60,8 @@ export const AboutSection = () => {
                     href="https://github.com/CreatorSaWiX/apunts-pro2"
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-white/20 transition-all duration-500 overflow-hidden outline-none h-48"
-                >
+                    className="group relative flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-white/20 transition duration-500 overflow-hidden outline-none h-48"
+                    aria-label="Obrir panell">
                     <div className="z-10">
                         <Github size={32} className="text-white mb-4" />
                         <h3 className="text-2xl font-black text-white tracking-tight">{t('settings.repository', 'Repositori')}</h3>
@@ -72,10 +72,11 @@ export const AboutSection = () => {
                     </div>
                 </a>
 
-                <button type="button"
+                <button
+                    type="button"
                     onClick={openContributors}
-                    className="group relative text-left flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-rose-500/30 hover:bg-rose-500/10 transition-all duration-500 overflow-hidden outline-none h-48"
-                >
+                    className="group relative text-left flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-rose-500/30 hover:bg-rose-500/10 transition duration-500 overflow-hidden outline-none h-48"
+                    aria-label="Obrir panell">
                     <div className="z-10">
                         <Heart size={32} className="text-rose-400 mb-4" />
                         <h3 className="text-2xl font-black text-white tracking-tight">{t('settings.contributors', 'Contribuïdors')}</h3>
@@ -109,10 +110,11 @@ export const AboutSection = () => {
                             <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
                             <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
-                            <button type="button"
+                            <button
+                                type="button"
                                 onClick={() => setIsModalOpen(false)}
                                 className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors cursor-pointer z-20 outline-none bg-white/5 hover:bg-white/10 p-2 rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"
-                            >
+                                aria-label="Tancar">
                                 <X size={20} />
                             </button>
 
@@ -145,7 +147,7 @@ export const AboutSection = () => {
                                                 initial={{ opacity: 0, x: -20 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 transition={{ delay: 0.05 * i }}
-                                                className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group cursor-pointer"
+                                                className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition group cursor-pointer"
                                             >
                                                 <div className="w-14 h-14 rounded-full overflow-hidden bg-gradient-to-tr from-sky-400 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform relative border-2 border-white/20 shrink-0">
                                                     {user.avatar ? (
@@ -160,7 +162,7 @@ export const AboutSection = () => {
                                                     </h3>
                                                     <p className="text-xs font-bold tracking-widest text-slate-300 uppercase">{user.role}</p>
                                                 </div>
-                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20 group-hover:text-rose-400 text-slate-400 transition-all shrink-0">
+                                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20 group-hover:text-rose-400 text-slate-400 transition shrink-0">
                                                     <ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
                                                 </div>
                                             </motion.div>

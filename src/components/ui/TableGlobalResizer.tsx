@@ -188,7 +188,7 @@ const TableGlobalResizer: React.FC<TableGlobalResizerProps> = ({ editor, scrollC
                 className="absolute right-0 top-0 bottom-0 w-4 cursor-col-resize pointer-events-auto group translate-x-1/2 flex items-center justify-center"
                 onMouseDown={(e) => onMouseDown(e, 'width')}
             >
-                <div className={`w-1.5 h-[calc(100%-16px)] bg-white border border-slate-300 rounded-full shadow-md transition-all ${isDragging && dragMode.current === 'width' ? 'opacity-100 bg-primary border-primary scale-110' : 'opacity-0 group-hover:opacity-100'}`} />
+                <div className={`w-1.5 h-[calc(100%-16px)] bg-white border border-slate-300 rounded-full shadow-md transition ${isDragging && dragMode.current === 'width' ? 'opacity-100 bg-primary border-primary scale-110' : 'opacity-0 group-hover:opacity-100'}`} />
             </div>
             
             <div 

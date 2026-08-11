@@ -61,7 +61,7 @@ const VisRegularitatHibrida = () => {
     const normalDir = new THREE.Vector3(g.dx, 1, g.dy).normalize();
 
     return (
-        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[650px]'}`}>
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[650px]'}`}>
             {/* Header Panel */}
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
                 <div className="flex bg-black/40 p-1 rounded-xl border border-white/5 shadow-inner">
@@ -69,7 +69,7 @@ const VisRegularitatHibrida = () => {
                         <button type="button"
                             key={c}
                             onClick={() => setClasse(c)}
-                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${classe === c ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition ${classe === c ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
                             {c === 'Cinf' ? 'C∞' : c}
                         </button>

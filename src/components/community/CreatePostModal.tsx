@@ -188,7 +188,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                             <button
                                 type="button"
                                 onClick={() => setIsFullscreen(!isFullscreen)}
-                                className="hidden md:flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs group"
+                                className="hidden md:flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition text-white border border-white/10 backdrop-blur-md shadow-xs group"
                                 title={isFullscreen ? "Minimitzar" : "Ampliar editor"}
                             >
                                 {isFullscreen ? (
@@ -200,17 +200,17 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                             <button
                                 type="button"
                                 onClick={() => setShowMobilePreview(!showMobilePreview)}
-                                className={`md:hidden flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full transition-all text-white border border-white/10 backdrop-blur-md shadow-xs ${showMobilePreview ? 'bg-primary text-white border-primary/50' : 'bg-white/5 hover:bg-white/15'}`}
+                                className={`md:hidden flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full transition text-white border border-white/10 backdrop-blur-md shadow-xs ${showMobilePreview ? 'bg-primary text-white border-primary/50' : 'bg-white/5 hover:bg-white/15'}`}
                                 title={showMobilePreview ? "Tancar miniatura" : "Veure miniatura"}
-                            >
+                                aria-label="Veure">
                                 <Eye size={18} strokeWidth={showMobilePreview ? 3 : 2.5} />
                             </button>
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs"
+                                className="flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition text-white border border-white/10 backdrop-blur-md shadow-xs"
                                 title="Tancar"
-                            >
+                                aria-label="Tancar">
                                 <X size={18} strokeWidth={2.5} />
                             </button>
                         </div>
@@ -270,7 +270,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                                                 </div>
                                                 <button type="button" aria-label="Eliminar fitxer"
                                                     onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
-                                                    className="text-slate-500 hover:text-white p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full hover:bg-white/10 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                                                    className="text-slate-500 hover:text-white p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full hover:bg-white/10 transition opacity-100 md:opacity-0 md:group-hover:opacity-100"
                                                 >
                                                     <X size={16} />
                                                 </button>
@@ -292,9 +292,9 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                                     <button
                                         type="button"
                                         onClick={() => setShowUploader(!showUploader)}
-                                        className={`w-10 h-10 flex items-center justify-center rounded-full transition-all ${showUploader ? 'text-white bg-white/20' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                                        className={`w-10 h-10 flex items-center justify-center rounded-full transition ${showUploader ? 'text-white bg-white/20' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
                                         title="Alternar Adjunts"
-                                    >
+                                        aria-label="Alternar Adjunts">
                                         <Paperclip size={20} />
                                     </button>
                                 </div>
@@ -313,8 +313,8 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                             <button
                                 type="button"
                                 onClick={() => setShowSubjectSelector(true)}
-                                className="inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs md:text-sm font-medium transition-all group min-h-[44px]"
-                            >
+                                className="inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs md:text-sm font-medium transition group min-h-[44px]"
+                                aria-label="Element interactiu">
                                 <span
                                     className="w-2 h-2 rounded-full shrink-0"
                                     style={activeSubject ? {
@@ -329,8 +329,8 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                             <button type="button"
                                 onClick={handleSend}
                                 disabled={loading || ((editorInstance && !editorInstance.isDestroyed ? editorInstance.isEmpty : !content.trim()) && attachments.length === 0)}
-                                className="px-6 md:px-8 py-2.5 md:py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)] text-xs md:text-base min-h-[44px]"
-                            >
+                                className="px-6 md:px-8 py-2.5 md:py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)] text-xs md:text-base min-h-[44px]"
+                             aria-label="Botó interactiu">
                                 {loading && <Spinner size="sm" variant="primary" />}
                                 {t('community.createPost.publishBtn', 'Publicar')}
                             </button>
@@ -353,7 +353,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                             <button
                                 type="button"
                                 onClick={() => showMobilePreview ? setShowMobilePreview(false) : onClose()}
-                                className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-white border border-white/10 backdrop-blur-md shadow-xs flex items-center gap-2"
+                                className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 active:scale-95 transition text-white border border-white/10 backdrop-blur-md shadow-xs flex items-center gap-2"
                                 title={showMobilePreview ? "Tornar a l'edició" : "Tancar"}
                             >
                                 {showMobilePreview ? (

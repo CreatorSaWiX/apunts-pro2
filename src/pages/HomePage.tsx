@@ -75,7 +75,7 @@ const HomePage = () => {
             )}
 
             {/* Subject Switcher - Premium Animated Pill */}
-            <div className="hidden md:flex absolute top-4 right-4 md:top-6 md:right-8 z-50 scale-90 md:scale-100 origin-top-right transition-all">
+            <div className="hidden md:flex absolute top-4 right-4 md:top-6 md:right-8 z-50 scale-90 md:scale-100 origin-top-right transition">
                 <NavigationPill>
                     {displaySubjects.map(subj => {
                         const isActive = subject.toUpperCase() === subj.toUpperCase();
@@ -83,7 +83,7 @@ const HomePage = () => {
                             <button type="button"
                                 key={subj}
                                 onClick={() => handleSubjectChange(subj)}
-                                className={`relative px-4 md:px-5 h-9 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-[13px] font-black tracking-widest transition-all duration-300 z-10 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                                className={`relative px-4 md:px-5 h-9 md:h-10 flex items-center justify-center rounded-full text-[11px] md:text-[13px] font-black tracking-widest transition duration-300 z-10 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                             >
                                 {isActive && (
                                     <motion.div

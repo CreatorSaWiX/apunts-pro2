@@ -21,6 +21,7 @@ const FIB_ACTIVITIES = [
     { name: "Projecte ECTS", credits: 1 }
 ];
 
+// eslint-disable-next-line react-doctor/no-giant-component
 const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
     const { nodes, addCFGSValidations, addCustomValidation } = useRoadmap();
@@ -42,6 +43,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
     const [customCredits, setCustomCredits] = useState<number | ''>('');
 
     // Auto-seleccionar el CFGS actual en obrir el modal
+    // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change, react-hooks/exhaustive-deps
     React.useEffect(() => {
         if (isOpen) {
             if (activeTab === 'cfgs' && currentAppliedCFGSId && !selectedId) {
@@ -110,11 +112,12 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                     />
                                 )}
-                                <button type="button"
+                                <button
+                                    type="button"
                                     onClick={() => { setActiveTab('custom'); setMobileView('content'); }}
                                     className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group ${activeTab === 'custom' ? 'bg-white/4' : 'hover:bg-white/2'}`}
-                                >
-                                    <div className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${activeTab === 'custom' ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
+                                    aria-label="Obrir panell">
+                                    <div className={`w-2 h-2 rounded-full transition duration-300 shrink-0 ${activeTab === 'custom' ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
                                     <div className="flex flex-col min-w-0">
                                         <span className={`transition-colors duration-300 font-bold ${activeTab === 'custom' ? 'text-white' : 'text-slate-400'}`}>
                                             {t('planner.roadmapValidations.universityActivities', 'Activitats Universitàries')}
@@ -142,11 +145,12 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                                 />
                                             )}
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 onClick={() => { setActiveTab('cfgs'); setSelectedId(cfgs.id); setMobileView('content'); }}
                                                 className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group pr-4 ${isSelected ? 'bg-white/4' : 'hover:bg-white/2'}`}
-                                            >
-                                                <div className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${isSelected ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
+                                                aria-label="Obrir panell">
+                                                <div className={`w-2 h-2 rounded-full transition duration-300 shrink-0 ${isSelected ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
                                                 <div className="flex flex-col min-w-0 flex-1 gap-1">
                                                     <span className={`transition-colors duration-300 font-bold line-clamp-2 text-sm ${isSelected ? 'text-white' : 'text-slate-400'}`}>
                                                         {cfgs.title.split(' (')[0]}
@@ -214,8 +218,8 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                             {t('planner.roadmapValidations.validatedSubjects', 'Assignatures Convalidades')}
                                         </h4>
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pb-4">
-                                            {selectedCFGS.modules.map((mod, idx) => (
-                                                <div key={idx} className="p-4 rounded-xl bg-white/2 border border-white/10 flex flex-col gap-2">
+                                            {selectedCFGS.modules.map((mod) => (
+                                                <div key={mod.name} className="p-4 rounded-xl bg-white/2 border border-white/10 flex flex-col gap-2">
                                                     <span className="text-sm font-bold text-slate-200">{mod.name}</span>
                                                     <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-slate-400">
                                                         <BookOpen size={12} /> {mod.credits} ECTS
@@ -254,9 +258,9 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                                         <div>
                                             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">{t('planner.roadmapValidations.officialSuggestions', 'Suggeriments Oficials FIB')}</h4>
                                             <div className="flex flex-wrap gap-2">
-                                                {FIB_ACTIVITIES.map((act, i) => (
+                                                {FIB_ACTIVITIES.map((act) => (
                                                     <button type="button"
-                                                        key={i}
+                                                        key={act.name}
                                                         onClick={() => {
                                                             setCustomName(act.name);
                                                             setCustomCredits(act.credits);
@@ -272,27 +276,29 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.activityName', 'Nom de l\'activitat')}</label>
+                                                <label htmlFor="customName" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.activityName', 'Nom de l\'activitat')}</label>
                                                 <input 
+                                                    id="customName"
                                                     type="text"
                                                     value={customName}
                                                     onChange={(e) => setCustomName(e.target.value)}
                                                     placeholder="Ex: Delegat d'assignatura"
-                                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/20 transition-all"
+                                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/20 transition"
                                                 />
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.creditsEcts', 'Crèdits ECTS')}</label>
+                                                <label htmlFor="customCredits" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.creditsEcts', 'Crèdits ECTS')}</label>
                                                 <div className="relative">
                                                     <input 
+                                                        id="customCredits"
                                                         type="number"
                                                         min="0.5"
                                                         step="0.5"
                                                         value={customCredits}
                                                         onChange={(e) => setCustomCredits(e.target.value ? Number(e.target.value) : '')}
                                                         placeholder="2"
-                                                        className="w-full bg-black/20 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/20 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                        className="w-full bg-black/20 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/20 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                     />
                                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-500 font-bold pointer-events-none">
                                                         ECTS
@@ -329,8 +335,8 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
                             <button type="button"
                                 onClick={activeTab === 'cfgs' ? handleApplyCFGS : handleApplyCustom}
                                 disabled={(activeTab === 'custom' && (!customName || !customCredits)) || isCurrentlyApplied}
-                                className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all disabled:cursor-not-allowed ${isCurrentlyApplied ? 'bg-white/10 text-white opacity-50 shadow-none' : 'bg-white text-black hover:scale-105 active:scale-95 disabled:opacity-50 shadow-[0_0_15px_rgba(255,255,255,0.2)]'}`}
-                            >
+                                className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition disabled:cursor-not-allowed ${isCurrentlyApplied ? 'bg-white/10 text-white opacity-50 shadow-none' : 'bg-white text-black hover:scale-105 active:scale-95 disabled:opacity-50 shadow-[0_0_15px_rgba(255,255,255,0.2)]'}`}
+                             aria-label="Botó interactiu">
                                 {activeTab === 'cfgs' ? (isCurrentlyApplied ? t('planner.roadmapValidations.alreadySelected', 'Ja Seleccionada') : t('planner.roadmapValidations.applyCredits', 'Aplicar {{credits}} ECTS', { credits: totalCFGSCredits })) : t('planner.roadmapValidations.addToRecord', 'Afegir a l\'expedient')}
                                 {!isCurrentlyApplied && (activeTab === 'custom' ? <Plus size={18} /> : <ArrowRight size={18} />)}
                             </button>

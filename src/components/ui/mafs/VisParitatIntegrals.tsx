@@ -18,8 +18,8 @@ const VisParitatIntegrals = () => {
     return (
         <div className="w-full flex flex-col">
             <div className="p-4 flex gap-4 bg-slate-800/50 border-b border-white/10 justify-center">
-                <button type="button" onClick={() => setMode('even')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'even' ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Parella</button>
-                <button type="button" onClick={() => setMode('odd')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${mode === 'odd' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Imparella</button>
+                <button type="button" onClick={() => setMode('even')} className={`px-4 py-2 rounded-xl text-xs font-bold transition ${mode === 'even' ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Parella</button>
+                <button type="button" onClick={() => setMode('odd')} className={`px-4 py-2 rounded-xl text-xs font-bold transition ${mode === 'odd' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'}`}>f(x) Imparella</button>
             </div>
             <Mafs viewBox={{ x: [-4, 4], y: [-2, 2] }} pan={true} zoom={true} preserveAspectRatio={false}>
                 <Coordinates.Cartesian />

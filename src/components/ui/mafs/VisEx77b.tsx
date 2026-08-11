@@ -21,7 +21,7 @@ const VisEx77b = () => {
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Domini B: <InlineMath math="g(x,y) = \sqrt{1-x^2-y^2}" /></span>
                     <span className="text-xs font-mono text-white">x² + y² ≤ 1</span>
                 </div>
-                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
                     {isIn ? '✓ Definit' : '✗ Fora del domini'}
                 </div>
             </div>

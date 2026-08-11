@@ -33,7 +33,7 @@ const VisEndomorfismeNilpotent = () => {
                         <button type="button"
                             key={s}
                             onClick={() => setStep(s)}
-                            className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${step === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                            className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${step === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
                             Pas {s}
                         </button>

@@ -16,7 +16,7 @@ export const GeneralSection = () => {
                 <div className="flex bg-white/[0.03] p-1.5 rounded-2xl border border-white/10 w-full sm:w-auto relative flex-wrap sm:flex-nowrap gap-1">
                     <button type="button"
                         onClick={() => i18n.changeLanguage('ca')}
-                        className="relative flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 outline-none z-10 group"
+                        className="relative flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition duration-300 outline-none z-10 group"
                     >
                         {preferredLang === 'ca' && (
                             <motion.div layoutId="lang-active-bg" className="absolute inset-0 bg-white/10 rounded-xl shadow-sm border border-white/10" transition={{ type: "spring", stiffness: 400, damping: 30 }} />
@@ -27,7 +27,7 @@ export const GeneralSection = () => {
 
                     <button type="button"
                         onClick={() => i18n.changeLanguage('es')}
-                        className="relative flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 outline-none z-10 group"
+                        className="relative flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition duration-300 outline-none z-10 group"
                     >
                         {preferredLang === 'es' && (
                             <motion.div layoutId="lang-active-bg" className="absolute inset-0 bg-white/10 rounded-xl shadow-sm border border-white/10" transition={{ type: "spring", stiffness: 400, damping: 30 }} />
@@ -38,7 +38,7 @@ export const GeneralSection = () => {
 
                     <button type="button"
                         onClick={() => i18n.changeLanguage('en')}
-                        className="relative flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 outline-none z-10 group"
+                        className="relative flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition duration-300 outline-none z-10 group"
                     >
                         {preferredLang === 'en' && (
                             <motion.div layoutId="lang-active-bg" className="absolute inset-0 bg-white/10 rounded-xl shadow-sm border border-white/10" transition={{ type: "spring", stiffness: 400, damping: 30 }} />

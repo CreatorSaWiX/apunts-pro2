@@ -95,7 +95,7 @@ const VisExPissarraTopologia = () => {
                     </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className={`p-4 rounded-xl border transition-all duration-300 ${isActuallyInterior ? 'bg-emerald-500/10 border-emerald-500/30 ring-1 ring-emerald-500/20' : 'bg-black/20 border-white/5 opacity-40'}`}>
+                    <div className={`p-4 rounded-xl border transition duration-300 ${isActuallyInterior ? 'bg-emerald-500/10 border-emerald-500/30 ring-1 ring-emerald-500/20' : 'bg-black/20 border-white/5 opacity-40'}`}>
                         <div className="text-[9px] uppercase font-black text-emerald-400 mb-2 tracking-widest flex justify-between">
                             Punt Interior
                             {isActuallyInterior && <span>✓</span>}
@@ -103,7 +103,7 @@ const VisExPissarraTopologia = () => {
                         <div className="mb-2"><InlineMath math="B(x, \epsilon) \subseteq A" /></div>
                         <p className="text-[9px] text-slate-500 leading-relaxed">La bola de radi $\epsilon$ està totalment dins del triangle.</p>
                     </div>
-                    <div className={`p-4 rounded-xl border transition-all duration-300 ${isActuallyBoundary ? 'bg-amber-500/10 border-amber-500/30 ring-1 ring-amber-500/20' : 'bg-black/20 border-white/5 opacity-40'}`}>
+                    <div className={`p-4 rounded-xl border transition duration-300 ${isActuallyBoundary ? 'bg-amber-500/10 border-amber-500/30 ring-1 ring-amber-500/20' : 'bg-black/20 border-white/5 opacity-40'}`}>
                         <div className="text-[9px] uppercase font-black text-amber-400 mb-2 tracking-widest flex justify-between">
                             Punt Frontera
                             {isActuallyBoundary && <span>✓</span>}

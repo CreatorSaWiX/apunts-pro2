@@ -82,7 +82,7 @@ const Modal = ({
                         {!hideCloseButton && (
                             <button type="button"
                                 onClick={onClose}
-                                className="absolute top-4 right-4 z-60 p-2 bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 rounded-full transition-all duration-300 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                                className="absolute top-4 right-4 z-60 p-2 bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 rounded-full transition duration-300 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
                             >
                                 <X size={20} strokeWidth={2.5} />
                             </button>
@@ -128,7 +128,7 @@ const ModalLayout = ({ children, className = '' }: { children: React.ReactNode, 
 const ModalInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(({ className = '', ...props }, ref) => (
     <input
         ref={ref}
-        className={`w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-white placeholder:text-slate-600 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all font-medium text-sm ${className}`}
+        className={`w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-white placeholder:text-slate-600 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition font-medium text-sm ${className}`}
         {...props}
     />
 ));
@@ -137,7 +137,7 @@ ModalInput.displayName = 'ModalInput';
 const ModalTextarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(({ className = '', ...props }, ref) => (
     <textarea
         ref={ref}
-        className={`w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-slate-300 placeholder:text-slate-600 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all min-h-30 resize-y custom-scrollbar ${className}`}
+        className={`w-full bg-black/20 border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)] rounded-2xl px-4 py-3 text-slate-300 placeholder:text-slate-600 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition min-h-30 resize-y custom-scrollbar ${className}`}
         {...props}
     />
 ));
@@ -163,7 +163,7 @@ const ModalButton = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttribut
     return (
         <button type="button"
             ref={ref}
-            className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:hover:transform-none disabled:cursor-not-allowed ${variantStyles} ${className}`}
+            className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold transition transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:hover:transform-none disabled:cursor-not-allowed ${variantStyles} ${className}`}
             {...props}
         />
     );

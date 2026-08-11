@@ -30,7 +30,7 @@ const VisDistanciaSync3D2D = () => {
     const dist3D = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
     return (
-        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full' : 'h-125'}`}>
+        <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col ${isFullScreen ? 'h-full' : 'h-125'}`}>
             <div className={`p-4 bg-slate-800/50 border-b border-white/10 flex flex-wrap items-center justify-between gap-4`}>
                 <div className="flex gap-4">
                     <div className="flex flex-col">

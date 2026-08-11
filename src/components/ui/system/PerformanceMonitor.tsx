@@ -88,7 +88,7 @@
 //         return (
 //             <button type="button"
 //                 onClick={() => setIsOpen(true)}
-//                 className="fixed bottom-4 right-4 z-[9999] bg-slate-900/80 backdrop-blur-md p-2 rounded-lg border border-white/10 text-emerald-400 hover:bg-slate-800 transition-all shadow-lg"
+//                 className="fixed bottom-4 right-4 z-[9999] bg-slate-900/80 backdrop-blur-md p-2 rounded-lg border border-white/10 text-emerald-400 hover:bg-slate-800 transition shadow-lg"
 //             >
 //                 <Activity size={20} />
 //             </button>
@@ -124,7 +124,7 @@
 //                     {/* Visual Bar */}
 //                     <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
 //                         <div
-//                             className={`h-full transition-all duration-500 ${stats.cpuLoad > 80 ? 'bg-red-500' : (stats.cpuLoad > 50 ? 'bg-yellow-500' : 'bg-emerald-500')}`}
+//                             className={`h-full transition duration-500 ${stats.cpuLoad > 80 ? 'bg-red-500' : (stats.cpuLoad > 50 ? 'bg-yellow-500' : 'bg-emerald-500')}`}
 //                             style={{ width: `${Math.min(stats.cpuLoad, 100)}%` }}
 //                         />
 //                     </div>

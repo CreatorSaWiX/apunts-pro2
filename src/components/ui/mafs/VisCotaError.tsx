@@ -30,13 +30,13 @@ const VisCotaError = () => {
             <div className="p-4 bg-slate-800/50 border-b border-white/10 flex justify-center gap-3">
                 <button type="button"
                     onClick={() => setMode('low')}
-                    className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${mode === 'low' ? 'bg-blue-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400'}`}
+                    className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition ${mode === 'low' ? 'bg-blue-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400'}`}
                 >
                     Baixa Curvatura
                 </button>
                 <button type="button"
                     onClick={() => setMode('high')}
-                    className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${mode === 'high' ? 'bg-red-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400'}`}
+                    className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition ${mode === 'high' ? 'bg-red-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400'}`}
                 >
                     Alta Curvatura
                 </button>

@@ -50,7 +50,7 @@ const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, classNam
         <TooltipItem text={label}>
             <Link
                 to={to}
-                className={`group relative flex items-center justify-center rounded-full transition-all duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'} ${className || 'h-11 md:w-10 md:h-10'} ${!className ? (isActive ? 'w-auto px-3 md:px-0 md:w-10' : 'w-10 md:w-10') : ''}`}
+                className={`group relative flex items-center justify-center rounded-full transition duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'} ${className || 'h-11 md:w-10 md:h-10'} ${!className ? (isActive ? 'w-auto px-3 md:px-0 md:w-10' : 'w-10 md:w-10') : ''}`}
             >
                 {isActive && (
                     <motion.div
@@ -68,7 +68,7 @@ const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, classNam
                     transition={{ type: "spring", stiffness: 400, damping: 15 }}
                     className="flex items-center justify-center"
                 >
-                    {Icon ? <Icon size={isActive ? 20 : 22} className={`transition-all duration-500 md:w-5 md:h-5 ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} /> : children}
+                    {Icon ? <Icon size={isActive ? 20 : 22} className={`transition duration-500 md:w-5 md:h-5 ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} /> : children}
                     
                     <AnimatePresence mode="popLayout">
                         {isActive && !text && Icon && (
@@ -158,7 +158,7 @@ const Navigation: React.FC = () => {
     return (
         <>
             {/* Main Floating Navigation Pill (Bottom on Mobile, Top-Left on Desktop) */}
-            <div ref={navRef} className={`nav-pill-container fixed z-50 transition-all duration-300 ease-out bottom-4 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[calc(100%-2rem)] max-w-[400px] md:w-[max-content] md:max-w-none ${location.pathname.startsWith('/planner') ? 'touch-landscape:hidden' : 'touch-landscape:bottom-4 touch-landscape:top-auto touch-landscape:left-1/2 touch-landscape:-translate-x-1/2 touch-landscape:w-[calc(100%-2rem)] touch-landscape:max-w-[400px]'} ${isMobile && isCanvasActive ? 'opacity-0 pointer-events-none translate-y-24 !z-0' : ''}`}>
+            <div ref={navRef} className={`nav-pill-container fixed z-50 transition duration-300 ease-out bottom-4 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[calc(100%-2rem)] max-w-[400px] md:w-[max-content] md:max-w-none ${location.pathname.startsWith('/planner') ? 'touch-landscape:hidden' : 'touch-landscape:bottom-4 touch-landscape:top-auto touch-landscape:left-1/2 touch-landscape:-translate-x-1/2 touch-landscape:w-[calc(100%-2rem)] touch-landscape:max-w-[400px]'} ${isMobile && isCanvasActive ? 'opacity-0 pointer-events-none translate-y-24 !z-0' : ''}`}>
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -200,10 +200,10 @@ const Navigation: React.FC = () => {
                                     label={t('nav.profile', 'El meu perfil')}
                                     isActive={location.pathname === '/profile'}
                                     text={user.username}
-                                    className={`h-11 md:h-10 pl-1 md:pl-1.5 transition-all duration-300 ${location.pathname === '/profile' ? 'w-auto pr-3 md:pr-4' : 'w-10 md:w-auto pr-1 md:pr-4'} flex items-center justify-center shrink-0`}
+                                    className={`h-11 md:h-10 pl-1 md:pl-1.5 transition duration-300 ${location.pathname === '/profile' ? 'w-auto pr-3 md:pr-4' : 'w-10 md:w-auto pr-1 md:pr-4'} flex items-center justify-center shrink-0`}
                                 >
                                     <div className="relative flex items-center justify-center shrink-0">
-                                        <img src={user.avatar} alt={user.username} loading="lazy" className={`rounded-full bg-slate-800 border-2 shadow-sm object-cover transition-all duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary shadow-[0_0_10px_rgba(56,189,248,0.5)] md:w-7 md:h-7 md:border-white/20' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`} />
+                                        <img src={user.avatar} alt={user.username} loading="lazy" className={`rounded-full bg-slate-800 border-2 shadow-sm object-cover transition duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary shadow-[0_0_10px_rgba(56,189,248,0.5)] md:w-7 md:h-7 md:border-white/20' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`} />
                                         {unreadCount > 0 && (
                                             <span className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-3 md:h-3 bg-rose-500 rounded-full border-2 border-[#0F172A] shadow-sm animate-pulse" />
                                         )}

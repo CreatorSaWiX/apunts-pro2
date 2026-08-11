@@ -152,7 +152,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                 <div className="flex items-center gap-2.5 relative z-10 flex-1" onDoubleClick={() => setIsEditingHeader(true)}>
                     <div 
                         onClick={toggleColorPicker}
-                        className={`w-2.5 h-2.5 rounded-full ${theme.bg} ${theme.text} shadow-[0_0_8px_currentColor] cursor-pointer hover:scale-150 hover:shadow-[0_0_12px_currentColor] transition-all`}
+                        className={`w-2.5 h-2.5 rounded-full ${theme.bg} ${theme.text} shadow-[0_0_8px_currentColor] cursor-pointer hover:scale-150 hover:shadow-[0_0_12px_currentColor] transition`}
                         title={t('planner.boardView.colorTitle', "Fes clic per canviar el color")}
                     ></div>
                     <AnimatePresence>
@@ -228,21 +228,21 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                             e.stopPropagation(); 
                             if (tasks.length > 0) setIsClearModalOpen(true);
                         }}
-                        className="text-slate-500 hover:text-amber-400 transition-all duration-200 pointer-events-auto p-1"
+                        className="text-slate-500 hover:text-amber-400 transition duration-200 pointer-events-auto p-1"
                         title={t('planner.boardView.clearList', "Buidar llista")}
                     >
                         <Trash2 size={14} />
                     </button>
                     <button type="button"
                         onClick={(e) => { e.stopPropagation(); setIsDeleteColumnModalOpen(true); }}
-                        className="text-slate-500 hover:text-red-400 transition-all duration-200 pointer-events-auto p-1"
+                        className="text-slate-500 hover:text-red-400 transition duration-200 pointer-events-auto p-1"
                         title={t('planner.boardView.deleteList', "Eliminar llista")}
                     >
                         <X size={16} />
                     </button>
                     <button type="button"
                         onClick={(e) => { e.stopPropagation(); startDrafting(); }}
-                        className="text-slate-500 hover:text-white transition-all duration-200 pointer-events-auto p-1"
+                        className="text-slate-500 hover:text-white transition duration-200 pointer-events-auto p-1"
                         title={t('planner.boardView.addTask', "Afegir tasca")}
                     >
                         <Plus size={16} strokeWidth={2.5} />
@@ -413,7 +413,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                                 startDrafting(); 
                             }
                         }}
-                        className="flex-1 min-h-[60px] cursor-pointer rounded-[32px] max-md:opacity-50 md:opacity-0 md:hover:opacity-100 hover:bg-white/[0.03] flex items-center justify-center transition-all mt-2 border border-transparent hover:border-white/5"
+                        className="flex-1 min-h-[60px] cursor-pointer rounded-[32px] max-md:opacity-50 md:opacity-0 md:hover:opacity-100 hover:bg-white/[0.03] flex items-center justify-center transition mt-2 border border-transparent hover:border-white/5"
                         title={t('planner.boardView.doubleClickHint', "Doble clic per afegir tasca")}
                     >
                         <Plus size={20} className="text-slate-500" />

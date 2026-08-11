@@ -120,10 +120,11 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                     {/* PDF Large Square Button - Right Aligned */}
                     {(availablePdfs.ca || availablePdfs.es) && (
                         <div className="relative shrink-0 self-center md:self-stretch flex items-center">
-                            <button type="button"
+                            <button
+                                type="button"
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
-                                className="flex flex-col items-center justify-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl border transition-all select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-[100px] h-full max-h-[100px]"
-                            >
+                                className="flex flex-col items-center justify-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-[100px] h-full max-h-[100px]"
+                                aria-label="Veure document">
                                 <FileText size={28} className="group-hover:scale-110 transition-transform duration-300" />
                                 <span>PDF</span>
                             </button>
@@ -139,7 +140,11 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                     >
                                         <div className="p-4 border-b border-red-500/10 flex justify-between items-center">
                                             <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">{t('notebook.pdfLanguage', 'Idioma Solucionari')}</span>
-                                            <button type="button" onClick={() => setIsPdfMenuOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsPdfMenuOpen(false)}
+                                                className="text-slate-500 hover:text-white transition-colors"
+                                                aria-label="Tancar">
                                                 <X size={16} />
                                             </button>
                                         </div>
@@ -150,8 +155,8 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     onClick={() => setIsPdfMenuOpen(false)}
-                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition-all group"
-                                                >
+                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition group"
+                                                    aria-label="Obrir panell">
                                                     <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
                                                         <span className="text-xs font-bold text-red-400">CA</span>
                                                     </div>
@@ -164,8 +169,8 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     onClick={() => setIsPdfMenuOpen(false)}
-                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition-all group"
-                                                >
+                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition group"
+                                                    aria-label="Obrir panell">
                                                     <div className="w-4 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
                                                         <span className="text-xs font-bold text-red-400">ES</span>
                                                     </div>
@@ -224,7 +229,7 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                             window.scrollTo({ top: y, behavior: 'smooth' });
                                         }
                                     }}
-                                    className={`w-full text-left px-3 py-3 rounded-lg flex items-start gap-3 transition-all relative group
+                                    className={`w-full text-left px-3 py-3 rounded-lg flex items-start gap-3 transition relative group
                                         ${isActive
                                             ? 'bg-indigo-500/10 text-indigo-200 shadow-[inset_2px_0_0_0_#6366f1]'
                                             : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
@@ -330,11 +335,12 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
 
                                     {/* Footer Navigation */}
                                     <div className="p-4 border-t border-white/5 bg-slate-900/80 backdrop-blur-md flex justify-between items-center shrink-0">
-                                        <button type="button"
+                                        <button
+                                            type="button"
                                             onClick={handlePrev}
                                             disabled={currentIndex === 0}
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                                        >
+                                            aria-label="Enrere">
                                             <ChevronLeft size={18} />
                                             <span className="hidden sm:inline font-medium">{t('notebook.prev', 'Anterior')}</span>
                                         </button>
@@ -343,11 +349,12 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                             {currentIndex + 1} / {topic.problems.length}
                                         </span>
 
-                                        <button type="button"
+                                        <button
+                                            type="button"
                                             onClick={handleNext}
                                             disabled={currentIndex === topic.problems.length - 1}
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                                        >
+                                            aria-label="Element interactiu">
                                             <span className="hidden sm:inline font-medium">{t('notebook.next', 'Següent')}</span>
                                             <ChevronRight size={18} />
                                         </button>

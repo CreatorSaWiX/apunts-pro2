@@ -140,7 +140,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                             placeholder={t('planner.roadmapSubjectSearch.searchPlaceholder', 'Busca per nom o codi...')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all font-medium"
+                            className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition font-medium"
                             spellCheck={false}
                         />
                     </div>
@@ -154,7 +154,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                                 <button type="button"
                                     key={cat.id}
                                     onClick={() => setActiveFilter(cat.id)}
-                                    className={`relative px-4 py-2 text-sm font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-2 rounded-full ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                                    className={`relative px-4 py-2 text-sm font-bold whitespace-nowrap transition duration-300 flex items-center gap-2 rounded-full ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     {isActive && (
                                         <motion.div
@@ -209,7 +209,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                                                 <motion.div 
                                                     key={subject.id}
                                                     variants={{ hidden: { opacity: 0, y: 15 }, visible: { opacity: 1, y: 0 } }}
-                                                    className={`relative overflow-hidden p-5 rounded-2xl border transition-all duration-300 group cursor-pointer flex flex-col
+                                                    className={`relative overflow-hidden p-5 rounded-2xl border transition duration-300 group cursor-pointer flex flex-col
                                                         ${isComplementary 
                                                             ? 'border-amber-500/20 bg-amber-500/[0.03] hover:bg-amber-500/[0.06] hover:border-amber-500/40 hover:shadow-[0_8px_30px_rgba(245,158,11,0.1)]' 
                                                             : 'border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-sky-500/30 hover:shadow-[0_8px_30px_rgba(14,165,233,0.1)]'
@@ -237,7 +237,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                                                                     </span>
                                                                 )}
                                                             </div>
-                                                            <div className={`p-2.5 rounded-xl transition-all duration-300 transform scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100
+                                                            <div className={`p-2.5 rounded-xl transition duration-300 transform scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100
                                                                 ${isComplementary ? 'bg-amber-500 text-amber-950' : 'bg-sky-500 text-sky-950'}
                                                             `}>
                                                                 <Plus size={20} strokeWidth={3} />

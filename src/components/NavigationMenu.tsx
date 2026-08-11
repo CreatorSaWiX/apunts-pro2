@@ -75,7 +75,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                                 key={topic.slug}
                                 to={`/tema/${topic.slug}`}
                                 onClick={() => setIsMenuOpen(false)}
-                                className="flex items-center gap-4 p-3.5 min-h-[48px] rounded-2xl hover:bg-slate-800/50 active:bg-slate-800 border border-transparent hover:border-slate-700/50 transition-all group"
+                                className="flex items-center gap-4 p-3.5 min-h-[48px] rounded-2xl hover:bg-slate-800/50 active:bg-slate-800 border border-transparent hover:border-slate-700/50 transition group"
                             >
                                 <span className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-400 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
                                     {(() => {
@@ -91,7 +91,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                                         {topic.title}
                                     </h4>
                                 </div>
-                                <ChevronRight size={16} className="text-slate-500 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                                <ChevronRight size={16} className="text-slate-500 group-hover:text-primary opacity-0 group-hover:opacity-100 transition" />
                             </Link>
                         ))}
 
@@ -114,7 +114,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                                         key={topic.slug}
                                         to={`/tema/${topic.slug}`}
                                         onClick={() => setIsMenuOpen(false)}
-                                        className="flex items-center gap-4 p-3.5 min-h-[48px] rounded-2xl hover:bg-slate-800/50 active:bg-slate-800 border border-transparent hover:border-slate-700/50 transition-all group"
+                                        className="flex items-center gap-4 p-3.5 min-h-[48px] rounded-2xl hover:bg-slate-800/50 active:bg-slate-800 border border-transparent hover:border-slate-700/50 transition group"
                                     >
                                         <span className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-400 font-mono text-xs group-hover:bg-primary group-hover:text-white transition-colors">
                                             L{i + 1}
@@ -124,7 +124,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                                                 {topic.title}
                                             </h4>
                                         </div>
-                                        <ChevronRight size={16} className="text-slate-500 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                                        <ChevronRight size={16} className="text-slate-500 group-hover:text-primary opacity-0 group-hover:opacity-100 transition" />
                                     </Link>
                                 ))}
                         </>

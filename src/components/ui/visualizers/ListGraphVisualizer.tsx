@@ -113,7 +113,7 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
                         value={inputVal}
                         onChange={(e) => setInputVal(e.target.value)}
                         placeholder="Valor Node (ex: 42)"
-                        className="w-full h-11 bg-slate-900/60 border border-slate-700/80 rounded-full px-4 text-center text-sky-200 font-bold focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all placeholder:text-slate-500 shadow-inner"
+                        className="w-full h-11 bg-slate-900/60 border border-slate-700/80 rounded-full px-4 text-center text-sky-200 font-bold focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition placeholder:text-slate-500 shadow-inner"
                     />
                 </div>
 
@@ -121,7 +121,7 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
                     <button type="button"
                         onClick={handlePushFront}
                         disabled={list.length >= 8}
-                        className="h-11 bg-emerald-500/15 hover:bg-emerald-500/25 disabled:opacity-40 disabled:hover:bg-emerald-500/15 text-emerald-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                        className="h-11 bg-emerald-500/15 hover:bg-emerald-500/25 disabled:opacity-40 disabled:hover:bg-emerald-500/15 text-emerald-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition active:scale-[0.98] border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
                         title="Insereix al principi"
                     >
                         <Plus size={16} /> push_front
@@ -130,7 +130,7 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
                     <button type="button"
                         onClick={handlePushBack}
                         disabled={list.length >= 8}
-                        className="h-11 bg-emerald-500/15 hover:bg-emerald-500/25 disabled:opacity-40 disabled:hover:bg-emerald-500/15 text-emerald-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                        className="h-11 bg-emerald-500/15 hover:bg-emerald-500/25 disabled:opacity-40 disabled:hover:bg-emerald-500/15 text-emerald-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition active:scale-[0.98] border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
                         title="Insereix al final"
                     >
                         <Plus size={16} /> push_back
@@ -139,7 +139,7 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
                     <button type="button"
                         onClick={handlePopFront}
                         disabled={list.length === 0}
-                        className="h-11 bg-rose-500/15 hover:bg-rose-500/25 disabled:opacity-40 disabled:hover:bg-rose-500/15 text-rose-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
+                        className="h-11 bg-rose-500/15 hover:bg-rose-500/25 disabled:opacity-40 disabled:hover:bg-rose-500/15 text-rose-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition active:scale-[0.98] border border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
                         title="Extreu del principi"
                     >
                         <Minus size={16} /> pop_front
@@ -148,7 +148,7 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
                     <button type="button"
                         onClick={handlePopBack}
                         disabled={list.length === 0}
-                        className="h-11 bg-rose-500/15 hover:bg-rose-500/25 disabled:opacity-40 disabled:hover:bg-rose-500/15 text-rose-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
+                        className="h-11 bg-rose-500/15 hover:bg-rose-500/25 disabled:opacity-40 disabled:hover:bg-rose-500/15 text-rose-400 font-bold text-xs tracking-wide rounded-full flex items-center justify-center gap-1.5 transition active:scale-[0.98] border border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
                         title="Extreu del final"
                     >
                         <Minus size={16} /> pop_back

@@ -84,15 +84,16 @@ const GifPicker = ({ onSelect, onClose }: GifPickerProps) => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Cerca a GIPHY..."
-                        className="w-full bg-slate-800 text-slate-200 text-xs px-3 py-2 pl-9 rounded-lg focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 placeholder:text-slate-500 transition-all"
+                        className="w-full bg-slate-800 text-slate-200 text-xs px-3 py-2 pl-9 rounded-lg focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 placeholder:text-slate-500 transition"
                         autoFocus
                     />
                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 </div>
-                <button type="button"
+                <button
+                    type="button"
                     onClick={onClose}
                     className="p-1.5 text-slate-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                >
+                    aria-label="Tancar">
                     <X size={16} />
                 </button>
             </div>
@@ -122,11 +123,12 @@ const GifPicker = ({ onSelect, onClose }: GifPickerProps) => {
                         {gifs.length > 0 ? (
                             <div className="grid grid-cols-2 gap-2">
                                 {gifs.map(gif => (
-                                    <button type="button"
+                                    <button
+                                        type="button"
                                         key={gif.id}
                                         onClick={() => onSelect(gif.url)}
-                                        className="relative aspect-video bg-slate-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-sky-500 transition-all group"
-                                    >
+                                        className="relative aspect-video bg-slate-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-sky-500 transition group"
+                                        aria-label="Acció img">
                                         <img
                                             src={gif.url}
                                             alt={gif.title}

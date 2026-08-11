@@ -119,7 +119,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                     <img
                         src={coverUrl}
                         alt={post.content.substring(0, 20)}
-                        className={`w-full h-full object-cover transition-all duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''} ${imageLoaded ? 'opacity-100 blur-none' : 'opacity-0 blur-sm'}`}
+                        className={`w-full h-full object-cover transition duration-500 ${!isHeroMode ? 'group-hover:scale-105' : ''} ${imageLoaded ? 'opacity-100 blur-none' : 'opacity-0 blur-sm'}`}
                         loading="lazy"
                         decoding="async"
                         onLoad={() => setImageLoaded(true)}
@@ -140,7 +140,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
             {/* Custom Thumbnail Upload Overlay */}
             {onThumbnailUpload && (
                 <div
-                    className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center text-white cursor-pointer z-30 backdrop-blur-sm rounded-[inherit]"
+                    className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col items-center justify-center text-white cursor-pointer z-30 backdrop-blur-sm rounded-[inherit]"
                     title="Canviar Miniatura"
                 >
                     <div className="flex flex-col items-center justify-center transform scale-90 group-hover:scale-100 transition-transform duration-300 pointer-events-none">
@@ -166,7 +166,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
             <div className="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 z-10">
                 <button type="button"
                     onClick={handleLike}
-                    className={`h-8 px-2.5 rounded-full flex items-center justify-center gap-1.5 backdrop-blur-md border border-white/20 transition-all active:scale-90 ${hasLiked ? 'bg-rose-500/20 text-rose-500 border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]' : 'bg-black/60 text-white hover:bg-black/80'}`}
+                    className={`h-8 px-2.5 rounded-full flex items-center justify-center gap-1.5 backdrop-blur-md border border-white/20 transition active:scale-90 ${hasLiked ? 'bg-rose-500/20 text-rose-500 border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]' : 'bg-black/60 text-white hover:bg-black/80'}`}
                     aria-label="M'agrada"
                 >
                     <Heart size={14} fill={hasLiked ? 'currentColor' : 'none'} />
@@ -203,7 +203,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <div className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 active:scale-[0.98] active:border-white/20 shadow-lg transition-all duration-200 group-hover:border-white/20 group-hover:shadow-[0_15px_40px_rgba(255,255,255,0.08)]">
+            <div className="w-full aspect-video rounded-xl overflow-hidden relative bg-[#0F172A] border border-white/10 active:scale-[0.98] active:border-white/20 shadow-lg transition duration-200 group-hover:border-white/20 group-hover:shadow-[0_15px_40px_rgba(255,255,255,0.08)]">
                 {cardVisuals}
             </div>
 

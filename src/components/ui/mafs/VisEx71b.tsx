@@ -22,7 +22,7 @@ const VisEx71b = () => {
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt B: <InlineMath math="|y| \le x^2, y \ne 0, x \in [-2, 2]" /></span>
                     <span className="text-xs font-mono text-white">|y| = {Math.abs(y).toFixed(2)} | x² = {(x * x).toFixed(2)}</span>
                 </div>
-                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
                     {isIn ? '✓ Punt de B' : '✗ Fora de B'}
                 </div>
             </div>

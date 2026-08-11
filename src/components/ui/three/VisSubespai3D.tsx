@@ -20,12 +20,14 @@ import { Arrow, DirectionalCurvePoints, hasWebGL, ThreeErrorBoundary, FunctionSu
 const VisSubespai3D = () => {
     const isMobile = useIsMobile();
     const { isFullScreen } = useInteraction();
-    const u = new THREE.Vector3(2, 1, 1);
-    const v = new THREE.Vector3(-1, 2, 0.5);
-    const sum = new THREE.Vector3().addVectors(u, v);
+    const { u, v, sum } = useMemo(() => {
+        const u = new THREE.Vector3(2, 1, 1);
+        const v = new THREE.Vector3(-1, 2, 0.5);
+        return { u, v, sum: new THREE.Vector3().addVectors(u, v) };
+    }, []);
 
     return (
-        <div className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col bg-slate-950 ${isFullScreen ? 'h-screen' : 'h-125 rounded-2xl border border-white/10 my-8'}`}>
+        <div className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-950 ${isFullScreen ? 'h-screen' : 'h-125 rounded-2xl border border-white/10 my-8'}`}>
             <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
                 <span className="bg-indigo-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-lg">Subespai a ℝ³</span>
                 <div className="bg-black/40 backdrop-blur-md p-2 rounded border border-white/10 text-[10px] text-slate-300 font-mono">

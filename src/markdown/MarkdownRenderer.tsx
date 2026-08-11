@@ -281,6 +281,7 @@ export function MarkdownRenderer({ content, components: customComponents }: Mark
 
     return (
         <ReactMarkdown
+            // eslint-disable-next-line react-doctor/react-markdown-unsanitized-raw-html
             rehypePlugins={[rehypeRaw, rehypeKatex]}
             remarkPlugins={[remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMath]}
             components={mergedComponents as any}

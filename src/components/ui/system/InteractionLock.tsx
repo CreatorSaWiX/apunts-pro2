@@ -233,7 +233,7 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
                     <div className={isMobile ? "flex justify-center my-4" : ""}>
                         <div
                             onClick={() => setIsFullScreen(true)}
-                            className="relative w-full max-w-70 h-28 overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-black/60 transition-all shadow-2xl group/card"
+                            className="relative w-full max-w-70 h-28 overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-black/60 transition shadow-2xl group/card"
                         >
                             {/* Interactive Nebula Background */}
                             <div className="absolute inset-0 opacity-40 pointer-events-none -z-10">
@@ -244,7 +244,7 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
                             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-400/50 to-transparent" />
 
                             <div className="relative z-10 flex flex-col items-center gap-2">
-                                <div className="p-2 bg-white/5 rounded-xl border border-white/10 group-hover/card:bg-indigo-500/20 group-hover/card:border-indigo-500/30 transition-all">
+                                <div className="p-2 bg-white/5 rounded-xl border border-white/10 group-hover/card:bg-indigo-500/20 group-hover/card:border-indigo-500/30 transition">
                                     <Maximize2 className="text-white/80 group-hover:text-indigo-400 w-5 h-5" />
                                 </div>
                                 <div className="text-center">
@@ -274,7 +274,7 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
                                     e.stopPropagation();
                                     setIsFullScreen(false);
                                 }}
-                                className="group bg-white/5 hover:bg-white/10 p-3.5 rounded-2xl border border-white/10 backdrop-blur-xl transition-all active:scale-90 shadow-2xl"
+                                className="group bg-white/5 hover:bg-white/10 p-3.5 rounded-2xl border border-white/10 backdrop-blur-xl transition active:scale-90 shadow-2xl"
                                 aria-label="Tancar"
                             >
                                 <X className="text-white/70 group-hover:text-white w-5 h-5 transition-colors" />

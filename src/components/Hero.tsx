@@ -96,7 +96,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                         <span className="text-[10px] uppercase tracking-widest text-red-400 font-semibold group-hover:text-red-300 transition-colors">
                             {t('hero.newVersion', 'Hi ha una nova versió')}
                         </span>
-                        <RefreshCw size={12} className="text-red-400 group-hover:text-red-300 group-hover:rotate-180 transition-all duration-500 ease-out" />
+                        <RefreshCw size={12} className="text-red-400 group-hover:text-red-300 group-hover:rotate-180 transition duration-500 ease-out" />
                     </motion.button>
                 ) : (
                     <motion.div
@@ -114,7 +114,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                         </span>
 
                         {/* Tooltip Last Update Date */}
-                        <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 px-3 py-2 bg-slate-800/95 backdrop-blur-md text-slate-300 text-[10px] uppercase tracking-wider font-semibold rounded-lg opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 whitespace-nowrap pointer-events-none border border-white/10 shadow-2xl z-50 flex items-center gap-2 flex-row">
+                        <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 px-3 py-2 bg-slate-800/95 backdrop-blur-md text-slate-300 text-[10px] uppercase tracking-wider font-semibold rounded-lg opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition duration-300 whitespace-nowrap pointer-events-none border border-white/10 shadow-2xl z-50 flex items-center gap-2 flex-row">
                             <span className="relative flex h-1.5 w-1.5 shrink-0">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>

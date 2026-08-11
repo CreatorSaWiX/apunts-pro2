@@ -124,7 +124,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                         if (onOpenDetails) onOpenDetails();
                                         onClose();
                                     }}
-                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative hover:bg-white/5 text-slate-300 hover:text-white border border-transparent`}
+                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition group overflow-hidden relative hover:bg-white/5 text-slate-300 hover:text-white border border-transparent`}
                                 >
                                     <div className="p-1 rounded-full bg-white/5 group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
                                         <BookOpen size={14} />
@@ -136,7 +136,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                             <button type="button"
                                 disabled={nodeData.status === 'locked'}
                                 onClick={() => handleStatusChange('in_progress')}
-                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
+                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition group overflow-hidden relative
                                             ${nodeData.status === 'in_progress' ? 'bg-sky-500/20 text-sky-400 font-bold border border-sky-500/30 shadow-[0_0_15px_rgba(14,165,233,0.2)]' : 'hover:bg-white/5 text-slate-300 hover:text-white border border-transparent'}
                                             ${nodeData.status === 'locked' ? 'opacity-50 cursor-not-allowed' : ''}
                                         `}
@@ -149,7 +149,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                             <button type="button"
                                 disabled={nodeData.status === 'locked'}
                                 onClick={() => handleStatusChange('passed')}
-                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
+                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition group overflow-hidden relative
                                             ${nodeData.status === 'passed' ? 'bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'hover:bg-white/5 text-slate-300 hover:text-white border border-transparent'}
                                             ${nodeData.status === 'locked' ? 'opacity-50 cursor-not-allowed' : ''}
                                         `}
@@ -180,7 +180,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                                 <button type="button"
                                                     key={g}
                                                     onClick={() => updateNodeGrade(nodeId, g)}
-                                                    className={`py-1.5 rounded-xl text-xs font-bold transition-all border ${nodeData.grade === g ? 'bg-emerald-500 text-emerald-950 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-black/40 text-slate-300 border-white/5 hover:border-emerald-500/30 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
+                                                    className={`py-1.5 rounded-xl text-xs font-bold transition border ${nodeData.grade === g ? 'bg-emerald-500 text-emerald-950 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-black/40 text-slate-300 border-white/5 hover:border-emerald-500/30 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
                                                 >
                                                     {g.toFixed(1)}
                                                 </button>
@@ -211,7 +211,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                                         updateNodeGrade(nodeId, null);
                                                     }
                                                 }}
-                                                className="w-full bg-black/40 border border-white/10 rounded-xl pl-3 pr-8 py-2 text-sm font-medium text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:bg-emerald-500/5 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                className="w-full bg-black/40 border border-white/10 rounded-xl pl-3 pr-8 py-2 text-sm font-medium text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:bg-emerald-500/5 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                             />
                                             {/* Small icon indicator inside input */}
                                             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-50 text-slate-400">
@@ -227,7 +227,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                     <button type="button"
                                         disabled={nodeData.status === 'locked'}
                                         onClick={() => handleStatusChange('failed')}
-                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative
+                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition group overflow-hidden relative
                                                     ${nodeData.status === 'failed' ? 'bg-red-500/20 text-red-400 font-bold border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'hover:bg-white/5 text-slate-300 hover:text-white border border-transparent'}
                                                     ${nodeData.status === 'locked' ? 'opacity-50 cursor-not-allowed' : ''}
                                                 `}
@@ -243,7 +243,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -5 }}
                                             onClick={() => handleStatusChange('retaking')}
-                                            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-sm hover:bg-amber-500 text-amber-500 hover:text-amber-950 transition-all border border-amber-500/30 font-bold group shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)] mt-2"
+                                            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-sm hover:bg-amber-500 text-amber-500 hover:text-amber-950 transition border border-amber-500/30 font-bold group shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.5)] mt-2"
                                         >
                                             <RefreshCw size={14} className="group-hover:animate-spin-slow" />
                                             {t('planner.roadmapSubjectContextMenu.retake', 'Tornar a matricular')}
@@ -258,7 +258,7 @@ const SubjectContextMenu: React.FC<SubjectContextMenuProps> = ({ isOpen, onClose
                                         removeNode(nodeId);
                                         onClose();
                                     }}
-                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all group overflow-hidden relative hover:bg-white/5 text-red-400 hover:text-red-300 border border-transparent"
+                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition group overflow-hidden relative hover:bg-white/5 text-red-400 hover:text-red-300 border border-transparent"
                                 >
                                     <Trash2 size={16} className="text-red-400 group-hover:text-red-300" />
                                     <span className="relative z-10">{t('planner.roadmapSubjectContextMenu.delete', 'Eliminar')}</span>

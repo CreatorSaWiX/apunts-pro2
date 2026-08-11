@@ -29,7 +29,7 @@ export const FabMenu: React.FC<FabMenuProps> = ({
 
     // Close when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
+        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
@@ -102,7 +102,7 @@ export const FabMenu: React.FC<FabMenuProps> = ({
                                 }}
                                 className={`flex items-center gap-3 pr-2 group ${action.color || 'text-white'}`}
                             >
-                                <span className="relative text-sm font-semibold tracking-wide px-4 py-2 opacity-100 sm:opacity-0 sm:-translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+                                <span className="relative text-sm font-semibold tracking-wide px-4 py-2 opacity-100 sm:opacity-0 sm:-translate-x-4 transition duration-300 group-hover:opacity-100 group-hover:translate-x-0">
                                     <div className="absolute inset-0 -z-10">
                                         <LiquidPanel className="w-full h-full !rounded-xl">{null}</LiquidPanel>
                                     </div>

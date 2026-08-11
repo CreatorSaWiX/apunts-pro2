@@ -175,12 +175,12 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
                         ? 'absolute inset-0 cursor-pointer z-10 outline-none rounded-[inherit]'
                         : isButtonVariant
                         ? 'w-full flex justify-center'
-                        : `cursor-pointer transition-all duration-300 ${isDragActive ? 'md:border-primary md:bg-primary/10' : 'md:border-white/10 md:hover:border-white/30 md:hover:bg-white/5'} md:border md:border-dashed md:rounded-2xl md:p-6 md:text-center`
+                        : `cursor-pointer transition duration-300 ${isDragActive ? 'md:border-primary md:bg-primary/10' : 'md:border-white/10 md:hover:border-white/30 md:hover:bg-white/5'} md:border md:border-dashed md:rounded-2xl md:p-6 md:text-center`
                     }
                 >
                     <input {...getInputProps()} />
                     {isButtonVariant && (
-                        <div className="flex items-center justify-center gap-2 py-2 px-4 w-auto inline-flex rounded-full bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-xs font-semibold text-white/50 hover:text-white cursor-pointer">
+                        <div className="flex items-center justify-center gap-2 py-2 px-4 w-auto inline-flex rounded-full bg-white/5 hover:bg-white/10 active:scale-95 transition text-xs font-semibold text-white/50 hover:text-white cursor-pointer">
                             <UploadCloud size={14} />
                             <span>{t('common.fileUploader.uploadThumbnail', 'Afegir miniatura')}</span>
                         </div>
@@ -194,7 +194,7 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
                                 <p className="text-xs text-slate-500 mt-1">{t('common.fileUploader.supportedTypes', 'Codi, PDFs, Vídeos, 3D, Imatges, ZIP (Màxim {{max}}MB per arxiu)', { max: maxSizeMB })}</p>
                             </div>
                             {/* Mobile View */}
-                            <div className="md:hidden flex items-center justify-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-all text-slate-300">
+                            <div className="md:hidden flex items-center justify-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition text-slate-300">
                                 <Paperclip size={20} className="text-slate-400" />
                                 <span className="text-sm font-bold">{t('common.fileUploader.tapToUpload', 'Adjuntar fitxer...')}</span>
                             </div>

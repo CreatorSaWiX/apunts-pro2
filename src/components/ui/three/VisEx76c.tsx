@@ -18,9 +18,13 @@ import { Arrow, DirectionalCurvePoints, hasWebGL, ThreeErrorBoundary, FunctionSu
 
 
 const VisEx76c = () => {
-    const center = new THREE.Vector3(1 / 3, 1 / 3, 1 / 3);
-    const radius = Math.sqrt(2 / 3);
-    const normal = new THREE.Vector3(1, 1, 1).normalize();
+    const { center, radius, normal } = useMemo(() => {
+        return {
+            center: new THREE.Vector3(1 / 3, 1 / 3, 1 / 3),
+            radius: Math.sqrt(2 / 3),
+            normal: new THREE.Vector3(1, 1, 1).normalize()
+        };
+    }, []);
 
     return (
         <group>

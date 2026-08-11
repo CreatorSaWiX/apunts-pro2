@@ -130,7 +130,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                                 <button type="button"
                                     key={f}
                                     onClick={() => setFilter(f)}
-                                    className={`relative px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 ${filter === f ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                                    className={`relative px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition duration-300 ${filter === f ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     {filter === f && (
                                         <motion.div 
@@ -152,7 +152,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                             <button type="button"
                                 onClick={markAllAsRead}
                                 className="hidden sm:block text-xs font-bold text-indigo-400 hover:text-indigo-300 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-lg transition-colors"
-                            >
+                             aria-label="Botó interactiu">
                                 {t('notifications.inbox.markAllRead', 'Marcar tot com llegit')}
                             </button>
                         )}
@@ -190,7 +190,7 @@ const InboxModal = ({ isOpen, onClose }: any) => {
                                 to={linkTo}
                                 key={notification.id}
                                 onClick={() => markAsRead(notification)}
-                                className={`group flex items-start gap-4 p-4 rounded-xl border transition-all ${notification.read
+                                className={`group flex items-start gap-4 p-4 rounded-xl border transition ${notification.read
                                     ? 'border-transparent hover:bg-white/[0.04] hover:border-white/10 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]'
                                     : 'bg-white/[0.08] border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]'
                                     }`}

@@ -28,7 +28,7 @@ const VisEx75b = () => {
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Conjunt B: <InlineMath math="x^2+4x+1 \le 0, |y-2|<10" /></span>
                     <span className="text-xs font-mono text-white">x ∈ [{xMin.toFixed(2)}, {xMax.toFixed(2)}] | y ∈ (-8, 12)</span>
                 </div>
-                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition shadow-lg ${isIn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
                     {isIn ? '✓ Punt de B' : '✗ Fora de B'}
                 </div>
             </div>

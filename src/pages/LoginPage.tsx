@@ -159,8 +159,8 @@ const LoginPage = () => {
                                             <button
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className="relative w-full group overflow-hidden rounded-xl bg-sky-500/90 text-white font-bold py-4 transition-all duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.6)]"
-                                            >
+                                                className="relative w-full group overflow-hidden rounded-xl bg-sky-500/90 text-white font-bold py-4 transition duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.6)]"
+                                             aria-label="Botó interactiu">
                                                 {/* Shimmer Effect */}
                                                 <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-30deg] translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000" />
                                                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-sky-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -187,7 +187,7 @@ const LoginPage = () => {
                                         {t('auth.login.noAccount', 'No tens un compte encara? ')}
                                         <Link to="/register" className="text-white hover:text-sky-400 transition-colors inline-flex items-center gap-1 group relative">
                                             {t('auth.login.registerNow', "Registra't ara")}
-                                            <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-sky-400 transition-all group-hover:w-full"></span>
+                                            <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-sky-400 transition group-hover:w-full"></span>
                                         </Link>
                                     </div>
                                 </motion.div>
@@ -202,7 +202,11 @@ const LoginPage = () => {
                                     transition={{ duration: 0.4, ease: customEasing }}
                                     className="relative z-10 w-full"
                                 >
-                                    <button type="button" onClick={() => { setView('login'); setError(''); }} className="absolute -top-4 -left-4 p-2 text-slate-400 hover:text-white transition-colors rounded-full hover:bg-white/5 z-20">
+                                    <button
+                                        type="button"
+                                        onClick={() => { setView('login'); setError(''); }}
+                                        className="absolute -top-4 -left-4 p-2 text-slate-400 hover:text-white transition-colors rounded-full hover:bg-white/5 z-20"
+                                        aria-label="Enrere">
                                         <ChevronLeft size={24} />
                                     </button>
                                     
@@ -245,8 +249,8 @@ const LoginPage = () => {
                                             <button
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className="relative w-full group overflow-hidden rounded-xl bg-sky-500/90 text-white font-bold py-4 transition-all duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.6)]"
-                                            >
+                                                className="relative w-full group overflow-hidden rounded-xl bg-sky-500/90 text-white font-bold py-4 transition duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.6)]"
+                                             aria-label="Botó interactiu">
                                                 {/* Shimmer Effect */}
                                                 <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-30deg] translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000" />
                                                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-sky-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

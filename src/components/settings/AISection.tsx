@@ -87,7 +87,7 @@ export const AISection = () => {
                                     type="text"
                                     value={aiSettings.userContext?.userPreferredName || ''}
                                     onChange={(e) => setAiSettings({ ...aiSettings, userContext: { memories: aiSettings.userContext?.memories || [], ...aiSettings.userContext, userPreferredName: e.target.value } })}
-                                    className="w-full bg-white/3 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/6 transition-all"
+                                    className="w-full bg-white/3 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/6 transition"
                                     placeholder="ex: mestre, cap..."
                                 />
                             </div>
@@ -122,7 +122,7 @@ export const AISection = () => {
                                     <textarea
                                         readOnly
                                         value={aiSettings.soul[field.id as keyof typeof aiSettings.soul] || ''}
-                                        className="w-full bg-slate-900/40 px-4 py-3 text-white placeholder-slate-600 transition-all resize-y custom-scrollbar filter blur-xs opacity-60 select-none pointer-events-none"
+                                        className="w-full bg-slate-900/40 px-4 py-3 text-white placeholder-slate-600 transition resize-y custom-scrollbar filter blur-xs opacity-60 select-none pointer-events-none"
                                         style={{ minHeight: field.minHeight }}
                                         placeholder={field.placeholder}
                                     />
@@ -131,7 +131,7 @@ export const AISection = () => {
                                         <p className="text-[11px] text-slate-300 font-bold uppercase tracking-wider mb-3 drop-shadow-md">{t('settings.ai.managedByAi', "Això ho gestiona l'IA autònomament")}</p>
                                         <button type="button"
                                             onClick={() => setEditingSoulField(field.id as any)}
-                                            className="px-5 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold rounded-xl text-xs transition-all backdrop-blur-md"
+                                            className="px-5 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold rounded-xl text-xs transition backdrop-blur-md"
                                         >
                                             {t('settings.ai.forceEdit', 'Forçar Modificació')}
                                         </button>
@@ -164,7 +164,8 @@ export const AISection = () => {
                                 {aiSettings.userContext.memories.map((mem, idx) => (
                                     <div key={idx} className="flex items-start justify-between gap-4 p-4 bg-white/3 border border-white/5 rounded-xl hover:border-white/10 transition-colors group">
                                         <span className="text-sm text-slate-300 font-medium leading-relaxed">{mem}</span>
-                                        <button type="button"
+                                        <button
+                                            type="button"
                                             onClick={() => {
                                                 const newMems = [...(aiSettings.userContext?.memories || [])];
                                                 newMems.splice(idx, 1);
@@ -175,7 +176,7 @@ export const AISection = () => {
                                             }}
                                             className="shrink-0 text-slate-500 hover:text-rose-500 transition-colors p-1 bg-white/5 hover:bg-rose-500/10 rounded-lg opacity-0 group-hover:opacity-100"
                                             title={t('settings.ai.deleteMemory', 'Esborrar memòria')}
-                                        >
+                                            aria-label="Eliminar">
                                             <Trash2 size={16} />
                                         </button>
                                     </div>
@@ -210,7 +211,7 @@ export const AISection = () => {
                                 ...aiSettings,
                                 soul: { ...aiSettings.soul, [editingSoulField as string]: e.target.value }
                             })}
-                            className="w-full flex-1 bg-white/3 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/6 transition-all resize-none custom-scrollbar text-sm leading-relaxed"
+                            className="w-full flex-1 bg-white/3 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/6 transition resize-none custom-scrollbar text-sm leading-relaxed"
                             placeholder={t('settings.ai.soulPlaceholder', "Escriu aquí les instruccions...")}
                         />
                     </div>

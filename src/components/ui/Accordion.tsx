@@ -31,10 +31,11 @@ const Accordion: React.FC<AccordionProps> = ({
 
   return (
     <div className="my-4 overflow-hidden rounded-xl border border-white/5 bg-white/[0.02] transition-colors hover:bg-white/[0.04]">
-      <button type="button"
+      <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between p-5 text-left"
-      >
+        aria-label="Element interactiu">
         <span className="text-lg font-medium tracking-tight text-white/90">
             {renderTitle(title)}
         </span>

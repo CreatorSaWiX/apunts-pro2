@@ -155,8 +155,8 @@ const RegisterPage = () => {
                                 <button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="relative w-full group overflow-hidden rounded-xl bg-emerald-500/90 text-white font-bold py-4 transition-all duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.6)]"
-                                >
+                                    className="relative w-full group overflow-hidden rounded-xl bg-emerald-500/90 text-white font-bold py-4 transition duration-500 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.6)]"
+                                 aria-label="Botó interactiu">
                                     {/* Shimmer Effect */}
                                     <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-30deg] translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000" />
                                     
@@ -198,7 +198,7 @@ const RegisterPage = () => {
                                     <button 
                                         type="button" 
                                         onClick={() => setIsPrivacyOpen(true)}
-                                        className="text-slate-300 hover:text-emerald-400 underline decoration-slate-600 hover:decoration-emerald-400/50 underline-offset-2 transition-all"
+                                        className="text-slate-300 hover:text-emerald-400 underline decoration-slate-600 hover:decoration-emerald-400/50 underline-offset-2 transition"
                                     >
                                         {t('auth.register.privacyPolicy', 'Política de Privacitat')}
                                     </button>
@@ -210,7 +210,7 @@ const RegisterPage = () => {
                             {t('auth.register.hasAccount', 'Ja tens un compte? ')}
                             <Link to="/login" className="text-white hover:text-emerald-400 transition-colors inline-flex items-center gap-1 group relative">
                                 {t('auth.register.login', 'Iniciar sessió')}
-                                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-emerald-400 transition-all group-hover:w-full"></span>
+                                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-emerald-400 transition group-hover:w-full"></span>
                             </Link>
                         </motion.div>
                     </motion.div>

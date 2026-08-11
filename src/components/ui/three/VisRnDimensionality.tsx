@@ -266,7 +266,7 @@ const VisRnDimensionality = () => {
     };
 
     return (
-        <div key={resizeKey} className={`w-full overflow-hidden relative group transition-all duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900 border-none rounded-none' : 'h-[600px] border border-white/5 rounded-2xl shadow-2xl'}`}>
+        <div key={resizeKey} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col ${isFullScreen ? 'h-full bg-slate-900 border-none rounded-none' : 'h-[600px] border border-white/5 rounded-2xl shadow-2xl'}`}>
             <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-4 w-full md:w-auto">
                     <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Dimensió n</span>
@@ -280,9 +280,9 @@ const VisRnDimensionality = () => {
 
                 {/* Mode Selector */}
                 <div className="flex bg-black/40 p-1 rounded-lg border border-white/5">
-                    <button type="button" onClick={() => setMode('single')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'single' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Vector</button>
-                    <button type="button" onClick={() => setMode('sum')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'sum' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Suma</button>
-                    <button type="button" onClick={() => setMode('product')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition-all ${mode === 'product' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Producte</button>
+                    <button type="button" onClick={() => setMode('single')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition ${mode === 'single' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Vector</button>
+                    <button type="button" onClick={() => setMode('sum')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition ${mode === 'sum' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Suma</button>
+                    <button type="button" onClick={() => setMode('product')} className={`px-3 py-1 text-[10px] font-bold uppercase rounded transition ${mode === 'product' ? 'bg-slate-700 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>Producte</button>
                 </div>
 
                 <div className="hidden lg:block text-[10px] font-mono text-slate-400 bg-black/20 px-3 py-1 rounded-full border border-white/5">

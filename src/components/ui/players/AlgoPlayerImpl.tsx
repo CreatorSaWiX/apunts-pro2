@@ -270,7 +270,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
                     </div>
 
                     {/* Environment Variables Panel */}
-                    <div className={`${isMemoryExpanded ? 'h-[35%] min-h-35 max-h-50' : 'h-auto'} bg-[#090b10] border-t border-slate-800/80 flex flex-col relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] shrink-0 transition-all duration-300`}>
+                    <div className={`${isMemoryExpanded ? 'h-[35%] min-h-35 max-h-50' : 'h-auto'} bg-[#090b10] border-t border-slate-800/80 flex flex-col relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] shrink-0 transition duration-300`}>
                         <div
                             className="px-4 py-1.5 sm:py-2 bg-[#0d1117] border-b border-slate-800/50 flex items-center justify-between cursor-pointer hover:bg-[#161b22] transition-colors"
                             onClick={() => setIsMemoryExpanded(!isMemoryExpanded)}

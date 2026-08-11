@@ -70,7 +70,7 @@ const SendButton = ({
             onClick={onClick}
             disabled={disabled || cooldown > 0}
             title={cooldown > 0 ? t('chat.wait', 'Espera {{cooldown}}s', { cooldown }) : t('common.send', 'Enviar')}
-            className={`shrink-0 rounded-full transition-all mb-0.5 mr-1 flex items-center justify-center
+            className={`shrink-0 rounded-full transition mb-0.5 mr-1 flex items-center justify-center
                 ${cooldown > 0
                 ? 'w-9 h-9 bg-white/10 text-slate-500 cursor-not-allowed text-xs font-mono font-semibold'
                 : hasInput
@@ -702,7 +702,7 @@ export const ChatBot: React.FC = () => {
 
             {/* Floating Input */}
             <div className="absolute bottom-0 left-0 w-full p-4 pt-8 bg-gradient-to-t from-[#020617]/90 via-[#020617]/50 to-transparent z-10 pointer-events-none">
-              <div className="pointer-events-auto relative flex flex-col gap-2 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-2 transition-all duration-300 focus-within:bg-white/10 focus-within:border-white/20 shadow-lg ring-1 ring-black/20">
+              <div className="pointer-events-auto relative flex flex-col gap-2 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-2 transition duration-300 focus-within:bg-white/10 focus-within:border-white/20 shadow-lg ring-1 ring-black/20">
                 <AnimatePresence>
                   {attachedFile && (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="px-2 pt-2">

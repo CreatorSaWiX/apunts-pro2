@@ -416,7 +416,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
                                             handleInputChange(e.target.value, e.target.selectionStart || 0);
                                         }}
                                         placeholder={`Escriu un comentari...`}
-                                        className="w-full bg-slate-900 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition-all"
+                                        className="w-full bg-slate-900 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition"
                                     />
                                     <button
                                         type="submit"

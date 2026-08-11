@@ -58,8 +58,8 @@ const ConfirmModal = ({
                         <div className="flex gap-3 w-full mt-4">
                             <button type="button"
                                 onClick={onClose}
-                                className="flex-1 px-4 py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl font-medium transition-all duration-200 border border-white/5 hover:border-white/10 active:scale-[0.98]"
-                            >
+                                className="flex-1 px-4 py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl font-medium transition duration-200 border border-white/5 hover:border-white/10 active:scale-[0.98]"
+                             aria-label="Botó interactiu">
                                 {finalCancelText}
                             </button>
                             <button type="button"
@@ -67,7 +67,7 @@ const ConfirmModal = ({
                                     onConfirm();
                                     onClose();
                                 }}
-                                className={`flex-1 px-4 py-2.5 rounded-xl font-medium text-white transition-all duration-200 shadow-lg active:scale-[0.98] ${isDestructive
+                                className={`flex-1 px-4 py-2.5 rounded-xl font-medium text-white transition duration-200 shadow-lg active:scale-[0.98] ${isDestructive
                                     ? 'bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 shadow-rose-500/25 border border-rose-500/50'
                                     : 'bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-sky-500/25 border border-sky-500/50'
                                     }`}

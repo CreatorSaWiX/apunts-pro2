@@ -107,7 +107,7 @@ const VisCanviBase = () => {
                         <div className="space-y-2">
                             <button type="button"
                                 onClick={() => setShowGrid(!showGrid)}
-                                className={`w-full py-2 rounded-lg text-[9px] font-bold uppercase transition-all border ${showGrid ? 'bg-blue-600 border-blue-500 text-white' : 'bg-transparent border-slate-700 text-slate-400 hover:border-blue-500 hover:text-blue-400'}`}
+                                className={`w-full py-2 rounded-lg text-[9px] font-bold uppercase transition border ${showGrid ? 'bg-blue-600 border-blue-500 text-white' : 'bg-transparent border-slate-700 text-slate-400 hover:border-blue-500 hover:text-blue-400'}`}
                             >
                                 {showGrid ? 'Amagar Graella de la Base' : 'Mostrar Graella de la Base'}
                             </button>
