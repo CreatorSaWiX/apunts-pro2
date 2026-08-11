@@ -21,7 +21,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User | null>(() => {
+        try {
+            const cachedUser = localStorage.getItem('auth_user');
+            return cachedUser ? JSON.parse(cachedUser) : null;
+        } catch {
+            return null;
+        }
+    });
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -56,15 +63,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
                         const username = firestoreData.username || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
 
-                        setUser({
+                        const newUser = {
                             id: firebaseUser.uid,
                             username: username,
                             email: firebaseUser.email || '',
                             avatar: firestoreData.avatar || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${username}`,
                             role: role
-                        });
+                        };
+                        setUser(newUser);
+                        localStorage.setItem('auth_user', JSON.stringify(newUser));
                     } else {
                         setUser(null);
+                        localStorage.removeItem('auth_user');
                     }
                     setIsLoading(false);
                 });
@@ -74,13 +84,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
         };
 
-        // Delay firebase initialization slightly so it doesn't compete with React hydration
-        const timer = setTimeout(() => {
-            initAuth();
-        }, 100);
+        initAuth();
 
         return () => {
-            clearTimeout(timer);
             if (unsubscribe) unsubscribe();
         };
     }, []);
@@ -130,14 +136,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // 4. Create Firestore Document
             await setDoc(doc(db, 'users', firebaseUser.uid), userData);
 
-            // 5. Force update local state
-            setUser({
+            // 5. Force update local state and cache
+            const newUser = {
                 id: firebaseUser.uid,
                 username: username,
                 email: email,
                 avatar: avatarUrl,
                 role: userData.role
-            });
+            };
+            setUser(newUser);
+            localStorage.setItem('auth_user', JSON.stringify(newUser));
 
         } catch (error) {
             console.error("Error creating user profile:", error);
@@ -151,6 +159,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             import('firebase/auth')
         ]);
         await signOut(auth);
+        localStorage.removeItem('auth_user');
+        setUser(null);
     }, []);
 
     const resetPassword = useCallback(async (email: string) => {

@@ -65,6 +65,7 @@ const applyThemeToDocument = (theme: Theme) => {
 interface SubjectState {
     subject: string;
     theme: Theme;
+    customColors: Record<string, string>;
     setSubject: (subject: string) => void;
     updateTheme: (customSubjectColors: Record<string, string>) => void;
 }
@@ -74,25 +75,29 @@ export const useSubjectStore = create<SubjectState>()(
         (set, get) => ({
             subject: 'PRO2',
             theme: calculateTheme('PRO2'),
+            customColors: {},
             setSubject: (subject) => {
-                const newTheme = calculateTheme(subject);
+                const newTheme = calculateTheme(subject, get().customColors);
                 set({ subject, theme: newTheme });
                 applyThemeToDocument(newTheme);
             },
             updateTheme: (customSubjectColors) => {
                 const newTheme = calculateTheme(get().subject, customSubjectColors);
-                set({ theme: newTheme });
+                set({ theme: newTheme, customColors: customSubjectColors });
                 applyThemeToDocument(newTheme);
             }
         }),
         {
             name: 'app-subject',
-            partialize: (state) => ({ subject: state.subject }),
+            partialize: (state) => ({ subject: state.subject, customColors: state.customColors }),
             onRehydrateStorage: () => (state) => {
                 if (state) {
                     // Timeout to ensure it runs after hydration
                     setTimeout(() => {
-                        applyThemeToDocument(state.theme);
+                        // Recalculate theme with customColors on rehydrate
+                        const rehydratedTheme = calculateTheme(state.subject, state.customColors);
+                        state.updateTheme(state.customColors); 
+                        applyThemeToDocument(rehydratedTheme);
                     }, 0);
                 }
             }

@@ -287,9 +287,22 @@ export function MarkdownRenderer({ content, components: customComponents }: Mark
                 rehypeRaw,
                 [rehypeSanitize, {
                     ...defaultSchema,
+                    tagNames: [
+                        ...(defaultSchema.tagNames || []),
+                        'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 
+                        'stackviz', 'queueviz', 'vectorviz', 'linkedlistviz', 'pointerviz', 
+                        'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 
+                        'linkedinviz', 'youtubeviz'
+                    ],
                     attributes: {
                         ...defaultSchema.attributes,
                         '*': ['className', 'style'],
+                        'videoviz': ['src', 'delay'],
+                        'oopviz': ['simulation'],
+                        'algoviz': ['algorithm'],
+                        'proofviz': ['proof'],
+                        'youtubeviz': ['src', 'caption'],
+                        'linkedinviz': ['src'],
                     }
                 }],
                 rehypeKatex

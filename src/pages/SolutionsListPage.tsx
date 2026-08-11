@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, Check, Code2, ExternalLink, FileText, X } from 'lucide-react';
@@ -33,7 +33,7 @@ const SolutionsListPage = () => {
     }, [topicId]);
     
     // We pass the explicit problem IDs so they are searched globally (not just constrained by topicId namespace)
-    const predefinedProblemIds = topicDefinition?.problems?.map(p => p.id) || [];
+    const predefinedProblemIds = useMemo(() => topicDefinition?.problems?.map(p => p.id) || [], [topicDefinition]);
     const { solutions: uploadedSolutions, loading } = useSolutions(topicId || '', predefinedProblemIds);
 
     // Scroll to top

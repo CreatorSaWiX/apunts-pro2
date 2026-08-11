@@ -93,7 +93,7 @@ const Navigation: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const location = useLocation();
-    const { user } = useAuth();
+    const { user, isLoading } = useAuth();
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -220,6 +220,10 @@ const Navigation: React.FC = () => {
                                         )}
                                     </AnimatePresence>
                                 </NavLinkItem>
+                            ) : isLoading ? (
+                                <div className="h-11 md:h-10 px-3 md:px-0 md:w-10 flex items-center justify-center shrink-0">
+                                    <div className="w-8 h-8 md:w-7 md:h-7 rounded-full bg-slate-800 animate-pulse border-2 border-white/10" />
+                                </div>
                             ) : (
                                 <NavLinkItem
                                     to="/login"
