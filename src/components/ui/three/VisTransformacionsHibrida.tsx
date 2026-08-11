@@ -259,14 +259,17 @@ const TransformMesh = ({ matrix, type, showWireframe }: { matrix: THREE.Matrix3,
         }
     }, [matrix]);
 
+    const extrudeSettings1 = React.useMemo(() => ({ depth: 0.2, bevelEnabled: false }), []);
+    const extrudeSettings2 = React.useMemo(() => ({ depth: 0.5, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05 }), []);
+
     return (
         <group>
             <mesh scale={[1, 1, 1]}>
-                <extrudeGeometry args={[shape, { depth: 0.2, bevelEnabled: false }]} />
+                <extrudeGeometry args={[shape, extrudeSettings1]} />
                 <meshStandardMaterial color="#ffffff" transparent opacity={0.05} wireframe />
             </mesh>
             <mesh ref={meshRef}>
-                <extrudeGeometry args={[shape, { depth: 0.5, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05 }]} />
+                <extrudeGeometry args={[shape, extrudeSettings2]} />
                 <meshStandardMaterial
                     color={color}
                     emissive={color}

@@ -33,20 +33,21 @@ const ParticlePortal = () => {
                 pos[i * 3 + 1] = (Math.random() - 0.5) * 8;
                 pos[i * 3 + 2] = (Math.random() - 0.5) * 4;
             }
-            groups.push({ id: crypto.randomUUID(), pos });
+            groups.push({ id: `particle-group-${g}`, pos });
         }
         return groups;
     });
 
-    useFrame((state) => {
-        // Use performance.now to avoid THREE.Clock deprecation warnings in newer Three.js versions
-        const t = performance.now() / 1000;
+    useFrame((state, delta) => {
+        const t = state.clock.elapsedTime;
         if (pointsRef.current) {
             // Group movement for all particle types
             pointsRef.current.position.y = (t * 0.1) % 2;
             pointsRef.current.rotation.z = Math.sin(t * 0.05) * 0.05;
-            // Parallax based on pointer
-            pointsRef.current.position.x += (state.pointer.x * 0.4 - pointsRef.current.position.x) * 0.05;
+            
+            // Frame-rate independent parallax using THREE.MathUtils.damp
+            const targetX = state.pointer.x * 0.4;
+            pointsRef.current.position.x = THREE.MathUtils.damp(pointsRef.current.position.x, targetX, 3, delta);
         }
     });
 

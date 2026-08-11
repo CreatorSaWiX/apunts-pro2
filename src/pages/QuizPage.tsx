@@ -100,6 +100,15 @@ const QuizPage: React.FC = () => {
         const loadQuiz = async () => {
             if (!topicId) return;
             
+            const handleQuizLoaded = (finalQuiz: any) => {
+                setQuiz(finalQuiz);
+                const saved = sessionStorage.getItem(`quiz_${topicId}`);
+                if (!saved) {
+                    timeLeftRef.current = finalQuiz.timeLimitSeconds;
+                    setInitialTimeLeft(finalQuiz.timeLimitSeconds);
+                }
+            };
+
             // 1. Hardcoded quiz?
             const { quizzes } = await import('../content/data/quizzes');
             const originalQuiz = quizzes.find(q => q.topicId === topicId);
@@ -113,7 +122,7 @@ const QuizPage: React.FC = () => {
                             options: [...q.options].sort(() => Math.random() - 0.5)
                         }))
                 };
-                setQuiz(fullyShuffled);
+                handleQuizLoaded(fullyShuffled);
                 setIsGenerating(false);
                 return;
             }
@@ -149,10 +158,11 @@ const QuizPage: React.FC = () => {
                             .sort(() => Math.random() - 0.5)
                             .map((q: any) => ({
                                 ...q,
+                                ...q,
                                 options: [...q.options].sort(() => Math.random() - 0.5)
                             }))
                     };
-                    setQuiz(fullyShuffled);
+                    handleQuizLoaded(fullyShuffled);
                 } else {
                     const errText = await response.text();
                     console.error("Failed to generate quiz:", response.status, errText);
@@ -173,13 +183,7 @@ const QuizPage: React.FC = () => {
     const timeLeftRef = useRef(0);
     const [initialTimeLeft, setInitialTimeLeft] = useState(0);
 
-    // Update times when quiz loads
-    useEffect(() => {
-        if (quiz) {
-            timeLeftRef.current = quiz.timeLimitSeconds;
-            setInitialTimeLeft(quiz.timeLimitSeconds);
-        }
-    }, [quiz]);
+    // Timer initialization is now handled securely inside loadQuiz to prevent race conditions with sessionStorage
 
     // 2. Persist progress in session storage (Senior: UX protection)
     useEffect(() => {

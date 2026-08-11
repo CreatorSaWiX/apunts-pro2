@@ -36,11 +36,18 @@ const SolutionDetailPage = () => {
     const { solutions } = useSolutions(topicId || '');
     const [authorData, setAuthorData] = useState<{ avatar?: string; username?: string; } | null>(null);
     const [courseStructure, setCourseStructure] = useState<TopicDefinition[]>([]);
+    const [importError, setImportError] = useState(false);
 
     useEffect(() => {
         import('../content/data/courseStructure')
-            .then(m => setCourseStructure(m.courseStructure))
-            .catch(console.error);
+            .then(m => {
+                setCourseStructure(m.courseStructure);
+                setImportError(false);
+            })
+            .catch(e => {
+                console.error(e);
+                setImportError(true);
+            });
     }, []);
 
     // Edit logic
@@ -169,6 +176,13 @@ const SolutionDetailPage = () => {
 
     return (
         <div className="min-h-screen pt-24 pb-12 px-4 max-w-350 mx-auto flex flex-col relative z-10">
+
+            {importError && (
+                <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex items-center justify-center gap-2">
+                    <X size={16} />
+                    <span>{t('solutionDetail.importErrorDesc', 'Hi ha hagut un problema de connexió i pot ser que alguns títols no es mostrin correctament.')}</span>
+                </div>
+            )}
 
             {/* Top Navigation Bar */}
             <motion.div

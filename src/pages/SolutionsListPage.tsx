@@ -18,13 +18,18 @@ const SolutionsListPage = () => {
 
     // 1. Get definitions for the current topic from our static structure
     const [topicDefinition, setTopicDefinition] = useState<TopicDefinition | undefined>(undefined);
+    const [importError, setImportError] = useState(false);
     
     useEffect(() => {
         import('../content/data/courseStructure')
             .then(m => {
                 setTopicDefinition(m.courseStructure.find((t: TopicDefinition) => t.id === topicId));
+                setImportError(false);
             })
-            .catch(console.error);
+            .catch(e => {
+                console.error(e);
+                setImportError(true);
+            });
     }, [topicId]);
     
     // We pass the explicit problem IDs so they are searched globally (not just constrained by topicId namespace)
@@ -65,6 +70,22 @@ const SolutionsListPage = () => {
     // 2. M1 & M2 Special Layout Check
     if ((topicId?.startsWith('m1-') || topicId?.startsWith('m2-')) && topicDefinition) {
         return <NotebookLayout topic={topicDefinition} solutions={uploadedSolutions} loading={loading} />;
+    }
+
+    // 3. Error Fallback
+    if (importError) {
+        return (
+            <div className="min-h-screen pt-24 pb-20 px-4 max-w-5xl mx-auto flex flex-col items-center justify-center text-center">
+                <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mb-6 border border-red-500/20">
+                    <X size={32} className="text-red-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2">{t('solutionsList.importError', 'Error al carregar el temari')}</h2>
+                <p className="text-slate-400 mb-6">{t('solutionsList.importErrorDesc', 'Hi ha hagut un problema de connexió. Si us plau, recarrega la pàgina.')}</p>
+                <button type="button" onClick={() => window.location.reload()} className="px-6 py-2.5 bg-red-500 text-white rounded-xl font-medium hover:bg-red-400 transition-colors">
+                    {t('common.retry', "Reintentar")}
+                </button>
+            </div>
+        );
     }
 
     // 2. Identify problems associated with this topic

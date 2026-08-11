@@ -69,7 +69,6 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     const numericHeight = Number(height);
     const [dimensions, setDimensions] = useState({ width: 0, height: numericHeight });
     const { theme } = useSubjectStore();
-    const [graphData, setGraphData] = useState<NonNullable<GraphVisualizerProps['initialData']>>(defaultData);
     const [isHovered, setIsHovered] = useState(false);
 
     // Performance optimization: only render heavy 2D Canvas when visible.
@@ -116,20 +115,18 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     }, [updateTrigger, hasMounted, autoCenter]);
 
     // Parse Data
-    useEffect(() => {
-        let dataFound = false;
-
+    const graphData = React.useMemo(() => {
         if (initialData) {
-            setGraphData(initialData);
-            dataFound = true;
-        } else if (children) {
+            return initialData;
+        } 
+        
+        if (children) {
             const text = extractText(children).trim();
             if (text.startsWith('{') && text.endsWith('}')) {
                 try {
                     const json = JSON.parse(text);
                     if (json.nodes && json.links) {
-                        setGraphData(json);
-                        dataFound = true;
+                        return json;
                     }
                 } catch (e) {
                     console.warn("Failed to parse graph JSON:", e);
@@ -137,7 +134,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
             }
         }
 
-        if (!dataFound && edges) {
+        if (edges) {
             const linkList: { source: string | number; target: string | number }[] = [];
             const nodeList = new Set<string>(); // Use Set to avoid duplicates
 
@@ -157,11 +154,13 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                 nodes.split(',').forEach((n: string) => nodeList.add(n.trim()));
             }
 
-            setGraphData({
+            return {
                 nodes: Array.from(nodeList).map(id => ({ id, label: id, group: 1 })),
                 links: linkList
-            });
+            };
         }
+        
+        return defaultData;
     }, [initialData, edges, nodes, children]);
 
     // Resize Handler
