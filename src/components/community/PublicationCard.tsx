@@ -217,9 +217,9 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
 
                 <div className="flex items-center justify-between gap-2 mt-1">
                     <div className="flex items-center gap-1.5 min-w-0 flex-1 mr-1">
-                        <img src={post.userAvatar} alt={post.username} loading="lazy" decoding="async" className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
+                        <img src={(user && user.id === post.userId) ? user.avatar : post.userAvatar} alt={(user && user.id === post.userId) ? user.username : post.username} loading="lazy" decoding="async" className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
                         <span className="text-[11px] text-slate-300 truncate group-hover:text-white transition-colors">
-                            {post.username}
+                            {(user && user.id === post.userId) ? user.username : post.username}
                         </span>
                     </div>
 
