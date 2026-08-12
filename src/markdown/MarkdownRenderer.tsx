@@ -7,6 +7,7 @@ import remarkDirective from "remark-directive";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
+import remarkMark from "./remarkMark";
 import "katex/dist/katex.min.css"; // Import katex styles
 import "mafs/core.css"; // Mafs core CSS
 import "mafs/font.css"; // Mafs fonts 
@@ -270,6 +271,9 @@ const defaultComponents: any = {
     ),
     tr: ({ ...props }) => (
         <tr className="group" {...props} />
+    ),
+    mark: ({ ...props }) => (
+        <mark className="bg-amber-500/20 text-amber-200 font-medium rounded-sm px-1.5 py-0.5" {...props} />
     )
 };
 
@@ -292,7 +296,7 @@ export function MarkdownRenderer({ content, components: customComponents }: Mark
                         'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 
                         'stackviz', 'queueviz', 'vectorviz', 'linkedlistviz', 'pointerviz', 
                         'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 
-                        'linkedinviz', 'youtubeviz', 'object'
+                        'linkedinviz', 'youtubeviz', 'object', 'mark'
                     ],
                     attributes: {
                         ...defaultSchema.attributes,
@@ -314,7 +318,7 @@ export function MarkdownRenderer({ content, components: customComponents }: Mark
                 }],
                 rehypeKatex
             ]}
-            remarkPlugins={[remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMath]}
+            remarkPlugins={[remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMark, remarkMath]}
             components={mergedComponents as any}
         >
             {content}

@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 import { useRoadmap, RoadmapProvider, TargetGradeProvider } from '../../../contexts/RoadmapContext';
 import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
 
