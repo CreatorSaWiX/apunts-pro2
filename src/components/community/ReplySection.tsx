@@ -20,11 +20,12 @@ interface ReplySectionProps {
     postId: string;
     postAuthorId: string;
     postContent: string;
+    onNavigateToProfile?: (userId: string) => void;
 }
 
 const CUSTOM_EMOTES = Object.values(CUSTOM_EMOJIS);
 
-const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) => {
+const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }: ReplySectionProps) => {
     const { user } = useAuth();
     const [replies, setReplies] = useState<PostReply[]>([]);
     const [loading, setLoading] = useState(true);
@@ -144,11 +145,17 @@ const ReplySection = ({ postId, postAuthorId, postContent }: ReplySectionProps) 
                                 <img loading="lazy"
                                     src={reply.userAvatar} 
                                     alt={reply.username} 
-                                    className="w-8 h-8 rounded-xl object-cover shrink-0"
+                                    className={`w-8 h-8 rounded-xl object-cover shrink-0 ${onNavigateToProfile ? 'cursor-pointer' : ''}`}
+                                    onClick={() => onNavigateToProfile && reply.userId && onNavigateToProfile(reply.userId)}
                                 />
                                 <div className="flex-1 min-w-0 bg-white/5 rounded-2xl p-3 border border-white/5">
                                     <div className="flex items-center justify-between mb-1">
-                                        <span className="text-xs font-bold text-slate-300">{reply.username}</span>
+                                        <span 
+                                            className={`text-xs font-bold text-slate-300 group-hover:text-primary transition-colors ${onNavigateToProfile ? 'cursor-pointer' : ''}`}
+                                            onClick={() => onNavigateToProfile && reply.userId && onNavigateToProfile(reply.userId)}
+                                        >
+                                            {reply.username}
+                                        </span>
                                         <span className="text-[10px] text-slate-500">
                                             {reply.createdAt?.toDate ? formatDistanceToNow(reply.createdAt.toDate(), { locale: ca, addSuffix: true }) : 'Ara'}
                                         </span>

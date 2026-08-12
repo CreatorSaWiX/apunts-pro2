@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 import type { CommunityPost } from '../../types/community';
 import { m as motion, AnimatePresence, type Variants } from 'framer-motion';
 import { X, Heart, Share2, Trash2, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
@@ -35,6 +36,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [direction, setDirection] = useState<'next' | 'prev' | null>(null);
     const isMobile = useIsMobile();
+    const navigate = useNavigate();
     const [showCommentsMobile, setShowCommentsMobile] = useState(false);
     
     // Swipe gestures states
@@ -298,11 +300,15 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -5 }}
                                         transition={{ duration: 0.15 }}
-                                        className="flex items-center gap-3 min-w-0"
+                                        className="flex items-center gap-3 min-w-0 cursor-pointer group"
+                                        onClick={() => {
+                                            onClose();
+                                            setTimeout(() => navigate(`/profile/${post.userId}`), 100);
+                                        }}
                                     >
                                         <img src={(user && user.id === post.userId) ? user.avatar : post.userAvatar} alt={(user && user.id === post.userId) ? user.username : post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800 border border-white/10 shrink-0" />
                                         <div className="min-w-0">
-                                            <h3 className="font-bold text-slate-100 truncate">{(user && user.id === post.userId) ? user.username : post.username}</h3>
+                                            <h3 className="font-bold text-slate-100 truncate group-hover:text-primary transition-colors">{(user && user.id === post.userId) ? user.username : post.username}</h3>
                                             {timeAgo && <p className="text-xs text-slate-500 font-medium capitalize first-letter:capitalize truncate">{timeAgo}</p>}
                                         </div>
                                     </motion.div>
@@ -478,7 +484,15 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                                 {!isMobile && (
                                     <div className="flex w-[420px] xl:w-[450px] shrink-0 border-l border-white/10 bg-[#080808] flex-col h-full min-h-0 overflow-hidden">
                                         <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-                                            <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
+                                            <ReplySection 
+                                                postId={post.id} 
+                                                postAuthorId={post.userId} 
+                                                postContent={post.content} 
+                                                onNavigateToProfile={(uid) => {
+                                                    onClose();
+                                                    setTimeout(() => navigate(`/profile/${uid}`), 100);
+                                                }}
+                                            />
                                         </div>
                                     </div>
                                 )}
@@ -508,7 +522,15 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                                 fullBleed={true}
                             >
                                 <div className="h-[70vh] flex flex-col overflow-hidden pb-[env(safe-area-inset-bottom)]">
-                                    <ReplySection postId={post.id} postAuthorId={post.userId} postContent={post.content} />
+                                    <ReplySection 
+                                        postId={post.id} 
+                                        postAuthorId={post.userId} 
+                                        postContent={post.content} 
+                                        onNavigateToProfile={(uid) => {
+                                            onClose();
+                                            setTimeout(() => navigate(`/profile/${uid}`), 100);
+                                        }}
+                                    />
                                 </div>
                             </BottomSheet>
                         )}

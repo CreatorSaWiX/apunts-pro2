@@ -119,7 +119,7 @@ const InlineEditableText = ({
 const ProfilePage = () => {
     const { t } = useTranslation();
     const { uid } = useParams();
-    const { user: authUser, logout, isLoading: authLoading } = useAuth();
+    const { user: authUser, logout, isLoading: authLoading, updateUser } = useAuth();
 
     const userIdToFetch = uid || authUser?.id;
     const isOwnProfile = Boolean(!uid || (authUser && authUser.id === uid));
@@ -292,7 +292,7 @@ const ProfilePage = () => {
 
     const handleUpdateProfile = async (data: Partial<ExtendedUser>) => {
         if (!authUser?.id) return;
-        const [{ db, auth }, { doc, setDoc, collection, query, where, getDocs, writeBatch }, { updateProfile }] = await Promise.all([
+        const [{ db, auth }, { doc, setDoc, collection, collectionGroup, query, where, getDocs, writeBatch }, { updateProfile }] = await Promise.all([
             import('../lib/firebase'),
             import('firebase/firestore'),
             import('firebase/auth')
@@ -300,31 +300,64 @@ const ProfilePage = () => {
         const userRef = doc(db, 'users', authUser.id);
         try {
             await setDoc(userRef, data, { merge: true });
-            if (auth.currentUser && data.username) {
-                await updateProfile(auth.currentUser, { displayName: data.username, photoURL: data.avatar || auth.currentUser.photoURL });
+            if (auth.currentUser && (data.username || data.avatar)) {
+                await updateProfile(auth.currentUser, { 
+                    displayName: data.username || auth.currentUser.displayName, 
+                    photoURL: data.avatar || auth.currentUser.photoURL 
+                });
             }
 
             if (data.avatar || data.username) {
+                const updateData: any = {};
+                if (data.avatar) updateData.userAvatar = data.avatar;
+                if (data.username) updateData.username = data.username;
+
+                // Actualització de Posts
                 try {
                     const batch = writeBatch(db);
                     const postsQuery = query(collection(db, 'community_posts'), where('userId', '==', authUser.id));
                     const postsSnapshot = await getDocs(postsQuery);
-
-                    const updateData: any = {};
-                    if (data.avatar) updateData.userAvatar = data.avatar;
-                    if (data.username) updateData.username = data.username;
-
-                    postsSnapshot.forEach((postDoc) => {
-                        batch.update(postDoc.ref, updateData);
-                    });
-
+                    postsSnapshot.forEach((postDoc) => batch.update(postDoc.ref, updateData));
                     await batch.commit();
                 } catch (batchError) {
                     console.error("Error updating past posts:", batchError);
                 }
+
+                // Actualització de Replies (Requereix index de CollectionGroup, pot fallar silenciosament)
+                try {
+                    const batch = writeBatch(db);
+                    const repliesQuery = query(collectionGroup(db, 'replies'), where('userId', '==', authUser.id));
+                    const repliesSnapshot = await getDocs(repliesQuery);
+                    repliesSnapshot.forEach((replyDoc) => {
+                        const replyUpdate: any = {};
+                        if (data.avatar) { replyUpdate.userAvatar = data.avatar; replyUpdate.fromUserAvatar = data.avatar; }
+                        if (data.username) { replyUpdate.username = data.username; }
+                        batch.update(replyDoc.ref, replyUpdate);
+                    });
+                    if (!repliesSnapshot.empty) await batch.commit();
+                } catch (e) {
+                    console.warn("No s'ha pogut actualitzar els replies (pot faltar index de collectionGroup):", e);
+                }
+
+                // Actualització de Comentaris (Requereix index de CollectionGroup)
+                try {
+                    const batch = writeBatch(db);
+                    const commentsQuery = query(collectionGroup(db, 'comments'), where('userId', '==', authUser.id));
+                    const commentsSnapshot = await getDocs(commentsQuery);
+                    commentsSnapshot.forEach((commentDoc) => {
+                        const commentUpdate: any = {};
+                        if (data.avatar) { commentUpdate.userAvatar = data.avatar; commentUpdate.fromUserAvatar = data.avatar; }
+                        if (data.username) { commentUpdate.username = data.username; }
+                        batch.update(commentDoc.ref, commentUpdate);
+                    });
+                    if (!commentsSnapshot.empty) await batch.commit();
+                } catch (e) {
+                    console.warn("No s'ha pogut actualitzar els comentaris (pot faltar index de collectionGroup):", e);
+                }
             }
 
             setExtendedUser((prev: ExtendedUser | null) => prev ? { ...prev, ...data } : null);
+            updateUser(data);
             if (data.username !== authUser.username && data.username) window.location.reload();
         } catch (error) {
             console.error("Error updating profile:", error);

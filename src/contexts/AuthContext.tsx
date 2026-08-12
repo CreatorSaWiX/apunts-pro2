@@ -15,6 +15,7 @@ interface AuthContextType {
     signup: (email: string, password: string, username: string) => Promise<void>;
     logout: () => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
+    updateUser: (updates: Partial<User>) => void;
     isLoading: boolean;
 }
 
@@ -180,14 +181,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, []);
 
+    const updateUser = useCallback((updates: Partial<User>) => {
+        setUser(prev => {
+            if (!prev) return null;
+            const updated = { ...prev, ...updates };
+            localStorage.setItem('auth_user', JSON.stringify(updated));
+            return updated;
+        });
+    }, []);
+
     const contextValue = useMemo(() => ({
         user,
         login,
         logout,
         signup,
         resetPassword,
+        updateUser,
         isLoading
-    }), [user, login, logout, signup, resetPassword, isLoading]);
+    }), [user, login, logout, signup, resetPassword, updateUser, isLoading]);
 
     return (
         <AuthContext.Provider value={contextValue}>

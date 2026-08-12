@@ -1,4 +1,5 @@
 import { useState, useMemo, memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import type { CommunityPost } from '../../types/community';
 import { Heart, Eye, FileCode2, Box, FileVideo, FileText, Archive, Pin } from 'lucide-react';
@@ -22,6 +23,7 @@ const MODEL_EXTENSIONS = ['gltf', 'glb', 'obj'];
 
 const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: PublicationCardProps) => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const isMobile = useIsMobile();
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -216,9 +218,15 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                 />
 
                 <div className="flex items-center justify-between gap-2 mt-1">
-                    <div className="flex items-center gap-1.5 min-w-0 flex-1 mr-1">
+                    <div 
+                        className="flex items-center gap-1.5 min-w-0 flex-1 mr-1 cursor-pointer group/author"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/profile/${post.userId}`);
+                        }}
+                    >
                         <img src={(user && user.id === post.userId) ? user.avatar : post.userAvatar} alt={(user && user.id === post.userId) ? user.username : post.username} loading="lazy" decoding="async" className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
-                        <span className="text-[11px] text-slate-300 truncate group-hover:text-white transition-colors">
+                        <span className="text-[11px] text-slate-300 truncate group-hover/author:text-white transition-colors">
                             {(user && user.id === post.userId) ? user.username : post.username}
                         </span>
                     </div>

@@ -83,7 +83,12 @@ export const PublishedCodeBlock = ({ language, code }: PublishedCodeBlockProps) 
                 </div>
 
                 {/* Code Content */}
-                <pre className="!m-0 !bg-transparent p-5 pt-12 custom-scrollbar overflow-x-auto text-[14px] leading-relaxed font-mono">
+                <pre 
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onTouchMove={(e) => e.stopPropagation()}
+                    onTouchEnd={(e) => e.stopPropagation()}
+                    className="!m-0 !bg-transparent p-5 pt-12 custom-scrollbar overflow-x-auto text-[14px] leading-relaxed font-mono"
+                >
                     <code className={`language-${displayLanguage}`} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlightedCode) }} />
                 </pre>
             </div>

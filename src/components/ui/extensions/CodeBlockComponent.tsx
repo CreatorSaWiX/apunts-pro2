@@ -108,7 +108,12 @@ export const CodeBlockComponent = ({ node, updateAttributes, extension }: any) =
             </div>
 
             <div className="relative rounded-2xl overflow-hidden bg-[#0d1117] border border-white/10 shadow-sm">
-                <pre className="!m-0 !bg-transparent p-5 pt-12 custom-scrollbar overflow-x-auto text-[14px] leading-relaxed font-mono">
+                <pre 
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onTouchMove={(e) => e.stopPropagation()}
+                    onTouchEnd={(e) => e.stopPropagation()}
+                    className="!m-0 !bg-transparent p-5 pt-12 custom-scrollbar overflow-x-auto text-[14px] leading-relaxed font-mono"
+                >
                     <NodeViewContent as={"code" as any} className={`language-${currentLanguage}`} />
                 </pre>
             </div>
