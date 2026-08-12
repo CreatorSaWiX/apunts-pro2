@@ -326,7 +326,7 @@ const ThreeVisualizer: React.FC<ThreeVisualizerProps> = (props) => {
     }
 
     return (
-        <InteractionLock className="my-8" key={type}>
+        <InteractionLock className="my-8" contentClassName="h-auto" key={type}>
             <Suspense fallback={<div className="p-4 flex items-center justify-center h-100">Carregant visualització 3D...</div>}><ThreeVisualizerContent SurfaceComponent={SurfaceComponent} isHybrid={isHybrid} /></Suspense>
         </InteractionLock>
     );

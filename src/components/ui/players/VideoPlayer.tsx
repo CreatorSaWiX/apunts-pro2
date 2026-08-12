@@ -3,6 +3,7 @@ import { Maximize, RotateCcw, Play, Pause, Gauge } from 'lucide-react';
 
 interface VideoPlayerProps {
     url?: string;
+    src?: string;
     delay?: string | number;
 }
 
@@ -13,7 +14,7 @@ const formatTime = (timeInSeconds: number) => {
     return `${m}:${s}`;
 };
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, src, delay = 3500 }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const progressRef = useRef<HTMLDivElement>(null);
@@ -26,6 +27,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
     const [isHovering, setIsHovering] = useState(false);
 
     const delayMs = typeof delay === 'string' ? parseInt(delay, 10) : delay;
+    const finalUrl = src || url;
 
     useEffect(() => {
         if (videoRef.current) {
@@ -36,7 +38,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
                 .catch(() => setIsPlaying(false));
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [url]);
+    }, [finalUrl]);
 
     const handleTimeUpdate = () => {
         if (!isDragging && videoRef.current) {
@@ -156,11 +158,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, delay = 3500 }) => {
             onMouseMove={handleContainerMouseMove}
             onMouseLeave={() => setIsHovering(false)}
         >
-            {url ? (
+            {finalUrl ? (
                 <div className="relative w-full flex items-center justify-center bg-black/20">
                     <video
                         ref={videoRef}
-                        src={url}
+                        src={finalUrl}
                         playsInline
                         onTimeUpdate={handleTimeUpdate}
                         onLoadedMetadata={handleLoadedMetadata}

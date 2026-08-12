@@ -292,17 +292,24 @@ export function MarkdownRenderer({ content, components: customComponents }: Mark
                         'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 
                         'stackviz', 'queueviz', 'vectorviz', 'linkedlistviz', 'pointerviz', 
                         'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 
-                        'linkedinviz', 'youtubeviz'
+                        'linkedinviz', 'youtubeviz', 'object'
                     ],
                     attributes: {
                         ...defaultSchema.attributes,
                         '*': ['className', 'style'],
-                        'videoviz': ['src', 'delay'],
+                        'videoviz': ['src', 'url', 'delay'],
                         'oopviz': ['simulation'],
                         'algoviz': ['algorithm'],
                         'proofviz': ['proof'],
                         'youtubeviz': ['src', 'caption'],
                         'linkedinviz': ['src'],
+                        'mafs': ['type'],
+                        'threeviz': ['type'],
+                        'three': ['type'],
+                        'graph': ['edges', 'nodes', 'height', 'directed'],
+                        'accordion': ['title', 'defaultOpen'],
+                        'callout': ['type', 'title'],
+                        'object': ['data', 'type', 'width', 'height'],
                     }
                 }],
                 rehypeKatex

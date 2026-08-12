@@ -180,7 +180,7 @@ const MafsVisualizer: React.FC<MafsVisualizerProps> = ({ type }) => {
     }
 
     return (
-        <InteractionLock className="my-8">
+        <InteractionLock className="my-8" contentClassName="h-auto min-h-[500px]">
             <div className="w-full h-full overflow-hidden transition duration-500 flex flex-col">
                 <Suspense fallback={<div className="p-4 flex items-center justify-center">Carregant visualització...</div>}><Component /></Suspense>
             </div>

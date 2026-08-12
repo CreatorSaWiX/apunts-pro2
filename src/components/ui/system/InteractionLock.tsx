@@ -14,6 +14,7 @@ import p3 from '../../../assets/particles/3.png';
 interface InteractionLockProps {
     children: React.ReactNode;
     className?: string;
+    contentClassName?: string;
     disabled?: boolean;
 }
 
@@ -112,7 +113,7 @@ const PortalBackground = () => {
     );
 };
 
-export const InteractionLock: React.FC<InteractionLockProps> = ({ children, className = "", disabled = false }) => {
+export const InteractionLock: React.FC<InteractionLockProps> = ({ children, className = "", contentClassName = "h-125", disabled = false }) => {
     const [isMobile, setIsMobile] = useState(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -218,11 +219,11 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
             >
                 {/* 1. DESKTOP VIEW: Auto-renders when visible in viewport (Lazy Load) */}
                 {!isMobile && !isFullScreen && !disabled && (
-                    <div className="w-full h-125 rounded-3xl overflow-hidden shadow-2xl border border-white/5 bg-slate-900/40 relative">
+                    <div className={`w-full rounded-3xl overflow-hidden shadow-2xl border border-white/5 bg-slate-900/40 relative ${contentClassName}`}>
                         {shouldMountChildren ? (
                             children
                         ) : (
-                            <div className="w-full h-125 bg-slate-950 flex items-center justify-center">
+                            <div className={`w-full bg-slate-950 flex items-center justify-center ${contentClassName}`}>
                                 <Spinner size="xl" variant="white" glow={false} />
                             </div>
                         )}

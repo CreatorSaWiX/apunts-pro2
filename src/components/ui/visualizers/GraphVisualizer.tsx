@@ -21,6 +21,7 @@ interface GraphVisualizerProps {
     isAnimating?: boolean;
     transparentBg?: boolean;
     autoCenter?: boolean;
+    directed?: boolean;
 }
 
 const defaultData = {
@@ -62,14 +63,20 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     updateTrigger,
     isAnimating,
     transparentBg = false,
-    autoCenter = false
+    autoCenter = false,
+    directed
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const fgRef = useRef<any>(null);
     const numericHeight = Number(height);
     const [dimensions, setDimensions] = useState({ width: 0, height: numericHeight });
-    const { theme } = useSubjectStore();
+    const { subject, theme } = useSubjectStore();
     const [isHovered, setIsHovered] = useState(false);
+
+    // Default to undirected for Math subjects (M1, M2), directed otherwise.
+    const isDirected = directed !== undefined 
+        ? directed 
+        : (subject !== 'M1' && subject !== 'M2');
 
     // Performance optimization: only render heavy 2D Canvas when visible.
     // We remove once: true so we can pause/resume simulation dynamically based on scroll.
@@ -344,10 +351,10 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                             nodeLabel="label"
                             linkColor={getLinkColor}
                             linkCurvature={getLinkCurvature}
-                            linkDirectionalParticles={2}
+                            linkDirectionalParticles={isDirected ? 2 : 0}
                             linkDirectionalParticleSpeed={0.005}
                             linkDirectionalParticleWidth={2}
-                            linkDirectionalArrowLength={6}
+                            linkDirectionalArrowLength={isDirected ? 6 : 0}
                             linkDirectionalArrowRelPos={1}
                             backgroundColor="rgba(0,0,0,0)"
                             linkWidth={2.5} // Thicker connections
