@@ -8,7 +8,7 @@ subject: "m2"
 
 ## 1.1 Definició
 
-Imaginem una llista infinita de números ordenats. Això és, literalment, una successió. Matemàticament, la definim com una aplicació on a cada número natural ($1, 2, 3...$) li assignem un número real. Normalment fem servir la lletra $a$ i un subíndex $n$: $(a_n) = a_1, a_2, a_3, \dots, a_n, \dots$
+Imaginem una llista infinita de números ordenats. Això és, literalment, una successió. Matemàticament, la definim com una aplicació on a cada número natural (==1, 2, 3...==) li assignem un número real. Normalment fem servir la lletra $a$ i un subíndex $n$: $(a_n) = a_1, a_2, a_3, \dots, a_n, \dots$
 
 Hi ha tres maneres principals de definir-les, i les hem de saber identificar:
 
@@ -86,7 +86,7 @@ $$
 
 ### B. El número e i $1^\infty$
 
-Una successió és **creixent** si cada terme és més gran o igual que l'anterior ($a_m \leq a_n$ quan $m < n$). És **decreixent** si passa el contrari. Les successions que són creixents o decreixents s'anomenen genèricament **monòtones**.
+Una successió és **creixent** si cada terme és més gran o igual que l'anterior ($a_m \leq a_n$ quan ==m < n==). És **decreixent** si passa el contrari. Les successions que són creixents o decreixents s'anomenen genèricament **monòtones**.
 
 **Per teorema de la convergència monòtona**, tota successió monòtona i acotada és obligatòriament convergent. El millor exemple d'això és la successió $a_n = \left(1 + \frac{1}{n}\right)^n$.
 
@@ -97,8 +97,8 @@ Una successió és **creixent** si cada terme és més gran o igual que l'anteri
 Finalment, com calculem límits més estranys si no tenim ni polinomis ni sumes senzilles? Tenim dues grans eines de diagnòstic:
 
 1.  **Criteri de l'arrel:** Calculem el límit de l'arrel n-èsima del valor absolut del terme: $\lim_n \sqrt[n]{|a_n|} = L$.
-    *   Si $L < 1$, el límit original de $a_n$ és $0$.
-    *   Si $L > 1$, la successió s'escapa cap a infinit ($\lim_n |a_n| = +\infty$).
+    *   Si ==L < 1==, el límit original de $a_n$ és $0$.
+    *   Si ==L > 1==, la successió s'escapa cap a infinit ($\lim_n |a_n| = +\infty$).
 
 2.  **Criteri del quocient:** Si no ens agraden les arrels, podem agafar un terme i dividir-lo per l'anterior: $\lim_n \frac{|a_n|}{|a_{n-1}|} = L$. Els resultats funcionen exactament igual: si dóna menor a 1 convergeix a 0, i si és major a 1 divergeix.
 

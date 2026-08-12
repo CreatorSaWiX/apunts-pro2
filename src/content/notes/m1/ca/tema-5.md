@@ -30,8 +30,8 @@ $$
 | Tipus | Descripció | Representació Formal | Exemple Pràctic |
 | :--- | :--- | :--- | :--- |
 | **Quadrada** | Mateix nombre de files que columnes ($m=n$). | $A \in \mathcal{M}_{n \times n}(\mathbb{K})$ | $\begin{pmatrix} 1 & 5 \\ -2 & 3 \end{pmatrix}$ |
-| **Triangular superior** | Tots els elements per sota la diagonal són zero. | $a_{ij} = 0$ si $i > j$ | $\begin{pmatrix} 1 & 2 & 3 \\ 0 & 4 & 5 \\ 0 & 0 & 6 \end{pmatrix}$ |
-| **Triangular inferior** | Tots els elements per sobre la diagonal són zero. | $a_{ij} = 0$ si $i < j$ | $\begin{pmatrix} 1 & 0 & 0 \\ 2 & 4 & 0 \\ 3 & 5 & 6 \end{pmatrix}$ |
+| **Triangular superior** | Tots els elements per sota la diagonal són zero. | $a_{ij} = 0$ si ==i > j== | $\begin{pmatrix} 1 & 2 & 3 \\ 0 & 4 & 5 \\ 0 & 0 & 6 \end{pmatrix}$ |
+| **Triangular inferior** | Tots els elements per sobre la diagonal són zero. | $a_{ij} = 0$ si ==i < j== | $\begin{pmatrix} 1 & 0 & 0 \\ 2 & 4 & 0 \\ 3 & 5 & 6 \end{pmatrix}$ |
 | **Diagonal** | Només els elements de la diagonal poden ser no nuls. | $a_{ij} = 0$ si $i \neq j$ | $\begin{pmatrix} 2 & 0 & 0 \\ 0 & 5 & 0 \\ 0 & 0 & -1 \end{pmatrix}$ |
 | **Identitat ($I_n$)** | Matriu diagonal on tots els elements de la diagonal són $1$. | $a_{ii} = 1, a_{ij} = 0$ | $\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$ |
 | **Simètrica** | La matriu és igual a la seva transposada ($A = A^t$). | $a_{ij} = a_{ji}$ | $\begin{pmatrix} 1 & 2 \\ 2 & 3 \end{pmatrix}$ |
@@ -53,7 +53,7 @@ $$
 | :--- | :--- | :--- |
 | **No commutatiu** | $AB \neq BA$ : L'ordre dels factors altera el producte. | $\begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix} \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix} \neq \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix} \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$ |
 | **Transposada** | $(AB)^t = B^t A^t$ : S'inverteix l'ordre dels factors. | $\left( \begin{pmatrix} 1 & 2 \end{pmatrix} \begin{pmatrix} 3 \\ 0 \end{pmatrix} \right)^t = \begin{pmatrix} 3 & 0 \end{pmatrix} \begin{pmatrix} 1 \\ 2 \end{pmatrix}$ |
-| **Associativa** | $(AB)C = A(BC)$ : L'agrupació no canvia el resultat. | $\left( \begin{pmatrix} 1 & 0 \end{pmatrix} \begin{pmatrix} 0 \\ 1 \end{pmatrix} \right) \begin{pmatrix} 2 \end{pmatrix} = \begin{pmatrix} 1 & 0 \end{pmatrix} \left( \begin{pmatrix} 0 \\ 1 \end{pmatrix} \begin{pmatrix} 2 \end{pmatrix} \right)$ |
+| **Associativa** | ==(AB)C = A(BC)== : L'agrupació no canvia el resultat. | $\left( \begin{pmatrix} 1 & 0 \end{pmatrix} \begin{pmatrix} 0 \\ 1 \end{pmatrix} \right) \begin{pmatrix} 2 \end{pmatrix} = \begin{pmatrix} 1 & 0 \end{pmatrix} \left( \begin{pmatrix} 0 \\ 1 \end{pmatrix} \begin{pmatrix} 2 \end{pmatrix} \right)$ |
 | **Polinomi** | $p(A) = A^2 + \dots + \mathbf{a_0 I}$ : Les constants porten la Identitat. | Per a $p(x) = x^2 - 1$, usem $p(A) = A^2 - \mathbf{I}$. |
 
 ### Matriu inversa ($A^{-1}$)
@@ -78,7 +78,7 @@ $$
 **Equivalència ($A \sim B$)**: Diem que $A$ i $B$ són equivalents si podem arribar de l'una a l'altra combinant operacions elementals.
 > **Exemple**:  
 > $A = \begin{pmatrix} 1 & 2 \\ 3 & 1 \end{pmatrix} \xrightarrow{F_2 - 3F_1} \mathbf{B = \begin{pmatrix} 1 & 2 \\ 0 & -5 \end{pmatrix}}$  
-> Això s'expressa matricialment com $B = EA$ on $E = \begin{pmatrix} 1 & 0 \\ -3 & 1 \end{pmatrix}$.
+> Això s'expressa matricialment com ==B = EA== on $E = \begin{pmatrix} 1 & 0 \\ -3 & 1 \end{pmatrix}$.
 
 ### Matrius escalonades i rang
 Diem que una matriu és **escalonada** quan té estructura d'escala descendents:
@@ -135,7 +135,7 @@ Un sistema es defineix, es discuteix (per saber si té solució) i es resol (Gau
 | Format | Descripció | Exemple |
 | :--- | :--- | :--- |
 | **Algebraic** | Les equacions tal qual. | $\begin{cases} x + 2y = 3 \\ x + y = 2 \end{cases}$ |
-| **Matricial** | Producte $Ax = b$ | $\begin{pmatrix} 1 & 2 \\ 1 & 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 3 \\ 2 \end{pmatrix}$ |
+| **Matricial** | Producte ==Ax = b== | $\begin{pmatrix} 1 & 2 \\ 1 & 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 3 \\ 2 \end{pmatrix}$ |
 | **Ampliada** | Bloc $(A \mid b)$ | $\begin{pmatrix} 1 & 2 & \mid & 3 \\ 1 & 1 & \mid & 2 \end{pmatrix}$ |
 
 On la **matriu ampliada** general és:
@@ -159,7 +159,7 @@ Diem que dos sistemes són equivalents si tenen la **mateixa solució general**.
 2. **Sistema compatible determinat (SCD)**: Té una única solució.
 3. **Sistema compatible indeterminat (SCI)**: Té infinites solucions.
 
-### Sistemes homogenis ($b = 0$)
+### Sistemes homogenis (==b = 0==)
 Són sistemes on tota la columna de termes independents és zero.
 - **Sempre són compatibles**: Tenen com a mínim la **solució trivial** $(0, \dots, 0)$.
 - **Discussió per rang**:
@@ -169,12 +169,12 @@ Són sistemes on tota la columna de termes independents és zero.
 ### Resolució de sistemes escalonats
 En un sistema escalonat compatible amb $r = \text{rang}$ i $n = \text{incògnites}$:
 - **Variables principals**: Corresponen als pivots (n'hi ha $r$).
-- **Variables lliures**: La resta ($n - r$), que esdevenen paràmetres $\lambda, \mu, \dots$
+- **Variables lliures**: La resta (==n - r==), que esdevenen paràmetres $\lambda, \mu, \dots$
 
 **Exemple de forma paramètrica (SCI)**:
-Si el resultat és $x + 2y = 5$, fem que $y = \lambda$ (lliure):
+Si el resultat és ==x + 2y = 5==, fem que $y = \lambda$ (lliure):
 $$ \begin{cases} x = 5 - 2\lambda \\ y = \lambda \end{cases} \implies (x, y) = (5, 0) + \lambda(-2, 1) $$
-> El sistema té **1 grau de llibertat** ($n-r = 1$).
+> El sistema té **1 grau de llibertat** (==n-r = 1==).
 
 ---
 
@@ -186,11 +186,11 @@ Sigui **$r = \text{rang}(A)$**, **$r' = \text{rang}(A \mid b)$** i **$n$** el no
 
 | Condició de Rangs | Tipus de Sistema | Solucions | Observació en Gauss |
 | :--- | :--- | :--- | :--- |
-| **$r < r'$** | **Incompatible (SI)** | Cap | Apareix una fila: $(0 \dots 0 \mid b)$ amb $b \neq 0$. |
-| **$r = r' = n$** | **Comp. Determinat (SCD)** | Única | Tenim tants pivots com incògnites. |
-| **$r = r' < n$** | **Comp. Indeterminat (SCI)** | Infinites | Hi ha $n-r$ variables lliures (paràmetres). |
+| **==r < r'==** | **Incompatible (SI)** | Cap | Apareix una fila: $(0 \dots 0 \mid b)$ amb $b \neq 0$. |
+| **==r = r' = n==** | **Comp. Determinat (SCD)** | Única | Tenim tants pivots com incògnites. |
+| **==r = r' < n==** | **Comp. Indeterminat (SCI)** | Infinites | Hi ha $n-r$ variables lliures (paràmetres). |
 
-> Si el sistema és compatible ($r = r'$), el valor de **$r$** s'anomena **rang del sistema**.
+> Si el sistema és compatible (==r = r'==), el valor de **$r$** s'anomena **rang del sistema**.
 
 ---
 
@@ -205,7 +205,7 @@ L'eliminació gaussiana és l'algorisme sistemàtic per resoldre SEL. Segueix aq
 
 > **Exemple pas a pas**: Resolem $\begin{cases} x + 2y = 3 \\ 2x + 4y = 6 \end{cases}$
 > 1. **Ampliada**: $\left(\begin{array}{cc|c} 1 & 2 & 3 \\ 2 & 4 & 6 \end{array}\right) \xrightarrow{F_2 - 2F_1} \left(\begin{array}{cc|c} \mathbf{1} & 2 & 3 \\ 0 & 0 & 0 \end{array}\right)$
-> 2. **Discussió**: $\text{rang}(A) = 1$, $\text{rang}(A|b) = 1$, $n = 2$. Com que $1 = 1 < 2$, és un **SCI**.
+> 2. **Discussió**: $\text{rang}(A) = 1$, $\text{rang}(A|b) = 1$, ==n = 2==. Com que ==1 = 1 < 2==, és un **SCI**.
 > 3. **Solució**: $x + 2y = 3 \implies x = 3 - 2\lambda, y = \lambda$.
 
 ---
@@ -219,7 +219,7 @@ El determinant és un valor escalar que ens indica si una matriu quadrada és in
 
 | Mètode | Regla / Definició | Exemple |
 | :--- | :--- | :--- |
-| **$2 \times 2$** | Producte creuat: $ad - bc$ | $\begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = 4 - 6 = -2$ |
+| **$2 \times 2$** | Producte creuat: ==ad - bc== | $\begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = 4 - 6 = -2$ |
 | **Diagonal / Triang.** | Producte dels elements de la diagonal. | $\det \begin{pmatrix} \mathbf{2} & 5 \\ 0 & \mathbf{3} \end{pmatrix} = 2 \cdot 3 = 6$ |
 | **Adjunts** | Desenvolupar per una fila/columna. | $\sum a_{ik} (-1)^{i+k} \det(A_{ik})$ |
 | **Sarrus ($3 \times 3$)** | Suma de diagonals (positives i negatives). | Només per a ordres $n=3$. |

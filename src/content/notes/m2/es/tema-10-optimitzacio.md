@@ -34,7 +34,7 @@ Sea $(a,b)$ un punto crítico de $f \in \mathcal{C}^2$. Analizamos el determinan
  
 Si la función es un polinomio de grado 2 (como $f(x,y) = x^2 + 2xy + 3y^2$), puedes completar cuadrados para ver si es una suma de cuadrados positivos (mínimo) o negativos (máximo). ¡Es mucho más rápido que calcular la Hessiana!
 
-> **Cuando $\Delta = 0$**: Prueba a estudiar $f$ sobre rectas que pasen por el punto (e.g. $y = 0$ o $y = x$). Otra herramienta muy potente es **completar cuadrados**: si puedes escribir $f(x,y) - f(a,b)$ como una forma que es siempre positiva (o siempre negativa), tienes un mínimo (o máximo) global sin necesidad de la Hessiana.
+> **Cuando $\Delta = 0$**: Prueba a estudiar $f$ sobre rectas que pasen por el punto (e.g. ==y = 0== o ==y = x==). Otra herramienta muy potente es **completar cuadrados**: si puedes escribir ==f(x,y) - f(a,b)== como una forma que es siempre positiva (o siempre negativa), tienes un mínimo (o máximo) global sin necesidad de la Hessiana.
 
 ---
 
@@ -42,7 +42,7 @@ Si la función es un polinomio de grado 2 (como $f(x,y) = x^2 + 2xy + 3y^2$), pu
 
 Buscamos los extremos de $f(\mathbf{x})$ sobre el conjunto definido por una restricción $g(\mathbf{x}) = 0$.
 
-La idea geométrica: los extremos condicionados se encuentran allí donde la **curva de nivel de $f$ es tangente a la curva de restricción $g = 0$**. Cuando dos curvas son tangentes, sus gradientes deben ser paralelos.
+La idea geométrica: los extremos condicionados se encuentran allí donde la **curva de nivel de $f$ es tangente a la curva de restricción ==g = 0==**. Cuando dos curvas son tangentes, sus gradientes deben ser paralelos.
 
 ### El Teorema de Lagrange
 Esto se formaliza con el sistema:
@@ -62,11 +62,11 @@ Donde $\lambda$ es el **multiplicador de Lagrange**. Para múltiples restriccion
 ### Cómo resolver el sistema
 Resolver $\nabla f = \lambda \nabla g$ puede ser algebraicamente pesado. Tres estrategias que a menudo simplifican mucho:
 
-1. **Elimina $\lambda$**: Aísla $\lambda$ de cada ecuación e iguálalas. Esto da una relación directa entre $x$ e $y$. Cuidado: no dividas por cero; trata $x = 0$ e $y = 0$ como casos separados.
+1. **Elimina $\lambda$**: Aísla $\lambda$ de cada ecuación e iguálalas. Esto da una relación directa entre $x$ e $y$. Cuidado: no dividas por cero; trata ==x = 0== e ==y = 0== como casos separados.
 
 2. **Aprovecha simetrías**: Si las ecuaciones para $x$ y para $y$ son casi idénticas, prueba $x = \pm y$ como candidato. Muchos ejercicios de examen están construidos con esta simetría oculta.
 
-3. **Sustitución directa en lugar de Lagrange**: Si la restricción es una recta (e.g. $y = 1 - x$) o permite aislar fácilmente una variable, sustitúyela directamente a $f$ y convierte el problema en una función de **una sola variable**. Es más rápido y seguro.
+3. **Sustitución directa en lugar de Lagrange**: Si la restricción es una recta (e.g. ==y = 1 - x==) o permite aislar fácilmente una variable, sustitúyela directamente a $f$ y convierte el problema en una función de **una sola variable**. Es más rápido y seguro.
 
 4. **Combinación de múltiples restricciones**: Cuando tengas dos o más restricciones, no apliques Lagrange directamente sobre todas (el sistema de $\lambda, \mu, \ldots$ puede ser enorme). Intenta usar la restricción más sencilla para simplificar la difícil **antes** de derivar. 
    > *Ejemplo*: Si tienes $x^2+y^2=1$ y otra ecuación con el término $x^2+y^2$, sustitúyelo por $1$ inmediatamente. Esto a menudo reduce el problema a una sola restricción o elimina variables.
@@ -106,16 +106,16 @@ Con toda la teoría a mano, apliquémosla de arriba abajo. Queremos los extremos
 ### Paso 1: Interior — Puntos Críticos Libres
 Calculamos $\nabla f = (2x - 2,\ 2y)$ e igualamos a cero:
 $$2x - 2 = 0 \implies x = 1, \quad 2y = 0 \implies y = 0$$
-**Punto crítico**: $(1, 0)$. Comprobamos que es interior: $1^2 + 0^2 = 1 \leq 4$. ✓
+**Punto crítico**: ==(1, 0)==. Comprobamos que es interior: $1^2 + 0^2 = 1 \leq 4$. ✓
 
-Valor: $f(1, 0) = 1 + 0 - 2 = -1$.
+Valor: ==f(1, 0) = 1 + 0 - 2 = -1==.
 
 ### Paso 2: Frontera — Extremos Condicionados
 La frontera es la circunferencia $x^2 + y^2 = 4$.
 
 Aplicamos la sustitución parcial: como en la frontera $x^2 + y^2 = 4$, sustituimos directamente:
 $$f(x,y) = \underbrace{(x^2 + y^2)}_{=4} - 2x = 4 - 2x$$
-Como sobre la circunferencia $x \in [-2, 2]$, los extremos de $h(x) = 4 - 2x$ se alcanzan en los extremos del intervalo:
+Como sobre la circunferencia $x \in [-2, 2]$, los extremos de ==h(x) = 4 - 2x== se alcanzan en los extremos del intervalo:
 - $x = 2 \implies f(2, 0) = 0$
 - $x = -2 \implies f(-2, 0) = 8$
 
@@ -123,9 +123,9 @@ Como sobre la circunferencia $x \in [-2, 2]$, los extremos de $h(x) = 4 - 2x$ se
 
 | Punto | Origen | $f$ |
 |------|--------|-----|
-| $(1, 0)$ | Interior | $-1$ |
-| $(2, 0)$ | Frontera | $0$ |
-| $(-2, 0)$ | Frontera | $8$ |
+| ==(1, 0)== | Interior | $-1$ |
+| ==(2, 0)== | Frontera | $0$ |
+| ==(-2, 0)== | Frontera | $8$ |
 
-- **Mínimo Absoluto**: $\mathbf{-1}$ en el punto $(1, 0)$.
-- **Máximo Absoluto**: $\mathbf{8}$ en el punto $(-2, 0)$.
+- **Mínimo Absoluto**: $\mathbf{-1}$ en el punto ==(1, 0)==.
+- **Máximo Absoluto**: $\mathbf{8}$ en el punto ==(-2, 0)==.

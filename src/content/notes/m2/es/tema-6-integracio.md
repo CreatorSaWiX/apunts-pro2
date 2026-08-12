@@ -26,13 +26,13 @@ Estamos calculando el área de un rectángulo infinitesimal. La integral suma to
 $$F(x) = \int_a^x f(t) dt$$
 entonces se cumple que:
 1. $F$ es continua en el intervalo $[a,b]$.
-2. Si $f$ es continua en algún punto $c \in (a,b)$, entonces la función área $F$ es derivable en $c$ y $F'(c) = f(c)$.
+2. Si $f$ es continua en algún punto $c \in (a,b)$, entonces la función área $F$ es derivable en $c$ y ==F'(c) = f(c)==.
 
 ::mafs{type="teorema_fonamental"}
 
 ### Derivada de una integral
 
-Sea $f$ continua y $u(x), v(x)$ funciones derivables. Si definimos: $F(x) = \int_{u(x)}^{v(x)} f(t)dt$ , entonces la derivada es:
+Sea $f$ continua y ==u(x), v(x)== funciones derivables. Si definimos: $F(x) = \int_{u(x)}^{v(x)} f(t)dt$ , entonces la derivada es:
 
 $$
 F'(x) = f(v(x)) \cdot v'(x) - f(u(x)) \cdot u'(x)
@@ -63,7 +63,7 @@ Para trabajar con integrales definidas, es esencial recordar estas propiedades:
 
 <!-- ### Primitiva y regla de Barrow
 
-Si tenemos dos funciones $f$ y $F$ definidas en el intervalo $(a,b)$ tal que $F'(x) = f(x)$ para todo $x \in (a,b)$, se dice que $F$ es una **primitiva** de $f$ en el intervalo $(a,b)$.
+Si tenemos dos funciones $f$ y $F$ definidas en el intervalo $(a,b)$ tal que ==F'(x) = f(x)== para todo $x \in (a,b)$, se dice que $F$ es una **primitiva** de $f$ en el intervalo $(a,b)$.
 
 ::mafs{type="primitiva_familia"}
 
@@ -71,7 +71,7 @@ Si tenemos dos funciones $f$ y $F$ definidas en el intervalo $(a,b)$ tal que $F'
 
 Este concepto nos introduce una de las herramientas más importantes y prácticas para evaluar integrales definidas: la **Regla de Barrow**. Nos permite calcular la integral definida de una función continua de manera muy sencilla si podemos encontrar una de sus primitivas.
 
-> **Regla de Barrow**: Si $f$ es continua en $[a,b]$ y $F$ es continua en $[a,b]$ y derivable en $(a,b)$ siendo una primitiva ($F'(x) = f(x)$), entonces:
+> **Regla de Barrow**: Si $f$ es continua en $[a,b]$ y $F$ es continua en $[a,b]$ y derivable en $(a,b)$ siendo una primitiva (==F'(x) = f(x)==), entonces:
 > $$\int_a^b f(x) dx = F(b) - F(a)$$
 
 ::mafs{type="regla_barrow"}
@@ -79,12 +79,12 @@ Este concepto nos introduce una de las herramientas más importantes y práctica
 ### Propiedades de simetría y paridad
 
 Si la función $f$ presenta simetrías, el estudio de la función área $F(x) = \int_0^x f(t)dt$ se simplifica:
-- Si **$f$ es par** ($f(-x) = f(x)$), entonces **$F$ es impar** ($F(-x) = -F(x)$).
-- Si **$f$ es impar** ($f(-x) = -f(x)$), entonces **$F$ es par** ($F(-x) = F(x)$).
+- Si **$f$ es par** (==f(-x) = f(x)==), entonces **$F$ es impar** (==F(-x) = -F(x)==).
+- Si **$f$ es impar** (==f(-x) = -f(x)==), entonces **$F$ es par** (==F(-x) = F(x)==).
 
 ::mafs{type="paritat_integrals"}
 
-> Recuerda que la integral de una función impar en un intervalo simétrico $[-a, a]$ es siempre $0$.
+> Recuerda que la integral de una función impar en un intervalo simétrico ==[-a, a]== es siempre $0$.
 
 ### Límites e indeterminaciones con integrales
 
@@ -99,10 +99,10 @@ $$\lim_{x \to a} \frac{\int_a^x f(t)dt}{g(x)} = \lim_{x \to a} \frac{f(x)}{g'(x)
 ### Estudio local de la función integral
 
 Podemos estudiar el comportamiento de $F(x) = \int_a^x f(t)dt$ sin calcular la integral:
-- **Puntos críticos**: Son los valores de $x$ donde $F'(x) = f(x) = 0$.
-- **Crecimiento**: $F$ crece donde $f(x) > 0$ y decrece donde $f(x) < 0$.
-- **Concavidad**: Estudiamos $F''(x) = f'(x)$. Si $f'(x) > 0$, $F$ es convexa ($\cup$).
-- **Puntos de Inflexión**: Donde $f'(x) = 0$ y hay cambio de curvatura. -->
+- **Puntos críticos**: Son los valores de $x$ donde ==F'(x) = f(x) = 0==.
+- **Crecimiento**: $F$ crece donde ==f(x) > 0== y decrece donde ==f(x) < 0==.
+- **Concavidad**: Estudiamos ==F''(x) = f'(x)==. Si ==f'(x) > 0==, $F$ es convexa ($\cup$).
+- **Puntos de Inflexión**: Donde ==f'(x) = 0== y hay cambio de curvatura. -->
 
 ---
 
@@ -169,7 +169,7 @@ Estas son las herramientas analíticas que hemos utilizado para resolver los eje
 
 ### 3.1 Cálculo de Áreas entre curvas
 Para encontrar el área limitada por dos funciones $f$ y $g$:
-1. Encontramos los puntos de corte igualando $f(x) = g(x)$.
+1. Encontramos los puntos de corte igualando ==f(x) = g(x)==.
 2. Determinamos qué función es superior en el intervalo $[a,b]$.
 3. Calculamos el área como: $A = \int_a^b |f(x) - g(x)| dx$.
 

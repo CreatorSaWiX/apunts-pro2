@@ -18,7 +18,7 @@ Una funció és derivable en un punt si podem mesurar el seu canvi instantani de
 Aquest valor $f'(a)$ s'anomena la **derivada** de $f$ en $a$.
 
 ### Interpretació Geomètrica
-Geomètricament, la derivada $f'(a)$ ens dóna el **pendent** (la inclinació) de la recta tangent a la gràfica just en el punt $(a, f(a))$. 
+Geomètricament, la derivada $f'(a)$ ens dóna el **pendent** (la inclinació) de la recta tangent a la gràfica just en el punt ==(a, f(a))==. 
 
 L'equació d'aquesta recta tangent és:
 $$y = f(a) + f'(a)(x - a)$$
@@ -51,7 +51,7 @@ $$f'(x) = u(x)^{v(x)} \left( v'(x) \ln u(x) + v(x) \frac{u'(x)}{u(x)} \right)$$
 Aquests teoremes ens permeten assegurar l'existència de punts amb propietats concretes només mirant els extrems d'un interval.
 
 ### Teorema de Rolle
-Si $f$ és contínua en $[a, b]$, derivable a $(a, b)$ i **$f(a) = f(b)$**, llavors existeix almenys un punt $c \in (a, b)$ tal que:
+Si $f$ és contínua en ==[a, b]==, derivable a ==(a, b)== i **==f(a) = f(b)==**, llavors existeix almenys un punt $c \in (a, b)$ tal que:
 $$f'(c) = 0$$
 *Intuïció: Si puges una muntanya i tornes a baixar a la mateixa alçada, en algun moment el teu pendent ha hagut de ser zero (el cim).*
 
@@ -59,7 +59,7 @@ $$f'(c) = 0$$
 
 
 ### Teorema del Valor Mitjà (Lagrange)
-És una versió "inclinada" del de Rolle. Si $f$ és contínua en $[a, b]$ i derivable a $(a, b)$, existeix un punt $c \in (a, b)$ tal que:
+És una versió "inclinada" del de Rolle. Si $f$ és contínua en ==[a, b]== i derivable a ==(a, b)==, existeix un punt $c \in (a, b)$ tal que:
 $$f'(c) = \frac{f(b) - f(a)}{b - a}$$
 *Significat: Hi ha un instant on el pendent de la tangent és paral·lel a la recta que uneix els punts d'inici i final.*
 
@@ -76,7 +76,7 @@ Podem saber si una funció puja o baixa mirant el signe de la seva primera deriv
 - $f'(x) < 0 \implies$ Funció **decreixent**.
 
 Per trobar **màxims i mínims relatius**:
-1. Busquem punts on $f'(a) = 0$ (punts crítics).
+1. Busquem punts on ==f'(a) = 0== (punts crítics).
 2. Mirem la segona derivada:
    - $f''(a) > 0 \implies$ **Mínim** (forma de bol).
    - $f''(a) < 0 \implies$ **Màxim** (forma de paraigua).
@@ -92,7 +92,7 @@ $$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$$
 Veiem la curvatura mirant el signe de la **segona derivada**:
 - $f''(x) > 0 \implies$ **Convexa** (forma $\cup$).
 - $f''(x) < 0 \implies$ **Còncava** (forma $\cap$).
-- Si $f''(a) = 0$ i hi ha canvi de signe, tenim un **punt d'inflexió**.
+- Si ==f''(a) = 0== i hi ha canvi de signe, tenim un **punt d'inflexió**.
 
 ---
 

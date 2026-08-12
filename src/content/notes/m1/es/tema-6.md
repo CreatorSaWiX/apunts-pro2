@@ -31,10 +31,10 @@ Un **espacio vectorial** sobre un cuerpo $\mathbb{K}$ (que será normalmente $\m
 
 | Axioma | Definición | Ejemplo (en $\mathbb{R}^2$) |
 | :--- | :--- | :--- |
-| **e1** Asociativa | $u + (v + w) = (u + v) + w$ | $(1,1) + [(2,0) + (0,3)] = [(1,1) + (2,0)] + (0,3)$ |
-| **e2** Conmutativa | $u + v = v + u$ | $(1,2) + (3,4) = (3,4) + (1,2) = (4,6)$ |
-| **e3** Elemento neutro | $\exists! \, 0_E \in E : u + 0_E = u$ | $(x,y) + (0,0) = (x,y)$ |
-| **e4** Elemento opuesto | $\forall u, \exists! \, (-u) : u + (-u) = 0_E$ | $(3,-2) + (-3,2) = (0,0)$ |
+| **e1** Asociativa | ==u + (v + w) = (u + v) + w== | ==(1,1) + [(2,0) + (0,3)] = [(1,1) + (2,0)] + (0,3)== |
+| **e2** Conmutativa | ==u + v = v + u== | ==(1,2) + (3,4) = (3,4) + (1,2) = (4,6)== |
+| **e3** Elemento neutro | $\exists! \, 0_E \in E : u + 0_E = u$ | ==(x,y) + (0,0) = (x,y)== |
+| **e4** Elemento opuesto | $\forall u, \exists! \, (-u) : u + (-u) = 0_E$ | ==(3,-2) + (-3,2) = (0,0)== |
 
 ::mafs{type="vis_axiomes_suma"}
 
@@ -57,7 +57,7 @@ Más allá de $\mathbb{R}^n$, encontramos muchos otros conjuntos que cumplen est
 *   **Polinomios $\mathcal{P}(\mathbb{R})$**: Todos los polinomis con coeficientes reales.
 *   **Polinomios de grado $\leq d$ ($\mathcal{P}_d(\mathbb{R})$)**: Fijando un grado máximo.
 *   **Espacio trivial $\{0_E\}$**: Formado solo por el vector nulo.
-*   **Soluciones de un sistema lineal homogéneo**: El conjunto de soluciones de $Ax = 0$ siempre forma un espacio vectorial.
+*   **Soluciones de un sistema lineal homogéneo**: El conjunto de soluciones de ==Ax = 0== siempre forma un espacio vectorial.
 
 ::mafs{type="vis_exemples_espais"}
 
@@ -103,8 +103,8 @@ Formalmente, un subconjunto no vacío $S \subseteq E$ es un **subespacio vectori
 ### 2.3 Independencia lineal
 
 Un conjunto de vectores $\{u_1, \dots, u_k\}$ es **linealmente independiente (LI)** si cada uno te aporta una **información nueva**. Si uno fuera **linealmente dependiente (LD)**, querría decir que "sobra" porque lo puedes fabricar combinando los otros. Por ejemplo: 
-*   **LI (Independientes)**: $u = (1, 0)$ y $v = (0, 1)$. No hay forma de multiplicar el $(1,0)$ por un número y que te dé el $(0,1)$. Son caminos totalmente diferentes.
-*   **LD (Dependientes)**: $u = (1, 2)$ y $v = (2, 4)$. Aquí $v = 2u$. El vector $v$ no nos dice nada nuevo, es solo el vector $u$ estirado. **Sobra**.
+*   **LI (Independientes)**: ==u = (1, 0)== y ==v = (0, 1)==. No hay forma de multiplicar el $(1,0)$ por un número y que te dé el $(0,1)$. Son caminos totalmente diferentes.
+*   **LD (Dependientes)**: ==u = (1, 2)== y ==v = (2, 4)==. Aquí ==v = 2u==. El vector $v$ no nos dice nada nuevo, es solo el vector $u$ estirado. **Sobra**.
 
 Para saber si un conjunto es LI o LD, tenemos tres métodos principales:
 
@@ -124,7 +124,7 @@ Si tenemos vectores numéricos, lo más rápido es ponerlos por columnas en una 
 *   Si **$r = \text{número de vectores}$** $\implies$ **LI**.
 *   Si **$r < \text{número de vectores}$** $\implies$ **LD**.
 
-**Ejemplo**: Para $u=(1,0,1)$, $v=(0,1,1)$ y $w=(1,1,2)$, el rango de la matriz es 2 (porque $w = u + v$). Como tenemos 3 vectores pero el rango es 2, el conjunto es **LD**.
+**Ejemplo**: Para $u=(1,0,1)$, $v=(0,1,1)$ y $w=(1,1,2)$, el rango de la matriz es 2 (porque ==w = u + v==). Como tenemos 3 vectores pero el rango es 2, el conjunto es **LD**.
 
 ### Método 3: Resolución de sistemas (SCD/SCI)
 Cuando planteamos la ecuación fundamental como un sistema de ecuaciones lineales homogéneo ($Ax=0$):
@@ -152,7 +152,7 @@ Intentar unir dos subespacios simplemente "juntándolos" (como si fuesen dos peg
 *   **Intuición**: Imagina dos rectas (el eje X y el eje Y). La unión son solo los puntos que están sobre los ejes. Pero si sumas el vector $(1,0)$ del eje X y el $(0,1)$ del eje Y, obtienes el $(1,1)$, que está en medio del plano y **fuera de los ejes**. ¡Has salido del "club"!
 *   **Conclusión**: La unión **NO** es normalmente un subespacio.
 
-### 3. Suma ($S + W$): La expansión
+### 3. Suma (==S + W==): La expansión
 Como la unión falla, la **suma** es la solución para fusionar subespacios. Consiste en coger todas las sumas posibles entre un vector de $S$ y uno de $W$.
 *   **Intuición**: Es como coger dos rectas y "llenar" todo el espacio que hay entre ellas hasta formar un plano completo. La suma **siempre** es un subespacio (el más pequeño que contiene a $S$ y $W$).
 *   **En la práctica**: Para encontrar una base de $S+W$, juntamos los generadores de $S$ y los de $W$ y eliminamos los que sobren (los dependientes).
@@ -178,7 +178,7 @@ La **dimensión** ($\dim E$) es el número de vectores que tiene cualquiera de s
 | :--- | :--- |
 | $\mathbb{R}^n$ | $n$ |
 | $\mathcal{M}_{m \times n}(\mathbb{K})$ | $m \cdot n$ |
-| $\mathcal{P}_d(\mathbb{R})$ | $d + 1$ |
+| $\mathcal{P}_d(\mathbb{R})$ | ==d + 1== |
 | Subespacio trivial $\{0_E\}$ | $0$ |
 
 ### Fórmula de Grassmann
@@ -186,9 +186,9 @@ Vital para ejercicios de sumas e intersecciones:
 $$\dim(S+W) = \dim S + \dim W - \dim(S \cap W)$$
 
 Sean $k$ vectores en un espacio $E$ de dimensión $n$:
-1. **$k > n$**: El conjunto es **siempre LD** (sobran vectores).
-2. **$k < n$**: El conjunto **no puede generar** $E$ (faltan vectores).
-3. **$k = n$**: Si demuestras que son **LI** (o que generan), automáticamente son **Base**. (¡Esto te ahorra la mitad del trabajo!).
+1. **==k > n==**: El conjunto es **siempre LD** (sobran vectores).
+2. **==k < n==**: El conjunto **no puede generar** $E$ (faltan vectores).
+3. **==k = n==**: Si demuestras que son **LI** (o que generan), automáticamente son **Base**. (¡Esto te ahorra la mitad del trabajo!).
 
 ::mafs{type="vis_regles_or_base"}
 
@@ -217,13 +217,13 @@ Expresan cada componente del vector en función de unos parámetros ($\alpha, \b
   Ej: $\langle (1,0), (0,1) \rangle \implies (x,y) = \alpha(1,0) + \beta(0,1) \implies \{x=\alpha, y=\beta\}$.
 
 ### B. De Generadores a Implícitas (Método de Gauss)
-Tienes los generadores $\langle u_1, u_2 \rangle$ y quieres saber qué ecuaciones deben cumplir las variables $(x, y, z)$.
+Tienes los generadores $\langle u_1, u_2 \rangle$ y quieres saber qué ecuaciones deben cumplir las variables ==(x, y, z)==.
 
 **Ejemplo práctico (Paso a paso):**
 Sean $u_1=(1,1,2)^T$ y $u_2=(0,1,1)^T$. Escribimos la matriz ampliada:
 $$ \left( \begin{array}{cc|c} 1 & 0 & x \\ 1 & 1 & y \\ 2 & 1 & z \end{array} \right) \xrightarrow{F_2-F_1, F_3-2F_1} \left( \begin{array}{cc|c} 1 & 0 & x \\ 0 & 1 & y-x \\ 0 & 1 & z-2x \end{array} \right) \xrightarrow{F_3-F_2} \left( \begin{array}{cc|c} 1 & 0 & x \\ 0 & 1 & y-x \\ \mathbf{0} & \mathbf{0} & \mathbf{z-x-y} \end{array} \right) $$
 Para que el sistema sea compatible, lo que queda a la derecha de la fila de ceros debe ser **0**.
-**Respuesta**: La ecuación implícita es $z - x - y = 0$.
+**Respuesta**: La ecuación implícita es ==z - x - y = 0==.
 
 ### B. De Implícitas a Generadores
 Simplemente resuelve el sistema de ecuaciones lineales. Las variables libres (parámetros) te darán los vectores de la base.

@@ -34,7 +34,7 @@ Sigui $(a,b)$ un punt crític de $f \in \mathcal{C}^2$. Analitzem el determinant
  
 Si la funció és un polinomi de grau 2 (com $f(x,y) = x^2 + 2xy + 3y^2$), pots completar quadrats per veure si és una suma de quadrats positius (mínim) o negatius (màxim). És molt més ràpid que calcular la Hessiana!
 
-> **Quan $\Delta = 0$**: Prova d'estudiar $f$ sobre rectes que passin pel punt (e.g. $y = 0$ o $y = x$). Una altra eina molt potent és **completar quadrats**: si pots escriure $f(x,y) - f(a,b)$ com una forma que és sempre positiva (o sempre negativa), tens un mínim (o màxim) global sense necessitat de la Hessiana.
+> **Quan $\Delta = 0$**: Prova d'estudiar $f$ sobre rectes que passin pel punt (e.g. ==y = 0== o ==y = x==). Una altra eina molt potent és **completar quadrats**: si pots escriure ==f(x,y) - f(a,b)== com una forma que és sempre positiva (o sempre negativa), tens un mínim (o màxim) global sense necessitat de la Hessiana.
 
 ---
 
@@ -42,7 +42,7 @@ Si la funció és un polinomi de grau 2 (com $f(x,y) = x^2 + 2xy + 3y^2$), pots 
 
 Busquem els extrems de $f(\mathbf{x})$ sobre el conjunt definit per una restricció $g(\mathbf{x}) = 0$.
 
-La idea geomètrica: els extrems condicionats es troben allà on la **corba de nivell de $f$ és tangent a la corba de restricció $g = 0$**. Quan dues corbes són tangents, els seus gradients han de ser paral·lels.
+La idea geomètrica: els extrems condicionats es troben allà on la **corba de nivell de $f$ és tangent a la corba de restricció ==g = 0==**. Quan dues corbes són tangents, els seus gradients han de ser paral·lels.
 
 ### El Teorema de Lagrange
 Això es formalitza amb el sistema:
@@ -62,11 +62,11 @@ On $\lambda$ és el **multiplicador de Lagrange**. Per a múltiples restriccions
 ### Com resoldre el sistema
 Resoldre $\nabla f = \lambda \nabla g$ pot ser algebraicament pesat. Tres estratègies que sovint simplifiquen molt:
 
-1. **Elimina $\lambda$**: Aïlla $\lambda$ de cada equació i iguala-les. Això dona una relació directa entre $x$ i $y$. Compte: no divideixis per zero; tracta $x = 0$ i $y = 0$ com a casos separats.
+1. **Elimina $\lambda$**: Aïlla $\lambda$ de cada equació i iguala-les. Això dona una relació directa entre $x$ i $y$. Compte: no divideixis per zero; tracta ==x = 0== i ==y = 0== com a casos separats.
 
 2. **Aprofita simetries**: Si les equacions per $x$ i per $y$ són gairebé idèntiques, prova $x = \pm y$ com a candidat. Molts exercicis d'examen estan construïts amb aquesta simetria oculta.
 
-3. **Substitució directa en lloc de Lagrange**: Si la restricció és una recta (e.g. $y = 1 - x$) o permet aïllar fàcilment una variable, substitueix-la directament a $f$ i converteix el problema en una funció d'**una sola variable**. És més ràpid i segur.
+3. **Substitució directa en lloc de Lagrange**: Si la restricció és una recta (e.g. ==y = 1 - x==) o permet aïllar fàcilment una variable, substitueix-la directament a $f$ i converteix el problema en una funció d'**una sola variable**. És més ràpid i segur.
 
 4. **Combinació de múltiples restriccions**: Quan tinguis dues o més restriccions, no apliquis Lagrange directament sobre totes (el sistema de $\lambda, \mu, \ldots$ pot ser enorme). Intenta usar la restricció més senzilla per simplificar la difícil **abans** de derivar. 
    > *Exemple*: Si tens $x^2+y^2=1$ i una altra equació amb el terme $x^2+y^2$, substitueix-lo per $1$ immediatament. Això sovint redueix el problema a una sola restricció o elimina variables.
@@ -106,16 +106,16 @@ Amb tota la teoria a mà, apliquem-la de dalt a baix. Volem els extrems absoluts
 ### Pas 1: Interior — Punts Crítics Lliures
 Calculem $\nabla f = (2x - 2,\ 2y)$ i igualem a zero:
 $$2x - 2 = 0 \implies x = 1, \quad 2y = 0 \implies y = 0$$
-**Punt crític**: $(1, 0)$. Comprovem que és interior: $1^2 + 0^2 = 1 \leq 4$. ✓
+**Punt crític**: ==(1, 0)==. Comprovem que és interior: $1^2 + 0^2 = 1 \leq 4$. ✓
 
-Valor: $f(1, 0) = 1 + 0 - 2 = -1$.
+Valor: ==f(1, 0) = 1 + 0 - 2 = -1==.
 
 ### Pas 2: Frontera — Extrems Condicionats
 La frontera és la circumferència $x^2 + y^2 = 4$.
 
 Apliquem la substitució parcial: com que a la frontera $x^2 + y^2 = 4$, substituïm directament:
 $$f(x,y) = \underbrace{(x^2 + y^2)}_{=4} - 2x = 4 - 2x$$
-Com que sobre la circumferència $x \in [-2, 2]$, els extrems de $h(x) = 4 - 2x$ s'assoleixen als extrems de l'interval:
+Com que sobre la circumferència $x \in [-2, 2]$, els extrems de ==h(x) = 4 - 2x== s'assoleixen als extrems de l'interval:
 - $x = 2 \implies f(2, 0) = 0$
 - $x = -2 \implies f(-2, 0) = 8$
 
@@ -123,9 +123,9 @@ Com que sobre la circumferència $x \in [-2, 2]$, els extrems de $h(x) = 4 - 2x$
 
 | Punt | Origen | $f$ |
 |------|--------|-----|
-| $(1, 0)$ | Interior | $-1$ |
-| $(2, 0)$ | Frontera | $0$ |
-| $(-2, 0)$ | Frontera | $8$ |
+| ==(1, 0)== | Interior | $-1$ |
+| ==(2, 0)== | Frontera | $0$ |
+| ==(-2, 0)== | Frontera | $8$ |
 
-- **Mínim Absolut**: $\mathbf{-1}$ al punt $(1, 0)$.
-- **Màxim Absolut**: $\mathbf{8}$ al punt $(-2, 0)$.
+- **Mínim Absolut**: $\mathbf{-1}$ al punt ==(1, 0)==.
+- **Màxim Absolut**: $\mathbf{8}$ al punt ==(-2, 0)==.

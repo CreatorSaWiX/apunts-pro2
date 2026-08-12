@@ -141,7 +141,7 @@ void parentesis(istream& in, ostream& out) {
 
 ### Exercise 3: Simulated Recursion with Stacks
 
-The computer uses a hidden stack (the Call-Stack) to process recursive functions. This exercise shows us how any recursive function of the type $f(n-1)$ can be translated into iterative code. In the iterative loop we take the `.top()`, and if it meets the viability condition ($v > 0$), we simulate the theoretical creation of activities by manually adding two smaller operations to the stack.
+The computer uses a hidden stack (the Call-Stack) to process recursive functions. This exercise shows us how any recursive function of the type $f(n-1)$ can be translated into iterative code. In the iterative loop we take the `.top()`, and if it meets the viability condition (==v > 0==), we simulate the theoretical creation of activities by manually adding two smaller operations to the stack.
 
 <details>
 <summary>Solution code: recursivitat.cc</summary>
@@ -228,7 +228,7 @@ void patata_calenta(istream& in, ostream& out) {
 
 ### Exercise 6: Recent Counter (Sliding Window)
 
-Given a base time tolerance threshold $T$, how many previous ones are still "alive" past the time? This pattern is known as a Sliding Window and is the main useful vital property of a queue. Upon reading a new instant ($current$), we expire the oldest used ones by looking at the `front()`: If it is less than $current - T$, we can consider it prescribed. After the sequential purge, we simply ask what active `size()` we have!
+Given a base time tolerance threshold $T$, how many previous ones are still "alive" past the time? This pattern is known as a Sliding Window and is the main useful vital property of a queue. Upon reading a new instant ($current$), we expire the oldest used ones by looking at the `front()`: If it is less than ==current - T==, we can consider it prescribed. After the sequential purge, we simply ask what active `size()` we have!
 
 <details>
 <summary>Solution code: recents.cc</summary>

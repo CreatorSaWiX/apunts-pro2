@@ -63,7 +63,7 @@ Let $\Delta = \det(Hf(a))$ be the determinant:
 The Taylor polynomial of degree $n$ at point $\mathbf{a}$ approximates the function $f$ near that point.
 
 ### Expanded formula (Degree 1 and 2)
-For manual calculations in two variables near $(a, b)$:
+For manual calculations in two variables near ==(a, b)==:
 $$
 P_1(x, y) = f(a, b) + \left[ \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\partial y}(a,b)(y-b) \right] 
 $$
@@ -83,7 +83,7 @@ $$P_2(\mathbf{x}) = f(\mathbf{a}) + \nabla f(\mathbf{a})^T (\mathbf{x}-\mathbf{a
 > If you have to calculate the polynomial at the origin $(0,0)$ of a composite function like $f(x,y) = \ln(1+2x+3y)$, **don't differentiate 5 times!** 
 > 1. Identify the core of the function: $\ln(1+t)$.
 > 2. Use the 1D Taylor expansion: $t - \frac{t^2}{2} + \dots$
-> 3. Substitute $t = 2x+3y$ and expand algebraically.
+> 3. Substitute ==t = 2x+3y== and expand algebraically.
 > *This technique is much faster and safer.*
 
 ::threeviz{type="taylor_3d"} -->
@@ -139,4 +139,4 @@ $$
 
 ::three{type="vis_diferencial_increment"}
 
-The **Differential** ($df$) represents the approximate increment of the function when we move a small distance $(dx, dy)$ from the initial point.
+The **Differential** ($df$) represents the approximate increment of the function when we move a small distance ==(dx, dy)== from the initial point.

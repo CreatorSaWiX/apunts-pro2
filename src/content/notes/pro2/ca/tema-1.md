@@ -131,7 +131,7 @@ program: main.o Punt.o
 	$(CXX) -o program main.o Punt.o
 
 main.o: main.cc Punt.hpp
-	$(CXX) $(CXXFLAGS) -c main.cc
+	==(CXX) ==(CXXFLAGS) -c main.cc
 ```
 
 ---

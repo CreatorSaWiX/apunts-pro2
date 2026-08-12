@@ -19,7 +19,7 @@ Per entendre què és la **derivada direccional** $\frac{\partial f}{\partial \m
 
 ::three{type="vis_derivada_direccional_hibrida"}
 
-Les **derivades parcials** són el cas on la direcció coincideix amb els eixos coordenats ($X, Y, Z$). A la pràctica, quan derives parcialment, tractes totes les altres variables com si fossin **constants**.
+Les **derivades parcials** són el cas on la direcció coincideix amb els eixos coordenats (==X, Y, Z==). A la pràctica, quan derives parcialment, tractes totes les altres variables com si fossin **constants**.
 
 - **Respecte a x**: $\frac{\partial f}{\partial x}$ (*"Derivada parcial de f respecte a x"*).
 - **Respecte a y**: $\frac{\partial f}{\partial y}$ (*"Derivada parcial de f respecte a y"*).
@@ -119,8 +119,8 @@ Si una funció és de classe $C^1$, podem aproximar-la localment per un pla tang
 
 ::three{type="pla_tangent"}
 
-### 4.1 Cas explícit: $z = f(x, y)$
-Si la superfície ve donada de forma explícita, el pla tangent en el punt $M(a, b, f(a,b))$ és:
+### 4.1 Cas explícit: ==z = f(x, y)==
+Si la superfície ve donada de forma explícita, el pla tangent en el punt ==M(a, b, f(a,b))== és:
 
 **Pla tangent:**
 $$z = f(a,b) + \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\partial y}(a,b)(y-b)$$
@@ -129,8 +129,8 @@ $$z = f(a,b) + \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\part
 Té vector director $(\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, -1)$. La seva equació contínua és:
 $$\frac{x-a}{\frac{\partial f}{\partial x}(a,b)} = \frac{y-b}{\frac{\partial f}{\partial y}(a,b)} = \frac{z-f(a,b)}{-1}$$
 
-### 4.2 Cas implícit: $F(x, y, z) = 0$
-Si la superfície ve definida per una equació implícita, el pla tangent en $M(a, b, c)$ és:
+### 4.2 Cas implícit: ==F(x, y, z) = 0==
+Si la superfície ve definida per una equació implícita, el pla tangent en ==M(a, b, c)== és:
 
 **Pla tangent:**
 $$\frac{\partial F}{\partial x}(a,b,c)(x-a) + \frac{\partial F}{\partial y}(a,b,c)(y-b) + \frac{\partial F}{\partial z}(a,b,c)(z-c) = 0$$
@@ -139,7 +139,7 @@ $$\frac{\partial F}{\partial x}(a,b,c)(x-a) + \frac{\partial F}{\partial y}(a,b,
 Té la direcció del gradient $\nabla F(a,b,c)$. L'equació contínua és:
 $$\frac{x-a}{\frac{\partial F}{\partial x}(a,b,c)} = \frac{y-b}{\frac{\partial F}{\partial y}(a,b,c)} = \frac{z-c}{\frac{\partial F}{\partial z}(a,b,c)}$$
 
-> **Conversió**: Qualsevol funció explícita $z = f(x,y)$ es pot tractar com una implícita fent $F(x,y,z) = f(x,y) - z = 0$.
+> **Conversió**: Qualsevol funció explícita ==z = f(x,y)== es pot tractar com una implícita fent ==F(x,y,z) = f(x,y) - z = 0==.
 
 ### 4.3 Pla tangent horitzontal
 Si el pla tangent és **paral·lel al pla $XY$**:

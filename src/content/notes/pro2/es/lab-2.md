@@ -141,7 +141,7 @@ void parentesis(istream& in, ostream& out) {
 
 ### Ejercicio 3: Recursividad simulada con Pilas
 
-El ordenador utiliza una pila oculta (el Call-Stack) para procesar funciones recursivas. Este ejercicio nos demuestra cómo cualquier función recursiva del tipo $f(n-1)$ puede traducirse a código iterativo. En el bucle iterativo tomamos el `.top()`, y si cumple la condición de viabilidad ($v > 0$), simulamos la creación teórica de actividades añadiendo manualmente dos operaciones más pequeñas a la pila.
+El ordenador utiliza una pila oculta (el Call-Stack) para procesar funciones recursivas. Este ejercicio nos demuestra cómo cualquier función recursiva del tipo $f(n-1)$ puede traducirse a código iterativo. En el bucle iterativo tomamos el `.top()`, y si cumple la condición de viabilidad (==v > 0==), simulamos la creación teórica de actividades añadiendo manualmente dos operaciones más pequeñas a la pila.
 
 <details>
 <summary>Código solución: recursivitat.cc</summary>
@@ -228,7 +228,7 @@ void patata_calenta(istream& in, ostream& out) {
 
 ### Ejercicio 6: Contador Recientes (Sliding Window)
 
-Dado un umbral base de tolerancia de tiempo $T$, ¿cuántos anteriores siguen "vivos" pasado el tiempo? Este patrón se conoce como ventana deslizante ("Sliding Window") y es la principal propiedad vitalicias útil de una cola. Al leer un nuevo instante ($actual$), caducamos los más viejos utilizados mirando el `front()`: Si es menor que $actual - T$, lo podemos dar por prescrito. Acabada la purga secuencial, ¡pedimos simple qué `size()` activo tenemos!
+Dado un umbral base de tolerancia de tiempo $T$, ¿cuántos anteriores siguen "vivos" pasado el tiempo? Este patrón se conoce como ventana deslizante ("Sliding Window") y es la principal propiedad vitalicias útil de una cola. Al leer un nuevo instante ($actual$), caducamos los más viejos utilizados mirando el `front()`: Si es menor que ==actual - T==, lo podemos dar por prescrito. Acabada la purga secuencial, ¡pedimos simple qué `size()` activo tenemos!
 
 <details>
 <summary>Código solución: recents.cc</summary>

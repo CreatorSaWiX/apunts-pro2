@@ -22,7 +22,7 @@ $$\lim_{x \to a} f(x) = l \iff \lim_{x \to a^+} f(x) = \lim_{x \to a^-} f(x) = l
 Para que una función sea "continua" en un punto $a$, se tienen que cumplir tres reglas:
 1. Debe existir el límite: $l = \lim_{x \to a} f(x)$.
 2. El punto debe ser válido: $a \in D$.
-3. El límite y el valor de la función deben coincidir: $l = f(a)$.
+3. El límite y el valor de la función deben coincidir: ==l = f(a)==.
 
 ### Discontinuidades
 - **Evitable:** Existe el límite, pero falla la condición 2 o 3.
@@ -34,10 +34,10 @@ Para que una función sea "continua" en un punto $a$, se tienen que cumplir tres
 :::
 
 ### Teorema de Bolzano
-Si una función es continua en un intervalo cerrado $[a, b]$ y en los extremos cambia de signo ($f(a) \cdot f(b) < 0$), entonces existe al menos un punto $c \in (a, b)$ tal que $f(c) = 0$.
+Si una función es continua en un intervalo cerrado ==[a, b]== y en los extremos cambia de signo ($f(a) \cdot f(b) < 0$), entonces existe al menos un punto $c \in (a, b)$ tal que ==f(c) = 0==.
 
 ### Teorema de Weierstrass
-Toda función continua en un intervalo cerrado $[a, b]$ tiene garantizado un punto máximo absoluto $M$ y un mínimo absoluto $m$ dentro de este intervalo.
+Toda función continua en un intervalo cerrado ==[a, b]== tiene garantizado un punto máximo absoluto $M$ y un mínimo absoluto $m$ dentro de este intervalo.
 
 ## 5. Resolución aproximada de ecuaciones
 

@@ -22,7 +22,7 @@ $$\lim_{x \to a} f(x) = l \iff \lim_{x \to a^+} f(x) = \lim_{x \to a^-} f(x) = l
 Perquè una funció sigui "contínua" en un punt $a$, s'han de complir tres regles:
 1. Ha d'existir el límit: $l = \lim_{x \to a} f(x)$.
 2. El punt ha de ser vàlid: $a \in D$.
-3. El límit i el valor de la funció han de coincidir: $l = f(a)$.
+3. El límit i el valor de la funció han de coincidir: ==l = f(a)==.
 
 ### Discontinuïtats
 - **Evitable:** Existeix el límit, però falla la condició 2 o 3.
@@ -34,10 +34,10 @@ Perquè una funció sigui "contínua" en un punt $a$, s'han de complir tres regl
 :::
 
 ### Teorema de Bolzano
-Si una funció és contínua en un interval tancat $[a, b]$ i als extrems canvia de signe ($f(a) \cdot f(b) < 0$), llavors existeix almenys un punt $c \in (a, b)$ tal que $f(c) = 0$.
+Si una funció és contínua en un interval tancat ==[a, b]== i als extrems canvia de signe ($f(a) \cdot f(b) < 0$), llavors existeix almenys un punt $c \in (a, b)$ tal que ==f(c) = 0==.
 
 ### Teorema de Weierstrass
-Tota funció contínua en un interval tancat $[a, b]$ té garantit un punt màxim absolut $M$ i un mínim absolut $m$ dins d'aquest interval.
+Tota funció contínua en un interval tancat ==[a, b]== té garantit un punt màxim absolut $M$ i un mínim absolut $m$ dins d'aquest interval.
 
 ## 5. Resolució aproximada d'equacions
 

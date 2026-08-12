@@ -22,7 +22,7 @@ En ejercicios de $\mathbb{R}^2$ y $\mathbb{R}^3$, las transformaciones más típ
 
 ::three{type="vis_transformacions_hibrida"}
 
-> **Geometría en 3D**: Mientras que en $\mathbb{R}^2$ solo tenemos un eje de rotación, en $\mathbb{R}^3$ podemos rotar respecto a $X, Y$ o $Z$. Fíjate cómo la **reflexión** invierte el objeto; es un concepto clave en gráficos por ordenador.
+> **Geometría en 3D**: Mientras que en $\mathbb{R}^2$ solo tenemos un eje de rotación, en $\mathbb{R}^3$ podemos rotar respecto a ==X, Y== o $Z$. Fíjate cómo la **reflexión** invierte el objeto; es un concepto clave en gráficos por ordenador.
 
 ---
 
@@ -37,20 +37,20 @@ Para que una función $f: E \to F$ sea lineal, debe cumplir **dos condiciones sa
 2.  **Producto por escalar**: $f(\lambda \cdot \vec{u}) = \lambda \cdot f(\vec{u})$  
     *(Si duplicas la entrada, la salida se duplica).*
 
-Una aplicación lineal **siempre** envía el vector cero al vector cero ($f(\vec{0}_E) = \vec{0}_F$). Si ves una función donde $f(0,0) = (1,2)$, ¡ya sabes seguro que **no** es lineal!
+Una aplicación lineal **siempre** envía el vector cero al vector cero ($f(\vec{0}_E) = \vec{0}_F$). Si ves una función donde ==f(0,0) = (1,2)==, ¡ya sabes seguro que **no** es lineal!
 
 ::mafs{type="vis_propietats_lineals"}
 
 ### ¿Cómo trabajar con polinomios y matrices?
 Cuando el ejercicio no es de $\mathbb{R}^n$, el primer paso es convertir los objetos en "vectores de números" (coordenadas) respecto a una base. Una vez tienes los vectores, el ejercicio se resuelve exactamente igual que en $\mathbb{R}^n$.
-*   **Polinomios ($\mathbb{R}_n[x]$)**: Un polinomio $ax^2 + bx + c$ se convierte en el vector $(a, b, c)$ si usamos la base $\{x^2, x, 1\}$.
-*   **Matrices ($\mathcal{M}_{2 \times 2}$)**: Una matriz $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ se convierte en el vector $(a, b, c, d)$ usando la base canónica de matrices.
+*   **Polinomios ($\mathbb{R}_n[x]$)**: Un polinomio $ax^2 + bx + c$ se convierte en el vector ==(a, b, c)== si usamos la base $\{x^2, x, 1\}$.
+*   **Matrices ($\mathcal{M}_{2 \times 2}$)**: Una matriz $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ se convierte en el vector ==(a, b, c, d)== usando la base canónica de matrices.
 
 ---
 
 ## 2. La matriz asociada
 
-Trabajar con fórmulas tipo $f(x,y) = (2x+y, x-y)$ es cansado. Por suerte, toda la información de una aplicación lineal se puede guardar en una **matriz**. Esta matriz actúa como un "traductor".
+Trabajar con fórmulas tipo ==f(x,y) = (2x+y, x-y)== es cansado. Por suerte, toda la información de una aplicación lineal se puede guardar en una **matriz**. Esta matriz actúa como un "traductor".
 
 ::mafs{type="vis_matriu_associada"}
 

@@ -70,27 +70,27 @@ Una **Biestrella** es un árbol que tiene **exactamente dos vértices que no son
 Un grafo $G$ de orden $n$ y tamaño $m$ es un árbol si cumple **dos** de estas tres condiciones:
 1.  $G$ es conexo.
 2.  $G$ es acíclico.
-3.  $m = n - 1$.
+3.  ==m = n - 1==.
 
 :::tip{title="Ex1-Parcial-2014"}
-**Problema:** Demostrad que un grafo de orden $n$ y tamaño $m$ es árbol si y solo si es acíclico y $m = n-1$.
+**Problema:** Demostrad que un grafo de orden $n$ y tamaño $m$ es árbol si y solo si es acíclico y ==m = n-1==.
 
 <details>
 <summary><b>Ver la demostración</b></summary>
 
-1. ($\implies$) Si $G$ es un árbol, entonces es acíclico por definición. Demostremos que $m = n-1$ por inducción sobre $n$:
+1. ($\implies$) Si $G$ es un árbol, entonces es acíclico por definición. Demostremos que ==m = n-1== por inducción sobre $n$:
     
-    **Caso base ($n=1$):** Un nodo y 0 aristas. $m = 0 = 1-1$. Correcto.
+    **Caso base ($n=1$):** Un nodo y 0 aristas. ==m = 0 = 1-1==. Correcto.
    
    **Paso inductivo:** 
     * **H.I.:** Suponemos que la fórmula $m=n-1$ es cierta para todos los árboles de $n=k$ vértices.
-    * **T.I.:** Un árbol de $n=k+1$ nodos tiene al menos una hoja (vértice de grado 1). Si la eliminamos junto con su arista, obtenemos un nuevo árbol de $n=k$ nodos. Por hipótesis de inducción, este tiene $m = k-1$ aristas. Al restaurar la hoja y la arista original, tenemos $m = (k-1) + 1 = k = (k+1)-1$.
+    * **T.I.:** Un árbol de $n=k+1$ nodos tiene al menos una hoja (vértice de grado 1). Si la eliminamos junto con su arista, obtenemos un nuevo árbol de $n=k$ nodos. Por hipótesis de inducción, este tiene ==m = k-1== aristas. Al restaurar la hoja y la arista original, tenemos ==m = (k-1) + 1 = k = (k+1)-1==.
 
-2. ($\impliedby$) Si $G$ es acíclico y $m = n-1$, hemos de demostrar que es conexo (y por tanto un árbol):
+2. ($\impliedby$) Si $G$ es acíclico y ==m = n-1==, hemos de demostrar que es conexo (y por tanto un árbol):
     * Supongamos que $G$ tiene $k$ componentes conexas $C_1, C_2, \dots, C_k$. Como el grafo es acíclico, cada componente también lo es y, por ser conexa, cada $C_i$ es un árbol.
     * Para cada componente $C_i$, sabemos que $m_i = n_i - 1$.
     * Sumando todas las aristas: $m = \sum_{i=1}^k m_i = \sum_{i=1}^k (n_i - 1) = \sum n_i - \sum 1 = n - k$.
-    * Como se nos dice que $m = n - 1$, entonces $n - k = n - 1 \implies \mathbf{k = 1}$.
+    * Como se nos dice que ==m = n - 1==, entonces $n - k = n - 1 \implies \mathbf{k = 1}$.
     * Al haber una sola componente, el grafo es conexo y queda demostrado que es un árbol.
 </details>
 :::
@@ -106,7 +106,7 @@ La mayoría de problemas numéricos se resuelven combinando el lema de los apret
 **Problema:** Un árbol tiene 3 vértices de grados 4, 3 y 2. El resto son hojas. ¿Cuántas hojas tiene?
 **Solución:**
 1.  Sean $f$ el número de hojas.
-2.  Orden total: $n = f + 3$ (las hojas + los 3 vértices conocidos).
+2.  Orden total: ==n = f + 3== (las hojas + los 3 vértices conocidos).
 3.  Suma de grados: $4 + 3 + 2 + (f \cdot 1) = 9 + f$.
 4.  Aplicamos la ecuación: $9 + f = 2(f + 3) - 2 \implies 9 + f = 2f + 4 \implies f = 5$.
 :::

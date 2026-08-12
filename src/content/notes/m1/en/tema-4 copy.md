@@ -70,27 +70,27 @@ A **Bistar** is a tree that has **exactly two vertices that are not leaves**.
 A graph $G$ of order $n$ and size $m$ is a tree if it meets **two** of these three conditions:
 1.  $G$ is connected.
 2.  $G$ is acyclic.
-3.  $m = n - 1$.
+3.  ==m = n - 1==.
 
 :::tip{title="Ex1-Midterm-2014"}
-**Problem:** Prove that a graph of order $n$ and size $m$ is a tree if and only if it is acyclic and $m = n-1$.
+**Problem:** Prove that a graph of order $n$ and size $m$ is a tree if and only if it is acyclic and ==m = n-1==.
 
 <details>
 <summary><b>See the proof</b></summary>
 
-1. ($\implies$) If $G$ is a tree, then it is acyclic by definition. Let's prove that $m = n-1$ by induction on $n$:
+1. ($\implies$) If $G$ is a tree, then it is acyclic by definition. Let's prove that ==m = n-1== by induction on $n$:
     
-    **Base case ($n=1$):** One node and 0 edges. $m = 0 = 1-1$. Correct.
+    **Base case ($n=1$):** One node and 0 edges. ==m = 0 = 1-1==. Correct.
    
    **Inductive step:** 
     * **I.H.:** Assume the formula $m=n-1$ is true for all trees with $n=k$ vertices.
-    * **I.S.:** A tree of $n=k+1$ nodes has at least one leaf (vertex of degree 1). If we remove it along with its edge, we obtain a new tree of $n=k$ nodes. By the induction hypothesis, this has $m = k-1$ edges. Restoring the leaf and the original edge, we have $m = (k-1) + 1 = k = (k+1)-1$.
+    * **I.S.:** A tree of $n=k+1$ nodes has at least one leaf (vertex of degree 1). If we remove it along with its edge, we obtain a new tree of $n=k$ nodes. By the induction hypothesis, this has ==m = k-1== edges. Restoring the leaf and the original edge, we have ==m = (k-1) + 1 = k = (k+1)-1==.
 
-2. ($\impliedby$) If $G$ is acyclic and $m = n-1$, we must prove that it is connected (and thus a tree):
+2. ($\impliedby$) If $G$ is acyclic and ==m = n-1==, we must prove that it is connected (and thus a tree):
     * Suppose that $G$ has $k$ connected components $C_1, C_2, \dots, C_k$. Since the graph is acyclic, each component is also acyclic and, being connected, each $C_i$ is a tree.
     * For each component $C_i$, we know that $m_i = n_i - 1$.
     * Summing all edges: $m = \sum_{i=1}^k m_i = \sum_{i=1}^k (n_i - 1) = \sum n_i - \sum 1 = n - k$.
-    * Since we are told that $m = n - 1$, then $n - k = n - 1 \implies \mathbf{k = 1}$.
+    * Since we are told that ==m = n - 1==, then $n - k = n - 1 \implies \mathbf{k = 1}$.
     * Since there is only one component, the graph is connected and it is proved to be a tree.
 </details>
 :::
@@ -106,7 +106,7 @@ Most numerical problems are solved by combining the handshaking lemma with the p
 **Problem:** A tree has 3 vertices of degrees 4, 3 and 2. The rest are leaves. How many leaves does it have?
 **Solution:**
 1.  Let $f$ be the number of leaves.
-2.  Total order: $n = f + 3$ (the leaves + the 3 known vertices).
+2.  Total order: ==n = f + 3== (the leaves + the 3 known vertices).
 3.  Sum of degrees: $4 + 3 + 2 + (f \cdot 1) = 9 + f$.
 4.  Apply the equation: $9 + f = 2(f + 3) - 2 \implies 9 + f = 2f + 4 \implies f = 5$.
 :::

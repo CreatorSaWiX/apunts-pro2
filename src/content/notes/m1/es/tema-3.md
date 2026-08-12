@@ -115,7 +115,7 @@ El Teorema de la eliminación es tu mejor arma. Si encuentras un solo vértice q
 
 **Para familias de grafos:**
 - **Árboles:** Nunca son hamiltonianos (tienen hojas).
-- **Bipartitos completos ($K_{r,s}$):** Solo son hamiltonianos si $r = s$.
+- **Bipartitos completos ($K_{r,s}$):** Solo son hamiltonianos si ==r = s==.
 - **Rueda ($W_n$):** Siempre es hamiltoniana (el ciclo exterior ya nos da el camino).
 :::
 
@@ -124,7 +124,7 @@ El Teorema de la eliminación es tu mejor arma. Si encuentras un solo vértice q
 Estas condiciones garantizan la existencia de un ciclo si el grafo tiene "muchas" aristas:
 
 - **Teorema de Dirac**: Si todos los vértices tienen grado $g(v) \ge \frac{n}{2}$, el grafo es **hamiltoniano**.
-- **Teorema de Ore**: Si para cada par de vértices **no adyacentes** $u, v$, la suma de sus grados es $g(u) + g(v) \ge n$, el grafo es **hamiltoniano**.
+- **Teorema de Ore**: Si para cada par de vértices **no adyacentes** ==u, v==, la suma de sus grados es $g(u) + g(v) \ge n$, el grafo es **hamiltoniano**.
 
 ### El algoritmo de exploración (backtracking)
 

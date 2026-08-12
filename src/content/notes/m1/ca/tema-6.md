@@ -31,10 +31,10 @@ Un **espai vectorial** sobre un cos $\mathbb{K}$ (que serà normalment $\mathbb{
 
 | Axioma | Definició | Exemple (a $\mathbb{R}^2$) |
 | :--- | :--- | :--- |
-| **e1** Associativa | $u + (v + w) = (u + v) + w$ | $(1,1) + [(2,0) + (0,3)] = [(1,1) + (2,0)] + (0,3)$ |
-| **e2** Commutativa | $u + v = v + u$ | $(1,2) + (3,4) = (3,4) + (1,2) = (4,6)$ |
-| **e3** Element neutre | $\exists! \, 0_E \in E : u + 0_E = u$ | $(x,y) + (0,0) = (x,y)$ |
-| **e4** Element oposat | $\forall u, \exists! \, (-u) : u + (-u) = 0_E$ | $(3,-2) + (-3,2) = (0,0)$ |
+| **e1** Associativa | ==u + (v + w) = (u + v) + w== | ==(1,1) + [(2,0) + (0,3)] = [(1,1) + (2,0)] + (0,3)== |
+| **e2** Commutativa | ==u + v = v + u== | ==(1,2) + (3,4) = (3,4) + (1,2) = (4,6)== |
+| **e3** Element neutre | $\exists! \, 0_E \in E : u + 0_E = u$ | ==(x,y) + (0,0) = (x,y)== |
+| **e4** Element oposat | $\forall u, \exists! \, (-u) : u + (-u) = 0_E$ | ==(3,-2) + (-3,2) = (0,0)== |
 
 ::mafs{type="vis_axiomes_suma"}
 
@@ -57,7 +57,7 @@ Més enllà de $\mathbb{R}^n$, trobem molts altres conjunts que compleixen aques
 *   **Polinomis $\mathcal{P}(\mathbb{R})$**: Tots els polinomis amb coeficients reals.
 *   **Polinomis de grau $\leq d$ ($\mathcal{P}_d(\mathbb{R})$)**: Fixant un grau màxim.
 *   **Espai trivial $\{0_E\}$**: Format només pel vector nul.
-*   **Solucions d'un sistema lineal homogeni**: El conjunt de solucions de $Ax = 0$ sempre forma un espai vectorial.
+*   **Solucions d'un sistema lineal homogeni**: El conjunt de solucions de ==Ax = 0== sempre forma un espai vectorial.
 
 ::mafs{type="vis_exemples_espais"}
 
@@ -103,8 +103,8 @@ Formalment, un subconjunt no buit $S \subseteq E$ és un **subespai vectorial** 
 ### 2.3 Independència lineal
 
 Un conjunt de vectors $\{u_1, \dots, u_k\}$ és **linealment independent (LI)** si cadascun t'aporta una **informació nova**. Si un fos **linealment dependent (LD)**, voldria dir que "sobra" perquè el pots fabricar combinant els altres. Per exemple: 
-*   **LI (Independents)**: $u = (1, 0)$ i $v = (0, 1)$. No hi ha cap forma de multiplicar el $(1,0)$ per un número i que et doni el $(0,1)$. Són camins totalment diferents.
-*   **LD (Dependents)**: $u = (1, 2)$ i $v = (2, 4)$. Aquí $v = 2u$. El vector $v$ no ens diu res de nou, és només el vector $u$ estirat. **Sobra**.
+*   **LI (Independents)**: ==u = (1, 0)== i ==v = (0, 1)==. No hi ha cap forma de multiplicar el $(1,0)$ per un número i que et doni el $(0,1)$. Són camins totalment diferents.
+*   **LD (Dependents)**: ==u = (1, 2)== i ==v = (2, 4)==. Aquí ==v = 2u==. El vector $v$ no ens diu res de nou, és només el vector $u$ estirat. **Sobra**.
 
 Per saber si un conjunt és LI o LD, tenim tres mètodes principals:
 
@@ -124,7 +124,7 @@ Si tenim vectors numèrics, el més ràpid és posar-los per columnes en una mat
 *   Si **$r = \text{nombre de vectors}$** $\implies$ **LI**.
 *   Si **$r < \text{nombre de vectors}$** $\implies$ **LD**.
 
-**Exemple**: Per a $u=(1,0,1)$, $v=(0,1,1)$ i $w=(1,1,2)$, el rang de la matriu és 2 (perquè $w = u + v$). Com que tenim 3 vectors però el rang és 2, el conjunt és **LD**.
+**Exemple**: Per a $u=(1,0,1)$, $v=(0,1,1)$ i $w=(1,1,2)$, el rang de la matriu és 2 (perquè ==w = u + v==). Com que tenim 3 vectors però el rang és 2, el conjunt és **LD**.
 
 ### Mètode 3: Resolució de sistemes (SCD/SCI)
 Quan plantegem l'equació fonamental com un sistema d'equacions lineals homogeni ($Ax=0$):
@@ -152,7 +152,7 @@ Intentar unir dos subespais simplement "ajuntant-los" (com si fossin dues enganx
 *   **Intuïció**: Imagina dues rectes (l'eix X i l'eix Y). La unió són només els punts que estan sobre els eixos. Però si sumes el vector $(1,0)$ de l'eix X i el $(0,1)$ de l'eix Y, obtens el $(1,1)$, que està al mig del pla i **fora dels eixos**. Has sortit del "club"!
 *   **Conclusió**: La unió **NO** és normalment un subespai.
 
-### 3. Suma ($S + W$): L'expansió
+### 3. Suma (==S + W==): L'expansió
 Com que la unió falla, la **suma** és la solució per fusionar subespais. Consisteix en agafar totes les sumes possibles entre un vector de $S$ i un de $W$.
 *   **Intuïció**: És com agafar dues rectes i "omplir" tot l'espai que hi ha entre elles fins a formar un pla complet. La suma **sempre** és un subespai (el més petit que conté a $S$ i $W$).
 *   **A la pràctica**: Per trobar una base de $S+W$, ajuntem els generadors de $S$ i els de $W$ i eliminem els que sobrin (els dependents).
@@ -178,7 +178,7 @@ La **dimensió** ($\dim E$) és el nombre de vectors que té qualsevol de les se
 | :--- | :--- |
 | $\mathbb{R}^n$ | $n$ |
 | $\mathcal{M}_{m \times n}(\mathbb{K})$ | $m \cdot n$ |
-| $\mathcal{P}_d(\mathbb{R})$ | $d + 1$ |
+| $\mathcal{P}_d(\mathbb{R})$ | ==d + 1== |
 | Subespai trivial $\{0_E\}$ | $0$ |
 
 ### Fórmula de Grassmann
@@ -186,9 +186,9 @@ Vital per a exercicis de sumes i interseccions:
 $$\dim(S+W) = \dim S + \dim W - \dim(S \cap W)$$
 
 Siguin $k$ vectors en un espai $E$ de dimensió $n$:
-1. **$k > n$**: El conjunt és **sempre LD** (sobren vectors).
-2. **$k < n$**: El conjunt **no pot generar** $E$ (falten vectors).
-3. **$k = n$**: Si demostres que són **LI** (o que generen), automàticament són **Base**. (Això t'estalvia la meitat de la feina!).
+1. **==k > n==**: El conjunt és **sempre LD** (sobren vectors).
+2. **==k < n==**: El conjunt **no pot generar** $E$ (falten vectors).
+3. **==k = n==**: Si demostres que són **LI** (o que generen), automàticament són **Base**. (Això t'estalvia la meitat de la feina!).
 
 ::mafs{type="vis_regles_or_base"}
 
@@ -217,13 +217,13 @@ Expressen cada component del vector en funció d'uns paràmetres ($\alpha, \beta
   Ex: $\langle (1,0), (0,1) \rangle \implies (x,y) = \alpha(1,0) + \beta(0,1) \implies \{x=\alpha, y=\beta\}$.
 
 ### B. De Generadors a Implícites (Mètode de Gauss)
-Tens els generadors $\langle u_1, u_2 \rangle$ i vols saber quines equacions han de complir les variables $(x, y, z)$.
+Tens els generadors $\langle u_1, u_2 \rangle$ i vols saber quines equacions han de complir les variables ==(x, y, z)==.
 
 **Exemple pràctic (Pas a pas):**
 Siguin $u_1=(1,1,2)^T$ i $u_2=(0,1,1)^T$. Escrivim la matriu ampliada:
 $$ \left( \begin{array}{cc|c} 1 & 0 & x \\ 1 & 1 & y \\ 2 & 1 & z \end{array} \right) \xrightarrow{F_2-F_1, F_3-2F_1} \left( \begin{array}{cc|c} 1 & 0 & x \\ 0 & 1 & y-x \\ 0 & 1 & z-2x \end{array} \right) \xrightarrow{F_3-F_2} \left( \begin{array}{cc|c} 1 & 0 & x \\ 0 & 1 & y-x \\ \mathbf{0} & \mathbf{0} & \mathbf{z-x-y} \end{array} \right) $$
 Perquè el sistema sigui compatible, el que queda a la dreta de la fila de zeros ha de ser **0**.
-**Resposta**: L'equació implícita és $z - x - y = 0$.
+**Resposta**: L'equació implícita és ==z - x - y = 0==.
 
 ### B. De Implícites a Generadors
 Simplement resol el sistema d'equacions lineals. Les variables lliures (paràmetres) et donaran els vectors de la base.

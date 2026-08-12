@@ -125,7 +125,7 @@ $$
 x + y + z = 0 \implies x = -y - z
 $$
 
-Com que tenim 3 variables i 1 equació, tenim $3 - 1 = 2$ graus de llibertat. Això significa que la **multiplicitat geomètrica** és:
+Com que tenim 3 variables i 1 equació, tenim ==3 - 1 = 2== graus de llibertat. Això significa que la **multiplicitat geomètrica** és:
 $$
 m_g(2) = \dim(E_2) = 2
 $$
@@ -145,16 +145,16 @@ A - 6I = \begin{pmatrix} -3 & 1 & 1 \\ 2 & -2 & 2 \\ 1 & 1 & -3 \end{pmatrix}
 $$
 
 Escalonant o simplificant les equacions:
-1.  $-3x + y + z = 0$
+1.  ==-3x + y + z = 0==
 2.  $2x - 2y + 2z = 0 \implies x - y + z = 0 \implies y = x + z$
-3.  $x + y - 3z = 0$
+3.  ==x + y - 3z = 0==
 
-Substituïm $y = x + z$ a l'equació 3:
+Substituïm ==y = x + z== a l'equació 3:
 $$
 x + (x + z) - 3z = 0 \implies 2x - 2z = 0 \implies x = z
 $$
 
-Si $x = z$, llavors $y = z + z = 2z$. Per tant, els vectors tenen la forma $(z, 2z, z) = z(1, 2, 1)$.
+Si ==x = z==, llavors ==y = z + z = 2z==. Per tant, els vectors tenen la forma ==(z, 2z, z) = z(1, 2, 1)==.
 La **multiplicitat geomètrica** és:
 $$m_g(6) = \dim(E_6) = 1$$
 
@@ -219,7 +219,7 @@ Aquestes propietats t'ajudaran en exercicis de demostració:
 El concepte és el mateix per a espais de polinomis ($P_n(\mathbb{R})$) o matrius ($\mathcal{M}_n(\mathbb{R})$):
 
 1.  Tria una base (normalment la canònica).
-2.  Troba la matriu associada $M(f, B)$.
+2.  Troba la matriu associada ==M(f, B)==.
 3.  Aplica el procés de diagonalització a aquesta matriu.
 4.  Recorda que els "vectors propis" resultants seran les coordenades dels elements de l'espai original (polinomi, matriu, etc.).
 

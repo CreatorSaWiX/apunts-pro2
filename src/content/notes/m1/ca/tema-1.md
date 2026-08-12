@@ -37,10 +37,10 @@ Prova de moure els vèrtexs d'aquí sota. Veus com les connexions es mantenen en
 ```
 :::
 
-Un graf $G$ és una parella $(V, A)$ on $V$ és el conjunt de vèrtexs (no buit) i $A$ és el conjunt d'arestes.
+Un graf $G$ és una parella ==(V, A)== on $V$ és el conjunt de vèrtexs (no buit) i $A$ és el conjunt d'arestes.
 
-- **Ordre ($n$)**: El nombre de vèrtexs, $n = |V|$.
-- **Mida ($m$)**: El nombre d'arestes, $m = |A|$.
+- **Ordre ($n$)**: El nombre de vèrtexs, ==n = |V|==.
+- **Mida ($m$)**: El nombre d'arestes, ==m = |A|==.
 
 ## 2. Relacions: veïns i incidència
 
@@ -74,7 +74,7 @@ Tenim dues grans maneres de guardar un graf a la memòria:
 Per a cada persona, tenim una llista dels seus amics. Ideal per grafs amb poques arestes ja que estalvia memòria. **Exemple**: "L'usuari u és amic de [v, w, z]".
 
 ### B. Matriu d'adjacències
-Una taula ($n \times n$) de 0 i 1. Si la matriu té un $1$ a la posició $(i, j)$, el vèrtex $i$ està connectat amb el $j$. 
+Una taula ($n \times n$) de 0 i 1. Si la matriu té un $1$ a la posició ==(i, j)==, el vèrtex $i$ està connectat amb el $j$. 
 
 $$
 M_A = \begin{pmatrix}
@@ -129,7 +129,7 @@ $$
 
 > **Seqüència de graus**:
 > És simplement fer una llista amb els graus de tots els vèrtexs, endreçada generalment de més gran a més petit.
-> Ex: Un graf "triangle amb una cua penjant" té llista de graus $S = (3, 2, 2, 1)$.
+> Ex: Un graf "triangle amb una cua penjant" té llista de graus ==S = (3, 2, 2, 1)==.
 
 Com que $2|A|$ sempre és un nombre PARELL, la suma dels graus ha de ser parella. Això vol dir que és **impossible** que hi hagi un nombre senar de gent amb un nombre senar d'amics.
 
@@ -436,7 +436,7 @@ No intentis dibuixar el complementari si a l'examen et demanen números. L'ordin
 ### Graf reunió ($G \cup G'$)
 És la unió disjunta de dos grafs. Simplement els dibuixem un al costat de l'altre.
 - **Vèrtex i Arestes**: $V_{total} = V \cup V'$ i $A_{total} = A \cup A'$.
-- Si $V \cap V' = \emptyset$ (no comparteixen nodes), l'ordre total és exactament $n + n'$.
+- Si $V \cap V' = \emptyset$ (no comparteixen nodes), l'ordre total és exactament ==n + n'==.
 
 **Exemple**: $C_3 \cup C_3$
 :::graph{height=150}

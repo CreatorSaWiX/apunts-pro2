@@ -18,7 +18,7 @@ A function is differentiable at a point if we can measure its instantaneous chan
 This value $f'(a)$ is called the **derivative** of $f$ at $a$.
 
 ### Geometric Interpretation
-Geometrically, the derivative $f'(a)$ gives us the **slope** (the inclination) of the tangent line to the graph exactly at the point $(a, f(a))$. 
+Geometrically, the derivative $f'(a)$ gives us the **slope** (the inclination) of the tangent line to the graph exactly at the point ==(a, f(a))==. 
 
 The equation of this tangent line is:
 $$y = f(a) + f'(a)(x - a)$$
@@ -51,7 +51,7 @@ $$f'(x) = u(x)^{v(x)} \left( v'(x) \ln u(x) + v(x) \frac{u'(x)}{u(x)} \right)$$
 These theorems allow us to ensure the existence of points with specific properties just by looking at the endpoints of an interval.
 
 ### Rolle's Theorem
-If $f$ is continuous on $[a, b]$, differentiable on $(a, b)$ and **$f(a) = f(b)$**, then there exists at least one point $c \in (a, b)$ such that:
+If $f$ is continuous on ==[a, b]==, differentiable on ==(a, b)== and **==f(a) = f(b)==**, then there exists at least one point $c \in (a, b)$ such that:
 $$f'(c) = 0$$
 *Intuition: If you climb a mountain and go back down to the same height, at some point your slope must have been zero (the peak).*
 
@@ -59,7 +59,7 @@ $$f'(c) = 0$$
 
 
 ### Mean Value Theorem (Lagrange)
-It is a "slanted" version of Rolle's theorem. If $f$ is continuous on $[a, b]$ and differentiable on $(a, b)$, there exists a point $c \in (a, b)$ such that:
+It is a "slanted" version of Rolle's theorem. If $f$ is continuous on ==[a, b]== and differentiable on ==(a, b)==, there exists a point $c \in (a, b)$ such that:
 $$f'(c) = \frac{f(b) - f(a)}{b - a}$$
 *Meaning: There is an instant where the slope of the tangent is parallel to the line connecting the start and end points.*
 
@@ -76,7 +76,7 @@ We can tell if a function goes up or down by looking at the sign of its first de
 - $f'(x) < 0 \implies$ **Decreasing** function.
 
 To find **relative maximums and minimums**:
-1. We look for points where $f'(a) = 0$ (critical points).
+1. We look for points where ==f'(a) = 0== (critical points).
 2. We look at the second derivative:
    - $f''(a) > 0 \implies$ **Minimum** (bowl shape).
    - $f''(a) < 0 \implies$ **Maximum** (umbrella shape).
@@ -92,7 +92,7 @@ $$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$$
 We see the curvature by looking at the sign of the **second derivative**:
 - $f''(x) > 0 \implies$ **Convex** ($\cup$ shape).
 - $f''(x) < 0 \implies$ **Concave** ($\cap$ shape).
-- If $f''(a) = 0$ and there is a change of sign, we have an **inflection point**.
+- If ==f''(a) = 0== and there is a change of sign, we have an **inflection point**.
 
 ---
 

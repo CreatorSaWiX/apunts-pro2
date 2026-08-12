@@ -19,7 +19,7 @@ Para entender qué es la **derivada direccional** $\frac{\partial f}{\partial \m
 
 ::three{type="vis_derivada_direccional_hibrida"}
 
-Las **derivadas parciales** son el caso donde la dirección coincide con los ejes coordenados ($X, Y, Z$). En la práctica, cuando derivas parcialmente, tratas todas las otras variables como si fuesen **constantes**.
+Las **derivadas parciales** son el caso donde la dirección coincide con los ejes coordenados (==X, Y, Z==). En la práctica, cuando derivas parcialmente, tratas todas las otras variables como si fuesen **constantes**.
 
 - **Respecto a x**: $\frac{\partial f}{\partial x}$ (*"Derivada parcial de f respecto a x"*).
 - **Respecto a y**: $\frac{\partial f}{\partial y}$ (*"Derivada parcial de f respecto a y"*).
@@ -119,8 +119,8 @@ Si una función es de clase $C^1$, podemos aproximarla localmente por un plano t
 
 ::three{type="pla_tangent"}
 
-### 4.1 Caso explícito: $z = f(x, y)$
-Si la superficie viene dada de forma explícita, el plano tangente en el punto $M(a, b, f(a,b))$ es:
+### 4.1 Caso explícito: ==z = f(x, y)==
+Si la superficie viene dada de forma explícita, el plano tangente en el punto ==M(a, b, f(a,b))== es:
 
 **Plano tangente:**
 $$z = f(a,b) + \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\partial y}(a,b)(y-b)$$
@@ -129,8 +129,8 @@ $$z = f(a,b) + \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\part
 Tiene vector director $(\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, -1)$. Su ecuación continua es:
 $$\frac{x-a}{\frac{\partial f}{\partial x}(a,b)} = \frac{y-b}{\frac{\partial f}{\partial y}(a,b)} = \frac{z-f(a,b)}{-1}$$
 
-### 4.2 Caso implícito: $F(x, y, z) = 0$
-Si la superficie viene definida por una ecuación implícita, el plano tangente en $M(a, b, c)$ es:
+### 4.2 Caso implícito: ==F(x, y, z) = 0==
+Si la superficie viene definida por una ecuación implícita, el plano tangente en ==M(a, b, c)== es:
 
 **Plano tangente:**
 $$\frac{\partial F}{\partial x}(a,b,c)(x-a) + \frac{\partial F}{\partial y}(a,b,c)(y-b) + \frac{\partial F}{\partial z}(a,b,c)(z-c) = 0$$
@@ -139,7 +139,7 @@ $$\frac{\partial F}{\partial x}(a,b,c)(x-a) + \frac{\partial F}{\partial y}(a,b,
 Tiene la dirección del gradiente $\nabla F(a,b,c)$. La ecuación continua es:
 $$\frac{x-a}{\frac{\partial F}{\partial x}(a,b,c)} = \frac{y-b}{\frac{\partial F}{\partial y}(a,b,c)} = \frac{z-c}{\frac{\partial F}{\partial z}(a,b,c)}$$
 
-> **Conversión**: Cualquier función explícita $z = f(x,y)$ se puede tratar como una implícita haciendo $F(x,y,z) = f(x,y) - z = 0$.
+> **Conversión**: Cualquier función explícita ==z = f(x,y)== se puede tratar como una implícita haciendo ==F(x,y,z) = f(x,y) - z = 0==.
 
 ### 4.3 Plano tangente horizontal
 Si el plano tangente es **paralelo al plano $XY$**:

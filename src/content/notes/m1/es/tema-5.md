@@ -30,8 +30,8 @@ $$
 | Tipo | Descripción | Representación Formal | Ejemplo Práctico |
 | :--- | :--- | :--- | :--- |
 | **Cuadrada** | Mismo número de filas que columnas ($m=n$). | $A \in \mathcal{M}_{n \times n}(\mathbb{K})$ | $\begin{pmatrix} 1 & 5 \\ -2 & 3 \end{pmatrix}$ |
-| **Triangular superior** | Todos los elementos por debajo de la diagonal son cero. | $a_{ij} = 0$ si $i > j$ | $\begin{pmatrix} 1 & 2 & 3 \\ 0 & 4 & 5 \\ 0 & 0 & 6 \end{pmatrix}$ |
-| **Triangular inferior** | Todos los elementos por encima de la diagonal son cero. | $a_{ij} = 0$ si $i < j$ | $\begin{pmatrix} 1 & 0 & 0 \\ 2 & 4 & 0 \\ 3 & 5 & 6 \end{pmatrix}$ |
+| **Triangular superior** | Todos los elementos por debajo de la diagonal son cero. | $a_{ij} = 0$ si ==i > j== | $\begin{pmatrix} 1 & 2 & 3 \\ 0 & 4 & 5 \\ 0 & 0 & 6 \end{pmatrix}$ |
+| **Triangular inferior** | Todos los elementos por encima de la diagonal son cero. | $a_{ij} = 0$ si ==i < j== | $\begin{pmatrix} 1 & 0 & 0 \\ 2 & 4 & 0 \\ 3 & 5 & 6 \end{pmatrix}$ |
 | **Diagonal** | Solo los elementos de la diagonal pueden ser no nulos. | $a_{ij} = 0$ si $i \neq j$ | $\begin{pmatrix} 2 & 0 & 0 \\ 0 & 5 & 0 \\ 0 & 0 & -1 \end{pmatrix}$ |
 | **Identidad ($I_n$)** | Matriz diagonal donde todos los elementos de la diagonal son $1$. | $a_{ii} = 1, a_{ij} = 0$ | $\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$ |
 | **Simétrica** | La matriz es igual a su transpuesta ($A = A^t$). | $a_{ij} = a_{ji}$ | $\begin{pmatrix} 1 & 2 \\ 2 & 3 \end{pmatrix}$ |
@@ -53,7 +53,7 @@ $$
 | :--- | :--- | :--- |
 | **No conmutativo** | $AB \neq BA$ : El orden de los factores altera el producto. | $\begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix} \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix} \neq \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix} \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$ |
 | **Transpuesta** | $(AB)^t = B^t A^t$ : Se invierte el orden de los factores. | $\left( \begin{pmatrix} 1 & 2 \end{pmatrix} \begin{pmatrix} 3 \\ 0 \end{pmatrix} \right)^t = \begin{pmatrix} 3 & 0 \end{pmatrix} \begin{pmatrix} 1 \\ 2 \end{pmatrix}$ |
-| **Asociativa** | $(AB)C = A(BC)$ : La agrupación no cambia el resultado. | $\left( \begin{pmatrix} 1 & 0 \end{pmatrix} \begin{pmatrix} 0 \\ 1 \end{pmatrix} \right) \begin{pmatrix} 2 \end{pmatrix} = \begin{pmatrix} 1 & 0 \end{pmatrix} \left( \begin{pmatrix} 0 \\ 1 \end{pmatrix} \begin{pmatrix} 2 \end{pmatrix} \right)$ |
+| **Asociativa** | ==(AB)C = A(BC)== : La agrupación no cambia el resultado. | $\left( \begin{pmatrix} 1 & 0 \end{pmatrix} \begin{pmatrix} 0 \\ 1 \end{pmatrix} \right) \begin{pmatrix} 2 \end{pmatrix} = \begin{pmatrix} 1 & 0 \end{pmatrix} \left( \begin{pmatrix} 0 \\ 1 \end{pmatrix} \begin{pmatrix} 2 \end{pmatrix} \right)$ |
 | **Polinomio** | $p(A) = A^2 + \dots + \mathbf{a_0 I}$ : Las constantes llevan la Identidad. | Para $p(x) = x^2 - 1$, usamos $p(A) = A^2 - \mathbf{I}$. |
 
 ### Matriz inversa ($A^{-1}$)
@@ -78,7 +78,7 @@ $$
 **Equivalencia ($A \sim B$)**: Decimos que $A$ y $B$ son equivalentes si podemos llegar de la una a la otra combinando operaciones elementales.
 > **Ejemplo**:  
 > $A = \begin{pmatrix} 1 & 2 \\ 3 & 1 \end{pmatrix} \xrightarrow{F_2 - 3F_1} \mathbf{B = \begin{pmatrix} 1 & 2 \\ 0 & -5 \end{pmatrix}}$  
-> Esto se expresa matricialmente como $B = EA$ donde $E = \begin{pmatrix} 1 & 0 \\ -3 & 1 \end{pmatrix}$.
+> Esto se expresa matricialmente como ==B = EA== donde $E = \begin{pmatrix} 1 & 0 \\ -3 & 1 \end{pmatrix}$.
 
 ### Matrices escalonadas y rango
 Decimos que una matriz es **escalonada** cuando tiene estructura de escalera descendente:
@@ -135,7 +135,7 @@ Un sistema se define, se discute (para saber si tiene solución) y se resuelve (
 | Formato | Descripción | Ejemplo |
 | :--- | :--- | :--- |
 | **Algebraico** | Las ecuaciones tal cual. | $\begin{cases} x + 2y = 3 \\ x + y = 2 \end{cases}$ |
-| **Matricial** | Producto $Ax = b$ | $\begin{pmatrix} 1 & 2 \\ 1 & 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 3 \\ 2 \end{pmatrix}$ |
+| **Matricial** | Producto ==Ax = b== | $\begin{pmatrix} 1 & 2 \\ 1 & 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 3 \\ 2 \end{pmatrix}$ |
 | **Ampliada** | Bloque $(A \mid b)$ | $\begin{pmatrix} 1 & 2 & \mid & 3 \\ 1 & 1 & \mid & 2 \end{pmatrix}$ |
 
 Donde la **matriz ampliada** general es:
@@ -159,7 +159,7 @@ Decimos que dos sistemas son equivalentes si tienen la **misma solución general
 2. **Sistema compatible determinado (SCD)**: Tiene una única solución.
 3. **Sistema compatible indeterminado (SCI)**: Tiene infinitas soluciones.
 
-### Sistemas homogéneos ($b = 0$)
+### Sistemas homogéneos (==b = 0==)
 Son sistemas donde toda la columna de términos independientes es cero.
 - **Siempre son compatibles**: Tienen como mínimo la **solución trivial** $(0, \dots, 0)$.
 - **Discusión por rango**:
@@ -169,12 +169,12 @@ Son sistemas donde toda la columna de términos independientes es cero.
 ### Resolución de sistemas escalonados
 En un sistema escalonado compatible con $r = \text{rango}$ y $n = \text{incógnitas}$:
 - **Variables principales**: Corresponden a los pivotes (hay $r$).
-- **Variables libres**: El resto ($n - r$), que se convierten en parámetros $\lambda, \mu, \dots$
+- **Variables libres**: El resto (==n - r==), que se convierten en parámetros $\lambda, \mu, \dots$
 
 **Ejemplo de forma paramétrica (SCI)**:
-Si el resultado es $x + 2y = 5$, hacemos que $y = \lambda$ (libre):
+Si el resultado es ==x + 2y = 5==, hacemos que $y = \lambda$ (libre):
 $$ \begin{cases} x = 5 - 2\lambda \\ y = \lambda \end{cases} \implies (x, y) = (5, 0) + \lambda(-2, 1) $$
-> El sistema tiene **1 grado de libertad** ($n-r = 1$).
+> El sistema tiene **1 grado de libertad** (==n-r = 1==).
 
 ---
 
@@ -186,11 +186,11 @@ Sea **$r = \text{rango}(A)$**, **$r' = \text{rango}(A \mid b)$** y **$n$** el n�
 
 | Condición de Rangos | Tipo de Sistema | Soluciones | Observación en Gauss |
 | :--- | :--- | :--- | :--- |
-| **$r < r'$** | **Incompatible (SI)** | Ninguna | Aparece una fila: $(0 \dots 0 \mid b)$ con $b \neq 0$. |
-| **$r = r' = n$** | **Comp. Determinado (SCD)** | Única | Tenemos tantos pivotes como incógnitas. |
-| **$r = r' < n$** | **Comp. Indeterminado (SCI)** | Infinitas | Hay $n-r$ variables libres (parámetros). |
+| **==r < r'==** | **Incompatible (SI)** | Ninguna | Aparece una fila: $(0 \dots 0 \mid b)$ con $b \neq 0$. |
+| **==r = r' = n==** | **Comp. Determinado (SCD)** | Única | Tenemos tantos pivotes como incógnitas. |
+| **==r = r' < n==** | **Comp. Indeterminado (SCI)** | Infinitas | Hay $n-r$ variables libres (parámetros). |
 
-> Si el sistema es compatible ($r = r'$), el valor de **$r$** se llama **rango del sistema**.
+> Si el sistema es compatible (==r = r'==), el valor de **$r$** se llama **rango del sistema**.
 
 ---
 
@@ -205,7 +205,7 @@ La eliminación gaussiana es el algoritmo sistemático para resolver SEL. Sigue 
 
 > **Ejemplo paso a paso**: Resolvemos $\begin{cases} x + 2y = 3 \\ 2x + 4y = 6 \end{cases}$
 > 1. **Ampliada**: $\left(\begin{array}{cc|c} 1 & 2 & 3 \\ 2 & 4 & 6 \end{array}\right) \xrightarrow{F_2 - 2F_1} \left(\begin{array}{cc|c} \mathbf{1} & 2 & 3 \\ 0 & 0 & 0 \end{array}\right)$
-> 2. **Discusión**: $\text{rango}(A) = 1$, $\text{rango}(A|b) = 1$, $n = 2$. Como $1 = 1 < 2$, es un **SCI**.
+> 2. **Discusión**: $\text{rango}(A) = 1$, $\text{rango}(A|b) = 1$, ==n = 2==. Como ==1 = 1 < 2==, es un **SCI**.
 > 3. **Solución**: $x + 2y = 3 \implies x = 3 - 2\lambda, y = \lambda$.
 
 ---
@@ -219,7 +219,7 @@ El determinante es un valor escalar que nos indica si una matriz cuadrada es inv
 
 | Método | Regla / Definición | Ejemplo |
 | :--- | :--- | :--- |
-| **$2 \times 2$** | Producto cruzado: $ad - bc$ | $\begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = 4 - 6 = -2$ |
+| **$2 \times 2$** | Producto cruzado: ==ad - bc== | $\begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = 4 - 6 = -2$ |
 | **Diagonal / Triang.** | Producto de los elementos de la diagonal. | $\det \begin{pmatrix} \mathbf{2} & 5 \\ 0 & \mathbf{3} \end{pmatrix} = 2 \cdot 3 = 6$ |
 | **Adjuntos** | Desarrollar por una fila/columna. | $\sum a_{ik} (-1)^{i+k} \det(A_{ik})$ |
 | **Sarrus ($3 \times 3$)** | Suma de diagonales (positivas y negativas). | Solo para órdenes $n=3$. |

@@ -115,7 +115,7 @@ El Teorema de l'eliminació és la teva millor arma. Si trobes un sol vèrtex qu
 
 **Per famílies de grafs:**
 - **Arbres:** Mai són hamiltonians (tenen fulles).
-- **Bipartits complets ($K_{r,s}$):** Només són hamiltonians si $r = s$.
+- **Bipartits complets ($K_{r,s}$):** Només són hamiltonians si ==r = s==.
 - **Roda ($W_n$):** Sempre és hamiltoniana (el cicle exterior ja ens dóna el camí).
 :::
 
@@ -124,7 +124,7 @@ El Teorema de l'eliminació és la teva millor arma. Si trobes un sol vèrtex qu
 Aquestes condicions garanteixen l'existència d'un cicle si el graf té "moltes" arestes:
 
 - **Teorema de Dirac**: Si tots els vèrtexs tenen grau $g(v) \ge \frac{n}{2}$, el graf és **hamiltonià**.
-- **Teorema d'Ore**: Si per a cada parella de vèrtexs **no adjacents** $u, v$, la suma dels seus graus és $g(u) + g(v) \ge n$, el graf és **hamiltonià**.
+- **Teorema d'Ore**: Si per a cada parella de vèrtexs **no adjacents** ==u, v==, la suma dels seus graus és $g(u) + g(v) \ge n$, el graf és **hamiltonià**.
 
 ### L'algorisme d'exploració (backtracking)
 

@@ -37,10 +37,10 @@ Prueba a mover los vértices de aquí abajo. ¿Ves cómo las conexiones se manti
 ```
 :::
 
-Un grafo $G$ es un par $(V, A)$ donde $V$ es el conjunto de vértices (no vacío) y $A$ es el conjunto de aristas.
+Un grafo $G$ es un par ==(V, A)== donde $V$ es el conjunto de vértices (no vacío) y $A$ es el conjunto de aristas.
 
-- **Orden ($n$)**: El número de vértices, $n = |V|$.
-- **Tamaño ($m$)**: El número de aristas, $m = |A|$.
+- **Orden ($n$)**: El número de vértices, ==n = |V|==.
+- **Tamaño ($m$)**: El número de aristas, ==m = |A|==.
 
 ## 2. Relaciones: vecinos e incidencia
 
@@ -74,7 +74,7 @@ Tenemos dos grandes maneras de guardar un grafo en la memoria:
 Para cada persona, tenemos una lista de sus amigos. Ideal para grafos con pocas aristas ya que ahorra memoria. **Ejemplo**: "El usuario u es amigo de [v, w, z]".
 
 ### B. Matriz de adyacencias
-Una tabla ($n \times n$) de 0 y 1. Si la matriz tiene un $1$ en la posición $(i, j)$, el vértice $i$ está conectado con el $j$. 
+Una tabla ($n \times n$) de 0 y 1. Si la matriz tiene un $1$ en la posición ==(i, j)==, el vértice $i$ está conectado con el $j$. 
 
 $$
 M_A = \begin{pmatrix}
@@ -129,7 +129,7 @@ $$
 
 > **Secuencia de grados**:
 > Es simplemente hacer una lista con los grados de todos los vértices, ordenada generalmente de mayor a menor.
-> Ex: Un grafo "triángulo con una cola colgando" tiene lista de grados $S = (3, 2, 2, 1)$.
+> Ex: Un grafo "triángulo con una cola colgando" tiene lista de grados ==S = (3, 2, 2, 1)==.
 
 Como $2|A|$ siempre es un número PAR, la suma de los grados tiene que ser par. Esto significa que es **imposible** que haya un número impar de gente con un número impar de amigos.
 
@@ -436,7 +436,7 @@ No intentes dibujar el complementario si en el examen te piden números. El orde
 ### Grafo reunión ($G \cup G'$)
 Es la unión disjunta de dos grafos. Simplemente los dibujamos uno al lado del otro.
 - **Vértice y Aristas**: $V_{total} = V \cup V'$ y $A_{total} = A \cup A'$.
-- Si $V \cap V' = \emptyset$ (no comparten nodos), el orden total es exactamente $n + n'$.
+- Si $V \cap V' = \emptyset$ (no comparten nodos), el orden total es exactamente ==n + n'==.
 
 **Ejemplo**: $C_3 \cup C_3$
 :::graph{height=150}
