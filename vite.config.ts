@@ -1,4 +1,4 @@
-import { apiDevServerPlugin } from './scripts/vite-plugins/api-dev-server';
+import { apiDevServerPlugin } from './scripts/vite-plugins/api-dev-server/index';
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
