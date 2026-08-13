@@ -35,6 +35,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Pantalla completa */
 body.player-fullscreen .nav-pill-container {
   opacity: 0;
   pointer-events: none;
@@ -124,138 +125,6 @@ body.player-fullscreen .nav-pill-container {
   @apply bg-transparent text-inherit p-0 rounded-none font-normal;
 }
 
-/* Tiptap Table Styles */
-.editor-content-area .tableWrapper {
-  @apply overflow-hidden my-6 rounded-xl shadow-sm w-full;
-}
-
-.editor-content-area table {
-  @apply border-collapse table-fixed rounded-xl overflow-hidden border-hidden min-w-[50%];
-  width: var(--custom-table-width, max-content) !important;
-  height: var(--custom-table-height, auto) !important;
-  max-width: 100%;
-  border-spacing: 0;
-  margin: 0 !important;
-}
-
-.editor-content-area td,
-.editor-content-area th {
-  @apply border border-white/10 p-3 min-w-[2em] relative bg-slate-900/40;
-}
-
-.editor-content-area th {
-  @apply font-bold bg-slate-800/60 text-left text-white/90;
-}
-
-.editor-content-area tr:first-child th:first-child {
-  @apply rounded-tl-xl;
-}
-
-.editor-content-area tr:first-child th:last-child {
-  @apply rounded-tr-xl;
-}
-
-.editor-content-area tr:last-child td:first-child {
-  @apply rounded-bl-xl;
-}
-
-.editor-content-area tr:last-child td:last-child {
-  @apply rounded-br-xl;
-}
-
-.editor-content-area .selectedCell:after {
-  @apply content-[''] absolute inset-0 bg-primary/20 pointer-events-none z-10;
-}
-
-.editor-content-area .column-resize-handle {
-  @apply absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize z-20 flex items-center justify-center opacity-0 transition-opacity;
-}
-
-/* Prevent accidental deformation by hiding the right-most handle */
-.editor-content-area th:last-child .column-resize-handle,
-.editor-content-area td:last-child .column-resize-handle {
-  display: none !important;
-}
-
-.editor-content-area .column-resize-handle::after {
-  content: '';
-  @apply absolute w-1.5 bg-primary;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.editor-content-area th .column-resize-handle::after,
-.editor-content-area td .column-resize-handle::after {
-  top: -10000px;
-  bottom: -10000px;
-}
-
-.editor-content-area .column-resize-handle:hover,
-.editor-content-area .column-resize-handle.dragging {
-  @apply opacity-100;
-}
-
-.editor-content-area .column-resize-handle:hover::after,
-.editor-content-area .column-resize-handle.dragging::after {
-  @apply shadow-[0_0_8px_#0ea5e999];
-}
-
-.ProseMirror-gapcursor {
-  display: none;
-  pointer-events: none;
-  position: absolute;
-}
-
-.ProseMirror-gapcursor:after {
-  content: "";
-  display: block;
-  position: absolute;
-  top: -2px;
-  width: 20px;
-  border-top: 1px solid var(--primary);
-  animation: ProseMirror-cursor-blink 1.1s steps(2, start) infinite;
-}
-
-@keyframes ProseMirror-cursor-blink {
-  to {
-    visibility: hidden;
-  }
-}
-
-.ProseMirror-focused .ProseMirror-gapcursor {
-  display: block;
-}
-
-/* Tiptap Task List Styles */
-ul[data-type="taskList"] {
-  @apply list-none p-0 m-0;
-}
-
-ul[data-type="taskList"] li {
-  @apply flex items-start my-1 text-left;
-}
-
-ul[data-type="taskList"] li>label {
-  @apply flex items-center justify-center mr-3 mt-1 cursor-pointer select-none;
-}
-
-ul[data-type="taskList"] li>label>input[type="checkbox"] {
-  -webkit-appearance: none;
-  appearance: none;
-  @apply w-5 h-5 bg-black/30 border border-white/20 rounded shadow-sm checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer relative;
-}
-
-ul[data-type="taskList"] li>label>input[type="checkbox"]:checked::after {
-  content: '✓';
-  @apply absolute text-white text-sm font-bold top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 leading-none;
-}
-
-ul[data-type="taskList"] li>div {
-  @apply flex-1 mt-0 text-slate-300;
-}
-
 /* -------------------------------------------------------------------------- */
 /*                        JUTGE STATEMENT STYLES                              */
 /* -------------------------------------------------------------------------- */
@@ -288,15 +157,15 @@ ul[data-type="taskList"] li>div {
 }
 
 /* Codi inline i variables matemàtiques */
-.jutge-content code,
+.jutge-content :not(pre) > code,
 .jutge-content var,
 .jutge-content tt,
 .jutge-content kbd {
   @apply font-mono text-emerald-400 bg-emerald-500/10 px-1 py-0.5 rounded text-sm not-italic;
 }
 
-/* Blocs de codi (Input/Output samples) */
-.jutge-content pre {
+/* Blocs de codi (Input/Output samples nets, no de PublishedCodeBlock) */
+.jutge-content pre:not(.custom-scrollbar) {
   @apply bg-[#0b1221] p-4 rounded-lg my-4 text-sm font-mono text-slate-300 overflow-x-auto border border-white/5 shadow-inner;
 }
 
@@ -373,10 +242,6 @@ canvas {
   outline: none !important;
   -webkit-tap-highlight-color: transparent;
 }
-
-/* NOTE: SSL Platinum Rank Styling removed — was dead code (fully commented out).
-   If needed again, restore from git history (commit before this cleanup). */
-
 
 .noise-bg {
   position: relative;
@@ -563,4 +428,140 @@ canvas {
     animation: none !important;
     opacity: 0 !important;
   }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                        TIPTAP PLUGIN MODIFICATIONS                         */
+/* -------------------------------------------------------------------------- */
+
+/* Tiptap Table Styles */
+.editor-content-area .tableWrapper {
+  @apply overflow-hidden my-6 rounded-xl shadow-sm w-full;
+}
+
+.editor-content-area table {
+  @apply border-collapse table-fixed rounded-xl overflow-hidden border-hidden min-w-[50%];
+  width: var(--custom-table-width, max-content) !important;
+  height: var(--custom-table-height, auto) !important;
+  max-width: 100%;
+  border-spacing: 0;
+  margin: 0 !important;
+}
+
+.editor-content-area td,
+.editor-content-area th {
+  @apply border border-white/10 p-3 min-w-[2em] relative bg-slate-900/40;
+}
+
+.editor-content-area th {
+  @apply font-bold bg-slate-800/60 text-left text-white/90;
+}
+
+.editor-content-area tr:first-child th:first-child {
+  @apply rounded-tl-xl;
+}
+
+.editor-content-area tr:first-child th:last-child {
+  @apply rounded-tr-xl;
+}
+
+.editor-content-area tr:last-child td:first-child {
+  @apply rounded-bl-xl;
+}
+
+.editor-content-area tr:last-child td:last-child {
+  @apply rounded-br-xl;
+}
+
+.editor-content-area .selectedCell:after {
+  @apply content-[''] absolute inset-0 bg-primary/20 pointer-events-none z-10;
+}
+
+.editor-content-area .column-resize-handle {
+  @apply absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize z-20 flex items-center justify-center opacity-0 transition-opacity;
+}
+
+/* Prevent accidental deformation by hiding the right-most handle */
+.editor-content-area th:last-child .column-resize-handle,
+.editor-content-area td:last-child .column-resize-handle {
+  display: none !important;
+}
+
+.editor-content-area .column-resize-handle::after {
+  content: '';
+  @apply absolute w-1.5 bg-primary;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.editor-content-area th .column-resize-handle::after,
+.editor-content-area td .column-resize-handle::after {
+  top: -10000px;
+  bottom: -10000px;
+}
+
+.editor-content-area .column-resize-handle:hover,
+.editor-content-area .column-resize-handle.dragging {
+  @apply opacity-100;
+}
+
+.editor-content-area .column-resize-handle:hover::after,
+.editor-content-area .column-resize-handle.dragging::after {
+  @apply shadow-[0_0_8px_#0ea5e999];
+}
+
+.ProseMirror-gapcursor {
+  display: none;
+  pointer-events: none;
+  position: absolute;
+}
+
+.ProseMirror-gapcursor:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -2px;
+  width: 20px;
+  border-top: 1px solid var(--primary);
+  animation: ProseMirror-cursor-blink 1.1s steps(2, start) infinite;
+}
+
+@keyframes ProseMirror-cursor-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.ProseMirror-focused .ProseMirror-gapcursor {
+  display: block;
+}
+
+/* Tiptap Task List Styles */
+ul[data-type="taskList"] {
+  @apply list-none p-0 m-0;
+}
+
+ul[data-type="taskList"] li {
+  @apply flex items-start my-1 text-left;
+}
+
+ul[data-type="taskList"] li>label {
+  @apply flex items-center justify-center mr-3 mt-1 cursor-pointer select-none;
+}
+
+ul[data-type="taskList"] li>label>input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  @apply w-5 h-5 bg-black/30 border border-white/20 rounded shadow-sm checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer relative;
+}
+
+ul[data-type="taskList"] li>label>input[type="checkbox"]:checked::after {
+  content: '✓';
+  @apply absolute text-white text-sm font-bold top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 leading-none;
+}
+
+ul[data-type="taskList"] li>div {
+  @apply flex-1 mt-0 text-slate-300;
 }

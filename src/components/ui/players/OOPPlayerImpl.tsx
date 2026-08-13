@@ -70,6 +70,8 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
         "&": { backgroundColor: "transparent !important", height: "100%" },
         ".cm-scroller": {
             fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace",
+            overflowX: "hidden !important",
+            overflowY: "auto !important",
             scrollbarWidth: "none",
             overscrollBehavior: "contain",
         },
@@ -80,7 +82,7 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
             backgroundColor: "transparent !important",
             borderRight: "1px solid rgba(255,255,255,0.06) !important",
             paddingRight: "8px",
-            marginRight: "12px",
+            marginRight: "0 !important",
             paddingLeft: "16px",
         },
         ".cm-lineNumbers .cm-gutterElement": {
@@ -96,9 +98,18 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
         },
         ".cm-content": {
             padding: "4px 0",
+            overflowX: "auto !important",
+            flex: "1",
+            minWidth: "0",
+            scrollbarWidth: "none",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0px, black 12px)",
+            maskImage: "linear-gradient(to right, transparent 0px, black 12px)",
+        },
+        ".cm-content::-webkit-scrollbar": {
+            display: "none",
         },
         ".cm-line": {
-            padding: "0 12px 0 0",
+            padding: "0 12px 0 12px !important",
         },
     });
 

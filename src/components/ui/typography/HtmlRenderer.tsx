@@ -22,7 +22,12 @@ export const HtmlRenderer = ({ content, className = '' }: HtmlRendererProps) => 
                 ) as Element | undefined;
 
                 if (codeNode) {
-                    const languageClass = codeNode.attribs.class || '';
+                    let languageClass = codeNode.attribs.class || '';
+                    
+                    // Force C++ for Jutge statements if no language is specified
+                    if (!languageClass && className.includes('jutge-content')) {
+                        languageClass = 'language-cpp';
+                    }
                     
                     const extractText = (node: any): string => {
                         if (node.type === 'text') return node.data;

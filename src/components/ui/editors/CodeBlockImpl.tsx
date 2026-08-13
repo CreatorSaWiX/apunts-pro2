@@ -78,40 +78,6 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         setTimeout(() => setCopied(false), 2000);
     };
     
-    // Custom Diff Highlight extension
-    const diffHighlight = ViewPlugin.fromClass(class {
-      decorations: DecorationSet
-      constructor(view: EditorView) {
-        this.decorations = this.getDecorations(view)
-      }
-      update(update: ViewUpdate) {
-        if (update.docChanged || update.viewportChanged)
-          this.decorations = this.getDecorations(update.view)
-      }
-      getDecorations(view: EditorView) {
-        const builder = new RangeSetBuilder<Decoration>()
-        for (const {from, to} of view.visibleRanges) {
-          for (let pos = from; pos < to;) {
-            const line = view.state.doc.lineAt(pos)
-            const text = line.text.trimStart()
-            if (text.startsWith('+')) {
-              builder.add(line.from, line.from, Decoration.line({
-                attributes: { class: "cm-diff-add" }
-              }))
-            } else if (text.startsWith('-')) {
-              builder.add(line.from, line.from, Decoration.line({
-                attributes: { class: "cm-diff-remove" }
-              }))
-            }
-            pos = line.to + 1
-          }
-        }
-        return builder.finish()
-      }
-    }, {
-      decorations: v => v.decorations
-    })
-
     const isMinimal = variant === 'minimal';
 
     // Custom theme matching the approved mockup design
@@ -124,7 +90,8 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         ".cm-scroller": {
             padding: "16px 20px 16px 0",
             fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace",
-            overflow: "auto",
+            overflowX: "hidden !important",
+            overflowY: "auto !important",
             scrollbarWidth: "none",
         },
         ".cm-scroller::-webkit-scrollbar": {
@@ -134,7 +101,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
             backgroundColor: "transparent !important",
             borderRight: "1px solid rgba(255,255,255,0.06) !important",
             paddingRight: "12px",
-            marginRight: "16px",
+            marginRight: "0 !important",
             paddingLeft: "8px",
         },
         ".cm-lineNumbers .cm-gutterElement": {
@@ -146,9 +113,20 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         },
         ".cm-content": {
             padding: "0",
+            overflowX: "auto !important",
+            flex: "1",
+            minWidth: "0",
+            scrollbarWidth: "none",
+            ...(isMinimal ? {} : {
+                WebkitMaskImage: "linear-gradient(to right, transparent 0px, black 16px)",
+                maskImage: "linear-gradient(to right, transparent 0px, black 16px)",
+            })
+        },
+        ".cm-content::-webkit-scrollbar": {
+            display: "none",
         },
         ".cm-line": {
-            padding: "0 16px 0 0",
+            padding: "0 16px 0 16px !important",
         },
         ".cm-activeLine": {
             backgroundColor: "transparent !important",
@@ -160,17 +138,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
             display: "none !important",
         },
         ".cm-selectionBackground": {
-            backgroundColor: "transparent !important",
-        },
-        ".cm-diff-add": {
-            backgroundColor: "rgba(16, 185, 129, 0.12) !important",
-            display: "block",
-            width: "100%",
-        },
-        ".cm-diff-remove": {
-            backgroundColor: "rgba(239, 68, 68, 0.12) !important",
-            display: "block",
-            width: "100%",
+            backgroundColor: "rgba(255,255,255,0.1) !important",
         },
     });
 
@@ -219,7 +187,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
                     readOnly={true}
                     editable={false}
                     theme={[vscodeDark, codeTheme]}
-                    extensions={[getLanguageExtension(langKey), diffHighlight]}
+                    extensions={[getLanguageExtension(langKey)]}
                     className={`!bg-transparent ${isMinimal ? 'h-full' : ''}`}
                     basicSetup={{
                         lineNumbers: !isMinimal,
