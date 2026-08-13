@@ -13,86 +13,40 @@
   monospace;
   --font-sans: "Inter",
   sans-serif;
-
-  --animate-shine: shine 3s ease-in-out infinite;
-  --animate-gradient-x: gradient-x 3s linear infinite;
-
-  @keyframes shine {
-    from {
-      transform: translateX(-200%) skewX(12deg);
-    }
-    to {
-      transform: translateX(200%) skewX(12deg);
-    }
-  }
-
-  @keyframes gradient-x {
-    0% {
-      transform: translateX(-25%);
-    }
-    50% {
-      transform: translateX(25%);
-    }
-    100% {
-      transform: translateX(-25%);
-    }
-  }
 }
 
-/* Lite Mode GPU & WCAG performance optimization: disable heavy backdrop filters on low-end/slow devices and provide cooperative fallbacks without destroying badge tints */
-:where(.lite-mode) *,
-:where(.lite-mode) ::before,
-:where(.lite-mode) ::after {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+:root {
+  --background: #0f172a;
+  --foreground: #94a3b8;
+  --primary: #0ea5e9;
+  --accent: #38bdf8;
+  --secondary: #94a3b8;
+  --glass-bg: rgba(15, 23, 42, 0.15);
+  --glass-bg-darker: rgba(11, 18, 33, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-light: rgba(255, 255, 255, 0.2);
+  --glass-shadow-inner: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  --glass-shadow-outer: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
-:where(.lite-mode) .glass-panel,
-:where(.lite-mode) .apple-glass-panel,
-:where(.lite-mode) .premium-bento-card {
-  background-color: rgba(15, 23, 42, 0.96);
+body {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
-/* Awwwards Shimmer Skeleton Placeholder (60fps compositor thread animation) */
-.shimmer-skeleton {
-  position: relative;
-  overflow: hidden;
-  background-color: rgba(30, 41, 59, 0.6);
+body.player-fullscreen .nav-pill-container {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0 !important;
 }
 
-.shimmer-skeleton::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  transform: translateX(-100%);
-  background-image: linear-gradient(90deg,
-      rgba(255, 255, 255, 0) 0,
-      rgba(255, 255, 255, 0.08) 20%,
-      rgba(255, 255, 255, 0.15) 60%,
-      rgba(255, 255, 255, 0) 100%);
-  animation: shimmer-slide 2s infinite;
-  will-change: transform;
-}
-
-@keyframes shimmer-slide {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-/* Mobile Safe Area utilities for Bottom Navigation and Header */
+/* Mobile Safe Area */
 .pb-safe-nav {
   padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 20px)) !important;
 }
 
-.pt-safe-header {
-  padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)) !important;
-}
-
-
+/* Global custom scroll bar */
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
@@ -116,42 +70,6 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
-}
-
-:root {
-  --background: #0f172a;
-  /* Slate 900 - Dark theme base */
-  --foreground: #94a3b8;
-  /* Slate 400 - Default text */
-
-  /* PRO2 Theme Defaults */
-  --primary: #0ea5e9;
-  /* Sky 500 */
-  --accent: #38bdf8;
-  /* Sky 400 */
-  --secondary: #94a3b8;
-
-  /* Liquid Glass System */
-  --glass-bg: rgba(15, 23, 42, 0.15);
-  /* Slate 900 very transparent */
-  --glass-bg-darker: rgba(11, 18, 33, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-light: rgba(255, 255, 255, 0.2);
-  --glass-shadow-inner: inset 0 1px 1px rgba(255, 255, 255, 0.15);
-  --glass-shadow-outer: 0 20px 40px rgba(0, 0, 0, 0.4);
-}
-
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  overflow-x: hidden;
-}
-
-body.player-fullscreen .nav-pill-container {
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0 !important;
 }
 
 ::-webkit-scrollbar {
@@ -459,14 +377,6 @@ canvas {
 /* NOTE: SSL Platinum Rank Styling removed — was dead code (fully commented out).
    If needed again, restore from git history (commit before this cleanup). */
 
-/* Community Glassmorphism & Effects */
-.glass-panel {
-  @apply bg-slate-900/40 backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
-}
-
-.glass-panel-hover {
-  @apply hover:bg-slate-800/50 hover:border-white/10 transition-all duration-500;
-}
 
 .noise-bg {
   position: relative;
@@ -487,86 +397,16 @@ canvas {
      Permanent will-change wastes ~2-8MB VRAM per element for no benefit. */
 }
 
-.masonry-grid {
-  column-count: 1;
-  column-gap: 1.5rem;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .masonry-grid {
-    column-count: 2;
-  }
-}
-
-.masonry-item {
-  break-inside: avoid;
-  margin-bottom: 1.5rem;
-  /* Avoid blanket translateZ(0) to prevent GPU VRAM layer explosion on low-end Androids */
-}
-
-.masonry-item:hover,
-.masonry-item:active {
-  will-change: transform;
-}
-
-
 
 /* -------------------------------------------------------------------------- */
 /*                        APPLE MINIMAL PROFILE UTILITIES                     */
 /* -------------------------------------------------------------------------- */
-
-.apple-shadow-avatar {
-  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-.apple-glass-panel {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.apple-text-gradient {
-  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.5) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
 
 .apple-mask-hero {
   mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
 }
 
-/* -------------------------------------------------------------------------- */
-/*                        PREMIUM BENTO GRID UTILITIES                        */
-/* -------------------------------------------------------------------------- */
-
-.premium-bento-card {
-  background: rgba(13, 15, 23, 0.6);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 4px 20px -8px rgba(0, 0, 0, 0.8);
-}
-
-.premium-bento-hover {
-  /* FIXED: 'transition: all' is an anti-pattern — it animates every CSS property
-     including background-image, border-image, etc., causing unnecessary Paint operations.
-     Only transition the properties that actually change on hover. */
-  transition: background 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.premium-bento-hover:hover {
-  background: rgba(20, 22, 30, 0.8);
-  border-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 12px 32px -8px rgba(0, 0, 0, 0.8);
-}
 
 /* -------------------------------------------------------------------------- */
 /*                        AI STREAMING INDICATOR                              */

@@ -1,7 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
-import Background from './components/Background';
 // import { PerformanceMonitor } from './components/ui/system/PerformanceMonitor';
 // import FeedbackModal from './components/FeedbackModal';
 import HomePage from './pages/HomePage';
@@ -34,36 +33,36 @@ function App() {
   return (
     <AppProviders>
       <MotionConfig reducedMotion="user">
-      <LazyMotion features={loadFeatures} strict>
-        <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
-        <Background />
-        {/* <PerformanceMonitor /> */}
-        <Navigation />
-        {/* <FeedbackModal /> */}
+        <LazyMotion features={loadFeatures} strict>
+          <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
+    
+            {/* <PerformanceMonitor /> */}
+            <Navigation />
+            {/* <FeedbackModal /> */}
 
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
-            <Route path="/login" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><LoginPage /></Suspense></PageTransition>} />
-            <Route path="/profile" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><ProfilePage /></Suspense></PageTransition>} />
-            <Route path="/profile/:uid" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><ProfilePage /></Suspense></PageTransition>} />
-            <Route path="/new-solution" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><NewSolutionPage /></Suspense></PageTransition>} />
-            <Route path="/tema/:id" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><TopicPage /></Suspense></PageTransition>} />
-            <Route path="/tema/:id/test" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><QuizPage /></Suspense></PageTransition>} />
-            <Route path="/tema/:id/solucionaris" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><SolutionsListPage /></Suspense></PageTransition>} />
-            <Route path="/tema/:id/solucionaris/:problemId" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><SolutionDetailPage /></Suspense></PageTransition>} />
-            <Route path="/comunitat" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><CommunityPage /></Suspense></PageTransition>} />
-            <Route path="/register" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><RegisterPage /></Suspense></PageTransition>} />
-            <Route path="/planner" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><PlannerPage /></Suspense></PageTransition>} />
-            <Route path="/settings" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><SettingsPage /></Suspense></PageTransition>} />
-          </Routes>
-        </AnimatePresence>
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
+                <Route path="/login" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><LoginPage /></Suspense></PageTransition>} />
+                <Route path="/profile" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><ProfilePage /></Suspense></PageTransition>} />
+                <Route path="/profile/:uid" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><ProfilePage /></Suspense></PageTransition>} />
+                <Route path="/new-solution" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><NewSolutionPage /></Suspense></PageTransition>} />
+                <Route path="/tema/:id" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><TopicPage /></Suspense></PageTransition>} />
+                <Route path="/tema/:id/test" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><QuizPage /></Suspense></PageTransition>} />
+                <Route path="/tema/:id/solucionaris" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><SolutionsListPage /></Suspense></PageTransition>} />
+                <Route path="/tema/:id/solucionaris/:problemId" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><SolutionDetailPage /></Suspense></PageTransition>} />
+                <Route path="/comunitat" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><CommunityPage /></Suspense></PageTransition>} />
+                <Route path="/register" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><RegisterPage /></Suspense></PageTransition>} />
+                <Route path="/planner" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><PlannerPage /></Suspense></PageTransition>} />
+                <Route path="/settings" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><SettingsPage /></Suspense></PageTransition>} />
+              </Routes>
+            </AnimatePresence>
 
-        {import.meta.env.PROD && <Analytics />}
-        <UpdateManager />
-        {showChatBot && <Suspense fallback={null}><ChatBot /></Suspense>}
-        </div>
-      </LazyMotion>
+            {import.meta.env.PROD && <Analytics />}
+            <UpdateManager />
+            {showChatBot && <Suspense fallback={null}><ChatBot /></Suspense>}
+          </div>
+        </LazyMotion>
       </MotionConfig>
     </AppProviders>
   );
