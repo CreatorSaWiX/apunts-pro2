@@ -15,11 +15,11 @@ export const useMentions = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const snap = await getDocs(collection(db, 'users'));
+                const snap = await getDocs(collection(db, 'usernames'));
                 setAllUsers(snap.docs.map(doc => ({ 
-                    id: doc.id, 
-                    username: doc.data().username || '', 
-                    avatar: doc.data().avatar || '' 
+                    id: doc.data().uid, 
+                    username: doc.id, 
+                    avatar: doc.data().avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${doc.id}` 
                 })));
             } catch (err) {
                 console.error("Error fetching users for mentions", err);

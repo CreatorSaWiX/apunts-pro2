@@ -88,7 +88,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                 className={`flex gap-3 group/comment mt-4`}
             >
                 {/* Avatar */}
-                <Link to={`/profile/${comment.userId}`} className="shrink-0 hover:opacity-80 transition-opacity">
+                <Link to={`/profile/${comment.username}`} className="shrink-0 hover:opacity-80 transition-opacity">
                     <img loading="lazy"
                         src={comment.userAvatar || `https://ui-avatars.com/api/?name=${comment.username}&background=random`}
                         alt={comment.username}
@@ -101,7 +101,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                     {/* Header */}
                     <div className="flex items-center gap-2 mb-1">
                         <Link
-                            to={`/profile/${comment.userId}`}
+                            to={`/profile/${comment.username}`}
                             className="font-bold text-slate-200 text-sm hover:underline hover:text-sky-400 transition-colors"
                         >
                             {comment.username}
@@ -112,7 +112,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                             <span className="flex items-center gap-1 text-slate-500 text-xs">
                                 <span className="text-[10px]">▶</span>
                                 <Link
-                                    to={`/profile/${comment.userId}`} // In a real app this might link to the replied user's profile, but we don't have their ID easily here without looking it up. keeping simple.
+                                    to={`/profile/${comment.replyTo.username}`}
                                     className="font-medium text-slate-400 hover:text-sky-400"
                                 >
                                     {comment.replyTo.username}

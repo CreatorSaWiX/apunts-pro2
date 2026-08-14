@@ -295,7 +295,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                     {/* Sender Info - Clickable Profile */}
                                     <div className="flex items-center justify-between">
                                         <Link
-                                            to={`/profile/${activeTab === 'inbox' ? selectedMessage.senderId : selectedMessage.receiverId}`}
+                                            to={`/profile/${activeTab === 'inbox' ? selectedMessage.senderName : selectedMessage.receiverName}` }
                                             className="flex items-center gap-4 group/profile"
                                             onClick={onClose} // Close modal when navigating to profile
                                         >

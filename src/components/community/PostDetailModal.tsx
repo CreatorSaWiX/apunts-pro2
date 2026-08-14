@@ -303,7 +303,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                                         className="flex items-center gap-3 min-w-0 cursor-pointer group"
                                         onClick={() => {
                                             onClose();
-                                            setTimeout(() => navigate(`/profile/${post.userId}`), 100);
+                                            setTimeout(() => navigate(`/profile/${post.username}`), 100);
                                         }}
                                     >
                                         <img src={(user && user.id === post.userId) ? user.avatar : post.userAvatar} alt={(user && user.id === post.userId) ? user.username : post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800 border border-white/10 shrink-0" />
@@ -488,9 +488,9 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                                                 postId={post.id} 
                                                 postAuthorId={post.userId} 
                                                 postContent={post.content} 
-                                                onNavigateToProfile={(uid) => {
+                                                onNavigateToProfile={(username) => {
                                                     onClose();
-                                                    setTimeout(() => navigate(`/profile/${uid}`), 100);
+                                                    setTimeout(() => navigate(`/profile/${username}`), 100);
                                                 }}
                                             />
                                         </div>
@@ -526,9 +526,9 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                                         postId={post.id} 
                                         postAuthorId={post.userId} 
                                         postContent={post.content} 
-                                        onNavigateToProfile={(uid) => {
+                                        onNavigateToProfile={(username) => {
                                             onClose();
-                                            setTimeout(() => navigate(`/profile/${uid}`), 100);
+                                            setTimeout(() => navigate(`/profile/${username}`), 100);
                                         }}
                                     />
                                 </div>

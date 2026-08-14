@@ -222,7 +222,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                         className="flex items-center gap-1.5 min-w-0 flex-1 mr-1 cursor-pointer group/author"
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/profile/${post.userId}`);
+                            navigate(`/profile/${post.username}`);
                         }}
                     >
                         <img src={(user && user.id === post.userId) ? user.avatar : post.userAvatar} alt={(user && user.id === post.userId) ? user.username : post.username} loading="lazy" decoding="async" className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />

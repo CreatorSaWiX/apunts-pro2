@@ -1,87 +1,20 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, ArrowUp, Plus, Clock, UploadCloud, Pencil, Trash2, Check, LogIn } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
-import { useAuth } from '../contexts/AuthContext';
-import { useSettingsStore } from '../stores/useSettingsStore';
+import { Bot, X, UploadCloud, Plus, Clock } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import { useLocation } from 'react-router-dom';
-import bgImage from '../assets/bg.webp';
-import AIStreamingIndicator from './AIStreamingIndicator';
-import type { StreamPhase } from './AIStreamingIndicator';
+import { AuthCanvasBackground } from '../ui/system/AuthCanvasBackground';
 import { useTranslation } from 'react-i18next';
+import type { StreamPhase } from '../AIStreamingIndicator';
 
-interface Message { id?: string; role: 'user' | 'model'; content: string; attachmentName?: string; attachmentType?: 'image' | 'pdf'; addedMemories?: string[]; }
-interface ChatMeta { id: string; title: string; updatedAt: number; }
+import { LoginGate } from './LoginGate';
+import { ChatHistoryPanel } from './ChatHistoryPanel';
+import { MessageList } from './MessageList';
+import { SendButton } from './SendButton';
+import type { Message, ChatMeta } from './constants';
 
 const newId = () => `chat_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-
-const MARKDOWN_CLS = `text-sm md:text-[15px]
-  [&_p]:leading-relaxed [&_p]:mb-4
-  [&_pre]:bg-[#0d1117] [&_pre]:border [&_pre]:border-white/5 [&_pre]:rounded-xl [&_pre]:p-4 [&_pre]:my-4 [&_pre]:overflow-x-auto
-  [&_code]:text-slate-200 [&_code]:bg-slate-800/80 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded-md [&_code]:font-mono [&_code]:text-[13px]
-  [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-slate-300
-  [&_a]:text-blue-400 [&_a]:no-underline hover:[&_a]:underline
-  [&_h1]:text-slate-100 [&_h1]:font-semibold [&_h1]:text-xl [&_h1]:mb-3 [&_h1]:mt-6
-  [&_h2]:text-slate-100 [&_h2]:font-semibold [&_h2]:text-lg [&_h2]:mb-3 [&_h2]:mt-6
-  [&_h3]:text-slate-100 [&_h3]:font-semibold [&_h3]:text-base [&_h3]:mb-2 [&_h3]:mt-4
-  [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-4 [&_ul]:marker:text-slate-500
-  [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-4 [&_ol]:marker:text-slate-500
-  [&_li]:my-1.5 [&_li>p]:inline
-  [&_strong]:text-slate-200 [&_strong]:font-semibold
-  [&_blockquote]:border-l-2 [&_blockquote]:border-slate-600 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-400`;
-
-const SendButton = ({ 
-    onClick, 
-    disabled, 
-    hasInput, 
-    lastSentTime, 
-    cooldownMs 
-}: { 
-    onClick: () => void; 
-    disabled: boolean; 
-    hasInput: boolean; 
-    lastSentTime: number; 
-    cooldownMs: number 
-}) => {
-    const [cooldown, setCooldown] = useState(0);
-
-    useEffect(() => {
-        const check = () => {
-             const elapsed = Date.now() - lastSentTime;
-             const remaining = Math.ceil((cooldownMs - elapsed) / 1000);
-             if (remaining > 0) setCooldown(remaining);
-             else setCooldown(0);
-        };
-        check();
-        if (Date.now() - lastSentTime < cooldownMs) {
-            const timer = setInterval(check, 1000);
-            return () => clearInterval(timer);
-        }
-    }, [lastSentTime, cooldownMs]);
-
-    const { t } = useTranslation();
-
-    return (
-        <button type="button"
-            onClick={onClick}
-            disabled={disabled || cooldown > 0}
-            title={cooldown > 0 ? t('chat.wait', 'Espera {{cooldown}}s', { cooldown }) : t('common.send', 'Enviar')}
-            className={`shrink-0 rounded-full transition mb-0.5 mr-1 flex items-center justify-center
-                ${cooldown > 0
-                ? 'w-9 h-9 bg-white/10 text-slate-500 cursor-not-allowed text-xs font-mono font-semibold'
-                : hasInput
-                    ? 'p-2 bg-white text-black hover:bg-slate-200 shadow-md'
-                    : 'p-2 bg-white/10 text-slate-500'
-                }`}
-        >
-            {cooldown > 0 ? cooldown : <ArrowUp size={18} strokeWidth={3} />}
-        </button>
-    );
-};
 
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
@@ -121,15 +54,14 @@ export const ChatBot: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isInitialLoad = useRef(true);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const lastSentAt = useRef<number>(0);   // anti-bypass: useRef no és accessible des del DOM
-  const COOLDOWN_MS = 15_000;             // 15 segons entre peticions
+  const lastSentAt = useRef<number>(0);
+  const COOLDOWN_MS = 15_000;
 
   // ── Firebase helpers ──────────────────────────────────────────────────────
-
   const fetchChatList = useCallback(async (): Promise<ChatMeta[]> => {
     if (!user) return [];
     const [{ db }, { collection, getDocs, orderBy, query }] = await Promise.all([
-      import('../lib/firebase'),
+      import('../../lib/firebase'),
       import('firebase/firestore')
     ]);
     const q = query(collection(db, 'users', user.id, 'chats'), orderBy('updatedAt', 'desc'));
@@ -140,7 +72,7 @@ export const ChatBot: React.FC = () => {
   const saveChat = useCallback(async (id: string, history: Message[], title: string) => {
     if (!user || !id) return;
     const [{ db }, { doc, setDoc }] = await Promise.all([
-      import('../lib/firebase'),
+      import('../../lib/firebase'),
       import('firebase/firestore')
     ]);
     await setDoc(doc(db, 'users', user.id, 'chats', id), { history, title, updatedAt: Date.now() });
@@ -149,7 +81,7 @@ export const ChatBot: React.FC = () => {
   const loadChat = useCallback(async (id: string) => {
     if (!user) return;
     const [{ db }, { doc, getDoc }] = await Promise.all([
-      import('../lib/firebase'),
+      import('../../lib/firebase'),
       import('firebase/firestore')
     ]);
     const snap = await getDoc(doc(db, 'users', user.id, 'chats', id));
@@ -160,7 +92,6 @@ export const ChatBot: React.FC = () => {
   }, [user, t]);
 
   // ── Init on open ──────────────────────────────────────────────────────────
-  // Init on open — reset scroll flag
   useEffect(() => {
     if (!isOpen || !user) return;
     isInitialLoad.current = true;
@@ -179,7 +110,6 @@ export const ChatBot: React.FC = () => {
     });
   }, [isOpen, user, fetchChatList, t, loadChat]);
 
-  // Cleanup abort controller on unmount
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
@@ -187,7 +117,6 @@ export const ChatBot: React.FC = () => {
   }, []);
 
   // ── Actions ───────────────────────────────────────────────────────────────
-
   const startNewChat = useCallback(async () => {
     if (messages.length > 0 && currentChatId) await saveChat(currentChatId, messages, currentChatTitle);
     const id = newId();
@@ -208,7 +137,7 @@ export const ChatBot: React.FC = () => {
   const deleteChat = useCallback(async (id: string) => {
     if (!user) return;
     const [{ db }, { doc, deleteDoc }] = await Promise.all([
-      import('../lib/firebase'),
+      import('../../lib/firebase'),
       import('firebase/firestore')
     ]);
     await deleteDoc(doc(db, 'users', user.id, 'chats', id));
@@ -223,26 +152,27 @@ export const ChatBot: React.FC = () => {
   const renameChat = useCallback(async (id: string, title: string) => {
     if (!user || !title.trim()) return;
     const [{ db }, { doc, updateDoc }] = await Promise.all([
-      import('../lib/firebase'),
+      import('../../lib/firebase'),
       import('firebase/firestore')
     ]);
+    
     await updateDoc(doc(db, 'users', user.id, 'chats', id), { title: title.trim() });
     setChatList(prev => prev.map(c => c.id === id ? { ...c, title: title.trim() } : c));
+    
     if (id === currentChatId) setCurrentChatTitle(title.trim());
+    
     setEditingId(null);
   }, [user, currentChatId]);
 
   // ── Layout / resize ───────────────────────────────────────────────────────
-
   useEffect(() => {
     const root = document.getElementById('root') || document.body;
+
     if (isOpen && window.innerWidth > 768) {
       root.style.width = `calc(100vw - ${sidebarWidth}px)`;
       document.documentElement.style.setProperty('--chatbot-width', `${sidebarWidth}px`);
-    } else {
-      root.style.width = '100%';
-      document.documentElement.style.setProperty('--chatbot-width', '0px');
     }
+
     return () => { root.style.width = '100%'; document.documentElement.style.setProperty('--chatbot-width', '0px'); };
   }, [isOpen, sidebarWidth]);
 
@@ -252,13 +182,14 @@ export const ChatBot: React.FC = () => {
       const w = window.innerWidth - e.clientX;
       if (w > 350 && w < window.innerWidth * 0.9) setSidebarWidth(w);
     };
+
     const onUp = () => { setIsResizing(false); document.body.style.cursor = 'default'; document.body.style.userSelect = 'auto'; };
     if (isResizing) { window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp); }
+    
     return () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
   }, [isResizing]);
 
   // ── File handling ─────────────────────────────────────────────────────────
-
   const processFile = useCallback((file: File) => {
     if (!file.type.startsWith('image/') && file.type !== 'application/pdf') { alert(t('chat.errors.invalidFileType', "Només s'accepten imatges i PDFs.")); return; }
     if (file.size > 5 * 1024 * 1024) { alert(t('chat.errors.fileTooLarge', "L'arxiu és massa gran. Màxim 5MB.")); return; }
@@ -288,7 +219,6 @@ export const ChatBot: React.FC = () => {
     }
   }, [input]);
 
-  // Scroll to bottom — use container ref to avoid dragging the window
   const scrollToBottom = useCallback((instant = false) => {
     const container = messagesContainerRef.current;
     if (!container) return;
@@ -298,21 +228,18 @@ export const ChatBot: React.FC = () => {
   useEffect(() => {
     if (isInitialLoad.current) {
       isInitialLoad.current = false;
-      scrollToBottom(true); // instant on initial load
+      scrollToBottom(true);
     } else {
-      scrollToBottom(false); // smooth for new messages
+      scrollToBottom(false);
     }
   }, [messages, streamPhase, streamingText, scrollToBottom]);
 
   // ── Send ──────────────────────────────────────────────────────────────────
-
   const handleSend = async () => {
-    // — Cooldown guard (anti-bypass: la comprovació és aquí, no només al botó disabled)
     const elapsed = Date.now() - lastSentAt.current;
     if (elapsed < COOLDOWN_MS) return;
     if ((!input.trim() && !attachedFile) || streamPhase !== 'idle') return;
 
-    // Marca el temps per iniciar el compte enrere visual al component fill
     lastSentAt.current = Date.now();
     setLastSentTime(Date.now());
     const userMsg = input.trim() || `[Fitxer: ${attachedFile?.name}]`;
@@ -341,7 +268,7 @@ export const ChatBot: React.FC = () => {
       let pageText = '';
       try { pageText = (document.querySelector('main') || document.body).innerText.slice(0, 4000); } catch (_) { }
 
-      const { auth } = await import('../lib/firebase');
+      const { auth } = await import('../../lib/firebase');
       const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
 
       const res = await fetch('/api/chat', {
@@ -363,12 +290,10 @@ export const ChatBot: React.FC = () => {
       });
 
       if (!res.ok) {
-        // Non-SSE error response (auth, validation, etc.)
         const errorData = await res.json().catch(() => ({ error: t('chat.errors.unknown', 'Error desconegut') }));
         throw new Error(errorData.error || 'Error');
       }
 
-      // ── Parse SSE stream ─────────────────────────────────────────────
       const reader = res.body?.getReader();
       if (!reader) throw new Error(t('chat.errors.streamingNotSupported', 'El navegador no suporta streaming'));
 
@@ -382,10 +307,7 @@ export const ChatBot: React.FC = () => {
         if (done) break;
 
         sseBuffer += decoder.decode(value, { stream: true });
-
-        // Parse SSE lines: each event ends with \n\n
         const events = sseBuffer.split('\n\n');
-        // Keep the last incomplete chunk in the buffer
         sseBuffer = events.pop() || '';
 
         for (const eventBlock of events) {
@@ -412,37 +334,27 @@ export const ChatBot: React.FC = () => {
                 if (parsed.phase === 'thinking') setStreamPhase('thinking');
                 else if (parsed.phase === 'writing') setStreamPhase('writing');
                 break;
-
               case 'thought':
                 setStreamPhase('thinking');
                 setThoughtText(prev => prev + parsed.text);
                 break;
-
               case 'delta':
                 if (fullReplyText === '') setStreamPhase('writing');
                 fullReplyText += parsed.text;
                 setStreamingText(fullReplyText);
                 break;
-
               case 'metadata':
                 metadata = parsed;
                 break;
-
               case 'error':
                 throw new Error(parsed.message || t('chat.errors.serverError', 'Error del servidor'));
-
-              case 'done':
-                // Handled after the loop
-                break;
             }
           } catch (parseErr: any) {
             if (eventType === 'error') throw parseErr;
-            // Skip unparseable events
           }
         }
       }
 
-      // ── Consolidate final message ───────────────────────────────────
       const finalText = fullReplyText || streamingText || t('chat.noResponse', 'Sense resposta.');
       const final = [...newMessages, { role: 'model' as const, content: finalText, addedMemories: metadata.memories_to_add }];
       setMessages(final);
@@ -499,39 +411,22 @@ export const ChatBot: React.FC = () => {
             className="fixed top-0 right-0 h-screen border-l border-white/5 shadow-2xl flex flex-col z-[2000] overflow-hidden max-w-full isolate"
           >
             {/* Background */}
-            <div className="absolute inset-0 z-[-1] bg-[#020617]">
-              <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover blur-[30px] scale-[1.2] select-none pointer-events-none" loading="lazy" />
+            <div className="absolute inset-0 z-[-1] bg-[#020617] overflow-hidden">
+              <img 
+                src="data:image/webp;base64,UklGRlgBAABXRUJQVlA4IEwBAADQDQCdASrwAIcAPpFIoU0lpCMiIEgAsBIJaW7hAuE9nqvHMvZz5AKzeirh8/MXUVsn8uejLKAJOaFT0RDVQG2aHVUmu7TV/MW8j8bTN74Mxrlelr+L7wcXw5pDOQHcVRQLnomMfEmpbhaOIvvm+LKDGc8jcs9ZAAD+5RuPgy22KjEYaHVb/T4KpzaboZ837cgmaZuQ3AfJ/358UVn7Kor7PdSWeglnfN6PBnqZbM4phUlVCpp93nLmZD/W3pTt8oXiW3HHPu1UMHJM9cj/ahOwtz1QIbtlKAufGoEur39+8R85ZqgI/6VvmNXkb1zmSE1M2DWUQYWmdTAm5afHnOI3mPL7nWXOxmnQumrDC/WfEhJc8dfb82tQdGbrrxzlRWxMy3QqBSKY5TKH+OKRxeHz/vuIC97FEPVmQ2+C6CrkgsNcEKf5Cafa2gAAAA==" 
+                alt="" 
+                className="absolute inset-0 w-full h-full object-cover blur-[50px] scale-[1.4] select-none pointer-events-none" 
+              />
               <div className="absolute inset-0 bg-[#020617]/30 backdrop-blur-xl" />
             </div>
 
             {/* Login gate — shown when user is not authenticated */}
             {!user && (
-              <div className="absolute inset-0 z-[50] flex flex-col">
-                {/* Mini header */}
-                <div className="shrink-0 h-16 px-4 border-b border-white/5 flex items-center justify-between bg-[#020617]/50 backdrop-blur-xl">
-                  <span className="text-sm font-medium text-slate-300 ml-2">{aiName}</span>
-                  <button type="button" onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"><X size={18} /></button>
-                </div>
-                {/* Login content */}
-                <div className="flex-1 flex flex-col items-center justify-center gap-6 px-8 text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-slate-800/80 border border-white/10 flex items-center justify-center overflow-hidden">
-                    {renderAIAvatar(28, "text-slate-400")}
-                  </div>
-                  <div>
-                    <h2 className="text-slate-100 font-semibold text-lg mb-2">{aiName}</h2>
-                    <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-wrap">
-                      {t('chat.loginRequired', "L'assistent d'IA és exclusiu per als membres registrats\nInicia sessió per accedir a l'historial i al xat")}
-                    </p>
-                  </div>
-                  <a
-                    href="/login"
-                    className="flex items-center gap-2 px-6 py-3 bg-white text-black font-medium rounded-2xl hover:bg-slate-100 transition-colors shadow-lg"
-                  >
-                    <LogIn size={18} />
-                    {t('chat.login', 'Inicia sessió')}
-                  </a>
-                </div>
-              </div>
+              <LoginGate 
+                 aiName={aiName} 
+                 setIsOpen={setIsOpen} 
+                 renderAIAvatar={renderAIAvatar} 
+              />
             )}
 
             {/* Drag overlay */}
@@ -548,60 +443,19 @@ export const ChatBot: React.FC = () => {
             {/* History Panel */}
             <AnimatePresence>
               {showHistory && (
-                <motion.div
-                  initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-                  transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-                  className="absolute inset-0 z-[20] flex flex-col bg-[#020617]/90 backdrop-blur-2xl"
-                >
-                  <div className="shrink-0 h-16 px-5 border-b border-white/5 flex items-center justify-between">
-                    <span className="text-sm font-medium text-slate-200">{t('chat.history', 'Historial de converses')}</span>
-                    <button type="button" onClick={() => setShowHistory(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"><X size={18} /></button>
-                  </div>
-                  <div className="flex-1 overflow-y-auto custom-scrollbar py-3 px-3 space-y-1">
-                    {chatList.length === 0 && (
-                      <p className="text-slate-500 text-sm text-center mt-10">{t('chat.noSavedChats', 'Sense converses desades')}</p>
-                    )}
-                    {chatList.map(chat => (
-                      <div
-                        key={chat.id}
-                        className={`group flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-pointer transition-colors ${chat.id === currentChatId ? 'bg-white/10' : 'hover:bg-white/5'}`}
-                        onClick={() => switchChat(chat.id)}
-                      >
-                        {editingId === chat.id ? (
-                          <input
-                            autoFocus
-                            className="flex-1 bg-transparent text-slate-200 text-sm focus:outline-none border-b border-slate-500"
-                            value={editingTitle}
-                            onChange={e => setEditingTitle(e.target.value)}
-                            onKeyDown={e => { if (e.key === 'Enter') renameChat(chat.id, editingTitle); if (e.key === 'Escape') setEditingId(null); }}
-                            onClick={e => e.stopPropagation()}
-                          />
-                        ) : (
-                          <span className="flex-1 text-sm text-slate-300 truncate">{chat.title}</span>
-                        )}
-                        <span className="text-xs text-slate-600 shrink-0">
-                          {chat.updatedAt ? new Date(chat.updatedAt).toLocaleDateString('ca', { day: '2-digit', month: 'short' }) : ''}
-                        </span>
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" onClick={e => e.stopPropagation()}>
-                          {editingId === chat.id ? (
-                            <button type="button" onClick={() => renameChat(chat.id, editingTitle)} className="p-1 text-green-400 hover:text-green-300 rounded transition-colors"><Check size={14} /></button>
-                          ) : (
-                            <button type="button" onClick={() => { setEditingId(chat.id); setEditingTitle(chat.title); }} className="p-1 text-slate-500 hover:text-slate-300 rounded transition-colors"><Pencil size={14} /></button>
-                          )}
-                          <button type="button" onClick={() => deleteChat(chat.id)} className="p-1 text-slate-500 hover:text-red-400 rounded transition-colors"><Trash2 size={14} /></button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="shrink-0 p-4 border-t border-white/5">
-                    <button type="button"
-                      onClick={startNewChat}
-                      className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Plus size={16} /> {t('chat.newConversation', 'Nova conversa')}
-                    </button>
-                  </div>
-                </motion.div>
+                <ChatHistoryPanel
+                  chatList={chatList}
+                  currentChatId={currentChatId}
+                  editingId={editingId}
+                  editingTitle={editingTitle}
+                  setEditingId={setEditingId}
+                  setEditingTitle={setEditingTitle}
+                  setShowHistory={setShowHistory}
+                  switchChat={switchChat}
+                  renameChat={renameChat}
+                  deleteChat={deleteChat}
+                  startNewChat={startNewChat}
+                />
               )}
             </AnimatePresence>
 
@@ -610,87 +464,16 @@ export const ChatBot: React.FC = () => {
               onMouseDown={() => { setIsResizing(true); document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none'; }} />
 
             {/* Messages */}
-            <div ref={messagesContainerRef} className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-28 md:px-6 space-y-8 custom-scrollbar z-0 flex flex-col">
-              {messages.length === 0 && (
-                <div className="flex-1 flex flex-col items-center justify-center opacity-50 min-h-[50vh]">
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden mb-4 opacity-70">
-                     {renderAIAvatar(40, "text-slate-600")}
-                  </div>
-                </div>
-              )}
-              {messages.map((msg, idx) => {
-                return (
-                  <div key={msg.id || `msg-${idx}-${msg.content.substring(0,10)}`} className={`flex w-full items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  {msg.role === 'model' && (
-                    <div className="w-6 h-6 rounded-md bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0 mt-1 overflow-hidden">
-                      {renderAIAvatar(14, "text-slate-400")}
-                    </div>
-                  )}
-                  <div className={`max-w-[85%] ${msg.role === 'user' ? 'bg-white/5 border border-white/10 text-slate-100 px-5 py-3 rounded-2xl backdrop-blur-md shadow-lg' : 'text-slate-300'}`}>
-                    {msg.role === 'user' ? (
-                      <div className="space-y-2">
-                        {msg.attachmentName && (
-                          <div className={`flex items-center gap-1.5 text-xs rounded-lg px-2 py-1 w-fit ${msg.attachmentType === 'image'
-                            ? 'bg-blue-500/15 border border-blue-400/20 text-blue-300'
-                            : 'bg-orange-500/15 border border-orange-400/20 text-orange-300'
-                            }`}>
-                            <span>{msg.attachmentType === 'image' ? '🖼' : '📄'}</span>
-                            <span className="truncate max-w-[180px]">{msg.attachmentName}</span>
-                          </div>
-                        )}
-                        {msg.content && <p className="whitespace-pre-wrap text-[15px]">{msg.content}</p>}
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-start">
-                        <div className={MARKDOWN_CLS}>
-                          <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{msg.content}</ReactMarkdown>
-                        </div>
-                        {msg.addedMemories && msg.addedMemories.length > 0 && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="inline-flex -mt-1 mb-1 px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-[11px] font-medium text-slate-400 tracking-wide select-none"
-                          >
-                            {t('chat.memoryUpdated', 'Memòria actualitzada')}
-                          </motion.div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  {msg.role === 'user' && user && (
-                    <img
-                      src={user.avatar}
-                      alt={user.username}
-                      className="w-6 h-6 rounded-md shrink-0 mt-1 object-cover border border-white/10"
-                      onError={(e) => { (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${user.username}`; }}
-                    />
-                  )}
-                </div>
-                );
-              })}
-              {/* AI Streaming Indicator (connecting / thinking) */}
-              {(streamPhase === 'connecting' || streamPhase === 'thinking') && (
-                <AIStreamingIndicator
-                  phase={streamPhase}
-                  thoughtText={thoughtText}
-                  renderAvatar={renderAIAvatar}
-                />
-              )}
-              {/* Streaming text (writing phase) */}
-              {streamPhase === 'writing' && streamingText && (
-                <div className="flex w-full items-start gap-3 justify-start">
-                  <div className="w-6 h-6 rounded-md bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0 mt-1 overflow-hidden">
-                    {renderAIAvatar(14, "text-slate-400")}
-                  </div>
-                  <div className="max-w-[85%] text-slate-300">
-                    <div className={`${MARKDOWN_CLS} ai-cursor-blink`}>
-                      <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{streamingText}</ReactMarkdown>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} className="h-4" />
-            </div>
+            <MessageList 
+              messages={messages}
+              user={user}
+              streamPhase={streamPhase}
+              thoughtText={thoughtText}
+              streamingText={streamingText}
+              renderAIAvatar={renderAIAvatar}
+              messagesEndRef={messagesEndRef}
+              messagesContainerRef={messagesContainerRef}
+            />
 
             {/* Floating Header */}
             <div className="absolute top-0 left-0 w-full h-16 px-4 border-b border-white/5 flex justify-between items-center bg-[#020617]/50 backdrop-blur-xl z-10">

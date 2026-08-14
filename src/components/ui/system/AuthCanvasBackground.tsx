@@ -89,7 +89,7 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
 
 const SpaceBackground = ({ variant }: { variant: 'login' | 'register' }) => {
     const [dpr, setDpr] = useState(1.5);
-    
+
     return (
         <div className="absolute inset-0 w-full h-full bg-[#020617] pointer-events-auto">
             <Canvas camera={{ position: [0, 8, 18], fov: 60 }} dpr={dpr}>

@@ -11,16 +11,13 @@ service cloud.firestore {
 
     // Usuaris
     match /users/{userId} {
-      // Només els usuaris autenticats poden veure perfils individuals (evita descarregar l'objecte sencer i PII leak)
-      allow get: if request.auth.uid == userId;
+      // Qualsevol usuari pot veure perfils individuals (per UI de la comunitat), però es bloqueja el list complet
+      allow get: if true;
       allow list: if false;
       allow update: if request.auth.uid == userId;
       
-      // Creació d'usuaris amb verificació segura del codi d'invitació via Firestore rules
-      allow create: if request.auth.uid == userId
-                    && (request.resource.data.role == 'invitat' || 
-                        (request.resource.data.role == 'moderador' && exists(/databases/$(database)/documents/invites/$(request.resource.data.inviteCodeUsed)))
-                       );
+      // Els nous usuaris només es poden crear amb el rol per defecte
+      allow create: if request.auth.uid == userId && request.resource.data.role == 'invitat';
 
       // Historial de xat de l'assistent IA: cada usuari accedeix NOMÉS al seu propi
       match /chats/{chatId} {
@@ -36,12 +33,7 @@ service cloud.firestore {
       }
     }
 
-    match /invites/{code} {
-      // Permetem que el client pugui comprovar si el document amb ID={code} existeix,
-      // però bloquegem "list" perquè no puguin descarregar tots els codis vàlids.
-      allow get: if request.auth.uid != null;
-      allow list, write: if false;
-    }
+
 
     // Missatges: permetre llegir els propis missatges, o enviar a qualsevol si estàs autenticat
     match /messages/{document=**} {
@@ -50,14 +42,14 @@ service cloud.firestore {
       allow create: if request.auth.uid != null || request.resource.data.receiverId == 'jV5Y63M77PcqIcOUCpLz76GTYMI3';
     }
 
-    // Solucions i Notificacions: els moderadors fan i desfan la base, però tothom autenticat pot comentar
+    // Solucions i Notificacions: els moderadors fan i desfan la base, tothom ho pot veure
     match /solutions/{solutionId} {
-      allow read: if request.auth.uid != null;
+      allow read: if true;
       allow write: if isModerator();
       
-      // Subcol·lecció de comentaris oberta per a tots els autenticats
+      // Subcol·lecció de comentaris oberta per a tots
       match /comments/{commentId} {
-        allow read: if request.auth.uid != null;
+        allow read: if true;
         allow create: if request.auth.uid != null;
         allow update: if request.auth.uid != null && request.auth.uid == resource.data.userId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content', 'userAvatar', 'username', 'reactions']);
         // Només l'autor original o l'administrador pot esborrar els missatges
@@ -96,6 +88,14 @@ service cloud.firestore {
     // Memòria de la IA
     match /ai_memory/{userId} {
       allow read, write: if request.auth.uid == userId;
+    }
+
+    // Diccionari de Noms d'Usuari
+    match /usernames/{usernameId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if request.auth.uid != null && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth.uid != null && resource.data.uid == request.auth.uid;
     }
 
     // Fallback

@@ -240,7 +240,7 @@ const SolutionDetailPage = () => {
                         <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
                             <span className="text-slate-500 mr-0.5">{t('solutionDetail.author', 'Autor:')}</span>
                             {solution.authorId ? (
-                                <Link to={`/profile/${solution.authorId}`} className="flex items-center gap-2 hover:text-sky-400 transition-colors">
+                                <Link to={`/profile/${solution.author}`} className="flex items-center gap-2 hover:text-sky-400 transition-colors">
                                     {authorData?.avatar && <img src={authorData.avatar} className="w-5 h-5 rounded-full bg-slate-800 object-cover" loading="lazy" alt="Avatar de l'autor" />}
                                     {authorData?.username || solution.author || t('solutionDetail.anonymous', 'Anònim')}
                                 </Link>

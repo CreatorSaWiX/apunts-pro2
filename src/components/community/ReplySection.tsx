@@ -20,7 +20,7 @@ interface ReplySectionProps {
     postId: string;
     postAuthorId: string;
     postContent: string;
-    onNavigateToProfile?: (userId: string) => void;
+    onNavigateToProfile?: (username: string) => void;
 }
 
 const CUSTOM_EMOTES = Object.values(CUSTOM_EMOJIS);
@@ -146,13 +146,13 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                                     src={reply.userAvatar} 
                                     alt={reply.username} 
                                     className={`w-8 h-8 rounded-xl object-cover shrink-0 ${onNavigateToProfile ? 'cursor-pointer' : ''}`}
-                                    onClick={() => onNavigateToProfile && reply.userId && onNavigateToProfile(reply.userId)}
+                                    onClick={() => onNavigateToProfile && reply.username && onNavigateToProfile(reply.username)}
                                 />
                                 <div className="flex-1 min-w-0 bg-white/5 rounded-2xl p-3 border border-white/5">
                                     <div className="flex items-center justify-between mb-1">
                                         <span 
                                             className={`text-xs font-bold text-slate-300 group-hover:text-primary transition-colors ${onNavigateToProfile ? 'cursor-pointer' : ''}`}
-                                            onClick={() => onNavigateToProfile && reply.userId && onNavigateToProfile(reply.userId)}
+                                            onClick={() => onNavigateToProfile && reply.username && onNavigateToProfile(reply.username)}
                                         >
                                             {reply.username}
                                         </span>

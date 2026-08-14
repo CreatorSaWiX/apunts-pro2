@@ -138,7 +138,7 @@ export const AboutSection = () => {
                                 ) : (
                                     contributors.map((user, i) => (
                                         <Link
-                                            to={`/profile/${user.uid}`}
+                                            to={`/profile/${user.username}`}
                                             key={i}
                                             onClick={() => setIsModalOpen(false)}
                                             className="block no-underline outline-none"

@@ -104,12 +104,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const [
             { auth, db },
             { createUserWithEmailAndPassword, updateProfile },
-            { doc, setDoc }
+            { doc, setDoc, getDoc }
         ] = await Promise.all([
             import('../lib/firebase'),
             import('firebase/auth'),
             import('firebase/firestore')
         ]);
+
+        // 0. Comprovar unicitat del nom d'usuari
+        const usernameDoc = await getDoc(doc(db, 'usernames', username));
+        if (usernameDoc.exists()) {
+            throw new Error("Aquest nom d'usuari ja està en ús. Si us plau, tria'n un altre.");
+        }
 
         // 1. Create User (Auth)
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -136,6 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             // 4. Create Firestore Document
             await setDoc(doc(db, 'users', firebaseUser.uid), userData);
+            await setDoc(doc(db, 'usernames', username), { uid: firebaseUser.uid, avatar: avatarUrl });
 
             // 5. Force update local state and cache
             const newUser = {

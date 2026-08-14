@@ -118,11 +118,10 @@ const InlineEditableText = ({
 // --- Main Profile Component ---
 const ProfilePage = () => {
     const { t } = useTranslation();
-    const { uid } = useParams();
+    const { username } = useParams();
     const { user: authUser, logout, isLoading: authLoading, updateUser } = useAuth();
 
-    const userIdToFetch = uid || authUser?.id;
-    const isOwnProfile = Boolean(!uid || (authUser && authUser.id === uid));
+    const isOwnProfile = Boolean(!username || (authUser && authUser.username === username));
 
     const [isMailboxOpen, setIsMailboxOpen] = useState(false);
     const [isInboxOpen, setIsInboxOpen] = useState(false);
@@ -196,7 +195,8 @@ const ProfilePage = () => {
     useEffect(() => {
         let isMounted = true;
         const fetchUserData = async () => {
-            if (userIdToFetch) {
+            const targetUsername = username || authUser?.username;
+            if (targetUsername) {
                 setIsFetchingUser(true);
                 const [{ db }, { doc, getDoc }] = await Promise.all([
                     import('../lib/firebase'),
@@ -204,20 +204,34 @@ const ProfilePage = () => {
                 ]);
                 if (!isMounted) return;
                 
-                const docRef = doc(db, 'users', userIdToFetch);
-                const docSnap = await getDoc(docRef);
+                // 1. Cercar quin UID correspon a aquest username
+                const usernameDoc = await getDoc(doc(db, 'usernames', targetUsername));
+                let resolvedUid = null;
+                
+                if (usernameDoc.exists()) {
+                    resolvedUid = usernameDoc.data().uid;
+                }
+                
+                // 2. Si l'hem trobat, descarregar l'usuari complet
+                if (resolvedUid && isMounted) {
+                    const userDocSnap = await getDoc(doc(db, 'users', resolvedUid));
+                    if (userDocSnap.exists()) {
+                        setExtendedUser({ ...userDocSnap.data(), id: userDocSnap.id } as ExtendedUser);
+                        setIsFetchingUser(false);
+                        return; // Acabem amb èxit
+                    }
+                }
                 
                 if (!isMounted) return;
 
-                if (docSnap.exists()) {
-                    setExtendedUser({ ...docSnap.data(), id: userIdToFetch } as ExtendedUser);
-                } else if (isOwnProfile && authUser) {
+                // 3. Fallbacks
+                if (isOwnProfile && authUser) {
                     setExtendedUser(authUser);
                 } else {
                     setExtendedUser({
                         username: t('profile.defaultUser', 'Usuari'),
-                        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${userIdToFetch}`,
-                        id: userIdToFetch
+                        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${targetUsername}`,
+                        id: targetUsername
                     });
                 }
                 setIsFetchingUser(false);
@@ -225,10 +239,10 @@ const ProfilePage = () => {
         };
         fetchUserData();
         return () => { isMounted = false; };
-    }, [userIdToFetch, authUser, isOwnProfile, t]);
+    }, [username, authUser, isOwnProfile, t]);
 
     useEffect(() => {
-        if (!userIdToFetch) return;
+        if (!extendedUser?.id) return;
         let isMounted = true;
         
         const fetchPosts = async () => {
@@ -240,7 +254,7 @@ const ProfilePage = () => {
                 ]);
                 if (!isMounted) return;
 
-                const q = query(collection(db, 'community_posts'), where('userId', '==', userIdToFetch));
+                const q = query(collection(db, 'community_posts'), where('userId', '==', extendedUser.id));
                 const snapshot = await getDocs(q);
                 
                 if (!isMounted) return;
@@ -259,7 +273,7 @@ const ProfilePage = () => {
         };
         fetchPosts();
         return () => { isMounted = false; };
-    }, [userIdToFetch]);
+    }, [extendedUser?.id]);
 
     useEffect(() => {
         if (!isOwnProfile || !authUser) return;
@@ -292,13 +306,35 @@ const ProfilePage = () => {
 
     const handleUpdateProfile = async (data: Partial<ExtendedUser>) => {
         if (!authUser?.id) return;
-        const [{ db, auth }, { doc, setDoc, collection, collectionGroup, query, where, getDocs, writeBatch }, { updateProfile }] = await Promise.all([
+        const [{ db, auth }, { doc, setDoc, deleteDoc, getDoc, collection, collectionGroup, query, where, getDocs, writeBatch }, { updateProfile }] = await Promise.all([
             import('../lib/firebase'),
             import('firebase/firestore'),
             import('firebase/auth')
         ]);
         const userRef = doc(db, 'users', authUser.id);
         try {
+            if (data.username && data.username !== authUser.username) {
+                const newUsernameDoc = await getDoc(doc(db, 'usernames', data.username));
+                if (newUsernameDoc.exists()) {
+                    throw new Error("Aquest nom d'usuari ja està en ús. Tria'n un altre.");
+                }
+                
+                // Creem la reserva del nou nom d'usuari amb l'avatar
+                await setDoc(doc(db, 'usernames', data.username), { uid: authUser.id, avatar: data.avatar || authUser.avatar || '' });
+                
+                // Esborrem la reserva de l'antic nom
+                if (authUser.username) {
+                    try {
+                        await deleteDoc(doc(db, 'usernames', authUser.username));
+                    } catch (e) {
+                        console.error("No s'ha pogut esborrar el username antic", e);
+                    }
+                }
+            } else if (data.avatar && authUser.username) {
+                // Només s'actualitza l'avatar, mantenint el nom actual
+                await setDoc(doc(db, 'usernames', authUser.username), { uid: authUser.id, avatar: data.avatar }, { merge: true });
+            }
+
             await setDoc(userRef, data, { merge: true });
             if (auth.currentUser && (data.username || data.avatar)) {
                 await updateProfile(auth.currentUser, { 
@@ -361,6 +397,7 @@ const ProfilePage = () => {
             if (data.username !== authUser.username && data.username) window.location.reload();
         } catch (error) {
             console.error("Error updating profile:", error);
+            alert(error instanceof Error ? error.message : "Error al guardar el perfil.");
         }
     };
 
@@ -370,7 +407,7 @@ const ProfilePage = () => {
         }
     };
 
-    if (!userIdToFetch && !authLoading) return <Navigate to="/login" replace />;
+    if (!username && !authUser && !authLoading) return <Navigate to="/login" replace />;
 
     if (authLoading || isFetchingUser || !extendedUser) {
         return (

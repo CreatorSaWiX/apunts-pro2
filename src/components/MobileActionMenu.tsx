@@ -188,7 +188,7 @@ const MobileActionMenu: React.FC<{
                             ) : (
                                 <div className="space-y-3">
                                     {contributors.map((user, i) => (
-                                        <Link to={`/profile/${user.uid}`} onClick={() => setIsOpen(false)} key={user.uid} className="flex flex-col gap-1 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10">
+                                        <Link to={`/profile/${user.username}`} onClick={() => setIsOpen(false)} key={user.uid} className="flex flex-col gap-1 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center text-white text-xs">
                                                     {user.avatar ? <img src={user.avatar} className="w-full h-full object-cover" loading="lazy" alt={`${user.username} avatar`} /> : user.username[0].toUpperCase()}
