@@ -1,112 +1,74 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from '@google/genai';
 import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
-import fs from 'fs';
-import { verifyIdToken } from './_shared/auth';
+import { withMiddleware } from './_shared/middleware';
+import { roadmapRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
-import path from 'path';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-    // Configurar CORS
-    Object.entries(CORS_HEADERS).forEach(([key, value]) => {
-        res.setHeader(key, value);
+export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+    const rawBody = await req.json().catch(() => ({}));
+    const parseResult = roadmapRequestSchema.safeParse(rawBody);
+
+    if (!parseResult.success) {
+        return new Response(JSON.stringify({ error: 'Dades invàlides', details: parseResult.error.format() }), { 
+            status: 400, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } 
+        });
+    }
+
+    const { prompt, currentNodes, history, memory, aiSettings, userName, attachedFile } = parseResult.data;
+
+    if (!prompt && !attachedFile) {
+        return new Response(JSON.stringify({ error: 'Falta el paràmetre "prompt" o arxiu adjunt' }), { 
+            status: 400, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } 
+        });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        return new Response(JSON.stringify({ error: 'Error intern del servidor (C)' }), { 
+            status: 500, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } 
+        });
+    }
+
+    // --- EXTRACCIÓ DINÀMICA DE CONTEXT ---
+    let injectedContext = "";
+    let mentionedNodes = currentNodes.filter((node: any) => {
+        const regex = new RegExp(`\\b${node.id}\\b`, 'i');
+        return regex.test(prompt || "");
     });
 
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
+    if (mentionedNodes.length === 0 && /(assignatur|cursar|roadmap|semestre|preparar|avaluaci|professor|hores|estudi|consell)/i.test(prompt || "")) {
+        mentionedNodes = currentNodes.filter((n: any) => n.status === 'in_progress');
+        if (mentionedNodes.length === 0) mentionedNodes = currentNodes.slice(0, 5); 
     }
 
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Mètode no permès. Fes servir POST.' });
-    }
-
-    try {
-        const idToken = req.headers.authorization?.split('Bearer ')[1];
-        if (!idToken) {
-            return res.status(401).json({ error: 'No autoritzat. Cal iniciar sessió.' });
-        }
-
-        try {
-            await verifyIdToken(idToken);
-        } catch (error) {
-            return res.status(401).json({ error: 'Token invàlid o caducat.' });
-        }
-
-        const { prompt, currentNodes = [], history = [], memory = {}, aiSettings, userName, attachedFile } = req.body;
-
-        if (!prompt && !attachedFile) {
-            return res.status(400).json({ error: 'Falta el paràmetre "prompt" o arxiu adjunt' });
-        }
-
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            return res.status(500).json({ error: 'Error intern del servidor (C)' });
-        }
-
-        res.setHeader('Content-Type', 'text/event-stream');
-        res.setHeader('Cache-Control', 'no-cache, no-transform');
-        res.setHeader('Connection', 'keep-alive');
-        res.setHeader('X-Accel-Buffering', 'no');
-        if (typeof res.flushHeaders === 'function') res.flushHeaders();
-
-        const emit = (event: string, data: object) => {
-            res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
-            if (typeof (res as any).flush === 'function') {
-                (res as any).flush();
-            }
-        };
-
-        // --- EXTRACCIÓ DINÀMICA DE CONTEXT (RAG) ---
-        // Busquem si l'usuari menciona alguna assignatura de les que té al roadmap
-        let injectedContext = "";
-        let mentionedNodes = currentNodes.filter((node: any) => {
-            // Busquem l'acrònim de forma case-insensitive, assegurant-nos que sigui una paraula sencera
-            const regex = new RegExp(`\\b${node.id}\\b`, 'i');
-            return regex.test(prompt);
-        });
-
-        // Si no menciona cap assignatura concreta però demana consells, explicacions o preparació
-        if (mentionedNodes.length === 0 && /(assignatur|cursar|roadmap|semestre|preparar|avaluaci|professor|hores|estudi|consell)/i.test(prompt)) {
-            mentionedNodes = currentNodes.filter((n: any) => n.status === 'in_progress');
-            // Si no té cap in_progress, agafem totes per donar-li context global
-            if (mentionedNodes.length === 0) mentionedNodes = currentNodes.slice(0, 5); 
-        }
-
-        if (mentionedNodes.length > 0) {
-            injectedContext += "\n\n# CONTEXT ESPECÍFIC DE LES ASSIGNATURES MENCIONADES:\n";
-            for (const node of mentionedNodes) {
-                try {
-                    // En producció a Vercel, els fitxers de public es poden llegir si s'han copiat correctament
-                    // Normalment per Vercel cal configurar bé els fitxers estàtics, però intentem llegir-ho del build path
-                    const filePath = path.join(process.cwd(), 'public', 'data', 'subjects', `${node.id}.json`);
-                    if (fs.existsSync(filePath)) {
-                        const fileData = fs.readFileSync(filePath, 'utf-8');
-                        const parsedData = JSON.parse(fileData);
-                        
-                        // Només injectem les parts rellevants per no saturar el token limit (tot i que Gemini aguanta bé)
-                        const filteredData = {
-                            acronim: parsedData.acronim,
-                            credits: parsedData.credits,
-                            activities: parsedData.activities,
-                            // Simplifiquem les seccions d'avaluació i altres per treure HTML
-                            sections: parsedData.sections?.map((s: any) => ({
-                                title: s.title,
-                                // Traiem l'HTML complex, deixem només el text net
-                                content: s.html ? s.html.replace(/<[^>]*>?/gm, '') : ''
-                            }))
-                        };
-                        
-                        injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(filteredData)}\n`;
-                    }
-                } catch (e) {
-                    console.error(`Error llegint el context de ${node.id}:`, e);
+    if (mentionedNodes.length > 0) {
+        injectedContext += "\n\n# CONTEXT ESPECÍFIC DE LES ASSIGNATURES MENCIONADES:\n";
+        for (const node of mentionedNodes) {
+            try {
+                const baseUrl = process.env.VITE_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:5173");
+                const url = `${baseUrl}/data/subjects/${node.id}.json`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const parsedData = await res.json();
+                    const filteredData = {
+                        acronim: parsedData.acronim,
+                        credits: parsedData.credits,
+                        activities: parsedData.activities,
+                        sections: parsedData.sections?.map((s: any) => ({
+                            title: s.title,
+                            content: s.html ? s.html.replace(/<[^>]*>?/gm, '') : ''
+                        }))
+                    };
+                    injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(filteredData)}\n`;
                 }
+            } catch (e) {
+                console.error(`Error llegint el context de ${node.id}:`, e);
             }
         }
+    }
 
-        const ai = new GoogleGenAI({ apiKey });
-        const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+    const ai = new GoogleGenAI({ apiKey });
+    const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
 Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
 
 [VIBE]
@@ -177,131 +139,130 @@ ${injectedContext}
 L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCITAMENT que afegeixis o treguis una assignatura del seu roadmap, usa les Eines (Tools). Altrament, només respon de forma natural.
 `;
 
-        const formattedHistory = (history || []).map((msg: any) => ({
-            role: msg.role === 'user' ? 'user' : 'model',
-            parts: [{ text: msg.content }]
-        }));
+    const formattedHistory = history.map((msg: any) => ({
+        role: msg.role === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.content }]
+    }));
 
-        
-
-        // Definim la tool per modificar el roadmap
-        const roadmapTool = {
-            name: "modify_roadmap",
-            description: "Modifica el roadmap de l'estudiant afegint o eliminant assignatures. Només cridar-ho si l'usuari ho demana explícitament (ex: 'Afegeix IA al meu roadmap').",
-            parameters: {
-                type: "object",
-                properties: {
-                    actions: {
-                        type: "array",
-                        description: "Llista d'accions a aplicar al roadmap.",
-                        items: {
-                            type: "object",
-                            properties: {
-                                type: { type: "string", description: "Tipus d'acció: 'add' o 'remove'" },
-                                subject: { type: "string", description: "Acrònim de l'assignatura (ex: 'IA', 'EDA')" }
-                            },
-                            required: ["type", "subject"]
-                        }
+    const roadmapTool = {
+        name: "modify_roadmap",
+        description: "Modifica el roadmap de l'estudiant afegint o eliminant assignatures. Només cridar-ho si l'usuari ho demana explícitament (ex: 'Afegeix IA al meu roadmap').",
+        parameters: {
+            type: "object",
+            properties: {
+                actions: {
+                    type: "array",
+                    description: "Llista d'accions a aplicar al roadmap.",
+                    items: {
+                        type: "object",
+                        properties: {
+                            type: { type: "string", description: "Tipus d'acció: 'add' o 'remove'" },
+                            subject: { type: "string", description: "Acrònim de l'assignatura (ex: 'IA', 'EDA')" }
+                        },
+                        required: ["type", "subject"]
                     }
-                },
-                required: ["actions"]
-            }
-        };
-
-        
-
-        let lastError: any;
-        let replied = false;
-
-        const msgParts: any[] = [];
-        if (prompt) msgParts.push({ text: prompt });
-        else msgParts.push({ text: "Analitza aquest document." });
-
-        if (attachedFile && attachedFile.data && attachedFile.mimeType) {
-            msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
+                }
+            },
+            required: ["actions"]
         }
+    };
 
-        for (const modelName of getLoadBalancedModels()) {
-            try {
-                
-                // Mantenim els tools però NO activem el thinkingConfig alhora,
-                // ja que pot provocar al·lucinacions amb "tool_code" o "thought" en models 2.5
-                const streamConfig: any = {
-                    systemInstruction,
-                    temperature: 0.1,
-                    tools: [{ functionDeclarations: [roadmapTool] as any }]
-                };
+    const msgParts: any[] = [];
+    if (prompt) msgParts.push({ text: prompt });
+    else msgParts.push({ text: "Analitza aquest document." });
 
+    if (attachedFile && attachedFile.data && attachedFile.mimeType) {
+        msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
+    }
 
-                const responseStream = await ai.models.generateContentStream({
-                    model: modelName,
-                    contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                    config: streamConfig
-                });
+    const encoder = new TextEncoder();
+    const sseStream = new ReadableStream({
+        async start(controller) {
+            const emit = (event: string, data: object) => {
+                controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+            };
 
-                emit('status', { phase: 'thinking', model: modelName });
+            let lastError: any;
+            let replied = false;
 
-                let hasToolCall = false;
-                let toolCallData = null;
+            for (const modelName of getLoadBalancedModels()) {
+                try {
+                    const streamConfig: any = {
+                        systemInstruction,
+                        temperature: 0.1,
+                        tools: [{ functionDeclarations: [roadmapTool] as any }]
+                    };
 
-                for await (const chunk of responseStream) {
-                    if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
-                        for (const part of chunk.candidates[0].content.parts) {
-                            if (part.thought && part.text) {
-                                emit('thought', { text: part.text });
-                            } else if (part.text) {
-                                emit('status', { phase: 'writing' });
-                                emit('message', { text: part.text });
+                    const responseStream = await ai.models.generateContentStream({
+                        model: modelName,
+                        contents: [...formattedHistory, { role: 'user', parts: msgParts }],
+                        config: streamConfig
+                    });
+
+                    emit('status', { phase: 'thinking', model: modelName });
+
+                    let hasToolCall = false;
+                    let toolCallData = null;
+
+                    for await (const chunk of responseStream) {
+                        if (req.signal.aborted) {
+                            controller.close();
+                            return;
+                        }
+                        if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+                            for (const part of chunk.candidates[0].content.parts) {
+                                if (part.thought && part.text) {
+                                    emit('thought', { text: part.text });
+                                } else if (part.text) {
+                                    emit('status', { phase: 'writing' });
+                                    emit('message', { text: part.text });
+                                }
                             }
                         }
+
+                        const functionCalls = chunk.functionCalls;
+                        if (functionCalls && functionCalls.length > 0) {
+                            hasToolCall = true;
+                            toolCallData = functionCalls[0].args;
+                            break;
+                        }
                     }
 
-                    const functionCalls = chunk.functionCalls;
-                    if (functionCalls && functionCalls.length > 0) {
-                        hasToolCall = true;
-                        toolCallData = functionCalls[0].args;
-                        break;
+                    if (hasToolCall && toolCallData) {
+                        emit('actions', { actions: (toolCallData as any).actions });
                     }
-                }
 
-                if (hasToolCall && toolCallData) {
-                    emit('actions', { actions: (toolCallData as any).actions });
+                    emit('done', {});
+                    replied = true;
+                    break;
+                } catch (e: any) {
+                    const is429 = e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate');
+                    if (is429) {
+                        lastError = e;
+                        continue;
+                    }
+                    emit('error', { message: e.message || 'Error intern del servidor' });
+                    emit('done', {});
+                    replied = true;
+                    break;
                 }
-
-                emit('done', {});
-                res.end();
-                replied = true;
-                break;
-            } catch (e: any) {
-                const is429 = e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate');
-                if (is429) {
-                    console.warn(`[Prod Roadmap AI] ${modelName} rate limit/503, provant el seguent model...`);
-                    lastError = e;
-                    continue;
-                }
-                
-                emit('error', { message: e.message || 'Error intern del servidor' });
-                emit('done', {});
-                res.end();
-                replied = true;
-                break;
             }
-        }
 
-        if (!replied) {
-            emit('error', { message: lastError?.message || 'Tots els models han fallat' });
-            emit('done', {});
-            res.end();
+            if (!replied) {
+                emit('error', { message: lastError?.message || 'Tots els models han fallat' });
+                emit('done', {});
+            }
+            controller.close();
         }
+    });
 
-    } catch (e: any) {
-        console.error("[Prod Roadmap AI Error]:", e);
-        if (!res.headersSent) {
-            res.status(500).json({ error: String(e.message || e) });
-        } else {
-            res.write(`event: error\ndata: ${JSON.stringify({ message: String(e.message || e) })}\n\n`);
-            if (typeof (res as any).flush === 'function') (res as any).flush();
-            res.end();
-        }
-    }
-}
+    return new Response(sseStream, {
+        status: 200,
+        headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            ...CORS_HEADERS,
+        },
+    });
+});

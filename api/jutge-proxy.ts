@@ -1,32 +1,27 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getProblemInfo } from '../src/lib/jutgeScraper.js';
-import { CORS_HEADERS } from './_shared/cors';
+import { withMiddleware, jsonResponse } from './_shared/middleware';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-    Object.entries(CORS_HEADERS).forEach(([key, value]) => {
-        res.setHeader(key, value);
-    });
-
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
+export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+    if (req.method !== 'GET') {
+        return jsonResponse({ error: 'Mètode no permès. Fes servir GET.' }, 405);
     }
 
     try {
-        const id = req.query.id as string;
-        const lang = (req.query.lang as string) || null;
+        const url = new URL(req.url);
+        const id = url.searchParams.get("id");
+        const lang = url.searchParams.get("lang") || null;
 
         if (!id) {
-            return res.status(400).json({ error: 'Missing Problem ID' });
+            return jsonResponse({ error: 'Missing Problem ID' }, 400);
         }
 
         const result = await getProblemInfo(id, lang);
 
-        // Set caching headers for the edge CDN
-        res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=43200');
-        res.status(200).json(result);
+        const response = jsonResponse(result, 200);
+        response.headers.set('Cache-Control', 's-maxage=86400, stale-while-revalidate=43200');
+        return response;
     } catch (e: any) {
         console.error("[Vercel API] Proxy Error:", e);
-        res.status(500).json({ error: 'Error intern del servidor' });
+        return jsonResponse({ error: 'Error intern del servidor' }, 500);
     }
-}
+});

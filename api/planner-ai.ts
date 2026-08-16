@@ -1,47 +1,35 @@
-import { verifyIdToken } from './_shared/auth';
-import { CORS_HEADERS, handleCors } from './_shared/cors';
 import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
+import { withMiddleware } from './_shared/middleware';
+import { plannerRequestSchema } from './_shared/schemas';
+import { CORS_HEADERS } from './_shared/cors';
 
-export default async function handler(req: Request) {
-    const corsOptions = handleCors(req);
-    if (corsOptions) return corsOptions;
+export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+    const rawBody = await req.json().catch(() => ({}));
+    const parseResult = plannerRequestSchema.safeParse(rawBody);
 
-    if (req.method !== 'POST') {
-        return new Response(JSON.stringify({ error: 'Mètode no permès' }), { status: 405, headers: CORS_HEADERS });
+    if (!parseResult.success) {
+        return new Response(JSON.stringify({ error: 'Dades invàlides', details: parseResult.error.format() }), { 
+            status: 400, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
+        });
     }
 
-    try {
-        const authHeader = req.headers.get('authorization');
-        const idToken = authHeader?.split('Bearer ')[1];
-        if (!idToken) return new Response(JSON.stringify({ error: 'No autoritzat' }), { status: 401, headers: CORS_HEADERS });
+    const { prompt, currentTasks, subjects, currentDate, aiSettings, attachedFile } = parseResult.data;
 
-        try {
-            await verifyIdToken(idToken);
-        } catch (error) {
-            return new Response(JSON.stringify({ error: 'Token invàlid' }), { status: 401, headers: CORS_HEADERS });
-        }
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) return new Response(JSON.stringify({ error: 'Falta GEMINI_API_KEY' }), { status: 500, headers: CORS_HEADERS });
 
-        const body = await req.json();
-        const { prompt, currentTasks = [], subjects = [], currentDate, aiSettings, attachedFile } = body;
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+        async start(controller) {
+            const emit = (event: string, data: object) => {
+                controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+            };
 
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) return new Response(JSON.stringify({ error: 'Falta GEMINI_API_KEY' }), { status: 500 });
+            try {
+                const { GoogleGenAI } = await import('@google/genai');
+                const genAI = new GoogleGenAI({ apiKey });
 
-        const encoder = new TextEncoder();
-        const stream = new ReadableStream({
-            async start(controller) {
-                const emit = (event: string, data: object) => {
-                    controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
-                };
-
-                try {
-                    const { GoogleGenAI } = await import('@google/genai');
-                    const genAI = new GoogleGenAI({ apiKey });
-
-                    
-                    
-
-                    const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+                const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
 Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
 
 [VIBE]
@@ -107,127 +95,119 @@ L'estructura exacta ha de ser:
   ]
 }`;
 
-                    const msgParts: any[] = [];
-                    if (prompt) msgParts.push({ text: prompt });
-                    else msgParts.push({ text: "Analitza aquest document." });
+                const msgParts: any[] = [];
+                if (prompt) msgParts.push({ text: prompt });
+                else msgParts.push({ text: "Analitza aquest document." });
 
-                    if (attachedFile && attachedFile.data && attachedFile.mimeType) {
-                        msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
-                    }
+                if (attachedFile && attachedFile.data && attachedFile.mimeType) {
+                    msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
+                }
 
-                    let lastError: any;
-                    let replied = false;
+                let lastError: any;
+                let replied = false;
 
-                    for (const modelName of getLoadBalancedModels()) {
-                        try {
-                            
-                            const streamConfig: any = {
-                                systemInstruction,
-                                responseMimeType: "application/json"
-                            };
+                for (const modelName of getLoadBalancedModels()) {
+                    try {
+                        const streamConfig: any = {
+                            systemInstruction,
+                            responseMimeType: "application/json"
+                        };
 
-                            applyThinkingConfig(streamConfig, modelName);
-                            if (modelName.includes('2.5')) {
-                                streamConfig.thinkingConfig.thinkingBudget = 32768;
-                            } else {
-                                // Gemini 3.x i superiors (la majoria usen thinking_level o budget sense limitar)
-                                streamConfig.thinkingConfig.thinkingBudget = 32768; 
-                                // Si en el futur l'SDK només accepta 'HIGH' es pot afegir: streamConfig.thinkingConfig.thinkingLevel = 'HIGH';
+                        applyThinkingConfig(streamConfig, modelName);
+                        if (streamConfig.thinkingConfig) {
+                             streamConfig.thinkingConfig.thinkingBudget = 32768;
+                        }
+
+                        const responseStream = await genAI.models.generateContentStream({
+                            model: modelName,
+                            contents: msgParts,
+                            config: streamConfig
+                        });
+
+                        emit('status', { phase: 'thinking', model: modelName });
+
+                        let accumulatedText = '';
+
+                        for await (const chunk of responseStream) {
+                            if (req.signal.aborted) {
+                                controller.close();
+                                return;
                             }
-
-                            const responseStream = await genAI.models.generateContentStream({
-                                model: modelName,
-                                contents: msgParts,
-                                config: streamConfig
-                            });
-
-                            emit('status', { phase: 'thinking', model: modelName });
-
-                            let accumulatedText = '';
-
-                            for await (const chunk of responseStream) {
-                                if (req.signal.aborted) {
-                                    controller.close();
-                                    return;
-                                }
-                                if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
-                                    for (const part of chunk.candidates[0].content.parts) {
-                                        if (part.thought && part.text) {
-                                            emit('thought', { text: part.text });
-                                        } else if (part.text) {
-                                            accumulatedText += part.text;
-                                        }
+                            if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+                                for (const part of chunk.candidates[0].content.parts) {
+                                    if (part.thought && part.text) {
+                                        emit('thought', { text: part.text });
+                                    } else if (part.text) {
+                                        accumulatedText += part.text;
                                     }
                                 }
                             }
-
-                            let rData;
-                            try {
-                                let cleanText = accumulatedText.trim();
-                                if (cleanText.startsWith("```json")) {
-                                    cleanText = cleanText.substring(7).replace(/```$/, '').trim();
-                                } else if (cleanText.startsWith("```")) {
-                                    cleanText = cleanText.substring(3).replace(/```$/, '').trim();
-                                }
-                                const firstBrace = cleanText.indexOf('{');
-                                const lastBrace = cleanText.lastIndexOf('}');
-                                if (firstBrace !== -1 && lastBrace !== -1) {
-                                    cleanText = cleanText.substring(firstBrace, lastBrace + 1);
-                                }
-                                rData = JSON.parse(cleanText);
-                            } catch (parseError: any) {
-                                console.warn("Planner didn't return valid JSON, falling back.", accumulatedText);
-                                rData = { actions: [] };
-                            }
-
-                            emit('actions', { actions: rData.actions || [] });
-                            emit('done', {});
-                            controller.close();
-                            replied = true;
-                            break;
-                        } catch (e: any) {
-                            const errMsg = String(e?.message || '');
-                            const errStatus = e?.status;
-                            const isFallbackable =
-                                errStatus === 429 || errStatus === 503 || errStatus === 404 ||
-                                errMsg.includes('429') || errMsg.includes('503') || errMsg.includes('404') ||
-                                errMsg.match(/exhausted/i) || errMsg.match(/not found/i);
-
-                            if (isFallbackable) {
-                                lastError = e;
-                                continue;
-                            }
-
-                            emit('error', { message: e.message || 'Error intern del servidor' });
-                            emit('done', {});
-                            controller.close();
-                            replied = true;
-                            break;
                         }
-                    }
 
-                    if (!replied) {
-                        emit('error', { message: lastError?.message || 'Tots els models han fallat' });
+                        let rData;
+                        try {
+                            let cleanText = accumulatedText.trim();
+                            if (cleanText.startsWith("```json")) {
+                                cleanText = cleanText.substring(7).replace(/```$/, '').trim();
+                            } else if (cleanText.startsWith("```")) {
+                                cleanText = cleanText.substring(3).replace(/```$/, '').trim();
+                            }
+                            const firstBrace = cleanText.indexOf('{');
+                            const lastBrace = cleanText.lastIndexOf('}');
+                            if (firstBrace !== -1 && lastBrace !== -1) {
+                                cleanText = cleanText.substring(firstBrace, lastBrace + 1);
+                            }
+                            rData = JSON.parse(cleanText);
+                        } catch (parseError: any) {
+                            console.warn("Planner didn't return valid JSON, falling back.", accumulatedText);
+                            rData = { actions: [] };
+                        }
+
+                        emit('actions', { actions: rData.actions || [] });
                         emit('done', {});
                         controller.close();
+                        replied = true;
+                        break;
+                    } catch (e: any) {
+                        const errMsg = String(e?.message || '');
+                        const errStatus = e?.status;
+                        const isFallbackable =
+                            errStatus === 429 || errStatus === 503 || errStatus === 404 ||
+                            errMsg.includes('429') || errMsg.includes('503') || errMsg.includes('404') ||
+                            errMsg.match(/exhausted/i) || errMsg.match(/not found/i);
+
+                        if (isFallbackable) {
+                            lastError = e;
+                            continue;
+                        }
+
+                        emit('error', { message: e.message || 'Error intern del servidor' });
+                        emit('done', {});
+                        controller.close();
+                        replied = true;
+                        break;
                     }
-                } catch (err: any) {
-                    emit('error', { message: err.message || 'Error de procés' });
+                }
+
+                if (!replied) {
+                    emit('error', { message: lastError?.message || 'Tots els models han fallat' });
                     emit('done', {});
                     controller.close();
                 }
+            } catch (err: any) {
+                emit('error', { message: err.message || 'Error de procés' });
+                emit('done', {});
+                controller.close();
             }
-        });
+        }
+    });
 
-        return new Response(stream, {
-            headers: {
-                'Content-Type': 'text/event-stream',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
-            }
-        });
-
-    } catch (e: any) {
-        return new Response(JSON.stringify({ error: String(e.message || e) }), { status: 500 });
-    }
-}
+    return new Response(stream, {
+        headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            ...CORS_HEADERS
+        }
+    });
+});

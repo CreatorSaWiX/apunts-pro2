@@ -1,25 +1,10 @@
 import { GoogleGenAI } from '@google/genai';
-import { verifyIdToken } from './_shared/auth';
 import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
-// Importem els apunts compilats per Content Collections
 import { allPersonalNotes } from '../.content-collections/generated/index.js';
-
-// ── Node.js Serverless Runtime (Millor memòria) ──────────────────────────────────────────────
-// Hem suprimit l'Edge runtime perquè 'embeddings.json' pot pesar uns quants MBs quan escali
-// i l'Edge runtime limita l'script a 1MB/2MB, el que faria caure l'API en producció.
-// Vercel Serverless suporta fins a 50MB, sent perfecte per aquesta arquitectura RAG local.
-
-import { CORS_HEADERS, handleCors } from './_shared/cors';
-
-// Arrays i config mogudes a _shared/models.ts
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-function jsonResponse(data: object, status = 200): Response {
-    return new Response(JSON.stringify(data), {
-        status,
-        headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
-    });
-}
+import { withMiddleware } from './_shared/middleware';
+import { chatRequestSchema } from './_shared/schemas';
+import { CORS_HEADERS } from './_shared/cors';
+import { Index } from "@upstash/vector";
 
 // ── META block parser (keywords + memories) ──────────────────────────────────
 const META_MARKER = '<META>';
@@ -57,111 +42,75 @@ function parseMetaBlock(fullText: string): {
 }
 
 // ── Main Handler ─────────────────────────────────────────────────────────────
-export default async function handler(req: Request): Promise<Response> {
-    // Preflight CORS
-    const corsOptions = handleCors(req);
-    if (corsOptions) return corsOptions;
-
-    if (req.method !== 'POST') {
-        return jsonResponse({ error: 'Mètode no permès. Fes servir POST.' }, 405);
+export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+    const rawBody = await req.json().catch(() => ({}));
+    const parseResult = chatRequestSchema.safeParse(rawBody);
+    
+    if (!parseResult.success) {
+        return new Response(JSON.stringify({ error: 'Dades invàlides', details: parseResult.error.format() }), { 
+            status: 400, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
+        });
     }
 
+    const { message, history, currentPath, pageText, image, aiSettings } = parseResult.data;
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        return new Response(JSON.stringify({ error: 'Error intern del servidor (C)' }), { status: 500, headers: CORS_HEADERS });
+    }
+
+    // ── 1. RAG mitjançant Upstash Vector ───────────────────────────────────
+    let notesContext = "";
     try {
-        // ── Auth ─────────────────────────────────────────────────────────────
-        const authHeader = req.headers.get('authorization') || '';
-        const idToken = authHeader.split('Bearer ')[1];
-        if (!idToken) {
-            return jsonResponse({ error: 'No autoritzat. Cal iniciar sessió.' }, 401);
-        }
+        const aiEmbedding = new GoogleGenAI({ apiKey });
+        const embedResponse = await aiEmbedding.models.embedContent({
+            model: 'gemini-embedding-2',
+            contents: message,
+        });
+        const userVector = embedResponse.embeddings?.[0]?.values;
 
-        try {
-            await verifyIdToken(idToken);
-        } catch (error) {
-            return jsonResponse({ error: 'Token invàlid o caducat.' }, 401);
-        }
-
-        // ── Body ─────────────────────────────────────────────────────────────
-        const { message, history = [], currentPath = '/', pageText = '', image, aiSettings } = await req.json();
-
-        if (!message) {
-            return jsonResponse({ error: 'Falta el paràmetre "message"' }, 400);
-        }
-
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            return jsonResponse({ error: 'Error intern del servidor (C)' }, 500);
-        }
-
-        // ── 1. RAG mitjançant Vector Embeddings ───────────────────────────────────
-        let notesContext = "";
-        try {
-            const aiEmbedding = new GoogleGenAI({ apiKey });
-            const embedResponse = await aiEmbedding.models.embedContent({
-                model: 'gemini-embedding-2',
-                contents: message,
+        if (userVector && process.env.UPSTASH_VECTOR_REST_URL && process.env.UPSTASH_VECTOR_REST_TOKEN) {
+            const index = new Index({
+                url: process.env.UPSTASH_VECTOR_REST_URL,
+                token: process.env.UPSTASH_VECTOR_REST_TOKEN,
             });
-            const userVector = embedResponse.embeddings?.[0]?.values;
-
-            if (userVector) {
-                // Utilitzem una importació dinàmica per si l'arxiu és massa gran o es genera en build
-                const rawEmbeddings = await import('../src/data/embeddings.json', { with: { type: "json" } })
-                    .then(m => m.default || m)
-                    .catch(() => []);
-                
-                const embeddingsData: any[] = Array.isArray(rawEmbeddings) ? rawEmbeddings : [];
-                
-                // Pre-compute user vector norm once: O(D) instead of O(C×D)
-                let userNormSq = 0;
-                for (let i = 0; i < userVector.length; i++) {
-                    userNormSq += userVector[i] * userVector[i];
-                }
-                const invUserNorm = 1 / Math.sqrt(userNormSq);
-
-                const scoredChunks = embeddingsData.map((chunk: any) => {
-                    let dotProduct = 0;
-                    let normB = 0;
-                    for (let i = 0; i < userVector.length; i++) {
-                        dotProduct += userVector[i] * chunk.embedding[i];
-                        normB += chunk.embedding[i] * chunk.embedding[i];
-                    }
-                    const score = dotProduct * invUserNorm / Math.sqrt(normB);
-                    return { ...chunk, score };
-                });
-                
-                // Ordenem de major a menor similitud i agafem els 7 millors fragments
-                scoredChunks.sort((a: any, b: any) => b.score - a.score);
-                const topChunks = scoredChunks.slice(0, 7);
-                
-                notesContext = topChunks
-                    .map((c: any) => `## Tema: ${c.title} (Relevància: ${(c.score * 100).toFixed(1)}%)\n\n${c.content}`)
-                    .join('\n\n---\n\n');
-            }
-        } catch (error) {
-            console.error("Error calculant RAG per embeddings:", error);
-            // Si falla l'embedding (ex: no hi ha internet, no troba l'arxiu local)
-            // tornem a caure al mètode fallback bàsic
-            const pathLower = currentPath.toLowerCase();
-            let activeSubject: string | null = null;
-            if (pathLower.includes('pro2')) activeSubject = 'pro2';
-            else if (pathLower.includes('m1')) activeSubject = 'm1';
-            else if (pathLower.includes('m2')) activeSubject = 'm2';
-
-            let relevantNotes = allPersonalNotes;
-            if (activeSubject) {
-                relevantNotes = relevantNotes.filter((n: any) => n.subject === activeSubject);
-            }
-            if (relevantNotes.length > 5) {
-                relevantNotes = relevantNotes.slice(0, 5);
-            }
-            notesContext = relevantNotes
-                .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
+            
+            const queryResponse = await index.query({
+                vector: userVector,
+                topK: 7,
+                includeMetadata: true
+            });
+            
+            notesContext = queryResponse
+                .map((r: any) => `## Tema: ${r.metadata?.title} (Relevància: ${(r.score * 100).toFixed(1)}%)\n\n${r.metadata?.content}`)
                 .join('\n\n---\n\n');
+        } else {
+             throw new Error("Missing Upstash Keys or Vector");
         }
+    } catch (error) {
+        console.warn("Error calculant RAG per embeddings, utilitzant fallback:", error);
+        const pathLower = currentPath.toLowerCase();
+        let activeSubject: string | null = null;
+        if (pathLower.includes('pro2')) activeSubject = 'pro2';
+        else if (pathLower.includes('m1')) activeSubject = 'm1';
+        else if (pathLower.includes('m2')) activeSubject = 'm2';
 
-        // ── 2. Gemini init ───────────────────────────────────────────────────
-        const ai = new GoogleGenAI({ apiKey });
+        let relevantNotes = allPersonalNotes;
+        if (activeSubject) {
+            relevantNotes = relevantNotes.filter((n: any) => n.subject === activeSubject);
+        }
+        if (relevantNotes.length > 5) {
+            relevantNotes = relevantNotes.slice(0, 5);
+        }
+        notesContext = relevantNotes
+            .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
+            .join('\n\n---\n\n');
+    }
 
-        const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
+    // ── 2. Gemini init ───────────────────────────────────────────────────
+    const ai = new GoogleGenAI({ apiKey });
+
+    const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
 Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
 L'usuari amb qui parles vol que li diguis: ${aiSettings?.userContext?.userPreferredName || "l'alumne"}.
 Memòria a llarg termini de l'usuari (Fets que ja coneixes):
@@ -207,189 +156,166 @@ ${notesContext}
 MOLT IMPORTANT SOBRE LA CERCA:
 Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actualitat, dates, conferències, documentació o qualsevol cosa que no estigui al "coneixement base oficial", **HAS D'UTILITZAR GOOGLE SEARCH per buscar la resposta a Internet** i respondre-li amb la informació trobada. Mai diguis "no ho tinc als meus apunts" si ho pots buscar a Google.`;
 
-        // ── 3. Historial ────────────────────────────────────────────────────
-        const formattedHistory = history.map((msg: any) => ({
-            role: msg.role === 'user' ? 'user' : 'model',
-            parts: [{ text: msg.content }]
-        }));
+    // ── 3. Historial ────────────────────────────────────────────────────
+    const formattedHistory = history.map((msg: any) => ({
+        role: msg.role === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.content }]
+    }));
 
-        const msgParts: any[] = [{ text: message }];
-        if (image && image.data && image.mimeType) {
-            msgParts.push({ inlineData: { data: image.data, mimeType: image.mimeType } });
-        }
+    const msgParts: any[] = [{ text: message }];
+    if (image && image.data && image.mimeType) {
+        msgParts.push({ inlineData: { data: image.data, mimeType: image.mimeType } });
+    }
 
-        // ── 4. SSE Stream ───────────────────────────────────────────────────
-        const encoder = new TextEncoder();
+    // ── 4. SSE Stream ───────────────────────────────────────────────────
+    const encoder = new TextEncoder();
 
-        const sseStream = new ReadableStream({
-            async start(controller) {
-                const emit = (event: string, data: object) => {
-                    controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
-                };
+    const sseStream = new ReadableStream({
+        async start(controller) {
+            const emit = (event: string, data: object) => {
+                controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+            };
 
-                let lastError: any;
-                let success = false;
-                let intent = 'THINK'; // Default to THINK
+            let lastError: any;
+            let success = false;
+            let intent = 'THINK'; // Default to THINK
 
-                // Tell frontend we are alive immediately
-                emit('status', { phase: 'thinking', model: 'AI Router' });
-                emit('thought', { text: "Classificant la intenció de la consulta..." });
+            emit('status', { phase: 'thinking', model: 'AI Router' });
+            emit('thought', { text: "Classificant la intenció de la consulta..." });
 
-                // ── 4.1. Dynamic Intent Classification ──────────────────────
-                try {
-                    // Try to quickly classify the intent
-                    const intentRes = await ai.models.generateContent({
-                        model: 'gemini-3.5-flash-lite',
-                        contents: message,
-                        config: {
-                            systemInstruction: "Ets un classificador d'intencions ràpid. Si el missatge de l'usuari requereix informació externa d'internet (actualitat, notícies, esports, dates recents, buscar a google), respon NOMÉS 'SEARCH'. Per qualsevol altra cosa (programació, càlculs, teoria, resum, xerrada), respon NOMÉS 'THINK'. No justifiquis la resposta.",
-                            temperature: 0.1,
-                            maxOutputTokens: 5,
-                        }
-                    });
-                    if (intentRes.text?.trim().toUpperCase().includes('SEARCH')) {
-                        intent = 'SEARCH';
+            try {
+                const intentRes = await ai.models.generateContent({
+                    model: 'gemini-3.5-flash-lite',
+                    contents: message,
+                    config: {
+                        systemInstruction: "Ets un classificador d'intencions ràpid. Si el missatge de l'usuari requereix informació externa d'internet (actualitat, notícies, esports, dates recents, buscar a google), respon NOMÉS 'SEARCH'. Per qualsevol altra cosa (programació, càlculs, teoria, resum, xerrada), respon NOMÉS 'THINK'. No justifiquis la resposta.",
+                        temperature: 0.1,
+                        maxOutputTokens: 5,
                     }
-                } catch (e) {
-                    console.error("Intent classifier failed, falling back to default:", e);
+                });
+                if (intentRes.text?.trim().toUpperCase().includes('SEARCH')) {
+                    intent = 'SEARCH';
                 }
+            } catch (e) {
+                console.error("Intent classifier failed, falling back to default:", e);
+            }
 
-                // If it's a search intent, we manually emit a thought to keep the UX alive
-                if (intent === 'SEARCH') {
-                    emit('status', { phase: 'thinking', model: 'Google Search' });
-                    emit('thought', { text: "Buscant a Google informació actualitzada..." });
-                }
+            if (intent === 'SEARCH') {
+                emit('status', { phase: 'thinking', model: 'Google Search' });
+                emit('thought', { text: "Buscant a Google informació actualitzada..." });
+            }
 
-                for (const modelName of getLoadBalancedModels()) {
-                    if (success) break;
+            for (const modelName of getLoadBalancedModels()) {
+                if (success) break;
 
-                    try {
-                        const streamConfig: any = {
-                            systemInstruction,
-                        };
+                try {
+                    const streamConfig: any = {
+                        systemInstruction,
+                    };
 
-                        // Configure Tools OR Thinking based on intent
-                        if (intent === 'SEARCH') {
-                            streamConfig.tools = [{ googleSearch: {} }];
-                        } else {
-                            applyThinkingConfig(streamConfig, modelName);
+                    if (intent === 'SEARCH') {
+                        streamConfig.tools = [{ googleSearch: {} }];
+                    } else {
+                        applyThinkingConfig(streamConfig, modelName);
+                    }
+
+                    const response = await ai.models.generateContentStream({
+                        model: modelName,
+                        contents: [...formattedHistory, { role: 'user', parts: msgParts }],
+                        config: streamConfig,
+                    });
+
+                    emit('status', { phase: 'thinking', model: modelName });
+
+                    let accumulatedText = '';
+                    let lastSentIndex = 0;
+                    let hasStartedWriting = false;
+                    const BUFFER_MARGIN = META_MARKER.length + 5;
+
+                    for await (const chunk of response) {
+                        if (req.signal.aborted) {
+                            controller.close();
+                            return;
                         }
+                        if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+                            for (const part of chunk.candidates[0].content.parts) {
+                                if (part.thought && part.text) {
+                                    emit('thought', { text: part.text });
+                                }
+                                else if (part.text) {
+                                    accumulatedText += part.text;
+                                    const metaIdx = accumulatedText.indexOf(META_MARKER);
 
-                        const response = await ai.models.generateContentStream({
-                            model: modelName,
-                            contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                            config: streamConfig,
-                        });
-
-                        // Emit thinking status
-                        emit('status', { phase: 'thinking', model: modelName });
-
-                        let accumulatedText = '';
-                        let lastSentIndex = 0;
-                        let hasStartedWriting = false;
-                        // Buffer safety margin: length of META_MARKER + some margin
-                        const BUFFER_MARGIN = META_MARKER.length + 5;
-
-                        for await (const chunk of response) {
-                            if (req.signal.aborted) {
-                                controller.close();
-                                return;
-                            }
-                            // Process each part in the chunk
-                            if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
-                                for (const part of chunk.candidates[0].content.parts) {
-                                    // Thought parts (native thinking from Gemini)
-                                    if (part.thought && part.text) {
-                                        emit('thought', { text: part.text });
-                                    }
-                                    // Regular text parts
-                                    else if (part.text) {
-                                        accumulatedText += part.text;
-
-                                        // Check if we've hit the META marker
-                                        const metaIdx = accumulatedText.indexOf(META_MARKER);
-
-                                        if (metaIdx === -1) {
-                                            // No META marker yet — stream text with buffer margin
-                                            const safeEnd = accumulatedText.length - BUFFER_MARGIN;
-                                            if (safeEnd > lastSentIndex) {
-                                                const toSend = accumulatedText.substring(lastSentIndex, safeEnd);
-                                                if (toSend) {
-                                                    if (!hasStartedWriting) {
-                                                        emit('status', { phase: 'writing' });
-                                                        hasStartedWriting = true;
-                                                    }
-                                                    emit('delta', { text: toSend });
-                                                    lastSentIndex = safeEnd;
+                                    if (metaIdx === -1) {
+                                        const safeEnd = accumulatedText.length - BUFFER_MARGIN;
+                                        if (safeEnd > lastSentIndex) {
+                                            const toSend = accumulatedText.substring(lastSentIndex, safeEnd);
+                                            if (toSend) {
+                                                if (!hasStartedWriting) {
+                                                    emit('status', { phase: 'writing' });
+                                                    hasStartedWriting = true;
                                                 }
+                                                emit('delta', { text: toSend });
+                                                lastSentIndex = safeEnd;
                                             }
                                         }
-                                        // If META found, stop sending text deltas (rest goes to metadata)
                                     }
                                 }
                             }
                         }
-
-                        // ── Stream ended: flush remaining text and parse metadata ───
-                        const { cleanText, keywords, memories_to_add } = parseMetaBlock(accumulatedText);
-
-                        // Send any remaining clean text that wasn't sent yet
-                        const remaining = cleanText.substring(lastSentIndex);
-                        if (remaining) {
-                            if (!hasStartedWriting) {
-                                emit('status', { phase: 'writing' });
-                            }
-                            emit('delta', { text: remaining });
-                        }
-
-                        // Emit metadata
-                        emit('metadata', { keywords, memories_to_add });
-                        emit('done', {});
-                        success = true;
-
-                    } catch (e: any) {
-                        const errMsg = String(e?.message || '');
-                        const errStatus = e?.status;
-                        const isRetryable =
-                            errStatus === 429 || errStatus === 404 ||
-                            errMsg.includes('429') || errMsg.includes('404') ||
-                            errMsg.toLowerCase().includes('quota') ||
-                            errMsg.toLowerCase().includes('rate') ||
-                            errMsg.toLowerCase().includes('not found') ||
-                            errMsg.toLowerCase().includes('not supported');
-
-                        if (isRetryable) {
-                            lastError = e;
-                            continue;
-                        }
-                        // Non-retryable error — emit error and stop
-                        emit('error', { message: e.message || 'Error intern del servidor' });
-                        emit('done', {});
-                        success = true; // prevent further retries
                     }
-                }
 
-                if (!success) {
-                    emit('error', { message: lastError?.message || 'Tots els models de Gemini han fallat' });
+                    const { cleanText, keywords, memories_to_add } = parseMetaBlock(accumulatedText);
+
+                    const remaining = cleanText.substring(lastSentIndex);
+                    if (remaining) {
+                        if (!hasStartedWriting) {
+                            emit('status', { phase: 'writing' });
+                        }
+                        emit('delta', { text: remaining });
+                    }
+
+                    emit('metadata', { keywords, memories_to_add });
                     emit('done', {});
+                    success = true;
+
+                } catch (e: any) {
+                    const errMsg = String(e?.message || '');
+                    const errStatus = e?.status;
+                    const isRetryable =
+                        errStatus === 429 || errStatus === 404 ||
+                        errMsg.includes('429') || errMsg.includes('404') ||
+                        errMsg.toLowerCase().includes('quota') ||
+                        errMsg.toLowerCase().includes('rate') ||
+                        errMsg.toLowerCase().includes('not found') ||
+                        errMsg.toLowerCase().includes('not supported');
+
+                    if (isRetryable) {
+                        lastError = e;
+                        continue;
+                    }
+                    emit('error', { message: e.message || 'Error intern del servidor' });
+                    emit('done', {});
+                    success = true; 
                 }
-
-                controller.close();
             }
-        });
 
-        return new Response(sseStream, {
-            status: 200,
-            headers: {
-                'Content-Type': 'text/event-stream',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
-                ...CORS_HEADERS,
-            },
-        });
+            if (!success) {
+                emit('error', { message: lastError?.message || 'Tots els models de Gemini han fallat' });
+                emit('done', {});
+            }
 
-    } catch (error: any) {
-        console.error('[Chat API Error]', error);
-        return jsonResponse({ error: 'Error intern del servidor' }, 500);
-    }
-}
+            controller.close();
+        }
+    });
+
+    return new Response(sseStream, {
+        status: 200,
+        headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            ...CORS_HEADERS,
+        },
+    });
+});
