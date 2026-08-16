@@ -5,6 +5,7 @@ import { withMiddleware } from './_shared/middleware';
 import { chatRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
 import { Index } from "@upstash/vector";
+import { buildChatSystemInstruction } from './_shared/prompts';
 
 // ── Eines (Tools) ────────────────────────────────────────────────────────────
 const saveMetadataTool = {
@@ -29,7 +30,7 @@ const saveMetadataTool = {
 };
 
 // ── Main Handler ─────────────────────────────────────────────────────────────
-export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
     const parseResult = chatRequestSchema.safeParse(rawBody);
     
@@ -69,7 +70,7 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
             });
             
             notesContext = queryResponse
-                .map((r: any) => `## Tema: ${r.metadata?.title} (Relevància: ${(r.score * 100).toFixed(1)}%)\n\n${r.metadata?.content}`)
+                .map((r: { metadata?: { title?: string; content?: string }; score: number }) => `## Tema: ${r.metadata?.title} (Relevància: ${(r.score * 100).toFixed(1)}%)\n\n${r.metadata?.content}`)
                 .join('\n\n---\n\n');
         } else {
              throw new Error("Missing Upstash Keys or Vector");
@@ -84,64 +85,33 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
 
         let relevantNotes = allPersonalNotes;
         if (activeSubject) {
-            relevantNotes = relevantNotes.filter((n: any) => n.subject === activeSubject);
+            relevantNotes = relevantNotes.filter((n: { subject: string; title: string; content: string }) => n.subject === activeSubject);
         }
         if (relevantNotes.length > 5) {
             relevantNotes = relevantNotes.slice(0, 5);
         }
         notesContext = relevantNotes
-            .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
+            .map((note: { title: string; content: string }) => `## Tema: ${note.title}\n\n${note.content}`)
             .join('\n\n---\n\n');
     }
 
     // ── 2. Gemini init ───────────────────────────────────────────────────
     const ai = new GoogleGenAI({ apiKey });
 
-    const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
-Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
-L'usuari amb qui parles vol que li diguis: ${aiSettings?.userContext?.userPreferredName || "l'alumne"}.
-Memòria a llarg termini de l'usuari (Fets que ja coneixes):
-${(aiSettings?.userContext?.memories || []).map((m: string) => `- ${m}`).join('\n')}
-
-[VIBE]
-${aiSettings?.identity?.vibe || "Ets útil."}
-
-[RULES]
-${aiSettings?.soul?.rules || ""}
-
-[BOUNDARIES]
-${aiSettings?.soul?.boundaries || ""}
-
-[CONTINUITY]
-${aiSettings?.soul?.continuity || ""}
-
-[CUSTOM DIRECTIVES]
-${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
-
-L'alumne està actualment a la pàgina: ${currentPath}
-
-Respon de manera natural, formatant en Markdown. Sigues directe i útil.
-
-Quan acabis la teva resposta, SI l'usuari ha revelat nova informació important sobre el seu perfil que cal recordar a llarg termini, o per extreure les paraules clau de la conversa, UTILITZA SEMPRE l'eina 'save_metadata'. Evita guardar dades temporals o casuals com a memòria.
-
-Aquest és el text visible a la seva pantalla ara mateix:
-"""
-${pageText}
-"""
-
-I aquest és el coneixement base oficial de l'assignatura:
-${notesContext}
-
-MOLT IMPORTANT SOBRE LA CERCA:
-Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actualitat, dates, conferències, documentació o qualsevol cosa que no estigui al "coneixement base oficial", **HAS D'UTILITZAR GOOGLE SEARCH per buscar la resposta a Internet** i respondre-li amb la informació trobada. Mai diguis "no ho tinc als meus apunts" si ho pots buscar a Google.`;
+    const systemInstruction = buildChatSystemInstruction(
+        aiSettings,
+        currentPath,
+        pageText,
+        notesContext
+    );
 
     // ── 3. Historial ────────────────────────────────────────────────────
-    const formattedHistory = history.map((msg: any) => ({
+    const formattedHistory = history.map((msg: { role: string; content: string }) => ({
         role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.content }]
     }));
 
-    const msgParts: any[] = [{ text: message }];
+    const msgParts: { text?: string; inlineData?: { data: string; mimeType: string } }[] = [{ text: message }];
     if (image && image.data && image.mimeType) {
         msgParts.push({ inlineData: { data: image.data, mimeType: image.mimeType } });
     }
@@ -155,18 +125,18 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                 controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
             };
 
-            let lastError: any;
-            let success = false;
-            let hasStartedWriting = false;
+                let lastError: unknown;
+                let success = false;
+                let hasStartedWriting = false;
 
-            for (const modelName of getLoadBalancedModels()) {
-                if (success) break;
+                for (const modelName of getLoadBalancedModels()) {
+                    if (success) break;
 
-                try {
-                    const streamConfig: any = {
-                        systemInstruction,
-                        tools: [{ googleSearch: {} }, { functionDeclarations: [saveMetadataTool] as any }]
-                    };
+                    try {
+                        const streamConfig: Record<string, unknown> = {
+                            systemInstruction,
+                            tools: [{ googleSearch: {} }, { functionDeclarations: [saveMetadataTool] as unknown[] }]
+                        };
 
                     applyThinkingConfig(streamConfig, modelName);
 
@@ -204,7 +174,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                         if (chunk.functionCalls && chunk.functionCalls.length > 0) {
                             for (const call of chunk.functionCalls) {
                                 if (call.name === 'save_metadata' && call.args) {
-                                    const args = call.args as any;
+                                    const args = call.args as { keywords?: string[]; memories_to_add?: string[] };
                                     if (args.keywords) extractedKeywords = args.keywords;
                                     if (args.memories_to_add) extractedMemories = args.memories_to_add;
                                 }
@@ -216,9 +186,9 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                     emit('done', {});
                     success = true;
 
-                } catch (e: any) {
-                    const errMsg = String(e?.message || '');
-                    const errStatus = e?.status;
+                } catch (e: unknown) {
+                    const errMsg = e instanceof Error ? e.message : String(e);
+                    const errStatus = (e as any)?.status;
                     const isRetryable =
                         (errStatus === 429 || errStatus === 404 ||
                         errMsg.includes('429') || errMsg.includes('404') ||
@@ -231,20 +201,20 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                         lastError = e;
                         continue;
                     }
-                    emit('error', { message: e.message || 'Error intern del servidor' });
+                    emit('error', { message: errMsg || 'Error intern del servidor' });
                     emit('done', {});
                     success = true; 
                 }
             }
 
             if (!success) {
-                emit('error', { message: lastError?.message || 'Tots els models de Gemini han fallat' });
+                emit('error', { message: (lastError as Error)?.message || 'Tots els models de Gemini han fallat' });
                 emit('done', {});
             }
 
             try {
                 controller.close();
-            } catch (e) {
+            } catch {
                 // Ignore if already closed
             }
         }

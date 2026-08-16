@@ -1,5 +1,22 @@
 import { verifyIdToken } from "./auth";
 import { CORS_HEADERS, handleCors } from "./cors";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+let ratelimit: Ratelimit | null = null;
+if (redisUrl && redisToken) {
+  ratelimit = new Ratelimit({
+    redis: new Redis({
+      url: redisUrl,
+      token: redisToken,
+    }),
+    limiter: Ratelimit.slidingWindow(10, "1 m"),
+    analytics: true,
+  });
+}
 
 /**
  * Funció de middleware superior (Higher-Order Function)
@@ -44,6 +61,26 @@ export function withMiddleware(
               status: 401,
               headers: { "Content-Type": "application/json", ...CORS_HEADERS },
           });
+      }
+
+      if (ratelimit) {
+        const xForwardedFor = req.headers.get("x-forwarded-for");
+        const ip = xForwardedFor ? xForwardedFor.split(",")[0].trim() : "unknown";
+        const identifier = userId || ip;
+        const { success, limit, reset, remaining } = await ratelimit.limit(identifier);
+
+        if (!success) {
+          return new Response(JSON.stringify({ error: "S'ha superat el límit de peticions. Si us plau, torna-ho a provar més tard." }), {
+            status: 429,
+            headers: {
+              "Content-Type": "application/json",
+              "X-RateLimit-Limit": limit.toString(),
+              "X-RateLimit-Remaining": remaining.toString(),
+              "X-RateLimit-Reset": reset.toString(),
+              ...CORS_HEADERS
+            }
+          });
+        }
       }
 
       // 4. Cridar a l'endpoint real amb l'userId

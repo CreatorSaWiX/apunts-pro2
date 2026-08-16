@@ -1,10 +1,13 @@
 import { GoogleGenAI } from '@google/genai';
-import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
+import { getLoadBalancedModels } from './_shared/models';
 import { withMiddleware } from './_shared/middleware';
 import { roadmapRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
+import { buildRoadmapSystemInstruction, RoadmapNode } from './_shared/prompts';
 
-export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+const subjectCache = new Map<string, { acronim?: string; credits?: number; activities?: string[]; sections?: { title?: string; content?: string }[] }>();
+
+export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
     const parseResult = roadmapRequestSchema.safeParse(rawBody);
 
@@ -31,13 +34,13 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
 
     // --- EXTRACCIÓ DINÀMICA DE CONTEXT ---
     let injectedContext = "";
-    let mentionedNodes = currentNodes.filter((node: any) => {
+    let mentionedNodes = currentNodes.filter((node: RoadmapNode) => {
         const regex = new RegExp(`\\b${node.id}\\b`, 'i');
         return regex.test(prompt || "");
     });
 
     if (mentionedNodes.length === 0 && /(assignatur|cursar|roadmap|semestre|preparar|avaluaci|professor|hores|estudi|consell)/i.test(prompt || "")) {
-        mentionedNodes = currentNodes.filter((n: any) => n.status === 'in_progress');
+        mentionedNodes = currentNodes.filter((n: RoadmapNode) => n.status === 'in_progress');
         if (mentionedNodes.length === 0) mentionedNodes = currentNodes.slice(0, 5); 
     }
 
@@ -45,6 +48,15 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
         injectedContext += "\n\n# CONTEXT ESPECÍFIC DE LES ASSIGNATURES MENCIONADES:\n";
         for (const node of mentionedNodes) {
             try {
+                if (subjectCache.has(node.id)) {
+                    const cachedData = subjectCache.get(node.id)!;
+                    // Movem al final (implementació LRU simple)
+                    subjectCache.delete(node.id);
+                    subjectCache.set(node.id, cachedData);
+                    injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(cachedData)}\n`;
+                    continue;
+                }
+
                 const baseUrl = process.env.VITE_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:5173");
                 const url = `${baseUrl}/data/subjects/${node.id}.json`;
                 const res = await fetch(url);
@@ -54,11 +66,18 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
                         acronim: parsedData.acronim,
                         credits: parsedData.credits,
                         activities: parsedData.activities,
-                        sections: parsedData.sections?.map((s: any) => ({
+                        sections: parsedData.sections?.map((s: { title: string; html?: string }) => ({
                             title: s.title,
                             content: s.html ? s.html.replace(/<[^>]*>?/gm, '') : ''
                         }))
                     };
+
+                    // Limitem el cache a 100 assignatures
+                    if (subjectCache.size >= 100) {
+                        const oldestKey = subjectCache.keys().next().value;
+                        if (oldestKey) subjectCache.delete(oldestKey);
+                    }
+                    subjectCache.set(node.id, filteredData);
                     injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(filteredData)}\n`;
                 }
             } catch (e) {
@@ -68,78 +87,15 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
-Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
+    const systemInstruction = buildRoadmapSystemInstruction(
+        aiSettings,
+        userName || "",
+        memory,
+        currentNodes,
+        injectedContext
+    );
 
-[VIBE]
-${aiSettings?.identity?.vibe || "Ets útil."}
-
-[RULES]
-${aiSettings?.soul?.rules || ""}
-
-[BOUNDARIES]
-${aiSettings?.soul?.boundaries || ""}
-
-[CONTINUITY]
-${aiSettings?.soul?.continuity || ""}
-
-[CUSTOM DIRECTIVES]
-${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
-
-L'usuari amb qui estàs parlant es diu: ${aiSettings?.userContext?.userPreferredName || userName || "Estudiant"}
-
-Ets un mentor executiu que ajuda estudiants amb el seu roadmap.
-Tens una personalitat professional. Respon amb màxima claredat i precisió.
-NO ets un xatbot convencional. Ets una eina de productivitat i planificació d'alt nivell.
-
-REGLES D'ESTIL I CONTINGUT (MOLT ESTRICTES):
-1. **ZERO EMOJIS**: Sota CAP concepte pots utilitzar emojis. Mai.
-2. **CLAREDAT I CONCISIÓ**: Vés directe a la informació o a l'acció. Si l'usuari envia un missatge curt o fora de context (ex: "Hola", "a", "hola què tal"), respon de forma completament natural, curta i directa com ho faria un company d'universitat. Demana què necessita sense allargar-te (ex: "Digues-me.", "Què passa?").
-3. **MÀXIMA CONCISIÓ**: Fes servir llistes, punts i frases curtes. No escriguis paràgrafs densos que no aportin valor.
-4. FORMAT I UI (CRÍTIC PER A L'APP):
-   - **Mètode d'Avaluació**: TRADUEIX explícitament l'avaluació a KaTeX PUR. És obligatori fer servir commands de LaTeX com \\min i \\max. La fórmula ha d'estar aïllada en un bloc $$:
-     $$ \\text{NOTA} = \\min(10, \\max(0.225 \\cdot NPP + ...)) $$
-     **MOLT IMPORTANT**: Has d'incloure SEMPRE i OBLIGATÒRIAMENT just a sota un bloc de codi EXACTAMENT amb el llenguatge \`subject-evaluation\` que contingui els pesos en JSON. Si no ho fas, l'aplicació farà "crash". Exemple:
-     \`\`\`subject-evaluation
-     [
-       {"acronym": "NPP", "name": "Examen Parcial", "weight": 22.5},
-       {"acronym": "NF", "name": "Examen Final", "weight": 45},
-       {"acronym": "NO", "name": "Examen d'Ordinador", "weight": 45},
-       {"acronym": "NJ", "name": "Joc / Projecte", "weight": 20}
-     ]
-     \`\`\`
-5. ADAPTA'T AL MISSATGE: Respon curt i directe per defecte. Desenvolupa només si demanen consell estratègic (ex: triar especialitat, dubtes d'avaluació).
-6. ZERO farciment: Mai diguis "Sóc un assistent virtual".
-7. MANTENIMENT DE TEMA: Si l'usuari et parla de qualsevol cosa fora de la uni, respon amb naturalitat. No canviïs forçosament cap a l'estudi.
-8. ESTIL DE COMUNICACIÓ (ANTI-CRINGE): Sigues molt directe i al gra. NO t'enrotllis gens ni facis paràgrafs llargs. NO facis servir adjectius innecessaris, motivacionals, exagerats o emocionals (ex: "màgicament", "apassionant", "increïble", "submergiràs"). Parla com un company enginyer objectiu, amb fets concrets i zero cringe.
-9. CONTINGUT D'ASSIGNATURES: Quan donis el resum o expliquis una assignatura, obvia el professorat i les competències, centra't ÚNICAMENT en aquests 3 punts:
-   - **Què faran (Activitats)**: Llistat molt breu dels projectes o pràctiques clau perquè sàpiga exactament què haurà de programar o resoldre.
-   - **Mètode d'Avaluació**: Moltes assignatures tenen avaluacions complexes amb \`max()\` o sumen més de 100% (punts extra). Per solucionar-ho:
-     1. Explica com s'avalua de forma molt senzilla en text pla i llistes. Si hi ha rutes alternatives (ex: Avaluació Única) o condicions (com quedar-se amb la nota màxima), explica-ho ràpidament en llenguatge humà, SENSE usar fórmules matemàtiques complexes ni KaTeX, per evitar errors de sintaxi i no espantar l'alumne.
-     2. A sota, genera EXACTAMENT un bloc de codi Markdown amb el llenguatge \`subject-evaluation\` i un array JSON a dins. Per aquest gràfic, tria NOMÉS la ruta principal (Avaluació Continuada) i posa els pesos base (les "weight" haurien de sumar prop de 100). Exemple:
-     \`\`\`subject-evaluation
-     [
-       {"acronym": "P", "name": "Examen Parcial", "weight": 30},
-       {"acronym": "F", "name": "Examen Final", "weight": 50},
-       {"acronym": "PR", "name": "Pràctiques", "weight": 20}
-     ]
-     \`\`\`
-   - **Gràfics d'Hores (IMPRESCINDIBLE)**: Perquè la UI renderitzi els gràfics visuals de càrrega, has de generar EXACTAMENT un bloc de codi Markdown amb el llenguatge "subject-stats". Exemple per a EDA:
-     \`\`\`subject-stats
-     EDA
-     \`\`\`
-     Mai posis "subject-stats" com a text normal, OBLIGATÒRIAMENT ha de ser un bloc de codi.
-
-# CONTEXT DE L'ESTUDIANT:
-- Memòria del perfil de l'estudiant (objectius, interessos): ${JSON.stringify(memory)}
-- Assignatures al Roadmap actual: ${JSON.stringify(currentNodes)}
-${injectedContext}
-
-# ACCIONS:
-L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCITAMENT que afegeixis o treguis una assignatura del seu roadmap, usa les Eines (Tools). Altrament, només respon de forma natural.
-`;
-
-    const formattedHistory = history.map((msg: any) => ({
+    const formattedHistory = history.map((msg: { role: string; content: string }) => ({
         role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.content }]
     }));
@@ -167,7 +123,7 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
         }
     };
 
-    const msgParts: any[] = [];
+    const msgParts: { text?: string; inlineData?: { data: string; mimeType: string } }[] = [];
     if (prompt) msgParts.push({ text: prompt });
     else msgParts.push({ text: "Analitza aquest document." });
 
@@ -183,22 +139,22 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
             };
 
             try {
-                let lastError: any;
+                let lastError: unknown;
                 let replied = false;
                 let hasStartedWriting = false;
 
                 for (const modelName of getLoadBalancedModels()) {
                     try {
-                        const streamConfig: any = {
+                        const streamConfig: Record<string, unknown> = {
                             systemInstruction,
                             temperature: 0.1,
-                            tools: [{ functionDeclarations: [roadmapTool] as any }]
+                            tools: [{ functionDeclarations: [roadmapTool] as unknown[] }]
                         };
 
                         const responseStream = await ai.models.generateContentStream({
                             model: modelName,
                             contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                            config: streamConfig
+                            config: streamConfig as never
                         });
 
                         emit('status', { phase: 'thinking', model: modelName });
@@ -232,19 +188,21 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                         }
 
                         if (hasToolCall && toolCallData) {
-                            emit('actions', { actions: (toolCallData as any).actions });
+                            emit('actions', { actions: (toolCallData as { actions?: unknown[] }).actions });
                         }
 
                         emit('done', {});
                         replied = true;
                         break;
-                    } catch (e: any) {
-                        const is429 = (e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate')) && !hasStartedWriting;
+                    } catch (e: unknown) {
+                        const errMessage = e instanceof Error ? e.message : String(e);
+                        const errStatus = (e as any)?.status;
+                        const is429 = (errStatus === 429 || errMessage.includes('429') || errMessage.includes('503') || errMessage.toLowerCase().includes('quota') || errMessage.toLowerCase().includes('rate')) && !hasStartedWriting;
                         if (is429) {
                             lastError = e;
                             continue;
                         }
-                        emit('error', { message: e.message || 'Error intern del servidor' });
+                        emit('error', { message: errMessage || 'Error intern del servidor' });
                         emit('done', {});
                         replied = true;
                         break;
@@ -252,13 +210,13 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                 }
 
                 if (!replied) {
-                    emit('error', { message: lastError?.message || 'Tots els models han fallat' });
+                    emit('error', { message: (lastError as Error)?.message || 'Tots els models han fallat' });
                     emit('done', {});
                 }
             } finally {
                 try {
                     controller.close();
-                } catch (e) {
+                } catch {
                     // Ignore if already closed
                 }
             }

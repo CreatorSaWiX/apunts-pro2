@@ -2,8 +2,9 @@ import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
 import { withMiddleware } from './_shared/middleware';
 import { plannerRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
+import { buildPlannerSystemInstruction } from './_shared/prompts';
 
-export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+export default withMiddleware(async function handler(req: Request): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
     const parseResult = plannerRequestSchema.safeParse(rawBody);
 
@@ -26,76 +27,17 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
             };
 
             try {
-                const { GoogleGenAI } = await import('@google/genai');
+                const { GoogleGenAI, Type } = await import('@google/genai');
                 const genAI = new GoogleGenAI({ apiKey });
 
-                const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
-Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
+                const systemInstruction = buildPlannerSystemInstruction(
+                    aiSettings,
+                    currentDate,
+                    subjects,
+                    currentTasks
+                );
 
-[VIBE]
-${aiSettings?.identity?.vibe || "Ets útil."}
-
-[RULES]
-${aiSettings?.soul?.rules || ""}
-
-[BOUNDARIES]
-${aiSettings?.soul?.boundaries || ""}
-
-[CONTINUITY]
-${aiSettings?.soul?.continuity || ""}
-
-[CUSTOM DIRECTIVES]
-${aiSettings?.soul?.customDirectives || "Cap directriu especial."}
-
-Ets un asistent intel·ligent per a una aplicació de planificació d'estudiants universitaris. La teva feina és analitzar el missatge de l'usuari i determinar quines accions s'han de prendre sobre les tasques.
-
-IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SENSE TEXT AL VOLTANT. Només JSON.
-
-# CONTEXT ACTUAL:
-- Data i hora actuals de l'usuari: ${currentDate || new Date().toISOString()}
-- Assignatures vàlides (selecciona l'id apropiat, o null):
-  ${JSON.stringify(subjects || [])}
-- Tasques actuals de l'usuari (fes-ho servir per trobar els 'taskId' quan hagis de modificar o esborrar tasques existents):
-  ${JSON.stringify(currentTasks?.map((t: any) => ({ id: t.id, title: t.title, subjectId: t.subjectId, status: t.status })) || [])}
-
-# INSTRUCCIONS:
-Pots executar una llista d'accions. Les accions possibles són:
-1. "CREATE": Per crear noves tasques. Reparteix-les lògicament usant startDate i dueDate. Usa l'hora actual com a base si no s'especifica res.
-2. "UPDATE": Per modificar tasques existents (posposar, canviar de color/assignatura, completar). Pots actualitzar el \`status\` a "TODO", "IN_PROGRESS", "IN_REVIEW", o "DONE".
-3. "DELETE": Per esborrar tasques.
-
-L'estructura exacta ha de ser:
-{
-  "actions": [
-    {
-      "type": "CREATE",
-      "task": {
-        "title": "Nom de la tasca",
-        "description": "Explicació (opcional)",
-        "priority": "HIGH" | "MEDIUM" | "LOW",
-        "status": "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE",
-        "estimatedMinutes": 60,
-        "subjectId": "ID_DE_L_ASSIGNATURA" | null,
-        "startDate": "2026-06-16T10:00:00.000Z" | null,
-        "dueDate": "2026-06-16T12:00:00.000Z" | null
-      }
-    },
-    {
-      "type": "DELETE",
-      "taskId": "id_de_la_tasca_a_esborrar"
-    },
-    {
-      "type": "UPDATE",
-      "taskId": "id_de_la_tasca_a_actualitzar",
-      "updates": {
-        "status": "IN_PROGRESS",
-        "startDate": "2026-06-17T10:00:00.000Z"
-      }
-    }
-  ]
-}`;
-
-                const msgParts: any[] = [];
+                const msgParts: { text?: string; inlineData?: { data: string; mimeType: string } }[] = [];
                 if (prompt) msgParts.push({ text: prompt });
                 else msgParts.push({ text: "Analitza aquest document." });
 
@@ -103,20 +45,57 @@ L'estructura exacta ha de ser:
                     msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
                 }
 
-                let lastError: any;
+                let lastError: unknown;
                 let replied = false;
                 let hasStartedWriting = false;
 
                 for (const modelName of getLoadBalancedModels()) {
                     try {
-                        const streamConfig: any = {
+                        const streamConfig: Record<string, unknown> = {
                             systemInstruction,
-                            responseMimeType: "application/json"
+                            responseMimeType: "application/json",
+                            responseSchema: {
+                                type: Type.OBJECT,
+                                properties: {
+                                    actions: {
+                                        type: Type.ARRAY,
+                                        items: {
+                                            type: Type.OBJECT,
+                                            properties: {
+                                                type: { type: Type.STRING },
+                                                taskId: { type: Type.STRING },
+                                                task: {
+                                                    type: Type.OBJECT,
+                                                    properties: {
+                                                        title: { type: Type.STRING },
+                                                        description: { type: Type.STRING },
+                                                        priority: { type: Type.STRING },
+                                                        status: { type: Type.STRING },
+                                                        estimatedMinutes: { type: Type.INTEGER },
+                                                        subjectId: { type: Type.STRING },
+                                                        startDate: { type: Type.STRING },
+                                                        dueDate: { type: Type.STRING }
+                                                    }
+                                                },
+                                                updates: {
+                                                    type: Type.OBJECT,
+                                                    properties: {
+                                                        status: { type: Type.STRING },
+                                                        startDate: { type: Type.STRING }
+                                                    }
+                                                }
+                                            },
+                                            required: ["type"]
+                                        }
+                                    }
+                                },
+                                required: ["actions"]
+                            }
                         };
 
                         applyThinkingConfig(streamConfig, modelName);
                         if (streamConfig.thinkingConfig) {
-                             streamConfig.thinkingConfig.thinkingBudget = 32768;
+                             (streamConfig.thinkingConfig as Record<string, any>).thinkingBudget = 32768;
                         }
 
                         const responseStream = await genAI.models.generateContentStream({
@@ -146,32 +125,21 @@ L'estructura exacta ha de ser:
                             }
                         }
 
-                        let rData;
+                        let rData: { actions: unknown[] } | undefined;
                         try {
-                            let cleanText = accumulatedText.trim();
-                            if (cleanText.startsWith("```json")) {
-                                cleanText = cleanText.substring(7).replace(/```$/, '').trim();
-                            } else if (cleanText.startsWith("```")) {
-                                cleanText = cleanText.substring(3).replace(/```$/, '').trim();
-                            }
-                            const firstBrace = cleanText.indexOf('{');
-                            const lastBrace = cleanText.lastIndexOf('}');
-                            if (firstBrace !== -1 && lastBrace !== -1) {
-                                cleanText = cleanText.substring(firstBrace, lastBrace + 1);
-                            }
-                            rData = JSON.parse(cleanText);
-                        } catch (parseError: any) {
+                            rData = JSON.parse(accumulatedText.trim());
+                        } catch {
                             console.warn("Planner didn't return valid JSON, falling back.", accumulatedText);
                             rData = { actions: [] };
                         }
 
-                        emit('actions', { actions: rData.actions || [] });
+                        emit('actions', { actions: rData?.actions || [] });
                         emit('done', {});
                         replied = true;
                         break;
-                    } catch (e: any) {
-                        const errMsg = String(e?.message || '');
-                        const errStatus = e?.status;
+                    } catch (e: unknown) {
+                        const errMsg = e instanceof Error ? e.message : String(e);
+                        const errStatus = (e as any)?.status;
                         const isFallbackable =
                             (errStatus === 429 || errStatus === 503 || errStatus === 404 ||
                             errMsg.includes('429') || errMsg.includes('503') || errMsg.includes('404') ||
@@ -182,7 +150,7 @@ L'estructura exacta ha de ser:
                             continue;
                         }
 
-                        emit('error', { message: e.message || 'Error intern del servidor' });
+                        emit('error', { message: errMsg || 'Error intern del servidor' });
                         emit('done', {});
                         replied = true;
                         break;
@@ -190,16 +158,16 @@ L'estructura exacta ha de ser:
                 }
 
                 if (!replied) {
-                    emit('error', { message: lastError?.message || 'Tots els models han fallat' });
+                    emit('error', { message: (lastError as Error)?.message || 'Tots els models han fallat' });
                     emit('done', {});
                 }
-            } catch (err: any) {
-                emit('error', { message: err.message || 'Error de procés' });
+            } catch (err: unknown) {
+                emit('error', { message: (err as Error).message || 'Error de procés' });
                 emit('done', {});
             } finally {
                 try {
                     controller.close();
-                } catch (e) {
+                } catch {
                     // Ignore if already closed
                 }
             }
