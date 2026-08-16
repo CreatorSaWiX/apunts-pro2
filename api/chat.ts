@@ -6,40 +6,27 @@ import { chatRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
 import { Index } from "@upstash/vector";
 
-// ── META block parser (keywords + memories) ──────────────────────────────────
-const META_MARKER = '<META>';
-const META_END = '</META>';
-
-function parseMetaBlock(fullText: string): {
-    cleanText: string;
-    keywords: string[];
-    memories_to_add: string[];
-} {
-    const metaIdx = fullText.indexOf(META_MARKER);
-    if (metaIdx === -1) return { cleanText: fullText, keywords: [], memories_to_add: [] };
-
-    const cleanText = fullText.substring(0, metaIdx).trimEnd();
-    const metaBlock = fullText.substring(metaIdx + META_MARKER.length);
-    const endIdx = metaBlock.indexOf(META_END);
-    const metaContent = endIdx !== -1 ? metaBlock.substring(0, endIdx) : metaBlock;
-
-    let keywords: string[] = [];
-    let memories_to_add: string[] = [];
-
-    for (const line of metaContent.split('\n')) {
-        const trimmed = line.trim();
-        if (trimmed.startsWith('KEYWORDS:')) {
-            keywords = trimmed.substring(9).split(',').map(k => k.trim()).filter(Boolean);
-        } else if (trimmed.startsWith('MEMORIES:')) {
-            const raw = trimmed.substring(9).trim();
-            if (raw && raw !== '-' && raw.toLowerCase() !== 'cap') {
-                memories_to_add = raw.split('|').map(m => m.trim()).filter(Boolean);
+// ── Eines (Tools) ────────────────────────────────────────────────────────────
+const saveMetadataTool = {
+    name: "save_metadata",
+    description: "Desa paraules clau i metadades extretes d'aquesta conversa.",
+    parameters: {
+        type: "object",
+        properties: {
+            keywords: {
+                type: "array",
+                description: "Llista de 3-5 paraules clau rellevants per aquesta conversa.",
+                items: { type: "string" }
+            },
+            memories_to_add: {
+                type: "array",
+                description: "Llista de fets importants sobre l'usuari a recordar a llarg termini (opcional).",
+                items: { type: "string" }
             }
-        }
+        },
+        required: ["keywords"]
     }
-
-    return { cleanText, keywords, memories_to_add };
-}
+};
 
 // ── Main Handler ─────────────────────────────────────────────────────────────
 export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
@@ -65,7 +52,7 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
         const aiEmbedding = new GoogleGenAI({ apiKey });
         const embedResponse = await aiEmbedding.models.embedContent({
             model: 'gemini-embedding-2',
-            contents: message,
+            contents: message.length > 500 ? message.substring(0, 500) : message,
         });
         const userVector = embedResponse.embeddings?.[0]?.values;
 
@@ -135,15 +122,7 @@ L'alumne està actualment a la pàgina: ${currentPath}
 
 Respon de manera natural, formatant en Markdown. Sigues directe i útil.
 
-Al FINAL de la teva resposta (després de tot el contingut), afegeix EXACTAMENT aquest bloc de metadades en una línia nova:
-
-<META>
-KEYWORDS: paraula1, paraula2, paraula3
-MEMORIES: -
-</META>
-
-On KEYWORDS són 3-5 paraules clau rellevants de la conversa.
-On MEMORIES: per defecte escriu "-". NOMÉS hi has d'afegir fets separats per "|" si l'usuari acaba de revelar informació vital a llarg termini sobre el seu perfil (ex. un projecte, una tecnologia que aprèn, preferències). Evita guardar dades temporals o de xerrada casual.
+Quan acabis la teva resposta, SI l'usuari ha revelat nova informació important sobre el seu perfil que cal recordar a llarg termini, o per extreure les paraules clau de la conversa, UTILITZA SEMPRE l'eina 'save_metadata'. Evita guardar dades temporals o casuals com a memòria.
 
 Aquest és el text visible a la seva pantalla ara mateix:
 """
@@ -178,32 +157,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
 
             let lastError: any;
             let success = false;
-            let intent = 'THINK'; // Default to THINK
-
-            emit('status', { phase: 'thinking', model: 'AI Router' });
-            emit('thought', { text: "Classificant la intenció de la consulta..." });
-
-            try {
-                const intentRes = await ai.models.generateContent({
-                    model: 'gemini-3.5-flash-lite',
-                    contents: message,
-                    config: {
-                        systemInstruction: "Ets un classificador d'intencions ràpid. Si el missatge de l'usuari requereix informació externa d'internet (actualitat, notícies, esports, dates recents, buscar a google), respon NOMÉS 'SEARCH'. Per qualsevol altra cosa (programació, càlculs, teoria, resum, xerrada), respon NOMÉS 'THINK'. No justifiquis la resposta.",
-                        temperature: 0.1,
-                        maxOutputTokens: 5,
-                    }
-                });
-                if (intentRes.text?.trim().toUpperCase().includes('SEARCH')) {
-                    intent = 'SEARCH';
-                }
-            } catch (e) {
-                console.error("Intent classifier failed, falling back to default:", e);
-            }
-
-            if (intent === 'SEARCH') {
-                emit('status', { phase: 'thinking', model: 'Google Search' });
-                emit('thought', { text: "Buscant a Google informació actualitzada..." });
-            }
+            let hasStartedWriting = false;
 
             for (const modelName of getLoadBalancedModels()) {
                 if (success) break;
@@ -211,13 +165,10 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                 try {
                     const streamConfig: any = {
                         systemInstruction,
+                        tools: [{ googleSearch: {} }, { functionDeclarations: [saveMetadataTool] as any }]
                     };
 
-                    if (intent === 'SEARCH') {
-                        streamConfig.tools = [{ googleSearch: {} }];
-                    } else {
-                        applyThinkingConfig(streamConfig, modelName);
-                    }
+                    applyThinkingConfig(streamConfig, modelName);
 
                     const response = await ai.models.generateContentStream({
                         model: modelName,
@@ -227,10 +178,8 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
 
                     emit('status', { phase: 'thinking', model: modelName });
 
-                    let accumulatedText = '';
-                    let lastSentIndex = 0;
-                    let hasStartedWriting = false;
-                    const BUFFER_MARGIN = META_MARKER.length + 5;
+                    let extractedKeywords: string[] = [];
+                    let extractedMemories: string[] = [];
 
                     for await (const chunk of response) {
                         if (req.signal.aborted) {
@@ -243,39 +192,27 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                                     emit('thought', { text: part.text });
                                 }
                                 else if (part.text) {
-                                    accumulatedText += part.text;
-                                    const metaIdx = accumulatedText.indexOf(META_MARKER);
-
-                                    if (metaIdx === -1) {
-                                        const safeEnd = accumulatedText.length - BUFFER_MARGIN;
-                                        if (safeEnd > lastSentIndex) {
-                                            const toSend = accumulatedText.substring(lastSentIndex, safeEnd);
-                                            if (toSend) {
-                                                if (!hasStartedWriting) {
-                                                    emit('status', { phase: 'writing' });
-                                                    hasStartedWriting = true;
-                                                }
-                                                emit('delta', { text: toSend });
-                                                lastSentIndex = safeEnd;
-                                            }
-                                        }
+                                    if (!hasStartedWriting) {
+                                        emit('status', { phase: 'writing' });
+                                        hasStartedWriting = true;
                                     }
+                                    emit('delta', { text: part.text });
+                                }
+                            }
+                        }
+                        
+                        if (chunk.functionCalls && chunk.functionCalls.length > 0) {
+                            for (const call of chunk.functionCalls) {
+                                if (call.name === 'save_metadata' && call.args) {
+                                    const args = call.args as any;
+                                    if (args.keywords) extractedKeywords = args.keywords;
+                                    if (args.memories_to_add) extractedMemories = args.memories_to_add;
                                 }
                             }
                         }
                     }
 
-                    const { cleanText, keywords, memories_to_add } = parseMetaBlock(accumulatedText);
-
-                    const remaining = cleanText.substring(lastSentIndex);
-                    if (remaining) {
-                        if (!hasStartedWriting) {
-                            emit('status', { phase: 'writing' });
-                        }
-                        emit('delta', { text: remaining });
-                    }
-
-                    emit('metadata', { keywords, memories_to_add });
+                    emit('metadata', { keywords: extractedKeywords, memories_to_add: extractedMemories });
                     emit('done', {});
                     success = true;
 
@@ -283,12 +220,12 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                     const errMsg = String(e?.message || '');
                     const errStatus = e?.status;
                     const isRetryable =
-                        errStatus === 429 || errStatus === 404 ||
+                        (errStatus === 429 || errStatus === 404 ||
                         errMsg.includes('429') || errMsg.includes('404') ||
                         errMsg.toLowerCase().includes('quota') ||
                         errMsg.toLowerCase().includes('rate') ||
                         errMsg.toLowerCase().includes('not found') ||
-                        errMsg.toLowerCase().includes('not supported');
+                        errMsg.toLowerCase().includes('not supported')) && !hasStartedWriting;
 
                     if (isRetryable) {
                         lastError = e;
@@ -305,7 +242,11 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                 emit('done', {});
             }
 
-            controller.close();
+            try {
+                controller.close();
+            } catch (e) {
+                // Ignore if already closed
+            }
         }
     });
 

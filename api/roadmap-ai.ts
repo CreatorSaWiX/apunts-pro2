@@ -182,77 +182,86 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
                 controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
             };
 
-            let lastError: any;
-            let replied = false;
+            try {
+                let lastError: any;
+                let replied = false;
+                let hasStartedWriting = false;
 
-            for (const modelName of getLoadBalancedModels()) {
-                try {
-                    const streamConfig: any = {
-                        systemInstruction,
-                        temperature: 0.1,
-                        tools: [{ functionDeclarations: [roadmapTool] as any }]
-                    };
+                for (const modelName of getLoadBalancedModels()) {
+                    try {
+                        const streamConfig: any = {
+                            systemInstruction,
+                            temperature: 0.1,
+                            tools: [{ functionDeclarations: [roadmapTool] as any }]
+                        };
 
-                    const responseStream = await ai.models.generateContentStream({
-                        model: modelName,
-                        contents: [...formattedHistory, { role: 'user', parts: msgParts }],
-                        config: streamConfig
-                    });
+                        const responseStream = await ai.models.generateContentStream({
+                            model: modelName,
+                            contents: [...formattedHistory, { role: 'user', parts: msgParts }],
+                            config: streamConfig
+                        });
 
-                    emit('status', { phase: 'thinking', model: modelName });
+                        emit('status', { phase: 'thinking', model: modelName });
 
-                    let hasToolCall = false;
-                    let toolCallData = null;
+                        let hasToolCall = false;
+                        let toolCallData = null;
 
-                    for await (const chunk of responseStream) {
-                        if (req.signal.aborted) {
-                            controller.close();
-                            return;
-                        }
-                        if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
-                            for (const part of chunk.candidates[0].content.parts) {
-                                if (part.thought && part.text) {
-                                    emit('thought', { text: part.text });
-                                } else if (part.text) {
-                                    emit('status', { phase: 'writing' });
-                                    emit('message', { text: part.text });
+                        for await (const chunk of responseStream) {
+                            if (req.signal.aborted) {
+                                controller.close();
+                                return;
+                            }
+                            if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+                                for (const part of chunk.candidates[0].content.parts) {
+                                    if (part.thought && part.text) {
+                                        emit('thought', { text: part.text });
+                                    } else if (part.text) {
+                                        hasStartedWriting = true;
+                                        emit('status', { phase: 'writing' });
+                                        emit('message', { text: part.text });
+                                    }
                                 }
+                            }
+
+                            const functionCalls = chunk.functionCalls;
+                            if (functionCalls && functionCalls.length > 0) {
+                                hasToolCall = true;
+                                toolCallData = functionCalls[0].args;
+                                break;
                             }
                         }
 
-                        const functionCalls = chunk.functionCalls;
-                        if (functionCalls && functionCalls.length > 0) {
-                            hasToolCall = true;
-                            toolCallData = functionCalls[0].args;
-                            break;
+                        if (hasToolCall && toolCallData) {
+                            emit('actions', { actions: (toolCallData as any).actions });
                         }
-                    }
 
-                    if (hasToolCall && toolCallData) {
-                        emit('actions', { actions: (toolCallData as any).actions });
+                        emit('done', {});
+                        replied = true;
+                        break;
+                    } catch (e: any) {
+                        const is429 = (e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate')) && !hasStartedWriting;
+                        if (is429) {
+                            lastError = e;
+                            continue;
+                        }
+                        emit('error', { message: e.message || 'Error intern del servidor' });
+                        emit('done', {});
+                        replied = true;
+                        break;
                     }
+                }
 
+                if (!replied) {
+                    emit('error', { message: lastError?.message || 'Tots els models han fallat' });
                     emit('done', {});
-                    replied = true;
-                    break;
-                } catch (e: any) {
-                    const is429 = e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('503') || String(e?.message || '').toLowerCase().includes('quota') || String(e?.message || '').toLowerCase().includes('rate');
-                    if (is429) {
-                        lastError = e;
-                        continue;
-                    }
-                    emit('error', { message: e.message || 'Error intern del servidor' });
-                    emit('done', {});
-                    replied = true;
-                    break;
+                }
+            } finally {
+                try {
+                    controller.close();
+                } catch (e) {
+                    // Ignore if already closed
                 }
             }
-
-            if (!replied) {
-                emit('error', { message: lastError?.message || 'Tots els models han fallat' });
-                emit('done', {});
-            }
-            controller.close();
         }
     });
 

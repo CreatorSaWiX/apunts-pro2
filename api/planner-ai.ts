@@ -105,6 +105,7 @@ L'estructura exacta ha de ser:
 
                 let lastError: any;
                 let replied = false;
+                let hasStartedWriting = false;
 
                 for (const modelName of getLoadBalancedModels()) {
                     try {
@@ -138,6 +139,7 @@ L'estructura exacta ha de ser:
                                     if (part.thought && part.text) {
                                         emit('thought', { text: part.text });
                                     } else if (part.text) {
+                                        hasStartedWriting = true;
                                         accumulatedText += part.text;
                                     }
                                 }
@@ -165,16 +167,15 @@ L'estructura exacta ha de ser:
 
                         emit('actions', { actions: rData.actions || [] });
                         emit('done', {});
-                        controller.close();
                         replied = true;
                         break;
                     } catch (e: any) {
                         const errMsg = String(e?.message || '');
                         const errStatus = e?.status;
                         const isFallbackable =
-                            errStatus === 429 || errStatus === 503 || errStatus === 404 ||
+                            (errStatus === 429 || errStatus === 503 || errStatus === 404 ||
                             errMsg.includes('429') || errMsg.includes('503') || errMsg.includes('404') ||
-                            errMsg.match(/exhausted/i) || errMsg.match(/not found/i);
+                            errMsg.match(/exhausted/i) || errMsg.match(/not found/i)) && !hasStartedWriting;
 
                         if (isFallbackable) {
                             lastError = e;
@@ -183,7 +184,6 @@ L'estructura exacta ha de ser:
 
                         emit('error', { message: e.message || 'Error intern del servidor' });
                         emit('done', {});
-                        controller.close();
                         replied = true;
                         break;
                     }
@@ -192,12 +192,16 @@ L'estructura exacta ha de ser:
                 if (!replied) {
                     emit('error', { message: lastError?.message || 'Tots els models han fallat' });
                     emit('done', {});
-                    controller.close();
                 }
             } catch (err: any) {
                 emit('error', { message: err.message || 'Error de procés' });
                 emit('done', {});
-                controller.close();
+            } finally {
+                try {
+                    controller.close();
+                } catch (e) {
+                    // Ignore if already closed
+                }
             }
         }
     });
