@@ -163,7 +163,7 @@ const defaultComponents: any = {
         );
     },
     mafs: (props: any) => {
-        const { node, ...rest } = props;
+        const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <MafsVisualizer {...rest} />
@@ -171,7 +171,7 @@ const defaultComponents: any = {
         );
     },
     threeviz: (props: any) => {
-        const { node, ...rest } = props;
+        const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <ThreeVisualizer {...rest} />
@@ -179,7 +179,7 @@ const defaultComponents: any = {
         );
     },
     three: (props: any) => {
-        const { node, ...rest } = props;
+        const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <ThreeVisualizer {...rest} />
@@ -187,7 +187,7 @@ const defaultComponents: any = {
         );
     },
     linkedinviz: (props: any) => {
-        const { node, ...rest } = props;
+        const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <LinkedInEmbed {...rest} />
@@ -195,7 +195,7 @@ const defaultComponents: any = {
         );
     },
     youtubeviz: (props: any) => {
-        const { node, ...rest } = props;
+        const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <YoutubeEmbed {...rest} />

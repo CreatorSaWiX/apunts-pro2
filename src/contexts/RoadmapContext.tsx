@@ -624,13 +624,38 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         []
     );
 
-    const lastSavedData = useRef<string | null>(null);
+    // ── Refs for stable saveRoadmap (avoids re-creating actionsValue on every drag) ──
+    const nodesRef = useRef(nodes);
+    const edgesRef = useRef(edges);
+    const itineraryRef = useRef(itinerary);
+    const targetGradeRef = useRef(targetGrade);
+    const userRef = useRef(user);
+    useEffect(() => { nodesRef.current = nodes; }, [nodes]);
+    useEffect(() => { edgesRef.current = edges; }, [edges]);
+    useEffect(() => { itineraryRef.current = itinerary; }, [itinerary]);
+    useEffect(() => { targetGradeRef.current = targetGrade; }, [targetGrade]);
+    useEffect(() => { userRef.current = user; }, [user]);
+
+    // Dirty counter: incremented on every meaningful state change, avoids expensive JSON.stringify
+    const saveVersionRef = useRef(0);
+    const lastSavedVersionRef = useRef(0);
+    useEffect(() => { saveVersionRef.current++; }, [nodes, edges, itinerary, targetGrade]);
 
     const saveRoadmap = useCallback(async (strokes: any[] = []) => {
-        if (!user) return;
+        const currentUser = userRef.current;
+        if (!currentUser) return;
+
+        // Skip if no state changes since last save (unless strokes changed)
+        if (strokes.length === 0 && saveVersionRef.current === lastSavedVersionRef.current) {
+            return;
+        }
+
         try {
+            const currentNodes = nodesRef.current;
+            const currentEdges = edgesRef.current;
+
             // Clean nodes and edges to avoid Firebase errors from undefined or non-serializable fields added by ReactFlow
-            const cleanNodes = nodes.map(n => ({
+            const cleanNodes = currentNodes.map(n => ({
                 id: n.id,
                 position: n.position,
                 style: n.style,
@@ -650,7 +675,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 },
                 type: n.type || 'subjectNode',
             }));
-            const cleanEdges = edges.map(e => ({
+            const cleanEdges = currentEdges.map(e => ({
                 id: e.id,
                 source: e.source,
                 target: e.target,
@@ -660,31 +685,25 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             const payload = removeUndefined({
                 nodes: cleanNodes,
                 edges: cleanEdges,
-                itinerary,
+                itinerary: itineraryRef.current,
                 strokes,
-                targetGrade
+                targetGrade: targetGradeRef.current
             });
-
-            const payloadStr = JSON.stringify(payload);
-            if (payloadStr === lastSavedData.current) {
-                // Skip if no actual changes
-                return;
-            }
 
             const { db } = await import('../lib/firebase');
             const { doc, setDoc } = await import('firebase/firestore');
-            const docRef = doc(db, 'users', user.id, 'roadmaps', 'main');
+            const docRef = doc(db, 'users', currentUser.id, 'roadmaps', 'main');
             await setDoc(docRef, {
                 ...payload,
                 updatedAt: new Date().toISOString()
             });
             
-            lastSavedData.current = payloadStr;
+            lastSavedVersionRef.current = saveVersionRef.current;
         } catch (err) {
             console.error("Error saving roadmap:", err);
             throw err;
         }
-    }, [nodes, edges, itinerary, targetGrade, user]);
+    }, []); // ← Stable! No dependencies that change on drag
 
     // Data context: re-renders only when nodes/edges/derived data changes
     const dataValue = useMemo(() => ({

@@ -18,7 +18,8 @@ export async function resetPasswordController(req: IncomingMessage, res: ServerR
         }
 
         // Importem el fitxer de l'API de Vercel
-        const { POST } = await import('../../../../api/reset-password.ts');
+        const apiModule = await import('../../../../api/reset-password.ts');
+        const handler = apiModule.default;
         
         // Creem un "Request" simulat (Web API standard que espera Vercel)
         const url = new URL(req.url || '', `http://${req.headers.host}`);
@@ -29,20 +30,20 @@ export async function resetPasswordController(req: IncomingMessage, res: ServerR
         });
 
         // Cridem la funció de Vercel directament
-        const response = await POST(mockRequest);
+        const response = await handler(mockRequest);
         
         // Retornem la resposta al format de Node (el que espera Vite)
         res.statusCode = response.status;
-        response.headers.forEach((value, key) => {
+        response.headers.forEach((value: string, key: string) => {
           res.setHeader(key, value);
         });
         
         const responseBody = await response.text();
         res.end(responseBody);
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error("[DevServer reset-password Error]:", e);
         res.statusCode = 500;
-        res.end(JSON.stringify({ error: String(e.message || e) }));
+        res.end(JSON.stringify({ error: String((e as Error).message || e) }));
       }
     });
   } else {

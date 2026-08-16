@@ -1,4 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
+import { verifyIdToken } from './_shared/auth';
+import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
 // Importem els apunts compilats per Content Collections
 import { allPersonalNotes } from '../.content-collections/generated/index.js';
 
@@ -7,25 +9,9 @@ import { allPersonalNotes } from '../.content-collections/generated/index.js';
 // i l'Edge runtime limita l'script a 1MB/2MB, el que faria caure l'API en producció.
 // Vercel Serverless suporta fins a 50MB, sent perfecte per aquesta arquitectura RAG local.
 
-// ── CORS Headers ─────────────────────────────────────────────────────────────
-const CORS_HEADERS: Record<string, string> = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
-    'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization',
-};
+import { CORS_HEADERS, handleCors } from './_shared/cors';
 
-// ── Models que suporten thinkingConfig ────────────────────────────────────────
-const THINKING_MODELS = new Set([
-    'gemini-3.5-flash',
-    'gemini-2.0-flash-thinking-exp-01-21',
-    'gemini-2.5-flash',
-]);
-
-const MODELS = [
-    'gemini-3.5-flash', // Primari (500 RPD)
-    'gemini-2.0-flash-thinking-exp-01-21', // Fallback oficial thinking
-    'gemini-3.1-flash-lite', // Fallback d'emergència
-];
+// Arrays i config mogudes a _shared/models.ts
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function jsonResponse(data: object, status = 200): Response {
@@ -73,9 +59,8 @@ function parseMetaBlock(fullText: string): {
 // ── Main Handler ─────────────────────────────────────────────────────────────
 export default async function handler(req: Request): Promise<Response> {
     // Preflight CORS
-    if (req.method === 'OPTIONS') {
-        return new Response(null, { status: 200, headers: CORS_HEADERS });
-    }
+    const corsOptions = handleCors(req);
+    if (corsOptions) return corsOptions;
 
     if (req.method !== 'POST') {
         return jsonResponse({ error: 'Mètode no permès. Fes servir POST.' }, 405);
@@ -89,16 +74,9 @@ export default async function handler(req: Request): Promise<Response> {
             return jsonResponse({ error: 'No autoritzat. Cal iniciar sessió.' }, 401);
         }
 
-        const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
-        if (!firebaseApiKey) {
-            return jsonResponse({ error: 'Configuració de Firebase incompleta al servidor.' }, 500);
-        }
-
-        const verifyRes = await fetch(
-            `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`,
-            { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken }) }
-        );
-        if (!verifyRes.ok) {
+        try {
+            await verifyIdToken(idToken);
+        } catch (error) {
             return jsonResponse({ error: 'Token invàlid o caducat.' }, 401);
         }
 
@@ -110,7 +88,7 @@ export default async function handler(req: Request): Promise<Response> {
         }
 
         const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
+        if (!apiKey) {
             return jsonResponse({ error: 'Error intern del servidor (C)' }, 500);
         }
 
@@ -126,20 +104,27 @@ export default async function handler(req: Request): Promise<Response> {
 
             if (userVector) {
                 // Utilitzem una importació dinàmica per si l'arxiu és massa gran o es genera en build
-                const embeddingsData = await import('../src/data/embeddings.json', { with: { type: "json" } })
+                const rawEmbeddings = await import('../src/data/embeddings.json', { with: { type: "json" } })
                     .then(m => m.default || m)
                     .catch(() => []);
                 
+                const embeddingsData: any[] = Array.isArray(rawEmbeddings) ? rawEmbeddings : [];
+                
+                // Pre-compute user vector norm once: O(D) instead of O(C×D)
+                let userNormSq = 0;
+                for (let i = 0; i < userVector.length; i++) {
+                    userNormSq += userVector[i] * userVector[i];
+                }
+                const invUserNorm = 1 / Math.sqrt(userNormSq);
+
                 const scoredChunks = embeddingsData.map((chunk: any) => {
                     let dotProduct = 0;
-                    let normA = 0;
                     let normB = 0;
                     for (let i = 0; i < userVector.length; i++) {
                         dotProduct += userVector[i] * chunk.embedding[i];
-                        normA += userVector[i] * userVector[i];
                         normB += chunk.embedding[i] * chunk.embedding[i];
                     }
-                    const score = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+                    const score = dotProduct * invUserNorm / Math.sqrt(normB);
                     return { ...chunk, score };
                 });
                 
@@ -254,7 +239,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                 try {
                     // Try to quickly classify the intent
                     const intentRes = await ai.models.generateContent({
-                        model: 'gemini-2.5-flash-lite',
+                        model: 'gemini-3.5-flash-lite',
                         contents: message,
                         config: {
                             systemInstruction: "Ets un classificador d'intencions ràpid. Si el missatge de l'usuari requereix informació externa d'internet (actualitat, notícies, esports, dates recents, buscar a google), respon NOMÉS 'SEARCH'. Per qualsevol altra cosa (programació, càlculs, teoria, resum, xerrada), respon NOMÉS 'THINK'. No justifiquis la resposta.",
@@ -262,7 +247,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                             maxOutputTokens: 5,
                         }
                     });
-                    if (intentRes.text.trim().toUpperCase().includes('SEARCH')) {
+                    if (intentRes.text?.trim().toUpperCase().includes('SEARCH')) {
                         intent = 'SEARCH';
                     }
                 } catch (e) {
@@ -275,12 +260,10 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                     emit('thought', { text: "Buscant a Google informació actualitzada..." });
                 }
 
-                for (const modelName of MODELS) {
+                for (const modelName of getLoadBalancedModels()) {
                     if (success) break;
 
                     try {
-                        const supportsThinking = THINKING_MODELS.has(modelName);
-
                         const streamConfig: any = {
                             systemInstruction,
                         };
@@ -288,11 +271,8 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                         // Configure Tools OR Thinking based on intent
                         if (intent === 'SEARCH') {
                             streamConfig.tools = [{ googleSearch: {} }];
-                        } else if (supportsThinking) {
-                            streamConfig.thinkingConfig = {
-                                includeThoughts: true,
-                                thinkingBudget: 1024,
-                            };
+                        } else {
+                            applyThinkingConfig(streamConfig, modelName);
                         }
 
                         const response = await ai.models.generateContentStream({
@@ -311,6 +291,10 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
                         const BUFFER_MARGIN = META_MARKER.length + 5;
 
                         for await (const chunk of response) {
+                            if (req.signal.aborted) {
+                                controller.close();
+                                return;
+                            }
                             // Process each part in the chunk
                             if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
                                 for (const part of chunk.candidates[0].content.parts) {

@@ -95,7 +95,9 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                             if (dSnap.exists() && dSnap.data().avatar) {
                                 fetchedAvatars[uid] = dSnap.data().avatar;
                             }
-                        } catch(e) {}
+                        } catch(e) {
+                            console.debug('Failed to verify problem link:', e);
+                        }
                     }));
                     
                     msgs = msgs.map(m => ({

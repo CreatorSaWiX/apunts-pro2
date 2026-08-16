@@ -1,5 +1,6 @@
-import { getApps, initializeApp, cert } from 'firebase-admin/app';
+import { getApps } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
+import { initFirebaseIfNeeded } from './_shared/auth';
 import nodemailer from 'nodemailer';
 
 export const config = {
@@ -18,22 +19,10 @@ function jsonResponse(data: object, status = 200): Response {
     });
 }
 
-// Inicialitza Firebase Admin només una vegada
-if (getApps().length === 0) {
-    try {
-        const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
-        if (serviceAccountJson) {
-            const serviceAccount = JSON.parse(serviceAccountJson);
-            initializeApp({
-                credential: cert(serviceAccount)
-            });
-        }
-    } catch (error) {
-        console.error("Error inicialitzant Firebase Admin:", error);
-    }
-}
+// Inicialitza Firebase Admin de manera segura
+initFirebaseIfNeeded();
 
-export async function POST(req: Request): Promise<Response> {
+export default async function handler(req: Request): Promise<Response> {
     if (req.method === 'OPTIONS') {
         return new Response(null, { status: 200, headers: CORS_HEADERS });
     }

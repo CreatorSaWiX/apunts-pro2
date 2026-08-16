@@ -143,7 +143,9 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             if (savedVersions) {
                 setSeenVersions(JSON.parse(savedVersions));
             }
-        } catch (e) { }
+        } catch (e) {
+            console.debug('LocalStorage read silenced:', e);
+        }
     }, []);
 
     const markAsSeen = useCallback((slug: string, version?: number) => {
@@ -167,7 +169,9 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                     // We don't update state here to avoid the badge disappearing before navigation
                 }
             }
-        } catch (e) { }
+        } catch (e) {
+            console.debug('LocalStorage write silenced:', e);
+        }
     }, []);
 
     // Pre-calculate card metrics for ultra-fast scroll performance

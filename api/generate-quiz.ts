@@ -1,4 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { verifyIdToken } from './_shared/auth';
+import { getLiteModels } from './_shared/models';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
@@ -6,6 +8,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     try {
+        const idToken = req.headers.authorization?.split('Bearer ')[1];
+        if (!idToken) {
+            return res.status(401).json({ error: 'No autoritzat. Cal iniciar sessió.' });
+        }
+        try {
+            await verifyIdToken(idToken);
+        } catch (error) {
+            return res.status(401).json({ error: 'Token invàlid o caducat' });
+        }
+
         const { topicId, markdownContent } = req.body;
 
         if (!topicId || !markdownContent) {
@@ -55,7 +67,7 @@ RETORNA UNICAMENT AQUEST FORMAT JSON:
 `;
 
         const response = await ai.models.generateContent({
-            model: 'gemini-3.1-flash-lite',
+            model: getLiteModels()[0],
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',

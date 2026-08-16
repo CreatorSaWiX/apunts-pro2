@@ -145,12 +145,7 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
           msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
         }
 
-        const MODELS = [
-          'gemini-3.5-flash',
-          'gemini-2.5-flash',
-          'gemini-1.5-flash',
-          'gemini-3.1-flash-lite'
-        ];
+        
 
         const roadmapTool = {
           name: "modify_roadmap",
@@ -175,24 +170,27 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
           }
         };
 
-        const THINKING_MODELS = new Set(['gemini-3.5-flash', 'gemini-2.5-flash']);
+        
 
         let lastError: any;
         let replied = false;
 
-        for (const modelName of MODELS) {
+        for (const modelName of getLoadBalancedModels()) {
           try {
-            const supportsThinking = THINKING_MODELS.has(modelName);
+            
             const streamConfig: any = {
               systemInstruction,
               tools: [{ functionDeclarations: [roadmapTool] as any }]
             };
 
-            if (supportsThinking) {
-              streamConfig.thinkingConfig = {
-                includeThoughts: true,
-                thinkingBudget: 1024,
-              };
+            applyThinkingConfig(streamConfig, modelName);;
+                            if (modelName.includes('2.5')) {
+                                streamConfig.thinkingConfig.thinkingBudget = 32768;
+                            } else {
+                                // Gemini 3.x i superiors (la majoria usen thinking_level o budget sense limitar)
+                                streamConfig.thinkingConfig.thinkingBudget = 32768; 
+                                // Si en el futur l'SDK només accepta 'HIGH' es pot afegir: streamConfig.thinkingConfig.thinkingLevel = 'HIGH';
+                            }
             }
 
             const responseStream = await genAI.models.generateContentStream({

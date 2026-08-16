@@ -1,6 +1,3 @@
-// previewGenerator.ts
-
-// Funció principal per generar thumbnails espectaculars per qualsevol fitxer
 export const generatePreview = async (file: File): Promise<string> => {
     try {
         if (file.type.startsWith('image/')) {
@@ -23,6 +20,7 @@ const generateImageThumbnail = (file: File): Promise<string> => {
         const img = new Image();
         img.src = URL.createObjectURL(file);
         img.onload = () => {
+            URL.revokeObjectURL(img.src);
             const canvas = document.createElement('canvas');
             const MAX_WIDTH = 800;
             const MAX_HEIGHT = 800;
@@ -42,10 +40,10 @@ const generateImageThumbnail = (file: File): Promise<string> => {
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 resolve(canvas.toDataURL('image/jpeg', 0.85));
             } else {
-                resolve(img.src);
+                resolve(generateGenericThumbnail(file.name));
             }
         };
-        img.onerror = () => resolve(generateGenericThumbnail(file.name));
+        img.onerror = () => { URL.revokeObjectURL(img.src); resolve(generateGenericThumbnail(file.name)); };
     });
 };
 
@@ -61,6 +59,7 @@ const generateVideoThumbnail = (file: File): Promise<string> => {
         };
         
         video.onseeked = () => {
+            URL.revokeObjectURL(video.src);
             const canvas = document.createElement('canvas');
             const MAX_WIDTH = 800;
             const MAX_HEIGHT = 800;
@@ -109,7 +108,7 @@ const generateVideoThumbnail = (file: File): Promise<string> => {
                 resolve(generateGenericThumbnail(file.name));
             }
         };
-        video.onerror = () => resolve(generateGenericThumbnail(file.name));
+        video.onerror = () => { URL.revokeObjectURL(video.src); resolve(generateGenericThumbnail(file.name)); };
     });
 };
 

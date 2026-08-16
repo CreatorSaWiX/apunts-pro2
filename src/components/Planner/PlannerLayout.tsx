@@ -110,7 +110,9 @@ const PlannerLayout: React.FC = () => {
                     if (document.documentElement.requestFullscreen) {
                         document.documentElement.requestFullscreen().catch(() => { });
                     }
-                } catch (e) { }
+                } catch (e) {
+                    console.debug('Failed to parse active views:', e);
+                }
             }
         };
         window.addEventListener('orientationchange', attemptFullscreen);

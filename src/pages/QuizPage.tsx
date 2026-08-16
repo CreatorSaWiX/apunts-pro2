@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle, XCircle, Clock, AlertTriangle, RefreshCw, Trophy } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import type { TopicQuiz } from '../content/data/quizzes';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
@@ -83,7 +82,7 @@ const QuizTimer = React.memo(({
     );
 });
 
-// eslint-disable-next-line react-doctor/no-giant-component
+
 const QuizPage: React.FC = () => {
     const { id: topicId } = useParams();
     const { t } = useTranslation();
@@ -93,7 +92,7 @@ const QuizPage: React.FC = () => {
     const [aiPhase, setAiPhase] = useState<'idle'|'connecting'|'thinking'|'writing'>('connecting');
     const [aiThought, setAiThought] = useState('');
 
-    // eslint-disable-next-line react-doctor/no-fetch-in-effect, react-doctor/no-set-state-after-await-in-effect
+
     useEffect(() => {
         const loadQuiz = async () => {
             if (!topicId) return;

@@ -1,13 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from '@google/genai';
+import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
 import fs from 'fs';
+import { verifyIdToken } from './_shared/auth';
+import { CORS_HEADERS } from './_shared/cors';
 import path from 'path';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Configurar CORS
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+    Object.entries(CORS_HEADERS).forEach(([key, value]) => {
+        res.setHeader(key, value);
+    });
 
     if (req.method === 'OPTIONS') {
         res.status(200).end();
@@ -24,18 +27,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(401).json({ error: 'No autoritzat. Cal iniciar sessió.' });
         }
 
-        const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
-        if (!firebaseApiKey) {
-            return res.status(500).json({ error: 'Configuració de Firebase incompleta al servidor.' });
-        }
-
-        const verifyRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken })
-        });
-
-        if (!verifyRes.ok) {
+        try {
+            await verifyIdToken(idToken);
+        } catch (error) {
             return res.status(401).json({ error: 'Token invàlid o caducat.' });
         }
 
@@ -46,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey || apiKey === 'LA_TEVA_CLAU_AQUI') {
+        if (!apiKey) {
             return res.status(500).json({ error: 'Error intern del servidor (C)' });
         }
 
@@ -188,11 +182,7 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
             parts: [{ text: msg.content }]
         }));
 
-        const MODELS = [
-            'gemini-3.5-flash',
-            'gemini-2.5-flash',
-            'gemini-3.1-flash-lite'
-        ];
+        
 
         // Definim la tool per modificar el roadmap
         const roadmapTool = {
@@ -218,7 +208,7 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
             }
         };
 
-        const THINKING_MODELS = new Set(['gemini-3.5-flash', 'gemini-2.5-flash']);
+        
 
         let lastError: any;
         let replied = false;
@@ -231,9 +221,9 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
             msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
         }
 
-        for (const modelName of MODELS) {
+        for (const modelName of getLoadBalancedModels()) {
             try {
-                const supportsThinking = THINKING_MODELS.has(modelName);
+                
                 // Mantenim els tools però NO activem el thinkingConfig alhora,
                 // ja que pot provocar al·lucinacions amb "tool_code" o "thought" en models 2.5
                 const streamConfig: any = {

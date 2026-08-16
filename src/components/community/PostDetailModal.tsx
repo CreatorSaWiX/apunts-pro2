@@ -143,7 +143,9 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                 } else {
                     viewedPosts = parsed;
                 }
-            } catch (e) { }
+            } catch (e) {
+                console.debug('Failed to copy to clipboard:', e);
+            }
 
             if (!viewedPosts[post.id]) {
                 viewedPosts[post.id] = true;

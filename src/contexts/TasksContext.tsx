@@ -224,12 +224,12 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const updateTask = useCallback(async (taskId: string, updates: Partial<Task>) => {
         // Optimistic update locally (SYNCHRONOUS to avoid flickering)
         setTasks(prev => prev.map(t => t.id === taskId ? { ...t, ...updates } : t));
-                try {
-                if (!user) throw new Error("No user logged in");
-                const { db } = await import('../lib/firebase');
-                const { doc, updateDoc } = await import('firebase/firestore');
-                
-                const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
+        try {
+            if (!user) throw new Error("No user logged in");
+            const { db } = await import('../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            
+            const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
             await updateDoc(taskRef, updates);
         } catch (err) {
             console.error("Error updating task:", err);

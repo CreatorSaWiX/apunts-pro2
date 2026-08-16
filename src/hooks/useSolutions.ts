@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import { fetchJutgeProblem } from '../lib/jutge';
 import { allSolutions, getSolutionsByTopic, getSolutionById } from '../content/data/solutions';
 import type { Solution } from '../content/data/solutions';
@@ -25,6 +23,9 @@ export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
 
                 // 2. Get Firestore solutions
                 const firestoreSolutions: Solution[] = [];
+
+                const { collection, query, where, getDocs } = await import('firebase/firestore');
+                const { db } = await import('../lib/firebase');
 
                 if (problemIdsToCheck && problemIdsToCheck.length > 0) {
                     // Chunk into groups of 10 to satisfy Firestore 'in' limitation
@@ -124,6 +125,8 @@ export const useSolution = (topicId: string, problemId: string, lang: string = '
                 if (staticData) foundSolution = staticData;
 
                 // 2. Firestore
+                const { doc, getDoc } = await import('firebase/firestore');
+                const { db } = await import('../lib/firebase');
                 const docRef = doc(db, 'solutions', problemId);
 
                 try {
@@ -193,6 +196,9 @@ export const useUserSolutions = (userId: string) => {
         const fetchUserSolutions = async () => {
             setLoading(true);
             try {
+                const { collection, query, where, getDocs } = await import('firebase/firestore');
+                const { db } = await import('../lib/firebase');
+
                 const q = query(
                     collection(db, 'solutions'),
                     where('authorId', '==', userId)

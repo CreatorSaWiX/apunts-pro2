@@ -61,13 +61,7 @@ export async function chatController(req: IncomingMessage, res: ServerResponse, 
 
         const genAI = new GoogleGenAI({ apiKey });
 
-        const MODELS = [
-          'gemini-3.5-flash',          // nou model de referència 3.5
-          'gemini-3.1-flash-lite',     // lite de gemini 3
-          'gemini-2.5-flash',          // provat i fiable
-          'gemini-2.5-flash-lite',     // lite de 2.5
-          'gemini-2.0-flash-lite',     // de rescat
-        ];
+        
 
         const langName = language?.startsWith('en') ? 'English' : language?.startsWith('es') ? 'Spanish' : 'Catalan';
         const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
@@ -170,7 +164,7 @@ Tens l'eina "Google Search" activada. Si l'alumne et fa una pregunta sobre actua
             return { cleanText, keywords, memories_to_add };
         }
 
-        for (const modelName of MODELS) {
+        for (const modelName of getLoadBalancedModels()) {
           try {
             const streamConfig: any = {
               systemInstruction,

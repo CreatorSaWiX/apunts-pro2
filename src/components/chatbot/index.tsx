@@ -266,7 +266,9 @@ export const ChatBot: React.FC = () => {
 
     try {
       let pageText = '';
-      try { pageText = (document.querySelector('main') || document.body).innerText.slice(0, 4000); } catch (_) { }
+      try { pageText = (document.querySelector('main') || document.body).innerText.slice(0, 4000); } catch (_) {
+          console.debug('Failed to read page text');
+      }
 
       const { auth } = await import('../../lib/firebase');
       const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';

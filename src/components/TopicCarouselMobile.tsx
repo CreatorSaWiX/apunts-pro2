@@ -468,7 +468,9 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: an
             if (savedNew) setSeenNewTopics(JSON.parse(savedNew));
             const savedVersions = localStorage.getItem('v1_seen-topic-versions');
             if (savedVersions) setSeenVersions(JSON.parse(savedVersions));
-        } catch (e) { }
+        } catch (e) {
+            console.debug('LocalStorage v1 read silenced:', e);
+        }
     }, []);
 
     const markAsSeen = useCallback((slug: string, version?: number) => {
@@ -488,7 +490,9 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: an
                     localStorage.setItem('v1_seen-topic-versions', JSON.stringify(updatedVersions));
                 }
             }
-        } catch (e) { }
+        } catch (e) {
+            console.debug('LocalStorage v1 write silenced:', e);
+        }
     }, []);
 
     return (
@@ -584,7 +588,9 @@ const LandscapeView = React.memo(({ subjectOverride }: any) => {
             if (savedNew) setSeenNewTopics(JSON.parse(savedNew));
             const savedVersions = localStorage.getItem('seen-topic-versions');
             if (savedVersions) setSeenVersions(JSON.parse(savedVersions));
-        } catch (e) { }
+        } catch (e) {
+            console.debug('LocalStorage read silenced:', e);
+        }
     }, []);
 
     const markAsSeen = useCallback((slug: string, version?: number) => {
@@ -604,7 +610,9 @@ const LandscapeView = React.memo(({ subjectOverride }: any) => {
                     localStorage.setItem('seen-topic-versions', JSON.stringify(updatedVersions));
                 }
             }
-        } catch (e) { }
+        } catch (e) {
+            console.debug('LocalStorage write silenced:', e);
+        }
     }, []);
 
     const sortedTopics = useMemo(() => {

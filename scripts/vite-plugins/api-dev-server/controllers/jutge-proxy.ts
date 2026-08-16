@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
-export async function jutgeProxyController(req: IncomingMessage, res: ServerResponse, env: Record<string, string>) {
+export async function jutgeProxyController(req: IncomingMessage, res: ServerResponse, _env: Record<string, string>) {
   try {
     const url = new URL(req.url || '', `http://${req.headers.host}`);
     const id = url.searchParams.get('id');
@@ -20,9 +20,9 @@ export async function jutgeProxyController(req: IncomingMessage, res: ServerResp
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.end(JSON.stringify(result));
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("[DevServer] Proxy Error:", e);
     res.statusCode = 500;
-    res.end(JSON.stringify({ error: String(e.message || e) }));
+    res.end(JSON.stringify({ error: String((e as Error).message || e) }));
   }
 }

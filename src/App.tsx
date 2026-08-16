@@ -2,7 +2,6 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 // import { PerformanceMonitor } from './components/ui/system/PerformanceMonitor';
-// import FeedbackModal from './components/FeedbackModal';
 import HomePage from './pages/HomePage';
 import PageTransition from './components/ui/system/PageTransition';
 import { AnimatePresence, LazyMotion, MotionConfig } from 'framer-motion';
@@ -38,7 +37,6 @@ function App() {
     
             {/* <PerformanceMonitor /> */}
             <Navigation />
-            {/* <FeedbackModal /> */}
 
             <AnimatePresence mode="wait">
               <Routes location={location} key={location.pathname}>

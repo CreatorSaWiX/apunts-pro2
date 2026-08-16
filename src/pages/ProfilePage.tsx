@@ -14,7 +14,7 @@ import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
 const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
 import { useTranslation } from 'react-i18next';
-import { useIsMobile } from '../hooks/useIsMobile';
+
 
 // --- Inline Editable Text Component ---
 const InlineEditableText = ({

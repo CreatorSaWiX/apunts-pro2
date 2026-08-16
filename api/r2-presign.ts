@@ -1,30 +1,47 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { verifyIdToken } from './_shared/auth';
+import { handleCors } from './_shared/cors';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-    // Configurar CORS
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
-    );
-
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
+export default async function handler(req: Request) {
+    const corsResponse = handleCors(req);
+    if (corsResponse) return corsResponse;
 
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Mètode no permès. Fes servir POST.' });
+        return new Response(JSON.stringify({ error: 'Mètode no permès. Fes servir POST.' }), {
+            status: 405,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
 
     try {
-        const { filename, contentType } = req.body;
+        const authHeader = req.headers.get('authorization') || '';
+        const idToken = authHeader.split('Bearer ')[1];
+        if (!idToken) {
+            return new Response(JSON.stringify({ error: 'No autoritzat' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+        }
+        try {
+            await verifyIdToken(idToken);
+        } catch (error) {
+            return new Response(JSON.stringify({ error: 'Token invàlid o caducat' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+        }
+
+        const body = await req.json().catch(() => ({}));
+        const { filename, contentType } = body;
 
         if (!filename || !contentType) {
-            return res.status(400).json({ error: 'Falta filename o contentType' });
+            return new Response(JSON.stringify({ error: 'Falta filename o contentType' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+        if (!ALLOWED_MIME_TYPES.includes(contentType)) {
+            return new Response(JSON.stringify({ error: 'Tipus de fitxer no permès' }), {
+                status: 415,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
 
         const accountId = process.env.R2_ACCOUNT_ID;
@@ -35,7 +52,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const publicUrlBase = process.env.VITE_R2_PUBLIC_URL;
 
         if (!endpoint || !accessKeyId || !secretAccessKey || !bucketName || !publicUrlBase) {
-            return res.status(500).json({ error: 'Configuració R2 incompleta al servidor' });
+            return new Response(JSON.stringify({ error: 'Configuració R2 incompleta al servidor' }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
 
         const S3 = new S3Client({
@@ -66,15 +86,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             signableHeaders: new Set(['content-type', 'cache-control'])
         });
         
-        // Retornem la URL on cal fer el PUT, i la URL pública final
-        return res.status(200).json({ 
+        return new Response(JSON.stringify({ 
             presignedUrl, 
             objectKey,
             publicUrl: `${publicUrlBase}/${objectKey}`
+        }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
         });
 
     } catch (error) {
         console.error('[R2 Presign Error]', error);
-        res.status(500).json({ error: 'Error intern generant URL de pujada' });
+        return new Response(JSON.stringify({ error: 'Error intern generant URL de pujada' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
 }

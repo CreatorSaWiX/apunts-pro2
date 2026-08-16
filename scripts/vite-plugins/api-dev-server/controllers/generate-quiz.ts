@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-
+import { GoogleGenAI } from '@google/genai';
+import { getLiteModels } from '../../../../../api/_shared/models';
 export async function generateQuizController(req: IncomingMessage, res: ServerResponse, env: Record<string, string>) {
   if (req.method === 'POST') {
     let body = '';
@@ -9,7 +10,6 @@ export async function generateQuizController(req: IncomingMessage, res: ServerRe
     req.on('end', async () => {
       try {
         const { topicId, markdownContent } = JSON.parse(body);
-        const { GoogleGenAI } = await import('@google/genai');
 
         const apiKey = env.GEMINI_API_KEY;
         if (!apiKey) {
@@ -52,7 +52,7 @@ RETORNA UNICAMENT AQUEST FORMAT JSON:
 }`;
 
         const response = await genAI.models.generateContent({
-            model: 'gemini-3.1-flash-lite',
+            model: getLiteModels()[0],
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',

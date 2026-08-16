@@ -4,7 +4,6 @@ export const UpdateManager = () => {
 
     useEffect(() => {
         const handlePreloadError = () => {
-            console.log("S'ha detectat una nova versió (chunk missing). Recarregant...");
             window.location.reload();
         };
 

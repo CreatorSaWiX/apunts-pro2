@@ -1,38 +1,25 @@
-export const config = {
-    runtime: 'edge'
-};
+import { verifyIdToken } from './_shared/auth';
+import { CORS_HEADERS, handleCors } from './_shared/cors';
+import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
 
 export default async function handler(req: Request) {
-    if (req.method === 'OPTIONS') {
-        return new Response(null, {
-            status: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
-                'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-            }
-        });
-    }
+    const corsOptions = handleCors(req);
+    if (corsOptions) return corsOptions;
 
     if (req.method !== 'POST') {
-        return new Response(JSON.stringify({ error: 'Mètode no permès' }), { status: 405 });
+        return new Response(JSON.stringify({ error: 'Mètode no permès' }), { status: 405, headers: CORS_HEADERS });
     }
 
     try {
         const authHeader = req.headers.get('authorization');
         const idToken = authHeader?.split('Bearer ')[1];
-        if (!idToken) return new Response(JSON.stringify({ error: 'No autoritzat' }), { status: 401 });
+        if (!idToken) return new Response(JSON.stringify({ error: 'No autoritzat' }), { status: 401, headers: CORS_HEADERS });
 
-        // Firebase verification...
-        const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
-        if (!firebaseApiKey) return new Response(JSON.stringify({ error: 'Configuració de Firebase incompleta' }), { status: 500 });
-        
-        const verifyRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken })
-        });
-        if (!verifyRes.ok) return new Response(JSON.stringify({ error: 'Token invàlid' }), { status: 401 });
+        try {
+            await verifyIdToken(idToken);
+        } catch (error) {
+            return new Response(JSON.stringify({ error: 'Token invàlid' }), { status: 401, headers: CORS_HEADERS });
+        }
 
         const body = await req.json();
         const { prompt, currentTasks = [], subjects = [], currentDate, aiSettings, attachedFile } = body;
@@ -51,15 +38,8 @@ export default async function handler(req: Request) {
                     const { GoogleGenAI } = await import('@google/genai');
                     const genAI = new GoogleGenAI({ apiKey });
 
-                    const MODELS = [
-                        'gemini-2.0-flash-thinking-exp-01-21',
-                        'gemini-3.5-flash',
-                        'gemini-2.5-flash',
-                        'gemini-3.1-flash-lite',
-                        'gemini-2.5-flash-lite',
-                        'gemini-2.0-flash-lite',
-                    ];
-                    const THINKING_MODELS = new Set(['gemini-2.0-flash-thinking-exp-01-21', 'gemini-2.0-flash-thinking-exp', 'gemini-3.5-flash', 'gemini-2.5-flash']);
+                    
+                    
 
                     const systemInstruction = `El teu nom és ${aiSettings?.identity?.name || "AI"}.
 Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
@@ -138,19 +118,21 @@ L'estructura exacta ha de ser:
                     let lastError: any;
                     let replied = false;
 
-                    for (const modelName of MODELS) {
+                    for (const modelName of getLoadBalancedModels()) {
                         try {
-                            const supportsThinking = THINKING_MODELS.has(modelName);
+                            
                             const streamConfig: any = {
                                 systemInstruction,
                                 responseMimeType: "application/json"
                             };
 
-                            if (supportsThinking) {
-                                streamConfig.thinkingConfig = {
-                                    includeThoughts: true,
-                                    thinkingBudget: 1024,
-                                };
+                            applyThinkingConfig(streamConfig, modelName);
+                            if (modelName.includes('2.5')) {
+                                streamConfig.thinkingConfig.thinkingBudget = 32768;
+                            } else {
+                                // Gemini 3.x i superiors (la majoria usen thinking_level o budget sense limitar)
+                                streamConfig.thinkingConfig.thinkingBudget = 32768; 
+                                // Si en el futur l'SDK només accepta 'HIGH' es pot afegir: streamConfig.thinkingConfig.thinkingLevel = 'HIGH';
                             }
 
                             const responseStream = await genAI.models.generateContentStream({
@@ -164,6 +146,10 @@ L'estructura exacta ha de ser:
                             let accumulatedText = '';
 
                             for await (const chunk of responseStream) {
+                                if (req.signal.aborted) {
+                                    controller.close();
+                                    return;
+                                }
                                 if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
                                     for (const part of chunk.candidates[0].content.parts) {
                                         if (part.thought && part.text) {

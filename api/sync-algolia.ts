@@ -1,10 +1,6 @@
 import algoliasearch from 'algoliasearch';
-
-const CORS_HEADERS: Record<string, string> = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
-    'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization',
-};
+import { verifyIdToken } from './_shared/auth';
+import { CORS_HEADERS, handleCors } from './_shared/cors';
 
 function jsonResponse(data: any, status: number = 200) {
     return new Response(JSON.stringify(data), {
@@ -17,15 +13,25 @@ function jsonResponse(data: any, status: number = 200) {
 }
 
 export default async function handler(req: Request) {
-    if (req.method === 'OPTIONS') {
-        return new Response(null, { status: 200, headers: CORS_HEADERS });
-    }
+    const corsOptions = handleCors(req);
+    if (corsOptions) return corsOptions;
 
     if (req.method !== 'POST') {
         return jsonResponse({ error: 'Method not allowed' }, 405);
     }
 
     try {
+        const authHeader = req.headers.get('authorization') || '';
+        const idToken = authHeader.split('Bearer ')[1];
+        if (!idToken) {
+            return jsonResponse({ error: 'No autoritzat' }, 401);
+        }
+        try {
+            await verifyIdToken(idToken);
+        } catch (error) {
+            return jsonResponse({ error: 'Token invàlid o caducat' }, 401);
+        }
+
         const body = await req.json();
         const { action, post, postId } = body;
 

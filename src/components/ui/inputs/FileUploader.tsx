@@ -46,9 +46,21 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
     };
 
     const uploadToR2 = async (fileOrBlob: File | Blob, filename: string, contentType: string) => {
+        const { auth } = await import('../../../lib/firebase');
+        const user = auth.currentUser;
+        
+        if (!user) {
+            throw new Error("Necessites iniciar sessió per pujar arxius.");
+        }
+        
+        const token = await user.getIdToken();
+
         const res = await fetch('/api/r2-presign', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ filename, contentType })
         });
         

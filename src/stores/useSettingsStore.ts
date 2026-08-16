@@ -79,7 +79,7 @@ interface SettingsState {
 
 export const useSettingsStore = create<SettingsState>()(
     persist(
-        (set, get) => ({
+        (set) => ({
             homeSubjects: ['PRO2', 'M1', 'M2'],
             defaultPlannerView: 'board',
             customSubjectColors: {},

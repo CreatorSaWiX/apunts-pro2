@@ -93,7 +93,7 @@ service cloud.firestore {
     // Diccionari de Noms d'Usuari
     match /usernames/{usernameId} {
       allow get: if true;
-      allow list: if true;
+      allow list: if false;
       allow create: if request.auth.uid != null && request.resource.data.uid == request.auth.uid;
       allow delete: if request.auth.uid != null && resource.data.uid == request.auth.uid;
     }

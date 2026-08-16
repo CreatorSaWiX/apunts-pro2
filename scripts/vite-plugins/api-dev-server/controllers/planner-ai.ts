@@ -110,28 +110,25 @@ L'estructura exacta ha de ser:
         let lastError: any;
         let replied = false;
         
-        const MODELS = [
-          'gemini-3.5-flash',          
-          'gemini-3.1-flash-lite',     
-          'gemini-2.5-flash',          
-          'gemini-2.5-flash-lite',     
-          'gemini-2.0-flash-lite',     
-        ];
-        const THINKING_MODELS = new Set(['gemini-3.5-flash', 'gemini-2.5-flash']);
+        
+        
 
-        for (const modelName of MODELS) {
+        for (const modelName of getLoadBalancedModels()) {
           try {
-            const supportsThinking = THINKING_MODELS.has(modelName);
+            
             const streamConfig: any = {
               systemInstruction,
               responseMimeType: "application/json"
             };
 
-            if (supportsThinking) {
-              streamConfig.thinkingConfig = {
-                includeThoughts: true,
-                thinkingBudget: 1024,
-              };
+            applyThinkingConfig(streamConfig, modelName);;
+                            if (modelName.includes('2.5')) {
+                                streamConfig.thinkingConfig.thinkingBudget = 32768;
+                            } else {
+                                // Gemini 3.x i superiors (la majoria usen thinking_level o budget sense limitar)
+                                streamConfig.thinkingConfig.thinkingBudget = 32768; 
+                                // Si en el futur l'SDK només accepta 'HIGH' es pot afegir: streamConfig.thinkingConfig.thinkingLevel = 'HIGH';
+                            }
             }
 
             const responseStream = await genAI.models.generateContentStream({
