@@ -17,18 +17,17 @@ const TopicPage: React.FC = () => {
     // PDF Download state
     const [availablePdfs, setAvailablePdfs] = useState<{ ca: boolean; es: boolean }>({ ca: false, es: false });
     const [isPdfMenuOpen, setIsPdfMenuOpen] = useState(false);
-    const [prevId, setPrevId] = useState(id);
-
-    if (id !== prevId) {
-        setPrevId(id);
+    useEffect(() => {
         setIsPdfMenuOpen(false);
-    }
+    }, [id]);
 
-    let topic = allPersonalNotes.find(note => note.slug === id && note.lang === preferredLang);
-    
-    if (!topic) {
-        topic = allPersonalNotes.find(note => note.slug === id && note.lang === 'ca');
-    }
+    const topic = React.useMemo(() => {
+        let found = allPersonalNotes.find(note => note.slug === id && note.lang === preferredLang);
+        if (!found) {
+            found = allPersonalNotes.find(note => note.slug === id && note.lang === 'ca');
+        }
+        return found;
+    }, [id, preferredLang]);
 
     // Scroll Progress
     const { scrollYProgress } = useScroll();
@@ -39,34 +38,41 @@ const TopicPage: React.FC = () => {
     });
 
     const isLab = topic?.slug.includes('-lab-');
+    const filename = topic ? topic.slug.replace(new RegExp(`^${topic.subject}-`), '') : '';
 
-    const sortedTopics = [...allPersonalNotes]
-        .filter(t => t.subject === topic?.subject && t.lang === 'ca')
-        .filter(t => {
+    const { prevTopic, nextTopic } = React.useMemo(() => {
+        if (!topic) return { prevTopic: undefined, nextTopic: undefined };
+
+        const preferredLangMap = new Map();
+        for (const n of allPersonalNotes) {
+            if (n.lang === preferredLang && !n.draft) {
+                preferredLangMap.set(n.slug, n);
+            }
+        }
+
+        const filtered = allPersonalNotes.filter(t => {
+            if (t.subject !== topic.subject || t.lang !== 'ca') return false;
             const tIsLab = t.slug.includes('-lab-');
-            const isMatch = isLab ? tIsLab : !tIsLab;
-            if (!isMatch) return false;
-
-            // Hide notes marked as draft
-            if ((t as any).draft) return false;
+            if (isLab ? !tIsLab : tIsLab) return false;
+            if (t.draft) return false;
             return true;
-        })
-        .sort((a, b) => a.order - b.order)
-        .map(caTopic => {
-            const localized = allPersonalNotes.find(n => n.slug === caTopic.slug && n.lang === preferredLang);
-            return localized && !(localized as any).draft ? localized : caTopic;
         });
 
-    const currentIndex = sortedTopics.findIndex(t => t.slug === id);
-    const prevTopic = currentIndex > 0 ? sortedTopics[currentIndex - 1] : undefined;
-    const nextTopic = currentIndex < sortedTopics.length - 1 ? sortedTopics[currentIndex + 1] : undefined;
+        const sorted = filtered
+            .map(caTopic => preferredLangMap.get(caTopic.slug) || caTopic)
+            .sort((a, b) => a.order - b.order);
+
+        const currentIndex = sorted.findIndex(t => t.slug === id);
+        return {
+            prevTopic: currentIndex > 0 ? sorted[currentIndex - 1] : undefined,
+            nextTopic: currentIndex >= 0 && currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : undefined
+        };
+    }, [topic, isLab, preferredLang, id]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
 
-        if (topic) {
-            const filename = topic.slug.replace(new RegExp(`^${topic.subject}-`), '');
-            
+        if (topic && filename) {
             const checkPdfs = async () => {
                 try {
                     const [caRes, esRes] = await Promise.all([
@@ -91,7 +97,7 @@ const TopicPage: React.FC = () => {
         }
     }, [id, topic]);
 
-    if (!topic || (topic as any).draft) {
+    if (!topic || topic.draft) {
         return <Navigate to="/" replace />;
     }
 
@@ -145,7 +151,7 @@ const TopicPage: React.FC = () => {
                                         <div className="p-1">
                                             {availablePdfs.ca && (
                                                 <a 
-                                                    href={`/pdfs/${topic.subject}/ca/${topic.slug.replace(new RegExp(`^${topic.subject}-`), '')}.pdf`}
+                                                    href={`/pdfs/${topic.subject}/ca/${filename}.pdf`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     onClick={() => setIsPdfMenuOpen(false)}
@@ -157,7 +163,7 @@ const TopicPage: React.FC = () => {
                                             )}
                                             {availablePdfs.es && (
                                                 <a 
-                                                    href={`/pdfs/${topic.subject}/es/${topic.slug.replace(new RegExp(`^${topic.subject}-`), '')}.pdf`}
+                                                    href={`/pdfs/${topic.subject}/es/${filename}.pdf`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     onClick={() => setIsPdfMenuOpen(false)}

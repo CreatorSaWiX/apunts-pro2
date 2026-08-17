@@ -1,11 +1,13 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { m as motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, Check, Code2, ExternalLink, FileText, X } from 'lucide-react';
+import { m as motion } from 'framer-motion';
+import { ArrowLeft, Search, Code2, X } from 'lucide-react';
 import { useSolutions } from '../hooks/useSolutions';
 import type { TopicDefinition } from '../content/data/courseStructure';
 import NotebookLayout from '../components/layout/NotebookLayout';
 import { useTranslation } from 'react-i18next';
+import ProblemCard from '../components/solutions/ProblemCard';
+import PdfDropdownMenu from '../components/solutions/PdfDropdownMenu';
 
 const SolutionsListPage = () => {
     const { id: topicId } = useParams();
@@ -14,7 +16,6 @@ const SolutionsListPage = () => {
     const preferredLang = i18n.language;
     
     const [availablePdfs, setAvailablePdfs] = useState<{ ca: boolean; es: boolean }>({ ca: false, es: false });
-    const [isPdfMenuOpen, setIsPdfMenuOpen] = useState(false);
 
     // 1. Get definitions for the current topic from our static structure
     const [topicDefinition, setTopicDefinition] = useState<TopicDefinition | undefined>(undefined);
@@ -35,6 +36,13 @@ const SolutionsListPage = () => {
     // We pass the explicit problem IDs so they are searched globally (not just constrained by topicId namespace)
     const predefinedProblemIds = useMemo(() => topicDefinition?.problems?.map(p => p.id) || [], [topicDefinition]);
     const { solutions: uploadedSolutions, loading } = useSolutions(topicId || '', predefinedProblemIds);
+
+    // Create a map for O(1) lookups
+    const uploadedSolutionsMap = useMemo(() => {
+        const map = new Map();
+        uploadedSolutions.forEach(s => map.set(s.id, s));
+        return map;
+    }, [uploadedSolutions]);
 
     // Scroll to top
     useEffect(() => {
@@ -95,7 +103,7 @@ const SolutionsListPage = () => {
     // Helper to check status
     const getProblemStatus = (problemId: string) => {
         // Check if we have a solution uploaded for this ID
-        const solution = uploadedSolutions.find(s => s.id === problemId);
+        const solution = uploadedSolutionsMap.get(problemId);
         return solution ? { status: 'solved', solution } : { status: 'pending', solution: null };
     };
 
@@ -107,7 +115,7 @@ const SolutionsListPage = () => {
         return pId.toLowerCase().includes(searchQuery.toLowerCase()) ||
             pTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
             // Also search in uploaded solution title if we have one (legacy override)
-            uploadedSolutions.find(s => s.id === pId)?.title.toLowerCase().includes(searchQuery.toLowerCase());
+            uploadedSolutionsMap.get(pId)?.title?.toLowerCase().includes(searchQuery.toLowerCase());
     });
 
     // Fallback: If we rely on uploaded solutions (unstructured topics)
@@ -153,71 +161,7 @@ const SolutionsListPage = () => {
                     </div>
 
                     {/* PDF Large Square Button - Right Aligned */}
-                    {(availablePdfs.ca || availablePdfs.es) && (
-                        <div className="relative shrink-0 self-center md:self-stretch flex items-center">
-                            <button
-                                type="button"
-                                onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
-                                className="flex flex-col items-center justify-center gap-2 px-8 py-6 text-xs font-black uppercase tracking-[0.2em] rounded-2xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-30 h-full max-h-30"
-                                aria-label="Veure document">
-                                <FileText size={32} className="group-hover:scale-110 transition-transform duration-300" />
-                                <span>PDF</span>
-                            </button>
-                            
-                            <AnimatePresence>
-                                {isPdfMenuOpen && (
-                                    <motion.div 
-                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        transition={{ duration: 0.2, ease: "easeOut" }}
-                                        className="absolute right-0 top-full mt-3 w-56 bg-[#0b1221]/90 backdrop-blur-xl border border-red-500/20 rounded-2xl shadow-[0_20px_50px_-12px_rgba(239,68,68,0.3)] z-50 overflow-hidden"
-                                    >
-                                        <div className="p-4 border-b border-red-500/10 flex justify-between items-center">
-                                            <span className="text-[10px] text-red-400/70 font-bold uppercase tracking-widest">{t('solutionsList.pdfLanguage', 'Idioma Solucionari')}</span>
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsPdfMenuOpen(false)}
-                                                className="text-slate-500 hover:text-white transition-colors"
-                                                aria-label="Tancar">
-                                                <X size={16} />
-                                            </button>
-                                        </div>
-                                        <div className="p-2">
-                                            {availablePdfs.ca && topicId && (
-                                                <a
-                                                    href={`/pdfs/solucionaris/${topicId.split('-')[0]}/ca/solucionari-${topicId}.pdf`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    onClick={() => setIsPdfMenuOpen(false)}
-                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition group"
-                                                    aria-label="Obrir panell">
-                                                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
-                                                        <span className="text-xs font-bold text-red-400">CA</span>
-                                                    </div>
-                                                    <span>{t('common.languages.ca', 'Català')}</span>
-                                                </a>
-                                            )}
-                                            {availablePdfs.es && topicId && (
-                                                <a
-                                                    href={`/pdfs/solucionaris/${topicId.split('-')[0]}/es/solucionari-${topicId}.pdf`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    onClick={() => setIsPdfMenuOpen(false)}
-                                                    className="flex items-center gap-4 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 rounded-xl transition group"
-                                                    aria-label="Obrir panell">
-                                                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
-                                                        <span className="text-xs font-bold text-red-400">ES</span>
-                                                    </div>
-                                                    <span>{t('common.languages.es', 'Español')}</span>
-                                                </a>
-                                            )}
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    )}
+                    <PdfDropdownMenu topicId={topicId!} availablePdfs={availablePdfs} />
                     <div className="w-full lg:w-80">
                         <div className="relative flex items-center bg-slate-900 border border-white/10 rounded-xl px-4 py-3 focus-within:border-emerald-500/30 transition-colors">
                             <Search size={18} className="text-slate-500 mr-3" />
@@ -252,82 +196,15 @@ const SolutionsListPage = () => {
                         const isSolved = status === 'solved';
 
                         return (
-                            <motion.div
+                            <ProblemCard
                                 key={problemId}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.3, delay: index * 0.05 }}
-                            >
-                                <Link
-                                    to={`/tema/${topicId}/solucionaris/${problemId}`}
-                                    className="group relative block h-full"
-                                >
-                                    <div className={`h-full backdrop-blur-sm rounded-3xl border p-6 transition duration-300 relative overflow-hidden group-hover:shadow-2xl group-hover:-translate-y-1 group-active:scale-95
-                                        ${isSolved
-                                            ? 'bg-linear-to-br from-slate-900/80 to-slate-800/80 border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-emerald-500/10'
-                                            : 'bg-slate-900/40 border-white/5 hover:border-white/20 hover:bg-slate-800/40 opacity-90 hover:opacity-100'
-                                        }
-                                    `}>
-                                        {/* Decorative glow for solved problems */}
-                                        {isSolved && (
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none transition-transform duration-700 ease-out group-hover:scale-150" />
-                                        )}
-
-                                        <div className="relative z-10 flex items-start justify-between mb-4">
-                                            {(() => {
-                                                const isJutgeId = /^[A-Z0-9]{6}$/.test(problemId) && topicId?.startsWith('pro2-');
-                                                const jutgeUrl = isJutgeId ? `https://jutge.org/problems/${problemId}` : undefined;
-                                                
-                                                if (jutgeUrl) {
-                                                    return (
-                                                        <button type="button" 
-                                                            onClick={(e) => {
-                                                                e.preventDefault(); 
-                                                                window.open(jutgeUrl, '_blank', 'noopener,noreferrer');
-                                                            }}
-                                                            className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition shadow-sm flex items-center gap-1.5 hover:-translate-y-0.5
-                                                                ${isSolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-400' : 'bg-slate-800 text-slate-400 border-white/10 hover:bg-slate-700 hover:text-white'}
-                                                            `}
-                                                            title={t('solutionsList.openJutge', "Obrir problema al Jutge")}
-                                                        >
-                                                            {problemId}
-                                                            <ExternalLink size={14} className="opacity-70" />
-                                                        </button>
-                                                    );
-                                                }
-                                                
-                                                return (
-                                                    <div className={`px-2.5 py-1 rounded-lg font-mono text-sm font-bold border transition-colors shadow-sm
-                                                        ${isSolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-white/10'}
-                                                    `}>
-                                                        {problemId}
-                                                    </div>
-                                                );
-                                            })()}
-                                            {isSolved ? (
-                                                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1.5 rounded-full border border-emerald-500/20 shadow-sm backdrop-blur-md">
-                                                    <Check size={12} strokeWidth={3} /> {t('common.status.done', 'Fet')}
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-800/50 px-2.5 py-1.5 rounded-full border border-white/5">
-                                                    {t('common.status.pending', 'Pendent')}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <h3 className={`text-lg font-semibold mb-2 line-clamp-2 transition-colors ${isSolved ? 'text-slate-200 group-hover:text-white' : 'text-slate-500 group-hover:text-slate-300'}`}>
-                                            {problemTitle || solution?.title || problemId}
-                                        </h3>
-
-                                        <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center text-xs">
-                                            <span className={`${isSolved ? 'text-emerald-400/80' : 'text-slate-600'} group-hover:text-white transition-colors`}>
-                                                {isSolved ? t('solutionsList.viewSolution', 'Veure solució') : t('solutionsList.readStatement', 'Llegir enunciat')}
-                                            </span>
-                                            {isSolved && <ArrowLeft size={12} className="rotate-180 text-emerald-500 group-hover:translate-x-1 transition-transform" />}
-                                        </div>
-                                    </div>
-                                </Link>
-                            </motion.div>
+                                problemId={problemId}
+                                topicId={topicId!}
+                                problemTitle={problemTitle}
+                                isSolved={isSolved}
+                                solutionTitle={solution?.title}
+                                index={index}
+                            />
                         );
                     })}
                 </div>

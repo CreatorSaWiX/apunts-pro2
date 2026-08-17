@@ -42,3 +42,11 @@ export const fetchJutgeProblem = async (problemId: string, lang: string = 'ca'):
         };
     }
 };
+
+export const isJutgeProblem = (problemId: string, topicId?: string): boolean => {
+    return /^[A-Z0-9]{6}$/.test(problemId) && (topicId?.startsWith('pro2-') || false);
+};
+
+export const getJutgeUrl = (problemId: string): string => {
+    return `https://jutge.org/problems/${problemId}`;
+};
