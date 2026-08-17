@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import type { CommunityPost } from '../../types/community';
 import { m as motion, AnimatePresence, type Variants } from 'framer-motion';
-import { X, Heart, Share2, Trash2, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
+import { X, Heart, Share2, Trash2, ChevronLeft, ChevronRight, MessageCircle, Pencil } from 'lucide-react';
 import ReplySection from './ReplySection';
 import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
@@ -26,10 +26,11 @@ interface PostDetailModalProps {
     onNext?: () => void;
     onPrev?: () => void;
     onDelete?: (postId: string) => void;
+    onEdit?: () => void;
 }
 
 // eslint-disable-next-line react-doctor/no-giant-component
-const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: PostDetailModalProps) => {
+const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete, onEdit }: PostDetailModalProps) => {
     const { t, i18n } = useTranslation();
     const { user } = useAuth();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -331,13 +332,24 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete }: Po
                                     <Share2 size={18} />
                                 </button>
                                 {user?.id === post.userId && (
-                                    <button type="button" aria-label="Compartir"
-                                        onClick={() => setIsDeleteModalOpen(true)}
-                                        className="p-2.5 rounded-full bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors"
-                                        title={t('community.postDetail.deleteTooltip', "Eliminar publicació")}
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
+                                    <>
+                                        {onEdit && (
+                                            <button type="button" aria-label="Editar"
+                                                onClick={() => onEdit()}
+                                                className="p-2.5 rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-colors"
+                                                title={t('community.postDetail.editTooltip', "Editar publicació")}
+                                            >
+                                                <Pencil size={18} />
+                                            </button>
+                                        )}
+                                        <button type="button" aria-label="Compartir"
+                                            onClick={() => setIsDeleteModalOpen(true)}
+                                            className="p-2.5 rounded-full bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors"
+                                            title={t('community.postDetail.deleteTooltip', "Eliminar publicació")}
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </>
                                 )}
                                 <div className="w-px h-6 bg-white/10 mx-1" />
                                 <button type="button" aria-label="Tancar" onClick={onClose} className="p-2.5 rounded-full hover:bg-rose-500/20 text-slate-400 hover:text-rose-500 transition-colors">

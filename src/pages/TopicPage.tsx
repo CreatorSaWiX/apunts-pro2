@@ -40,8 +40,6 @@ const TopicPage: React.FC = () => {
 
     const isLab = topic?.slug.includes('-lab-');
 
-
-
     const sortedTopics = [...allPersonalNotes]
         .filter(t => t.subject === topic?.subject && t.lang === 'ca')
         .filter(t => {
@@ -119,7 +117,7 @@ const TopicPage: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
-                                className="flex flex-col items-center justify-center gap-1 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-lg shadow-red-950/10 group min-w-[60px]"
+                                className="flex flex-col items-center justify-center gap-1 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-lg shadow-red-950/10 group min-w-15"
                                 aria-label="Veure document">
                                 <FileText size={18} className="group-hover:scale-110 transition-transform duration-300" />
                                 <span>PDF</span>

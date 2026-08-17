@@ -35,6 +35,7 @@ const CommunityPage = () => {
     const [showMobileFiltersMenu, setShowMobileFiltersMenu] = useState(false);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
+    const [postToEdit, setPostToEdit] = useState<CommunityPost | null>(null);
 
     // Filters & Sort State
     const [filterType, setFilterType] = useState<'all' | 'pdf' | 'image' | 'code'>('all');
@@ -324,7 +325,8 @@ const CommunityPage = () => {
                 {isCreateOpen && (
                     <CreatePostModal
                         isOpen={isCreateOpen}
-                        onClose={() => setIsCreateOpen(false)}
+                        onClose={() => { setIsCreateOpen(false); setPostToEdit(null); }}
+                        postToEdit={postToEdit}
                     />
                 )}
 
@@ -348,11 +350,12 @@ const CommunityPage = () => {
                             onPrev={handlePrevPost}
                             onNext={handleNextPost}
                             onDelete={() => {
-                                // Important: We'd need to lift setPosts to the Hook to delete items properly, 
-                                // but for now since this forces a re-render it might be okay. Wait, setPosts is inside the hook.
-                                // I will not implement delete mutation here since I can't easily without editing the hook.
-                                // Actually, I should probably reload or something. For now, it will just close.
                                 setSelectedPost(null); 
+                            }}
+                            onEdit={() => {
+                                setPostToEdit(posts.find(p => p.id === selectedPost.id) || selectedPost);
+                                setSelectedPost(null);
+                                setIsCreateOpen(true);
                             }}
                         />
                     );

@@ -176,50 +176,50 @@ export const ShortcutsSection = () => {
 
                 <div className="w-full mt-2 flex flex-col gap-8">
                     {categories.map(category => (
-                    <div key={category.id} className="flex flex-col gap-3">
-                        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider pl-2">{category.label}</h3>
-                        <div className="flex flex-col gap-2">
-                            {category.actions.map(action => {
-                                const currentShortcut = shortcuts[action.id] || action.default;
-                                const isListening = listeningAction === action.id;
+                        <div key={category.id} className="flex flex-col gap-3">
+                            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider pl-2">{category.label}</h3>
+                            <div className="flex flex-col gap-2">
+                                {category.actions.map(action => {
+                                    const currentShortcut = shortcuts[action.id] || action.default;
+                                    const isListening = listeningAction === action.id;
 
-                                return (
-                                    <div key={action.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-white/[0.02] border border-white/10 p-4 rounded-2xl hover:bg-white/[0.04] transition-colors gap-4 sm:gap-0">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-primary/10 text-primary rounded-lg shrink-0">
-                                                <Keyboard size={18} />
+                                    return (
+                                        <div key={action.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-white/[0.02] border border-white/10 p-4 rounded-2xl hover:bg-white/[0.04] transition-colors gap-4 sm:gap-0">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-primary/10 text-primary rounded-lg shrink-0">
+                                                    <Keyboard size={18} />
+                                                </div>
+                                                <span className="text-slate-200 font-medium">{action.label}</span>
                                             </div>
-                                            <span className="text-slate-200 font-medium">{action.label}</span>
-                                        </div>
 
-                                        <div className="flex items-center gap-3 self-end sm:self-auto">
-                                            <button
-                                                onClick={() => setListeningAction(action.id)}
-                                                className={`px-4 py-2 rounded-lg font-mono text-sm font-bold transition border min-w-[120px] ${isListening
+                                            <div className="flex items-center gap-3 self-end sm:self-auto">
+                                                <button
+                                                    onClick={() => setListeningAction(action.id)}
+                                                    className={`px-4 py-2 rounded-lg font-mono text-sm font-bold transition border min-w-[120px] ${isListening
                                                         ? 'bg-primary/20 border-primary text-primary animate-pulse'
                                                         : 'bg-black/50 border-white/10 text-slate-300 hover:border-white/30 hover:text-white'
-                                                    }`}
-                                            >
-                                                {isListening ? t('settings.shortcuts.pressAnyKey', 'Prem qualsevol tecla...') : formatKey(currentShortcut.meta, currentShortcut.key)}
-                                            </button>
+                                                        }`}
+                                                >
+                                                    {isListening ? t('settings.shortcuts.pressAnyKey', 'Prem qualsevol tecla...') : formatKey(currentShortcut.meta, currentShortcut.key)}
+                                                </button>
 
-                                            <button
-                                                title={t('settings.shortcuts.reset', 'Restablir')}
-                                                onClick={() => setShortcuts(prev => ({
-                                                    ...prev,
-                                                    [action.id]: action.default
-                                                }))}
-                                                className="p-2 text-slate-500 hover:text-rose-400 transition-colors bg-white/5 rounded-lg hover:bg-white/10"
-                                                aria-label="Acció RotateCcw">
-                                                <RotateCcw size={16} />
-                                            </button>
+                                                <button
+                                                    title={t('settings.shortcuts.reset', 'Restablir')}
+                                                    onClick={() => setShortcuts(prev => ({
+                                                        ...prev,
+                                                        [action.id]: action.default
+                                                    }))}
+                                                    className="p-2 text-slate-500 hover:text-rose-400 transition-colors bg-white/5 rounded-lg hover:bg-white/10"
+                                                    aria-label="Acció RotateCcw">
+                                                    <RotateCcw size={16} />
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
                 </div>
             </div>
         </div>

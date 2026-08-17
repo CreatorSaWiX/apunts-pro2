@@ -63,7 +63,7 @@ interface SettingsState {
     offlineStorage: OfflineStorageSettings;
     shortcuts: ShortcutsSettings;
     isSettingsLoaded: boolean;
-    
+
     // Actions
     setHomeSubjects: (subjects: string[] | ((prev: string[]) => string[])) => void;
     setDefaultPlannerView: (view: PlannerViewMode | ((prev: PlannerViewMode) => PlannerViewMode)) => void;
@@ -72,7 +72,7 @@ interface SettingsState {
     setOfflineStorage: (settings: OfflineStorageSettings | ((prev: OfflineStorageSettings) => OfflineStorageSettings)) => void;
     setShortcuts: (shortcuts: ShortcutsSettings | ((prev: ShortcutsSettings) => ShortcutsSettings)) => void;
     setIsSettingsLoaded: (loaded: boolean) => void;
-    
+
     // Helper to merge all settings from Firebase
     syncFromFirebase: (data: Partial<SettingsState>) => void;
 }
@@ -88,11 +88,11 @@ export const useSettingsStore = create<SettingsState>()(
             shortcuts: DEFAULT_SHORTCUTS,
             isSettingsLoaded: false,
 
-            setHomeSubjects: (updater) => set((state) => ({ 
-                homeSubjects: typeof updater === 'function' ? updater(state.homeSubjects) : updater 
+            setHomeSubjects: (updater) => set((state) => ({
+                homeSubjects: typeof updater === 'function' ? updater(state.homeSubjects) : updater
             })),
-            setDefaultPlannerView: (updater) => set((state) => ({ 
-                defaultPlannerView: typeof updater === 'function' ? updater(state.defaultPlannerView) : updater 
+            setDefaultPlannerView: (updater) => set((state) => ({
+                defaultPlannerView: typeof updater === 'function' ? updater(state.defaultPlannerView) : updater
             })),
             setCustomSubjectColors: (updater) => {
                 set((state) => {
@@ -102,17 +102,17 @@ export const useSettingsStore = create<SettingsState>()(
                     return { customSubjectColors: newColors };
                 });
             },
-            setAiSettings: (updater) => set((state) => ({ 
-                aiSettings: typeof updater === 'function' ? updater(state.aiSettings) : updater 
+            setAiSettings: (updater) => set((state) => ({
+                aiSettings: typeof updater === 'function' ? updater(state.aiSettings) : updater
             })),
-            setOfflineStorage: (updater) => set((state) => ({ 
-                offlineStorage: typeof updater === 'function' ? updater(state.offlineStorage) : updater 
+            setOfflineStorage: (updater) => set((state) => ({
+                offlineStorage: typeof updater === 'function' ? updater(state.offlineStorage) : updater
             })),
-            setShortcuts: (updater) => set((state) => ({ 
-                shortcuts: typeof updater === 'function' ? updater(state.shortcuts) : updater 
+            setShortcuts: (updater) => set((state) => ({
+                shortcuts: typeof updater === 'function' ? updater(state.shortcuts) : updater
             })),
             setIsSettingsLoaded: (loaded) => set({ isSettingsLoaded: loaded }),
-            
+
             syncFromFirebase: (data) => {
                 set((state) => {
                     const newAiSettings = data.aiSettings ? {

@@ -87,10 +87,13 @@ const ToolbarButton = ({ onClick, isActive, disabled = false, icon: Icon, title 
         type="button"
         onClick={onClick}
         disabled={disabled}
-        className={`p-3 sm:p-2 rounded-lg transition-colors ${isActive ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white hover:bg-white/10'} disabled:opacity-30`}
-        title={title}
+        className={`group relative p-3 sm:p-2 rounded-lg transition-colors ${isActive ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white hover:bg-white/10'} disabled:opacity-30`}
+        aria-label={title}
     >
         <Icon size={16} />
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap px-2.5 py-1.5 bg-black/90 text-white text-xs font-bold rounded-lg border border-white/10 shadow-xl backdrop-blur-sm">
+            {title}
+        </div>
     </button>
 );
 
@@ -113,12 +116,15 @@ const EditorDropdown = ({ icon: Icon, label, children, title, isActive = false }
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`p-3 sm:p-2 flex items-center gap-1 rounded-lg transition-colors ${isOpen || isActive ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
-                title={title}
+                className={`group relative p-3 sm:p-2 flex items-center gap-1 rounded-lg transition-colors ${isOpen || isActive ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                aria-label={title}
             >
                 {Icon && <Icon size={16} />}
                 {label && <span className="text-sm font-medium">{label}</span>}
                 <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-[60] whitespace-nowrap px-2.5 py-1.5 bg-black/90 text-white text-xs font-bold rounded-lg border border-white/10 shadow-xl backdrop-blur-sm">
+                    {title}
+                </div>
             </button>
             {isOpen && (
                 <div className="absolute top-full left-0 mt-1 z-50 min-w-[160px] bg-[#1a1f2e] border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1">
@@ -182,7 +188,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
     };
 
     return (
-        <div className="flex flex-nowrap md:flex-wrap overflow-x-auto custom-scrollbar items-center gap-2 sm:gap-1 p-2 sm:p-2 border-b border-white/10 bg-black/20 shrink-0">
+        <div className="flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible custom-scrollbar items-center gap-2 sm:gap-1 p-2 sm:p-2 border-b border-white/10 bg-black/20 shrink-0">
             {/* TEXT FORMAT */}
             <EditorDropdown icon={Type} title={t('editor.typography', 'Tipografia')} isActive={editor.isActive('heading')}>
                 <DropdownItem onClick={() => editor.chain().focus().setParagraph().run()} isActive={editor.isActive('paragraph')} label={t('editor.normalText', 'Text Normal')} />
@@ -248,36 +254,35 @@ const MenuBar = ({ editor }: { editor: any }) => {
             </EditorDropdown>
 
 
-            <ToolbarButton 
+            <ToolbarButton
                 onClick={() => {
                     if (!editor.isActive('table')) {
                         editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
                     }
-                }} 
-                isActive={editor.isActive('table')} 
-                icon={TableIcon} 
-                title={t('editor.insertTable', 'Inserir Taula') + formatShortcut('editorTable')} 
+                }}
+                isActive={editor.isActive('table')}
+                icon={TableIcon}
+                title={t('editor.insertTable', 'Inserir Taula') + formatShortcut('editorTable')}
             />
 
-            <div 
-                className={`flex items-center overflow-hidden origin-left transition duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-                    editor.isActive('table') ? 'max-w-[500px] opacity-100 scale-100 ml-1' : 'max-w-0 opacity-0 scale-95 ml-0'
-                }`}
+            <div
+                className={`flex items-center overflow-hidden origin-left transition duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${editor.isActive('table') ? 'max-w-[500px] opacity-100 scale-100 ml-1' : 'max-w-0 opacity-0 scale-95 ml-0'
+                    }`}
             >
                 <div className="flex items-center gap-1 w-max">
                     <div className="w-px h-6 bg-primary/20 mx-1" />
                     <ToolbarButton onClick={() => editor.chain().focus().addRowBefore().run()} isActive={false} icon={Rows} title={t('editor.addRowBefore', 'Fila a Dalt')} />
                     <ToolbarButton onClick={() => editor.chain().focus().addRowAfter().run()} isActive={false} icon={Rows} title={t('editor.addRowAfter', 'Fila a Baix')} />
                     <ToolbarButton onClick={() => editor.chain().focus().deleteRow().run()} isActive={false} icon={Trash2} title={t('editor.deleteRow', 'Eliminar Fila')} />
-                    
+
                     <div className="w-px h-6 bg-primary/20 mx-1" />
-                    
+
                     <ToolbarButton onClick={() => editor.chain().focus().addColumnBefore().run()} isActive={false} icon={Columns} title={t('editor.addColumnBefore', 'Columna a l\'Esquerra')} />
                     <ToolbarButton onClick={() => editor.chain().focus().addColumnAfter().run()} isActive={false} icon={Columns} title={t('editor.addColumnAfter', 'Columna a la Dreta')} />
                     <ToolbarButton onClick={() => editor.chain().focus().deleteColumn().run()} isActive={false} icon={Trash2} title={t('editor.deleteColumn', 'Eliminar Columna')} />
-                    
+
                     <div className="w-px h-6 bg-primary/20 mx-1" />
-                    
+
                     <ToolbarButton onClick={() => editor.chain().focus().deleteTable().run()} isActive={false} icon={Trash2} title={t('editor.deleteTable', 'Eliminar Taula Sencera')} />
                 </div>
             </div>

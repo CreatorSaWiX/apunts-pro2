@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
-import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { getSubjectById, type SubjectType } from '../../config/subjects';
 import { AlertCircle, ChevronDown, Paperclip, X, Maximize2, Minimize2, Eye, ChevronLeft } from 'lucide-react';
 
@@ -21,6 +21,7 @@ interface CreatePostModalProps {
     isOpen: boolean;
     onClose: () => void;
     initialSubject?: SubjectType;
+    postToEdit?: CommunityPost | null;
 }
 
 interface TiptapEditor {
@@ -29,18 +30,18 @@ interface TiptapEditor {
     getHTML: () => string;
 }
 
-export default function CreatePostModal({ isOpen, onClose, initialSubject }: CreatePostModalProps) {
+export default function CreatePostModal({ isOpen, onClose, initialSubject, postToEdit }: CreatePostModalProps) {
     const { t } = useTranslation();
     const { user } = useAuth();
     const { customSubjectColors } = useSettingsStore();
-    const [subject, setSubject] = useState<SubjectType>(initialSubject || 'General');
-    const [content, setContent] = useState('');
-    const [debouncedContent, setDebouncedContent] = useState('');
+    const [subject, setSubject] = useState<SubjectType>(postToEdit?.subject || initialSubject || 'General');
+    const [content, setContent] = useState(postToEdit?.content || '');
+    const [debouncedContent, setDebouncedContent] = useState(postToEdit?.content || '');
     const [loading, setLoading] = useState(false);
 
     const [showSubjectSelector, setShowSubjectSelector] = useState(false);
 
-    const [attachments, setAttachments] = useState<Attachment[]>([]);
+    const [attachments, setAttachments] = useState<Attachment[]>(postToEdit?.attachments || []);
     const [error, setError] = useState<string | null>(null);
 
     const [editorInstance, setEditorInstance] = useState<TiptapEditor | null>(null);
@@ -52,10 +53,15 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
     const activeSubject = getSubjectById(subject);
 
     useEffect(() => {
-        if (initialSubject) {
+        if (postToEdit) {
+            setSubject(postToEdit.subject);
+            setContent(postToEdit.content);
+            setDebouncedContent(postToEdit.content);
+            setAttachments(postToEdit.attachments || []);
+        } else if (initialSubject) {
             setSubject(initialSubject);
         }
-    }, [initialSubject]);
+    }, [initialSubject, postToEdit]);
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -107,29 +113,47 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                 ...(att.isCustomThumbnail !== undefined ? { isCustomThumbnail: att.isCustomThumbnail } : {})
             }));
 
-            const postData = {
-                userId: user.id,
-                username: user.username || 'Anònim',
-                userAvatar: user.avatar || null,
-                content: finalContent.trim(),
-                subject: subject,
-                attachments: cleanAttachments,
-                createdAt: serverTimestamp(),
-                reactions: {},
-                isPinned: false
-            };
+            if (postToEdit) {
+                const postRef = doc(db, 'community_posts', postToEdit.id);
+                await updateDoc(postRef, {
+                    content: finalContent.trim(),
+                    subject: subject,
+                    attachments: cleanAttachments
+                });
 
-            const docRef = await addDoc(collection(db, 'community_posts'), postData);
+                fetch('/api/sync-algolia', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'update',
+                        post: { id: postToEdit.id, content: finalContent.trim(), subject, attachments: cleanAttachments }
+                    })
+                }).catch(console.error);
+            } else {
+                const postData = {
+                    userId: user.id,
+                    username: user.username || 'Anònim',
+                    userAvatar: user.avatar || null,
+                    content: finalContent.trim(),
+                    subject: subject,
+                    attachments: cleanAttachments,
+                    createdAt: serverTimestamp(),
+                    reactions: {},
+                    isPinned: false
+                };
 
-            // Notify Algolia via Vercel webhook (fire and forget to not block UI)
-            fetch('/api/sync-algolia', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'create',
-                    post: { id: docRef.id, ...postData }
-                })
-            }).catch(console.error);
+                const docRef = await addDoc(collection(db, 'community_posts'), postData);
+
+                // Notify Algolia via Vercel webhook (fire and forget to not block UI)
+                fetch('/api/sync-algolia', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'create',
+                        post: { id: docRef.id, ...postData }
+                    })
+                }).catch(console.error);
+            }
 
             setContent('');
             setAttachments([]);
@@ -184,7 +208,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                 {/* LEFT PANEL: EDITOR */}
                 <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'} ${showMobilePreview ? 'hidden md:flex' : 'flex'}`}>
                     <Modal.Header className="px-4! md:px-8! py-4! md:py-6! border-none! bg-transparent! flex justify-between items-center w-full">
-                        <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">{t('community.createPost.title', 'Nou recurs')}</h2>
+                        <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">{postToEdit ? t('community.createPost.editTitle', 'Editar recurs') : t('community.createPost.title', 'Nou recurs')}</h2>
                         <div className="flex items-center gap-2 ml-auto">
                             <button
                                 type="button"
@@ -333,7 +357,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject }: Cre
                                 className="px-6 md:px-8 py-2.5 md:py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)] text-xs md:text-base min-h-[44px]"
                              aria-label="Botó interactiu">
                                 {loading && <Spinner size="sm" variant="primary" />}
-                                {t('community.createPost.publishBtn', 'Publicar')}
+                                {postToEdit ? t('common.save', 'Desar') : t('community.createPost.publishBtn', 'Publicar')}
                             </button>
                         </div>
                     </div>
