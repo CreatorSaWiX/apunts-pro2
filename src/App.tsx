@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 // import { PerformanceMonitor } from './components/ui/system/PerformanceMonitor';
@@ -9,8 +9,6 @@ const loadFeatures = () => import('framer-motion').then(res => res.domMax);
 import { AppProviders } from './contexts/AppProviders';
 import Spinner from './components/ui/Spinner';
 import { Analytics } from "@vercel/analytics/react";
-
-import { UpdateManager } from './components/ui/system/UpdateManager';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
@@ -28,6 +26,13 @@ const ChatBot = lazy(() => import('./components/chatbot/index').then(module => (
 function App() {
   const location = useLocation();
   const showChatBot = location.pathname.startsWith('/tema/');
+
+  // Force reload if new version is available
+  useEffect(() => {
+    const handlePreloadError = () => { window.location.reload(); };
+    window.addEventListener('vite:preloadError', handlePreloadError as EventListener);
+    return () => { window.removeEventListener('vite:preloadError', handlePreloadError as EventListener); };
+  }, []);
 
   return (
     <AppProviders>
@@ -57,7 +62,6 @@ function App() {
             </AnimatePresence>
 
             {import.meta.env.PROD && <Analytics />}
-            <UpdateManager />
             {showChatBot && <Suspense fallback={null}><ChatBot /></Suspense>}
           </div>
         </LazyMotion>
