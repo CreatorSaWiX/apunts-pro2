@@ -34,6 +34,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
     const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
 
     useEffect(() => {
+        let ignore = false;
         if (isOpen && subjectId) {
             setLoading(true);
             setMobileView('menu');
@@ -44,18 +45,25 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                     return res.json();
                 })
                 .then(json => {
-                    setData(json);
-                    if (json.sections && json.sections.length > 0) {
-                        setActiveTab(json.sections[0].title);
+                    if (!ignore) {
+                        setData(json);
+                        if (json.sections && json.sections.length > 0) {
+                            setActiveTab(json.sections[0].title);
+                        }
+                        setLoading(false);
                     }
-                    setLoading(false);
                 })
                 .catch(err => {
-                    console.error('Failed to load subject details:', err);
-                    setData(null);
-                    setLoading(false);
+                    if (!ignore) {
+                        console.error('Failed to load subject details:', err);
+                        setData(null);
+                        setLoading(false);
+                    }
                 });
         }
+        return () => {
+            ignore = true;
+        };
     }, [isOpen, subjectId]);
 
     // Keyboard shortcut to close
@@ -224,27 +232,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                     transition={{ duration: 0.3, type: "spring", bounce: 0 }}
                                                 >
                                                     {activeTab === 'Professorat' && data.professors?.length > 0 && (
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            {data.professors.map((prof: any, i: number) => (
-                                                                <div key={prof.email || prof.name} className="group p-5 bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] transition duration-300 rounded-2xl flex items-start gap-4">
-                                                                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center text-sky-400 font-bold text-lg shrink-0 group-hover:scale-110 group-hover:rotate-6 transition duration-300">
-                                                                        {prof.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
-                                                                    </div>
-                                                                    <div className="flex-1 min-w-0">
-                                                                        <h4 className="text-white font-bold truncate group-hover:text-sky-300 transition-colors">{prof.name}</h4>
-                                                                        <p className="text-xs text-sky-400/80 font-mono mt-0.5 tracking-wider">{prof.role}</p>
-                                                                        {prof.email && (
-                                                                            <a href={`mailto:${prof.email}`} className="text-sm text-slate-400 hover:text-white truncate mt-2 flex items-center gap-2 transition-colors">
-                                                                                <div className="p-1.5 rounded-md bg-white/5 group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
-                                                                                </div>
-                                                                                {prof.email}
-                                                                            </a>
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                                        <ProfessorList professors={data.professors} />
                                                     )}
 
                                                     {activeTab === 'Activitats' && data.activities?.filter((a: any) => a.title).length > 0 && (
@@ -441,5 +429,28 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
         document.body
     );
 };
-
 export default SubjectDetailsModal;
+
+const ProfessorList = ({ professors }: { professors: any[] }) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {professors.map((prof: any) => (
+            <div key={prof.email || prof.name} className="group p-5 bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] transition duration-300 rounded-2xl flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center text-sky-400 font-bold text-lg shrink-0 group-hover:scale-110 group-hover:rotate-6 transition duration-300">
+                    {prof.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
+                </div>
+                <div className="flex-1 min-w-0">
+                    <h4 className="text-white font-bold truncate group-hover:text-sky-300 transition-colors">{prof.name}</h4>
+                    <p className="text-xs text-sky-400/80 font-mono mt-0.5 tracking-wider">{prof.role}</p>
+                    {prof.email && (
+                        <a href={`mailto:${prof.email}`} className="text-sm text-slate-400 hover:text-white truncate mt-2 flex items-center gap-2 transition-colors">
+                            <div className="p-1.5 rounded-md bg-white/5 group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+                            </div>
+                            {prof.email}
+                        </a>
+                    )}
+                </div>
+            </div>
+        ))}
+    </div>
+);

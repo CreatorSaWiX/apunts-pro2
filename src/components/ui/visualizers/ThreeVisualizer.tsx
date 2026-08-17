@@ -22,24 +22,14 @@ const Arrow = ({ memoDir, length, color, head, width }: any) => {
 // Helper to avoid heavy geometry recalculations every frame
 const DirectionalCurvePoints = ({ a, vx, vy, f }: any) => {
     const curvePoints = useMemo(() => {
-        const points = Array.from({ length: 50 }, (_, i) => {
+        return Array.from({ length: 50 }, (_, i) => {
             const t = (i / 49) * 8 - 4;
-            return [a[0] + t * vx, f(a[0] + t * vx, a[1] + t * vy), a[1] + t * vy];
+            return new THREE.Vector3(a[0] + t * vx, f(a[0] + t * vx, a[1] + t * vy), a[1] + t * vy);
         });
-        return new Float32Array(points.flat());
     }, [a, vx, vy, f]);
 
     return (
-        <line>
-            <bufferGeometry>
-                <bufferAttribute
-                    attach="attributes-position"
-                    args={[curvePoints, 3]}
-                    count={curvePoints.length / 3}
-                />
-            </bufferGeometry>
-            <lineBasicMaterial attach="material" color="#818cf8" linewidth={3} />
-        </line>
+        <Line points={curvePoints} color="#818cf8" lineWidth={3} />
     );
 }
 

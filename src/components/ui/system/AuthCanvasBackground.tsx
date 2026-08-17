@@ -20,46 +20,100 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
         const segments = 45; // Optimized from 60 to 45 (approx 44% less vertices) to save CPU
         const geo = new THREE.PlaneGeometry(size, size, segments, segments);
         geo.rotateX(-Math.PI / 2);
-
-        const count = geo.attributes.position.count;
-        geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
-        geo.computeVertexNormals();
-
         return geo;
     }, []);
 
-    const color = useMemo(() => new THREE.Color(), []);
+    const uniforms = useMemo(() => ({
+        uTime: { value: 0 },
+        uVariant: { value: 0 }
+    }), []);
+
+    useEffect(() => {
+        uniforms.uVariant.value = variant === 'login' ? 0 : 1;
+    }, [variant, uniforms]);
 
     useFrame((state) => {
-        const t = state.clock.getElapsedTime() * 0.8;
-        const position = geometry.attributes.position;
-        const colorAttr = geometry.attributes.color;
-
-        for (let i = 0; i < position.count; i++) {
-            const x = position.getX(i);
-            const z = position.getZ(i);
-
-            let y = 0;
-            if (variant === 'login') {
-                // Inverted paraboloid amb ondulació
-                const distSq = x * x + z * z;
-                y = 8 - distSq * 0.15 + Math.sin(x * 0.5 + t) * Math.cos(z * 0.5 + t) * 0.5;
-                // Gradient HSL de blau a vermell
-                color.setHSL(0.7 - Math.min(Math.max((y + 5) / 15, 0), 0.7), 0.8, 0.5);
-            } else {
-                // Ripple / Drop interference per Register
-                const dist = Math.sqrt(x * x + z * z);
-                y = Math.sin(dist * 1.5 - t * 3) * 1.5 + 2;
-                // Gradient HSL diferent (Tons càlids i maragda)
-                color.setHSL(0.4 - Math.min(Math.max((y + 2) / 8, -0.2), 0.4), 0.8, 0.5);
-            }
-
-            position.setY(i, y);
-            colorAttr.setXYZ(i, color.r, color.g, color.b);
-        }
-        geometry.attributes.position.needsUpdate = true;
-        geometry.attributes.color.needsUpdate = true;
+        uniforms.uTime.value = state.clock.getElapsedTime() * 0.8;
     });
+
+    const onBeforeCompileWireframe = (shader: any) => {
+        shader.uniforms.uTime = uniforms.uTime;
+        shader.uniforms.uVariant = uniforms.uVariant;
+        
+        shader.vertexShader = `
+            uniform float uTime;
+            uniform float uVariant;
+            ${shader.vertexShader}
+        `.replace(
+            `#include <begin_vertex>`,
+            `
+            #include <begin_vertex>
+            
+            float lx = position.x;
+            float lz = position.z;
+            float lt = uTime;
+            float ly = 0.0;
+            
+            if (uVariant < 0.5) {
+                float distSq = lx*lx + lz*lz;
+                ly = 8.0 - distSq * 0.15 + sin(lx*0.5 + lt) * cos(lz*0.5 + lt) * 0.5;
+            } else {
+                float dist = sqrt(lx*lx + lz*lz);
+                ly = sin(dist * 1.5 - lt * 3.0) * 1.5 + 2.0;
+            }
+            transformed.y = ly;
+            `
+        );
+    };
+
+    const onBeforeCompileSolid = (shader: any) => {
+        shader.uniforms.uTime = uniforms.uTime;
+        shader.uniforms.uVariant = uniforms.uVariant;
+        
+        shader.vertexShader = `
+            uniform float uTime;
+            uniform float uVariant;
+            varying vec3 vComputedColor;
+            
+            vec3 hsl2rgb(vec3 c) {
+                vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0);
+                return c.z + c.y * (rgb-0.5)*(1.0-abs(2.0*c.z-1.0));
+            }
+            
+            ${shader.vertexShader}
+        `.replace(
+            `#include <begin_vertex>`,
+            `
+            #include <begin_vertex>
+            
+            float lx = position.x;
+            float lz = position.z;
+            float lt = uTime;
+            float ly = 0.0;
+            vec3 hsl = vec3(0.0);
+            
+            if (uVariant < 0.5) {
+                float distSq = lx*lx + lz*lz;
+                ly = 8.0 - distSq * 0.15 + sin(lx*0.5 + lt) * cos(lz*0.5 + lt) * 0.5;
+                float l = clamp((ly + 5.0) / 15.0, 0.0, 0.7);
+                hsl = vec3(0.7 - l, 0.8, 0.5);
+            } else {
+                float dist = sqrt(lx*lx + lz*lz);
+                ly = sin(dist * 1.5 - lt * 3.0) * 1.5 + 2.0;
+                float h = clamp((ly + 2.0) / 8.0, -0.2, 0.4);
+                hsl = vec3(0.4 - h, 0.8, 0.5);
+            }
+            transformed.y = ly;
+            vComputedColor = hsl2rgb(hsl);
+            `
+        ).replace(
+            `#include <color_vertex>`,
+            `
+            #include <color_vertex>
+            vColor.xyz = vComputedColor;
+            `
+        );
+    };
 
     return (
         <group>
@@ -71,6 +125,7 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
                     transparent
                     opacity={0.15}
                     side={THREE.DoubleSide}
+                    onBeforeCompile={onBeforeCompileWireframe}
                 />
             </mesh>
             {/* Solid colored layer */}
@@ -81,6 +136,7 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
                     opacity={0.8}
                     side={THREE.DoubleSide}
                     shininess={50}
+                    onBeforeCompile={onBeforeCompileSolid}
                 />
             </mesh>
         </group>

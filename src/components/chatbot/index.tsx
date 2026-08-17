@@ -482,7 +482,7 @@ export const ChatBot: React.FC = () => {
               <div className="text-sm font-medium text-slate-300 truncate max-w-[55%] ml-2">{currentChatTitle}</div>
               <div className="flex items-center gap-1">
                 <button type="button" onClick={startNewChat} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Nova conversa"><Plus size={18} /></button>
-                <button type="button" onClick={() => { fetchChatList().then(setChatList); setShowHistory(true); }} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Historial"><Clock size={18} /></button>
+                <button type="button" onClick={() => { fetchChatList().then(setChatList).catch(console.error); setShowHistory(true); }} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Historial"><Clock size={18} /></button>
                 <button type="button" onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors ml-1"><X size={18} /></button>
               </div>
             </div>

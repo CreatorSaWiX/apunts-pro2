@@ -189,13 +189,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const updateUser = useCallback((updates: Partial<User>) => {
-        setUser(prev => {
-            if (!prev) return null;
-            const updated = { ...prev, ...updates };
-            localStorage.setItem('auth_user', JSON.stringify(updated));
-            return updated;
-        });
-    }, []);
+        if (!user) return;
+        const updated = { ...user, ...updates };
+        localStorage.setItem('auth_user', JSON.stringify(updated));
+        setUser(updated);
+    }, [user]);
 
     const contextValue = useMemo(() => ({
         user,

@@ -13,8 +13,8 @@ const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) =>
     useEffect(() => {
         if (!subjectId) return;
 
+        let ignore = false;
         setLoading(true);
-        // Netegem l'acrònim (treiem possibles espais o salt de línia extres)
         const cleanId = subjectId.trim().toUpperCase();
 
         fetch(`/data/subjects/${cleanId}.json`)
@@ -23,14 +23,22 @@ const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) =>
                 return res.json();
             })
             .then(json => {
-                setData(json);
-                setLoading(false);
+                if (!ignore) {
+                    setData(json);
+                    setLoading(false);
+                }
             })
             .catch(err => {
-                console.error(`Failed to load subject details for widget: ${cleanId}`, err);
-                setData(null);
-                setLoading(false);
+                if (!ignore) {
+                    console.error(`Failed to load subject details for widget: ${cleanId}`, err);
+                    setData(null);
+                    setLoading(false);
+                }
             });
+            
+        return () => {
+            ignore = true;
+        };
     }, [subjectId]);
 
     if (loading) {

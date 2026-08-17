@@ -29,9 +29,18 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
         return jsonResponse({ error: 'Configuració R2 incompleta al servidor' }, 500);
     }
 
+    let endpointOrigin: string | undefined;
+    if (endpoint) {
+        try {
+            endpointOrigin = new URL(endpoint).origin;
+        } catch (e) {
+            endpointOrigin = undefined;
+        }
+    }
+
     const S3 = new S3Client({
         region: 'auto',
-        endpoint: endpoint ? new URL(endpoint).origin : undefined,
+        endpoint: endpointOrigin,
         credentials: {
             accessKeyId,
             secretAccessKey,

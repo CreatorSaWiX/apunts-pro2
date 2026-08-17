@@ -72,6 +72,6 @@ export const r2PresignRequestSchema = z.object({
 
 // --- Reset Password Schemas ---
 export const resetPasswordRequestSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   lang: z.enum(["ca", "es", "en"]).optional().default("ca"),
 });
