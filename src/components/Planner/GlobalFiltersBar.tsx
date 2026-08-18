@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check, Folder, Flag, Calendar, Filter, Search } from 'lucide-react';
 import { useTasks, type DateRangeFilter } from '../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import type { TaskPriority } from '../../types/tasks';
 import { useTranslation } from 'react-i18next';
 import BottomSheet from '../ui/mobile/BottomSheet';
@@ -9,7 +10,13 @@ import NavigationPill from '../ui/NavigationPill';
 
 const GlobalFiltersBar: React.FC = () => {
     const { t } = useTranslation();
-    const { subjects, filters, setFilters, clearFilters, tasks } = useTasks();
+    const { subjects, filters, setFilters, clearFilters, tasks } = useTasks(useShallow(state => ({
+        subjects: state.subjects,
+        filters: state.filters,
+        setFilters: state.setFilters,
+        clearFilters: state.clearFilters,
+        tasks: state.tasks
+    })));
     const [openFilter, setOpenFilter] = useState<'SUBJECTS' | 'PRIORITY' | 'DATERANGE' | null>(null);
     const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
     const [subjectSearch, setSubjectSearch] = useState('');

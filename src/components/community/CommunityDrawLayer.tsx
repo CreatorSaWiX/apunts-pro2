@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useViewport } from '@xyflow/react';
 import { useDrawContext, type Stroke } from '../../contexts/DrawContext';
+import { useShallow } from 'zustand/react/shallow';
 import MultiplayerCursors from './MultiplayerCursors';
 
 // Helper to generate SVG path data from points with Quadratic Bezier Smoothing
@@ -68,7 +69,15 @@ interface CommunityDrawLayerProps {
 
 const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, broadcastStroke, broadcastLiveStroke, broadcastRemoveStroke }) => {
     const { x, y, zoom } = useViewport();
-    const { isDrawMode, currentTool, currentColor, currentWidth, strokes, setStrokes, removeStroke } = useDrawContext();
+    const { isDrawMode, currentTool, currentColor, currentWidth, strokes, setStrokes, removeStroke } = useDrawContext(useShallow(state => ({
+        isDrawMode: state.isDrawMode,
+        currentTool: state.currentTool,
+        currentColor: state.currentColor,
+        currentWidth: state.currentWidth,
+        strokes: state.strokes,
+        setStrokes: state.setStrokes,
+        removeStroke: state.removeStroke
+    })));
     const customCursorRef = useRef<HTMLDivElement>(null);
     const rafId = useRef<number | null>(null);
     

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { ReactFlow, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { DrawProvider, useDrawContext, type Stroke, type DrawTool } from '../../contexts/DrawContext';
+import { useShallow } from 'zustand/react/shallow';
 import CommunityDrawLayer from './CommunityDrawLayer';
 import { LiquidToolbar, LiquidToolbarButton } from '../ui/glass/LiquidToolbar';
 import { Palette, X, Undo2, Redo2, Trash2, Pen, Eraser, Hand } from 'lucide-react';
@@ -19,7 +20,22 @@ const PRO_OPTIONS = { hideAttribution: true };
 // A wrapper to use the hooks inside ReactFlowProvider and DrawProvider
 const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { t } = useTranslation();
-    const { isDrawMode, currentTool, setCurrentTool, currentColor, setCurrentColor, currentWidth, setCurrentWidth, undoStroke, redoStroke, canUndo, canRedo, clearStrokes, strokes, setStrokes } = useDrawContext();
+    const { isDrawMode, currentTool, setCurrentTool, currentColor, setCurrentColor, currentWidth, setCurrentWidth, undoStroke, redoStroke, canUndo, canRedo, clearStrokes, strokes, setStrokes } = useDrawContext(useShallow(state => ({
+        isDrawMode: state.isDrawMode,
+        currentTool: state.currentTool,
+        setCurrentTool: state.setCurrentTool,
+        currentColor: state.currentColor,
+        setCurrentColor: state.setCurrentColor,
+        currentWidth: state.currentWidth,
+        setCurrentWidth: state.setCurrentWidth,
+        undoStroke: state.undoStroke,
+        redoStroke: state.redoStroke,
+        canUndo: state.canUndo,
+        canRedo: state.canRedo,
+        clearStrokes: state.clearStrokes,
+        strokes: state.strokes,
+        setStrokes: state.setStrokes
+    })));
     const { updateCursor, broadcastStroke, broadcastLiveStroke, broadcastClear, broadcastRemoveStroke } = useMultiplayerCanvas(strokes, setStrokes as React.Dispatch<React.SetStateAction<Stroke[]>>, currentColor);
     
     // Enable draw mode by default when opening canvas, and manage body overflow

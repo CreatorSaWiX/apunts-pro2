@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import { Flag, Bookmark, Search } from 'lucide-react';
 import type { TaskPriority } from '../../types/tasks';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +17,11 @@ export interface TaskPopoverEventDetail {
 
 const TaskPopover: React.FC = () => {
     const { t } = useTranslation();
-    const { tasks, updateTask, subjects } = useTasks();
+    const { tasks, updateTask, subjects } = useTasks(useShallow(state => ({
+        tasks: state.tasks,
+        updateTask: state.updateTask,
+        subjects: state.subjects
+    })));
     const [isOpen, setIsOpen] = useState(false);
     const [taskId, setTaskId] = useState<string | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useMemo } from 'react';
+import { createStore, useStore } from 'zustand';
 import { useAuth } from './AuthContext';
 import type { Task, Subject, TaskPriority } from '../types/tasks';
 import subjectsData from '../data/subjects.json';
@@ -12,104 +13,223 @@ export interface TaskFilters {
     dateRange: DateRangeFilter;
 }
 
-interface TasksContextType {
+export interface TasksState {
     tasks: Task[];
-    filteredTasks: Task[];
+    subjects: Subject[];
+    filters: TaskFilters;
     isLoading: boolean;
     error: string | null;
+    user: any; // Stored user from AuthContext
+    deletedTasks: Task[]; // internal
+
+    filteredTasks: Task[]; // Derived state
+
+    setTasks: (tasks: Task[]) => void;
+    setSubjects: (subjects: Subject[]) => void;
+    setIsLoading: (v: boolean) => void;
+    setError: (e: string | null) => void;
+    setFilters: (f: TaskFilters | ((prev: TaskFilters) => TaskFilters)) => void;
+    clearFilters: () => void;
+    setUser: (u: any) => void;
+
     addTask: (task: Omit<Task, 'id' | 'userId' | 'createdAt'>) => Promise<string>;
     updateTask: (taskId: string, updates: Partial<Task>) => Promise<void>;
     deleteTask: (taskId: string, task?: Task) => Promise<void>;
     undoDelete: () => Promise<void>;
     addBatchTasks: (tasks: Omit<Task, 'id' | 'userId' | 'createdAt'>[]) => Promise<void>;
-    subjects: Subject[];
-    filters: TaskFilters;
-    setFilters: React.Dispatch<React.SetStateAction<TaskFilters>>;
-    clearFilters: () => void;
 }
 
-const TasksContext = createContext<TasksContextType | undefined>(undefined);
+type TasksStore = ReturnType<typeof createTasksStore>;
+
+const computeFilteredTasks = (tasks: Task[], filters: TaskFilters): Task[] => {
+    return tasks.filter(task => {
+        if (filters.subjects.length > 0 && (!task.subjectId || !filters.subjects.includes(task.subjectId))) return false;
+        if (filters.priorities.length > 0 && !filters.priorities.includes(task.priority)) return false;
+        if (filters.dateRange !== 'ALL') {
+            if (!task.dueDate) return false;
+            const due = new Date(task.dueDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const dueTime = due.getTime();
+            
+            if (filters.dateRange === 'TODAY') {
+                const endOfToday = new Date(today);
+                endOfToday.setHours(23, 59, 59, 999);
+                if (dueTime > endOfToday.getTime()) return false;
+            } else if (filters.dateRange === 'THIS_WEEK') {
+                const nextWeek = new Date(today);
+                nextWeek.setDate(today.getDate() + 7);
+                nextWeek.setHours(23, 59, 59, 999);
+                if (dueTime > nextWeek.getTime()) return false;
+            } else if (filters.dateRange === 'THIS_MONTH') {
+                const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+                if (dueTime > endOfMonth.getTime() || dueTime < new Date(today.getFullYear(), today.getMonth(), 1).getTime()) return false;
+            } else if (filters.dateRange === 'THIS_TERM') {
+                const endOfTerm = new Date(today);
+                endOfTerm.setMonth(today.getMonth() + 4);
+                if (dueTime > endOfTerm.getTime()) return false;
+            }
+        }
+        return true;
+    });
+};
+
+const createTasksStore = () =>
+    createStore<TasksState>((set, get) => ({
+        tasks: [],
+        subjects: [],
+        filters: { subjects: [], priorities: [], dateRange: 'ALL' },
+        isLoading: true,
+        error: null,
+        user: null,
+        deletedTasks: [],
+        filteredTasks: [],
+
+        setTasks: (tasks) => set(state => ({ tasks, filteredTasks: computeFilteredTasks(tasks, state.filters) })),
+        setSubjects: (subjects) => set({ subjects }),
+        setIsLoading: (isLoading) => set({ isLoading }),
+        setError: (error) => set({ error }),
+        setUser: (user) => set({ user }),
+        
+        setFilters: (filtersUpdater) => set((state) => {
+            const newFilters = typeof filtersUpdater === 'function' ? filtersUpdater(state.filters) : filtersUpdater;
+            return { filters: newFilters, filteredTasks: computeFilteredTasks(state.tasks, newFilters) };
+        }),
+        clearFilters: () => set(state => {
+            const newFilters: TaskFilters = { subjects: [], priorities: [], dateRange: 'ALL' };
+            return { filters: newFilters, filteredTasks: computeFilteredTasks(state.tasks, newFilters) };
+        }),
+
+        addTask: async (taskData) => {
+            const { user } = get();
+            if (!user) throw new Error("No user logged in");
+            const { db } = await import('../lib/firebase');
+            const { collection, addDoc } = await import('firebase/firestore');
+            
+            const newTask = {
+                ...taskData,
+                userId: user.id,
+                title: taskData.title.trim() === '' ? 'Nova Tasca' : taskData.title,
+                createdAt: new Date().toISOString()
+            };
+            const cleanTask = Object.fromEntries(Object.entries(newTask).filter(([_, v]) => v !== undefined));
+            const docRef = await addDoc(collection(db, 'users', user.id, 'tasks'), cleanTask);
+            return docRef.id;
+        },
+
+        addBatchTasks: async (tasksData) => {
+            const { user } = get();
+            if (!user) throw new Error("No user logged in");
+            const { db } = await import('../lib/firebase');
+            const { collection, writeBatch, doc } = await import('firebase/firestore');
+            
+            const batch = writeBatch(db);
+            const tasksRef = collection(db, 'users', user.id, 'tasks');
+            tasksData.forEach(taskData => {
+                const newDocRef = doc(tasksRef);
+                const newTask = {
+                    ...taskData,
+                    userId: user.id,
+                    title: taskData.title.trim() === '' ? 'Nova Tasca' : taskData.title,
+                    createdAt: new Date().toISOString()
+                };
+                const cleanTask = Object.fromEntries(Object.entries(newTask).filter(([_, v]) => v !== undefined));
+                batch.set(newDocRef, cleanTask);
+            });
+            await batch.commit();
+        },
+
+        updateTask: async (taskId, updates) => {
+            const { user, tasks, filters } = get();
+            // Optimistic update locally
+            const newTasks = tasks.map(t => t.id === taskId ? { ...t, ...updates } : t);
+            set({ tasks: newTasks, filteredTasks: computeFilteredTasks(newTasks, filters) });
+            
+            if (!user) throw new Error("No user logged in");
+            const { db } = await import('../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
+            await updateDoc(taskRef, updates);
+        },
+
+        deleteTask: async (taskId, task) => {
+            const { user, tasks, deletedTasks, filters } = get();
+            if (!user) throw new Error("No user logged in");
+            
+            const found = task || tasks.find(t => t.id === taskId);
+            const newTasks = tasks.filter(t => t.id !== taskId);
+            const newDeleted = found ? [...deletedTasks, found] : deletedTasks;
+            
+            set({ tasks: newTasks, deletedTasks: newDeleted, filteredTasks: computeFilteredTasks(newTasks, filters) });
+            
+            const { db } = await import('../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            await deleteDoc(doc(db, 'users', user.id, 'tasks', taskId));
+        },
+
+        undoDelete: async () => {
+            const { user, deletedTasks } = get();
+            if (!user || deletedTasks.length === 0) return;
+            
+            const lastDeleted = deletedTasks[deletedTasks.length - 1];
+            const newDeleted = deletedTasks.slice(0, -1);
+            set({ deletedTasks: newDeleted });
+            
+            try {
+                const { db } = await import('../lib/firebase');
+                const { doc, setDoc } = await import('firebase/firestore');
+                await setDoc(doc(db, 'users', user.id, 'tasks', lastDeleted.id), {
+                    userId: lastDeleted.userId,
+                    title: lastDeleted.title,
+                    description: lastDeleted.description,
+                    status: lastDeleted.status,
+                    priority: lastDeleted.priority,
+                    dueDate: lastDeleted.dueDate,
+                    startDate: lastDeleted.startDate,
+                    estimatedMinutes: lastDeleted.estimatedMinutes,
+                    createdAt: lastDeleted.createdAt
+                });
+            } catch (err) {
+                console.error("Error undoing delete:", err);
+                set(s => ({ deletedTasks: [...s.deletedTasks, lastDeleted] })); // put it back on failure
+            }
+        }
+    }));
+
+const TasksContext = createContext<TasksStore | null>(null);
 
 export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { user } = useAuth();
     const { customSubjectColors } = useSettingsStore();
-    const [tasks, setTasks] = useState<Task[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const deletedTasksRef = useRef<Task[]>([]);
     
-    // Merge subjects with custom colors from Firebase/Settings
-    const subjects: Subject[] = useMemo(() => {
-        return (subjectsData as Subject[]).map((sub: Subject) => {
+    const storeRef = useRef<TasksStore>(null);
+    if (!storeRef.current) {
+        storeRef.current = createTasksStore();
+    }
+
+    const store = storeRef.current;
+
+    // Sync user
+    useEffect(() => {
+        store.getState().setUser(user);
+    }, [user, store]);
+
+    // Sync subjects
+    useEffect(() => {
+        const subjects: Subject[] = (subjectsData as Subject[]).map((sub: Subject) => {
             if (customSubjectColors && customSubjectColors[sub.name]) {
                 return { ...sub, colorToken: `${customSubjectColors[sub.name]}-500` };
             }
             return sub;
         });
-    }, [customSubjectColors]);
-    
-    const [filters, setFilters] = useState<TaskFilters>({
-        subjects: [],
-        priorities: [],
-        dateRange: 'ALL'
-    });
+        store.getState().setSubjects(subjects);
+    }, [customSubjectColors, store]);
 
-    const clearFilters = useCallback(() => {
-        setFilters({ subjects: [], priorities: [], dateRange: 'ALL' });
-    }, []);
-
-    const filteredTasks = useMemo(() => {
-        return tasks.filter(task => {
-            // Subject Filter
-            if (filters.subjects.length > 0 && (!task.subjectId || !filters.subjects.includes(task.subjectId))) {
-                return false;
-            }
-
-            // Priority Filter
-            if (filters.priorities.length > 0 && !filters.priorities.includes(task.priority)) {
-                return false;
-            }
-
-            // Date Range Filter
-            if (filters.dateRange !== 'ALL') {
-                if (!task.dueDate) return false; // Hide tasks without due dates when a specific date range is selected
-                
-                const due = new Date(task.dueDate);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                const dueTime = due.getTime();
-                // const todayTime = today.getTime();
-                
-                if (filters.dateRange === 'TODAY') {
-                    // Today or overdue
-                    const endOfToday = new Date(today);
-                    endOfToday.setHours(23, 59, 59, 999);
-                    if (dueTime > endOfToday.getTime()) return false;
-                } else if (filters.dateRange === 'THIS_WEEK') {
-                    const nextWeek = new Date(today);
-                    nextWeek.setDate(today.getDate() + 7);
-                    nextWeek.setHours(23, 59, 59, 999);
-                    if (dueTime > nextWeek.getTime()) return false;
-                } else if (filters.dateRange === 'THIS_MONTH') {
-                    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
-                    if (dueTime > endOfMonth.getTime() || dueTime < new Date(today.getFullYear(), today.getMonth(), 1).getTime()) return false;
-                } else if (filters.dateRange === 'THIS_TERM') {
-                    // Example logic for "This Term": Next 4 months
-                    const endOfTerm = new Date(today);
-                    endOfTerm.setMonth(today.getMonth() + 4);
-                    if (dueTime > endOfTerm.getTime()) return false;
-                }
-            }
-
-            return true;
-        });
-    }, [tasks, filters]);
-
+    // Listen to Firebase
     useEffect(() => {
         if (!user) {
-            setTasks([]);
-            setIsLoading(false);
+            store.getState().setTasks([]);
+            store.getState().setIsLoading(false);
             return;
         }
 
@@ -117,11 +237,10 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         const loadTasks = async () => {
             try {
-                setIsLoading(true);
+                store.getState().setIsLoading(true);
                 const { db } = await import('../lib/firebase');
                 const { collection, query, onSnapshot } = await import('firebase/firestore');
-
-                // Ens assegurem de consultar la subcol·lecció correcta
+                
                 const q = query(collection(db, 'users', user.id, 'tasks'));
                 
                 unsubscribe = onSnapshot(q, (snapshot) => {
@@ -142,18 +261,18 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                             subjectId: data.subjectId
                         });
                     });
-                    setTasks(loadedTasks);
-                    setIsLoading(false);
+                    store.getState().setTasks(loadedTasks);
+                    store.getState().setIsLoading(false);
                 }, (err) => {
                     console.error("Error loading tasks:", err);
-                    setError("Failed to load tasks.");
-                    setIsLoading(false);
+                    store.getState().setError("Failed to load tasks.");
+                    store.getState().setIsLoading(false);
                 });
 
             } catch (err) {
                 console.error("Failed to initialize tasks listener", err);
-                setError("Initialization error.");
-                setIsLoading(false);
+                store.getState().setError("Initialization error.");
+                store.getState().setIsLoading(false);
             }
         };
 
@@ -162,155 +281,34 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return () => {
             if (unsubscribe) unsubscribe();
         };
-    }, [user]);
+    }, [user, store]);
 
-    const addTask = useCallback(async (taskData: Omit<Task, 'id' | 'userId' | 'createdAt'>): Promise<string> => {
-        if (!user) throw new Error("No user logged in");
-        
-        try {
-            const { db } = await import('../lib/firebase');
-            const { collection, addDoc } = await import('firebase/firestore');
-            
-            const newTask = {
-                ...taskData,
-                userId: user.id,
-                title: taskData.title.trim() === '' ? 'Nova Tasca' : taskData.title,
-                createdAt: new Date().toISOString()
-            };
-
-            // Remove undefined fields to prevent Firestore errors
-            const cleanTask = Object.fromEntries(Object.entries(newTask).filter(([_, v]) => v !== undefined));
-
-            const docRef = await addDoc(collection(db, 'users', user.id, 'tasks'), cleanTask);
-            return docRef.id;
-        } catch (err) {
-            console.error("Error adding task:", err);
-            throw err;
-        }
-    }, [user]);
-
-    const addBatchTasks = useCallback(async (tasksData: Omit<Task, 'id' | 'userId' | 'createdAt'>[]) => {
-        if (!user) throw new Error("No user logged in");
-        
-        try {
-            const { db } = await import('../lib/firebase');
-            const { collection, writeBatch, doc } = await import('firebase/firestore');
-            
-            const batch = writeBatch(db);
-            const tasksRef = collection(db, 'users', user.id, 'tasks');
-
-            tasksData.forEach(taskData => {
-                const newDocRef = doc(tasksRef);
-                const newTask = {
-                    ...taskData,
-                    userId: user.id,
-                    title: taskData.title.trim() === '' ? 'Nova Tasca' : taskData.title,
-                    createdAt: new Date().toISOString()
-                };
-                
-                // Remove undefined fields
-                const cleanTask = Object.fromEntries(Object.entries(newTask).filter(([_, v]) => v !== undefined));
-                
-                batch.set(newDocRef, cleanTask);
-            });
-
-            await batch.commit();
-        } catch (err) {
-            console.error("Error adding batch tasks:", err);
-            throw err;
-        }
-    }, [user]);
-
-    const updateTask = useCallback(async (taskId: string, updates: Partial<Task>) => {
-        // Optimistic update locally (SYNCHRONOUS to avoid flickering)
-        setTasks(prev => prev.map(t => t.id === taskId ? { ...t, ...updates } : t));
-        try {
-            if (!user) throw new Error("No user logged in");
-            const { db } = await import('../lib/firebase');
-            const { doc, updateDoc } = await import('firebase/firestore');
-            
-            const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
-            await updateDoc(taskRef, updates);
-        } catch (err) {
-            console.error("Error updating task:", err);
-            // Revert would go here in a robust implementation
-            throw err;
-        }
-    }, [user]);
-
-    const deleteTask = useCallback(async (taskId: string, task?: Task) => {
-        try {
-            if (!user) throw new Error("No user logged in");
-            const { db } = await import('../lib/firebase');
-            const { doc, deleteDoc } = await import('firebase/firestore');
-            
-            setTasks(prev => {
-                const found = task || prev.find(t => t.id === taskId);
-                if (found) deletedTasksRef.current.push(found);
-                return prev.filter(t => t.id !== taskId);
-            });
-            
-            await deleteDoc(doc(db, 'users', user.id, 'tasks', taskId));
-        } catch (err) {
-            console.error("Error deleting task:", err);
-            throw err;
-        }
-    }, [user]);
-
-    const undoDelete = useCallback(async () => {
-        const lastDeleted = deletedTasksRef.current.pop();
-        if (!lastDeleted) return;
-
-        try {
-            if (!user) throw new Error("No user logged in");
-            const { db } = await import('../lib/firebase');
-            const { doc, setDoc } = await import('firebase/firestore');
-            
-            await setDoc(doc(db, 'users', user.id, 'tasks', lastDeleted.id), {
-                userId: lastDeleted.userId,
-                title: lastDeleted.title,
-                description: lastDeleted.description,
-                status: lastDeleted.status,
-                priority: lastDeleted.priority,
-                dueDate: lastDeleted.dueDate,
-                startDate: lastDeleted.startDate,
-                estimatedMinutes: lastDeleted.estimatedMinutes,
-                createdAt: lastDeleted.createdAt
-            });
-        } catch (err) {
-            console.error("Error undoing delete:", err);
-            deletedTasksRef.current.push(lastDeleted); // put it back on failure
-        }
-    }, [user]);
-
+    // Global KeyDown for Undo
     useEffect(() => {
         const handleGlobalKeyDown = (e: KeyboardEvent) => {
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
-                // Preveiem que desfaci accions dins d'un input si està escrivint
                 if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
                 e.preventDefault();
-                undoDelete();
+                store.getState().undoDelete();
             }
         };
         window.addEventListener('keydown', handleGlobalKeyDown);
         return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-    }, [undoDelete]);
-
-    const contextValue = useMemo(() => ({
-        tasks, filteredTasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks, subjects, filters, setFilters, clearFilters
-    }), [tasks, filteredTasks, isLoading, error, addTask, updateTask, deleteTask, undoDelete, addBatchTasks, subjects, filters, clearFilters]);
+    }, [store]);
 
     return (
-        <TasksContext.Provider value={contextValue}>
+        <TasksContext.Provider value={store}>
             {children}
         </TasksContext.Provider>
     );
 };
 
-export const useTasks = () => {
-    const context = useContext(TasksContext);
-    if (context === undefined) {
+export function useTasks(): TasksState;
+export function useTasks<T>(selector: (state: TasksState) => T): T;
+export function useTasks<T>(selector?: (state: TasksState) => T): T | TasksState {
+    const store = useContext(TasksContext);
+    if (!store) {
         throw new Error('useTasks must be used within a TasksProvider');
     }
-    return context;
-};
+    return selector ? useStore(store, selector) : useStore(store);
+}

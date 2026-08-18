@@ -23,6 +23,7 @@ import TextNode from './Nodes/TextNode';
 import PostItNode from './Nodes/PostItNode';
 import DrawLayer from './DrawLayer';
 import { DrawProvider, useDrawContext } from '../../../contexts/DrawContext';
+import { useShallow } from 'zustand/react/shallow';
 import { useCanvasShortcuts } from '../../../hooks/useCanvasShortcuts';
 import LiquidPanel from '../../ui/glass/LiquidPanel';
 import { LiquidToolbar, LiquidToolbarButton } from '../../ui/glass/LiquidToolbar';
@@ -92,8 +93,37 @@ interface RoadmapViewProps {
 
 const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI = () => { } }) => {
     const { t } = useTranslation();
-    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade, initialStrokes, addAnnotationNode, targetGrade, setTargetGrade, requiredAverageGrade } = useRoadmap();
-    const { isDrawMode, setIsDrawMode, currentColor, setCurrentColor, clearStrokes, undoStroke, redoStroke, canUndo, canRedo, strokes, setStrokes } = useDrawContext();
+    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade, initialStrokes, addAnnotationNode, targetGrade, setTargetGrade, requiredAverageGrade } = useRoadmap(useShallow(state => ({
+        nodes: state.nodes,
+        edges: state.edges,
+        onNodesChange: state.onNodesChange,
+        onEdgesChange: state.onEdgesChange,
+        onConnect: state.onConnect,
+        saveRoadmap: state.saveRoadmap,
+        isLoading: state.isLoading,
+        canStartMaster: state.canStartMaster,
+        totalPassedECTS: state.totalPassedECTS,
+        setSpecialization: state.setSpecialization,
+        averageGrade: state.averageGrade,
+        initialStrokes: state.initialStrokes,
+        addAnnotationNode: state.addAnnotationNode,
+        targetGrade: state.targetGrade,
+        setTargetGrade: state.setTargetGrade,
+        requiredAverageGrade: state.requiredAverageGrade
+    })));
+    const { isDrawMode, setIsDrawMode, currentColor, setCurrentColor, clearStrokes, undoStroke, redoStroke, canUndo, canRedo, strokes, setStrokes } = useDrawContext(useShallow(state => ({
+        isDrawMode: state.isDrawMode,
+        setIsDrawMode: state.setIsDrawMode,
+        currentColor: state.currentColor,
+        setCurrentColor: state.setCurrentColor,
+        clearStrokes: state.clearStrokes,
+        undoStroke: state.undoStroke,
+        redoStroke: state.redoStroke,
+        canUndo: state.canUndo,
+        canRedo: state.canRedo,
+        strokes: state.strokes,
+        setStrokes: state.setStrokes
+    })));
     const reactFlowInstance = useReactFlow();
     const [isSaving, setIsSaving] = useState(false);
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);

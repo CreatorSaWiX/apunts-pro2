@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useTasks } from '../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 
 interface SubjectPickerProps {
     value: string | null | undefined;
@@ -13,7 +14,7 @@ interface SubjectPickerProps {
 
 const SubjectPicker: React.FC<SubjectPickerProps> = ({ value, onChange, placeholder, className = '' }) => {
     const { t } = useTranslation();
-    const { subjects } = useTasks();
+    const { subjects } = useTasks(useShallow(state => ({ subjects: state.subjects })));
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const triggerRef = useRef<HTMLButtonElement>(null);

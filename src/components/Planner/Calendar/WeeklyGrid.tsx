@@ -6,6 +6,7 @@ import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
 import { m as motion } from 'framer-motion';
 import { useTasks } from '../../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import { useDuplicateModifier } from '../../../hooks/useDuplicateModifier';
 import NavigationPill from '../../ui/NavigationPill';
 
@@ -16,7 +17,9 @@ interface WeeklyGridProps {
 }
 
 const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, updates: Partial<Task>) => void }> = ({ task, day, updateTask }) => {
-    const { deleteTask } = useTasks();
+    const { deleteTask } = useTasks(useShallow(state => ({
+        deleteTask: state.deleteTask
+    })));
     
     const taskStart = new Date(task.startDate!);
     const taskEnd = task.dueDate ? new Date(task.dueDate) : new Date(taskStart.getTime() + (task.estimatedMinutes || 60) * 60000);
@@ -211,7 +214,9 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
         LOW: 'bg-primary'
     };
     
-    const { subjects } = useTasks();
+    const { subjects } = useTasks(useShallow(state => ({
+        subjects: state.subjects
+    })));
     const taskSubject = subjects.find(s => s.id === task.subjectId);
     
     // Si té assignatura utilitzem el seu color (ex: bg-fuchsia-400), sinó el de prioritat
@@ -361,7 +366,10 @@ const CurrentTimeLine = () => {
 };
 
 const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) => {
-    const { addTask, updateTask } = useTasks();
+    const { addTask, updateTask } = useTasks(useShallow(state => ({
+        addTask: state.addTask,
+        updateTask: state.updateTask
+    })));
     const dateStr = format(day, 'yyyy-MM-dd');
     
     const { setNodeRef, isOver } = useDroppable({

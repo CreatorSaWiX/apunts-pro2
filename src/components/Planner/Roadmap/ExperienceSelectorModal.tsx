@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Globe, Briefcase, ChevronRight, Search, ExternalLink } from 'lucide-react';
-import { useRoadmapActions } from '../../../contexts/RoadmapContext';
+import { useRoadmap } from '../../../contexts/RoadmapContext';
+import { useShallow } from 'zustand/react/shallow';
 import Modal from '../../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
 
@@ -287,7 +288,9 @@ let cachedUniversities: UniversityItem[] | null = null;
 
 const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
-    const { addExperienceNode } = useRoadmapActions();
+    const { addExperienceNode } = useRoadmap(useShallow(state => ({
+        addExperienceNode: state.addExperienceNode
+    })));
     const [selectedType, setSelectedType] = useState<ExpType>('mobility');
     const [details, setDetails] = useState<ExperienceDetails>({});
     const [universities, setUniversities] = useState<UniversityItem[]>(cachedUniversities || []);

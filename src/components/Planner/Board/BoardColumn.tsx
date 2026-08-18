@@ -4,6 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import TaskCard from './TaskCard';
 import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Plus, Calendar, Flag, Play, Trash2, X, Check } from 'lucide-react';
 import { DateTimePicker } from './DateTimePicker';
@@ -26,7 +27,10 @@ const toLocalDatetime = (d: Date) => {
 
 const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, onAddTask, onUpdateColumn, onDeleteColumn }) => {
     const { t } = useTranslation();
-    const { subjects, deleteTask } = useTasks();
+    const { subjects, deleteTask } = useTasks(useShallow(state => ({
+        subjects: state.subjects,
+        deleteTask: state.deleteTask
+    })));
     const taskIds = useMemo(() => tasks.map(t => t.id), [tasks]);
     const [isDrafting, setIsDrafting] = useState(false);
     const [draftTitle, setDraftTitle] = useState('');

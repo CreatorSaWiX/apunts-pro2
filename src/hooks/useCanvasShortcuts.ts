@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useDrawContext, type DrawTool } from '../contexts/DrawContext';
 import { useSettingsStore } from '../stores/useSettingsStore';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 
 interface UseCanvasShortcutsOptions {
     onClose?: () => void;
@@ -24,7 +25,19 @@ export const useCanvasShortcuts = ({ onClose, onClearBroadcast, enabled = true }
         setCurrentTool,
         setCurrentColor,
         setCurrentWidth
-    } = useDrawContext();
+    } = useDrawContext(useShallow(state => ({
+        currentTool: state.currentTool,
+        currentColor: state.currentColor,
+        currentWidth: state.currentWidth,
+        canUndo: state.canUndo,
+        canRedo: state.canRedo,
+        undoStroke: state.undoStroke,
+        redoStroke: state.redoStroke,
+        clearStrokes: state.clearStrokes,
+        setCurrentTool: state.setCurrentTool,
+        setCurrentColor: state.setCurrentColor,
+        setCurrentWidth: state.setCurrentWidth
+    })));
 
     const stateRef = useRef({
         currentTool,

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRoadmapAI } from '../../../hooks/useRoadmapAI';
 import { ArrowUp, Sparkles, StopCircle, CheckCircle2, Plus, X } from 'lucide-react';
-import { useRoadmap } from '../../../contexts/RoadmapContext';
+import { useShallow } from 'zustand/react/shallow';
 import { useSettingsStore } from '../../../stores/useSettingsStore';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown, { type Components } from 'react-markdown';

@@ -5,6 +5,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Task, TaskPriority, TaskStatus } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import { m as motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { Calendar, Flag, Play, X, Check, Trash2, Pencil } from 'lucide-react';
 import { format } from 'date-fns';
@@ -34,7 +35,11 @@ interface TaskCardProps {
 const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
-    const { updateTask, subjects, deleteTask } = useTasks();
+    const { updateTask, subjects, deleteTask } = useTasks(useShallow(state => ({
+        updateTask: state.updateTask,
+        subjects: state.subjects,
+        deleteTask: state.deleteTask
+    })));
     const subject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
 
     const getSubjectClasses = (token: string) => {

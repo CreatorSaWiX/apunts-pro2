@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import Modal from '../../ui/modals/Modal';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
+import { useShallow } from 'zustand/react/shallow';
 import { CFGS_DEGREES } from '../../../data/cfgs';
 import { GraduationCap, Sparkles, BookOpen, Layers, Plus, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +25,11 @@ const FIB_ACTIVITIES = [
 // eslint-disable-next-line react-doctor/no-giant-component
 const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
-    const { nodes, addCFGSValidations, addCustomValidation } = useRoadmap();
+    const { nodes, addCFGSValidations, addCustomValidation } = useRoadmap(useShallow(state => ({
+        nodes: state.nodes,
+        addCFGSValidations: state.addCFGSValidations,
+        addCustomValidation: state.addCustomValidation
+    })));
     const [activeTab, setActiveTab] = useState<Tab>('cfgs');
     const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
     

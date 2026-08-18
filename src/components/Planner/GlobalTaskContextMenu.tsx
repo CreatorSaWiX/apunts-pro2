@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import { Copy, Trash2, Flag } from 'lucide-react';
 import type { Task, TaskPriority } from '../../types/tasks';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +15,11 @@ interface ContextMenuEventDetail {
 
 const GlobalTaskContextMenu: React.FC = () => {
     const { t } = useTranslation();
-    const { updateTask, deleteTask, addTask } = useTasks();
+    const { updateTask, deleteTask, addTask } = useTasks(useShallow(state => ({
+        updateTask: state.updateTask,
+        deleteTask: state.deleteTask,
+        addTask: state.addTask
+    })));
     const [isOpen, setIsOpen] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [task, setTask] = useState<Task | null>(null);

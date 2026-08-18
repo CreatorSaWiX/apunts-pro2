@@ -6,6 +6,7 @@ import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
 import { m as motion } from 'framer-motion';
 import { useTasks } from '../../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import NavigationPill from '../../ui/NavigationPill';
 
 interface MonthlyGridProps {
@@ -16,7 +17,10 @@ interface MonthlyGridProps {
 }
 
 const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onSelectDay?: (date: Date, clickEvent?: React.MouseEvent) => void }> = ({ day, isCurrentMonth, tasks, onSelectDay }) => {
-    const { addTask, subjects } = useTasks();
+    const { addTask, subjects } = useTasks(useShallow(state => ({
+        addTask: state.addTask,
+        subjects: state.subjects
+    })));
     const dateStr = format(day, 'yyyy-MM-dd');
     
     const { setNodeRef, isOver } = useDroppable({

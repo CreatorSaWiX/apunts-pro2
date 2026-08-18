@@ -1,6 +1,7 @@
 import React, { useRef, useCallback } from 'react';
 import { useViewport } from '@xyflow/react';
 import { useDrawContext, type Stroke } from '../../../contexts/DrawContext';
+import { useShallow } from 'zustand/react/shallow';
 
 // O(N) path generation using Array.join instead of O(N²) string concatenation
 const getSvgPathFromPoints = (points: { x: number; y: number }[]) => {
@@ -62,7 +63,15 @@ const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStrok
 
 const DrawLayer: React.FC = () => {
     const { x, y, zoom } = useViewport();
-    const { isDrawMode, currentTool, currentColor, currentWidth, strokes, addStroke, removeStroke } = useDrawContext();
+    const { isDrawMode, currentTool, currentColor, currentWidth, strokes, addStroke, removeStroke } = useDrawContext(useShallow(state => ({
+        isDrawMode: state.isDrawMode,
+        currentTool: state.currentTool,
+        currentColor: state.currentColor,
+        currentWidth: state.currentWidth,
+        strokes: state.strokes,
+        addStroke: state.addStroke,
+        removeStroke: state.removeStroke
+    })));
     
     // Use refs for mutable drawing state to avoid O(N) array spreads per pointerMove frame
     const currentStrokeRef = useRef<Stroke | null>(null);

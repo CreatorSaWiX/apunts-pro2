@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, type ReactNode, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useRef, type ReactNode } from 'react';
+import { createStore, useStore } from 'zustand';
 
 export interface Stroke {
     id: string;
@@ -9,101 +10,90 @@ export interface Stroke {
 
 export type DrawTool = 'pen' | 'eraser' | 'pan';
 
-interface DrawContextType {
-    isDrawMode: boolean; // Computed based on currentTool !== 'pan'
-    setIsDrawMode: (v: boolean) => void;
+export interface DrawState {
     currentTool: DrawTool;
-    setCurrentTool: (t: DrawTool) => void;
+    isDrawMode: boolean; // computed based on tool
     currentColor: string;
-    setCurrentColor: (c: string) => void;
     currentWidth: number;
-    setCurrentWidth: (w: number) => void;
     strokes: Stroke[];
-    setStrokes: React.Dispatch<React.SetStateAction<Stroke[]>>;
+    undoneStrokes: Stroke[];
+    canUndo: boolean;
+    canRedo: boolean;
+    setCurrentTool: (t: DrawTool) => void;
+    setIsDrawMode: (v: boolean) => void;
+    setCurrentColor: (c: string) => void;
+    setCurrentWidth: (w: number) => void;
+    setStrokes: (strokes: Stroke[] | ((prev: Stroke[]) => Stroke[])) => void;
     addStroke: (stroke: Stroke) => void;
     removeStroke: (id: string) => void;
     clearStrokes: () => void;
     undoStroke: () => void;
     redoStroke: () => void;
-    canUndo: boolean;
-    canRedo: boolean;
 }
 
-const DrawContext = createContext<DrawContextType | undefined>(undefined);
+type DrawStore = ReturnType<typeof createDrawStore>;
+
+const createDrawStore = () =>
+    createStore<DrawState>((set) => ({
+        currentTool: 'pan',
+        isDrawMode: false,
+        currentColor: '#ef4444',
+        currentWidth: 4,
+        strokes: [],
+        undoneStrokes: [],
+        canUndo: false,
+        canRedo: false,
+        setCurrentTool: (t) => set({ currentTool: t, isDrawMode: t !== 'pan' }),
+        setIsDrawMode: (v) => set({ currentTool: v ? 'pen' : 'pan', isDrawMode: v }),
+        setCurrentColor: (c) => set({ currentColor: c }),
+        setCurrentWidth: (w) => set({ currentWidth: w }),
+        setStrokes: (newStrokes) => set((state) => {
+            const strokes = typeof newStrokes === 'function' ? newStrokes(state.strokes) : newStrokes;
+            return { strokes, canUndo: strokes.length > 0 };
+        }),
+        addStroke: (stroke) => set((state) => {
+            const newStrokes = [...state.strokes, stroke];
+            return { strokes: newStrokes, undoneStrokes: [], canUndo: true, canRedo: false };
+        }),
+        removeStroke: (id) => set((state) => {
+            const newStrokes = state.strokes.filter(s => s.id !== id);
+            return { strokes: newStrokes, canUndo: newStrokes.length > 0 };
+        }),
+        clearStrokes: () => set({ strokes: [], undoneStrokes: [], canUndo: false, canRedo: false }),
+        undoStroke: () => set((state) => {
+            if (state.strokes.length === 0) return state;
+            const popped = state.strokes[state.strokes.length - 1];
+            const newStrokes = state.strokes.slice(0, -1);
+            const newUndone = [...state.undoneStrokes, popped];
+            return { strokes: newStrokes, undoneStrokes: newUndone, canUndo: newStrokes.length > 0, canRedo: true };
+        }),
+        redoStroke: () => set((state) => {
+            if (state.undoneStrokes.length === 0) return state;
+            const popped = state.undoneStrokes[state.undoneStrokes.length - 1];
+            const newUndone = state.undoneStrokes.slice(0, -1);
+            const newStrokes = [...state.strokes, popped];
+            return { strokes: newStrokes, undoneStrokes: newUndone, canUndo: true, canRedo: newUndone.length > 0 };
+        })
+    }));
+
+const DrawContext = createContext<DrawStore | null>(null);
 
 export const DrawProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [currentTool, setCurrentTool] = useState<DrawTool>('pan');
-    const isDrawMode = currentTool !== 'pan';
-    
-    // Kept for backwards compatibility but it just sets tool to 'pen' or 'pan'
-    const setIsDrawMode = useCallback((v: boolean) => {
-        setCurrentTool(v ? 'pen' : 'pan');
-    }, []);
-
-    const [currentColor, setCurrentColor] = useState('#ef4444'); // Default red
-    const [currentWidth, setCurrentWidth] = useState(4); // Default brush width
-    const [strokes, setStrokes] = useState<Stroke[]>([]);
-    const [undoneStrokes, setUndoneStrokes] = useState<Stroke[]>([]);
-
-    const addStroke = useCallback((stroke: Stroke) => {
-        setStrokes((prev) => [...prev, stroke]);
-        setUndoneStrokes([]);
-    }, []);
-
-    const clearStrokes = useCallback(() => {
-        setStrokes([]);
-        setUndoneStrokes([]);
-    }, []);
-
-    const removeStroke = useCallback((id: string) => {
-        setStrokes((prev) => prev.filter(s => s.id !== id));
-    }, []);
-
-    const undoStroke = useCallback(() => {
-        if (strokes.length === 0) return;
-        const popped = strokes[strokes.length - 1];
-        setStrokes(strokes.slice(0, -1));
-        setUndoneStrokes(u => [...u, popped]);
-    }, [strokes]);
-
-    const redoStroke = useCallback(() => {
-        if (undoneStrokes.length === 0) return;
-        const popped = undoneStrokes[undoneStrokes.length - 1];
-        setUndoneStrokes(undoneStrokes.slice(0, -1));
-        setStrokes(s => [...s, popped]);
-    }, [undoneStrokes]);
-
-    const contextValue = useMemo(() => ({
-        isDrawMode,
-        setIsDrawMode,
-        currentTool,
-        setCurrentTool,
-        currentColor,
-        setCurrentColor,
-        currentWidth,
-        setCurrentWidth,
-        strokes,
-        setStrokes,
-        addStroke,
-        removeStroke,
-        clearStrokes,
-        undoStroke,
-        redoStroke,
-        canUndo: strokes.length > 0,
-        canRedo: undoneStrokes.length > 0
-    }), [isDrawMode, currentTool, currentColor, currentWidth, strokes, undoneStrokes, addStroke, removeStroke, clearStrokes, undoStroke, redoStroke, setIsDrawMode]);
+    // We use a ref to ensure the store is only created once per provider instance
+    const storeRef = useRef<DrawStore>(null);
+    if (!storeRef.current) {
+        storeRef.current = createDrawStore();
+    }
 
     return (
-        <DrawContext.Provider value={contextValue}>
+        <DrawContext.Provider value={storeRef.current}>
             {children}
         </DrawContext.Provider>
     );
 };
 
-export const useDrawContext = () => {
-    const context = useContext(DrawContext);
-    if (context === undefined) {
-        throw new Error('useDrawContext must be used within a DrawProvider');
-    }
-    return context;
-};
+export function useDrawContext<T>(selector: (state: DrawState) => T): T {
+    const store = useContext(DrawContext);
+    if (!store) throw new Error('useDrawContext must be used within a DrawProvider');
+    return useStore(store, selector);
+}

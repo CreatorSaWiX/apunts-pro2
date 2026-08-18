@@ -15,6 +15,7 @@ import { createPortal } from 'react-dom';
 import { format } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import { useTasks } from '../../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import type { Task } from '../../../types/tasks';
 import { useDuplicateModifier } from '../../../hooks/useDuplicateModifier';
 import MonthlyGrid from './MonthlyGrid';
@@ -28,7 +29,11 @@ type CalendarMode = 'month' | 'week' | 'year';
 
 const CalendarView: React.FC = () => {
     const { t } = useTranslation();
-    const { tasks, updateTask, addTask } = useTasks();
+    const { tasks, updateTask, addTask } = useTasks(useShallow(state => ({
+        tasks: state.tasks,
+        updateTask: state.updateTask,
+        addTask: state.addTask
+    })));
     const [currentDate, setCurrentDate] = useState(new Date());
     const [mode, setMode] = useState<CalendarMode>('week');
     const [direction, setDirection] = useState(0);

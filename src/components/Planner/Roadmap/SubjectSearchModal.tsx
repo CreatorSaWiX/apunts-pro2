@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Search, Plus, Zap } from 'lucide-react';
 import subjectsData from '../../../data/subjects.json';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
+import { useShallow } from 'zustand/react/shallow';
 import { specializations } from '../../../data/curriculum';
 import { m as motion } from 'framer-motion';
 import Modal from '../../ui/modals/Modal';
@@ -14,7 +15,10 @@ interface SubjectSearchModalProps {
 
 const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
-    const { nodes, addSubjectNode } = useRoadmap();
+    const { nodes, addSubjectNode } = useRoadmap(useShallow(state => ({
+        nodes: state.nodes,
+        addSubjectNode: state.addSubjectNode
+    })));
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [activeFilter, setActiveFilter] = useState('all');

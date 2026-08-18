@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
+import { createStore, useStore } from 'zustand';
 import type { Node, Edge, NodeChange, EdgeChange, Connection } from '@xyflow/react';
 import { useAuth } from './AuthContext';
 import subjectsData from '../data/subjects.json';
@@ -60,7 +61,18 @@ interface SubjectDataItem {
 const typedSubjectsData = subjectsData as SubjectDataItem[];
 
 // Data context: nodes, edges, derived values. Changes when nodes/edges change.
-interface RoadmapDataContextType {
+
+
+// Actions context: stable callbacks. Does NOT change on drag/position changes.
+
+
+// Backwards-compatible combined type
+
+
+
+
+
+export interface RoadmapState {
     nodes: Node<SubjectNodeData>[];
     edges: Edge[];
     itinerary: ItineraryType;
@@ -71,17 +83,23 @@ interface RoadmapDataContextType {
     initialStrokes: DrawingStroke[];
     targetGrade: number | null;
     requiredAverageGrade: number | null;
-}
+    user: any;
+    saveVersion: number;
+    lastSavedVersion: number;
 
-// Actions context: stable callbacks. Does NOT change on drag/position changes.
-interface RoadmapActionsContextType {
+    setNodes: (updater: (prev: Node<SubjectNodeData>[]) => Node<SubjectNodeData>[]) => void;
+    setEdges: (updater: (prev: Edge[]) => Edge[]) => void;
     setItinerary: (it: ItineraryType) => void;
+    setIsLoading: (v: boolean) => void;
+    setTargetGrade: (grade: number | null) => void;
+    setInitialStrokes: (strokes: DrawingStroke[]) => void;
+    setUser: (u: any) => void;
+
     onNodesChange: (changes: NodeChange[]) => void;
     onEdgesChange: (changes: EdgeChange[]) => void;
     onConnect: (connection: Connection) => void;
     updateNodeStatus: (nodeId: string, status: SubjectStatus) => void;
     updateNodeGrade: (nodeId: string, grade: number | null) => void;
-    saveRoadmap: (strokes?: DrawingStroke[]) => Promise<void>;
     addSubjectNode: (acronym: string, type: SubjectNodeData['type']) => void;
     addExperienceNode: (type: 'mobility' | 'internship' | 'tfg' | 'tfm', details: ExperienceDetails) => void;
     addCFGSValidations: (cfgsId: string) => void;
@@ -91,14 +109,307 @@ interface RoadmapActionsContextType {
     duplicateAnnotation: (nodeId: string) => void;
     removeNode: (nodeId: string) => void;
     setSpecialization: (specializationId: string) => void;
-    setTargetGrade: (grade: number | null) => void;
+    saveRoadmap: (strokes?: DrawingStroke[]) => Promise<void>;
 }
 
-// Backwards-compatible combined type
-type RoadmapContextType = RoadmapDataContextType & RoadmapActionsContextType;
+const computeDerivedState = (nodes: Node<SubjectNodeData>[], targetGrade: number | null) => {
+    let totalPassedECTS = 0;
+    let totalGradePoints = 0;
+    let totalGradedCredits = 0;
+    let gradablePassedPoints = 0;
+    let gradablePassedECTS = 0;
+    let gradableRemainingECTS = 0;
 
-const RoadmapDataContext = createContext<RoadmapDataContextType | undefined>(undefined);
-const RoadmapActionsContext = createContext<RoadmapActionsContextType | undefined>(undefined);
+    nodes.forEach(node => {
+        const isPassed = node.data.status === 'passed';
+        if (isPassed) {
+            totalPassedECTS += node.data.credits;
+        }
+
+        if (isPassed && typeof node.data.grade === 'number') {
+            totalGradePoints += node.data.grade * node.data.credits;
+            totalGradedCredits += node.data.credits;
+        }
+
+        if (isGradableNode(node)) {
+            if (isPassed && typeof node.data.grade === 'number') {
+                gradablePassedPoints += node.data.grade * node.data.credits;
+                gradablePassedECTS += node.data.credits;
+            } else if (!isPassed) {
+                gradableRemainingECTS += node.data.credits;
+            }
+        }
+    });
+
+    const averageGrade = totalGradedCredits === 0 ? null : totalGradePoints / totalGradedCredits;
+    const canStartMaster = totalPassedECTS >= 213;
+    let requiredAverageGrade = null;
+    
+    if (targetGrade !== null && gradableRemainingECTS > 0) {
+        const totalGradableECTS = gradablePassedECTS + gradableRemainingECTS;
+        requiredAverageGrade = (targetGrade * totalGradableECTS - gradablePassedPoints) / gradableRemainingECTS;
+    }
+
+    return { totalPassedECTS, averageGrade, canStartMaster, requiredAverageGrade };
+};
+
+// Extracted checkPrerequisites
+const checkPrerequisites = (currentNodes: Node<SubjectNodeData>[], currentEdges: Edge[]) => {
+    const incomingMap = new Map<string, string[]>();
+    for (const e of currentEdges) {
+        const arr = incomingMap.get(e.target);
+        if (arr) arr.push(e.source);
+        else incomingMap.set(e.target, [e.source]);
+    }
+
+    let nodesChanged = true;
+    let newNodes = [...currentNodes];
+    let safetyCounter = 0;
+
+    while (nodesChanged && safetyCounter < 15) {
+        nodesChanged = false;
+        safetyCounter++;
+        const nodeMap = new Map(newNodes.map(n => [n.id, n]));
+        
+        const maxPassedSemester = newNodes.reduce((max, n) => {
+            const isPassed = n.data.status === 'passed';
+            const isRegularSubject = !['optional', 'specialization', 'tfg', 'tfm', 'mobility', 'internship'].includes(n.data.type);
+            if (isPassed && isRegularSubject) {
+                return Math.max(max, n.data.semester || getSemesterForSubject(n.id));
+            }
+            return max;
+        }, 0);
+        const allowedSemester = Math.max(1, maxPassedSemester + 1);
+        const passedCredits = newNodes.reduce((sum, n) => n.data.status === 'passed' ? sum + n.data.credits : sum, 0);
+
+        newNodes = newNodes.map(node => {
+            const incoming = incomingMap.get(node.id);
+            const edgePrereqsPassed = !incoming || incoming.every(sourceId => {
+                const sourceNode = nodeMap.get(sourceId);
+                return sourceNode?.data.status === 'passed';
+            });
+
+            const isSemesterAllowed = (node.data.semester || getSemesterForSubject(node.id)) <= allowedSemester;
+            let prereqsMet = edgePrereqsPassed && isSemesterAllowed;
+
+            if (['tfg', 'tfm', 'mobility', 'internship'].includes(node.data.type)) {
+                prereqsMet = edgePrereqsPassed && passedCredits >= 160;
+            }
+
+            if (!prereqsMet && node.data.status !== 'locked') {
+                nodesChanged = true;
+                return { ...node, data: { ...node.data, status: 'locked' as SubjectStatus, attempts: 0, grade: null } };
+            }
+
+            if (prereqsMet && node.data.status === 'locked') {
+                nodesChanged = true;
+                return { ...node, data: { ...node.data, status: 'in_progress' as SubjectStatus, attempts: 1 } };
+            }
+            return node;
+        });
+    }
+    return newNodes;
+};
+
+const createRoadmapStore = () => createStore<RoadmapState>((set, get) => ({
+    nodes: [],
+    edges: [],
+    itinerary: 'GEI_STANDARD',
+    isLoading: true,
+    totalPassedECTS: 0,
+    canStartMaster: false,
+    averageGrade: null,
+    initialStrokes: [],
+    targetGrade: null,
+    requiredAverageGrade: null,
+    user: null,
+    saveVersion: 0,
+    lastSavedVersion: 0,
+
+    setNodes: (updater) => set(state => {
+        const newNodes = updater(state.nodes);
+        const derived = computeDerivedState(newNodes, state.targetGrade);
+        return { nodes: newNodes, ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+    setEdges: (updater) => set(state => ({ edges: updater(state.edges), saveVersion: state.saveVersion + 1 })),
+    setItinerary: (it) => set(state => ({ itinerary: it, saveVersion: state.saveVersion + 1 })),
+    setIsLoading: (v) => set({ isLoading: v }),
+    setTargetGrade: (grade) => set(state => {
+        const derived = computeDerivedState(state.nodes, grade);
+        return { targetGrade: grade, ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+    setInitialStrokes: (strokes) => set({ initialStrokes: strokes }),
+    setUser: (u) => set({ user: u }),
+
+    onNodesChange: (changes) => set(state => {
+        const newNodes = applyNodeChanges(changes, state.nodes) as Node<SubjectNodeData>[];
+        // Don't recompute derived or saveVersion on mere position changes
+        return { nodes: newNodes };
+    }),
+    onEdgesChange: (changes) => set(state => ({ edges: applyEdgeChanges(changes, state.edges) })),
+    onConnect: (connection) => set(state => ({ edges: addEdge(connection, state.edges) })),
+
+    updateNodeStatus: (nodeId, status) => set(state => {
+        const mapped = state.nodes.map(node => {
+            if (node.id === nodeId) {
+                let newAttempts = node.data.attempts || 1;
+                if (node.data.status === 'failed' && status === 'retaking') newAttempts += 1;
+                if (status === 'locked' || status === 'available') newAttempts = 0;
+                if (status === 'in_progress' && newAttempts === 0) newAttempts = 1;
+                let newGrade = node.data.grade;
+                if (status !== 'passed') newGrade = null;
+                return { ...node, data: { ...node.data, status, attempts: newAttempts, grade: newGrade } };
+            }
+            return node;
+        });
+        const finalNodes = checkPrerequisites(mapped, state.edges);
+        const derived = computeDerivedState(finalNodes, state.targetGrade);
+        return { nodes: finalNodes, ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+
+    updateNodeGrade: (nodeId, grade) => set(state => {
+        const mapped = state.nodes.map(node => {
+            if (node.id === nodeId) return { ...node, data: { ...node.data, grade } };
+            return node;
+        });
+        const derived = computeDerivedState(mapped, state.targetGrade);
+        return { nodes: mapped, ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+
+    addSubjectNode: (acronym, type) => set(state => {
+        const subject = (subjectsData as SubjectDataItem[]).find(s => s.name === acronym);
+        const semester = getSemesterForSubject(acronym);
+        const newNode: Node<SubjectNodeData> = {
+            id: acronym, position: { x: 0, y: 0 },
+            data: { label: subject?.description || acronym, credits: getCreditsForSubject(acronym), status: 'available', type, attempts: 0, description: subject?.description || acronym, semester, grade: null }
+        };
+        const { nodes: layouted } = getGridLayoutedElements([...state.nodes, newNode], state.edges);
+        const derived = computeDerivedState(layouted as Node<SubjectNodeData>[], state.targetGrade);
+        return { nodes: layouted as Node<SubjectNodeData>[], ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+
+    addExperienceNode: (type, details) => set(state => {
+        const id = `${type}_${Date.now()}`;
+        const credits = details.credits || (type === 'tfg' ? 18 : type === 'tfm' ? 30 : 12);
+        let label = 'Experiència'; let description = '';
+        if (type === 'mobility') { label = `Mobilitat: ${details.destination || 'Internacional'}`; description = `Programa: ${details.program || 'Erasmus+'}`; }
+        else if (type === 'internship') { label = `Pràctiques: ${details.company || 'Empresa'}`; description = `Rol: ${details.role || 'Enginyer'}`; }
+        else if (type === 'tfg') { label = 'Treball Final de Grau'; description = details.title || 'TFG'; }
+        else if (type === 'tfm') { label = 'Treball Final de Màster'; description = details.title || 'TFM'; }
+        
+        const newNode: Node<SubjectNodeData> = {
+            id, position: { x: 0, y: 0 },
+            data: { label, credits, status: 'in_progress', type, attempts: 1, description, semester: 8, grade: null, details }
+        };
+        const { nodes: layouted } = getGridLayoutedElements([...state.nodes, newNode], state.edges);
+        const derived = computeDerivedState(layouted as Node<SubjectNodeData>[], state.targetGrade);
+        return { nodes: layouted as Node<SubjectNodeData>[], ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+
+    addCFGSValidations: (cfgsId) => set(state => {
+        const cfgs = CFGS_DEGREES.find(c => c.id === cfgsId);
+        if (!cfgs) return state;
+        const newNodes: Node<SubjectNodeData>[] = cfgs.modules.map((mod, idx) => ({
+            id: `CFGS_${cfgsId}_${idx}_${Date.now()}`, position: { x: 0, y: 0 },
+            data: { label: mod.name, credits: mod.credits, status: 'passed', type: 'optional', attempts: 1, description: `Convalidació de CFGS: ${cfgs.title}`, semester: 9, grade: null }
+        }));
+        const filteredPrev = state.nodes.filter(n => !n.id.startsWith('CFGS_'));
+        const combined = [...filteredPrev, ...newNodes];
+        const { nodes: layouted } = getGridLayoutedElements(combined, state.edges);
+        const derived = computeDerivedState(layouted as Node<SubjectNodeData>[], state.targetGrade);
+        return { nodes: layouted as Node<SubjectNodeData>[], ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+
+    addCustomValidation: (name, credits) => set(state => {
+        const newNode: Node<SubjectNodeData> = {
+            id: `VALIDATION_${Date.now()}`, position: { x: 0, y: 0 },
+            data: { label: name, credits, status: 'passed', type: 'optional', attempts: 1, description: `Convalidació: ${name}`, semester: 9, grade: null }
+        };
+        const newNodes = [...state.nodes, newNode];
+        const derived = computeDerivedState(newNodes, state.targetGrade);
+        return { nodes: newNodes, ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+
+    addAnnotationNode: (type, x, y) => set(state => {
+        const newNode: Node<SubjectNodeData> = {
+            id: `ANNOTATION_${Date.now()}`, position: { x, y }, type: type === 'text' ? 'textNode' : 'postItNode',
+            style: { width: type === 'text' ? 300 : 250, height: type === 'text' ? 100 : 250 },
+            data: { label: '', credits: 0, status: 'available', type, attempts: 0, description: '', semester: 0, text: type === 'text' ? 'El teu text aquí' : 'Nota', color: type === 'text' ? '#ffffff' : '#fef08a', fontSize: 16, fontWeight: 'normal' }
+        };
+        return { nodes: [...state.nodes, newNode], saveVersion: state.saveVersion + 1 };
+    }),
+
+    updateNodeData: (nodeId, data) => set(state => ({
+        nodes: state.nodes.map(n => n.id === nodeId ? { ...n, data: { ...n.data, ...data } } : n),
+        saveVersion: state.saveVersion + 1
+    })),
+
+    duplicateAnnotation: (nodeId) => set(state => {
+        const sourceNode = state.nodes.find(n => n.id === nodeId);
+        if (!sourceNode) return state;
+        const newNode: Node<SubjectNodeData> = {
+            ...sourceNode, id: `ANNOTATION_${Date.now()}`, selected: false,
+            position: { x: sourceNode.position.x + 40, y: sourceNode.position.y + 40 }
+        };
+        return { nodes: [...state.nodes, newNode], saveVersion: state.saveVersion + 1 };
+    }),
+
+    removeNode: (nodeId) => set(state => {
+        const newNodes = state.nodes.filter(n => n.id !== nodeId);
+        const newEdges = state.edges.filter(e => e.source !== nodeId && e.target !== nodeId);
+        const derived = computeDerivedState(newNodes, state.targetGrade);
+        return { nodes: newNodes, edges: newEdges, ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+
+    setSpecialization: (specializationId) => set(state => {
+        const spec = specializations.find(s => s.id === specializationId);
+        if (!spec) return state;
+        const newNodes = state.nodes.filter(n => n.data.type !== 'specialization');
+        spec.mandatory.forEach(acronym => {
+            if (!newNodes.find(n => n.id === acronym)) {
+                const subject = (subjectsData as SubjectDataItem[]).find(s => s.name === acronym);
+                newNodes.push({
+                    id: acronym, position: { x: 0, y: 0 },
+                    data: { label: subject?.description || acronym, credits: getCreditsForSubject(acronym), status: 'locked', type: 'specialization', attempts: 0, description: subject?.description || acronym, semester: getSemesterForSubject(acronym), grade: null }
+                });
+            }
+        });
+        const finalNodes = checkPrerequisites(newNodes, state.edges);
+        const derived = computeDerivedState(finalNodes, state.targetGrade);
+        return { nodes: finalNodes, ...derived, saveVersion: state.saveVersion + 1 };
+    }),
+
+    saveRoadmap: async (strokes = []) => {
+        const state = get();
+        if (!state.user) return;
+        if (strokes.length === 0 && state.saveVersion === state.lastSavedVersion) return;
+
+        try {
+            const cleanNodes = state.nodes.map(n => ({
+                id: n.id, position: n.position, style: n.style,
+                data: { label: n.data.label, credits: n.data.credits, status: n.data.status, type: n.data.type, attempts: n.data.attempts, description: n.data.description, semester: n.data.semester, grade: n.data.grade, text: n.data.text, color: n.data.color, fontSize: n.data.fontSize, fontWeight: n.data.fontWeight },
+                type: n.type || 'subjectNode',
+            }));
+            const cleanEdges = state.edges.map(e => ({ id: e.id, source: e.source, target: e.target, animated: !!e.animated }));
+
+            const payload = removeUndefined({
+                nodes: cleanNodes, edges: cleanEdges, itinerary: state.itinerary, strokes, targetGrade: state.targetGrade
+            });
+
+            const { db } = await import('../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            await setDoc(doc(db, 'users', state.user.id, 'roadmaps', 'main'), { ...payload, updatedAt: new Date().toISOString() });
+            
+            set({ lastSavedVersion: state.saveVersion });
+        } catch (err) {
+            console.error("Error saving roadmap:", err);
+            throw err;
+        }
+    }
+}));
+
+type RoadmapStore = ReturnType<typeof createRoadmapStore>;
+const RoadmapContext = createContext<RoadmapStore | null>(null);
 
 // Lightweight context so SubjectNode can read requiredAverageGrade without
 // subscribing to the full RoadmapContext (which changes on every drag/zoom).
@@ -175,21 +486,26 @@ const createInitialGraph = () => {
 
 export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const { user } = useAuth();
-    const [nodes, setNodes] = useState<Node<SubjectNodeData>[]>([]);
-    const [edges, setEdges] = useState<Edge[]>([]);
-    const [initialStrokes, setInitialStrokes] = useState<DrawingStroke[]>([]);
-    const [itinerary, setItinerary] = useState<ItineraryType>('GEI_STANDARD');
-    const [isLoading, setIsLoading] = useState(true);
-    const [targetGrade, setTargetGrade] = useState<number | null>(null);
+    const storeRef = useRef<RoadmapStore>(null);
+    if (!storeRef.current) {
+        storeRef.current = createRoadmapStore();
+    }
+
+    const store = storeRef.current;
+
+    useEffect(() => {
+        store.getState().setUser(user);
+    }, [user, store]);
 
     useEffect(() => {
         let isMounted = true;
         const loadRoadmap = async () => {
             if (!user) {
-                if (isMounted) setIsLoading(false);
+                if (isMounted) store.getState().setIsLoading(false);
                 return;
             }
             try {
+                store.getState().setIsLoading(true);
                 const { db } = await import('../lib/firebase');
                 const { doc, getDoc } = await import('firebase/firestore');
                 const docRef = doc(db, 'users', user.id, 'roadmaps', 'main');
@@ -197,15 +513,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 if (snap.exists() && isMounted) {
                     const data = snap.data();
                     if (data.nodes && data.edges) {
-                        interface SerializedNode {
-                            id: string;
-                            position: { x: number; y: number };
-                            data: SubjectNodeData & { semester?: number; grade?: number | null };
-                            [key: string]: unknown;
-                        }
-
-                        // Migrate old nodes that don't have a semester or grade
-                        const migratedNodes = (data.nodes as SerializedNode[]).map((n) => ({
+                        const migratedNodes = (data.nodes as any[]).map((n) => ({
                             ...n,
                             data: {
                                 ...n.data,
@@ -213,578 +521,47 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                                 grade: n.data.grade !== undefined ? n.data.grade : null
                             }
                         }));
-
-                        // Ensure TFG exists for older roadmaps
                         if (!migratedNodes.some((n) => n.data.type === 'tfg')) {
                             migratedNodes.push({
-                                id: `tfg_default`,
-                                position: { x: 0, y: 0 },
-                                data: {
-                                    label: 'Treball Final de Grau',
-                                    credits: 18,
-                                    status: 'locked',
-                                    type: 'tfg',
-                                    attempts: 0,
-                                    description: 'TFG',
-                                    semester: 8,
-                                    grade: null
-                                }
+                                id: `tfg_default`, position: { x: 0, y: 0 },
+                                data: { label: 'Treball Final de Grau', credits: 18, status: 'locked', type: 'tfg', attempts: 0, description: 'TFG', semester: 8, grade: null }
                             });
                         }
-
-                        setNodes(migratedNodes as Node<SubjectNodeData>[]);
-                        setEdges(data.edges);
-                        if (data.itinerary) setItinerary(data.itinerary);
-                        if (data.strokes) setInitialStrokes(data.strokes);
-                        if (typeof data.targetGrade === 'number') setTargetGrade(data.targetGrade);
+                        store.getState().setNodes(() => migratedNodes);
+                        store.getState().setEdges(() => data.edges);
+                        if (data.itinerary) store.getState().setItinerary(data.itinerary);
+                        if (data.strokes) store.getState().setInitialStrokes(data.strokes);
+                        if (typeof data.targetGrade === 'number') store.getState().setTargetGrade(data.targetGrade);
                     }
                 } else if (isMounted) {
-                    // Initialize default GEI tree
                     const { nodes: layoutedNodes, edges: layoutedEdges } = createInitialGraph();
-                    setNodes(layoutedNodes as Node<SubjectNodeData>[]);
-                    setEdges(layoutedEdges);
-                    setInitialStrokes([]);
+                    store.getState().setNodes(() => layoutedNodes as Node<SubjectNodeData>[]);
+                    store.getState().setEdges(() => layoutedEdges);
+                    store.getState().setInitialStrokes([]);
                 }
             } catch (err) {
                 console.error("Failed to load roadmap:", err);
             } finally {
-                if (isMounted) setIsLoading(false);
+                if (isMounted) store.getState().setIsLoading(false);
             }
         };
         loadRoadmap();
         return () => { isMounted = false; };
-    }, [user]);
-
-    // Derived Logic for ECTS
-    const totalPassedECTS = useMemo(() => {
-        return nodes.reduce((acc, node) => {
-            if (node.data.status === 'passed') return acc + node.data.credits;
-            return acc;
-        }, 0);
-    }, [nodes]);
-
-    // Derived Logic for Average Grade (Nota Mitjana Ponderada)
-    const averageGrade = useMemo(() => {
-        let totalGradePoints = 0;
-        let totalGradedCredits = 0;
-        nodes.forEach((node) => {
-            if (node.data.status === 'passed' && typeof node.data.grade === 'number') {
-                totalGradePoints += node.data.grade * node.data.credits;
-                totalGradedCredits += node.data.credits;
-            }
-        });
-        if (totalGradedCredits === 0) return null;
-        return totalGradePoints / totalGradedCredits;
-    }, [nodes]);
-
-    // Required average grade to reach targetGrade (excludes non-gradable nodes)
-    const requiredAverageGrade = useMemo(() => {
-        if (targetGrade === null) return null;
-
-        let gradablePassedPoints = 0;
-        let gradablePassedECTS = 0;
-        let gradableRemainingECTS = 0;
-
-        nodes.forEach(node => {
-            if (!isGradableNode(node)) return;
-
-            if (node.data.status === 'passed' && typeof node.data.grade === 'number') {
-                gradablePassedPoints += node.data.grade * node.data.credits;
-                gradablePassedECTS += node.data.credits;
-            } else if (node.data.status !== 'passed') {
-                gradableRemainingECTS += node.data.credits;
-            }
-        });
-
-        if (gradableRemainingECTS === 0) return null;
-
-        const totalGradableECTS = gradablePassedECTS + gradableRemainingECTS;
-        const required = (targetGrade * totalGradableECTS - gradablePassedPoints) / gradableRemainingECTS;
-        return required;
-    }, [targetGrade, nodes]);
-
-    // PARS Rule: Can start master if remaining credits < 27 (excluding TFG 18)
-    // Degree total is 240. ECTS remaining = 240 - passed. If remaining <= 27 + 18?
-    // Wait, the rule is "missing max 27 ECTS including TFG? No, missing max 9 ECTS + TFG = 27".
-    // This means they must have passed >= 240 - 27 = 213 ECTS.
-    const canStartMaster = useMemo(() => {
-        return totalPassedECTS >= 213;
-    }, [totalPassedECTS]);
-
-    const onNodesChange = useCallback(
-        (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds) as Node<SubjectNodeData>[]),
-        []
-    );
-
-    const onEdgesChange = useCallback(
-        (changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-        []
-    );
-
-
-
-    const checkPrerequisites = useCallback((currentNodes: Node<SubjectNodeData>[], currentEdges: Edge[]) => {
-        // Pre-compute adjacency map once: O(E)
-        const incomingMap = new Map<string, string[]>();
-        for (const e of currentEdges) {
-            const arr = incomingMap.get(e.target);
-            if (arr) arr.push(e.source);
-            else incomingMap.set(e.target, [e.source]);
-        }
-
-        let nodesChanged = true;
-        let newNodes = [...currentNodes];
-
-        // Evaluate repeatedly until the graph stabilizes (to handle cascading locks/unlocks)
-        let safetyCounter = 0;
-        while (nodesChanged && safetyCounter < 15) {
-            nodesChanged = false;
-            safetyCounter++;
-
-            // Pre-compute node lookup map once per iteration: O(N)
-            const nodeMap = new Map(newNodes.map(n => [n.id, n]));
-
-            const maxPassedSemester = newNodes.reduce((max, n) => {
-                const isPassed = n.data.status === 'passed';
-                const isRegularSubject = !['optional', 'specialization', 'tfg', 'tfm', 'mobility', 'internship'].includes(n.data.type);
-                if (isPassed && isRegularSubject) {
-                    return Math.max(max, n.data.semester || getSemesterForSubject(n.id));
-                }
-                return max;
-            }, 0);
-            const allowedSemester = Math.max(1, maxPassedSemester + 1);
-            const passedCredits = newNodes.reduce((sum, n) => n.data.status === 'passed' ? sum + n.data.credits : sum, 0);
-
-            newNodes = newNodes.map(node => {
-                // O(1) lookup instead of O(E) filter
-                const incoming = incomingMap.get(node.id);
-                const edgePrereqsPassed = !incoming || incoming.every(sourceId => {
-                    // O(1) lookup instead of O(N) find
-                    const sourceNode = nodeMap.get(sourceId);
-                    return sourceNode?.data.status === 'passed';
-                });
-
-                const isSemesterAllowed = (node.data.semester || getSemesterForSubject(node.id)) <= allowedSemester;
-                let prereqsMet = edgePrereqsPassed && isSemesterAllowed;
-
-                // Els blocs finals (TFG, Mobilitat, Pràctiques) no depenen d'un semestre seqüencial estricte,
-                // sinó d'haver superat una quantitat suficient de crèdits (aprox. 3 anys = 180 ECTS).
-                // Rebaixem a 160 per donar flexibilitat.
-                if (['tfg', 'tfm', 'mobility', 'internship'].includes(node.data.type)) {
-                    prereqsMet = edgePrereqsPassed && passedCredits >= 160;
-                }
-
-                // If prerequisites are NOT met, force node to locked
-                if (!prereqsMet && node.data.status !== 'locked') {
-                    nodesChanged = true;
-                    return { ...node, data: { ...node.data, status: 'locked' as SubjectStatus, attempts: 0, grade: null } };
-                }
-
-                // If prerequisites ARE met but node is locked, unlock it to 'in_progress'
-                if (prereqsMet && node.data.status === 'locked') {
-                    nodesChanged = true;
-                    return { ...node, data: { ...node.data, status: 'in_progress' as SubjectStatus, attempts: 1 } };
-                }
-
-                return node;
-            });
-        }
-
-        return newNodes;
-    }, []);
-
-    const updateNodeStatus = useCallback((nodeId: string, status: SubjectStatus) => {
-        setNodes((nds) => {
-            const mapped = nds.map((node) => {
-                if (node.id === nodeId) {
-                    let newAttempts = node.data.attempts || 1;
-                    if (node.data.status === 'failed' && status === 'retaking') {
-                        newAttempts += 1;
-                    }
-                    if (status === 'locked' || status === 'available') {
-                        newAttempts = 0;
-                    }
-                    if (status === 'in_progress' && newAttempts === 0) {
-                        newAttempts = 1;
-                    }
-
-                    // Clear grade if status is not passed anymore
-                    let newGrade = node.data.grade;
-                    if (status !== 'passed') {
-                        newGrade = null;
-                    }
-
-                    return { ...node, data: { ...node.data, status, attempts: newAttempts, grade: newGrade } };
-                }
-                return node;
-            });
-            // Re-check prerequisites after status change
-            return checkPrerequisites(mapped, edges);
-        });
-    }, [edges, checkPrerequisites]);
-
-    const updateNodeGrade = useCallback((nodeId: string, grade: number | null) => {
-        setNodes((nds) =>
-            nds.map((node) => {
-                if (node.id === nodeId) {
-                    return { ...node, data: { ...node.data, grade } };
-                }
-                return node;
-            })
-        );
-    }, []);
-
-    const addSubjectNode = useCallback((acronym: string, type: SubjectNodeData['type']) => {
-        const subject = typedSubjectsData.find((s) => s.name === acronym);
-        const semester = getSemesterForSubject(acronym);
-        const newNode: Node<SubjectNodeData> = {
-            id: acronym,
-            position: { x: 0, y: 0 },
-            data: {
-                label: subject?.description || acronym,
-                credits: getCreditsForSubject(acronym),
-                status: 'available',
-                type,
-                attempts: 0,
-                description: subject?.description || acronym,
-                semester,
-                grade: null
-            }
-        };
-
-        setNodes(prev => {
-            const newNodes = [...prev, newNode];
-            const { nodes: layouted } = getGridLayoutedElements(newNodes, edges);
-            return layouted as Node<SubjectNodeData>[];
-        });
-    }, [edges]);
-
-    const addExperienceNode = useCallback((type: 'mobility' | 'internship' | 'tfg' | 'tfm', details: ExperienceDetails) => {
-        const id = `${type}_${Date.now()}`;
-        const credits = details.credits || (type === 'tfg' ? 18 : type === 'tfm' ? 30 : 12);
-
-        let label = 'Experiència';
-        let description = '';
-        if (type === 'mobility') {
-            label = `Mobilitat: ${details.destination || 'Internacional'}`;
-            description = `Programa: ${details.program || 'Erasmus+'}`;
-        } else if (type === 'internship') {
-            label = `Pràctiques: ${details.company || 'Empresa'}`;
-            description = `Rol: ${details.role || 'Enginyer'}`;
-        } else if (type === 'tfg') {
-            label = 'Treball Final de Grau';
-            description = details.title || 'TFG';
-        } else if (type === 'tfm') {
-            label = 'Treball Final de Màster';
-            description = details.title || 'TFM';
-        }
-
-        const newNode: Node<SubjectNodeData> = {
-            id,
-            position: { x: 0, y: 0 },
-            data: {
-                label,
-                credits,
-                status: 'in_progress', // Start in progress visually
-                type,
-                attempts: 1,
-                description,
-                semester: 8, // Usually later in the degree
-                grade: null,
-                details
-            }
-        };
-
-        setNodes(prev => {
-            const newNodes = [...prev, newNode];
-            const { nodes: layouted } = getGridLayoutedElements(newNodes, edges);
-            return layouted as Node<SubjectNodeData>[];
-        });
-    }, [edges]);
-
-    const addCFGSValidations = useCallback((cfgsId: string) => {
-        const cfgs = CFGS_DEGREES.find(c => c.id === cfgsId);
-        if (!cfgs) return;
-
-        const newNodes: Node<SubjectNodeData>[] = cfgs.modules.map((mod, idx) => ({
-            id: `CFGS_${cfgsId}_${idx}_${Date.now()}`,
-            position: { x: 0, y: 0 },
-            data: {
-                label: mod.name,
-                credits: mod.credits,
-                status: 'passed',
-                type: 'optional',
-                attempts: 1,
-                description: `Convalidació de CFGS: ${cfgs.title}`,
-                semester: 9, // Place at the bottom of the graph
-                grade: null
-            }
-        }));
-
-        setNodes(prev => {
-            // Remove any existing CFGS validation nodes so they don't accumulate
-            const filteredPrev = prev.filter(n => !n.id.startsWith('CFGS_'));
-            const combined = [...filteredPrev, ...newNodes];
-            const { nodes: layouted } = getGridLayoutedElements(combined, edges);
-            return layouted as Node<SubjectNodeData>[];
-        });
-    }, [edges]);
-
-    const addCustomValidation = useCallback((name: string, credits: number) => {
-        const newNode: Node<SubjectNodeData> = {
-            id: `VALIDATION_${Date.now()}`,
-            position: { x: 0, y: 0 },
-            data: {
-                label: name,
-                credits,
-                status: 'passed',
-                type: 'optional',
-                attempts: 1,
-                description: `Convalidació: ${name}`,
-                semester: 9, // Place at the bottom
-                grade: null
-            }
-        };
-
-        setNodes(prev => {
-            const newNodes = [...prev, newNode];
-            return newNodes as Node<SubjectNodeData>[];
-        });
-    }, []);
-
-    const addAnnotationNode = useCallback((type: 'text' | 'postit', x: number, y: number) => {
-        const newNode: Node<SubjectNodeData> = {
-            id: `ANNOTATION_${Date.now()}`,
-            position: { x, y },
-            type: type === 'text' ? 'textNode' : 'postItNode',
-            style: { width: type === 'text' ? 300 : 250, height: type === 'text' ? 100 : 250 },
-            data: {
-                label: '',
-                credits: 0,
-                status: 'available',
-                type,
-                attempts: 0,
-                description: '',
-                semester: 0,
-                text: type === 'text' ? 'El teu text aquí' : 'Nota',
-                color: type === 'text' ? '#ffffff' : '#fef08a',
-                fontSize: 16,
-                fontWeight: 'normal'
-            }
-        };
-
-        setNodes(prev => [...prev, newNode]);
-    }, []);
-
-    const updateNodeData = useCallback((nodeId: string, data: Partial<SubjectNodeData>) => {
-        setNodes(prev => prev.map(n => {
-            if (n.id === nodeId) {
-                return { ...n, data: { ...n.data, ...data } };
-            }
-            return n;
-        }));
-    }, []);
-
-    const duplicateAnnotation = useCallback((nodeId: string) => {
-        setNodes(prev => {
-            const sourceNode = prev.find(n => n.id === nodeId);
-            if (!sourceNode) return prev;
-
-            const newNode: Node<SubjectNodeData> = {
-                ...sourceNode,
-                id: `ANNOTATION_${Date.now()}`,
-                selected: false, // Deselect the clone initially
-                style: sourceNode.style,
-                position: {
-                    x: sourceNode.position.x + 40,
-                    y: sourceNode.position.y + 40
-                }
-            };
-            return [...prev, newNode];
-        });
-    }, []);
-
-    const removeNode = useCallback((nodeId: string) => {
-        setNodes(prev => {
-            const newNodes = prev.filter(n => n.id !== nodeId);
-            return newNodes as Node<SubjectNodeData>[];
-        });
-        setEdges(prev => prev.filter(e => e.source !== nodeId && e.target !== nodeId));
-    }, []);
-
-    const setSpecialization = useCallback((specializationId: string) => {
-        const spec = specializations.find(s => s.id === specializationId);
-        if (!spec) return;
-
-        setNodes(prev => {
-            // Remove existing specialization nodes
-            const newNodes = prev.filter(n => n.data.type !== 'specialization');
-
-            // Add new nodes
-            spec.mandatory.forEach(acronym => {
-                // Check if already exists to avoid duplicates
-                if (!newNodes.find(n => n.id === acronym)) {
-                    const subject = typedSubjectsData.find((s) => s.name === acronym);
-                    const semester = getSemesterForSubject(acronym);
-                    newNodes.push({
-                        id: acronym,
-                        position: { x: 0, y: 0 },
-                        data: {
-                            label: subject?.description || acronym,
-                            credits: getCreditsForSubject(acronym),
-                            status: 'locked', // Will be recalculated by checkPrerequisites
-                            type: 'specialization',
-                            attempts: 0,
-                            description: subject?.description || acronym,
-                            semester,
-                            grade: null
-                        }
-                    });
-                }
-            });
-
-            // Apply prerequisites
-            return checkPrerequisites(newNodes as Node<SubjectNodeData>[], edges);
-        });
-    }, [edges, checkPrerequisites]);
-
-    // Recalculate layout when edges change (only on connection)
-    const onConnect = useCallback(
-        (params: Connection) => {
-            setEdges((eds) => addEdge(params, eds));
-        },
-        []
-    );
-
-    // ── Refs for stable saveRoadmap (avoids re-creating actionsValue on every drag) ──
-    const nodesRef = useRef(nodes);
-    const edgesRef = useRef(edges);
-    const itineraryRef = useRef(itinerary);
-    const targetGradeRef = useRef(targetGrade);
-    const userRef = useRef(user);
-    useEffect(() => { nodesRef.current = nodes; }, [nodes]);
-    useEffect(() => { edgesRef.current = edges; }, [edges]);
-    useEffect(() => { itineraryRef.current = itinerary; }, [itinerary]);
-    useEffect(() => { targetGradeRef.current = targetGrade; }, [targetGrade]);
-    useEffect(() => { userRef.current = user; }, [user]);
-
-    // Dirty counter: incremented on every meaningful state change, avoids expensive JSON.stringify
-    const saveVersionRef = useRef(0);
-    const lastSavedVersionRef = useRef(0);
-    useEffect(() => { saveVersionRef.current++; }, [nodes, edges, itinerary, targetGrade]);
-
-    const saveRoadmap = useCallback(async (strokes: DrawingStroke[] = []) => {
-        const currentUser = userRef.current;
-        if (!currentUser) return;
-
-        // Skip if no state changes since last save (unless strokes changed)
-        if (strokes.length === 0 && saveVersionRef.current === lastSavedVersionRef.current) {
-            return;
-        }
-
-        try {
-            const currentNodes = nodesRef.current;
-            const currentEdges = edgesRef.current;
-
-            // Clean nodes and edges to avoid Firebase errors from undefined or non-serializable fields added by ReactFlow
-            const cleanNodes = currentNodes.map(n => ({
-                id: n.id,
-                position: n.position,
-                style: n.style,
-                data: {
-                    label: n.data.label,
-                    credits: n.data.credits,
-                    status: n.data.status,
-                    type: n.data.type,
-                    attempts: n.data.attempts,
-                    description: n.data.description,
-                    semester: n.data.semester,
-                    grade: n.data.grade,
-                    text: n.data.text,
-                    color: n.data.color,
-                    fontSize: n.data.fontSize,
-                    fontWeight: n.data.fontWeight
-                },
-                type: n.type || 'subjectNode',
-            }));
-            const cleanEdges = currentEdges.map(e => ({
-                id: e.id,
-                source: e.source,
-                target: e.target,
-                animated: !!e.animated
-            }));
-
-            const payload = removeUndefined({
-                nodes: cleanNodes,
-                edges: cleanEdges,
-                itinerary: itineraryRef.current,
-                strokes,
-                targetGrade: targetGradeRef.current
-            });
-
-            const { db } = await import('../lib/firebase');
-            const { doc, setDoc } = await import('firebase/firestore');
-            const docRef = doc(db, 'users', currentUser.id, 'roadmaps', 'main');
-            await setDoc(docRef, {
-                ...payload,
-                updatedAt: new Date().toISOString()
-            });
-            
-            lastSavedVersionRef.current = saveVersionRef.current;
-        } catch (err) {
-            console.error("Error saving roadmap:", err);
-            throw err;
-        }
-    }, []); // ← Stable! No dependencies that change on drag
-
-    // Data context: re-renders only when nodes/edges/derived data changes
-    const dataValue = useMemo(() => ({
-        nodes, edges, itinerary,
-        isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes,
-        targetGrade, requiredAverageGrade
-    }), [nodes, edges, itinerary, isLoading, totalPassedECTS, canStartMaster, averageGrade, initialStrokes, targetGrade, requiredAverageGrade]);
-
-    // Actions context: stable callbacks, rarely re-created (only when their explicit deps change)
-    const actionsValue = useMemo(() => ({
-        setItinerary,
-        onNodesChange, onEdgesChange, onConnect,
-        updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode,
-        setSpecialization, setTargetGrade
-    }), [onNodesChange, onEdgesChange, onConnect, updateNodeStatus, updateNodeGrade, saveRoadmap, addSubjectNode, addExperienceNode, addCFGSValidations, addCustomValidation, addAnnotationNode, updateNodeData, duplicateAnnotation, removeNode, setSpecialization]);
+    }, [user, store]);
 
     return (
-        <RoadmapDataContext.Provider value={dataValue}>
-            <RoadmapActionsContext.Provider value={actionsValue}>
-                {children}
-            </RoadmapActionsContext.Provider>
-        </RoadmapDataContext.Provider>
+        <RoadmapContext.Provider value={store}>
+            {children}
+        </RoadmapContext.Provider>
     );
 };
 
-/** Full hook — subscribes to BOTH data + actions (re-renders on node changes). Use when you need nodes/edges. */
-export const useRoadmap = (): RoadmapContextType => {
-    const data = useContext(RoadmapDataContext);
-    const actions = useContext(RoadmapActionsContext);
-    if (data === undefined || actions === undefined) {
-        throw new Error('useRoadmap must be used within a RoadmapProvider');
-    }
-    return { ...data, ...actions };
-};
+export function useRoadmap<T>(selector: (state: RoadmapState) => T): T {
+    const store = useContext(RoadmapContext);
+    if (!store) throw new Error('useRoadmap must be used within a RoadmapProvider');
+    return useStore(store, selector);
+}
 
-/** Actions-only hook — does NOT re-render when nodes/edges change. Use for modals, context menus, etc. */
-export const useRoadmapActions = (): RoadmapActionsContextType => {
-    const actions = useContext(RoadmapActionsContext);
-    if (actions === undefined) {
-        throw new Error('useRoadmapActions must be used within a RoadmapProvider');
-    }
-    return actions;
-};
-
-/** Data-only hook — subscribes to data changes only. */
-export const useRoadmapData = (): RoadmapDataContextType => {
-    const data = useContext(RoadmapDataContext);
-    if (data === undefined) {
-        throw new Error('useRoadmapData must be used within a RoadmapProvider');
-    }
-    return data;
-};
+// Deprecated alias aliases
+export const useRoadmapActions = () => useRoadmap(state => state);
+export const useRoadmapData = () => useRoadmap(state => state);

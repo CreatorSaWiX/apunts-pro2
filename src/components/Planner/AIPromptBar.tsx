@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, StopCircle, Plus, X } from 'lucide-react';
 import { useTasks } from '../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +21,13 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
     const [streamPhase, setStreamPhase] = useState<StreamPhase>('idle');
     const [thoughtText, setThoughtText] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const { tasks, addTask, updateTask, deleteTask, subjects } = useTasks();
+    const { tasks, addTask, updateTask, deleteTask, subjects } = useTasks(useShallow(state => ({
+        tasks: state.tasks,
+        addTask: state.addTask,
+        updateTask: state.updateTask,
+        deleteTask: state.deleteTask,
+        subjects: state.subjects
+    })));
     const { aiSettings } = useSettingsStore();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);

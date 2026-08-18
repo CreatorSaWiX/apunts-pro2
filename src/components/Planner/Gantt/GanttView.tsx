@@ -3,6 +3,7 @@ import { flushSync } from 'react-dom';
 import { format, addDays, addMinutes } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import { useTasks } from '../../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import type { Task, Subject } from '../../../types/tasks';
 import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor, closestCorners, useDroppable, type DragEndEvent } from '@dnd-kit/core';
@@ -11,7 +12,11 @@ import UnscheduledDrawer from '../UnscheduledDrawer';
 import TaskCard from '../Board/TaskCard';
 
 const GanttView: React.FC = () => {
-    const { filteredTasks: tasks, updateTask, subjects } = useTasks();
+    const { filteredTasks: tasks, updateTask, subjects } = useTasks(useShallow(state => ({
+        filteredTasks: state.filteredTasks,
+        updateTask: state.updateTask,
+        subjects: state.subjects
+    })));
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
 

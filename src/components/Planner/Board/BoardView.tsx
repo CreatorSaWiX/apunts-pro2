@@ -13,6 +13,7 @@ import {
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { useTasks } from '../../../contexts/TasksContext';
+import { useShallow } from 'zustand/react/shallow';
 import BoardColumn from './BoardColumn';
 import TaskCard from './TaskCard';
 import type { Task, TaskStatus } from '../../../types/tasks';
@@ -31,7 +32,13 @@ const PRESET_COLORS = ['indigo-400', 'fuchsia-400', 'emerald-400', 'amber-400', 
 
 const BoardView: React.FC = () => {
     const { t } = useTranslation();
-    const { filteredTasks: tasks, tasks: allTasks, updateTask, addTask, deleteTask } = useTasks();
+    const { filteredTasks: tasks, tasks: allTasks, updateTask, addTask, deleteTask } = useTasks(useShallow(state => ({
+        filteredTasks: state.filteredTasks,
+        tasks: state.tasks,
+        updateTask: state.updateTask,
+        addTask: state.addTask,
+        deleteTask: state.deleteTask
+    })));
     const [localTasks, setLocalTasks] = useState(tasks);
 
     useEffect(() => {
