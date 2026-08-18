@@ -1,171 +1,60 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { LogOut, Upload, Mail, Send, Bell, ExternalLink } from 'lucide-react';
 import { useParams, Navigate } from 'react-router-dom';
-
 import { m as motion, AnimatePresence } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
 import InboxModal from '../components/notifications/InboxModal';
 import Spinner from '../components/ui/Spinner';
-
 import FileUploader, { type Attachment } from '../components/ui/inputs/FileUploader';
 import type { CommunityPost } from '../types/community';
 import PublicationCard from '../components/community/PublicationCard';
-const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
 import { useTranslation } from 'react-i18next';
+import InlineEditableText from '../components/ui/inputs/InlineEditableText';
+import { useProfile } from '../hooks/useProfile';
+import { useAuth } from '../contexts/AuthContext';
 
+const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
 
-// --- Inline Editable Text Component ---
-const InlineEditableText = ({
-    value,
-    onSave,
-    className,
-    placeholder,
-    isEditable,
-    multiline = false,
-    inputClassName = '',
-    externalLink
-}: {
-    value: string;
-    onSave: (val: string) => Promise<void>;
-    className?: string;
-    placeholder?: string;
-    isEditable: boolean;
-    multiline?: boolean;
-    inputClassName?: string;
-    externalLink?: string;
-}) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [tempValue, setTempValue] = useState(value);
-    const [isSaving, setIsSaving] = useState(false);
-    const { t } = useTranslation();
-
-    useEffect(() => {
-        setTempValue(value);
-    }, [value]);
-
-    const save = async () => {
-        if (tempValue !== value) {
-            setIsSaving(true);
-            await onSave(tempValue);
-            setIsSaving(false);
-        }
-        setIsEditing(false);
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !multiline) {
-            save();
-        } else if (e.key === 'Escape') {
-            setTempValue(value);
-            setIsEditing(false);
-        }
-    };
-
-    if (!isEditable) {
-        return <span className={className}>{value || placeholder}</span>;
-    }
-
-    if (isEditing) {
-        return (
-            <div className="relative inline-block w-full max-w-full">
-                {multiline ? (
-                    <textarea
-                        autoFocus
-                        value={tempValue}
-                        onChange={(e) => setTempValue(e.target.value)}
-                        onBlur={save}
-                        onKeyDown={handleKeyDown}
-                        className={`${className} bg-transparent border-none p-0 m-0 outline-none w-full resize-none focus:ring-0 ${inputClassName}`}
-                        rows={3}
-                        disabled={isSaving}
-                    />
-                ) : (
-                    <input
-                        autoFocus
-                        value={tempValue}
-                        onChange={(e) => setTempValue(e.target.value)}
-                        onBlur={save}
-                        onKeyDown={handleKeyDown}
-                        className={`${className} bg-transparent border-none p-0 m-0 outline-none w-full focus:ring-0 ${inputClassName}`}
-                        disabled={isSaving}
-                    />
-                )}
-                {isSaving && <div className="absolute right-0 top-1/2 -translate-y-1/2"><Spinner size="sm" /></div>}
-            </div>
-        );
-    }
-
-    return (
-        <span className="inline-flex items-center gap-1.5">
-            <span
-                onClick={() => setIsEditing(true)}
-                className={`${className} cursor-text group/inline relative inline-flex items-center`}
-                title={t('common.clickToEdit', 'Fes clic per editar')}
-            >
-                <span className="line-clamp-2">{value || <span className="text-slate-500 italic">{placeholder}</span>}</span>
-            </span>
-            {externalLink && value && (
-                <a href={externalLink} target="_blank" rel="noreferrer" className="text-slate-500 hover:text-white transition-colors cursor-pointer" title="Visitar" onClick={(e) => e.stopPropagation()}>
-                    <ExternalLink size={14} strokeWidth={2.5} />
-                </a>
-            )}
-        </span>
-    );
-};
-
-// --- Main Profile Component ---
 const ProfilePage = () => {
     const { t } = useTranslation();
     const { username } = useParams();
-    const { user: authUser, logout, isLoading: authLoading, updateUser } = useAuth();
-
-    const isOwnProfile = Boolean(!username || (authUser && authUser.username === username));
+    const { user: authUser, logout, isLoading: authLoading } = useAuth();
+    
+    const {
+        extendedUser,
+        isFetchingUser,
+        isOwnProfile,
+        userPosts,
+        isFetchingPosts,
+        hasMorePosts,
+        loadMorePosts,
+        unreadCount,
+        unreadNotificationsCount,
+        handleUpdateProfile,
+        setUserPosts
+    } = useProfile(username);
 
     const [isMailboxOpen, setIsMailboxOpen] = useState(false);
     const [isInboxOpen, setIsInboxOpen] = useState(false);
     const [isComposeOpen, setIsComposeOpen] = useState(false);
-    const [unreadCount, setUnreadCount] = useState(0);
-    const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
-
-    interface ExtendedUser {
-        id: string;
-        username: string;
-        avatar?: string;
-        banner?: string;
-        bio?: string;
-        portfolio?: string;
-        role?: string;
-        email?: string;
-    }
-
-    const [extendedUser, setExtendedUser] = useState<ExtendedUser | null>(null);
-    const [isFetchingUser, setIsFetchingUser] = useState(true);
-
-    const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
-    const [isFetchingPosts, setIsFetchingPosts] = useState(true);
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
     const bannerRef = React.useRef<HTMLDivElement>(null);
 
+    // Parallax effect for the banner
     useEffect(() => {
         let animationFrameId: number;
 
         const render = () => {
             if (!bannerRef.current) return;
-
             const y = window.scrollY;
 
             if (y < 0) {
-                // Native Safari/iOS Overscroll
                 const bannerHeight = bannerRef.current.offsetHeight || 380;
                 const scale = 1 + (Math.abs(y) / bannerHeight);
-                // translateY(y) moves it UP relative to the document, canceling the OS down-shift
                 bannerRef.current.style.transform = `translate3d(0, ${y}px, 0) scale(${scale})`;
             } else if (y > 0) {
-                // Parallax Effect on Scroll Down
                 const isMobile = window.innerWidth < 768;
-                // Stronger parallax for mobile
                 const parallaxSpeed = isMobile ? 0.75 : 0.4;
                 const fadeSpeed = isMobile ? 400 : 500;
                 
@@ -184,222 +73,13 @@ const ProfilePage = () => {
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll(); // Initial check
+        handleScroll();
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
         };
     }, []);
-
-    useEffect(() => {
-        let isMounted = true;
-        const fetchUserData = async () => {
-            const targetUsername = username || authUser?.username;
-            if (targetUsername) {
-                setIsFetchingUser(true);
-                const [{ db }, { doc, getDoc }] = await Promise.all([
-                    import('../lib/firebase'),
-                    import('firebase/firestore')
-                ]);
-                if (!isMounted) return;
-                
-                // 1. Cercar quin UID correspon a aquest username
-                const usernameDoc = await getDoc(doc(db, 'usernames', targetUsername));
-                let resolvedUid = null;
-                
-                if (usernameDoc.exists()) {
-                    resolvedUid = usernameDoc.data().uid;
-                }
-                
-                // 2. Si l'hem trobat, descarregar l'usuari complet
-                if (resolvedUid && isMounted) {
-                    const userDocSnap = await getDoc(doc(db, 'users', resolvedUid));
-                    if (userDocSnap.exists()) {
-                        setExtendedUser({ ...userDocSnap.data(), id: userDocSnap.id } as ExtendedUser);
-                        setIsFetchingUser(false);
-                        return; // Acabem amb èxit
-                    }
-                }
-                
-                if (!isMounted) return;
-
-                // 3. Fallbacks
-                if (isOwnProfile && authUser) {
-                    setExtendedUser(authUser);
-                } else {
-                    setExtendedUser({
-                        username: t('profile.defaultUser', 'Usuari'),
-                        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${targetUsername}`,
-                        id: targetUsername
-                    });
-                }
-                setIsFetchingUser(false);
-            }
-        };
-        fetchUserData();
-        return () => { isMounted = false; };
-    }, [username, authUser, isOwnProfile, t]);
-
-    useEffect(() => {
-        if (!extendedUser?.id) return;
-        let isMounted = true;
-        
-        const fetchPosts = async () => {
-            setIsFetchingPosts(true);
-            try {
-                const [{ db }, { collection, query, where, getDocs }] = await Promise.all([
-                    import('../lib/firebase'),
-                    import('firebase/firestore')
-                ]);
-                if (!isMounted) return;
-
-                const q = query(collection(db, 'community_posts'), where('userId', '==', extendedUser.id));
-                const snapshot = await getDocs(q);
-                
-                if (!isMounted) return;
-
-                const posts: CommunityPost[] = [];
-                snapshot.forEach(doc => {
-                    posts.push({ id: doc.id, ...doc.data() } as CommunityPost);
-                });
-                posts.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
-                setUserPosts(posts);
-            } catch (err) {
-                console.error("Error fetching user posts:", err);
-            } finally {
-                if (isMounted) setIsFetchingPosts(false);
-            }
-        };
-        fetchPosts();
-        return () => { isMounted = false; };
-    }, [extendedUser?.id]);
-
-    useEffect(() => {
-        if (!isOwnProfile || !authUser) return;
-        let isMounted = true;
-        let unsubscribeMsg: (() => void) | undefined;
-        let unsubscribeNotif: (() => void) | undefined;
-
-        const setup = async () => {
-            const [{ db }, { collection, query, where, onSnapshot }] = await Promise.all([
-                import('../lib/firebase'),
-                import('firebase/firestore')
-            ]);
-            
-            if (!isMounted) return;
-
-            const qMsg = query(collection(db, 'messages'), where('receiverId', '==', authUser.id), where('read', '==', false));
-            unsubscribeMsg = onSnapshot(qMsg, (snapshot) => setUnreadCount(snapshot.size));
-
-            const qNotif = query(collection(db, 'notifications'), where('userId', '==', authUser.id), where('read', '==', false));
-            unsubscribeNotif = onSnapshot(qNotif, (snapshot) => setUnreadNotificationsCount(snapshot.size));
-        };
-
-        setup();
-        return () => { 
-            isMounted = false;
-            if (unsubscribeMsg) unsubscribeMsg(); 
-            if (unsubscribeNotif) unsubscribeNotif(); 
-        };
-    }, [isOwnProfile, authUser]);
-
-    const handleUpdateProfile = async (data: Partial<ExtendedUser>) => {
-        if (!authUser?.id) return;
-        const [{ db, auth }, { doc, setDoc, deleteDoc, getDoc, collection, collectionGroup, query, where, getDocs, writeBatch }, { updateProfile }] = await Promise.all([
-            import('../lib/firebase'),
-            import('firebase/firestore'),
-            import('firebase/auth')
-        ]);
-        const userRef = doc(db, 'users', authUser.id);
-        try {
-            if (data.username && data.username !== authUser.username) {
-                const newUsernameDoc = await getDoc(doc(db, 'usernames', data.username));
-                if (newUsernameDoc.exists()) {
-                    throw new Error("Aquest nom d'usuari ja està en ús. Tria'n un altre.");
-                }
-                
-                // Creem la reserva del nou nom d'usuari amb l'avatar
-                await setDoc(doc(db, 'usernames', data.username), { uid: authUser.id, avatar: data.avatar || authUser.avatar || '' });
-                
-                // Esborrem la reserva de l'antic nom
-                if (authUser.username) {
-                    try {
-                        await deleteDoc(doc(db, 'usernames', authUser.username));
-                    } catch (e) {
-                        console.error("No s'ha pogut esborrar el username antic", e);
-                    }
-                }
-            } else if (data.avatar && authUser.username) {
-                // Només s'actualitza l'avatar, mantenint el nom actual
-                await setDoc(doc(db, 'usernames', authUser.username), { uid: authUser.id, avatar: data.avatar }, { merge: true });
-            }
-
-            await setDoc(userRef, data, { merge: true });
-            if (auth.currentUser && (data.username || data.avatar)) {
-                await updateProfile(auth.currentUser, { 
-                    displayName: data.username || auth.currentUser.displayName, 
-                    photoURL: data.avatar || auth.currentUser.photoURL 
-                });
-            }
-
-            if (data.avatar || data.username) {
-                const updateData: any = {};
-                if (data.avatar) updateData.userAvatar = data.avatar;
-                if (data.username) updateData.username = data.username;
-
-                // Actualització de Posts
-                try {
-                    const batch = writeBatch(db);
-                    const postsQuery = query(collection(db, 'community_posts'), where('userId', '==', authUser.id));
-                    const postsSnapshot = await getDocs(postsQuery);
-                    postsSnapshot.forEach((postDoc) => batch.update(postDoc.ref, updateData));
-                    await batch.commit();
-                } catch (batchError) {
-                    console.error("Error updating past posts:", batchError);
-                }
-
-                // Actualització de Replies (Requereix index de CollectionGroup, pot fallar silenciosament)
-                try {
-                    const batch = writeBatch(db);
-                    const repliesQuery = query(collectionGroup(db, 'replies'), where('userId', '==', authUser.id));
-                    const repliesSnapshot = await getDocs(repliesQuery);
-                    repliesSnapshot.forEach((replyDoc) => {
-                        const replyUpdate: any = {};
-                        if (data.avatar) { replyUpdate.userAvatar = data.avatar; replyUpdate.fromUserAvatar = data.avatar; }
-                        if (data.username) { replyUpdate.username = data.username; }
-                        batch.update(replyDoc.ref, replyUpdate);
-                    });
-                    if (!repliesSnapshot.empty) await batch.commit();
-                } catch (e) {
-                    console.warn("No s'ha pogut actualitzar els replies (pot faltar index de collectionGroup):", e);
-                }
-
-                // Actualització de Comentaris (Requereix index de CollectionGroup)
-                try {
-                    const batch = writeBatch(db);
-                    const commentsQuery = query(collectionGroup(db, 'comments'), where('userId', '==', authUser.id));
-                    const commentsSnapshot = await getDocs(commentsQuery);
-                    commentsSnapshot.forEach((commentDoc) => {
-                        const commentUpdate: any = {};
-                        if (data.avatar) { commentUpdate.userAvatar = data.avatar; commentUpdate.fromUserAvatar = data.avatar; }
-                        if (data.username) { commentUpdate.username = data.username; }
-                        batch.update(commentDoc.ref, commentUpdate);
-                    });
-                    if (!commentsSnapshot.empty) await batch.commit();
-                } catch (e) {
-                    console.warn("No s'ha pogut actualitzar els comentaris (pot faltar index de collectionGroup):", e);
-                }
-            }
-
-            setExtendedUser((prev: ExtendedUser | null) => prev ? { ...prev, ...data } : null);
-            updateUser(data);
-            if (data.username !== authUser.username && data.username) window.location.reload();
-        } catch (error) {
-            console.error("Error updating profile:", error);
-            alert(error instanceof Error ? error.message : "Error al guardar el perfil.");
-        }
-    };
 
     const handleImageUpload = async (attachments: Attachment[], field: 'avatar' | 'banner') => {
         if (attachments.length > 0) {
@@ -419,7 +99,6 @@ const ProfilePage = () => {
 
     const getProxyUrl = (url: string | undefined | null) => {
         if (!url) return undefined;
-        // Si estem en desenvolupament (Vite), passem pel proxy per evitar el bloqueig dels ISPs espanyols al subdomini .r2.dev
         if (import.meta.env.DEV && url.includes('.r2.dev/')) {
             const path = new URL(url).pathname;
             return `/api/cdn${path}`;
@@ -434,20 +113,10 @@ const ProfilePage = () => {
 
     return (
         <div className="min-h-screen w-full relative z-10 font-sans bg-transparent">
-
-            {/* HERO SECTION - Premium Bento Approach */}
+            {/* HERO SECTION */}
             <div className="relative w-full flex flex-col mb-4 md:mb-8 group/hero">
-                {/* Banner Container */}
                 <div className="relative w-full h-[220px] md:h-[320px] lg:h-[380px]">
-                    {/* Immersive background header with smooth mask. Native scroll listener handles overscroll scale. */}
-                    <div
-                        ref={bannerRef}
-                        className="absolute inset-0 apple-mask-hero pointer-events-none select-none overflow-hidden"
-                        style={{
-                            transformOrigin: 'top',
-                            willChange: 'transform' // Performance optimization
-                        }}
-                    >
+                    <div ref={bannerRef} className="absolute inset-0 apple-mask-hero pointer-events-none select-none overflow-hidden" style={{ transformOrigin: 'top', willChange: 'transform' }}>
                         {isBannerVideo ? (
                             <>
                                 <video src={bannerUrl} autoPlay loop muted playsInline className="absolute inset-0 object-cover w-full h-full opacity-40 blur-[40px] scale-110 transition-opacity duration-1000" />
@@ -469,13 +138,7 @@ const ProfilePage = () => {
                                     <Upload size={14} />
                                     <span className="hidden sm:inline">{t('profile.bannerFormatHint', '2MB max (WebP/WebM recomanat)')}</span>
                                 </button>
-                                <FileUploader
-                                    variant="avatar"
-                                    acceptType="imagesAndVideos"
-                                    maxSizeMB={2}
-                                    maxFiles={1}
-                                    onUploadComplete={(atts) => handleImageUpload(atts, 'banner')}
-                                />
+                                <FileUploader variant="avatar" acceptType="imagesAndVideos" maxSizeMB={2} maxFiles={1} onUploadComplete={(atts) => handleImageUpload(atts, 'banner')} />
                             </div>
                         </div>
                     )}
@@ -484,7 +147,6 @@ const ProfilePage = () => {
                 {/* Profile Info Container */}
                 <div className="w-full px-4 md:px-8 max-w-[1100px] mx-auto flex flex-col md:flex-row md:items-end gap-4 md:gap-8 relative z-20 -mt-16 md:-mt-20">
                     <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="relative shrink-0 group/avatar mx-auto md:mx-0">
-                        {/* Awwwards touch: subtle glow behind avatar */}
                         <div className="absolute inset-0 bg-primary/20 blur-[30px] rounded-full pointer-events-none md:opacity-50 opacity-100" />
                         <div className="w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-[1.25rem] md:rounded-[2rem] p-1 bg-[#020617]/60 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/20 relative overflow-hidden z-10">
                             <img src={avatarUrl} alt={extendedUser?.username} loading="lazy" className="w-full h-full rounded-[1rem] md:rounded-[1.7rem] object-cover bg-[#111]" />
@@ -493,13 +155,7 @@ const ProfilePage = () => {
                                     <Upload size={24} className="mb-1 relative z-20 pointer-events-none" />
                                     <span className="text-[10px] md:text-xs font-bold tracking-widest uppercase text-center px-2 relative z-20 pointer-events-none">{t('common.change', 'Canviar')}</span>
                                     <div className="absolute inset-0 z-10">
-                                        <FileUploader
-                                            variant="avatar"
-                                            acceptType="images"
-                                            maxFiles={1}
-                                            maxSizeMB={5}
-                                            onUploadComplete={(atts) => handleImageUpload(atts, 'avatar')}
-                                        />
+                                        <FileUploader variant="avatar" acceptType="images" maxFiles={1} maxSizeMB={5} onUploadComplete={(atts) => handleImageUpload(atts, 'avatar')} />
                                     </div>
                                 </div>
                             )}
@@ -582,25 +238,36 @@ const ProfilePage = () => {
                 </div>
             </div>
 
-            {/* USER POSTS MASONRY GRID */}
+            {/* USER POSTS */}
             <div className="max-w-[1100px] mx-auto px-4 md:px-8 w-full mt-8 md:mt-12 lg:mt-20 pb-32 relative z-30">
-                {/* Posts title section removed per user request */}
-
-                {isFetchingPosts ? (
+                {isFetchingPosts && userPosts.length === 0 ? (
                     <div className="flex justify-center items-center py-20">
                         <Spinner size="md" variant="primary" />
                     </div>
                 ) : userPosts.length > 0 ? (
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-                        className="columns-1 sm:columns-2 lg:columns-3 gap-4 md:gap-6 space-y-4 md:space-y-6 max-w-[1200px] mx-auto pb-24"
-                    >
-                        {userPosts.map(post => (
-                            <div key={post.id} className="break-inside-avoid mb-4 md:mb-6" onClick={() => setSelectedPost(post)}>
-                                <PublicationCard post={post} />
+                    <>
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
+                            className="columns-1 sm:columns-2 lg:columns-3 gap-4 md:gap-6 space-y-4 md:space-y-6 max-w-[1200px] mx-auto"
+                        >
+                            {userPosts.map(post => (
+                                <div key={post.id} className="break-inside-avoid mb-4 md:mb-6 cursor-pointer" onClick={() => setSelectedPost(post)}>
+                                    <PublicationCard post={post} />
+                                </div>
+                            ))}
+                        </motion.div>
+                        
+                        {hasMorePosts && (
+                            <div className="flex justify-center mt-12 mb-8">
+                                <button 
+                                    onClick={loadMorePosts}
+                                    className="px-6 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition border border-white/10 shadow-lg text-sm font-semibold flex items-center gap-2"
+                                >
+                                    {t('common.loadMore', 'Carregar més')}
+                                </button>
                             </div>
-                        ))}
-                    </motion.div>
+                        )}
+                    </>
                 ) : (
                     <div className="text-center py-20">
                         <p className="text-slate-500 font-medium">{t('profile.posts.noPosts', 'Aquest usuari encara no ha publicat res.')}</p>
