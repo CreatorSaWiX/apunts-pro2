@@ -170,7 +170,7 @@ export const SubjectsSection = () => {
                                                 className="flex items-center justify-between px-4 py-3 rounded-xl transition text-left group/item hover:bg-white/5"
                                                 aria-label="Obrir panell">
                                                 <div className="flex items-center gap-3">
-                                                    <div className={`w-2.5 h-2.5 rounded-full bg-${colorFamily}-500`} />
+                                                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: tailwindColors[colorFamily]?.primary || '#0ea5e9' }} />
                                                     <span className="font-bold text-slate-200">{subject.name}</span>
                                                 </div>
                                                 <ChevronRight size={18} className="text-slate-600 group-hover/item:text-white transition-colors" />

@@ -11,6 +11,7 @@ import FileUploader from '../ui/inputs/FileUploader';
 import { ImagePlus } from 'lucide-react';
 import subjectsData from '../../data/subjects.json';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { tailwindColors } from '../../stores/useSubjectStore';
 
 interface PublicationCardProps {
     post: CommunityPost;
@@ -185,7 +186,10 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                 )}
                 {subjectData && (
                     <div className="bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold tracking-widest px-2 py-1 rounded-md flex items-center gap-1.5 shadow-xl">
-                        <span className={`w-1.5 h-1.5 rounded-full bg-${subjectData.colorToken}`} />
+                        <span 
+                            className="w-1.5 h-1.5 rounded-full" 
+                            style={{ backgroundColor: tailwindColors[subjectData.colorToken?.split('-')[0] || 'sky']?.primary || '#0ea5e9' }}
+                        />
                         {subjectData.name}
                     </div>
                 )}
