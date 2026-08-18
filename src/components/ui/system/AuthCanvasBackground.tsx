@@ -106,11 +106,16 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
             transformed.y = ly;
             vComputedColor = hsl2rgb(hsl);
             `
-        ).replace(
-            `#include <color_vertex>`,
+        );
+
+        shader.fragmentShader = `
+            varying vec3 vComputedColor;
+            ${shader.fragmentShader}
+        `.replace(
+            `#include <color_fragment>`,
             `
-            #include <color_vertex>
-            vColor.xyz = vComputedColor;
+            #include <color_fragment>
+            diffuseColor.rgb *= vComputedColor;
             `
         );
     };
@@ -131,12 +136,12 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
             {/* Solid colored layer */}
             <mesh geometry={geometry} position={[0, -0.05, 0]}>
                 <meshPhongMaterial
-                    vertexColors={true}
                     transparent
                     opacity={0.8}
                     side={THREE.DoubleSide}
                     shininess={50}
                     onBeforeCompile={onBeforeCompileSolid}
+                    customProgramCacheKey={() => `colored-${variant}`}
                 />
             </mesh>
         </group>
@@ -226,12 +231,8 @@ const MathBackground = ({ variant }: { variant: 'login' | 'register' }) => {
 
     useEffect(() => {
         let frameId: number;
-        let lastTime = 0;
         const render = (t: number) => {
-            if (t - lastTime >= 33) {
-                setTime(t / 1000);
-                lastTime = t;
-            }
+            setTime(t / 1000);
             frameId = requestAnimationFrame(render);
         };
         frameId = requestAnimationFrame(render);
