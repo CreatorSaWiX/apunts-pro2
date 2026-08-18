@@ -11,7 +11,6 @@ interface SolutionHeaderProps {
     nextSolution: any;
     jutgeUrl?: string;
     canonicalTitle: string;
-    isSolved: boolean;
 }
 
 const SolutionHeader = ({
@@ -22,7 +21,6 @@ const SolutionHeader = ({
     nextSolution,
     jutgeUrl,
     canonicalTitle,
-    isSolved
 }: SolutionHeaderProps) => {
     const { t } = useTranslation();
 
@@ -33,37 +31,31 @@ const SolutionHeader = ({
             transition={{ duration: 0.5 }}
             className="flex items-center justify-between mb-8 pb-4 border-b border-white/5"
         >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 min-w-0">
                 <Link
                     to={`/tema/${topicId}/solucionaris`}
-                    className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white transition border border-white/5 hover:border-white/20"
+                    className="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-800/50 hover:bg-white/10 text-slate-400 hover:text-white transition border border-white/5 hover:border-white/20"
                     title={t('solutionDetail.backToList', 'Tornar a la llista')}
                 >
                     <ArrowLeft size={18} />
                 </Link>
 
-                <div className="flex flex-col">
-                    <div className="flex items-center gap-2">
+                <div className="flex flex-col min-w-0">
+                    <div className="flex items-center gap-2 min-w-0">
                         {jutgeUrl ? (
-                            <a href={jutgeUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-emerald-400 hover:text-emerald-300 hover:underline font-bold tracking-tight text-lg flex items-center gap-1.5" title={t('solutionDetail.openJutge', 'Obrir problema al Jutge')}>
+                            <a href={jutgeUrl} target="_blank" rel="noopener noreferrer" className="shrink-0 font-mono text-emerald-400 hover:text-emerald-300 hover:underline font-bold tracking-tight text-lg flex items-center gap-1.5" title={t('solutionDetail.openJutge', 'Obrir problema al Jutge')}>
                                 {solution.id}
                                 <ExternalLink size={16} className="opacity-70" />
                             </a>
                         ) : (
-                            <span className="font-mono text-emerald-400 font-bold tracking-tight text-lg">
+                            <span className="shrink-0 font-mono text-emerald-400 font-bold tracking-tight text-lg">
                                 {solution.id}
                             </span>
                         )}
-                        <span className="w-1 h-1 rounded-full bg-slate-600"></span>
-                        <h1 className="text-lg font-bold text-slate-200 truncate max-w-xs sm:max-w-md">
+                        <span className="shrink-0 w-1 h-1 rounded-full bg-slate-600"></span>
+                        <h1 className="text-lg font-bold text-slate-200 truncate">
                             {canonicalTitle}
                         </h1>
-                        {isSolved && (
-                            <div className="hidden sm:flex items-center gap-1 ml-2 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
-                                <CheckCircle size={10} className="fill-current" />
-                                <span>{t('solutionDetail.accepted', 'Acceptat')}</span>
-                            </div>
-                        )}
                     </div>
                     {/* Author Info */}
                     <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">

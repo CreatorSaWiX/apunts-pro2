@@ -17,7 +17,6 @@ import { ShortcutsSection } from '../components/settings/ShortcutsSection';
 
 type TabId = 'general' | 'shortcuts' | 'offline' | 'ai' | 'about';
 
-
 const SettingsContent = () => {
     const { t } = useTranslation();
     const { user } = useAuth();

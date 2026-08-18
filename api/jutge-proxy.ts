@@ -24,4 +24,4 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
         console.error("[Vercel API] Proxy Error:", e);
         return jsonResponse({ error: 'Error intern del servidor' }, 500);
     }
-});
+}, { requireAuth: false });

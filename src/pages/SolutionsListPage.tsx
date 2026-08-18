@@ -14,13 +14,13 @@ const SolutionsListPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
-    
+
     const [availablePdfs, setAvailablePdfs] = useState<{ ca: boolean; es: boolean }>({ ca: false, es: false });
 
     // 1. Get definitions for the current topic from our static structure
     const [topicDefinition, setTopicDefinition] = useState<TopicDefinition | undefined>(undefined);
     const [importError, setImportError] = useState(false);
-    
+
     useEffect(() => {
         import('../content/data/courseStructure')
             .then(m => {
@@ -32,7 +32,7 @@ const SolutionsListPage = () => {
                 setImportError(true);
             });
     }, [topicId]);
-    
+
     // We pass the explicit problem IDs so they are searched globally (not just constrained by topicId namespace)
     const predefinedProblemIds = useMemo(() => topicDefinition?.problems?.map(p => p.id) || [], [topicDefinition]);
     const { solutions: uploadedSolutions, loading } = useSolutions(topicId || '', predefinedProblemIds);
@@ -57,14 +57,14 @@ const SolutionsListPage = () => {
                         fetch(`/pdfs/solucionaris/${subject}/ca/solucionari-${topicId}.pdf`, { method: 'HEAD' }),
                         fetch(`/pdfs/solucionaris/${subject}/es/solucionari-${topicId}.pdf`, { method: 'HEAD' })
                     ]);
-                    
+
                     const isValidPdf = (res: Response) => {
                         return res.ok && res.headers.get('content-type')?.includes('application/pdf');
                     };
 
-                    setAvailablePdfs({ 
-                        ca: !!isValidPdf(caRes), 
-                        es: !!isValidPdf(esRes) 
+                    setAvailablePdfs({
+                        ca: !!isValidPdf(caRes),
+                        es: !!isValidPdf(esRes)
                     });
                 } catch (e) {
                     console.error("Error comprovant PDFs de solucionaris", e);
@@ -138,7 +138,7 @@ const SolutionsListPage = () => {
     }
 
     return (
-        <div className="min-h-screen pt-28 pb-20 px-4 max-w-6xl mx-auto">
+        <div className="min-h-screen pt-12 md:pt-28 pb-20 px-4 max-w-6xl mx-auto">
             {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -188,26 +188,26 @@ const SolutionsListPage = () => {
                         ))}
                     </div>
                 ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {visibleProblems.map((problem, index) => {
-                        const { id: problemId } = problem;
-                        const problemTitle = (preferredLang === 'es' && problem.title_es) ? problem.title_es : problem.title;
-                        const { status, solution } = getProblemStatus(problemId);
-                        const isSolved = status === 'solved';
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {visibleProblems.map((problem, index) => {
+                            const { id: problemId } = problem;
+                            const problemTitle = (preferredLang === 'es' && problem.title_es) ? problem.title_es : problem.title;
+                            const { status, solution } = getProblemStatus(problemId);
+                            const isSolved = status === 'solved';
 
-                        return (
-                            <ProblemCard
-                                key={problemId}
-                                problemId={problemId}
-                                topicId={topicId!}
-                                problemTitle={problemTitle}
-                                isSolved={isSolved}
-                                solutionTitle={solution?.title}
-                                index={index}
-                            />
-                        );
-                    })}
-                </div>
+                            return (
+                                <ProblemCard
+                                    key={problemId}
+                                    problemId={problemId}
+                                    topicId={topicId!}
+                                    problemTitle={problemTitle}
+                                    isSolved={isSolved}
+                                    solutionTitle={solution?.title}
+                                    index={index}
+                                />
+                            );
+                        })}
+                    </div>
                 )
             ) : (
                 /* Fallback for unstructured topics */

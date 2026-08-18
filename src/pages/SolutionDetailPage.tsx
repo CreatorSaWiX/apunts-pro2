@@ -19,9 +19,9 @@ const SolutionDetailPage = () => {
     const { solution, loading, setSolution } = useSolution(topicId || '', problemId || '', lang);
     const { solutions } = useSolutions(topicId || '');
     const { user } = useAuth();
-    
+
     const { authorData } = useAuthor(solution?.authorId);
-    
+
     const [courseStructure, setCourseStructure] = useState<TopicDefinition[]>([]);
     const [importError, setImportError] = useState(false);
 
@@ -90,15 +90,17 @@ const SolutionDetailPage = () => {
                 nextSolution={nextSolution}
                 jutgeUrl={jutgeUrl}
                 canonicalTitle={canonicalTitle}
-                isSolved={isSolved}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full items-start">
-                <ProblemStatementPanel
-                    solution={solution}
-                    lang={lang}
-                    setLang={setLang}
-                />
+                <div className="hidden lg:block">
+                    <ProblemStatementPanel
+                        solution={solution}
+                        lang={lang}
+                        setLang={setLang}
+                    />
+                </div>
+
 
                 <SolutionEditorViewer
                     solution={solution}
