@@ -3,7 +3,7 @@ import { getLoadBalancedModels } from './_shared/models';
 import { withMiddleware } from './_shared/middleware';
 import { roadmapRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
-import { buildRoadmapSystemInstruction, RoadmapNode } from './_shared/prompts';
+import { buildRoadmapSystemInstruction, type RoadmapNode } from './_shared/prompts';
 
 const subjectCache = new Map<string, { acronim?: string; credits?: number; activities?: string[]; sections?: { title?: string; content?: string }[] }>();
 
@@ -61,7 +61,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                 const url = `${baseUrl}/data/subjects/${node.id}.json`;
                 const res = await fetch(url);
                 if (res.ok) {
-                    const parsedData = await res.json();
+                    const parsedData = await res.json() as any;
                     const filteredData = {
                         acronim: parsedData.acronim,
                         credits: parsedData.credits,
@@ -196,7 +196,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         break;
                     } catch (e: unknown) {
                         const errMessage = e instanceof Error ? e.message : String(e);
-                        const errStatus = (e as any)?.status;
+                        const errStatus = (e as { status?: number })?.status;
                         const is429 = (errStatus === 429 || errMessage.includes('429') || errMessage.includes('503') || errMessage.toLowerCase().includes('quota') || errMessage.toLowerCase().includes('rate')) && !hasStartedWriting;
                         if (is429) {
                             lastError = e;

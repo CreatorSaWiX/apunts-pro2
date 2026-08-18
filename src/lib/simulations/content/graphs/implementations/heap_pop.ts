@@ -29,7 +29,7 @@ void Heap<T>::flow_down_(int i) {
     }
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     heap_pop: {
         id: "heap_pop",
         code: heapPopCode,

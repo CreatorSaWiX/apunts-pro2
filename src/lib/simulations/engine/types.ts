@@ -2,7 +2,7 @@ export interface SimulationStep {
     line: number;
     description: string;
     variables: Record<string, string>;
-    visual: Record<string, any>;
+    visual: Record<string, unknown>;
 }
 
 export interface Simulation {
@@ -11,5 +11,5 @@ export interface Simulation {
     code?: string;
     files?: Record<string, string>;
     generateSteps: () => SimulationStep[];
-    initialState?: Record<string, any>;
+    initialState?: Record<string, unknown>;
 }

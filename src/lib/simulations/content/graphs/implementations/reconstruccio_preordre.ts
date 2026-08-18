@@ -24,7 +24,7 @@ pro2::BinTree<T> build_preorder(istream& cin) {
     return pro2::BinTree<T>(value, left, right);
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     reconstruccio_preordre: {
         id: "reconstruccio_preordre",
         code: rebuildPreorderCode,

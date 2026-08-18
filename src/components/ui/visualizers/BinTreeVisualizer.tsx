@@ -102,10 +102,22 @@ export default function BinTreeVisualizer() {
         }
     };
 
+    interface TreeNodeItem {
+        id: string;
+        label: string;
+        color: string;
+    }
+
+    interface TreeLinkItem {
+        source: string;
+        target: string;
+        label: string;
+    }
+
     // Graph JSON Generator
     const graphData = useMemo(() => {
-        const nodes: any[] = [];
-        const links: any[] = [];
+        const nodes: TreeNodeItem[] = [];
+        const links: TreeLinkItem[] = [];
 
         if (treeState === "EMPTY") {
             nodes.push({ id: "ghost", label: "Buit (Null)", color: "#1e293b" });

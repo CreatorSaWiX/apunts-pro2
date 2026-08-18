@@ -9,7 +9,7 @@ const LoginPage = () => {
     const [view, setView] = useState<'login' | 'forgot-password' | 'success'>('login');
     const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
 
-    const customEasing: any = [0.16, 1, 0.3, 1]; // Premium smooth ease
+    const customEasing: [number, number, number, number] = [0.16, 1, 0.3, 1]; // Premium smooth ease
 
     return (
         <AuthLayout variant="login">

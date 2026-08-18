@@ -46,7 +46,15 @@ export function getLiteModels(): string[] {
  * Configura els paràmetres de 'thinking' de forma automàtica
  * si el model triat suporta aquesta funcionalitat.
  */
-export function applyThinkingConfig(streamConfig: any, modelName: string): void {
+export interface ThinkingStreamConfig {
+    thinkingConfig?: {
+        includeThoughts: boolean;
+        thinkingBudget?: number;
+    };
+    [key: string]: unknown;
+}
+
+export function applyThinkingConfig(streamConfig: ThinkingStreamConfig, modelName: string): void {
     if (THINKING_MODELS.has(modelName)) {
         streamConfig.thinkingConfig = { includeThoughts: true };
         

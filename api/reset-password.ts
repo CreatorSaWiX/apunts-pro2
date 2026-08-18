@@ -37,9 +37,9 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
     let resetLink = '';
     try {
         resetLink = await getAuth().generatePasswordResetLink(email);
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error("Error generant link Firebase:", e);
-        if (e.code === 'auth/user-not-found') {
+        if ((e as { code?: string })?.code === 'auth/user-not-found') {
             return jsonResponse({ success: true }, 200); 
         }
         return jsonResponse({ error: "No s'ha pogut generar l'enllaç." }, 400);
@@ -171,7 +171,7 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
         });
 
         return jsonResponse({ success: true, message: "Correu enviat correctament." }, 200);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error al servidor (enviar email):", error);
         return jsonResponse({ error: "S'ha produït un error al servidor." }, 500);
     }

@@ -3,7 +3,7 @@ import { m as motion } from 'framer-motion';
 
 interface PremiumInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label: string;
-    icon: any;
+    icon: React.ComponentType<{ size?: number; className?: string }>;
     theme?: 'sky' | 'emerald';
 }
 

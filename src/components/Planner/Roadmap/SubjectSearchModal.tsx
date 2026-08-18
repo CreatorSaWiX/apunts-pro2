@@ -47,16 +47,36 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
         return specializations.find(s => s.mandatory.includes(currentSpecNode.id));
     }, [currentSpecNode]);
 
+interface SubjectDataItem {
+    id: string;
+    name: string;
+    description: string;
+    [key: string]: unknown;
+}
+
+interface SubjectSpecialization {
+    id: string;
+    name: string;
+    mandatory: string[];
+    complementary: string[];
+}
+
+interface SubjectWithTags extends SubjectDataItem {
+    specs: SubjectSpecialization[];
+    _searchName: string;
+    _searchDesc: string;
+}
+
     // Available subjects that are not in the graph yet
     const availableSubjects = useMemo(() => {
         const existingIds = new Set(nodes.map(n => n.id));
-        return subjectsData.filter((s: any) => !existingIds.has(s.name));
+        return (subjectsData as SubjectDataItem[]).filter((s) => !existingIds.has(s.name));
     }, [nodes]);
 
     // Attach tags (specializations) to each subject
     const subjectsWithTags = useMemo(() => {
-        return availableSubjects.map((s: any) => {
-            const specs = specializations.filter(spec => 
+        return availableSubjects.map((s) => {
+            const specs = (specializations as SubjectSpecialization[]).filter(spec => 
                 spec.mandatory.includes(s.name) || spec.complementary.includes(s.name)
             );
             return { 
@@ -69,10 +89,10 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
     }, [availableSubjects]);
 
     const filteredSubjects = useMemo(() => {
-        let result = subjectsWithTags;
+        let result: SubjectWithTags[] = subjectsWithTags;
         
         if (debouncedQuery) {
-            result = result.filter((s: any) => 
+            result = result.filter((s) => 
                 s._searchName.includes(debouncedQuery) || 
                 s._searchDesc.includes(debouncedQuery)
             );
@@ -86,7 +106,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
             } else if (activeFilter === 'altres') {
                 result = result.filter(s => s.specs.length === 0);
             } else {
-                result = result.filter(s => s.specs.some((spec: any) => spec.id === activeFilter));
+                result = result.filter(s => s.specs.some((spec) => spec.id === activeFilter));
             }
         }
 
@@ -202,7 +222,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                                         }}
                                         className="grid grid-cols-1 md:grid-cols-2 gap-4"
                                     >
-                                        {filteredSubjects.map((subject: any) => {
+                                        {filteredSubjects.map((subject) => {
                                             const isComplementary = currentSpec && currentSpec.complementary.includes(subject.name);
                                             
                                             return (
@@ -248,7 +268,7 @@ const SubjectSearchModal: React.FC<SubjectSearchModalProps> = ({ isOpen, onClose
                                                         
                                                         {subject.specs.length > 0 ? (
                                                             <div className="flex flex-wrap gap-2 mt-auto">
-                                                                {subject.specs.slice(0, 3).map((spec: any) => (
+                                                                {subject.specs.slice(0, 3).map((spec) => (
                                                                     <span key={spec.id} className="text-[10px] font-bold text-slate-400 bg-slate-800/50 px-2 py-1 rounded-md border border-white/5">
                                                                         {spec.name}
                                                                     </span>

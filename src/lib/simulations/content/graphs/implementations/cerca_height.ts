@@ -20,7 +20,7 @@ bool cerca(const BinTree<int>& t, int x) {
     return cerca(t.left(), x) || cerca(t.right(), x);
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     cerca_height: {
         id: "cerca_height",
         code: cercaHeightCode,

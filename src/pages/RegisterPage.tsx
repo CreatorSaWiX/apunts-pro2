@@ -5,7 +5,7 @@ import PrivacyModal from '../components/ui/modals/PrivacyModal';
 
 const RegisterPage = () => {
     const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
-    const customEasing: any = [0.16, 1, 0.3, 1]; // Premium smooth ease
+    const customEasing: [number, number, number, number] = [0.16, 1, 0.3, 1]; // Premium smooth ease
 
     return (
         <>

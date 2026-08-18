@@ -30,7 +30,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
     const [threadedComments, setThreadedComments] = useState<Comment[]>([]);
     const [loading, setLoading] = useState(true);
     const [newComment, setNewComment] = useState('');
-    const [replyingTo, setReplyingTo] = useState<any | null>(null);
+    const [replyingTo, setReplyingTo] = useState<Comment | null>(null);
     const [showGifPicker, setShowGifPicker] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [visibleCount, setVisibleCount] = useState(20);
@@ -118,7 +118,7 @@ const CommentsSection = ({ solutionId, solutionTitle }: CommentsSectionProps) =>
         commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    const submitComment = async (content: string, replyToObj: any = null) => {
+    const submitComment = async (content: string, replyToObj: Comment | null = null) => {
         if (!content.trim() || !user) return;
 
         try {

@@ -26,9 +26,49 @@ const TAB_ICONS: Record<string, React.ReactNode> = {
     'Capacitats prèvies': <Key size={16} />
 };
 
+interface Professor {
+    name: string;
+    role?: string;
+    email?: string;
+}
+
+interface SubjectDetailHour {
+    type?: string;
+    label?: string;
+    value: number;
+}
+
+interface SubjectDetailActivity {
+    title: string;
+    description?: string;
+    isEvaluative?: boolean;
+    week?: number | null;
+    hours?: SubjectDetailHour[];
+}
+
+interface SubjectDetailSection {
+    title: string;
+    html: string;
+    [key: string]: any;
+}
+
+interface SubjectDetailData {
+    name?: string;
+    code?: string;
+    credits?: number;
+    description?: string;
+    guiaDocentUrl?: string;
+    summary?: string;
+    professors?: Professor[];
+    hours?: SubjectDetailHour[];
+    activities?: SubjectDetailActivity[];
+    sections: SubjectDetailSection[];
+    [key: string]: any;
+}
+
 const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClose, subjectId }) => {
     const { t } = useTranslation();
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<SubjectDetailData | null>(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState<string>('');
     const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
@@ -169,10 +209,10 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                     <div className="flex-1 overflow-y-auto custom-scrollbar px-3 pb-6 flex flex-col gap-1">
                                         <h3 className="text-[10px] uppercase tracking-[0.2em] text-slate-600 font-bold px-3 py-2 mt-2 mb-1">{t('planner.roadmapSubjectDetails.sections', 'Seccions')}</h3>
                                         {[
-                                            ...(data.professors?.length > 0 ? ['Professorat'] : []),
-                                            ...(data.hours?.length > 0 ? ['Hores setmanals'] : []),
-                                            ...(data.activities?.length > 0 ? ['Activitats'] : []),
-                                            ...data.sections.map((s: any) => s.title)
+                                            ...((data.professors && data.professors.length > 0) ? ['Professorat'] : []),
+                                            ...((data.hours && data.hours.length > 0) ? ['Hores setmanals'] : []),
+                                            ...((data.activities && data.activities.length > 0) ? ['Activitats'] : []),
+                                            ...data.sections.map((s) => s.title)
                                         ].map((title: string) => {
                                             const isActive = activeTab === title;
                                             return (
@@ -231,13 +271,13 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                     exit={{ opacity: 0, transition: { duration: 0 } }}
                                                     transition={{ duration: 0.3, type: "spring", bounce: 0 }}
                                                 >
-                                                    {activeTab === 'Professorat' && data.professors?.length > 0 && (
+                                                    {activeTab === 'Professorat' && data.professors && data.professors.length > 0 && (
                                                         <ProfessorList professors={data.professors} />
                                                     )}
 
-                                                    {activeTab === 'Activitats' && data.activities?.filter((a: any) => a.title).length > 0 && (
+                                                    {activeTab === 'Activitats' && data.activities && data.activities.filter((a) => a.title).length > 0 && (
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                            {data.activities.filter((a: any) => a.title).map((act: any, i: number) => (
+                                                            {data.activities.filter((a) => a.title).map((act) => (
                                                                 <div key={act.title} className={`p-6 bg-[#0a0f1c]/80 border ${act.isEvaluative ? 'border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] bg-amber-500/[0.02]' : 'border-white/5 shadow-xl'} rounded-3xl relative overflow-hidden group hover:bg-[#0f172a] transition duration-300`}>
                                                                     {act.isEvaluative && (
                                                                         <div className="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 text-[10px] font-black uppercase tracking-widest rounded-bl-2xl border-l border-b border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
@@ -247,7 +287,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
 
                                                                     <div className="flex items-start justify-between gap-4 mb-4">
                                                                         <h3 className={`text-xl font-bold tracking-tight leading-tight ${act.isEvaluative ? 'text-amber-400' : 'text-white'}`}>{act.title}</h3>
-                                                                        {act.week !== null && (
+                                                                        {act.week !== null && act.week !== undefined && (
                                                                             <div className="shrink-0 px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-[11px] text-sky-400 font-mono font-bold tracking-wider">
                                                                                 {t('planner.roadmapSubjectDetails.week', 'Setmana {{week}}', { week: act.week })}
                                                                             </div>
@@ -258,23 +298,10 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                         {act.description}
                                                                     </p>
 
-                                                                    {act.objectives?.length > 0 && (
-                                                                        <div className="mb-6">
-                                                                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block mb-2">{t('planner.roadmapSubjectDetails.relatedObjectives', 'Objectius relacionats')}</span>
-                                                                            <div className="flex flex-wrap gap-2">
-                                                                                {act.objectives.map((obj: string, j: number) => (
-                                                                                    <span key={j} className="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-black bg-sky-500/10 text-sky-400 border border-sky-500/30">
-                                                                                        {obj}
-                                                                                    </span>
-                                                                                ))}
-                                                                            </div>
-                                                                        </div>
-                                                                    )}
-
-                                                                    {act.hours?.length > 0 && (
+                                                                    {act.hours && act.hours.length > 0 && (
                                                                         <div className="mt-auto pt-4 border-t border-white/5">
                                                                             <div className="flex flex-wrap gap-2">
-                                                                                {act.hours.map((hour: any, j: number) => (
+                                                                                {act.hours.map((hour, j) => (
                                                                                     <div key={j} className="flex items-center gap-2 bg-black/40 border border-white/5 rounded-lg px-2.5 py-1">
                                                                                         <span className="text-[10px] uppercase tracking-wider text-slate-400">{hour.type}</span>
                                                                                         <span className="text-xs font-black text-white">{hour.value}h</span>
@@ -288,9 +315,9 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                         </div>
                                                     )}
 
-                                                    {activeTab === 'Hores setmanals' && data.hours?.length > 0 && (
+                                                    {activeTab === 'Hores setmanals' && data.hours && data.hours.length > 0 && (
                                                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                                                            {data.hours.map((hour: any, i: number) => {
+                                                            {data.hours.map((hour, i) => {
                                                                 const colors = [
                                                                     '#0ea5e9', // sky-500
                                                                     '#10b981', // emerald-500
@@ -299,7 +326,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                                     '#6366f1'  // indigo-500
                                                                 ];
                                                                 const color = colors[i % colors.length];
-                                                                const maxHours = Math.max(...data.hours.map((h: any) => h.value), 10);
+                                                                const maxHours = Math.max(...(data.hours?.map((h) => h.value) || [10]), 10);
                                                                 const percentage = Math.min((hour.value / maxHours) * 100, 100) || 0;
 
                                                                 return (
@@ -349,7 +376,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
                                                         </div>
                                                     )}
 
-                                                    {data.sections.map((sec: any) => {
+                                                    {data.sections.map((sec) => {
                                                         if (sec.title !== activeTab) return null;
 
                                                         // Enhance HTML for better Awwwards UI
@@ -431,9 +458,9 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
 };
 export default SubjectDetailsModal;
 
-const ProfessorList = ({ professors }: { professors: any[] }) => (
+const ProfessorList = ({ professors }: { professors: Professor[] }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {professors.map((prof: any) => (
+        {professors.map((prof) => (
             <div key={prof.email || prof.name} className="group p-5 bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] transition duration-300 rounded-2xl flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center text-sky-400 font-bold text-lg shrink-0 group-hover:scale-110 group-hover:rotate-6 transition duration-300">
                     {prof.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2)}

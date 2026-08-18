@@ -12,6 +12,31 @@ interface Props {
 
 type ExpType = 'mobility' | 'internship';
 
+interface UniversityItem {
+    name: string;
+    country: string;
+    program?: string;
+    webLink?: string;
+    docLink?: string;
+}
+
+interface ExperienceDetails {
+    destination?: string;
+    program?: string;
+    credits?: number;
+    company?: string;
+    role?: string;
+}
+
+interface SidebarItemProps {
+    icon: React.ComponentType<{ size?: number; className?: string }>;
+    title: string;
+    subtitle: string;
+    active: boolean;
+    onClick: () => void;
+    colorClass: string;
+}
+
 const SidebarItem = ({
     icon: Icon,
     title,
@@ -19,14 +44,7 @@ const SidebarItem = ({
     active,
     onClick,
     colorClass
-}: {
-    icon: any,
-    title: string,
-    subtitle: string,
-    active: boolean,
-    onClick: () => void,
-    colorClass: string
-}) => {
+}: SidebarItemProps) => {
     return (
         <button type="button"
             onClick={onClick}
@@ -57,7 +75,16 @@ const SidebarItem = ({
     );
 };
 
-const PremiumInput = ({ label, type = "text", value, onChange, placeholder, helpLink }: any) => {
+interface PremiumInputProps {
+    label: string;
+    type?: string;
+    value: string | number;
+    onChange: React.ChangeEventHandler<HTMLInputElement>;
+    placeholder?: string;
+    helpLink?: string;
+}
+
+const PremiumInput = ({ label, type = "text", value, onChange, placeholder, helpLink }: PremiumInputProps) => {
     return (
         <div className="group relative">
             <div className="flex justify-between items-center mb-2">
@@ -83,7 +110,15 @@ const PremiumInput = ({ label, type = "text", value, onChange, placeholder, help
     );
 };
 
-const PremiumSelect = ({ label, value, onChange, options = [], helpLink }: any) => {
+interface PremiumSelectProps {
+    label: string;
+    value: string;
+    onChange: (e: { target: { value: string } }) => void;
+    options?: string[];
+    helpLink?: string;
+}
+
+const PremiumSelect = ({ label, value, onChange, options = [], helpLink }: PremiumSelectProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -109,7 +144,6 @@ const PremiumSelect = ({ label, value, onChange, options = [], helpLink }: any) 
                 <AnimatePresence>
                     {isOpen && (
                         <>
-                            {/* Overlay per tancar el desplegable en fer clic fora */}
                             <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
@@ -142,23 +176,26 @@ const PremiumSelect = ({ label, value, onChange, options = [], helpLink }: any) 
     );
 };
 
+interface PremiumComboboxProps {
+    label: string;
+    value: string;
+    onChange: (val: string, program?: string) => void;
+    placeholder?: string;
+    options: UniversityItem[];
+}
 
-
-const PremiumCombobox = ({ label, value, onChange, placeholder, options }: any) => {
+const PremiumCombobox = ({ label, value, onChange, placeholder, options }: PremiumComboboxProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState('');
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    // Filter options based on query
-    const filteredOptions = options.filter((opt: any) =>
+    const filteredOptions = options.filter((opt) =>
         opt.name.toLowerCase().includes(query.toLowerCase()) ||
         opt.country.toLowerCase().includes(query.toLowerCase())
     );
 
-    // Selected option object
-    const selectedOption = options.find((opt: any) => opt.name === value);
+    const selectedOption = options.find((opt) => opt.name === value);
 
-    // Close when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
@@ -176,69 +213,64 @@ const PremiumCombobox = ({ label, value, onChange, placeholder, options }: any) 
             </div>
             <div className="relative">
                 <div
-                    className={`w-full bg-slate-900/50 border ${isOpen ? 'border-sky-500/50 ring-1 ring-sky-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-base sm:text-sm text-white flex items-center gap-3 transition font-medium cursor-text`}
-                    onClick={() => setIsOpen(true)}
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus-within:border-sky-500/50 focus-within:ring-1 focus-within:ring-sky-500/50 transition font-medium flex justify-between items-center cursor-pointer"
                 >
-                    <Search size={16} className={isOpen ? 'text-sky-400' : 'text-slate-500'} />
-                    <input
-                        type="text"
-                        value={isOpen ? query : (value || '')}
-                        onChange={(e) => {
-                            setQuery(e.target.value);
-                            setIsOpen(true);
-                            // Permetem escriptura lliure per si no hi és a la llista
-                            if (!isOpen) onChange(e.target.value);
-                        }}
-                        onFocus={() => setIsOpen(true)}
-                        placeholder={placeholder}
-                        className="bg-transparent border-none outline-none w-full placeholder:text-slate-600"
-                    />
-                    {value && !isOpen && selectedOption?.flag && (
-                        <div className="flex items-center gap-2 shrink-0">
-                            <span className="text-lg">{selectedOption.flag}</span>
-                        </div>
-                    )}
+                    <span className={value ? "text-white" : "text-slate-500"}>
+                        {selectedOption ? `${selectedOption.name} (${selectedOption.country})` : (value || placeholder)}
+                    </span>
+                    <Search size={16} className="text-slate-500" />
                 </div>
 
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            initial={{ opacity: 0, y: -10, filter: "blur(10px)" }}
-                            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                            exit={{ opacity: 0, y: -10, filter: "blur(10px)" }}
-                            transition={{ duration: 0.2 }}
-                            className="absolute z-50 w-full mt-2 bg-[#0F172A]/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden max-h-60 overflow-y-auto custom-scrollbar"
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.15 }}
+                            className="absolute z-50 w-full mt-2 bg-[#0F172A]/95 backdrop-blur-2xl border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-64"
                         >
-                            <div className="flex flex-col p-1">
+                            <div className="p-3 border-b border-white/10 sticky top-0 bg-[#0F172A]">
+                                <div className="relative">
+                                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                                    <input
+                                        type="text"
+                                        value={query}
+                                        onChange={(e) => setQuery(e.target.value)}
+                                        placeholder={placeholder}
+                                        autoFocus
+                                        className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500/50"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="overflow-y-auto custom-scrollbar flex-1 flex flex-col">
                                 {filteredOptions.length === 0 ? (
-                                    <div className="px-4 py-3 text-sm text-slate-500 text-center font-medium">Cap resultat trobat</div>
+                                    <div className="p-4 text-center text-xs text-slate-500">
+                                        No s'han trobat universitats
+                                    </div>
                                 ) : (
-                                    filteredOptions.map((opt: any) => (
+                                    filteredOptions.map((opt) => (
                                         <button
-                                            key={opt.id}
+                                            key={opt.name}
                                             type="button"
                                             onClick={() => {
                                                 onChange(opt.name, opt.program);
-                                                setQuery('');
                                                 setIsOpen(false);
+                                                setQuery('');
                                             }}
-                                            className={`w-full text-left px-3 py-2.5 text-sm transition rounded-lg flex items-center justify-between group/item
-                                                ${value === opt.name ? 'bg-sky-500/10 text-sky-400' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}
+                                            className={`w-full text-left px-4 py-2.5 text-xs transition-colors flex flex-col justify-center border-b border-white/5 last:border-0 ${value === opt.name ? 'bg-sky-500/10 text-sky-400 font-medium' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}
                                         >
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-lg">{opt.flag}</span>
-                                                <div className="flex flex-col">
-                                                    <span className="font-medium">{opt.name}</span>
-                                                    <span className={`text-[10px] ${value === opt.name ? 'text-sky-500/70' : 'text-slate-500'} group-hover/item:text-slate-400 transition-colors`}>{opt.country}</span>
-                                                </div>
+                                            <span className="font-bold text-slate-200">{opt.name}</span>
+                                            <div className="flex items-center gap-2 mt-0.5">
+                                                <span className="text-[10px] text-slate-400">{opt.country}</span>
+                                                {opt.program && (
+                                                    <span className="text-[9px] px-1.5 py-0.2 bg-white/5 text-slate-400 rounded border border-white/5">
+                                                        {opt.program}
+                                                    </span>
+                                                )}
                                             </div>
-                                            <span className={`text-[9px] px-2 py-1 rounded-md uppercase tracking-wider font-bold shrink-0
-                                                ${opt.program.includes('Erasmus') ? 'bg-blue-500/10 text-blue-400' :
-                                                    opt.program.includes('Amèrica') ? 'bg-orange-500/10 text-orange-400' :
-                                                        'bg-purple-500/10 text-purple-400'}`}
-                                            >
-                                                {opt.program}
-                                            </span>
                                         </button>
                                     ))
                                 )}
@@ -251,15 +283,14 @@ const PremiumCombobox = ({ label, value, onChange, placeholder, options }: any) 
     );
 };
 
-
-let cachedUniversities: any[] | null = null;
+let cachedUniversities: UniversityItem[] | null = null;
 
 const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
     const { addExperienceNode } = useRoadmapActions();
     const [selectedType, setSelectedType] = useState<ExpType>('mobility');
-    const [details, setDetails] = useState<any>({});
-    const [universities, setUniversities] = useState<any[]>(cachedUniversities || []);
+    const [details, setDetails] = useState<ExperienceDetails>({});
+    const [universities, setUniversities] = useState<UniversityItem[]>(cachedUniversities || []);
     const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
 
     useEffect(() => {
@@ -393,14 +424,14 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                                     label={t('planner.roadmapExperienceSelector.program', 'Programa')}
                                                     options={['Erasmus+', 'SICUE', 'Amèrica Llatina', 'UNITECH', 'Doble Titulació', "Mobilitat fora d'Europa"]}
                                                     value={details.program || 'Erasmus+'}
-                                                    onChange={(e: any) => setDetails({ ...details, program: e.target.value })}
+                                                    onChange={(e) => setDetails({ ...details, program: e.target.value })}
                                                 />
                                                 <PremiumInput
                                                     label={t('planner.roadmapExperienceSelector.creditsEcts', 'Crèdits (ECTS)')}
                                                     type="number"
                                                     placeholder="30"
                                                     value={details.credits || ''}
-                                                    onChange={(e: any) => setDetails({ ...details, credits: parseInt(e.target.value) || 0 })}
+                                                    onChange={(e) => setDetails({ ...details, credits: parseInt(e.target.value) || 0 })}
                                                 />
                                             </div>
                                         </div>
@@ -419,14 +450,14 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                                 label={t('planner.roadmapExperienceSelector.company', 'Empresa')}
                                                 placeholder={t('planner.roadmapExperienceSelector.companyPlaceholder', 'Ex: Google, inLab FIB, etc.')}
                                                 value={details.company || ''}
-                                                onChange={(e: any) => setDetails({ ...details, company: e.target.value })}
+                                                onChange={(e) => setDetails({ ...details, company: e.target.value })}
                                             />
 
                                             <PremiumInput
                                                 label={t('planner.roadmapExperienceSelector.role', 'Rol / Posició')}
                                                 placeholder={t('planner.roadmapExperienceSelector.rolePlaceholder', 'Ex: Software Engineer Intern')}
                                                 value={details.role || ''}
-                                                onChange={(e: any) => setDetails({ ...details, role: e.target.value })}
+                                                onChange={(e) => setDetails({ ...details, role: e.target.value })}
                                             />
 
                                             <PremiumInput
@@ -434,7 +465,7 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                                 type="number"
                                                 placeholder="12"
                                                 value={details.credits || ''}
-                                                onChange={(e: any) => setDetails({ ...details, credits: parseInt(e.target.value) || 0 })}
+                                                onChange={(e) => setDetails({ ...details, credits: parseInt(e.target.value) || 0 })}
                                             />
                                         </div>
                                     </>

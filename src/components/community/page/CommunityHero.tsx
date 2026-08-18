@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Timestamp } from 'firebase/firestore';
 import type { CommunityPost } from '../../../types/community';
 import PublicationCard from '../PublicationCard';
 
@@ -15,7 +16,7 @@ const mockEpicPost: CommunityPost = {
     userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
     content: 'Guia completa d\'Estructures de Dades. Arbres AVL i Grafs amb exemples en C++.',
     subject: 'pro2',
-    createdAt: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as any,
+    createdAt: new Timestamp(Math.floor(Date.now() / 1000), 0),
     reactions: { 'user1': { userId: 'user1', username: 'Bob', emoji: '❤️' }, 'user2': { userId: 'user2', username: 'Alice', emoji: '❤️' } },
     isPinned: false,
     views: 1240,
@@ -29,7 +30,7 @@ const mockLegendaryPost: CommunityPost = {
     userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria',
     content: 'Resum interactiu de Fonaments d\'Ordinadors amb esquemes de circuits.',
     subject: 'm1',
-    createdAt: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as any,
+    createdAt: new Timestamp(Math.floor(Date.now() / 1000), 0),
     reactions: { 'u1': { userId: '1', username: '', emoji: '❤️' }, 'u2': { userId: '2', username: '', emoji: '❤️' }, 'u3': { userId: '3', username: '', emoji: '❤️' }, 'u4': { userId: '4', username: '', emoji: '❤️' }, 'u5': { userId: '5', username: '', emoji: '❤️' } },
     isPinned: true,
     views: 3500,
@@ -43,7 +44,7 @@ const mockMythicPost: CommunityPost = {
     userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sawix',
     content: 'Projecte Final: Simulador de Processadors. Codi font sencer i documentació.',
     subject: 'm2',
-    createdAt: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as any,
+    createdAt: new Timestamp(Math.floor(Date.now() / 1000), 0),
     reactions: { '1': { userId: '1', username: '', emoji: '❤️' }, '2': { userId: '2', username: '', emoji: '❤️' }, '3': { userId: '3', username: '', emoji: '❤️' }, '4': { userId: '4', username: '', emoji: '❤️' }, '5': { userId: '5', username: '', emoji: '❤️' }, '6': { userId: '6', username: '', emoji: '❤️' }, '7': { userId: '7', username: '', emoji: '❤️' }, '8': { userId: '8', username: '', emoji: '❤️' } },
     isPinned: true,
     views: 12500,

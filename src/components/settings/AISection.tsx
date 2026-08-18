@@ -59,7 +59,7 @@ export const AISection = () => {
                                 <InputField
                                     label={t('settings.ai.name', 'Nom de la IA')}
                                     value={aiSettings.identity.name || ''}
-                                    onChange={(e: any) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, name: e.target.value } })}
+                                    onChange={(e) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, name: e.target.value } })}
                                     placeholder="ex: Cloufy"
                                 />
                             </div>
@@ -69,7 +69,7 @@ export const AISection = () => {
                             <InputField
                                 label={t('settings.ai.pronouns', 'Pronoms')}
                                 value={aiSettings.identity.pronouns || ''}
-                                onChange={(e: any) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, pronouns: e.target.value } })}
+                                onChange={(e) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, pronouns: e.target.value } })}
                                 placeholder="ex: he, she, they"
                             />
 
@@ -96,7 +96,7 @@ export const AISection = () => {
                         <TextAreaField
                             label={t('settings.ai.vibe', 'Personalitat (Vibe)')}
                             value={aiSettings.identity.vibe || ''}
-                            onChange={(e: any) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, vibe: e.target.value } })}
+                            onChange={(e) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, vibe: e.target.value } })}
                             placeholder={t('settings.ai.vibePlaceholder', "Defineix el to general, l'estil de conversa i com et farà sentir la IA...")}
                             minHeight="80px"
                         />
@@ -130,7 +130,7 @@ export const AISection = () => {
                                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0d16]/40 group-hover:bg-[#0a0d16]/60 transition-colors z-10">
                                         <p className="text-[11px] text-slate-300 font-bold uppercase tracking-wider mb-3 drop-shadow-md">{t('settings.ai.managedByAi', "Això ho gestiona l'IA autònomament")}</p>
                                         <button type="button"
-                                            onClick={() => setEditingSoulField(field.id as any)}
+                                            onClick={() => setEditingSoulField(field.id as 'rules' | 'boundaries' | 'customDirectives')}
                                             className="px-5 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold rounded-xl text-xs transition backdrop-blur-md"
                                         >
                                             {t('settings.ai.forceEdit', 'Forçar Modificació')}

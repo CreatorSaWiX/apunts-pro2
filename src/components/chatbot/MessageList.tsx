@@ -10,7 +10,7 @@ import AIStreamingIndicator, { type StreamPhase } from '../AIStreamingIndicator'
 
 interface MessageListProps {
   messages: Message[];
-  user: any;
+  user: { avatar?: string; username?: string } | null;
   streamPhase: StreamPhase;
   thoughtText: string;
   streamingText: string;

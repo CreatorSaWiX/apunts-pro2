@@ -10,7 +10,7 @@ import { getFirebaseErrorMessage } from '../../utils/authErrors';
 
 interface LoginFormProps {
     onForgotPassword: (email: string) => void;
-    customEasing: any;
+    customEasing: [number, number, number, number];
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, customEasing }) => {
@@ -31,7 +31,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, customEa
         try {
             await login(email, password);
             navigate('/');
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
             setError(getFirebaseErrorMessage(err, t));
         } finally {

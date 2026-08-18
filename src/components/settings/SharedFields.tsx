@@ -1,5 +1,16 @@
 
-export const InputField = ({ label, value, onChange, placeholder, type = "text", subLabel = "" }: any) => (
+import React from 'react';
+
+interface InputFieldProps {
+    label: string;
+    value?: string | number;
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
+    placeholder?: string;
+    type?: string;
+    subLabel?: string;
+}
+
+export const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, placeholder, type = "text", subLabel = "" }) => (
     <div className="space-y-2 w-full">
         <div className="flex justify-between items-baseline">
             <label className="text-sm font-semibold text-slate-200">{label}</label>
@@ -15,7 +26,15 @@ export const InputField = ({ label, value, onChange, placeholder, type = "text",
     </div>
 );
 
-export const TextAreaField = ({ label, value, onChange, placeholder, minHeight = "100px" }: any) => (
+interface TextAreaFieldProps {
+    label?: string;
+    value?: string;
+    onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+    placeholder?: string;
+    minHeight?: string;
+}
+
+export const TextAreaField: React.FC<TextAreaFieldProps> = ({ label, value, onChange, placeholder, minHeight = "100px" }) => (
     <div className="space-y-2 w-full">
         {label && <label className="block text-sm font-semibold text-slate-200">{label}</label>}
         <textarea

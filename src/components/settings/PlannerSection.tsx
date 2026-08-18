@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 export const PlannerSection = () => {
     const { t } = useTranslation();
     const { defaultPlannerView, setDefaultPlannerView } = useSettingsStore();
-    const plannerViews: { id: PlannerViewMode, icon: any, label: string }[] = [
+    const plannerViews: { id: PlannerViewMode, icon: React.ComponentType<{ size?: number; className?: string }>, label: string }[] = [
         { id: 'board', icon: LayoutGrid, label: t('planner.board', 'Tauler') },
         { id: 'calendar', icon: Calendar, label: t('planner.calendar', 'Calendari') },
         { id: 'gantt', icon: CalendarDays, label: t('planner.timeline', 'Timeline') },

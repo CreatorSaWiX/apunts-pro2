@@ -32,13 +32,14 @@ export function apiDevServerPlugin(mode: string): Plugin {
 
           // Map other paths to the api/ directory
           const apiFile = path.substring(1); // e.g. "chat", "roadmap-ai"
-          let apiModule: any;
+          let apiModule: { default?: (req: Request) => Promise<Response> };
           try {
             // Import dynamically using Vite's module runner for HMR and TS support
             apiModule = await server.ssrLoadModule(`/api/${apiFile}.ts`);
-          } catch (e: any) {
+          } catch (e: unknown) {
             // File not found or failed to compile, let Vite handle it or return 404
-            if (e.code === 'ERR_MODULE_NOT_FOUND' || e.message?.includes('Cannot find module') || e.message?.includes('Failed to load url')) {
+            const err = e as { code?: string; message?: string };
+            if (err.code === 'ERR_MODULE_NOT_FOUND' || err.message?.includes('Cannot find module') || err.message?.includes('Failed to load url')) {
                return next();
             }
             throw e; // Throw actual syntax/compilation errors
@@ -68,7 +69,7 @@ export function apiDevServerPlugin(mode: string): Plugin {
           }
 
           // Create a Web API Request
-          const fullUrl = new URL((req as any).originalUrl || req.url || '/', `http://${req.headers.host || 'localhost'}`);
+          const fullUrl = new URL((req as IncomingMessage & { originalUrl?: string }).originalUrl || req.url || '/', `http://${req.headers.host || 'localhost'}`);
           const init: RequestInit = {
             method: req.method,
             headers: mappedHeaders,
@@ -95,7 +96,8 @@ export function apiDevServerPlugin(mode: string): Plugin {
               if (done) break;
               if (value) {
                 res.write(value);
-                if (typeof (res as any).flush === 'function') (res as any).flush();
+                const flushableRes = res as ServerResponse & { flush?: () => void };
+                if (typeof flushableRes.flush === 'function') flushableRes.flush();
               }
             }
             res.end();
@@ -103,13 +105,14 @@ export function apiDevServerPlugin(mode: string): Plugin {
             const text = await response.text();
             res.end(text);
           }
-        } catch (e: any) {
+        } catch (e: unknown) {
           console.error(`[DevServer Universal API Wrapper Error]:`, e);
+          const err = e as Error;
           if (!res.headersSent) {
              res.statusCode = 500;
-             res.end(JSON.stringify({ error: String(e.message || e) }));
+             res.end(JSON.stringify({ error: String(err?.message || e) }));
           } else {
-             res.write(`event: error\ndata: ${JSON.stringify({ message: String(e.message || e) })}\n\n`);
+             res.write(`event: error\ndata: ${JSON.stringify({ message: String(err?.message || e) })}\n\n`);
              res.end();
           }
         }
@@ -162,7 +165,7 @@ async function handleLocalCdn(req: IncomingMessage, res: ServerResponse, env: Re
     
     res.writeHead(302, { Location: presignedUrl });
     res.end();
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("[DevServer R2 CDN Error]:", e);
     res.statusCode = 500;
     res.end('Error CDN local');

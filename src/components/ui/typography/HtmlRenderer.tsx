@@ -1,6 +1,6 @@
 import React from 'react';
-import parse, { type DOMNode, Element, domToReact } from 'html-react-parser';
-import DOMPurify from 'dompurify';
+import parse, { type DOMNode, Element, Text, domToReact } from 'html-react-parser';
+import DOMPurify from 'isomorphic-dompurify';
 import { PublishedCodeBlock } from '../extensions/PublishedCodeBlock';
 
 interface HtmlRendererProps {
@@ -9,9 +9,11 @@ interface HtmlRendererProps {
 }
 
 export const HtmlRenderer = ({ content, className = '' }: HtmlRendererProps) => {
-    // We sanitize the HTML first, just like before, but we allow classes (for language-*)
+    if (!content) return null;
+
+    // Sanitize with custom relaxed attributes if needed
     const sanitizedHtml = DOMPurify.sanitize(content, {
-        ADD_ATTR: ['target', 'class'] // Ensuring class attributes are kept
+        ADD_ATTR: ['target', 'rel']
     });
 
     const options = {
@@ -29,9 +31,9 @@ export const HtmlRenderer = ({ content, className = '' }: HtmlRendererProps) => 
                         languageClass = 'language-cpp';
                     }
                     
-                    const extractText = (node: any): string => {
-                        if (node.type === 'text') return node.data;
-                        if (node.children) return node.children.map(extractText).join('');
+                    const extractText = (node: DOMNode): string => {
+                        if (node instanceof Text) return node.data;
+                        if (node instanceof Element && node.children) return (node.children as DOMNode[]).map(extractText).join('');
                         return '';
                     };
                     

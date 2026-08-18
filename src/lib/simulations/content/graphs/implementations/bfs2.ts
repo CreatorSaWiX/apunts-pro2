@@ -42,7 +42,7 @@ const bfs2Code = `vector<int> BFS(const vector<vector<int>>& G, int v) {
     return D;
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     bfs2: {
         id: "bfs2",
         code: bfs2Code,

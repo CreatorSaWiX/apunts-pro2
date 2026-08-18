@@ -21,7 +21,7 @@ const treeSearchCode = `bool tree_search(Tree<int> t, int x) {
     return false;
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     tree_general_search: {
         id: "tree_general_search",
         code: treeSearchCode,

@@ -36,7 +36,13 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
         uniforms.uTime.value = state.clock.getElapsedTime() * 0.8;
     });
 
-    const onBeforeCompileWireframe = (shader: any) => {
+    interface WebGLShaderCompile {
+        uniforms: Record<string, { value: unknown }>;
+        vertexShader: string;
+        fragmentShader: string;
+    }
+
+    const onBeforeCompileWireframe = (shader: WebGLShaderCompile) => {
         shader.uniforms.uTime = uniforms.uTime;
         shader.uniforms.uVariant = uniforms.uVariant;
         
@@ -66,7 +72,7 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
         );
     };
 
-    const onBeforeCompileSolid = (shader: any) => {
+    const onBeforeCompileSolid = (shader: WebGLShaderCompile) => {
         shader.uniforms.uTime = uniforms.uTime;
         shader.uniforms.uVariant = uniforms.uVariant;
         

@@ -50,7 +50,17 @@ const GifPicker = ({ onSelect, onClose }: GifPickerProps) => {
                     throw new Error(data.meta.msg || 'Error fetching GIFs');
                 }
 
-                const formattedGifs = data.data.map((gif: any) => ({
+                interface GiphyApiGif {
+                    id: string;
+                    title: string;
+                    images: {
+                        fixed_height: {
+                            url: string;
+                        };
+                    };
+                }
+
+                const formattedGifs = (data.data as GiphyApiGif[]).map((gif) => ({
                     id: gif.id,
                     url: gif.images.fixed_height.url, // Use fixed height for grid, or original/downsized
                     title: gif.title

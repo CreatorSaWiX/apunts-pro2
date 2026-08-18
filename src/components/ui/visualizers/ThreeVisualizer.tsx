@@ -13,14 +13,29 @@ interface ThreeVisualizerProps {
     type: string;
 }
 
+interface ArrowProps {
+    memoDir: THREE.Vector3;
+    length?: number;
+    color?: number | string | THREE.Color;
+    head?: number;
+    width?: number;
+}
+
 // Helper to avoid thousands of ArrowHelper allocations
-const Arrow = ({ memoDir, length, color, head, width }: any) => {
+const Arrow = ({ memoDir, length, color, head, width }: ArrowProps) => {
     const helper = useMemo(() => new THREE.ArrowHelper(memoDir, new THREE.Vector3(0, 0, 0), length, color, head, width), [memoDir, length, color, head, width]);
     return <primitive object={helper} />;
 }
 
+interface DirectionalCurvePointsProps {
+    a: [number, number] | number[];
+    vx: number;
+    vy: number;
+    f: (x: number, y: number) => number;
+}
+
 // Helper to avoid heavy geometry recalculations every frame
-const DirectionalCurvePoints = ({ a, vx, vy, f }: any) => {
+const DirectionalCurvePoints = ({ a, vx, vy, f }: DirectionalCurvePointsProps) => {
     const curvePoints = useMemo(() => {
         return Array.from({ length: 50 }, (_, i) => {
             const t = (i / 49) * 8 - 4;
@@ -44,9 +59,13 @@ function hasWebGL(): boolean {
     }
 }
 
+interface ThreeErrorBoundaryProps {
+    children: React.ReactNode;
+}
+
 // Error Boundary per capturar errors de R3F sense fer petar la pàgina
-class ThreeErrorBoundary extends Component<{ children: React.ReactNode }, { hasError: boolean, error: string }> {
-    constructor(props: any) {
+class ThreeErrorBoundary extends Component<ThreeErrorBoundaryProps, { hasError: boolean, error: string }> {
+    constructor(props: ThreeErrorBoundaryProps) {
         super(props);
         this.state = { hasError: false, error: '' };
     }
@@ -183,7 +202,7 @@ const VisDerivadesParcialsHibrida = lazy(() => import('../three/VisDerivadesParc
 const VisRnDimensionality = lazy(() => import('../three/VisRnDimensionality'));
 const VisTransformacionsHibrida = lazy(() => import('../three/VisTransformacionsHibrida'));
 
-const VISUALIZERS: Record<string, React.ComponentType<any>> = {
+const VISUALIZERS: Record<string, React.ComponentType<Record<string, unknown>>> = {
     'vis_transformacions_hibrida': VisTransformacionsHibrida,
     'vis_rn_dimensionality': VisRnDimensionality,
     'vis_derivades_parcials_hibrida': VisDerivadesParcialsHibrida,
@@ -217,7 +236,7 @@ const VISUALIZERS: Record<string, React.ComponentType<any>> = {
 };
 
 
-const ThreeVisualizerContent = ({ SurfaceComponent, isHybrid }: { SurfaceComponent: React.ComponentType<any>, isHybrid: boolean }) => {
+const ThreeVisualizerContent = ({ SurfaceComponent, isHybrid }: { SurfaceComponent: React.ComponentType<Record<string, unknown>>, isHybrid: boolean }) => {
     const isMobile = useIsMobile();
     const { isFullScreen } = useInteraction();
 

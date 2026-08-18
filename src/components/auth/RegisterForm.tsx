@@ -10,7 +10,7 @@ import { getFirebaseErrorMessage } from '../../utils/authErrors';
 
 interface RegisterFormProps {
     onOpenPrivacy: () => void;
-    customEasing: any;
+    customEasing: [number, number, number, number];
 }
 
 const fadeInUp = {
@@ -38,7 +38,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onOpenPrivacy, custo
         try {
             await signup(email, password, username);
             navigate('/');
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
             setError(getFirebaseErrorMessage(err, t));
         } finally {

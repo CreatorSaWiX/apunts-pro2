@@ -33,7 +33,9 @@ export const tailwindColors: Record<string, { primary: string, primary_rgb: stri
 };
 
 const calculateTheme = (subject: string, customSubjectColors: Record<string, string> = {}): Theme => {
-    const subjectInfo = subjectsData.find((s: any) => s.name.toUpperCase() === subject.toUpperCase());
+    const subjectInfo = (subjectsData as Array<{ name: string; colorToken?: string }>).find(
+        (s) => s.name.toUpperCase() === subject.toUpperCase()
+    );
     
     let colorFamily = 'sky';
     if (customSubjectColors && customSubjectColors[subject.toUpperCase()]) {

@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import LiquidPanel from '../../ui/glass/LiquidPanel';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { Task, TaskPriority } from '../../../types/tasks';
+import type { Task, TaskPriority, TaskStatus } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
 import { m as motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { Calendar, Flag, Play, X, Check, Trash2, Pencil } from 'lucide-react';
@@ -116,7 +116,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
             dueDate: editDueDate ? new Date(editDueDate).toISOString() : null,
             startDate: editStartDate ? new Date(editStartDate).toISOString() : null,
             subjectId: editSubjectId || undefined,
-            status: editStatus as any
+            status: editStatus as TaskStatus
         };
 
         if (updates.startDate && updates.dueDate) {

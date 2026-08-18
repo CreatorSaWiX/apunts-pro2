@@ -11,17 +11,26 @@ interface NavigationMenuProps {
     theme: { label: string };
 }
 
+interface PersonalNoteItem {
+    slug: string;
+    title: string;
+    order: number;
+    lang: string;
+    subject: string;
+    draft?: boolean;
+}
+
 const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOpen, subject, theme }) => {
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
     
     const safeSubject = (subject || '').toLowerCase();
     
-    const [allPersonalNotes, setAllPersonalNotes] = React.useState<any[]>([]);
+    const [allPersonalNotes, setAllPersonalNotes] = React.useState<PersonalNoteItem[]>([]);
     
     React.useEffect(() => {
         if (isMenuOpen) {
-            import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
+            import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes as unknown as PersonalNoteItem[])).catch(console.error);
         }
     }, [isMenuOpen]);
     
@@ -61,10 +70,10 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                     <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2">{t('navigation.courseSyllabus', 'Temari del Curs')}</div>
                     {[...allPersonalNotes]
                         .filter(note => {
-                            if ((note as any).subject !== safeSubject || note.slug.includes('-lab-')) return false;
-                            if ((note as any).draft) return false;
+                            if (note.subject !== safeSubject || note.slug.includes('-lab-')) return false;
+                            if (note.draft) return false;
                             
-                            const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+                            const versions = allPersonalNotes.filter(n => n.slug === note.slug && !n.draft);
                             const hasPreferred = versions.some(n => n.lang === preferredLang);
                             if (hasPreferred) return note.lang === preferredLang;
                             return note.lang === 'ca';
@@ -95,15 +104,15 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ isMenuOpen, setIsMenuOp
                             </Link>
                         ))}
 
-                    {[...allPersonalNotes].some(n => (n as any).subject === safeSubject && n.slug.includes('-lab-')) && (
+                    {[...allPersonalNotes].some(n => n.subject === safeSubject && n.slug.includes('-lab-')) && (
                         <>
                             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2 mt-8">{t('navigation.labs', 'Laboratoris')}</div>
                             {[...allPersonalNotes]
                                 .filter(note => {
-                                    if ((note as any).subject !== safeSubject || !note.slug.includes('-lab-')) return false;
-                                    if ((note as any).draft) return false;
+                                    if (note.subject !== safeSubject || !note.slug.includes('-lab-')) return false;
+                                    if (note.draft) return false;
                                     
-                                    const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+                                    const versions = allPersonalNotes.filter(n => n.slug === note.slug && !n.draft);
                                     const hasPreferred = versions.some(n => n.lang === preferredLang);
                                     if (hasPreferred) return note.lang === preferredLang;
                                     return note.lang === 'ca';

@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { HtmlRenderer } from '../ui/typography/HtmlRenderer';
 import CommentsSection from '../comments/CommentsSection';
 
+import type { Solution } from '../../content/data/solutions';
+
 interface ProblemStatementPanelProps {
-    solution: any;
+    solution: Solution;
     lang: string;
     setLang: (lang: string) => void;
 }

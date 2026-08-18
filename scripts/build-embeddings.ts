@@ -82,8 +82,8 @@ async function buildEmbeddings() {
             if (response.embeddings && response.embeddings.length > 0) {
                 chunk.embedding = response.embeddings[0].values;
             }
-        } catch (err: any) {
-            console.error(`Error generant embedding per ${chunk.id}:`, err.message);
+        } catch (err: unknown) {
+            console.error(`Error generant embedding per ${chunk.id}:`, (err as Error)?.message);
         }
 
         // Delay de 2.5 segons entre crides (~24 reqs per minut) per evitar 429 RESOURCE_EXHAUSTED

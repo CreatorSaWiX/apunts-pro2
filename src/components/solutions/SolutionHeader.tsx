@@ -3,12 +3,14 @@ import { ArrowLeft, ChevronLeft, ChevronRight, CheckCircle, ExternalLink } from 
 import { m as motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
+import type { Solution } from '../../content/data/solutions';
+
 interface SolutionHeaderProps {
-    solution: any;
+    solution: Solution | null;
     topicId: string;
     authorData: { avatar?: string; username?: string } | null;
-    prevSolution: any;
-    nextSolution: any;
+    prevSolution: Solution | null;
+    nextSolution: Solution | null;
     jutgeUrl?: string;
     canonicalTitle: string;
 }
@@ -23,6 +25,7 @@ const SolutionHeader = ({
     canonicalTitle,
 }: SolutionHeaderProps) => {
     const { t } = useTranslation();
+    if (!solution) return null;
 
     return (
         <motion.div

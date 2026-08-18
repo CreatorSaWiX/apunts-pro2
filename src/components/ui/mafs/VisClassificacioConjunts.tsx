@@ -23,7 +23,7 @@ const VisClassificacioConjunts = () => {
         <div className="w-full flex flex-col">
             <div className="p-2 flex flex-wrap gap-1 bg-slate-800/50 border-b border-white/10">
                 {['obert', 'tancat', 'acotat', 'compacte'].map((t) => (
-                    <button type="button" key={t} onClick={() => setType(t as any)} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-black transition ${type === t ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'text-slate-500 hover:bg-slate-700'}`}>{t}</button>
+                    <button type="button" key={t} onClick={() => setType(t as 'obert' | 'tancat' | 'acotat' | 'compacte')} className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-black transition ${type === t ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'text-slate-500 hover:bg-slate-700'}`}>{t}</button>
                 ))}
             </div>
 

@@ -9,7 +9,7 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     arbgen_esborra: {
         id: "arbgen_esborra",
         code: `static void esborra_node_arbreGen(node_arbreGen* m) {  
@@ -33,7 +33,7 @@ const legacyAlgo: Record<string, any> = {
         },
         generateSteps: () => {
             const steps: AlgoStep[] = [];
-            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: AlgoStep['links'], vars: Record<string, string>) => {
                 steps.push({ line, description: desc, highlights, links, variables: vars });
             };
 
@@ -58,7 +58,7 @@ const legacyAlgo: Record<string, any> = {
             addStep(5, "algo.arbgen_esborra.step_5", 
                 { "mB": "#facc15", "m": "#3b82f6" }, l1, { "i": "1" });
 
-            const l2: any[] = [];
+            const l2: AlgoStep['links'] = [];
             addStep(6, "algo.arbgen_esborra.step_6", 
                 { "m": "#3b82f6", "mB": "rgba(0,0,0,0)" }, l2, { "deleted": "C" });
 

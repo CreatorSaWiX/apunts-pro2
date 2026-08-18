@@ -3,14 +3,14 @@ import { StepBuilder } from '../../engine/StepBuilder';
 export class GraphBuilder extends StepBuilder {
     setHighlight(id: string | number, color: string) {
         const visual = this.getVisual();
-        const highlights = { ...(visual.highlights || {}) };
+        const highlights = { ...(visual.highlights as Record<string | number, string> || {}) };
         highlights[id] = color;
         this.setVisual({ highlights });
     }
 
     removeHighlight(id: string | number) {
         const visual = this.getVisual();
-        const highlights = { ...(visual.highlights || {}) };
+        const highlights = { ...(visual.highlights as Record<string | number, string> || {}) };
         delete highlights[id];
         this.setVisual({ highlights });
     }
@@ -22,7 +22,7 @@ export class GraphBuilder extends StepBuilder {
 
     setNodeLabel(id: string | number, label: string) {
         const visual = this.getVisual();
-        const nodeLabels = { ...(visual.nodeLabels || {}) };
+        const nodeLabels = { ...(visual.nodeLabels as Record<string | number, string> || {}) };
         nodeLabels[id] = label;
         this.setVisual({ nodeLabels });
     }

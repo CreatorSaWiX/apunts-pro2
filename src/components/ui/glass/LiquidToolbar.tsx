@@ -40,7 +40,9 @@ export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, classNam
     );
 };
 
-interface LiquidToolbarButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+import type { HTMLMotionProps } from 'framer-motion';
+
+interface LiquidToolbarButtonProps extends HTMLMotionProps<'button'> {
     active?: boolean;
     variant?: 'default' | 'custom';
     children: React.ReactNode;
@@ -65,7 +67,7 @@ export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active
                 ) : ''}
                 ${className}
             `}
-            {...(props as any)}
+            {...props}
         >
             {active && variant === 'default' && (
                 <motion.div

@@ -2,12 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { m as motion } from 'framer-motion';
 
 
+interface SubjectHourItem {
+    type?: string;
+    label?: string;
+    value: number;
+}
+
+interface SubjectHoursData {
+    hours?: SubjectHourItem[];
+    [key: string]: unknown;
+}
+
 interface SubjectHoursWidgetProps {
     subjectId: string;
 }
 
 const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) => {
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<SubjectHoursData | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -56,7 +67,7 @@ const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) =>
     return (
         <div className="my-6 flex justify-center w-full">
             <div className="flex flex-wrap justify-center gap-6">
-                {data.hours.map((hour: any, i: number) => {
+                {data.hours.map((hour: SubjectHourItem, i: number) => {
                     const colors = [
                         '#0ea5e9', // sky-500
                         '#10b981', // emerald-500
@@ -65,7 +76,7 @@ const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) =>
                         '#6366f1'  // indigo-500
                     ];
                     const color = colors[i % colors.length];
-                    const maxHours = Math.max(...data.hours.map((h: any) => h.value), 10);
+                    const maxHours = Math.max(...(data.hours?.map((h: SubjectHourItem) => h.value) || [10]), 10);
                     const percentage = Math.min((hour.value / maxHours) * 100, 100) || 0;
 
                     return (

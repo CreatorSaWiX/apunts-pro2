@@ -351,7 +351,7 @@ export const ChatBot: React.FC = () => {
               case 'error':
                 throw new Error(parsed.message || t('chat.errors.serverError', 'Error del servidor'));
             }
-          } catch (parseErr: any) {
+          } catch (parseErr: unknown) {
             if (eventType === 'error') throw parseErr;
           }
         }
@@ -376,9 +376,10 @@ export const ChatBot: React.FC = () => {
           }
         });
       }
-    } catch (err: any) {
-      if (err.name === 'AbortError') return;
-      setMessages(prev => [...prev, { role: 'model', content: `**Error:** ${err.message}` }]);
+    } catch (err: unknown) {
+      const errorObj = err as Error;
+      if (errorObj?.name === 'AbortError') return;
+      setMessages(prev => [...prev, { role: 'model', content: `**Error:** ${errorObj?.message || 'Error desconegut'}` }]);
     } finally {
       setStreamPhase('idle');
       setThoughtText('');

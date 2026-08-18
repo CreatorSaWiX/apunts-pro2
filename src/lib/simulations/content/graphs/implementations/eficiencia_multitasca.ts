@@ -21,7 +21,7 @@ const pairMultitaskCode = `pair<double, int> sum_and_size__(BinTree<double> t) {
     };
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     eficiencia_multitasca: {
         id: "eficiencia_multitasca",
         code: pairMultitaskCode,

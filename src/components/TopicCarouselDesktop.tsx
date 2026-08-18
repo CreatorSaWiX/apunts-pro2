@@ -20,7 +20,7 @@ const SpotlightCard = React.memo(({
     className?: string;
     isActive?: boolean;
     isMenuOpen?: boolean;
-    [key: string]: any;
+    [key: string]: unknown;
 }) => {
     const isMobile = useIsMobile();
     const shouldDisable = isMobile && isMenuOpen;
@@ -105,16 +105,16 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const sortedTopics = useMemo(() => {
         return [...allPersonalNotes]
             .filter(note => {
-                const isMatch = (note as any).subject === subject && !note.slug.includes('-lab-');
+                const isMatch = note.subject === subject && !note.slug.includes('-lab-');
                 if (!isMatch) return false;
 
                 // Hide notes marked as draft
-                if ((note as any).draft) {
+                if (note.draft) {
                     return false;
                 }
 
-                // Filtrar duplicats: quins idiomes t├® disponibles aquest slug?
-                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+                // Filtrar duplicats: quins idiomes té disponibles aquest slug?
+                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !n.draft);
                 const hasPreferred = versions.some(n => n.lang === preferredLang);
 
                 if (hasPreferred) {
@@ -295,7 +295,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         const activeTopic = sortedTopics[activeIndex];
         if (activeTopic) {
             const versions = allPersonalNotes.filter(n => n.slug === activeTopic.slug);
-            const newestUpdate = Math.max(0, ...versions.map(n => (n as any).isUpdated || 0));
+            const newestUpdate = Math.max(0, ...versions.map(n => n.isUpdated || 0));
             markAsSeen(activeTopic.slug, newestUpdate);
             navigate(`/tema/${activeTopic.slug}`);
         }
@@ -392,8 +392,8 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                         const isActive = activeIndex === i;
                         // Check if ANY language version of this topic is marked as new or updated
                         const versions = allPersonalNotes.filter(n => n.slug === topic.slug);
-                        const hasNewTag = versions.some(n => (n as any).isNew);
-                        const newestUpdate = Math.max(0, ...versions.map(n => (n as any).isUpdated || 0));
+                        const hasNewTag = versions.some(n => n.isNew);
+                        const newestUpdate = Math.max(0, ...versions.map(n => n.isUpdated || 0));
 
                         const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
                         const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);

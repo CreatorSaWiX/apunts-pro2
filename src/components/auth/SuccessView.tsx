@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 interface SuccessViewProps {
     email: string;
     onBackToLogin: () => void;
-    customEasing: any;
+    customEasing: [number, number, number, number];
 }
 
 export const SuccessView: React.FC<SuccessViewProps> = ({ email, onBackToLogin, customEasing }) => {

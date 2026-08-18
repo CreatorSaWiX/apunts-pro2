@@ -16,26 +16,18 @@ const personalNotes = defineCollection({
         content: z.string()
     }),
     transform: (document) => {
-        // Path per windows i mac
-        const dPath = (document._meta.directory || "").toLowerCase();
+        const dPath = document._meta.directory || "";
         
-        let subject = 'pro2';
-        if (dPath.includes('m1')) subject = 'm1';
-        if (dPath.includes('m2')) subject = 'm2';
+        // La ruta sempre és "assignatura/idioma" (ex. "m1/ca" o "pro2/es")
+        const parts = dPath.split(/[/\\]/);
         
-        let lang = 'ca';
-        // Busquem rutes tipus /es o \es o /es/ 
-        if (dPath.includes('/es') || dPath.includes('\\es') || dPath === 'es') {
-            lang = 'es';
-        } else if (dPath.includes('/en') || dPath.includes('\\en') || dPath === 'en') {
-            lang = 'en';
-        }
+        const subject = parts[0]?.toLowerCase() || 'pro2';
+        const lang = parts[1]?.toLowerCase() || 'ca';
 
         return {
             ...document,
-            subject: subject,
-            lang: lang,
-            // El slug es queda igual ("m1-tema-1")
+            subject,
+            lang,
             slug: `${subject}-${document._meta.fileName.replace(/\.md$/, '')}`
         };
     }

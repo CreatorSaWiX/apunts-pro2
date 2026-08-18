@@ -39,7 +39,7 @@ const bstSearchCode = `bool bst_search(const BinTree<int>& a, int x) {
     return bst_search(a.right(), x);
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     bst_search: {
         id: "bst_search",
         code: bstSearchCode,

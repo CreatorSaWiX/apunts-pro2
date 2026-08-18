@@ -1,12 +1,14 @@
 import { Table, TableView } from '@tiptap/extension-table';
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import type { EditorView } from '@tiptap/pm/view';
 
 class CustomTableView extends TableView {
-    constructor(node: any, cellMinWidth: number, view: any, HTMLAttributes: any) {
-        super(node, cellMinWidth, view, HTMLAttributes);
+    constructor(node: ProseMirrorNode, cellMinWidth: number, view: EditorView, HTMLAttributes: Record<string, unknown>) {
+        super(node as any, cellMinWidth, view as any, HTMLAttributes as any);
         this.applyCustomStyles(node);
     }
 
-    applyCustomStyles(node: any) {
+    applyCustomStyles(node: ProseMirrorNode) {
         if (node.attrs.width) {
             this.table.style.setProperty('--custom-table-width', node.attrs.width);
         }
@@ -15,8 +17,8 @@ class CustomTableView extends TableView {
         }
     }
 
-    update(node: any) {
-        const result = super.update(node);
+    update(node: ProseMirrorNode) {
+        const result = super.update(node as any);
         if (result) {
             this.applyCustomStyles(node);
         }
@@ -27,7 +29,7 @@ class CustomTableView extends TableView {
 export const CustomTable = Table.extend({
     addOptions() {
         return {
-            ...(this.parent?.() as any),
+            ...(this.parent?.() || {}),
             View: CustomTableView,
         } as any;
     },

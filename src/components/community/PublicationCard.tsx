@@ -16,7 +16,7 @@ import { tailwindColors } from '../../stores/useSubjectStore';
 interface PublicationCardProps {
     post: CommunityPost;
     isHeroMode?: boolean;
-    onThumbnailUpload?: (attachments: any[]) => void;
+    onThumbnailUpload?: (attachments: NonNullable<CommunityPost['attachments']>) => void;
 }
 
 const CODE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx', 'json', 'html', 'css', 'cpp', 'c', 'h', 'hpp', 'py', 'java', 'go', 'rs', 'php', 'rb'];

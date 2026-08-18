@@ -4,7 +4,7 @@ import { ArrowUp, Sparkles, StopCircle, CheckCircle2, Plus, X } from 'lucide-rea
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { useSettingsStore } from '../../../stores/useSettingsStore';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -14,19 +14,24 @@ import SubjectEvaluationWidget from './Widgets/SubjectEvaluationWidget';
 import SubjectCompetenciesWidget from './Widgets/SubjectCompetenciesWidget';
 import AIStreamingIndicator from '../../AIStreamingIndicator';
 import { useTranslation } from 'react-i18next';
+import type { Node } from '@xyflow/react';
 
 interface RoadmapAIPromptBarProps {
     isOpen: boolean;
     onClose: () => void;
+    nodes: Node[];
+    addSubjectNode: (abbr: string, targetId?: string) => void;
 }
 
-
-
-const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose }) => {
+export const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ 
+    isOpen, 
+    onClose,
+    nodes,
+    addSubjectNode
+}) => {
     const { t } = useTranslation();
-    const [prompt, setPrompt] = useState('');
-    const { nodes, addSubjectNode } = useRoadmap();
     const { aiSettings } = useSettingsStore();
+    const [prompt, setPrompt] = useState('');
     const {
         messages,
         isGenerating,
@@ -37,7 +42,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
         setAttachedFile,
         processFile,
         handleGenerate: doGenerate
-    } = useRoadmapAI(aiSettings, nodes, (a: string, t: any) => addSubjectNode(a, t));
+    } = useRoadmapAI(aiSettings as any, nodes as any, (a: string, t?: string) => addSubjectNode(a, t ?? ''));
 
     const [isDragging, setIsDragging] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -94,8 +99,8 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
         }
     };
 
-    const markdownComponents = React.useMemo(() => ({
-        strong({ node, children, ...props }: any) {
+    const markdownComponents: Components = React.useMemo(() => ({
+        strong({ children, ...props }) {
             const text = String(children);
             const match = /^\[([A-Z0-9.-]+)\]$/.exec(text.trim());
             if (match) {
@@ -107,14 +112,12 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
             }
             return <strong {...props}>{children}</strong>;
         },
-        pre({ node, children, ...props }: any) {
-            // Check if it's a custom widget block (language starts with subject-)
-            if (node && node.children && node.children.length === 1 && node.children[0].tagName === 'code') {
-                const codeNode = node.children[0];
+        pre({ node, children, ...props }) {
+            const codeNode = node?.children?.[0] as { tagName?: string; properties?: { className?: string[] } } | undefined;
+            if (node && node.children && node.children.length === 1 && codeNode?.tagName === 'code') {
                 const className = codeNode.properties?.className || [];
                 const langClass = className.find((c: string) => c.startsWith('language-subject-'));
                 if (langClass) {
-                    // Do not wrap custom widgets in a <pre> block
                     return <>{children}</>;
                 }
             }
@@ -124,7 +127,7 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                 </pre>
             );
         },
-        code({ node, className, children, ...props }: any) {
+        code({ className, children, ...props }) {
             const text = String(children);
             const matchClass = /language-([\w-]+)/.exec(className || '');
 
@@ -138,13 +141,10 @@ const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({ isOpen, onClose
                 if (matchClass[1] === 'subject-competencies') {
                     return <SubjectCompetenciesWidget dataString={text} />
                 }
-                // Regular highlighted block code
                 return <code className={className} {...props}>{children}</code>;
             }
 
-            // Distinguish inline code
             const isInline = !text.includes('\n');
-
             if (isInline) {
                 // Gemini sometimes double-wraps inline code with backticks inside the actual text node
                 let cleanText = text.trim();

@@ -106,7 +106,13 @@ export default function PointerVisualizer() {
     );
 }
 
-function Node({ label, value, highlight }: any) {
+interface NodeProps {
+    label: string;
+    value: string | number;
+    highlight?: boolean;
+}
+
+function Node({ label, value, highlight }: NodeProps) {
     return (
         <div className="flex flex-col items-center gap-2">
             <span className="text-[9px] text-slate-700 font-black uppercase tracking-widest">{label}</span>

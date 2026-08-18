@@ -137,12 +137,12 @@ const generatePdfThumbnail = async (file: File): Promise<string> => {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    const renderContext: any = {
+    const renderContext = {
         canvasContext: ctx,
         viewport: viewport
     };
     
-    await page.render(renderContext).promise;
+    await page.render(renderContext as unknown as Parameters<typeof page.render>[0]).promise;
     return canvas.toDataURL('image/jpeg', 0.9);
 };
 

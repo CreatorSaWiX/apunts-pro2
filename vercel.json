@@ -22,7 +22,7 @@
     ],
     "rewrites": [
         {
-            "source": "/((?!pdfs/|assets/|sw.js|favicon.ico|manifest.webmanifest|workbox-).*)",
+            "source": "/((?!api/|pdfs/|assets/|sw.js|favicon.ico|manifest.webmanifest|workbox-).*)",
             "destination": "/index.html"
         }
     ]

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import type { DocumentSnapshot, Firestore, DocumentReference, WriteBatch } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import type { CommunityPost } from '../types/community';
@@ -25,7 +26,7 @@ export function useProfile(username: string | undefined) {
 
     const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
     const [isFetchingPosts, setIsFetchingPosts] = useState(true);
-    const [lastPostDoc, setLastPostDoc] = useState<any>(null); // For pagination
+    const [lastPostDoc, setLastPostDoc] = useState<DocumentSnapshot | null>(null); // For pagination
     const [hasMorePosts, setHasMorePosts] = useState(true);
 
     const [unreadCount, setUnreadCount] = useState(0);
@@ -192,11 +193,16 @@ export function useProfile(username: string | undefined) {
     }, [isOwnProfile, authUser]);
 
     // Helper per fer updates batchkejats de 500 en 500
-    const executeChunkedBatches = async (db: any, writeBatch: any, docs: any[], updateData: any) => {
+    const executeChunkedBatches = async (
+        db: Firestore,
+        writeBatchFn: (firestore: Firestore) => WriteBatch,
+        docs: Array<{ ref: DocumentReference }>,
+        updateData: Record<string, unknown>
+    ) => {
         const CHUNK_SIZE = 500;
         for (let i = 0; i < docs.length; i += CHUNK_SIZE) {
             const chunk = docs.slice(i, i + CHUNK_SIZE);
-            const batch = writeBatch(db);
+            const batch = writeBatchFn(db);
             chunk.forEach(doc => {
                 batch.update(doc.ref, updateData);
             });
@@ -245,7 +251,7 @@ export function useProfile(username: string | undefined) {
 
             // Fan-out updates (Client-side, chunked to prevent limits)
             if (data.avatar || data.username) {
-                const updateData: any = {};
+                const updateData: Record<string, unknown> = {};
                 if (data.avatar) updateData.userAvatar = data.avatar;
                 if (data.username) updateData.username = data.username;
 

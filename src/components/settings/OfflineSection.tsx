@@ -47,7 +47,7 @@ export const OfflineSection = () => {
 
     const updateQuota = () => {
         if (navigator.storage && navigator.storage.estimate) {
-            navigator.storage.estimate().then((estimate: any) => {
+            navigator.storage.estimate().then((estimate: StorageEstimate & { usageDetails?: Record<string, number> }) => {
                 setStorageDetails({
                     quota: estimate.quota || 0,
                     usage: estimate.usage || 0,

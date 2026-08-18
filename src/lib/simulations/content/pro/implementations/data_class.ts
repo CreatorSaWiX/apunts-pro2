@@ -8,7 +8,7 @@ export interface OOPStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; files: Record<string, string>; generateSteps: () => OOPStep[] }> = {
     data_class: {
         id: "data_class",
         files: {

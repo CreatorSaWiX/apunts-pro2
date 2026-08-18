@@ -22,7 +22,7 @@ const bstInsertCode = `BinTree<int> bst_insert(const BinTree<int>& a, int x) {
                         bst_insert(a.right(), x));
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     bst_insert: {
         id: "bst_insert",
         code: bstInsertCode,

@@ -3,7 +3,11 @@ import Spinner from '../Spinner';
 
 const AlgoPlayerImpl = lazy(() => import('./AlgoPlayerImpl'));
 
-export default function AlgoPlayer(props: any) {
+interface AlgoPlayerProps {
+    algorithm: string;
+}
+
+export default function AlgoPlayer(props: AlgoPlayerProps) {
     return (
         <Suspense fallback={<div className="h-125 bg-[#0d1117] rounded-xl flex items-center justify-center border border-white/5"><Spinner size="lg" variant="emerald" /></div>}>
             <AlgoPlayerImpl {...props} />

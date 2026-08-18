@@ -9,7 +9,7 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     list_remove_all: {
         id: "list_remove_all",
         code: `void removeItem() {
@@ -35,7 +35,7 @@ const legacyAlgo: Record<string, any> = {
         },
         generateSteps: () => {
             const steps: AlgoStep[] = [];
-            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: AlgoStep['links'], vars: Record<string, string>) => {
                 steps.push({ line, description: desc, highlights, links, variables: vars });
             };
 

@@ -23,21 +23,21 @@ const PlannerPage = lazy(() => import('./pages/PlannerPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const ChatBot = lazy(() => import('./components/chatbot/index').then(module => ({ default: module.ChatBot })));
 
+const SuspendedPage = ({ children }: { children: React.ReactNode }) => (
+  <PageTransition>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center w-full">
+        <Spinner size="2xl" variant="primary" />
+      </div>
+    }>
+      {children}
+    </Suspense>
+  </PageTransition>
+);
+
 function App() {
   const location = useLocation();
   const showChatBot = location.pathname.startsWith('/tema/');
-
-  const SuspendedPage = ({ children }: { children: React.ReactNode }) => (
-    <PageTransition>
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center w-full">
-          <Spinner size="2xl" variant="primary" />
-        </div>
-      }>
-        {children}
-      </Suspense>
-    </PageTransition>
-  );
 
   // Force reload if new version is available
   useEffect(() => {

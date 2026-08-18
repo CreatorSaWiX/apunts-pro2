@@ -218,7 +218,7 @@ export const useUserSolutions = (userId: string) => {
                         // Add status if needed for profile
                         status: data.status || 'pending',
                         date: data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : 'Recent'
-                    } as any);
+                    } as unknown as Solution);
                 });
 
                 if (isMounted) setSolutions(userSolutions);

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { allPersonalNotes } from 'content-collections';
-import type { Quiz } from '../types/quiz';
+import type { Quiz, QuizQuestion } from '../types/quiz';
 import { fisherYatesShuffle } from '../utils/quizUtils';
 
 export type AIPhase = 'idle' | 'connecting' | 'thinking' | 'writing';
@@ -24,7 +24,7 @@ export const useQuiz = (topicId: string | undefined) => {
             try {
                 // 1. Try to load local hardcoded quiz
                 const { quizzes } = await import('../content/data/quizzes');
-                const originalQuiz = quizzes.find((q: any) => q.topicId === topicId);
+                const originalQuiz = (quizzes as Quiz[]).find((q: Quiz) => q.topicId === topicId);
                 
                 if (originalQuiz) {
                     const fullyShuffled: Quiz = {

@@ -86,10 +86,11 @@ export function withMiddleware(
       // 4. Cridar a l'endpoint real amb l'userId
       return await handler(req, userId);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("[Middleware Error]:", error);
+      const message = (error as Error)?.message || "Internal Server Error";
       return new Response(
-        JSON.stringify({ error: error.message || "Internal Server Error" }),
+        JSON.stringify({ error: message }),
         { status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
       );
     }

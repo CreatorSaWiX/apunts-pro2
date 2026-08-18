@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
+import { NodeViewWrapper, NodeViewContent, type NodeViewProps } from '@tiptap/react';
 import { Copy, Check, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const CodeBlockComponent = ({ node, updateAttributes, extension }: any) => {
+export const CodeBlockComponent: React.FC<NodeViewProps> = ({ node, updateAttributes }) => {
     const currentLanguage = node.attrs.language || 'auto';
     const [copied, setCopied] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -114,7 +114,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, extension }: any) =
                     onTouchEnd={(e) => e.stopPropagation()}
                     className="!m-0 !bg-transparent p-5 pt-12 custom-scrollbar overflow-x-auto text-[14px] leading-relaxed font-mono"
                 >
-                    <NodeViewContent as={"code" as any} className={`language-${currentLanguage}`} />
+                    <NodeViewContent className={`language-${currentLanguage}`} />
                 </pre>
             </div>
         </NodeViewWrapper>

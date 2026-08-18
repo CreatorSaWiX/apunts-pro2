@@ -76,12 +76,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, src, delay = 3500 }) => 
 
     const handleFullscreen = () => {
         if (containerRef.current) {
+            const el = containerRef.current as HTMLElement & { webkitRequestFullscreen?: () => Promise<void> | void };
             if (document.fullscreenElement) {
                 document.exitFullscreen();
-            } else if (containerRef.current.requestFullscreen) {
-                containerRef.current.requestFullscreen();
-            } else if ((containerRef.current as any).webkitRequestFullscreen) {
-                (containerRef.current as any).webkitRequestFullscreen();
+            } else if (el.requestFullscreen) {
+                el.requestFullscreen();
+            } else if (el.webkitRequestFullscreen) {
+                el.webkitRequestFullscreen();
             }
         }
     };
@@ -142,7 +143,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, src, delay = 3500 }) => 
     }, [isDragging, duration]);
 
     // Ocultació de controls
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const handleContainerMouseMove = () => {
         setIsHovering(true);
         if (timeoutRef.current) clearTimeout(timeoutRef.current);

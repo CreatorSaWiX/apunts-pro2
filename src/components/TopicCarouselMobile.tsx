@@ -8,7 +8,20 @@ import { m as motion, MotionConfig, useScroll, useTransform, useMotionValueEvent
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hapticSelection, hapticLight } from '../lib/haptics';
 
-const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, scrollX, itemWidth, t }: any) => {
+import type { MotionValue } from 'framer-motion';
+
+type TopicNote = (typeof allPersonalNotes)[number];
+
+interface PremiumScrubberProps {
+    sortedTopics: TopicNote[];
+    activeIndex: number;
+    scrollToCard: (index: number, isRealDrag?: boolean) => void;
+    scrollX: MotionValue<number>;
+    itemWidth: number;
+    t: any;
+}
+
+const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, scrollX, itemWidth, t }: PremiumScrubberProps) => {
     const trackRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [pointerDownX, setPointerDownX] = useState<number | null>(null);
@@ -85,7 +98,7 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
 
                 {/* Elegant Ticks */}
                 <div className="absolute left-0 right-0 h-1.5 flex justify-between px-[2px] pointer-events-none">
-                    {sortedTopics.map((_: any, i: number) => (
+                    {sortedTopics.map((_, i: number) => (
                          <div key={i} className={`w-0.5 h-full rounded-full transition-colors duration-300 ${safeDisplayIndex === i ? 'bg-white' : 'bg-white/20'}`} />
                     ))}
                 </div>
@@ -125,10 +138,26 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
     );
 });
 
+interface CarouselCardProps {
+    topic: TopicNote;
+    index: number;
+    activeIndex: number;
+    itemWidth: number;
+    scrollX: MotionValue<number>;
+    subject: string;
+    navigate: (to: string) => void;
+    markAsSeen: (slug: string, updateTime: number) => void;
+    isInteractive: boolean;
+    seenNewTopics: string[];
+    seenVersions: Record<string, number>;
+    onCardClick: (index: number) => void;
+    t: any;
+}
+
 const CarouselCard = React.memo(({
     topic, index, activeIndex, itemWidth, scrollX,
     subject, navigate, markAsSeen, isInteractive, seenNewTopics, seenVersions, onCardClick, t
-}: any) => {
+}: CarouselCardProps) => {
     
     // Smooth Scale & Opacity Transforms optimized for Horizontal Snap (App Store Style)
     const input = [
@@ -143,9 +172,9 @@ const CarouselCard = React.memo(({
     
     const isActive = activeIndex === index;
 
-    const versions = allPersonalNotes.filter((n: any) => n.slug === topic.slug);
-    const hasNewTag = versions.some((n: any) => n.isNew);
-    const newestUpdate = Math.max(0, ...versions.map((n: any) => n.isUpdated || 0));
+    const versions = allPersonalNotes.filter((n) => n.slug === topic.slug);
+    const hasNewTag = versions.some((n) => n.isNew);
+    const newestUpdate = Math.max(0, ...versions.map((n) => n.isUpdated || 0));
 
     const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
     const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
@@ -290,10 +319,21 @@ const CarouselCard = React.memo(({
     );
 });
 
-const LandscapeTopicCard = React.memo(({ topic, index, subject, navigate, markAsSeen, seenNewTopics, seenVersions, t }: any) => {
-    const versions = allPersonalNotes.filter((n: any) => n.slug === topic.slug);
-    const hasNewTag = versions.some((n: any) => n.isNew);
-    const newestUpdate = Math.max(0, ...versions.map((n: any) => n.isUpdated || 0));
+interface LandscapeTopicCardProps {
+    topic: TopicNote;
+    index: number;
+    subject: string;
+    navigate: (to: string) => void;
+    markAsSeen: (slug: string, updateTime?: number) => void;
+    seenNewTopics: string[];
+    seenVersions: Record<string, number>;
+    t: any;
+}
+
+const LandscapeTopicCard = React.memo(({ topic, index, subject, navigate, markAsSeen, seenNewTopics, seenVersions, t }: LandscapeTopicCardProps) => {
+    const versions = allPersonalNotes.filter((n) => n.slug === topic.slug);
+    const hasNewTag = versions.some((n) => n.isNew);
+    const newestUpdate = Math.max(0, ...versions.map((n) => n.isUpdated || 0));
 
     const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
     const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
@@ -348,7 +388,7 @@ interface TopicCarouselProps {
     subjectOverride?: string;
 }
 
-const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: any) => {
+const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: TopicCarouselProps) => {
     const isMobile = useIsMobile();
     const navigate = useNavigate();
     const { subject: contextSubject } = useSubjectStore();
@@ -365,11 +405,11 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: an
     const sortedTopics = useMemo(() => {
         return [...allPersonalNotes]
             .filter(note => {
-                const isMatch = (note as any).subject === subject && !note.slug.includes('-lab-');
+                const isMatch = note.subject === subject && !note.slug.includes('-lab-');
                 if (!isMatch) return false;
-                if ((note as any).draft) return false;
+                if (note.draft) return false;
 
-                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !n.draft);
                 const hasPreferred = versions.some(n => n.lang === preferredLang);
                 return hasPreferred ? note.lang === preferredLang : note.lang === 'ca';
             })
@@ -572,7 +612,7 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
     return <PortraitCarousel isMenuOpen={isMenuOpen} subjectOverride={subjectOverride} />;
 });
 
-const LandscapeView = React.memo(({ subjectOverride }: any) => {
+const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: string }) => {
     const navigate = useNavigate();
     const { subject: contextSubject } = useSubjectStore();
     const subject = (subjectOverride || contextSubject || '').toLowerCase();
@@ -618,11 +658,11 @@ const LandscapeView = React.memo(({ subjectOverride }: any) => {
     const sortedTopics = useMemo(() => {
         return [...allPersonalNotes]
             .filter(note => {
-                const isMatch = (note as any).subject === subject && !note.slug.includes('-lab-');
+                const isMatch = note.subject === subject && !note.slug.includes('-lab-');
                 if (!isMatch) return false;
-                if ((note as any).draft) return false;
+                if (note.draft) return false;
 
-                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !(n as any).draft);
+                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !n.draft);
                 const hasPreferred = versions.some(n => n.lang === preferredLang);
                 return hasPreferred ? note.lang === preferredLang : note.lang === 'ca';
             })

@@ -4,7 +4,7 @@ import i18n from "../../../i18n/config";
 export class StepBuilder {
     private steps: SimulationStep[] = [];
     private variables: Record<string, string> = {};
-    private visual: Record<string, any> = {};
+    private visual: Record<string, unknown> = {};
 
     setVariable(key: string, value: string) {
         this.variables[key] = value;
@@ -18,11 +18,11 @@ export class StepBuilder {
         this.variables = { ...this.variables, ...vars };
     }
 
-    setVisual(visualUpdates: Record<string, any>) {
+    setVisual(visualUpdates: Record<string, unknown>) {
         this.visual = { ...this.visual, ...visualUpdates };
     }
     
-    replaceVisual(newVisual: Record<string, any>) {
+    replaceVisual(newVisual: Record<string, unknown>) {
         this.visual = newVisual;
     }
     

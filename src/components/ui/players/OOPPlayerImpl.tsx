@@ -50,7 +50,7 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
     }, [isPlaying, currentStep, steps.length, speed]);
 
     const step: Partial<SimulationStep> = steps[currentStep] || {};
-    const displayFile = userSelectedFile || step.visual?.activeFile || Object.keys(sim.files || {})[0];
+    const displayFile = userSelectedFile || (step.visual?.activeFile as string) || Object.keys(sim.files || {})[0];
 
     const handlePlayPause = () => {
         if (!isPlaying) {
@@ -254,9 +254,9 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
                                 <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold">{t('player.terminalOutput')}</span>
                             </div>
                             <div className="flex-1 p-4 overflow-y-auto custom-scrollbar font-mono text-xs sm:text-[13px] text-slate-300 flex flex-col gap-1.5 leading-relaxed">
-                                {(step.visual?.terminalOutput || []).map((line: string, i: number) => (
+                                {((step.visual?.terminalOutput as string[]) || []).map((line: string, i: number) => (
                                     <div key={i} className={`${line.startsWith('>') ? 'text-sky-400 font-bold opacity-70' : 'text-slate-200'} transition`}>
-                                        {t(line as any)}
+                                        {t(line, line)}
                                     </div>
                                 ))}
                                 <div className="w-2 h-4 bg-slate-500 animate-pulse mt-1"></div>

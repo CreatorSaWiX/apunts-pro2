@@ -17,7 +17,7 @@ const HomePage = () => {
     const [isExiting, setIsExiting] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Sync subject to displaySubject during render to avoid cascading renders
     if (subject !== prevSubject) {

@@ -141,8 +141,8 @@ async function generateSolucionarisPDFs() {
             const command = `pandoc "${tempMdPath}" -o "${pdfPath}" --pdf-engine=xelatex -V geometry:margin=2.5cm --toc`;
             execSync(command, { stdio: 'inherit' });
             console.log(`✅ PDF generat: ${pdfPath}`);
-        } catch (e: any) {
-            console.error(`❌ Error generant PDF per a ${topicId}:`, e.message);
+        } catch (e: unknown) {
+            console.error(`❌ Error generant PDF per a ${topicId}:`, (e as Error)?.message);
             const debugPath = path.join(process.cwd(), `debug_${topicId}.md`);
             fs.writeFileSync(debugPath, cleanedContent, 'utf8');
             console.log(`🔍 Markdown de depuració desat a: ${debugPath}`);

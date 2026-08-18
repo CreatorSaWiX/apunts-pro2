@@ -1,10 +1,16 @@
-export const getFirebaseErrorMessage = (err: any, t: (key: string, defaultText: string) => string): string => {
-    if (!err || !err.code) {
-        if (err && err.message) return err.message;
+interface FirebaseLikeError {
+    code?: string;
+    message?: string;
+}
+
+export const getFirebaseErrorMessage = (err: unknown, t: (key: string, defaultText: string) => string): string => {
+    const errorObj = (typeof err === 'object' && err !== null) ? (err as FirebaseLikeError) : null;
+    if (!errorObj || !errorObj.code) {
+        if (errorObj && errorObj.message) return errorObj.message;
         return t('auth.genericError', 'S\'ha produït un error inesperat.');
     }
 
-    switch (err.code) {
+    switch (errorObj.code) {
         // Login Errors
         case 'auth/invalid-credential':
         case 'auth/wrong-password':
@@ -20,6 +26,6 @@ export const getFirebaseErrorMessage = (err: any, t: (key: string, defaultText: 
             return t('auth.register.invalidEmail', 'El correu electrònic no és vàlid.');
         
         default:
-            return err.message || t('auth.genericError', 'S\'ha produït un error inesperat.');
+            return errorObj.message || t('auth.genericError', 'S\'ha produït un error inesperat.');
     }
 };

@@ -40,7 +40,7 @@ const treeLeft: Record<number, number | null> = { 1: 2, 2: 4, 3: 6, 4: null, 5: 
 
 const treeRight: Record<number, number | null> = { 1: 3, 2: 5, 3: 7, 4: null, 5: null, 6: null, 7: null };
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     postordre: {
         id: "postordre",
         code: postordreCode,

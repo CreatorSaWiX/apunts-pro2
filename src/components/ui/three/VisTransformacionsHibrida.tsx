@@ -79,7 +79,7 @@ const VisTransformacionsHibrida = () => {
                     ].map((btn) => (
                         <button type="button"
                             key={btn.id}
-                            onClick={() => setType(btn.id as any)}
+                            onClick={() => setType(btn.id as 'rot' | 'ref' | 'proj' | 'esc')}
                             className={`px-3 py-1.5 text-[9px] font-black uppercase rounded-lg transition ${type === btn.id ? `${btn.color} text-white shadow-lg` : 'text-slate-500 hover:text-slate-300'}`}
                         >
                             {btn.label}

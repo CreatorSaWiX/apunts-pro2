@@ -34,6 +34,31 @@ export interface SubjectNodeData extends Record<string, unknown> {
     fontWeight?: string;
 }
 
+export interface DrawingStroke {
+    id?: string;
+    points: { x: number; y: number; pressure?: number }[];
+    color?: string;
+    size?: number;
+    [key: string]: unknown;
+}
+
+export interface ExperienceDetails {
+    destination?: string;
+    program?: string;
+    company?: string;
+    role?: string;
+    title?: string;
+    credits?: number;
+}
+
+interface SubjectDataItem {
+    name: string;
+    description: string;
+    [key: string]: unknown;
+}
+
+const typedSubjectsData = subjectsData as SubjectDataItem[];
+
 // Data context: nodes, edges, derived values. Changes when nodes/edges change.
 interface RoadmapDataContextType {
     nodes: Node<SubjectNodeData>[];
@@ -43,7 +68,7 @@ interface RoadmapDataContextType {
     totalPassedECTS: number;
     canStartMaster: boolean;
     averageGrade: number | null;
-    initialStrokes: any[];
+    initialStrokes: DrawingStroke[];
     targetGrade: number | null;
     requiredAverageGrade: number | null;
 }
@@ -56,9 +81,9 @@ interface RoadmapActionsContextType {
     onConnect: (connection: Connection) => void;
     updateNodeStatus: (nodeId: string, status: SubjectStatus) => void;
     updateNodeGrade: (nodeId: string, grade: number | null) => void;
-    saveRoadmap: (strokes?: any[]) => Promise<void>;
+    saveRoadmap: (strokes?: DrawingStroke[]) => Promise<void>;
     addSubjectNode: (acronym: string, type: SubjectNodeData['type']) => void;
-    addExperienceNode: (type: 'mobility' | 'internship' | 'tfg' | 'tfm', details: any) => void;
+    addExperienceNode: (type: 'mobility' | 'internship' | 'tfg' | 'tfm', details: ExperienceDetails) => void;
     addCFGSValidations: (cfgsId: string) => void;
     addCustomValidation: (name: string, credits: number) => void;
     addAnnotationNode: (type: 'text' | 'postit', x: number, y: number) => void;
@@ -81,14 +106,14 @@ const TargetGradeContext = createContext<number | null>(null);
 export const TargetGradeProvider = TargetGradeContext.Provider;
 export const useTargetGrade = () => useContext(TargetGradeContext);
 
-const removeUndefined = (obj: any): any => {
-    if (Array.isArray(obj)) return obj.map(removeUndefined);
+const removeUndefined = <T,>(obj: T): T => {
+    if (Array.isArray(obj)) return obj.map(removeUndefined) as unknown as T;
     if (obj !== null && typeof obj === 'object') {
         return Object.fromEntries(
             Object.entries(obj)
                 .filter(([_, v]) => v !== undefined)
                 .map(([k, v]) => [k, removeUndefined(v)])
-        );
+        ) as T;
     }
     return obj;
 };
@@ -102,7 +127,7 @@ const isGradableNode = (node: Node<SubjectNodeData>): boolean => {
 
 const createInitialGraph = () => {
     const nodes: Node<SubjectNodeData>[] = geiBaseNodes.map(acronym => {
-        const subject = subjectsData.find((s: any) => s.name === acronym);
+        const subject = typedSubjectsData.find((s) => s.name === acronym);
         const semester = getSemesterForSubject(acronym);
         const isQ1 = semester === 1;
         return {
@@ -152,7 +177,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
     const { user } = useAuth();
     const [nodes, setNodes] = useState<Node<SubjectNodeData>[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
-    const [initialStrokes, setInitialStrokes] = useState<any[]>([]);
+    const [initialStrokes, setInitialStrokes] = useState<DrawingStroke[]>([]);
     const [itinerary, setItinerary] = useState<ItineraryType>('GEI_STANDARD');
     const [isLoading, setIsLoading] = useState(true);
     const [targetGrade, setTargetGrade] = useState<number | null>(null);
@@ -172,8 +197,15 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 if (snap.exists() && isMounted) {
                     const data = snap.data();
                     if (data.nodes && data.edges) {
+                        interface SerializedNode {
+                            id: string;
+                            position: { x: number; y: number };
+                            data: SubjectNodeData & { semester?: number; grade?: number | null };
+                            [key: string]: unknown;
+                        }
+
                         // Migrate old nodes that don't have a semester or grade
-                        const migratedNodes = data.nodes.map((n: any) => ({
+                        const migratedNodes = (data.nodes as SerializedNode[]).map((n) => ({
                             ...n,
                             data: {
                                 ...n.data,
@@ -183,7 +215,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                         }));
 
                         // Ensure TFG exists for older roadmaps
-                        if (!migratedNodes.some((n: any) => n.data.type === 'tfg')) {
+                        if (!migratedNodes.some((n) => n.data.type === 'tfg')) {
                             migratedNodes.push({
                                 id: `tfg_default`,
                                 position: { x: 0, y: 0 },
@@ -403,7 +435,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
     }, []);
 
     const addSubjectNode = useCallback((acronym: string, type: SubjectNodeData['type']) => {
-        const subject = subjectsData.find((s: any) => s.name === acronym);
+        const subject = typedSubjectsData.find((s) => s.name === acronym);
         const semester = getSemesterForSubject(acronym);
         const newNode: Node<SubjectNodeData> = {
             id: acronym,
@@ -427,7 +459,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
         });
     }, [edges]);
 
-    const addExperienceNode = useCallback((type: 'mobility' | 'internship' | 'tfg' | 'tfm', details: any) => {
+    const addExperienceNode = useCallback((type: 'mobility' | 'internship' | 'tfg' | 'tfm', details: ExperienceDetails) => {
         const id = `${type}_${Date.now()}`;
         const credits = details.credits || (type === 'tfg' ? 18 : type === 'tfm' ? 30 : 12);
 
@@ -592,7 +624,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
             spec.mandatory.forEach(acronym => {
                 // Check if already exists to avoid duplicates
                 if (!newNodes.find(n => n.id === acronym)) {
-                    const subject = subjectsData.find((s: any) => s.name === acronym);
+                    const subject = typedSubjectsData.find((s) => s.name === acronym);
                     const semester = getSemesterForSubject(acronym);
                     newNodes.push({
                         id: acronym,
@@ -641,7 +673,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
     const lastSavedVersionRef = useRef(0);
     useEffect(() => { saveVersionRef.current++; }, [nodes, edges, itinerary, targetGrade]);
 
-    const saveRoadmap = useCallback(async (strokes: any[] = []) => {
+    const saveRoadmap = useCallback(async (strokes: DrawingStroke[] = []) => {
         const currentUser = userRef.current;
         if (!currentUser) return;
 

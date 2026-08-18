@@ -9,7 +9,7 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     arbgen_copia: {
         id: "arbgen_copia",
         code: `static node_arbreGen* copia_node_arbreGen(node_arbreGen* m) { 
@@ -38,7 +38,7 @@ const legacyAlgo: Record<string, any> = {
         },
         generateSteps: () => {
             const steps: AlgoStep[] = [];
-            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: AlgoStep['links'], vars: Record<string, string>) => {
                 steps.push({ line, description: desc, highlights, links, variables: vars });
             };
 

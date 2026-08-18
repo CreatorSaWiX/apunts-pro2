@@ -16,9 +16,10 @@ export const DeleteAccSection = () => {
             setIsDeleting(true);
             await deleteDoc(doc(db, 'users', auth.currentUser.uid));
             await deleteUser(auth.currentUser);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error esborrant el compte:", error);
-            if (error.code === 'auth/requires-recent-login') {
+            const err = error as { code?: string };
+            if (err?.code === 'auth/requires-recent-login') {
                 alert(t('settings.deleteAcc.errorRecentLogin', "Per motius de seguretat, necessites tancar la sessió i tornar a entrar per poder esborrar el teu compte."));
             } else {
                 alert(t('settings.deleteAcc.errorGeneric', "Hi ha hagut un error esborrant el compte."));

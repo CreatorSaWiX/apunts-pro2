@@ -86,7 +86,7 @@ const VisInversaAplicacio = lazy(() => import('../mafs/VisInversaAplicacio'));
 const VisCanviBaseSandvitx = lazy(() => import('../mafs/VisCanviBaseSandvitx'));
 const VisTransformacionsGeometricas = lazy(() => import('../mafs/VisTransformacionsGeometricas'));
 
-const VISUALIZERS: Record<string, React.ComponentType<any>> = {
+const VISUALIZERS: Record<string, React.ComponentType<Record<string, unknown>>> = {
     'vis_canvi_base': VisCanviBase,
     'vis_regles_or_base': VisReglesOrBase,
     'vis_independencia_lineal': VisIndependenciaLineal,

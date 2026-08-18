@@ -38,7 +38,7 @@ const VisOperacionsSEV = () => {
                 ].map((t) => (
                     <button type="button"
                         key={t.id}
-                        onClick={() => setTab(t.id as any)}
+                        onClick={() => setTab(t.id as 'inter' | 'unio' | 'suma' | 'directa')}
                         className={`px-3 py-1.5 rounded text-[9px] font-black uppercase transition whitespace-nowrap ${tab === t.id ? `${t.color} text-white shadow-lg` : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}`}
                     >
                         {t.label}

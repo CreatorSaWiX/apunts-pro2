@@ -18,8 +18,15 @@ const getSvgPathFromPoints = (points: { x: number; y: number }[]) => {
     return path;
 };
 
+interface CompletedStrokesProps {
+    strokes: Stroke[];
+    currentTool: string;
+    removeStroke: (id: string) => void;
+    broadcastRemoveStroke: (id: string) => void;
+}
+
 // Memoized component to prevent re-rendering all strokes when drawing a new one
-const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStroke, broadcastRemoveStroke }: any) => {
+const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStroke, broadcastRemoveStroke }: CompletedStrokesProps) => {
     return (
         <>
             {strokes.map((stroke: Stroke) => (

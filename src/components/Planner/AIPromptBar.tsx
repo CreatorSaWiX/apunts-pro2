@@ -5,6 +5,7 @@ import { useSettingsStore } from '../../stores/useSettingsStore';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import AIStreamingIndicator, { type StreamPhase } from '../AIStreamingIndicator';
+import type { Task, TaskStatus, TaskPriority } from '../../types/tasks';
 
 interface AIPromptBarProps {
     isOpen: boolean;
@@ -164,10 +165,25 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                                 setThoughtText(prev => prev + parsed.text);
                                 break;
                             case 'actions':
-                                setStreamPhase('writing'); 
+                                setStreamPhase('writing');
                                 const actions = parsed.actions;
                                 if (actions && Array.isArray(actions) && actions.length > 0) {
-                                    await Promise.all(actions.map(async (action: any) => {
+                                    interface PlannerAIAction {
+                                        type: 'CREATE' | 'UPDATE' | 'DELETE';
+                                        task?: {
+                                            title?: string;
+                                            description?: string;
+                                            status?: TaskStatus;
+                                            priority?: TaskPriority;
+                                            dueDate?: string | null;
+                                            startDate?: string | null;
+                                            estimatedMinutes?: number;
+                                            subjectId?: string;
+                                        };
+                                        taskId?: string;
+                                        updates?: Partial<Task>;
+                                    }
+                                    await Promise.all(actions.map(async (action: PlannerAIAction) => {
                                         if (action.type === 'CREATE' && action.task) {
                                             await addTask({
                                                 title: action.task.title || 'Tasca AI',
@@ -203,10 +219,11 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                 }
             }
 
-        } catch (err: any) {
-            if (err.name === 'AbortError') return;
+        } catch (err: unknown) {
+            const errorObj = err as Error;
+            if (errorObj?.name === 'AbortError') return;
             console.error(err);
-            setError(err.message);
+            setError(errorObj?.message || 'Error desconegut');
         } finally {
             setIsGenerating(false);
             setStreamPhase('idle');

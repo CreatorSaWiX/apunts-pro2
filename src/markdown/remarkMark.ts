@@ -64,7 +64,7 @@ const remarkMark: Plugin = () => {
             }
 
             // Replace the text node with our new children
-            parent.children.splice(index, 1, ...children as any[]);
+            parent.children.splice(index, 1, ...(children as unknown as Parent['children']));
         });
     };
 };

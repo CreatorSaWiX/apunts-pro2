@@ -12,12 +12,13 @@ import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment,
 import { HtmlRenderer } from '../ui/typography/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
+import type { Locale } from 'date-fns';
 import { ca, es, enUS } from 'date-fns/locale';
 import BottomSheet from '../ui/mobile/BottomSheet';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import ConfirmModal from '../ui/modals/ConfirmModal';
 
-const dateLocales: Record<string, any> = { ca, es, en: enUS };
+const dateLocales: Record<string, Locale> = { ca, es, en: enUS };
 
 interface PostDetailModalProps {
     post: CommunityPost | null;

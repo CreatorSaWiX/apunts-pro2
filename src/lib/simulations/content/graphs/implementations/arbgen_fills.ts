@@ -9,7 +9,7 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     arbgen_fills: {
         id: "arbgen_fills",
         code: `void fills(vector<ArbreGen> &v) {
@@ -35,7 +35,7 @@ const legacyAlgo: Record<string, any> = {
         },
         generateSteps: () => {
             const steps: AlgoStep[] = [];
-            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: any[], vars: Record<string, string>) => {
+            const addStep = (line: number, desc: string, highlights: Record<string, string>, links: AlgoStep['links'], vars: Record<string, string>) => {
                 steps.push({ line, description: desc, highlights, links, variables: vars });
             };
 
@@ -54,7 +54,7 @@ const legacyAlgo: Record<string, any> = {
             addStep(6, "algo.arbgen_fills.step_3", 
                 { "m": "#3b82f6", "mA": "#22c55e", "mB": "#8b5cf6" }, l1, { "i": "0", "v[0]": "fill creat" });
 
-            const l2: any[] = [];
+            const l2: AlgoStep['links'] = [];
             addStep(6, "algo.arbgen_fills.step_4", 
                 { "m": "#3b82f6", "mA": "#22c55e", "mB": "#22c55e" }, l2, { "i": "1", "v[1]": "fill creat" });
 

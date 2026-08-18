@@ -10,7 +10,7 @@ interface ForgotPasswordFormProps {
     initialEmail: string;
     onBackToLogin: () => void;
     onSuccess: (email: string) => void;
-    customEasing: any;
+    customEasing: [number, number, number, number];
 }
 
 export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ 
@@ -38,7 +38,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
         try {
             await resetPassword(email);
             onSuccess(email);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
             setError(t('auth.login.errorReset', "No s'ha pogut enviar el correu. Comprova que l'adreça sigui correcta."));
         } finally {

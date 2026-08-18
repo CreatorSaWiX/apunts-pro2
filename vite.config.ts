@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => {
           runtimeCaching: [
             {
               urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
-              handler: 'StaleWhileRevalidate',
+              handler: 'NetworkFirst',
               options: {
                 cacheName: 'api-cache',
                 expiration: {
@@ -108,6 +108,7 @@ export default defineConfig(({ mode }) => {
               ) {
                 return 'vendor-react';
               }
+              return 'vendor';
             }
           }
         }

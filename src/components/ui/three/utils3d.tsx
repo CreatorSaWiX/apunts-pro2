@@ -2,8 +2,16 @@ import React, { useMemo, useEffect, Component } from 'react';
 import * as THREE from 'three';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 
+interface ArrowProps {
+    memoDir: THREE.Vector3;
+    length?: number;
+    color?: number | string | THREE.Color;
+    head?: number;
+    width?: number;
+}
+
 // Helper to avoid thousands of ArrowHelper allocations
-export const Arrow = ({ memoDir, length, color, head, width }: any) => {
+export const Arrow = ({ memoDir, length, color, head, width }: ArrowProps) => {
     const helper = useMemo(() => new THREE.ArrowHelper(memoDir, new THREE.Vector3(0, 0, 0), length, color, head, width), [memoDir, length, color, head, width]);
     
     useEffect(() => {
@@ -23,8 +31,15 @@ export const Arrow = ({ memoDir, length, color, head, width }: any) => {
     return <primitive object={helper} />;
 }
 
+interface DirectionalCurvePointsProps {
+    a: [number, number] | number[];
+    vx: number;
+    vy: number;
+    f: (x: number, y: number) => number;
+}
+
 // Helper to avoid heavy geometry recalculations every frame
-export const DirectionalCurvePoints = ({ a, vx, vy, f }: any) => {
+export const DirectionalCurvePoints = ({ a, vx, vy, f }: DirectionalCurvePointsProps) => {
     const curvePoints = useMemo(() => {
         const points = Array.from({ length: 50 }, (_, i) => {
             const t = (i / 49) * 8 - 4;
@@ -58,9 +73,13 @@ export function hasWebGL(): boolean {
     }
 }
 
+interface ThreeErrorBoundaryProps {
+    children: React.ReactNode;
+}
+
 // Error Boundary per capturar errors de R3F sense fer petar la pàgina
-export class ThreeErrorBoundary extends Component<{ children: React.ReactNode }, { hasError: boolean, error: string }> {
-    constructor(props: any) {
+export class ThreeErrorBoundary extends Component<ThreeErrorBoundaryProps, { hasError: boolean, error: string }> {
+    constructor(props: ThreeErrorBoundaryProps) {
         super(props);
         this.state = { hasError: false, error: '' };
     }

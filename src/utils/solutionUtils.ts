@@ -18,7 +18,14 @@ export const isJutgeId = (solutionId?: string, topicId?: string): boolean => {
     return !!(solutionId && /^[A-Z0-9]{6}$/.test(solutionId) && topicId?.startsWith('pro2-'));
 };
 
-export const isSolutionSolved = (solution: any): boolean => {
+interface SolutionLike {
+    authorId?: string;
+    type?: string;
+    content?: string;
+    code?: string;
+}
+
+export const isSolutionSolved = (solution?: SolutionLike | null): boolean => {
     return !!(solution && solution.authorId && (
         (solution.type === 'notebook' && solution.content) || 
         (solution.code && !solution.code.includes('// Solució no disponible encara'))

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import algoliasearch from 'algoliasearch/lite';
 import type { CommunityPost } from '../types/community';
 import { useAuth } from '../contexts/AuthContext';
+import type { DocumentSnapshot } from 'firebase/firestore';
 
 const POSTS_PER_PAGE = 24;
 
@@ -22,7 +23,7 @@ export const useCommunityFeed = (
     const [posts, setPosts] = useState<CommunityPost[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
-    const [lastVisible, setLastVisible] = useState<any>(null);
+    const [lastVisible, setLastVisible] = useState<DocumentSnapshot | null>(null);
     const [hasMore, setHasMore] = useState(true);
     const [debouncedSearch, setDebouncedSearch] = useState('');
 

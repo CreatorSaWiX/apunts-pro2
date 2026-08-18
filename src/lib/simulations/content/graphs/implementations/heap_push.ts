@@ -24,7 +24,7 @@ void Heap<T>::flow_up_(int i) {
     }
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     heap_push: {
         id: "heap_push",
         code: heapPushCode,

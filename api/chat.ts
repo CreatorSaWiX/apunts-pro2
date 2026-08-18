@@ -188,7 +188,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
                 } catch (e: unknown) {
                     const errMsg = e instanceof Error ? e.message : String(e);
-                    const errStatus = (e as any)?.status;
+                    const errStatus = (e as { status?: number })?.status;
                     const isRetryable =
                         (errStatus === 429 || errStatus === 404 ||
                         errMsg.includes('429') || errMsg.includes('404') ||

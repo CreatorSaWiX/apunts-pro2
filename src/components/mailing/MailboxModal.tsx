@@ -30,7 +30,12 @@ interface Message {
     createdAt: any;
 }
 
-const MailboxModal = ({ isOpen, onClose }: any) => {
+interface MailboxModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+const MailboxModal = ({ isOpen, onClose }: MailboxModalProps) => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const [messages, setMessages] = useState<Message[]>([]);
@@ -47,7 +52,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                 try {
                     const docSnap = await getDoc(doc(db, 'users', selectedMessage.receiverId));
                     if (docSnap.exists()) {
-                        setReceiverProfile(docSnap.data() as any);
+                        setReceiverProfile(docSnap.data() as { avatar?: string });
                     }
                 } catch (e) {
                     console.error("Error fetching receiver profile", e);

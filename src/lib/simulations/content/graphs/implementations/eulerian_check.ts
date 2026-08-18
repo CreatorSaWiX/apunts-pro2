@@ -27,7 +27,7 @@ const eulerianCheckCode = `bool is_eulerian(const vector<vector<int>>& G) {
     return false;
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     eulerian_check: {
         id: "eulerian_check",
         code: eulerianCheckCode,

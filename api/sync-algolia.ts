@@ -2,7 +2,7 @@ import algoliasearch from 'algoliasearch';
 import { withMiddleware, jsonResponse } from './_shared/middleware';
 import { algoliaSyncRequestSchema } from './_shared/schemas';
 
-export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
     const parseResult = algoliaSyncRequestSchema.safeParse(rawBody);
 
@@ -35,7 +35,7 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
                 subject: post.subject,
                 userId: post.userId,
                 type: post.type,
-                attachments: post.attachments?.map((a: any) => ({ name: a.name })) || [],
+                attachments: post.attachments?.map((a: { name: string }) => ({ name: a.name })) || [],
             };
 
             await index.saveObject(record);
@@ -50,7 +50,7 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
         } else {
             return jsonResponse({ error: 'Invalid action' }, 400);
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[Algolia Sync Error]', error);
         return jsonResponse({ error: 'Failed to sync to Algolia' }, 500);
     }

@@ -3,7 +3,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { withMiddleware, jsonResponse } from './_shared/middleware';
 import { r2PresignRequestSchema } from './_shared/schemas';
 
-export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
     const parseResult = r2PresignRequestSchema.safeParse(rawBody);
 

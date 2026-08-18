@@ -3,7 +3,21 @@ import { useTranslation } from 'react-i18next';
 import { Code2, Database, LayoutTemplate, ChevronDown, ChevronUp } from 'lucide-react';
 import GraphVisualizer from '../visualizers/GraphVisualizer';
 import { graphs as algorithms } from '../../../lib/simulations/content/graphs';
-import ReactCodeMirror from '@uiw/react-codemirror';
+import type { Simulation, SimulationStep } from '../../../lib/simulations/engine/types';
+
+interface GraphNode {
+    id: string | number;
+    label?: string;
+    color?: string;
+    x?: number;
+    y?: number;
+}
+interface GraphLink {
+    source: string | number;
+    target: string | number;
+    color?: string;
+}
+import ReactCodeMirror, { type ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView } from '@codemirror/view';
 import { cpp } from '@codemirror/lang-cpp';
@@ -21,9 +35,9 @@ export default function AlgoPlayer({ algorithm }: AlgoPlayerProps) {
     return <AlgoPlayerContent algo={algo} />;
 }
 
-function AlgoPlayerContent({ algo }: { algo: any }) {
+function AlgoPlayerContent({ algo }: { algo: Simulation }) {
     const { t } = useTranslation();
-    const [steps] = useState<any[]>(() => algo.generateSteps());
+    const [steps] = useState<SimulationStep[]>(() => algo.generateSteps());
     const [currentStep, setCurrentStep] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [activeTab, setActiveTab] = useState<'viz' | 'code'>('viz');
@@ -32,8 +46,8 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
 
     // Stable graph initial data to prevent nodes from exploding/remounting
     const [graphData] = useState(() => ({
-        nodes: algo.initialState?.nodes?.map((n: any) => ({ ...n })) || [],
-        links: algo.initialState?.links?.map((l: any) => ({ ...l })) || []
+        nodes: ((algo.initialState?.nodes as any[])?.map((n: any) => ({ ...n })) || []) as GraphNode[],
+        links: ((algo.initialState?.links as any[])?.map((l: any) => ({ ...l })) || []) as GraphLink[]
     }));
 
     useEffect(() => {
@@ -43,13 +57,15 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
     }, [currentStep, isPlaying, steps.length]);
 
     useEffect(() => {
-        let timer: any;
+        let timer: ReturnType<typeof setInterval> | undefined;
         if (isPlaying) {
             timer = setInterval(() => {
                 setCurrentStep(prev => prev < steps.length - 1 ? prev + 1 : prev);
             }, speed);
         }
-        return () => clearInterval(timer);
+        return () => {
+            if (timer) clearInterval(timer);
+        };
     }, [isPlaying, steps.length, speed]);
 
     const step = steps[currentStep];
@@ -62,17 +78,17 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
 
     // Update node colors and labels dynamically
     // We modify the stable nodes in-place to preserve their physics state (x, y)
-    graphData.nodes.forEach((n: any) => {
-        n.color = step?.visual?.highlights?.[n.id] || '#334155';
-        if (step?.visual?.nodeLabels && step.visual.nodeLabels[n.id]) {
-            n.label = step.visual.nodeLabels[n.id];
+    graphData.nodes.forEach((n) => {
+        n.color = (step?.visual?.highlights as any)?.[n.id] || '#334155';
+        if (step?.visual?.nodeLabels && (step.visual.nodeLabels as any)[n.id]) {
+            n.label = (step.visual.nodeLabels as any)[n.id];
         }
     });
 
     // Create a new graph data object for the visualizer to trigger its useEffect
     const currentGraphData = {
         nodes: graphData.nodes,
-        links: (step?.visual?.links || algo.initialState?.links || []).map((l: any) => ({ ...l }))
+        links: ((step?.visual?.links || algo.initialState?.links || []) as any[]).map((l: any) => ({ ...l }))
     };
 
     const customTheme = EditorView.theme({
@@ -125,7 +141,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
         },
     });
 
-    const editorRef = useRef<any>(null);
+    const editorRef = useRef<ReactCodeMirrorRef | null>(null);
     const highlightRef = useRef<HTMLDivElement>(null);
     const [highlightStyle, setHighlightStyle] = useState<{ top: number; height: number; opacity: number }>({ top: 0, height: 20, opacity: 0 });
 
@@ -185,7 +201,7 @@ function AlgoPlayerContent({ algo }: { algo: any }) {
                 { id: 'code', label: t('player.codeAndState'), icon: <Code2 size={14} /> }
             ]}
             activeTab={activeTab}
-            onTabChange={(id: any) => setActiveTab(id)}
+            onTabChange={(id) => setActiveTab(id as 'viz' | 'code')}
             leftPanel={
                 <div className={`flex-1 flex flex-col relative bg-linear-to-br from-[#0B0F17] via-[#0F1420] to-[#0A0D14] h-full ${activeTab === 'viz' ? 'flex' : 'hidden'} lg:flex`}>
                     {/* Mac-style Window Controls & Title */}

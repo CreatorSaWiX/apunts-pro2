@@ -13,9 +13,26 @@ export type StreamPhase = 'idle' | 'connecting' | 'thinking' | 'writing' | 'done
 
 import { useTranslation } from 'react-i18next';
 
+export interface RoadmapAINode {
+    id: string;
+    data: {
+        status?: string;
+        credits?: number;
+        semester?: number | string;
+        grade?: number;
+        [key: string]: unknown;
+    };
+    [key: string]: unknown;
+}
+
+export interface RoadmapActionChange {
+    type: 'add' | 'remove';
+    subject: string;
+}
+
 export const useRoadmapAI = (
-    aiSettings: any,
-    nodes: any[],
+    aiSettings: Record<string, unknown>,
+    nodes: RoadmapAINode[],
     addSubjectNode: (subject: string, status: string) => void
 ) => {
     const [messages, setMessages] = useState<Message[]>(() => {
@@ -152,7 +169,7 @@ export const useRoadmapAI = (
             if (!reader) throw new Error("No s'ha pogut iniciar l'stream");
             const decoder = new TextDecoder();
             let aiResponse = "";
-            let changes: any[] = [];
+            let changes: RoadmapActionChange[] = [];
             let sseBuffer = "";
             const aiMsgId = (Date.now() + 1).toString();
 
@@ -213,7 +230,7 @@ export const useRoadmapAI = (
                                 setError(parsed.message || parsed.content);
                                 break;
                         }
-                    } catch (e) {
+                    } catch (_e) {
                         // Ignorar chunks mal formats
                     }
                 }
@@ -221,12 +238,13 @@ export const useRoadmapAI = (
 
             window.dispatchEvent(new CustomEvent('ai-magic-done'));
 
-        } catch (err: any) {
-            if (err.name === 'AbortError') {
+        } catch (err: unknown) {
+            const errorObj = err as Error;
+            if (errorObj?.name === 'AbortError') {
                 return;
             }
             console.error(err);
-            setError(err.message || 'Error comunicant amb la IA');
+            setError(errorObj?.message || 'Error comunicant amb la IA');
         } finally {
             setIsGenerating(false);
             setStreamPhase('done');

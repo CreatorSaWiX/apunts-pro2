@@ -21,13 +21,15 @@ const CodeEditorSkeleton = () => {
     );
 };
 
+import type { Solution } from '../../content/data/solutions';
+
 interface SolutionEditorViewerProps {
-    solution: any;
-    user: any;
+    solution: Solution | null;
+    user: { id: string; username: string } | null;
     topicId: string;
     canonicalTitle: string;
     jutgeUrl?: string;
-    setSolution: (updater: any) => void;
+    setSolution?: React.Dispatch<React.SetStateAction<Solution | null>> | ((updater: (prev: Solution | null) => Solution | null) => void);
 }
 
 const SolutionEditorViewer = ({
@@ -39,6 +41,7 @@ const SolutionEditorViewer = ({
     setSolution
 }: SolutionEditorViewerProps) => {
     const { t } = useTranslation();
+    if (!solution) return null;
     const [isEditing, setIsEditing] = useState(false);
     const [currentCode, setCurrentCode] = useState(solution?.code || '');
 
@@ -67,8 +70,8 @@ const SolutionEditorViewer = ({
             await updateSolution(solution.id, solutionData);
 
             if (setSolution) {
-                setSolution((prev: any) => ({
-                    ...prev,
+                setSolution((prev: Solution | null) => ({
+                    ...(prev || {} as Solution),
                     code: currentCode,
                     title: canonicalTitle,
                     authorId: user.id,
@@ -149,7 +152,7 @@ const SolutionEditorViewer = ({
                             className="m-0! h-full bg-transparent! rounded-none! shadow-none! border-0! flex-1 flex flex-col"
                             headerActions={
                                 <div className="flex items-center gap-2">
-                                    {user && (user.role === 'moderador' || user.role === 'editor') && (
+                                    {user && ((user as any).role === 'moderador' || (user as any).role === 'editor') && (
                                         <button type="button"
                                             onClick={() => setIsEditing(true)}
                                             className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"

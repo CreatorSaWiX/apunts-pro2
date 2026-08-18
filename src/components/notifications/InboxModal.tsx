@@ -28,7 +28,12 @@ interface Notification {
     createdAt: any;
 }
 
-const InboxModal = ({ isOpen, onClose }: any) => {
+interface InboxModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+const InboxModal = ({ isOpen, onClose }: InboxModalProps) => {
     const { t, i18n } = useTranslation();
     const dateLocale = i18n.language === 'es' ? es : i18n.language === 'en' ? enUS : ca;
     const { user } = useAuth();

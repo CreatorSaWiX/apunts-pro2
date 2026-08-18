@@ -139,7 +139,7 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                         break;
                     } catch (e: unknown) {
                         const errMsg = e instanceof Error ? e.message : String(e);
-                        const errStatus = (e as any)?.status;
+                        const errStatus = (e as { status?: number })?.status;
                         const isFallbackable =
                             (errStatus === 429 || errStatus === 503 || errStatus === 404 ||
                             errMsg.includes('429') || errMsg.includes('503') || errMsg.includes('404') ||

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Editor } from '@tiptap/react';
 import { findParentNode } from '@tiptap/core';
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 
 interface TableGlobalResizerProps {
     editor: Editor;
@@ -11,7 +12,7 @@ const TableGlobalResizer: React.FC<TableGlobalResizerProps> = ({ editor, scrollC
     const [rect, setRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const isDraggingRef = useRef(false);
-    const tableNodeInfo = useRef<{ pos: number; node: any } | null>(null);
+    const tableNodeInfo = useRef<{ pos: number; node: ProseMirrorNode } | null>(null);
     const tableDomRef = useRef<HTMLElement | null>(null);
     const initialMouse = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
     const initialTableSize = useRef<{ width: number, height: number }>({ width: 0, height: 0 });

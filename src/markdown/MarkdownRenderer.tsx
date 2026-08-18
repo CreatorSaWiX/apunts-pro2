@@ -64,151 +64,153 @@ type MarkdownRendererProps = {
     components?: React.ComponentProps<typeof ReactMarkdown>["components"];
 };
 
-const defaultComponents: any = {
+type MarkdownComponentProps = Record<string, unknown>;
+
+const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     // Custom directive for videos: ::videoviz[src="/m2/video.webm" delay="3500"]
-    videoviz: (props: any) => {
+    videoviz: (props: MarkdownComponentProps) => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <VideoPlayer {...props} />
+                <VideoPlayer {...(props as unknown as React.ComponentProps<typeof VideoPlayer>)} />
             </React.Suspense>
         );
     },
-    accordion: (props: any) => {
+    accordion: (props: MarkdownComponentProps) => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <Accordion {...props} />
+                <Accordion {...(props as unknown as React.ComponentProps<typeof Accordion>)} />
             </React.Suspense>
         );
     },
     // Custom directive for graphs: ::graph
-    graph: (props: any) => {
+    graph: (props: MarkdownComponentProps) => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <GraphVisualizer {...props} />
+                <GraphVisualizer {...(props as unknown as React.ComponentProps<typeof GraphVisualizer>)} />
             </React.Suspense>
         );
     },
     // Callouts from ::note, ::tip, etc.
-    callout: (props: any) => {
-        return <Callout {...props} />;
+    callout: (props: MarkdownComponentProps) => {
+        return <Callout {...(props as unknown as React.ComponentProps<typeof Callout>)} />;
     },
-    algoviz: (props: any) => {
+    algoviz: (props: MarkdownComponentProps) => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <AlgoPlayer algorithm={props.algorithm} />
+                <AlgoPlayer algorithm={props.algorithm as string} />
             </React.Suspense>
         );
     },
-    oopviz: (props: any) => {
+    oopviz: (props: MarkdownComponentProps) => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <OOPPlayer simulation={props.simulation} />
+                <OOPPlayer simulation={props.simulation as string} />
             </React.Suspense>
         );
     },
-    stackviz: (props: any) => {
+    stackviz: () => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <StackVisualizer {...props} />
+                <StackVisualizer />
             </React.Suspense>
         );
     },
-    queueviz: (props: any) => {
+    queueviz: () => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <QueueVisualizer {...props} />
+                <QueueVisualizer />
             </React.Suspense>
         );
     },
-    vectorviz: (props: any) => {
+    vectorviz: () => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <VectorVisualizer {...props} />
+                <VectorVisualizer />
             </React.Suspense>
         );
     },
-    linkedlistviz: (props: any) => {
+    linkedlistviz: () => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <ListVisualizer {...props} />
+                <ListVisualizer />
             </React.Suspense>
         );
     },
-    pointerviz: (props: any) => {
+    pointerviz: () => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <PointerVisualizer {...props} />
+                <PointerVisualizer />
             </React.Suspense>
         );
     },
-    listviz: (props: any) => {
+    listviz: (props: MarkdownComponentProps) => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <ListGraphVisualizer {...props} />
+                <ListGraphVisualizer {...(props as unknown as React.ComponentProps<typeof ListGraphVisualizer>)} />
             </React.Suspense>
         );
     },
-    bintreeviz: (props: any) => {
+    bintreeviz: () => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <BinTreeVisualizer {...props} />
+                <BinTreeVisualizer />
             </React.Suspense>
         );
     },
-    proofviz: (props: any) => {
+    proofviz: (props: MarkdownComponentProps) => {
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <ProofPlayer proofId={props.proof} />
+                <ProofPlayer proofId={props.proof as string} />
             </React.Suspense>
         );
     },
-    mafs: (props: any) => {
+    mafs: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <MafsVisualizer {...rest} />
+                <MafsVisualizer {...(rest as unknown as React.ComponentProps<typeof MafsVisualizer>)} />
             </React.Suspense>
         );
     },
-    threeviz: (props: any) => {
+    threeviz: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <ThreeVisualizer {...rest} />
+                <ThreeVisualizer {...(rest as unknown as React.ComponentProps<typeof ThreeVisualizer>)} />
             </React.Suspense>
         );
     },
-    three: (props: any) => {
+    three: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <ThreeVisualizer {...rest} />
+                <ThreeVisualizer {...(rest as unknown as React.ComponentProps<typeof ThreeVisualizer>)} />
             </React.Suspense>
         );
     },
-    linkedinviz: (props: any) => {
+    linkedinviz: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <LinkedInEmbed {...rest} />
+                <LinkedInEmbed {...(rest as unknown as React.ComponentProps<typeof LinkedInEmbed>)} />
             </React.Suspense>
         );
     },
-    youtubeviz: (props: any) => {
+    youtubeviz: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
         return (
             <React.Suspense fallback={<VizFallback />}>
-                <YoutubeEmbed {...rest} />
+                <YoutubeEmbed {...(rest as unknown as React.ComponentProps<typeof YoutubeEmbed>)} />
             </React.Suspense>
         );
     },
-    pre: ({ children }: any) => <>{children}</>,
-    code(props: any) {
+    pre: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+    code(props: React.ComponentPropsWithoutRef<'code'> & { metadata?: string }) {
         const { children, className, ...rest } = props;
         const match = /language-(\w+)/.exec(className || '');
 
         // Access metadata passed by remarkCodeMetadata via hProperties -> props
-        const metadata = (rest as any).metadata || '';
+        const metadata = props.metadata || '';
         const titleMatch = metadata.match(/\[(.*?)\]/);
         const title = titleMatch ? titleMatch[1] : undefined;
 
@@ -319,7 +321,7 @@ export function MarkdownRenderer({ content, components: customComponents }: Mark
                 rehypeKatex
             ]}
             remarkPlugins={[remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMark, remarkMath]}
-            components={mergedComponents as any}
+            components={mergedComponents as unknown as React.ComponentProps<typeof ReactMarkdown>["components"]}
         >
             {content}
         </ReactMarkdown>

@@ -6,7 +6,13 @@ import GraphVisualizer from '../visualizers/GraphVisualizer';
 import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
 
-export default function ProofPlayer(props: any) {
+interface ProofPlayerProps {
+    proof?: string;
+    proofId?: string;
+    attributes?: { proof?: string };
+}
+
+export default function ProofPlayer(props: ProofPlayerProps) {
     // Defensive prop extraction: check for 'proof', 'proofId', or nested 'attributes'
     const id = props.proof || props.proofId || props.attributes?.proof;
     const proof = id ? proofs[id] : null;

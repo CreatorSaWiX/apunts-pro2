@@ -39,7 +39,7 @@ const VisExPissarraTopologia = () => {
                 </div>
                 <div className="flex gap-1 bg-black/20 p-1 rounded-lg">
                     {['set', 'int', 'fr', 'adh'].map((v) => (
-                        <button type="button" key={v} onClick={() => setView(v as any)} className={`px-2 py-1 rounded text-[9px] font-black transition uppercase ${view === v ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-500 hover:text-white'}`}>
+                        <button type="button" key={v} onClick={() => setView(v as 'set' | 'int' | 'fr' | 'adh')} className={`px-2 py-1 rounded text-[9px] font-black transition uppercase ${view === v ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-500 hover:text-white'}`}>
                             {v === 'set' ? 'Conjunt A' : v === 'int' ? 'A° (Int)' : v === 'fr' ? 'Fr (Front)' : ' \u0304A (Adh)'}
                         </button>
                     ))}

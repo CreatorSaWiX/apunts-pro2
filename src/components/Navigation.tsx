@@ -43,7 +43,7 @@ const TooltipItem = ({ children, text, disabled = false, tooltipPosition = "bott
     );
 };
 
-const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, className }: { to: string, icon?: any, children?: React.ReactNode, label: string, isActive: boolean, text?: string, className?: string }) => {
+const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, className }: { to: string, icon?: React.ComponentType<{ size?: number; className?: string }>, children?: React.ReactNode, label: string, isActive: boolean, text?: string, className?: string }) => {
     return (
         <TooltipItem text={label}>
             <Link

@@ -40,7 +40,7 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     // Merge subjects with custom colors from Firebase/Settings
     const subjects: Subject[] = useMemo(() => {
-        return subjectsData.map((sub: any) => {
+        return (subjectsData as Subject[]).map((sub: Subject) => {
             if (customSubjectColors && customSubjectColors[sub.name]) {
                 return { ...sub, colorToken: `${customSubjectColors[sub.name]}-500` };
             }

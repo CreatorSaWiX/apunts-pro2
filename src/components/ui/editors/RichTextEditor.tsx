@@ -1,5 +1,5 @@
 import { useEditor, EditorContent } from '@tiptap/react';
-import { Node, mergeAttributes } from '@tiptap/core';
+import { Node, mergeAttributes, type Editor } from '@tiptap/core';
 import { useShortcut } from '../../../hooks/useShortcut';
 import { useSettingsStore } from '../../../stores/useSettingsStore';
 import { useTranslation } from 'react-i18next';
@@ -79,10 +79,18 @@ interface RichTextEditorProps {
     content: string;
     onChange: (html: string) => void;
     placeholder?: string;
-    editorRef?: (editor: any) => void;
+    editorRef?: (editor: Editor | null) => void;
 }
 
-const ToolbarButton = ({ onClick, isActive, disabled = false, icon: Icon, title }: any) => (
+interface ToolbarButtonProps {
+    onClick: () => void;
+    isActive?: boolean;
+    disabled?: boolean;
+    icon: React.ComponentType<{ size?: number; className?: string }>;
+    title: string;
+}
+
+const ToolbarButton = ({ onClick, isActive, disabled = false, icon: Icon, title }: ToolbarButtonProps) => (
     <button
         type="button"
         onClick={onClick}
@@ -97,7 +105,15 @@ const ToolbarButton = ({ onClick, isActive, disabled = false, icon: Icon, title 
     </button>
 );
 
-const EditorDropdown = ({ icon: Icon, label, children, title, isActive = false }: any) => {
+interface EditorDropdownProps {
+    icon?: React.ComponentType<{ size?: number; className?: string }>;
+    label?: string;
+    children: React.ReactNode;
+    title: string;
+    isActive?: boolean;
+}
+
+const EditorDropdown = ({ icon: Icon, label, children, title, isActive = false }: EditorDropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -137,7 +153,14 @@ const EditorDropdown = ({ icon: Icon, label, children, title, isActive = false }
     );
 };
 
-const DropdownItem = ({ onClick, isActive, icon: Icon, label }: any) => (
+interface DropdownItemProps {
+    onClick: () => void;
+    isActive?: boolean;
+    icon?: React.ComponentType<{ size?: number; className?: string }>;
+    label: string;
+}
+
+const DropdownItem = ({ onClick, isActive, icon: Icon, label }: DropdownItemProps) => (
     <button
         type="button"
         onClick={onClick}
@@ -148,13 +171,13 @@ const DropdownItem = ({ onClick, isActive, icon: Icon, label }: any) => (
     </button>
 );
 
-const MenuBar = ({ editor }: { editor: any }) => {
+const MenuBar = ({ editor }: { editor: Editor | null }) => {
     const { t } = useTranslation();
     const { shortcuts } = useSettingsStore();
     const [, forceUpdate] = useState({});
 
     const handleEmojiSelect = (emojiUrl: string) => {
-        editor.chain().focus().insertContent({ type: 'customEmoji', attrs: { src: emojiUrl } }).run();
+        editor?.chain().focus().insertContent({ type: 'customEmoji', attrs: { src: emojiUrl } }).run();
     };
 
     useEffect(() => {
@@ -175,6 +198,8 @@ const MenuBar = ({ editor }: { editor: any }) => {
         const key = shortcut.key.toUpperCase();
         return ` (${metaStr}${key})`;
     }, [shortcuts, isMac]);
+
+    if (!editor) return null;
 
     const setLink = () => {
         const previousUrl = editor.getAttributes('link').href;

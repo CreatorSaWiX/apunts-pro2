@@ -48,7 +48,7 @@ export const dfs: Simulation = {
             const x = P[P.length - 1];
             
             // Clear current yellow highlights to green
-            const currentHighlights = builder.build().slice(-1)[0]?.visual?.highlights || {};
+            const currentHighlights = (builder.build().slice(-1)[0]?.visual?.highlights || {}) as Record<string, string>;
             for (const key in currentHighlights) {
                 if (currentHighlights[key] === "#facc15") builder.setHighlight(key, "#10b981");
             }
@@ -79,7 +79,7 @@ export const dfs: Simulation = {
             }
         }
         
-        const finalHighlights = builder.build().slice(-1)[0]?.visual?.highlights || {};
+        const finalHighlights = (builder.build().slice(-1)[0]?.visual?.highlights || {}) as Record<string, string>;
         for (const key in finalHighlights) builder.setHighlight(key, "#3b82f6");
         
         updateVars();

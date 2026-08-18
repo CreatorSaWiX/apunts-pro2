@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, type FileRejection } from 'react-dropzone';
 import { UploadCloud, Paperclip } from 'lucide-react';
 
 import Spinner from '../Spinner';
@@ -132,9 +132,10 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
                 });
                 
                 setProgress(((i + 1) / acceptedFiles.length) * 100);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error("Error pujant arxiu:", err);
-                alert(`Error amb ${file.name}: ${err.message}`);
+                const msg = (err as Error)?.message || 'Error desconegut';
+                alert(`Error amb ${file.name}: ${msg}`);
             }
         }
         
@@ -143,14 +144,14 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [maxFiles, onUploadComplete]);
 
-    const onDropRejected = useCallback((fileRejections: any[]) => {
+    const onDropRejected = useCallback((fileRejections: FileRejection[]) => {
         const errors = fileRejections.map(r => {
-            if (r.errors.find((e: any) => e.code === 'file-too-large')) {
+            if (r.errors.find((e) => e.code === 'file-too-large')) {
                 return `L'arxiu "${r.file.name}" és massa gran. El límit és de ${maxSizeMB}MB.`;
             }
             return `L'arxiu "${r.file.name}" no s'ha pogut pujar. Format no acceptat o massa gran.`;
         });
-        alert(errors.join('\\n'));
+        alert(errors.join('\n'));
     }, [maxSizeMB]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({

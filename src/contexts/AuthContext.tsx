@@ -50,25 +50,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
                     if (firebaseUser) {
                         let role = 'invitat';
-                        let firestoreData: any = {};
+                        let firestoreData: Record<string, unknown> = {};
 
                         try {
                             const docSnap = await getDoc(doc(db, 'users', firebaseUser.uid));
                             if (docSnap.exists()) {
                                 firestoreData = docSnap.data();
-                                role = firestoreData.role || 'invitat';
+                                role = (firestoreData.role as string) || 'invitat';
                             }
                         } catch (e) {
                             console.error("Error fetching user role", e);
                         }
 
-                        const username = firestoreData.username || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
+                        const username = (firestoreData.username as string) || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
 
                         const newUser = {
                             id: firebaseUser.uid,
                             username: username,
                             email: firebaseUser.email || '',
-                            avatar: firestoreData.avatar || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${username}`,
+                            avatar: (firestoreData.avatar as string) || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${username}`,
                             role: role
                         };
                         setUser(newUser);
@@ -132,7 +132,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // 3. Determine Role and Data
             const finalRole = 'invitat';
 
-            const userData: any = {
+            const userData: Record<string, unknown> = {
                 username: username,
                 email: email,
                 avatar: avatarUrl,
@@ -150,7 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 username: username,
                 email: email,
                 avatar: avatarUrl,
-                role: userData.role
+                role: userData.role as string
             };
             setUser(newUser);
             localStorage.setItem('auth_user', JSON.stringify(newUser));

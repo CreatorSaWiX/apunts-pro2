@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { m as motion, AnimatePresence } from 'framer-motion';
@@ -13,6 +13,9 @@ import FloatingActionButton from '../components/ui/mobile/FloatingActionButton';
 import NavigationPill from '../components/ui/NavigationPill';
 
 import { useCommunityFeed } from '../hooks/useCommunityFeed';
+import { useCanvasOrchestrator } from '../hooks/useCanvasOrchestrator';
+import { useCommunityUI } from '../hooks/useCommunityUI';
+
 import CommunityHero from '../components/community/page/CommunityHero';
 import CommunityToolbar from '../components/community/page/CommunityToolbar';
 import CommunityFeed from '../components/community/page/CommunityFeed';
@@ -30,25 +33,27 @@ const CommunityPage = () => {
     // App State
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
     
-    // UI State
-    const [activeSubject, setActiveSubject] = useState<string>('all');
-    const [showSubjectFilter, setShowSubjectFilter] = useState(false);
-    const [showMobileFiltersMenu, setShowMobileFiltersMenu] = useState(false);
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
-    const [postToEdit, setPostToEdit] = useState<CommunityPost | null>(null);
+    // UI & Canvas Orchestration (Custom Hooks)
+    const {
+        activeSubject, setActiveSubject,
+        showSubjectFilter, setShowSubjectFilter,
+        showMobileFiltersMenu, setShowMobileFiltersMenu,
+        isCreateOpen, setIsCreateOpen,
+        selectedPost, setSelectedPost,
+        postToEdit, setPostToEdit,
+        filterType, setFilterType,
+        sortBy, setSortBy,
+        searchQuery, setSearchQuery
+    } = useCommunityUI();
 
-    // Filters & Sort State
-    const [filterType, setFilterType] = useState<'all' | 'pdf' | 'image' | 'code'>('all');
-    const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'views' | 'liked'>('recent');
-    const [searchQuery, setSearchQuery] = useState('');
-
-    // Canvas State
-    const [isCanvasOpen, setIsCanvasOpen] = useState(false);
-    const [isCanvasFullyOpen, setIsCanvasFullyOpen] = useState(false);
-    const [isBackgroundHidden, setIsBackgroundHidden] = useState(false);
-    const [isCanvasClosing, setIsCanvasClosing] = useState(false);
-    const animationTimersRef = useRef<NodeJS.Timeout[]>([]);
+    const {
+        isCanvasOpen,
+        isCanvasFullyOpen,
+        isBackgroundHidden,
+        isCanvasClosing,
+        handleOpenCanvas,
+        handleCloseCanvas
+    } = useCanvasOrchestrator();
 
     // Custom Hook for Data
     const {
@@ -58,6 +63,28 @@ const CommunityPage = () => {
         filteredAndSortedPosts,
         lastPostRef
     } = useCommunityFeed(searchQuery, activeSubject, filterType, sortBy, isOffline);
+
+    const postModalData = useMemo(() => {
+        if (!selectedPost) return null;
+        const list = filteredAndSortedPosts.some(p => p.id === selectedPost.id) ? filteredAndSortedPosts : posts;
+        const currentIdx = list.findIndex(p => p.id === selectedPost.id);
+        
+        const handlePrevPost = list.length > 1 && currentIdx !== -1 ? () => {
+            const prevIdx = currentIdx > 0 ? currentIdx - 1 : list.length - 1;
+            setSelectedPost(list[prevIdx]);
+        } : undefined;
+        
+        const handleNextPost = list.length > 1 && currentIdx !== -1 ? () => {
+            const nextIdx = currentIdx < list.length - 1 ? currentIdx + 1 : 0;
+            setSelectedPost(list[nextIdx]);
+        } : undefined;
+
+        return {
+            post: posts.find(p => p.id === selectedPost.id) || selectedPost,
+            handlePrevPost,
+            handleNextPost
+        };
+    }, [selectedPost, filteredAndSortedPosts, posts, setSelectedPost]);
 
     useEffect(() => {
         const handleOnline = () => setIsOffline(false);
@@ -74,7 +101,7 @@ const CommunityPage = () => {
         if (!isOffline) {
             setIsCreateOpen(true);
         }
-    }, [isOffline]);
+    }, [isOffline, setIsCreateOpen]);
 
     useShortcut('createResource', handleCreateShortcut);
 
@@ -84,50 +111,7 @@ const CommunityPage = () => {
         } else {
             setIsCreateOpen(true);
         }
-    }, [user, navigate]);
-
-    const handleOpenCanvas = () => {
-        setIsCanvasOpen(true);
-        const t1 = setTimeout(() => {
-            setIsCanvasFullyOpen(true);
-            setIsBackgroundHidden(true);
-        }, 800);
-        animationTimersRef.current.push(t1);
-    };
-
-    const handleCloseCanvas = () => {
-        setIsCanvasClosing(true);
-        setIsBackgroundHidden(false);
-        setIsCanvasFullyOpen(false);
-        const t1 = setTimeout(() => setIsCanvasOpen(false), 350);
-        const t2 = setTimeout(() => setIsCanvasClosing(false), 1200);
-        animationTimersRef.current.push(t1, t2);
-    };
-
-    useEffect(() => {
-        if (typeof document !== 'undefined') {
-            if (isCanvasOpen) {
-                document.body.classList.add('canvas-active');
-                window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: true }));
-            } else {
-                document.body.classList.remove('canvas-active');
-                window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: false }));
-            }
-        }
-        return () => {
-            if (typeof document !== 'undefined') {
-                document.body.classList.remove('canvas-active');
-                window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: false }));
-            }
-        };
-    }, [isCanvasOpen]);
-
-    useEffect(() => {
-        const timers = animationTimersRef.current;
-        return () => {
-            timers.forEach(clearTimeout);
-        };
-    }, []);
+    }, [user, navigate, setIsCreateOpen]);
 
     return (
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
@@ -171,7 +155,7 @@ const CommunityPage = () => {
                         <div>
                             <h4 className="text-[11px] font-bold text-slate-400 mb-3 uppercase tracking-widest">{t('community.allTypes', 'Tipus de recurs')}</h4>
                             <div className="grid grid-cols-2 gap-3">
-                                {['all', 'pdf', 'image', 'code'].map((type, i) => (
+                                {(['all', 'pdf', 'image', 'code'] as const).map((type, i) => (
                                     <motion.button
                                         key={type}
                                         initial={{ opacity: 0, y: 10 }}
@@ -179,7 +163,7 @@ const CommunityPage = () => {
                                         transition={{ delay: i * 0.05 + 0.1 }}
                                         onClick={() => {
                                             if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(40);
-                                            setFilterType(type as any);
+                                            setFilterType(type);
                                             setTimeout(() => setShowMobileFiltersMenu(false), 200);
                                         }}
                                         className={`p-3.5 rounded-2xl text-sm font-semibold transition duration-300 flex items-center justify-center gap-2 ${filterType === type ? 'bg-primary text-white shadow-[0_0_20px_rgba(0,0,0,0.2)] scale-[1.02]' : 'bg-white/5 text-slate-300 border border-white/5'}`}
@@ -193,7 +177,7 @@ const CommunityPage = () => {
                         <div>
                             <h4 className="text-[11px] font-bold text-slate-400 mb-3 uppercase tracking-widest">Ordenació</h4>
                             <div className="grid grid-cols-2 gap-3">
-                                {['recent', 'popular', 'views', 'liked'].map((sort, i) => (
+                                {(['recent', 'popular', 'views', 'liked'] as const).map((sort, i) => (
                                     <motion.button
                                         key={sort}
                                         initial={{ opacity: 0, y: 10 }}
@@ -201,7 +185,7 @@ const CommunityPage = () => {
                                         transition={{ delay: i * 0.05 + 0.2 }}
                                         onClick={() => {
                                             if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(40);
-                                            setSortBy(sort as any);
+                                            setSortBy(sort);
                                             setTimeout(() => setShowMobileFiltersMenu(false), 200);
                                         }}
                                         className={`p-3.5 rounded-2xl text-sm font-semibold transition duration-300 flex items-center justify-center gap-2 ${sortBy === sort ? 'bg-primary text-white shadow-[0_0_20px_rgba(0,0,0,0.2)] scale-[1.02]' : 'bg-white/5 text-slate-300 border border-white/5'}`}
@@ -326,36 +310,21 @@ const CommunityPage = () => {
                     />
                 )}
 
-                {selectedPost && (() => {
-                    const list = filteredAndSortedPosts.some(p => p.id === selectedPost.id) ? filteredAndSortedPosts : posts;
-                    const currentIdx = list.findIndex(p => p.id === selectedPost.id);
-                    const handlePrevPost = list.length > 1 && currentIdx !== -1 ? () => {
-                        const prevIdx = currentIdx > 0 ? currentIdx - 1 : list.length - 1;
-                        setSelectedPost(list[prevIdx]);
-                    } : undefined;
-                    const handleNextPost = list.length > 1 && currentIdx !== -1 ? () => {
-                        const nextIdx = currentIdx < list.length - 1 ? currentIdx + 1 : 0;
-                        setSelectedPost(list[nextIdx]);
-                    } : undefined;
-
-                    return (
-                        <PostDetailModal
-                            post={posts.find(p => p.id === selectedPost.id) || selectedPost}
-                            isOpen={!!selectedPost}
-                            onClose={() => setSelectedPost(null)}
-                            onPrev={handlePrevPost}
-                            onNext={handleNextPost}
-                            onDelete={() => {
-                                setSelectedPost(null); 
-                            }}
-                            onEdit={() => {
-                                setPostToEdit(posts.find(p => p.id === selectedPost.id) || selectedPost);
-                                setSelectedPost(null);
-                                setIsCreateOpen(true);
-                            }}
-                        />
-                    );
-                })()}
+                {postModalData && (
+                    <PostDetailModal
+                        post={postModalData.post}
+                        isOpen={true}
+                        onClose={() => setSelectedPost(null)}
+                        onPrev={postModalData.handlePrevPost}
+                        onNext={postModalData.handleNextPost}
+                        onDelete={() => setSelectedPost(null)}
+                        onEdit={() => {
+                            setPostToEdit(postModalData.post);
+                            setSelectedPost(null);
+                            setIsCreateOpen(true);
+                        }}
+                    />
+                )}
             </Suspense>
 
             <AnimatePresence>

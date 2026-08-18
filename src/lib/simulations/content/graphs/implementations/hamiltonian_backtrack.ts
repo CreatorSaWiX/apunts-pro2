@@ -31,7 +31,7 @@ const hamiltonianBacktrackCode = `bool hamiltonian_path(int u, int count, int n,
     return false;
 }`;
 
-const legacyAlgo: Record<string, any> = {
+const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     hamiltonian_backtrack: {
         id: "hamiltonian_backtrack",
         code: hamiltonianBacktrackCode,

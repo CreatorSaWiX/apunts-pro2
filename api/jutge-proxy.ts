@@ -1,7 +1,7 @@
 import { getProblemInfo } from '../src/lib/jutgeScraper.js';
 import { withMiddleware, jsonResponse } from './_shared/middleware';
 
-export default withMiddleware(async function handler(req: Request, userId?: string): Promise<Response> {
+export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     if (req.method !== 'GET') {
         return jsonResponse({ error: 'Mètode no permès. Fes servir GET.' }, 405);
     }
@@ -20,7 +20,7 @@ export default withMiddleware(async function handler(req: Request, userId?: stri
         const response = jsonResponse(result, 200);
         response.headers.set('Cache-Control', 's-maxage=86400, stale-while-revalidate=43200');
         return response;
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error("[Vercel API] Proxy Error:", e);
         return jsonResponse({ error: 'Error intern del servidor' }, 500);
     }

@@ -122,7 +122,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
     useEffect(() => {
         if (initialStrokes && initialStrokes.length > 0) {
-            setStrokes(initialStrokes);
+            setStrokes(initialStrokes as any);
         }
     }, [initialStrokes, setStrokes]);
 
@@ -173,7 +173,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            await saveRoadmap(strokes);
+            await saveRoadmap(strokes as any);
         } catch (err) {
             console.error("Failed to save", err);
         } finally {
@@ -674,6 +674,8 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                 <RoadmapAIPromptBar
                     isOpen={isOpenAI}
                     onClose={onCloseAI}
+                    nodes={nodes as any}
+                    addSubjectNode={() => {}}
                 />
             )}
         </div>

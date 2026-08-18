@@ -8,7 +8,8 @@ import {
     useSensor,
     useSensors,
     type DragStartEvent,
-    type DragOverEvent
+    type DragOverEvent,
+    type DragEndEvent
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { useTasks } from '../../../contexts/TasksContext';
@@ -18,7 +19,6 @@ import type { Task, TaskStatus } from '../../../types/tasks';
 import { createPortal } from 'react-dom';
 import { Plus, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { v4 as uuidv4 } from 'uuid';
 
 const defaultColumns = [
     { id: 'TODO', title: 'TO DO', color: 'indigo-400' },
@@ -73,7 +73,7 @@ const BoardView: React.FC = () => {
 
     const handleAddColumn = () => {
         if (newColumnTitle.trim()) {
-            const id = uuidv4();
+            const id = crypto.randomUUID();
             setColumns([...columns, { id, title: newColumnTitle.trim(), color: newColumnColor }]);
             setNewColumnTitle('');
             setNewColumnColor(PRESET_COLORS[0]);
@@ -168,7 +168,7 @@ const BoardView: React.FC = () => {
         });
     };
 
-    const onDragEnd = (event: any) => {
+    const onDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
         if (active.data.current?.type === 'Column') {

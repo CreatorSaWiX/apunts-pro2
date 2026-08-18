@@ -28,7 +28,7 @@ const VisTransformacionsGeometricas = () => {
     const m = getMatrix();
     const f = (x: number, y: number): [number, number] => [m[0]*x + m[1]*y, m[2]*x + m[3]*y];
 
-    const shape = [
+    const shape: [number, number][] = [
         [0, 0], [0, 3], [2, 3], [2, 2.5], [0.5, 2.5], [0.5, 1.8], [1.5, 1.8], [1.5, 1.3], [0.5, 1.3], [0.5, 0], [0, 0]
     ];
 
@@ -43,20 +43,20 @@ const VisTransformacionsGeometricas = () => {
                     <button type="button" onClick={() => setType('esc')} className={`px-4 py-1.5 text-[10px] font-black uppercase rounded-lg transition ${type === 'esc' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>Escalat</button>
                 </div>
 
-                <div className="flex gap-8 min-w-[200px]">
+                <div className="flex flex-1 w-full max-w-sm gap-6">
                     {type === 'rot' && (
-                        <div className="flex flex-col gap-2 flex-1">
-                            <div className="flex justify-between">
-                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Angle</span>
+                        <div className="flex-1">
+                            <div className="flex justify-between mb-1">
+                                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Angle</span>
                                 <span className="text-[10px] font-mono text-indigo-400">{alpha}º</span>
                             </div>
                             <input type="range" min="0" max="360" value={alpha} onChange={(e) => setAlpha(parseInt(e.target.value))} className="w-full accent-indigo-500" />
                         </div>
                     )}
                     {type === 'esc' && (
-                        <div className="flex flex-col gap-2 flex-1">
-                            <div className="flex justify-between">
-                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Factor</span>
+                        <div className="flex-1">
+                            <div className="flex justify-between mb-1">
+                                <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Factor (k)</span>
                                 <span className="text-[10px] font-mono text-emerald-400">{k.toFixed(1)}x</span>
                             </div>
                             <input type="range" min="0.1" max="2.5" step="0.1" value={k} onChange={(e) => setK(parseFloat(e.target.value))} className="w-full accent-emerald-500" />
@@ -71,10 +71,10 @@ const VisTransformacionsGeometricas = () => {
                     <Mafs viewBox={{ x: [-5, 5], y: [-5, 5] }} pan={false} zoom={false}>
                         <Coordinates.Cartesian />
                         {/* Original Shadow */}
-                        <Polygon points={shape as any} color={Theme.blue} fillOpacity={0.05} weight={1} />
+                        <Polygon points={shape} color={Theme.blue} fillOpacity={0.05} weight={1} />
                         {/* Transformed Shape */}
                         <Polygon 
-                            points={shape.map(p => f(p[0], p[1])) as any} 
+                            points={shape.map(p => f(p[0], p[1]))} 
                             color={type === 'rot' ? Theme.indigo : (type === 'ref' ? Theme.red : (type === 'proj' ? Theme.orange : Theme.green))} 
                             fillOpacity={0.15}
                             weight={3}

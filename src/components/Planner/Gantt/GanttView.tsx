@@ -4,7 +4,7 @@ import { format, addDays, addMinutes } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import { useTasks } from '../../../contexts/TasksContext';
 import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';
-import type { Task } from '../../../types/tasks';
+import type { Task, Subject } from '../../../types/tasks';
 import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor, closestCorners, useDroppable, type DragEndEvent } from '@dnd-kit/core';
 import { createPortal } from 'react-dom';
 import UnscheduledDrawer from '../UnscheduledDrawer';
@@ -234,7 +234,7 @@ const GanttView: React.FC = () => {
                     {/* Tracks Area */}
                     <div className="relative pt-6 pb-24" style={{ minHeight: `${tasksWithLayout.reduce((max, t) => Math.max(max, t.trackIndex), 0) * 50 + 100}px` }}>
                         
-                        {tasksWithLayout.map(task => (
+                        {tasksWithLayout.map((task: LayoutTask) => (
                             <TaskBar 
                                 key={task.id} 
                                 task={task} 
@@ -292,7 +292,9 @@ const GanttView: React.FC = () => {
     );
 };
 
-const TaskBar: React.FC<{ task: any, zoomLevel: number, timelineStart: Date, updateTask: any, subject: any }> = ({ task, zoomLevel, timelineStart, updateTask, subject }) => {
+type LayoutTask = Task & { start: Date; end: Date; durationMins: number; leftMins: number; trackIndex: number; };
+
+const TaskBar: React.FC<{ task: LayoutTask, zoomLevel: number, timelineStart: Date, updateTask: (id: string, updates: Partial<Task>) => void, subject?: Subject }> = ({ task, zoomLevel, timelineStart, updateTask, subject }) => {
     const [dragState, setDragState] = useState<{ 
         type: 'left'|'right'|'move', 
         initialX: number, 

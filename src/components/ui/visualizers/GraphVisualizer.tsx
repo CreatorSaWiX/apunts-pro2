@@ -8,6 +8,31 @@ import { InteractionLock } from '../system/InteractionLock';
 import { useInteraction } from '../../../contexts/InteractionContext';
 import Spinner from '../Spinner';
 
+interface GraphNodeObject {
+    id: string | number;
+    label?: string;
+    group?: number;
+    color?: string;
+    x?: number;
+    y?: number;
+}
+
+interface GraphLinkObject {
+    source: string | number | GraphNodeObject;
+    target: string | number | GraphNodeObject;
+    label?: string;
+    color?: string;
+    curvature?: number;
+}
+
+interface ForceGraphMethods {
+    zoomToFit: (duration?: number, padding?: number) => void;
+    d3ReheatSimulation: () => void;
+    zoom: (val?: number) => number;
+    pauseAnimation: () => void;
+    resumeAnimation: () => void;
+}
+
 interface GraphVisualizerProps {
     initialData?: {
         nodes: { id: string | number; label?: string; group?: number; color?: string }[];
@@ -17,7 +42,7 @@ interface GraphVisualizerProps {
     nodes?: string;
     height?: number;
     showControls?: boolean;
-    updateTrigger?: any;
+    updateTrigger?: unknown;
     isAnimating?: boolean;
     transparentBg?: boolean;
     autoCenter?: boolean;
@@ -45,10 +70,10 @@ const extractText = (node: React.ReactNode): string => {
     if (typeof node === 'string') return node;
     if (typeof node === 'number') return String(node);
     if (Array.isArray(node)) return node.map(extractText).join('');
-    if (typeof node === 'object' && 'props' in node) {
-        const props = (node as any).props;
-        if (props.code && typeof props.code === 'string') return props.code;
-        if (props.children) return extractText(props.children);
+    if (typeof node === 'object' && node !== null && 'props' in node) {
+        const props = (node as { props?: { code?: string; children?: React.ReactNode } }).props;
+        if (props?.code && typeof props.code === 'string') return props.code;
+        if (props?.children) return extractText(props.children);
     }
     return '';
 };
@@ -67,7 +92,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     directed
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
-    const fgRef = useRef<any>(null);
+    const fgRef = useRef<ForceGraphMethods | null>(null);
     const numericHeight = Number(height);
     const [dimensions, setDimensions] = useState({ width: 0, height: numericHeight });
     const { subject, theme } = useSubjectStore();
@@ -172,7 +197,6 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
 
     // Resize Handler
     useEffect(() => {
-        let timeoutId: any;
 
         const updateDimensions = () => {
             if (containerRef.current) {
@@ -182,23 +206,24 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                 });
             }
         };
-
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
         const debouncedUpdate = () => {
             clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => updateDimensions(), 100);
+            timeoutId = setTimeout(updateDimensions, 100);
         };
 
         window.addEventListener('resize', debouncedUpdate);
 
         let observer: ResizeObserver | null = null;
-        if (containerRef.current) {
+        if (typeof ResizeObserver !== 'undefined' && containerRef.current) {
             observer = new ResizeObserver(() => {
-                debouncedUpdate();
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(updateDimensions, 100);
             });
             observer.observe(containerRef.current);
         }
 
-        updateDimensions(); // Set immediately on mount
+        updateDimensions();
 
         return () => {
             clearTimeout(timeoutId);
@@ -207,48 +232,39 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         };
     }, [numericHeight, transparentBg]);
 
-    // Custom Node Rendering (We only draw outlines and text, let the library handle the node-body for perfect hit-detection)
-    const drawNode = useCallback((node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
-        const label = node.label || node.id;
+    const drawNode = useCallback((node: GraphNodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
+        const label = node.label || String(node.id);
         const fontSize = 12 / globalScale;
         const r = 6;
         const color = node.color || theme.primary || '#8b5cf6';
 
         ctx.beginPath();
-        ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
+        ctx.arc((node.x || 0), (node.y || 0), r, 0, 2 * Math.PI, false);
         ctx.fillStyle = color;
         ctx.fill();
 
-        // Premium stroke: semi-transparent white
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.lineWidth = 2 / globalScale;
         ctx.stroke();
 
-        // Draw Label
         ctx.font = `${fontSize}px Sans-Serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-        // Position label slightly below the node
-        ctx.fillText(label, node.x, node.y + r + fontSize);
+        ctx.fillText(label, (node.x || 0), (node.y || 0) + r + fontSize);
     }, [theme]);
-
-
 
     const initialZoomDone = useRef(false);
     const [hasCanvasProtection, setHasCanvasProtection] = useState(false);
 
-    // Detect if browser (Brave, Opera GX) is known to natively break canvas tracking components
-    // via fingerprinting defense mechanisms. (Brave spoofs 1x1 canvas reads but breaks larger ones)
     useEffect(() => {
         const checkBrowser = async () => {
-            // Detect Brave
-            if ((window.navigator as any).brave && (await (window.navigator as any).brave.isBrave())) {
+            const nav = window.navigator as unknown as { brave?: { isBrave?: () => Promise<boolean> } };
+            if (nav.brave?.isBrave && (await nav.brave.isBrave())) {
                 setHasCanvasProtection(true);
                 return;
             }
 
-            // Detect Opera GX or normal Opera which often have privacy shields on
             const ua = window.navigator.userAgent || '';
             if (ua.includes('OPR/') || ua.includes('Opera GX')) {
                 setHasCanvasProtection(true);
@@ -258,16 +274,14 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         checkBrowser();
     }, []);
 
-    // Stable references for ForceGraph props to prevent hidden-canvas thrashing
-    const getNodeColor = useCallback((node: any) => node.color || theme.primary || '#8b5cf6', [theme.primary]);
-    const getNodeCanvasObjectMode = useCallback(() => 'after', []);
-    const getLinkColor = useCallback((link: any) => link.color || '#475569', []);
-    const getLinkCurvature = useCallback((link: any) => link.curvature || 0, []);
+    const getNodeColor = useCallback((node: GraphNodeObject) => node.color || theme.primary || '#8b5cf6', [theme.primary]);
+    const getNodeCanvasObjectMode = useCallback(() => 'after' as const, []);
+    const getLinkColor = useCallback((link: GraphLinkObject) => link.color || '#475569', []);
+    const getLinkCurvature = useCallback((link: GraphLinkObject) => link.curvature || 0, []);
 
     const handleEngineStop = useCallback(() => {
         if (fgRef.current) {
             if (!initialZoomDone.current || needsFit.current) {
-                // When layout settles, fit to view
                 fgRef.current.zoomToFit(400, numericHeight <= 150 ? 12 : 30);
                 initialZoomDone.current = true;
                 needsFit.current = false;
@@ -282,10 +296,8 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         }
     };
 
-    // Fix for Brave Browser Fingerprinting bug
-    const handleNodeHover = useCallback((node: any) => {
+    const handleNodeHover = useCallback((node: GraphNodeObject | null) => {
         if (node) {
-            // Apply cursor
             if (containerRef.current) containerRef.current.style.cursor = 'grab';
         } else {
             if (containerRef.current) containerRef.current.style.cursor = 'default';
@@ -339,18 +351,18 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
                 {(hasMounted && dimensions.width > 0) && (
                     <Suspense fallback={null}>
                         <ForceGraph2D
-                            ref={fgRef}
+                            ref={fgRef as any}
                             width={dimensions.width}
                             height={dimensions.height}
                             graphData={graphData}
                             nodeRelSize={6} // Increased size
-                            nodeColor={getNodeColor}
+                            nodeColor={getNodeColor as any}
                             nodeCanvasObjectMode={getNodeCanvasObjectMode}
-                            nodeCanvasObject={drawNode}
-                            onNodeHover={handleNodeHover}
+                            nodeCanvasObject={drawNode as any}
+                            onNodeHover={handleNodeHover as any}
                             nodeLabel="label"
-                            linkColor={getLinkColor}
-                            linkCurvature={getLinkCurvature}
+                            linkColor={getLinkColor as any}
+                            linkCurvature={getLinkCurvature as any}
                             linkDirectionalParticles={isDirected ? 2 : 0}
                             linkDirectionalParticleSpeed={0.005}
                             linkDirectionalParticleWidth={2}

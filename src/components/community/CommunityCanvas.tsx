@@ -10,8 +10,10 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { useMultiplayerCanvas } from '../../hooks/useMultiplayerCanvas';
 import { useCanvasShortcuts } from '../../hooks/useCanvasShortcuts';
 
-const EMPTY_NODES: any[] = [];
-const EMPTY_EDGES: any[] = [];
+import type { Node, Edge } from '@xyflow/react';
+
+const EMPTY_NODES: Node[] = [];
+const EMPTY_EDGES: Edge[] = [];
 const PRO_OPTIONS = { hideAttribution: true };
 
 // A wrapper to use the hooks inside ReactFlowProvider and DrawProvider
