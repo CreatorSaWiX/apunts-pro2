@@ -37,6 +37,10 @@
   <meta property="twitter:description" content="Resums de teoria i solucionaris jutge" />
   <meta property="twitter:image" content="/thumbnail.png" />
   <style>
+    html {
+      background-color: #0f172a;
+    }
+
     #initial-loader {
       position: fixed;
       top: 0;
@@ -64,6 +68,12 @@
       transform: scale(1.4);
       z-index: -1;
       pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      body::before {
+        background-image: none;
+      }
     }
 
     #initial-loader h1 {

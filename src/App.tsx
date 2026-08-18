@@ -16,7 +16,7 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const TopicPage = lazy(() => import('./pages/TopicPage'));
 const SolutionsListPage = lazy(() => import('./pages/SolutionsListPage'));
 const SolutionDetailPage = lazy(() => import('./pages/SolutionDetailPage'));
-const NewSolutionPage = lazy(() => import('./pages/NewSolutionPage'));
+
 const QuizPage = lazy(() => import('./pages/QuizPage'));
 const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 const PlannerPage = lazy(() => import('./pages/PlannerPage'));
@@ -26,6 +26,18 @@ const ChatBot = lazy(() => import('./components/chatbot/index').then(module => (
 function App() {
   const location = useLocation();
   const showChatBot = location.pathname.startsWith('/tema/');
+
+  const SuspendedPage = ({ children }: { children: React.ReactNode }) => (
+    <PageTransition>
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center w-full">
+          <Spinner size="2xl" variant="primary" />
+        </div>
+      }>
+        {children}
+      </Suspense>
+    </PageTransition>
+  );
 
   // Force reload if new version is available
   useEffect(() => {
@@ -39,25 +51,24 @@ function App() {
       <MotionConfig reducedMotion="user">
         <LazyMotion features={loadFeatures} strict>
           <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
-    
+
             {/* <PerformanceMonitor /> */}
             <Navigation />
 
             <AnimatePresence mode="wait">
               <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
-                <Route path="/login" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><LoginPage /></Suspense></PageTransition>} />
-                <Route path="/profile" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><ProfilePage /></Suspense></PageTransition>} />
-                <Route path="/profile/:username" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><ProfilePage /></Suspense></PageTransition>} />
-                <Route path="/new-solution" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><NewSolutionPage /></Suspense></PageTransition>} />
-                <Route path="/tema/:id" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><TopicPage /></Suspense></PageTransition>} />
-                <Route path="/tema/:id/test" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><QuizPage /></Suspense></PageTransition>} />
-                <Route path="/tema/:id/solucionaris" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><SolutionsListPage /></Suspense></PageTransition>} />
-                <Route path="/tema/:id/solucionaris/:problemId" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><SolutionDetailPage /></Suspense></PageTransition>} />
-                <Route path="/comunitat" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><CommunityPage /></Suspense></PageTransition>} />
-                <Route path="/register" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><RegisterPage /></Suspense></PageTransition>} />
-                <Route path="/planner" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><PlannerPage /></Suspense></PageTransition>} />
-                <Route path="/settings" element={<PageTransition><Suspense fallback={<div className="min-h-screen flex items-center justify-center w-full"><Spinner size="2xl" variant="primary" /></div>}><SettingsPage /></Suspense></PageTransition>} />
+                <Route path="/login" element={<SuspendedPage><LoginPage /></SuspendedPage>} />
+                <Route path="/profile" element={<SuspendedPage><ProfilePage /></SuspendedPage>} />
+                <Route path="/profile/:username" element={<SuspendedPage><ProfilePage /></SuspendedPage>} />
+                <Route path="/tema/:id" element={<SuspendedPage><TopicPage /></SuspendedPage>} />
+                <Route path="/tema/:id/test" element={<SuspendedPage><QuizPage /></SuspendedPage>} />
+                <Route path="/tema/:id/solucionaris" element={<SuspendedPage><SolutionsListPage /></SuspendedPage>} />
+                <Route path="/tema/:id/solucionaris/:problemId" element={<SuspendedPage><SolutionDetailPage /></SuspendedPage>} />
+                <Route path="/comunitat" element={<SuspendedPage><CommunityPage /></SuspendedPage>} />
+                <Route path="/register" element={<SuspendedPage><RegisterPage /></SuspendedPage>} />
+                <Route path="/planner" element={<SuspendedPage><PlannerPage /></SuspendedPage>} />
+                <Route path="/settings" element={<SuspendedPage><SettingsPage /></SuspendedPage>} />
               </Routes>
             </AnimatePresence>
 
