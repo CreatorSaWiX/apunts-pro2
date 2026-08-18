@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { m as motion } from 'framer-motion';
-import { Mail, Reply, ExternalLink, ChevronRight, Send } from 'lucide-react';
+import { Mail, Reply, ExternalLink, ChevronRight, ChevronLeft, Send, Edit } from 'lucide-react';
 import { collection, query, where, getDocs, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 
@@ -36,6 +36,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
     const [isReplyOpen, setIsReplyOpen] = useState(false);
+    const [isComposeOpen, setIsComposeOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<'inbox' | 'sent'>('inbox');
     const [receiverProfile, setReceiverProfile] = useState<{avatar?: string} | null>(null);
 
@@ -68,6 +69,7 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
     const fetchMessages = async () => {
         if (!user) return;
         setIsLoading(true);
+        setMessages([]);
         try {
             const q = query(
                 collection(db, 'messages'),
@@ -155,19 +157,23 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
     if (!isOpen) return null;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="5xl">
+        <Modal isOpen={isOpen} onClose={onClose} size="5xl" fullScreenOnMobile={true}>
             <Modal.Layout>
                 {/* Left Panel: List */}
-                <Modal.Sidebar className={selectedMessage ? 'hidden md:flex' : 'flex'}>
+                <Modal.Sidebar className={`relative ${selectedMessage ? 'hidden md:flex' : 'flex'}`}>
                     <Modal.Header>
                         <div className="flex flex-col gap-4">
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-between gap-3">
                                 <span className="text-xl font-bold text-white tracking-tight">{t('mailing.mailbox.title', 'Bústia')}</span>
                             </div>
                             
                             <NavigationPill className="w-full flex !p-1.5">
                                 <button type="button"
-                                    onClick={() => setActiveTab('inbox')}
+                                    onClick={() => {
+                                        setIsLoading(true);
+                                        setMessages([]);
+                                        setActiveTab('inbox');
+                                    }}
                                     className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition duration-300 ${activeTab === 'inbox' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     {activeTab === 'inbox' && (
@@ -183,7 +189,11 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                                     <span className="relative z-10">{t('mailing.mailbox.inbox', 'Rebuts')}</span>
                                 </button>
                                 <button type="button"
-                                    onClick={() => setActiveTab('sent')}
+                                    onClick={() => {
+                                        setIsLoading(true);
+                                        setMessages([]);
+                                        setActiveTab('sent');
+                                    }}
                                     className={`relative flex-1 py-1.5 text-sm font-bold rounded-full transition duration-300 ${activeTab === 'sent' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     {activeTab === 'sent' && (
@@ -265,6 +275,18 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                             </div>
                         )}
                     </Modal.Body>
+
+                    {/* FAB Compose */}
+                    <div className="absolute bottom-6 right-6 z-50">
+                        <button
+                            type="button"
+                            onClick={() => setIsComposeOpen(true)}
+                            className="group relative w-14 h-14 bg-[#0a0a0a]/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition duration-300 active:scale-95 overflow-hidden hover:bg-white/10"
+                            title={t('mailing.mailbox.compose', 'Redactar')}>
+                            <div className="absolute inset-0 rounded-full border border-white/20" />
+                            <Edit size={22} className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] group-hover:scale-110 transition-transform duration-300" />
+                        </button>
+                    </div>
                 </Modal.Sidebar>
 
                 {/* Right Panel: Content */}
@@ -273,8 +295,8 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                         <>
                             {/* Mobile Back Button */}
                             <div className="md:hidden p-4 border-b border-white/5 flex items-center gap-2">
-                                <button type="button" aria-label="Tornar enrere" onClick={() => setSelectedMessage(null)} className="p-2 hover:bg-white/5 rounded-lg text-slate-400">
-                                    <Reply className="rotate-180" size={20} />
+                                <button type="button" aria-label="Tornar enrere" onClick={() => setSelectedMessage(null)} className="p-2 -ml-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition">
+                                    <ChevronLeft size={24} />
                                 </button>
                                 <span className="font-medium text-white">{t('mailing.mailbox.back', 'Torna')}</span>
                             </div>
@@ -379,6 +401,14 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                         receiverId={activeTab === 'inbox' ? selectedMessage.senderId : selectedMessage.receiverId}
                         receiverName={activeTab === 'inbox' ? selectedMessage.senderName : (selectedMessage.receiverName || t('mailing.mailbox.user', 'Usuari'))}
                         initialSubject={selectedMessage.subject.toUpperCase().startsWith('RE:') ? selectedMessage.subject : `RE: ${selectedMessage.subject}`}
+                    />
+                )}
+
+                {/* General Compose Modal */}
+                {isComposeOpen && (
+                    <ComposeMessageModal
+                        isOpen={isComposeOpen}
+                        onClose={() => setIsComposeOpen(false)}
                     />
                 )}
             </Modal.Layout>

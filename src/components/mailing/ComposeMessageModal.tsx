@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { m as motion } from 'framer-motion';
-import { X, Send, AlertCircle, FileCode, Code } from 'lucide-react';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import React, { useState, useEffect, useRef } from 'react';
+import { m as motion, AnimatePresence } from 'framer-motion';
+import { X, Send, AlertCircle, FileCode, Code, User, Search } from 'lucide-react';
+import { addDoc, collection, serverTimestamp, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -9,12 +9,13 @@ import ProblemSelectorModal from './ProblemSelectorModal';
 import Spinner from '../ui/Spinner';
 import Modal from '../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
 interface ComposeMessageModalProps {
     isOpen: boolean;
     onClose: () => void;
-    receiverId: string;
-    receiverName: string;
+    receiverId?: string;
+    receiverName?: string;
     initialSubject?: string;
 }
 
@@ -36,9 +37,46 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
     const [isProblemSelectorOpen, setIsProblemSelectorOpen] = useState(false);
     const [selectedProblem, setSelectedProblem] = useState<{ id: string; title: string; topicId?: string } | null>(null);
 
+    // User selector state
+    const [allUsers, setAllUsers] = useState<{id: string, username: string, avatar: string}[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [selectedReceiver, setSelectedReceiver] = useState<{id: string, username: string, avatar: string} | null>(
+        receiverId && receiverName ? { id: receiverId, username: receiverName, avatar: '' } : null
+    );
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useOnClickOutside(dropdownRef, () => setIsDropdownOpen(false));
+
+    const [isFetchingUsers, setIsFetchingUsers] = useState(false);
+
+    useEffect(() => {
+        if (!receiverId) {
+            const fetchUsers = async () => {
+                setIsFetchingUsers(true);
+                try {
+                    const snap = await getDocs(collection(db, 'usernames'));
+                    setAllUsers(snap.docs.map(doc => ({ 
+                        id: doc.data().uid, 
+                        username: doc.id, 
+                        avatar: doc.data().avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${doc.id}` 
+                    })));
+                } catch (err) {
+                    console.error("Error fetching users for compose", err);
+                } finally {
+                    setIsFetchingUsers(false);
+                }
+            };
+            fetchUsers();
+        }
+    }, [receiverId]);
+
+    const filteredUsers = searchQuery.trim() 
+        ? allUsers.filter(u => u.username.toLowerCase().includes(searchQuery.toLowerCase()) && u.id !== user?.id).slice(0, 5) 
+        : [];
+
     const handleSelectProblem = (problem: { id: string; title: string; topicId?: string }) => {
         setSelectedProblem(problem);
-        // Automatically add snippet to subject if empty or just append
         if (!subject.includes(`[${problem.id}]`)) {
             setSubject(prev => `[${problem.id}] ${prev}`.trim());
         }
@@ -47,6 +85,11 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!selectedReceiver) {
+            setError(t('mailing.compose.errNoReceiver', 'Si us plau, selecciona un destinatari.'));
+            return;
+        }
 
         if (!subject.trim()) {
             setError(t('mailing.compose.errNoSubject', 'Si us plau, introdueix un assumpte per al missatge.'));
@@ -67,26 +110,24 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
         setError('');
 
         try {
-
-
-            let receiverAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${receiverName}`;
+            let finalReceiverAvatar = selectedReceiver.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${selectedReceiver.username}`;
             try {
                 const { getDoc, doc } = await import('firebase/firestore');
-                const docSnap = await getDoc(doc(db, 'users', receiverId));
+                const docSnap = await getDoc(doc(db, 'users', selectedReceiver.id));
                 if (docSnap.exists() && docSnap.data().avatar) {
-                    receiverAvatar = docSnap.data().avatar;
+                    finalReceiverAvatar = docSnap.data().avatar;
                 }
             } catch (err) {
-                console.error(t('mailing.compose.errAvatar', "No s'ha pogut verificar la foto del receptor"), err);
+                console.error("No s'ha pogut verificar la foto del receptor", err);
             }
 
             await addDoc(collection(db, 'messages'), {
                 senderId: user.id,
                 senderName: user.username,
                 senderAvatar: user.avatar,
-                receiverId: receiverId,
-                receiverName: receiverName,
-                receiverAvatar: receiverAvatar,
+                receiverId: selectedReceiver.id,
+                receiverName: selectedReceiver.username,
+                receiverAvatar: finalReceiverAvatar,
                 subject: subject,
                 body: body,
                 relatedProblemId: selectedProblem ? selectedProblem.id : null,
@@ -99,6 +140,8 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
             setBody('');
             setSubject('');
             setSelectedProblem(null);
+            setSearchQuery('');
+            if (!receiverId) setSelectedReceiver(null);
         } catch (err) {
             console.error(err);
             setError(t('mailing.compose.errSendFailed', 'Error en enviar el missatge. Torna-ho a provar.'));
@@ -110,15 +153,90 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="xl">
+        <Modal isOpen={isOpen} onClose={onClose} size="xl" fullScreenOnMobile={true}>
             <Modal.Header>
                 <div className="flex flex-col">
                     <span className="text-xl font-bold text-white tracking-tight">{t('mailing.compose.title', 'Redactar missatge')}</span>
-                    <span className="text-xs text-slate-400 mt-1">{t('mailing.compose.sendingTo', 'Enviant a')} <span className="text-white font-medium">{receiverName}</span></span>
+                    {receiverId && receiverName && (
+                        <span className="text-xs text-slate-400 mt-1">{t('mailing.compose.sendingTo', 'Enviant a')} <span className="text-white font-medium">{receiverName}</span></span>
+                    )}
                 </div>
             </Modal.Header>
             <Modal.Body>
                 <form onSubmit={handleSubmit} className="space-y-5">
+                    
+                    {!receiverId && (
+                        <div className="space-y-3 relative" ref={dropdownRef}>
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t('mailing.compose.to', 'Per a')}</label>
+                            {selectedReceiver ? (
+                                <div className="flex items-center gap-2 p-2 bg-white/5 border border-white/10 rounded-xl">
+                                    <img src={selectedReceiver.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${selectedReceiver.username}`} alt="" className="w-8 h-8 rounded-full" />
+                                    <span className="text-sm text-white font-medium flex-1">{selectedReceiver.username}</span>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setSelectedReceiver(null)}
+                                        className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                        <Search size={16} className="text-slate-400" />
+                                    </div>
+                                    <Modal.Input
+                                        value={searchQuery}
+                                        onChange={(e) => {
+                                            setSearchQuery(e.target.value);
+                                            setIsDropdownOpen(true);
+                                        }}
+                                        onFocus={() => setIsDropdownOpen(true)}
+                                        placeholder={t('mailing.compose.searchUser', 'Cerca usuari per nom...')}
+                                        className="pl-9"
+                                    />
+                                    
+                                    <AnimatePresence>
+                                        {isDropdownOpen && searchQuery.trim() && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -10 }}
+                                                className="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-white/10 rounded-xl shadow-xl overflow-hidden z-50"
+                                            >
+                                                {filteredUsers.length > 0 ? (
+                                                    <div className="max-h-48 overflow-y-auto">
+                                                        {filteredUsers.map(u => (
+                                                            <button
+                                                                key={u.id}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setSelectedReceiver(u);
+                                                                    setSearchQuery('');
+                                                                    setIsDropdownOpen(false);
+                                                                }}
+                                                                className="w-full flex items-center gap-3 p-3 hover:bg-white/5 transition text-left"
+                                                            >
+                                                                <img src={u.avatar} alt="" className="w-8 h-8 rounded-full bg-slate-800" />
+                                                                <span className="text-sm font-medium text-white">{u.username}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="p-4 text-center text-sm text-slate-400">
+                                                        {isFetchingUsers 
+                                                            ? t('mailing.compose.searchingUsers', "Cercant usuaris...")
+                                                            : t('mailing.compose.noUsersFound', "No s'han trobat usuaris")}
+                                                    </div>
+                                                )}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     <div className="space-y-3">
                         <div className="flex justify-between items-center">
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t('mailing.compose.subject', 'Assumpte')}</label>

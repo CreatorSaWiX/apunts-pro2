@@ -37,7 +37,8 @@ service cloud.firestore {
 
     // Missatges: permetre llegir els propis missatges, o enviar a qualsevol si estàs autenticat
     match /messages/{document=**} {
-      allow read, update, delete: if request.auth.uid != null && resource.data.receiverId == request.auth.uid;
+      allow read: if request.auth.uid != null && (resource.data.receiverId == request.auth.uid || resource.data.senderId == request.auth.uid);
+      allow update, delete: if request.auth.uid != null && resource.data.receiverId == request.auth.uid;
       // Els loguejats poden enviar a tothom. Els anònims NOMÉS poden enviar missatges (Feedback) al teu UID directament.
       allow create: if request.auth.uid != null || request.resource.data.receiverId == 'jV5Y63M77PcqIcOUCpLz76GTYMI3';
     }
@@ -93,7 +94,7 @@ service cloud.firestore {
     // Diccionari de Noms d'Usuari
     match /usernames/{usernameId} {
       allow get: if true;
-      allow list: if false;
+      allow list: if request.auth.uid != null;
       allow create: if request.auth.uid != null && request.resource.data.uid == request.auth.uid;
       allow delete: if request.auth.uid != null && resource.data.uid == request.auth.uid;
     }

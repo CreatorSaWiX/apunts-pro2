@@ -114,7 +114,7 @@ const ModalBody = ({ children, className = '' }: { children: React.ReactNode, cl
 );
 
 const ModalSidebar = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-    <div className={`w-72 border-r border-white/8 bg-white/2 shrink-0 flex flex-col ${className}`}>
+    <div className={`w-full md:w-72 border-r border-white/8 bg-white/2 shrink-0 flex flex-col ${className}`}>
         {children}
     </div>
 );
