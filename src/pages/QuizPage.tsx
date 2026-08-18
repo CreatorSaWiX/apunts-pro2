@@ -1,231 +1,80 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, CheckCircle, XCircle, Clock, AlertTriangle, RefreshCw, Trophy } from 'lucide-react';
-import { m as motion, AnimatePresence } from 'framer-motion';
-import ReactCodeMirror from '@uiw/react-codemirror';
-import { vscodeDark } from '@uiw/codemirror-theme-vscode';
-import { EditorView } from '@codemirror/view';
-import { cpp } from '@codemirror/lang-cpp';
-import { allPersonalNotes } from 'content-collections';
-import AIStreamingIndicator from '../components/AIStreamingIndicator';
+import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-
-const renderInlineCode = (text: string) => {
-    if (!text.includes('`')) return text;
-    const parts = text.split(/`([^`]+)`/g);
-    return parts.map((part, i) => {
-        if (i % 2 === 1) {
-            return (
-                <code key={i} className="font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20 shadow-[0_0_10px_rgba(14,165,233,0.15)] mx-0.5 leading-none text-[0.85em]">
-                    {part}
-                </code>
-            );
-        }
-        return <span key={i}>{part}</span>;
-    });
-};
-
-const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
-};
-
-const QuizTimer = React.memo(({ 
-    initialTime, 
-    isFinished, 
-    onTimeUp, 
-    onTick 
-}: { 
-    initialTime: number; 
-    isFinished: boolean; 
-    onTimeUp: () => void; 
-    onTick: (time: number) => void;
-}) => {
-    const [timeLeft, setTimeLeft] = useState(initialTime);
-    const onTimeUpRef = useRef(onTimeUp);
-    const onTickRef = useRef(onTick);
-
-    useEffect(() => {
-        onTimeUpRef.current = onTimeUp;
-        onTickRef.current = onTick;
-    }, [onTimeUp, onTick]);
-
-    useEffect(() => {
-        if (isFinished) return;
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => {
-                const next = prev - 1;
-                return next < 0 ? 0 : next;
-            });
-        }, 1000);
-        return () => clearInterval(timer);
-    }, [isFinished]);
-
-    useEffect(() => {
-        if (isFinished) return;
-        if (timeLeft === 0) {
-            onTimeUpRef.current();
-        } else if (timeLeft < initialTime) {
-            onTickRef.current(timeLeft);
-        }
-    }, [timeLeft, isFinished, initialTime]);
-
-    return (
-        <div className={`flex items-center gap-3 px-5 py-2 rounded-2xl font-mono text-sm font-bold border transition duration-500 ${timeLeft < 60
-            ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.2)] scale-105'
-            : 'bg-slate-800/50 backdrop-blur-md text-slate-300 border-white/10'
-            }`}>
-            <Clock size={16} className={timeLeft < 60 ? 'animate-pulse' : ''} />
-            <span className="tabular-nums">{formatTime(timeLeft)}</span>
-        </div>
-    );
-});
-
+import { useQuiz } from '../hooks/useQuiz';
+import type { QuizSession } from '../types/quiz';
+import { QuizTimer } from '../components/quiz/QuizTimer';
+import { QuizLoadingState } from '../components/quiz/QuizLoadingState';
+import { QuizResults } from '../components/quiz/QuizResults';
+import { QuizQuestionView } from '../components/quiz/QuizQuestionView';
 
 const QuizPage: React.FC = () => {
     const { id: topicId } = useParams();
     const { t } = useTranslation();
 
-    const [quiz, setQuiz] = useState<any>(null);
-    const [isGenerating, setIsGenerating] = useState(true);
-    const [aiPhase, setAiPhase] = useState<'idle'|'connecting'|'thinking'|'writing'>('connecting');
-    const [aiThought, setAiThought] = useState('');
-
-
-    useEffect(() => {
-        const loadQuiz = async () => {
-            if (!topicId) return;
-            
-            const handleQuizLoaded = (finalQuiz: any) => {
-                setQuiz(finalQuiz);
-                const saved = sessionStorage.getItem(`quiz_${topicId}`);
-                if (!saved) {
-                    timeLeftRef.current = finalQuiz.timeLimitSeconds;
-                    setInitialTimeLeft(finalQuiz.timeLimitSeconds);
-                }
-            };
-
-            // 1. Hardcoded quiz?
-            const { quizzes } = await import('../content/data/quizzes');
-            const originalQuiz = quizzes.find(q => q.topicId === topicId);
-            if (originalQuiz) {
-                const fullyShuffled = {
-                    ...originalQuiz,
-                    questions: [...originalQuiz.questions]
-                        .sort(() => Math.random() - 0.5)
-                        .map(q => ({
-                            ...q,
-                            options: [...q.options].sort(() => Math.random() - 0.5)
-                        }))
-                };
-                handleQuizLoaded(fullyShuffled);
-                setIsGenerating(false);
-                return;
-            }
-
-            // 2. Not found, generate dynamically!
-            const normalizedTopicId = topicId.replace(/tema(\d)/, 'tema-$1');
-            const topicNote = allPersonalNotes.find(note => note.slug === normalizedTopicId && note.lang === 'ca') || 
-                              allPersonalNotes.find(note => note.slug === normalizedTopicId) ||
-                              allPersonalNotes.find(note => note.slug.startsWith(normalizedTopicId + '-'));
-                              
-            if (!topicNote || !topicNote.content) {
-                setIsGenerating(false); // No content to generate from
-                return;
-            }
-
-            try {
-                setAiPhase('thinking');
-                setAiThought(t('quiz.generating', 'Llegint apunts i generant test (10 min, 10 preguntes)...'));
-                const response = await fetch('/api/generate-quiz', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        topicId: topicId,
-                        markdownContent: topicNote.content
-                    })
-                });
-
-                if (response.ok) {
-                    const generatedQuiz = await response.json();
-                    const fullyShuffled = {
-                        ...generatedQuiz,
-                        questions: [...generatedQuiz.questions]
-                            .sort(() => Math.random() - 0.5)
-                            .map((q: any) => ({
-                                ...q,
-                                ...q,
-                                options: [...q.options].sort(() => Math.random() - 0.5)
-                            }))
-                    };
-                    handleQuizLoaded(fullyShuffled);
-                } else {
-                    const errText = await response.text();
-                    console.error("Failed to generate quiz:", response.status, errText);
-                }
-            } catch (e) {
-                console.error("Error connecting to Gemini", e);
-            } finally {
-                setIsGenerating(false);
-                setAiPhase('idle');
-            }
-        };
-        loadQuiz();
-    }, [topicId, t]);
+    const { quiz, isGenerating, aiPhase, aiThought } = useQuiz(topicId);
 
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
     const [isFinished, setIsFinished] = useState(false);
+    
     const timeLeftRef = useRef(0);
     const [initialTimeLeft, setInitialTimeLeft] = useState(0);
+    const [isRestoring, setIsRestoring] = useState(true);
 
-    // Timer initialization is now handled securely inside loadQuiz to prevent race conditions with sessionStorage
-
-    // 2. Persist progress in session storage (Senior: UX protection)
+    // Initial setup when quiz loads
     useEffect(() => {
-        const saved = sessionStorage.getItem(`quiz_${topicId}`);
-        if (saved) {
-            try {
-                const { currentIdx, answers, time } = JSON.parse(saved);
-                setCurrentQuestionIdx(currentIdx);
-                setSelectedAnswers(answers);
-                timeLeftRef.current = time;
-                setInitialTimeLeft(time);
-            } catch (e) { console.error("Error restoring quiz session", e); }
+        if (quiz && isRestoring) {
+            const saved = sessionStorage.getItem(`quiz_${topicId}`);
+            if (saved) {
+                try {
+                    const { currentIdx, answers, time }: QuizSession = JSON.parse(saved);
+                    setCurrentQuestionIdx(currentIdx);
+                    setSelectedAnswers(answers);
+                    timeLeftRef.current = time;
+                    setInitialTimeLeft(time);
+                } catch (e) {
+                    console.error("Error restoring quiz session", e);
+                    timeLeftRef.current = quiz.timeLimitSeconds;
+                    setInitialTimeLeft(quiz.timeLimitSeconds);
+                }
+            } else {
+                timeLeftRef.current = quiz.timeLimitSeconds;
+                setInitialTimeLeft(quiz.timeLimitSeconds);
+            }
+            setIsRestoring(false);
         }
-    }, [topicId]);
-
-
+    }, [quiz, topicId, isRestoring]);
 
     const saveSession = useCallback((time: number) => {
         if (!isFinished) {
-            sessionStorage.setItem(`quiz_${topicId}`, JSON.stringify({
+            const sessionData: QuizSession = {
                 currentIdx: currentQuestionIdx,
                 answers: selectedAnswers,
                 time: time
-            }));
+            };
+            sessionStorage.setItem(`quiz_${topicId}`, JSON.stringify(sessionData));
         } else {
             sessionStorage.removeItem(`quiz_${topicId}`);
         }
     }, [currentQuestionIdx, selectedAnswers, isFinished, topicId]);
 
     useEffect(() => {
-        saveSession(timeLeftRef.current);
-    }, [currentQuestionIdx, selectedAnswers, isFinished, saveSession]);
+        if (!isRestoring) {
+            saveSession(timeLeftRef.current);
+        }
+    }, [currentQuestionIdx, selectedAnswers, isFinished, saveSession, isRestoring]);
 
-    // Timer visual warnings handled by QuizTimer component
-
-    // 4. Keyboard Navigation (Senior: Accessibility & Pro-feel)
     const handleSelectOption = useCallback((optionId: string) => {
-        if (isFinished) return;
-        setSelectedAnswers(prev => ({ ...prev, [quiz!.questions[currentQuestionIdx].id]: optionId }));
+        if (isFinished || !quiz) return;
+        setSelectedAnswers(prev => ({ ...prev, [quiz.questions[currentQuestionIdx].id]: optionId }));
     }, [isFinished, currentQuestionIdx, quiz]);
 
     const finishQuiz = useCallback(async () => {
         setIsFinished(true);
         if (!quiz) return;
-        const finalScore = Object.values(quiz.questions).reduce((acc: number, q: any) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
+        const finalScore = quiz.questions.reduce((acc, q) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
         if (finalScore === quiz.questions.length) {
             const confetti = (await import('canvas-confetti')).default;
             confetti({
@@ -254,11 +103,10 @@ const QuizPage: React.FC = () => {
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (isFinished || !quiz) return;
+            if (isFinished || !quiz || isRestoring) return;
             const key = e.key.toLowerCase();
             const currentQ = quiz.questions[currentQuestionIdx];
 
-            // Map keys a,b,c,d to options based on their current displayed index
             if (['a', 'b', 'c', 'd'].includes(key)) {
                 const idx = key.charCodeAt(0) - 97; // 0 for a, 1 for b...
                 if (currentQ.options[idx]) {
@@ -275,43 +123,23 @@ const QuizPage: React.FC = () => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isFinished, quiz, currentQuestionIdx, selectedAnswers, handleSelectOption, handleNext, handlePrev]);
+    }, [isFinished, quiz, currentQuestionIdx, selectedAnswers, handleSelectOption, handleNext, handlePrev, isRestoring]);
 
-    if (!quiz) {
+    if (!quiz || isRestoring) {
         return (
-            <div className="min-h-screen pt-24 pb-12 px-4 max-w-2xl mx-auto flex flex-col items-center justify-center text-center relative z-10">
-                {isGenerating ? (
-                    <div className="flex flex-col items-center gap-6">
-                        <div className="bg-slate-900/60 p-8 rounded-4xl border border-white/10 shadow-2xl">
-                            <AIStreamingIndicator 
-                                phase={aiPhase} 
-                                thoughtText={aiThought}
-                                hideAvatar={true}
-                            />
-                            <p className="mt-4 text-slate-400 text-sm">{aiThought}</p>
-                        </div>
-                    </div>
-                ) : (
-                    <>
-                        <AlertTriangle size={48} className="text-amber-500 mb-4 mx-auto" />
-                        <h1 className="text-2xl font-bold text-white mb-2">{t('quiz.noDataTitle', 'Sense dades')}</h1>
-                        <p className="text-slate-400 mb-8">{t('quiz.noDataDesc', 'No hem pogut trobar el test ni generar-ne un de nou.')}</p>
-                        <Link to="/" className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors inline-block">
-                            {t('quiz.backHome', "Tornar a l'inici")}
-                        </Link>
-                    </>
-                )}
-            </div>
+            <QuizLoadingState 
+                isGenerating={isGenerating || isRestoring} 
+                aiPhase={aiPhase} 
+                aiThought={aiThought} 
+            />
         );
     }
 
     const currentQ = quiz.questions[currentQuestionIdx];
 
-    const score = Object.values(quiz.questions).reduce((acc: number, q: any) => acc + (selectedAnswers[q.id] === q.correctOptionId ? 1 : 0), 0);
-
     return (
         <div className="h-screen pt-8 md:pt-10 pb-6 px-4 max-w-4xl mx-auto flex flex-col relative z-10 overflow-hidden overflow-x-hidden">
-            {/* Elegant Header */}
+            {/* Header */}
             <div className="flex items-center justify-between mb-4 xl:mb-6 pb-3 border-b border-white/5 shrink-0">
                 <Link
                     to="/"
@@ -322,273 +150,56 @@ const QuizPage: React.FC = () => {
 
                 {!isFinished && (
                     <QuizTimer 
-                        initialTime={initialTimeLeft > 0 ? initialTimeLeft : (quiz?.timeLimitSeconds || 600)} 
+                        initialTime={initialTimeLeft > 0 ? initialTimeLeft : (quiz.timeLimitSeconds || 600)} 
                         isFinished={isFinished} 
                         onTimeUp={() => setIsFinished(true)} 
                         onTick={(t) => {
                             timeLeftRef.current = t;
-                            if (t % 5 === 0) saveSession(t); // Save every 5 seconds to not spam storage
+                            if (t % 5 === 0) saveSession(t);
                         }} 
                     />
                 )}
             </div>
 
             {isFinished ? (
-                // RESULTS SCREEN - Premium Finish
-                <div className="flex-1 overflow-y-auto min-h-0 pr-2 pb-6 custom-scrollbar">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden"
-                    >
-                        {/* Background Decorative Element */}
-                        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-
-                        <div className="text-center mb-10 relative z-10">
-                            <motion.div
-                                initial={{ y: 20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.2 }}
-                            >
-                                <Trophy className={`mx-auto mb-4 ${score === quiz.questions.length ? 'text-amber-400' : 'text-slate-500'}`} size={56} />
-                                <h2 className="text-3xl xl:text-4xl font-black text-white mb-3 tracking-tight">{t('quiz.finishedTitle', 'Cicle Finalitzat')}</h2>
-
-                                <div className="flex items-center justify-center gap-4 mb-4">
-                                    <div className="text-5xl xl:text-6xl font-black bg-linear-to-br from-primary to-accent bg-clip-text text-transparent">
-                                        {Math.round((score / quiz.questions.length) * 100)}%
-                                    </div>
-                                    <div className="h-12 w-px bg-white/10" />
-                                    <div className="text-left">
-                                        <p className="text-slate-400 text-xs xl:text-sm uppercase tracking-widest font-bold">{t('quiz.score', 'Puntuació')}</p>
-                                        <p className="text-white font-mono text-lg xl:text-xl">{score} / {quiz.questions.length}</p>
-                                    </div>
-                                </div>
-
-                                <p className="text-slate-300 text-base max-w-lg mx-auto leading-relaxed">
-                                    {score === quiz.questions.length
-                                        ? t('quiz.perfectScore', "Perfecte. Has demostrat un domini absolut de la matèria. Estàs preparat per a qualsevol repte tècnic d'alt nivell.")
-                                        : t('quiz.improveScore', "Analitza els teus errors per millorar la teva tècnica en C++.")}
-                                </p>
-                            </motion.div>
-                        </div>
-
-                        <div className="space-y-4 xl:space-y-6 relative z-10">
-                            {Object.values(quiz.questions).map((q: any, i: number) => {
-                                const userAnswer = selectedAnswers[q.id];
-                                const isCorrect = userAnswer === q.correctOptionId;
-
-                                return (
-                                    <motion.div
-                                        key={q.id}
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: i * 0.1 + 0.5 }}
-                                        className={`p-5 xl:p-6 rounded-3xl border transition-colors ${isCorrect ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-red-500/5 border-red-500/20'}`}
-                                    >
-                                        <div className="flex gap-4">
-                                            <div className={`mt-1 p-1.5 rounded-full shrink-0 h-fit ${isCorrect ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
-                                                {isCorrect ? <CheckCircle size={18} /> : <XCircle size={18} />}
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <h4 className="text-slate-200 font-bold leading-relaxed mb-3 text-sm xl:text-base">{i + 1}. {renderInlineCode(q.question)}</h4>
-
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                                                    <div className={`p-3 rounded-xl text-xs font-medium border ${isCorrect ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300' : 'bg-red-500/10 border-red-500/20 text-red-300'}`}>
-                                                        <span className="uppercase opacity-50 block mb-1">{t('quiz.yourAnswer', 'La teva resposta')}</span>
-                                                        <span className="">{renderInlineCode(q.options.find((o: any) => o.id === userAnswer)?.text || t('quiz.notAnswered', 'No contestada'))}</span>
-                                                    </div>
-                                                    {!isCorrect && (
-                                                        <div className="p-3 rounded-xl text-xs font-medium border bg-emerald-500/10 border-emerald-500/20 text-emerald-300">
-                                                            <span className="uppercase opacity-50 block mb-1">{t('quiz.correctAnswer', 'Resposta Correcta')}</span>
-                                                            <span className="">{renderInlineCode(q.options.find((o: any) => o.id === q.correctOptionId)?.text || '')}</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                                                    <p className="text-xs xl:text-sm text-slate-300 leading-relaxed italic">
-                                                        <span className="font-bold text-primary not-italic mr-2">{t('quiz.deepDive', 'Deep-dive:')}</span>
-                                                        {renderInlineCode(q.explanation)}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                );
-                            })}
-                        </div>
-
-                        <div className="mt-10 flex justify-center">
-                            <button type="button"
-                                onClick={() => window.location.reload()}
-                                className="flex items-center gap-2 px-8 py-3 bg-white text-slate-950 font-bold rounded-2xl hover:bg-slate-200 transition-colors shadow-xl"
-                            >
-                                <RefreshCw size={18} /> {t('quiz.retry', 'Reintentar Test')}
-                            </button>
-                        </div>
-                    </motion.div>
-                </div>
+                <QuizResults 
+                    quiz={quiz} 
+                    selectedAnswers={selectedAnswers} 
+                    onRetry={() => window.location.reload()} 
+                />
             ) : (
-                // QUIZ SCREEN - Immersive Challenge (Fit in Screen)
-                <div className="flex flex-col flex-1 min-h-0">
+                <>
                     {/* Animated Progress Track */}
                     <div className="flex gap-2 mb-4 xl:mb-6 px-1 shrink-0">
-                        {Object.values(quiz.questions).map((q: any, i: number) => (
+                        {quiz.questions.map((q, i) => (
                             <div
                                 key={q.id}
                                 className="h-1.5 flex-1 relative rounded-full bg-white/5 overflow-hidden"
                             >
-                                <motion.div
-                                    className={`absolute inset-0 rounded-full origin-left ${i <= currentQuestionIdx ? 'bg-primary' : ''}`}
-                                    initial={false}
-                                    animate={{
-                                        scaleX: i < currentQuestionIdx || (i === currentQuestionIdx && !!selectedAnswers[q.id]) ? 1 : 0,
-                                        opacity: i === currentQuestionIdx ? 1 : 0.6
-                                    }}
-                                    transition={{ duration: 0.5 }}
+                                <div
+                                    className={`absolute inset-0 rounded-full origin-left transition-all duration-500 ease-out ${
+                                        i < currentQuestionIdx || (i === currentQuestionIdx && !!selectedAnswers[q.id]) 
+                                            ? 'scale-x-100 bg-primary' 
+                                            : 'scale-x-0 bg-transparent'
+                                    }`}
                                 />
                                 {i === currentQuestionIdx && (
-                                    <motion.div
-                                        className="absolute inset-0 bg-white/20"
-                                        animate={{ opacity: [0, 1, 0] }}
-                                        transition={{ repeat: Infinity, duration: 2 }}
-                                    />
+                                    <div className="absolute inset-0 bg-white/20 animate-pulse" />
                                 )}
                             </div>
                         ))}
                     </div>
 
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={currentQ.id}
-                            initial={{ opacity: 0, x: 20, filter: 'blur(5px)' }}
-                            animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                            exit={{ opacity: 0, x: -20, filter: 'blur(5px)' }}
-                            transition={{ duration: 0.3, ease: "easeOut" }}
-                            className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-t-[2.5rem] rounded-b-2xl p-6 xl:p-10 shadow-2xl mb-4 xl:mb-6 flex-1 flex flex-col min-h-0"
-                        >
-                            {/* Question Content Wrapper - Scrollable if extremely long, else flex content */}
-                            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto overflow-x-hidden pr-2 pb-2 custom-scrollbar">
-                                <h2 className="text-xl xl:text-2xl text-white font-bold leading-tight mb-4 xl:mb-6 shrink-0">
-                                    {renderInlineCode(currentQ.question)}
-                                </h2>
-
-                                {currentQ.codeSnippet && (
-                                    <div className="rounded-2xl overflow-hidden mb-5 border border-white/10 shadow-xl bg-[#0d1117] shrink-0 group relative">
-                                        <div className="flex items-center px-4 py-3 bg-white/3 border-b border-white/5 relative">
-                                            <div className="absolute inset-0 bg-linear-to-r from-primary/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
-                                            <div className="flex gap-1.5 z-10 hover:gap-2 transition cursor-default">
-                                                <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
-                                                <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></div>
-                                                <div className="w-3 h-3 rounded-full bg-emerald-500/80 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                                            </div>
-                                            <div className="ml-4 text-[12px] font-mono font-medium text-slate-400 z-10 flex items-center gap-2">
-                                                <span className="text-primary/70">⌘</span> snippet.cpp
-                                            </div>
-                                        </div>
-                                        <div className="p-4 xl:p-6 text-xs xl:text-sm">
-                                            <ReactCodeMirror
-                                                value={currentQ.codeSnippet}
-                                                readOnly={true}
-                                                editable={false}
-                                                theme={[vscodeDark, EditorView.theme({
-                                                    "&": { backgroundColor: "transparent !important" },
-                                                    ".cm-gutters": { backgroundColor: "transparent !important", borderRight: "none !important", color: "rgba(255,255,255,0.3)" },
-                                                    ".cm-scroller": { fontFamily: "inherit" }
-                                                })]}
-                                                extensions={[cpp()]}
-                                                className="font-mono leading-relaxed tracking-tight bg-transparent!"
-                                                basicSetup={{
-                                                    lineNumbers: true,
-                                                    foldGutter: false,
-                                                    highlightActiveLine: false,
-                                                    highlightSelectionMatches: false,
-                                                    syntaxHighlighting: true,
-                                                    drawSelection: false,
-                                                    dropCursor: false,
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="grid grid-cols-1 gap-3 mt-auto shrink-0">
-                                    {currentQ.options.map((opt: any, i: number) => {
-                                        const isSelected = selectedAnswers[currentQ.id] === opt.id;
-                                        const letters = ['A', 'B', 'C', 'D'];
-                                        return (
-                                            <motion.button
-                                                key={opt.id}
-                                                onClick={() => handleSelectOption(opt.id)}
-                                                whileHover={{ x: 4, scale: 1.01 }}
-                                                whileTap={{ scale: 0.98 }}
-                                                className={`group cursor-pointer text-left p-3.5 xl:p-4 rounded-2xl border transition-colors duration-300 flex gap-4 items-center relative overflow-hidden ${isSelected
-                                                    ? 'bg-primary/10 border-primary shadow-[0_0_25px_rgba(14,165,233,0.15)] ring-1 ring-primary/50'
-                                                    : 'bg-slate-800/40 border-white/5 hover:bg-slate-700/50 hover:border-white/20'
-                                                    }`}
-                                            >
-                                                {isSelected && (
-                                                    <motion.div
-                                                        layoutId="selection-glow"
-                                                        className="absolute inset-0 bg-linear-to-r from-primary/10 to-transparent pointer-events-none"
-                                                    />
-                                                )}
-
-                                                <div className={`w-8 h-8 rounded-xl border flex items-center justify-center shrink-0 transition duration-300 font-mono font-bold text-sm z-10 ${isSelected
-                                                    ? 'bg-primary text-white border-transparent scale-110 shadow-[0_0_15px_rgba(14,165,233,0.4)]'
-                                                    : 'border-white/10 bg-black/40 text-slate-400 group-hover:border-white/30 group-hover:text-slate-200'
-                                                    }`}>
-                                                    {letters[i]}
-                                                </div>
-                                                <span className={`leading-snug text-sm xl:text-[15px] transition-colors z-10 ${isSelected ? 'text-white font-semibold' : 'text-slate-300 group-hover:text-slate-100'}`}>
-                                                    {renderInlineCode(opt.text)}
-                                                </span>
-                                            </motion.button>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </motion.div>
-                    </AnimatePresence>
-
-                    {/* Pro-Navigation Controls */}
-                    <div className="flex items-center justify-between gap-4 shrink-0 px-2 xl:px-4">
-                        <button
-                            type="button"
-                            onClick={handlePrev}
-                            disabled={currentQuestionIdx === 0}
-                            className="flex items-center gap-2 px-6 py-3.5 xl:py-4 rounded-2xl border border-white/10 bg-slate-900/50 hover:bg-slate-800 text-slate-400 hover:text-white disabled:opacity-0 disabled:pointer-events-none transition font-bold text-sm shadow-lg hover:shadow-xl"
-                            aria-label="Enrere">
-                            <ChevronLeft size={18} /> <span className="hidden sm:inline">{t('quiz.prev', 'Anterior')}</span>
-                        </button>
-
-                        <div className="flex-1 max-w-xs h-px bg-linear-to-r from-transparent via-white/10 to-transparent hidden md:block" />
-
-                        <button type="button"
-                            onClick={handleNext}
-                            disabled={!selectedAnswers[currentQ.id]}
-                            className={`flex items-center justify-center gap-2 px-8 xl:px-10 py-3.5 xl:py-4 rounded-2xl font-black uppercase tracking-widest text-xs xl:text-sm transition duration-300 relative overflow-hidden group ${selectedAnswers[currentQ.id]
-                                ? 'bg-white text-slate-950 shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:scale-105 active:scale-95'
-                                : 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed opacity-50'
-                                }`}
-                            aria-label="Botó interactiu"
-                        >
-                            {selectedAnswers[currentQ.id] && (
-                                <div className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-                            )}
-
-                            <span className="relative z-10">{currentQuestionIdx === quiz.questions.length - 1 ? t('quiz.evaluate', 'Avaluar') : t('quiz.next', 'Següent')}</span>
-                            {currentQuestionIdx !== quiz.questions.length - 1 && <ChevronRight size={18} className="relative z-10" />}
-
-                            {/* Keyboard hint */}
-                            {selectedAnswers[currentQ.id] && (
-                                <span className="hidden lg:block absolute bottom-1 right-2 text-[8px] font-bold opacity-30 text-slate-900">
-                                    ↵ ENTER
-                                </span>
-                            )}
-                        </button>
-                    </div>
-                </div>
+                    <QuizQuestionView 
+                        questionsLength={quiz.questions.length}
+                        currentQuestionIdx={currentQuestionIdx}
+                        currentQ={currentQ}
+                        selectedAnswers={selectedAnswers}
+                        onSelectOption={handleSelectOption}
+                        onPrev={handlePrev}
+                        onNext={handleNext}
+                    />
+                </>
             )}
         </div>
     );
