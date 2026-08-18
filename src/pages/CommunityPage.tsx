@@ -9,6 +9,7 @@ import { useShortcut } from '../hooks/useShortcut';
 import type { CommunityPost } from '../types/community';
 
 import BottomSheet from '../components/ui/mobile/BottomSheet';
+import FloatingActionButton from '../components/ui/mobile/FloatingActionButton';
 import NavigationPill from '../components/ui/NavigationPill';
 
 import { useCommunityFeed } from '../hooks/useCommunityFeed';
@@ -275,16 +276,11 @@ const CommunityPage = () => {
 
                 <main className="w-full max-w-400 mx-auto px-4 sm:px-8 lg:px-12 relative z-10 pt-4 md:pt-0 touch-landscape:pt-4">
                     {/* Mobile Upload FAB */}
-                    <div className="md:hidden touch-landscape:block fixed bottom-28 right-4 z-50">
-                        <button
-                            type="button"
-                            onClick={handleUploadClick}
-                            className="group relative w-14 h-14 bg-[#0a0a0a]/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition duration-300 active:scale-95 overflow-hidden"
-                            aria-label="Obrir panell">
-                            <div className="absolute inset-0 rounded-full border border-white/20" />
-                            <Plus size={24} className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
-                        </button>
-                    </div>
+                    <FloatingActionButton
+                        onClick={handleUploadClick}
+                        icon={<Plus size={24} className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />}
+                        ariaLabel="Obrir panell"
+                    />
 
                     <CommunityToolbar 
                         activeSubject={activeSubject}

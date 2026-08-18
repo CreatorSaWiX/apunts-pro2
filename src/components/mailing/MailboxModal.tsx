@@ -10,6 +10,7 @@ import ComposeMessageModal from './ComposeMessageModal';
 import CodeBlock from '../ui/editors/CodeBlock';
 import Modal from '../ui/modals/Modal';
 import NavigationPill from '../ui/NavigationPill';
+import FloatingActionButton from '../ui/mobile/FloatingActionButton';
 import Spinner from '../ui/Spinner';
 import { useTranslation } from 'react-i18next';
 
@@ -277,16 +278,13 @@ const MailboxModal = ({ isOpen, onClose }: any) => {
                     </Modal.Body>
 
                     {/* FAB Compose */}
-                    <div className="absolute bottom-6 right-6 z-50">
-                        <button
-                            type="button"
-                            onClick={() => setIsComposeOpen(true)}
-                            className="group relative w-14 h-14 bg-[#0a0a0a]/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white rounded-full flex items-center justify-center transition duration-300 active:scale-95 overflow-hidden hover:bg-white/10"
-                            title={t('mailing.mailbox.compose', 'Redactar')}>
-                            <div className="absolute inset-0 rounded-full border border-white/20" />
-                            <Edit size={22} className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] group-hover:scale-110 transition-transform duration-300" />
-                        </button>
-                    </div>
+                    <FloatingActionButton
+                        onClick={() => setIsComposeOpen(true)}
+                        icon={<Edit size={22} className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] group-hover:scale-110 transition-transform duration-300" />}
+                        title={t('mailing.mailbox.compose', 'Redactar')}
+                        wrapperClassName="absolute bottom-6 right-6 z-50"
+                        className="bg-[#0a0a0a]/60 hover:bg-white/10"
+                    />
                 </Modal.Sidebar>
 
                 {/* Right Panel: Content */}
