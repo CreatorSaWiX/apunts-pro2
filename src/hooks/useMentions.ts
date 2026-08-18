@@ -13,9 +13,11 @@ export const useMentions = () => {
     const [mentionSearch, setMentionSearch] = useState<{ query: string, startIdx: number } | null>(null);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchUsers = async () => {
             try {
                 const snap = await getDocs(collection(db, 'usernames'));
+                if (!isMounted) return;
                 setAllUsers(snap.docs.map(doc => ({ 
                     id: doc.data().uid, 
                     username: doc.id, 
@@ -26,6 +28,7 @@ export const useMentions = () => {
             }
         };
         fetchUsers();
+        return () => { isMounted = false; };
     }, []);
 
     const handleInputChange = (val: string, cursorPosition: number) => {

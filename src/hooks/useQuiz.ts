@@ -14,11 +14,12 @@ export const useQuiz = (topicId: string | undefined) => {
     const [aiThought, setAiThought] = useState('');
 
     useEffect(() => {
+        let isMounted = true;
         const loadQuiz = async () => {
             if (!topicId) return;
 
             const handleQuizLoaded = (finalQuiz: Quiz) => {
-                setQuiz(finalQuiz);
+                if (isMounted) setQuiz(finalQuiz);
             };
 
             try {
@@ -35,7 +36,7 @@ export const useQuiz = (topicId: string | undefined) => {
                         }))
                     };
                     handleQuizLoaded(fullyShuffled);
-                    setIsGenerating(false);
+                    if (isMounted) setIsGenerating(false);
                     return;
                 }
             } catch (e) {
@@ -49,13 +50,15 @@ export const useQuiz = (topicId: string | undefined) => {
                               allPersonalNotes.find(note => note.slug.startsWith(normalizedTopicId + '-'));
                               
             if (!topicNote || !topicNote.content) {
-                setIsGenerating(false); // No content to generate from
+                if (isMounted) setIsGenerating(false);
                 return;
             }
 
             try {
-                setAiPhase('thinking');
-                setAiThought(t('quiz.generating', 'Llegint apunts i generant test (10 min, 10 preguntes)...'));
+                if (isMounted) {
+                    setAiPhase('thinking');
+                    setAiThought(t('quiz.generating', 'Llegint apunts i generant test (10 min, 10 preguntes)...'));
+                }
                 
                 const response = await fetch('/api/generate-quiz', {
                     method: 'POST',
@@ -83,12 +86,15 @@ export const useQuiz = (topicId: string | undefined) => {
             } catch (e) {
                 console.error("Error connecting to Gemini", e);
             } finally {
-                setIsGenerating(false);
-                setAiPhase('idle');
+                if (isMounted) {
+                    setIsGenerating(false);
+                    setAiPhase('idle');
+                }
             }
         };
 
         loadQuiz();
+        return () => { isMounted = false; };
     }, [topicId, t]);
 
     return { quiz, isGenerating, aiPhase, aiThought };
