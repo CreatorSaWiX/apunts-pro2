@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Settings2, Sparkles, Bot, Database, Keyboard, type LucideIcon } from 'lucide-react';
+import { Settings2, Sparkles, Bot, Database, Keyboard, ChevronLeft, ChevronRight, type LucideIcon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useIsMobile } from '../hooks/useIsMobile';
 
@@ -22,6 +22,7 @@ const SettingsContent = () => {
     const { user } = useAuth();
     const isMobile = useIsMobile();
     const [activeTab, setActiveTab] = useState<TabId>('general');
+    const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
 
     const TABS: { id: TabId; label: string; icon: LucideIcon }[] = [
         { id: 'general', label: t('nav.general', 'General'), icon: Settings2 },
@@ -35,6 +36,13 @@ const SettingsContent = () => {
         if (tab.id === 'ai' && !user) return false;
         return true;
     });
+
+    const handleTabClick = (id: TabId) => {
+        setActiveTab(id);
+        if (isMobile) {
+            setMobileView('content');
+        }
+    };
 
     const renderActiveSection = () => {
         switch (activeTab) {
@@ -73,15 +81,21 @@ const SettingsContent = () => {
             <div className="w-full h-full overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10">
                 <div className="w-full max-w-[1100px] mx-auto min-h-full flex flex-col md:flex-row relative">
                     {/* Sidebar (Desktop) / Header (Mobile) */}
-                    <aside className="w-full md:w-[280px] shrink-0 flex flex-col z-20 md:sticky md:top-0 md:h-dvh relative bg-transparent border-none">
-                        <nav className="flex-1 flex md:flex-col justify-start md:justify-center overflow-x-auto custom-scrollbar px-6 md:px-8 gap-1 md:overflow-x-hidden hide-scrollbar py-2">
+                    {(!isMobile || mobileView === 'menu') && (
+                        <aside className={`${isMobile ? 'w-full' : 'w-full md:w-[280px]'} shrink-0 flex flex-col z-20 md:sticky md:top-0 md:h-dvh relative bg-transparent border-none`}>
+                            {isMobile && (
+                            <div className="px-6 pt-12 pb-2">
+                                <h1 className="text-2xl font-bold text-white">Configuració</h1>
+                            </div>
+                        )}
+                        <nav className="flex-1 flex flex-col justify-start md:justify-center px-6 md:px-8 gap-2 py-4 md:py-2">
                             {availableTabs.map(tab => {
-                                const isActive = activeTab === tab.id;
+                                const isActive = !isMobile && activeTab === tab.id;
                                 return (
                                     <button type="button"
                                         key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        className={`shrink-0 group relative flex items-center px-4 py-3 transition duration-300 outline-none text-left rounded-xl`}
+                                        onClick={() => handleTabClick(tab.id)}
+                                        className={`w-full group relative flex items-center justify-between px-4 py-4 md:py-3 transition duration-300 outline-none text-left rounded-xl ${isMobile ? 'bg-white/5 mb-1' : ''}`}
                                     >
                                         {isActive && (
                                             <motion.div
@@ -95,19 +109,33 @@ const SettingsContent = () => {
                                                 size={18}
                                                 className={`transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}
                                             />
-                                            <span className={`font-semibold text-[14px] transition-colors duration-300 ${isActive ? 'text-white font-bold' : 'text-slate-400 group-hover:text-slate-200'}`}>
+                                            <span className={`font-semibold text-[15px] md:text-[14px] transition-colors duration-300 ${isActive ? 'text-white font-bold' : 'text-slate-400 group-hover:text-slate-200'}`}>
                                                 {tab.label}
                                             </span>
                                         </div>
+                                        {isMobile && (
+                                            <ChevronRight size={18} className="text-slate-500 relative z-10" />
+                                        )}
                                     </button>
                                 );
                             })}
                         </nav>
                     </aside>
+                    )}
 
                     {/* Main Content Area */}
-                    <main className="flex-1 h-auto relative z-20 pb-28 md:pb-20 safe-area-bottom">
-                        <div className="w-full px-6 py-8 md:px-12 md:py-20 flex flex-col items-start justify-start min-h-full">
+                    {(!isMobile || mobileView === 'content') && (
+                        <main className="flex-1 h-auto relative z-20 pb-28 md:pb-20 safe-area-bottom">
+                            <div className="w-full px-6 py-6 md:px-12 md:py-20 flex flex-col items-start justify-start min-h-full">
+                            {isMobile && (
+                                <button 
+                                    onClick={() => setMobileView('menu')}
+                                    className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+                                >
+                                    <ChevronLeft size={20} />
+                                    <span className="font-medium text-[15px]">{t('common.back', 'Tornar')}</span>
+                                </button>
+                            )}
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeTab}
@@ -119,9 +147,10 @@ const SettingsContent = () => {
                                 >
                                     {renderActiveSection()}
                                 </motion.div>
-                            </AnimatePresence>
-                        </div>
-                    </main>
+                                </AnimatePresence>
+                            </div>
+                        </main>
+                    )}
                 </div>
             </div>
         </div>

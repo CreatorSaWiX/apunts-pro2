@@ -38,13 +38,13 @@
     {
         "id": "S7",
         "name": "M2",
-        "colorToken": "cyan-400",
+        "colorToken": "green-400",
         "description": "Matemàtiques II"
     },
     {
         "id": "S8",
         "name": "PRO2",
-        "colorToken": "lime-400",
+        "colorToken": "sky-400",
         "description": "Programació II"
     },
     {
