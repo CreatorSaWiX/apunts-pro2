@@ -1,7 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
-// import { PerformanceMonitor } from './components/ui/system/PerformanceMonitor';
 import HomePage from './pages/HomePage';
 import PageTransition from './components/ui/system/PageTransition';
 import { AnimatePresence, LazyMotion, MotionConfig } from 'framer-motion';
@@ -52,7 +51,6 @@ function App() {
         <LazyMotion features={loadFeatures} strict>
           <div className="min-h-screen text-slate-200 selection:bg-primary/30 font-sans relative">
 
-            {/* <PerformanceMonitor /> */}
             <Navigation />
 
             <AnimatePresence mode="wait">

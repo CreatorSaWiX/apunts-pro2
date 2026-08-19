@@ -4,7 +4,6 @@ import { Bot, X, UploadCloud, Plus, Clock } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { useLocation } from 'react-router-dom';
-import { AuthCanvasBackground } from '../ui/system/AuthCanvasBackground';
 import { useTranslation } from 'react-i18next';
 import type { StreamPhase } from '../AIStreamingIndicator';
 
@@ -193,12 +192,16 @@ export const ChatBot: React.FC = () => {
   const processFile = useCallback((file: File) => {
     if (!file.type.startsWith('image/') && file.type !== 'application/pdf') { alert(t('chat.errors.invalidFileType', "Només s'accepten imatges i PDFs.")); return; }
     if (file.size > 5 * 1024 * 1024) { alert(t('chat.errors.fileTooLarge', "L'arxiu és massa gran. Màxim 5MB.")); return; }
+    let aborted = false;
     const reader = new FileReader();
     reader.onload = (e) => {
+      if (aborted) return;
       const b64 = (e.target?.result as string).split(',')[1];
       setAttachedFile({ data: b64, mimeType: file.type, name: file.name });
     };
     reader.readAsDataURL(file);
+    // Return cleanup for consumers that need abort support
+    return () => { aborted = true; reader.abort(); };
   }, [t]);
 
   useEffect(() => {

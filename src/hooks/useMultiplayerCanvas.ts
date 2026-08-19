@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { rtdb } from '../lib/firebase';
-import { ref, onValue, set, push, onChildAdded, onChildRemoved, onChildChanged, remove, serverTimestamp, get } from 'firebase/database';
+import { ref, onValue, set, push, onChildAdded, onChildRemoved, onChildChanged, remove, serverTimestamp } from 'firebase/database';
 import { useAuth } from '../contexts/AuthContext';
 import type { Stroke } from '../contexts/DrawContext';
 
@@ -56,21 +56,9 @@ export const useMultiplayerCanvas = (
         if (!user) return;
 
         const strokesRef = ref(rtdb, 'community_canvas/strokes');
-        
-        // Initial load
-        get(strokesRef).then(snapshot => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const loadedStrokes: Stroke[] = [];
-                Object.keys(data).forEach(key => {
-                    loadedStrokes.push({ ...data[key], id: key });
-                });
-                setStrokes(loadedStrokes);
-                loadedStrokes.forEach(s => localStrokesRef.current.add(s.id));
-            }
-        }).catch(console.error);
 
-        // Listen for new strokes
+        // onChildAdded fires for ALL existing children on registration + new ones,
+        // so no separate initial get() is needed.
         const unsubscribeAdded = onChildAdded(strokesRef, (snapshot) => {
             if (snapshot.exists() && snapshot.key) {
                 const newStroke = { ...snapshot.val(), id: snapshot.key } as Stroke;

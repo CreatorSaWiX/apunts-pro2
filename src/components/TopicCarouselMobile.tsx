@@ -151,12 +151,13 @@ interface CarouselCardProps {
     seenNewTopics: string[];
     seenVersions: Record<string, number>;
     onCardClick: (index: number) => void;
+    topicMeta?: { hasNew: boolean; newestUpdate: number };
     t: any;
 }
 
 const CarouselCard = React.memo(({
     topic, index, activeIndex, itemWidth, scrollX,
-    subject, navigate, markAsSeen, isInteractive, seenNewTopics, seenVersions, onCardClick, t
+    subject, navigate, markAsSeen, isInteractive, seenNewTopics, seenVersions, onCardClick, topicMeta, t
 }: CarouselCardProps) => {
     
     // Smooth Scale & Opacity Transforms optimized for Horizontal Snap (App Store Style)
@@ -172,9 +173,8 @@ const CarouselCard = React.memo(({
     
     const isActive = activeIndex === index;
 
-    const versions = allPersonalNotes.filter((n) => n.slug === topic.slug);
-    const hasNewTag = versions.some((n) => n.isNew);
-    const newestUpdate = Math.max(0, ...versions.map((n) => n.isUpdated || 0));
+    const hasNewTag = topicMeta?.hasNew ?? false;
+    const newestUpdate = topicMeta?.newestUpdate ?? 0;
 
     const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
     const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
@@ -327,13 +327,13 @@ interface LandscapeTopicCardProps {
     markAsSeen: (slug: string, updateTime?: number) => void;
     seenNewTopics: string[];
     seenVersions: Record<string, number>;
+    topicMeta?: { hasNew: boolean; newestUpdate: number };
     t: any;
 }
 
-const LandscapeTopicCard = React.memo(({ topic, index, subject, navigate, markAsSeen, seenNewTopics, seenVersions, t }: LandscapeTopicCardProps) => {
-    const versions = allPersonalNotes.filter((n) => n.slug === topic.slug);
-    const hasNewTag = versions.some((n) => n.isNew);
-    const newestUpdate = Math.max(0, ...versions.map((n) => n.isUpdated || 0));
+const LandscapeTopicCard = React.memo(({ topic, index, subject, navigate, markAsSeen, seenNewTopics, seenVersions, topicMeta, t }: LandscapeTopicCardProps) => {
+    const hasNewTag = topicMeta?.hasNew ?? false;
+    const newestUpdate = topicMeta?.newestUpdate ?? 0;
 
     const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
     const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
@@ -402,8 +402,20 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
     
     const isInteractive = !(isMobile && isMenuOpen);
 
-    const sortedTopics = useMemo(() => {
-        return [...allPersonalNotes]
+    const { sortedTopics, topicMeta } = useMemo(() => {
+        const meta = new Map<string, { hasNew: boolean; newestUpdate: number }>();
+        for (const note of allPersonalNotes) {
+            const existing = meta.get(note.slug);
+            if (!existing) {
+                meta.set(note.slug, { hasNew: !!note.isNew, newestUpdate: note.isUpdated || 0 });
+            } else {
+                if (note.isNew) existing.hasNew = true;
+                const upd = note.isUpdated || 0;
+                if (upd > existing.newestUpdate) existing.newestUpdate = upd;
+            }
+        }
+
+        const topics = [...allPersonalNotes]
             .filter(note => {
                 const isMatch = note.subject === subject && !note.slug.includes('-lab-');
                 if (!isMatch) return false;
@@ -414,6 +426,8 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
                 return hasPreferred ? note.lang === preferredLang : note.lang === 'ca';
             })
             .sort((a, b) => a.order - b.order);
+
+        return { sortedTopics: topics, topicMeta: meta };
     }, [subject, preferredLang]);
 
     const carouselRef = useRef<HTMLDivElement>(null);
@@ -568,6 +582,7 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
                             seenNewTopics={seenNewTopics}
                             seenVersions={seenVersions}
                             onCardClick={scrollToCard}
+                            topicMeta={topicMeta.get(topic.slug)}
                             t={t}
                         />
                     ))}
@@ -655,8 +670,20 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
         }
     }, []);
 
-    const sortedTopics = useMemo(() => {
-        return [...allPersonalNotes]
+    const { sortedTopics, topicMeta } = useMemo(() => {
+        const meta = new Map<string, { hasNew: boolean; newestUpdate: number }>();
+        for (const note of allPersonalNotes) {
+            const existing = meta.get(note.slug);
+            if (!existing) {
+                meta.set(note.slug, { hasNew: !!note.isNew, newestUpdate: note.isUpdated || 0 });
+            } else {
+                if (note.isNew) existing.hasNew = true;
+                const upd = note.isUpdated || 0;
+                if (upd > existing.newestUpdate) existing.newestUpdate = upd;
+            }
+        }
+
+        const topics = [...allPersonalNotes]
             .filter(note => {
                 const isMatch = note.subject === subject && !note.slug.includes('-lab-');
                 if (!isMatch) return false;
@@ -667,6 +694,8 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
                 return hasPreferred ? note.lang === preferredLang : note.lang === 'ca';
             })
             .sort((a, b) => a.order - b.order);
+
+        return { sortedTopics: topics, topicMeta: meta };
     }, [subject, preferredLang]);
         return (
             <div className="fixed inset-0 z-0 w-full flex flex-col overflow-hidden pointer-events-none">
@@ -682,6 +711,7 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
                                 markAsSeen={markAsSeen}
                                 seenNewTopics={seenNewTopics}
                                 seenVersions={seenVersions}
+                                topicMeta={topicMeta.get(topic.slug)}
                                 t={t}
                             />
                         ))}

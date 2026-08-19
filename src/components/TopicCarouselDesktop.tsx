@@ -102,8 +102,21 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
     const metricsRef = useRef<{ center: number, index: number }[]>([]);
 
-    const sortedTopics = useMemo(() => {
-        return [...allPersonalNotes]
+    const { sortedTopics, topicMeta } = useMemo(() => {
+        // Pre-compute metadata for all slugs in a single pass: O(M)
+        const meta = new Map<string, { hasNew: boolean; newestUpdate: number }>();
+        for (const note of allPersonalNotes) {
+            const existing = meta.get(note.slug);
+            if (!existing) {
+                meta.set(note.slug, { hasNew: !!note.isNew, newestUpdate: note.isUpdated || 0 });
+            } else {
+                if (note.isNew) existing.hasNew = true;
+                const upd = note.isUpdated || 0;
+                if (upd > existing.newestUpdate) existing.newestUpdate = upd;
+            }
+        }
+
+        const topics = [...allPersonalNotes]
             .filter(note => {
                 const isMatch = note.subject === subject && !note.slug.includes('-lab-');
                 if (!isMatch) return false;
@@ -124,6 +137,8 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 }
             })
             .sort((a, b) => a.order - b.order);
+
+        return { sortedTopics: topics, topicMeta: meta };
     }, [subject, preferredLang]);
 
     // Save activeIndex to session storage whenever it updates (skip during restoration)
@@ -390,10 +405,10 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 >
                     {sortedTopics.map((topic, i) => {
                         const isActive = activeIndex === i;
-                        // Check if ANY language version of this topic is marked as new or updated
-                        const versions = allPersonalNotes.filter(n => n.slug === topic.slug);
-                        const hasNewTag = versions.some(n => n.isNew);
-                        const newestUpdate = Math.max(0, ...versions.map(n => n.isUpdated || 0));
+                        // O(1) lookup from pre-computed metadata Map
+                        const meta = topicMeta.get(topic.slug);
+                        const hasNewTag = meta?.hasNew ?? false;
+                        const newestUpdate = meta?.newestUpdate ?? 0;
 
                         const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
                         const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);

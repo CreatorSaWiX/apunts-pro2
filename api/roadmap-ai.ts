@@ -5,7 +5,27 @@ import { roadmapRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
 import { buildRoadmapSystemInstruction, type RoadmapNode } from './_shared/prompts';
 
-const subjectCache = new Map<string, { acronim?: string; credits?: number; activities?: string[]; sections?: { title?: string; content?: string }[] }>();
+interface SubjectOfficialData {
+    acronim?: string;
+    credits?: number;
+    activities?: string[];
+    sections?: { title?: string; content?: string }[];
+}
+
+interface RawSubjectJson {
+    acronim?: string;
+    credits?: number;
+    activities?: string[];
+    sections?: { title: string; html?: string }[];
+}
+
+interface CacheEntry {
+    data: SubjectOfficialData;
+    timestamp: number;
+}
+
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hora
+const subjectCache = new Map<string, CacheEntry>();
 
 export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
@@ -46,14 +66,15 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
     if (mentionedNodes.length > 0) {
         injectedContext += "\n\n# CONTEXT ESPECÍFIC DE LES ASSIGNATURES MENCIONADES:\n";
+        const now = Date.now();
         for (const node of mentionedNodes) {
             try {
-                if (subjectCache.has(node.id)) {
-                    const cachedData = subjectCache.get(node.id)!;
-                    // Movem al final (implementació LRU simple)
+                const cached = subjectCache.get(node.id);
+                if (cached && (now - cached.timestamp < CACHE_TTL_MS)) {
+                    // Refresh LRU order
                     subjectCache.delete(node.id);
-                    subjectCache.set(node.id, cachedData);
-                    injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(cachedData)}\n`;
+                    subjectCache.set(node.id, cached);
+                    injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(cached.data)}\n`;
                     continue;
                 }
 
@@ -61,8 +82,8 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                 const url = `${baseUrl}/data/subjects/${node.id}.json`;
                 const res = await fetch(url);
                 if (res.ok) {
-                    const parsedData = await res.json() as any;
-                    const filteredData = {
+                    const parsedData = (await res.json()) as RawSubjectJson;
+                    const filteredData: SubjectOfficialData = {
                         acronim: parsedData.acronim,
                         credits: parsedData.credits,
                         activities: parsedData.activities,
@@ -72,12 +93,12 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         }))
                     };
 
-                    // Limitem el cache a 100 assignatures
+                    // Limitem el cache a 100 assignatures (LRU)
                     if (subjectCache.size >= 100) {
                         const oldestKey = subjectCache.keys().next().value;
                         if (oldestKey) subjectCache.delete(oldestKey);
                     }
-                    subjectCache.set(node.id, filteredData);
+                    subjectCache.set(node.id, { data: filteredData, timestamp: now });
                     injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(filteredData)}\n`;
                 }
             } catch (e) {

@@ -203,9 +203,16 @@ export const useCommunityFeed = (
         return result;
     }, [posts, filterType, sortBy, user]);
 
-    // Auto-fetch if client-side filters hide all current chunk items
+    // Auto-fetch if client-side filters hide all current chunk items (max 3 retries)
+    const autoFetchCountRef = useRef(0);
+    useEffect(() => {
+        autoFetchCountRef.current = 0;
+    }, [filterType, sortBy, activeSubject, searchQuery]);
+
     useEffect(() => {
         if (!loading && !loadingMore && hasMore && posts.length > 0 && filteredAndSortedPosts.length === 0) {
+            if (autoFetchCountRef.current >= 3) return;
+            autoFetchCountRef.current++;
             const t = setTimeout(() => {
                 loadMore();
             }, 100);

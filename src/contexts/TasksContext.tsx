@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useMemo } from 'react';
 import { createStore, useStore } from 'zustand';
-import { useAuth } from './AuthContext';
+import { useAuth, type User } from './AuthContext';
 import type { Task, Subject, TaskPriority } from '../types/tasks';
 import subjectsData from '../data/subjects.json';
 import { useSettingsStore } from '../stores/useSettingsStore';
@@ -19,7 +19,7 @@ export interface TasksState {
     filters: TaskFilters;
     isLoading: boolean;
     error: string | null;
-    user: any; // Stored user from AuthContext
+    user: User | null; // Stored user from AuthContext
     deletedTasks: Task[]; // internal
 
     filteredTasks: Task[]; // Derived state
@@ -30,7 +30,7 @@ export interface TasksState {
     setError: (e: string | null) => void;
     setFilters: (f: TaskFilters | ((prev: TaskFilters) => TaskFilters)) => void;
     clearFilters: () => void;
-    setUser: (u: any) => void;
+    setUser: (u: User | null) => void;
 
     addTask: (task: Omit<Task, 'id' | 'userId' | 'createdAt'>) => Promise<string>;
     updateTask: (taskId: string, updates: Partial<Task>) => Promise<void>;

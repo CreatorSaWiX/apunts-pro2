@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
 import { createStore, useStore } from 'zustand';
 import type { Node, Edge, NodeChange, EdgeChange, Connection } from '@xyflow/react';
-import { useAuth } from './AuthContext';
+import { useAuth, type User } from './AuthContext';
 import subjectsData from '../data/subjects.json';
 import { geiBaseNodes, geiBaseEdges, getCreditsForSubject, getSemesterForSubject, specializations } from '../data/curriculum';
 import { CFGS_DEGREES } from '../data/cfgs';
@@ -60,16 +60,6 @@ interface SubjectDataItem {
 
 const typedSubjectsData = subjectsData as SubjectDataItem[];
 
-// Data context: nodes, edges, derived values. Changes when nodes/edges change.
-
-
-// Actions context: stable callbacks. Does NOT change on drag/position changes.
-
-
-// Backwards-compatible combined type
-
-
-
 
 
 export interface RoadmapState {
@@ -83,7 +73,7 @@ export interface RoadmapState {
     initialStrokes: DrawingStroke[];
     targetGrade: number | null;
     requiredAverageGrade: number | null;
-    user: any;
+    user: User | null;
     saveVersion: number;
     lastSavedVersion: number;
 
@@ -93,7 +83,7 @@ export interface RoadmapState {
     setIsLoading: (v: boolean) => void;
     setTargetGrade: (grade: number | null) => void;
     setInitialStrokes: (strokes: DrawingStroke[]) => void;
-    setUser: (u: any) => void;
+    setUser: (u: User | null) => void;
 
     onNodesChange: (changes: NodeChange[]) => void;
     onEdgesChange: (changes: EdgeChange[]) => void;
@@ -153,7 +143,10 @@ const computeDerivedState = (nodes: Node<SubjectNodeData>[], targetGrade: number
     return { totalPassedECTS, averageGrade, canStartMaster, requiredAverageGrade };
 };
 
-// Extracted checkPrerequisites
+// Extracted checkPrerequisites — optimized: loop-invariant values hoisted out of while
+const SPECIAL_TYPES = new Set(['optional', 'specialization', 'tfg', 'tfm', 'mobility', 'internship']);
+const EXPERIENCE_TYPES = new Set(['tfg', 'tfm', 'mobility', 'internship']);
+
 const checkPrerequisites = (currentNodes: Node<SubjectNodeData>[], currentEdges: Edge[]) => {
     const incomingMap = new Map<string, string[]>();
     for (const e of currentEdges) {
@@ -161,6 +154,22 @@ const checkPrerequisites = (currentNodes: Node<SubjectNodeData>[], currentEdges:
         if (arr) arr.push(e.source);
         else incomingMap.set(e.target, [e.source]);
     }
+
+    // Pre-compute loop-invariant values: the while loop only cascades
+    // locked↔in_progress transitions, never changing 'passed' status,
+    // so these values remain stable across all iterations.
+    let maxPassedSemester = 0;
+    let passedCredits = 0;
+    for (const n of currentNodes) {
+        if (n.data.status === 'passed') {
+            passedCredits += n.data.credits;
+            if (!SPECIAL_TYPES.has(n.data.type)) {
+                const sem = n.data.semester || getSemesterForSubject(n.id);
+                if (sem > maxPassedSemester) maxPassedSemester = sem;
+            }
+        }
+    }
+    const allowedSemester = Math.max(1, maxPassedSemester + 1);
 
     let nodesChanged = true;
     let newNodes = [...currentNodes];
@@ -170,17 +179,6 @@ const checkPrerequisites = (currentNodes: Node<SubjectNodeData>[], currentEdges:
         nodesChanged = false;
         safetyCounter++;
         const nodeMap = new Map(newNodes.map(n => [n.id, n]));
-        
-        const maxPassedSemester = newNodes.reduce((max, n) => {
-            const isPassed = n.data.status === 'passed';
-            const isRegularSubject = !['optional', 'specialization', 'tfg', 'tfm', 'mobility', 'internship'].includes(n.data.type);
-            if (isPassed && isRegularSubject) {
-                return Math.max(max, n.data.semester || getSemesterForSubject(n.id));
-            }
-            return max;
-        }, 0);
-        const allowedSemester = Math.max(1, maxPassedSemester + 1);
-        const passedCredits = newNodes.reduce((sum, n) => n.data.status === 'passed' ? sum + n.data.credits : sum, 0);
 
         newNodes = newNodes.map(node => {
             const incoming = incomingMap.get(node.id);
@@ -192,7 +190,7 @@ const checkPrerequisites = (currentNodes: Node<SubjectNodeData>[], currentEdges:
             const isSemesterAllowed = (node.data.semester || getSemesterForSubject(node.id)) <= allowedSemester;
             let prereqsMet = edgePrereqsPassed && isSemesterAllowed;
 
-            if (['tfg', 'tfm', 'mobility', 'internship'].includes(node.data.type)) {
+            if (EXPERIENCE_TYPES.has(node.data.type)) {
                 prereqsMet = edgePrereqsPassed && passedCredits >= 160;
             }
 
@@ -513,7 +511,7 @@ export const RoadmapProvider: React.FC<{ children: ReactNode }> = ({ children })
                 if (snap.exists() && isMounted) {
                     const data = snap.data();
                     if (data.nodes && data.edges) {
-                        const migratedNodes = (data.nodes as any[]).map((n) => ({
+                        const migratedNodes = (data.nodes as Node<SubjectNodeData>[]).map((n) => ({
                             ...n,
                             data: {
                                 ...n.data,
@@ -562,6 +560,3 @@ export function useRoadmap<T>(selector: (state: RoadmapState) => T): T {
     return useStore(store, selector);
 }
 
-// Deprecated alias aliases
-export const useRoadmapActions = () => useRoadmap(state => state);
-export const useRoadmapData = () => useRoadmap(state => state);

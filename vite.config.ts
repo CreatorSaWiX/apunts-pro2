@@ -108,6 +108,12 @@ export default defineConfig(({ mode }) => {
               ) {
                 return 'vendor-react';
               }
+              if (id.includes('pdfjs-dist')) return 'vendor-pdfjs';
+              if (id.includes('@xyflow')) return 'vendor-xyflow';
+              if (id.includes('@dnd-kit')) return 'vendor-dnd';
+              if (id.includes('i18next')) return 'vendor-i18n';
+              if (id.includes('mafs')) return 'vendor-mafs';
+              if (id.includes('lowlight') || id.includes('highlight.js')) return 'vendor-lowlight';
               return 'vendor';
             }
           }
