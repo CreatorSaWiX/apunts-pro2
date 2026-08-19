@@ -79,7 +79,11 @@ export default defineConfig(({ mode }) => {
         '@react-three/fiber',
         '@react-three/drei',
       ],
-      exclude: [],
+      exclude: ['portfolio'],
+      entries: [
+        'index.html',
+        'src/**/*.{ts,tsx}'
+      ]
     },
     build: {
       chunkSizeWarningLimit: 1000,

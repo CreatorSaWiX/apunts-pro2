@@ -135,7 +135,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                     try {
                         const streamConfig: Record<string, unknown> = {
                             systemInstruction,
-                            tools: [{ googleSearch: {} }, { functionDeclarations: [saveMetadataTool] as unknown[] }]
+                            tools: [{ functionDeclarations: [saveMetadataTool] as unknown[] }]
                         };
 
                     applyThinkingConfig(streamConfig, modelName);
@@ -190,12 +190,14 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                     const errMsg = e instanceof Error ? e.message : String(e);
                     const errStatus = (e as { status?: number })?.status;
                     const isRetryable =
-                        (errStatus === 429 || errStatus === 404 ||
-                        errMsg.includes('429') || errMsg.includes('404') ||
+                        (errStatus === 429 || errStatus === 404 || errStatus === 503 || errStatus === 500 ||
+                        errMsg.includes('429') || errMsg.includes('404') || errMsg.includes('503') ||
                         errMsg.toLowerCase().includes('quota') ||
                         errMsg.toLowerCase().includes('rate') ||
                         errMsg.toLowerCase().includes('not found') ||
-                        errMsg.toLowerCase().includes('not supported')) && !hasStartedWriting;
+                        errMsg.toLowerCase().includes('not supported') ||
+                        errMsg.toLowerCase().includes('unavailable') ||
+                        errMsg.toLowerCase().includes('high demand')) && !hasStartedWriting;
 
                     if (isRetryable) {
                         lastError = e;
