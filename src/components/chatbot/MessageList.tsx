@@ -8,6 +8,9 @@ import { useTranslation } from 'react-i18next';
 import { type Message, MARKDOWN_CLS } from './constants';
 import AIStreamingIndicator, { type StreamPhase } from '../AIStreamingIndicator';
 
+const remarkPluginsConfig = [remarkGfm, remarkMath];
+const rehypePluginsConfig = [rehypeKatex];
+
 interface MessageListProps {
   messages: Message[];
   user: { avatar?: string; username?: string } | null;
@@ -19,7 +22,7 @@ interface MessageListProps {
   messagesContainerRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export const MessageList: React.FC<MessageListProps> = ({
+export const MessageList = React.memo<MessageListProps>(({
   messages,
   user,
   streamPhase,
@@ -64,7 +67,7 @@ export const MessageList: React.FC<MessageListProps> = ({
             ) : (
               <div className="flex flex-col items-start">
                 <div className={MARKDOWN_CLS}>
-                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{msg.content}</ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={remarkPluginsConfig as any} rehypePlugins={rehypePluginsConfig as any}>{msg.content}</ReactMarkdown>
                 </div>
                 {msg.addedMemories && msg.addedMemories.length > 0 && (
                   <motion.div
@@ -106,7 +109,7 @@ export const MessageList: React.FC<MessageListProps> = ({
           </div>
           <div className="max-w-[85%] text-slate-300">
             <div className={`${MARKDOWN_CLS} ai-cursor-blink`}>
-              <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{streamingText}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={remarkPluginsConfig as any} rehypePlugins={rehypePluginsConfig as any}>{streamingText}</ReactMarkdown>
             </div>
           </div>
         </div>
@@ -114,4 +117,6 @@ export const MessageList: React.FC<MessageListProps> = ({
       <div ref={messagesEndRef} className="h-4" />
     </div>
   );
-};
+});
+
+MessageList.displayName = 'MessageList';

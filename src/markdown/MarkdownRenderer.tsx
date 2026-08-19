@@ -279,6 +279,40 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     )
 };
 
+const rehypePluginsConfig = [
+    rehypeRaw,
+    [rehypeSanitize, {
+        ...defaultSchema,
+        tagNames: [
+            ...(defaultSchema.tagNames || []),
+            'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 
+            'stackviz', 'queueviz', 'vectorviz', 'linkedlistviz', 'pointerviz', 
+            'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 
+            'linkedinviz', 'youtubeviz', 'object', 'mark'
+        ],
+        attributes: {
+            ...defaultSchema.attributes,
+            '*': ['className', 'style'],
+            'videoviz': ['src', 'url', 'delay'],
+            'oopviz': ['simulation'],
+            'algoviz': ['algorithm'],
+            'proofviz': ['proof'],
+            'youtubeviz': ['src', 'caption'],
+            'linkedinviz': ['src'],
+            'mafs': ['type'],
+            'threeviz': ['type'],
+            'three': ['type'],
+            'graph': ['edges', 'nodes', 'height', 'directed'],
+            'accordion': ['title', 'defaultOpen'],
+            'callout': ['type', 'title'],
+            'object': ['data', 'type', 'width', 'height'],
+        }
+    }],
+    rehypeKatex
+];
+
+const remarkPluginsConfig = [remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMark, remarkMath];
+
 export function MarkdownRenderer({ content, components: customComponents }: MarkdownRendererProps) {
     const mergedComponents = React.useMemo(() => {
         return {
@@ -289,38 +323,8 @@ export function MarkdownRenderer({ content, components: customComponents }: Mark
 
     return (
         <ReactMarkdown
-            rehypePlugins={[
-                rehypeRaw,
-                [rehypeSanitize, {
-                    ...defaultSchema,
-                    tagNames: [
-                        ...(defaultSchema.tagNames || []),
-                        'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 
-                        'stackviz', 'queueviz', 'vectorviz', 'linkedlistviz', 'pointerviz', 
-                        'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 
-                        'linkedinviz', 'youtubeviz', 'object', 'mark'
-                    ],
-                    attributes: {
-                        ...defaultSchema.attributes,
-                        '*': ['className', 'style'],
-                        'videoviz': ['src', 'url', 'delay'],
-                        'oopviz': ['simulation'],
-                        'algoviz': ['algorithm'],
-                        'proofviz': ['proof'],
-                        'youtubeviz': ['src', 'caption'],
-                        'linkedinviz': ['src'],
-                        'mafs': ['type'],
-                        'threeviz': ['type'],
-                        'three': ['type'],
-                        'graph': ['edges', 'nodes', 'height', 'directed'],
-                        'accordion': ['title', 'defaultOpen'],
-                        'callout': ['type', 'title'],
-                        'object': ['data', 'type', 'width', 'height'],
-                    }
-                }],
-                rehypeKatex
-            ]}
-            remarkPlugins={[remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMark, remarkMath]}
+            rehypePlugins={rehypePluginsConfig as any}
+            remarkPlugins={remarkPluginsConfig as any}
             components={mergedComponents as unknown as React.ComponentProps<typeof ReactMarkdown>["components"]}
         >
             {content}

@@ -22,12 +22,12 @@ export const ChatBot: React.FC = () => {
   const { t, i18n } = useTranslation();
   const aiName = aiSettings?.identity?.name;
   
-  const renderAIAvatar = (iconSize: number, iconClass: string) => {
+  const renderAIAvatar = useCallback((iconSize: number, iconClass: string) => {
     const url = aiSettings?.identity?.avatarUrl;
     if (!url) return <Bot size={iconSize} className={iconClass} />;
     if (url.startsWith('http')) return <img src={url} alt="AI" className="w-full h-full object-cover rounded-[inherit]" />;
     return <span className="flex items-center justify-center w-full h-full text-[1.2em] leading-none select-none">{url}</span>;
-  };
+  }, [aiSettings?.identity?.avatarUrl]);
 
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);

@@ -77,7 +77,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
-    
+
     const isMinimal = variant === 'minimal';
 
     // Custom theme matching the approved mockup design
