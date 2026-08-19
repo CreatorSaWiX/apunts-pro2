@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { useAuth } from '../contexts/AuthContext';
 
 export interface UserMention {
     id: string;
@@ -9,10 +10,13 @@ export interface UserMention {
 }
 
 export const useMentions = () => {
+    const { user, isLoading } = useAuth();
     const [allUsers, setAllUsers] = useState<UserMention[]>([]);
     const [mentionSearch, setMentionSearch] = useState<{ query: string, startIdx: number } | null>(null);
 
     useEffect(() => {
+        if (!user || isLoading) return;
+        
         let isMounted = true;
         const fetchUsers = async () => {
             try {
@@ -29,7 +33,7 @@ export const useMentions = () => {
         };
         fetchUsers();
         return () => { isMounted = false; };
-    }, []);
+    }, [user, isLoading]);
 
     const handleInputChange = (val: string, cursorPosition: number) => {
         const textBeforeCursor = val.substring(0, cursorPosition);

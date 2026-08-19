@@ -63,6 +63,14 @@ service cloud.firestore {
       allow create: if request.auth.uid != null;
     }
 
+    // Permisos Globals per Fan-out (CollectionGroup queries)
+    match /{path=**}/replies/{replyId} {
+      allow read: if true;
+    }
+    match /{path=**}/comments/{commentId} {
+      allow read: if true;
+    }
+
     // Comunitat
     match /community_posts/{postId} {
       allow read: if true;
@@ -96,6 +104,7 @@ service cloud.firestore {
       allow get: if true;
       allow list: if request.auth.uid != null;
       allow create: if request.auth.uid != null && request.resource.data.uid == request.auth.uid;
+      allow update: if request.auth.uid != null && resource.data.uid == request.auth.uid;
       allow delete: if request.auth.uid != null && resource.data.uid == request.auth.uid;
     }
 

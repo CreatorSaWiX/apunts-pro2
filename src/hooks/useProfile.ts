@@ -103,8 +103,7 @@ export function useProfile(username: string | undefined) {
                 const q = query(
                     collection(db, 'community_posts'), 
                     where('userId', '==', extendedUser.id),
-                    orderBy('createdAt', 'desc'),
-                    limit(20)
+                    limit(100) // Changed to 100 since we'll sort in memory and lack pagination without orderBy
                 );
                 const snapshot = await getDocs(q);
                 
@@ -115,9 +114,15 @@ export function useProfile(username: string | undefined) {
                     posts.push({ id: doc.id, ...doc.data() } as CommunityPost);
                 });
                 
+                // Sort in memory to avoid Firestore composite index requirement
+                posts.sort((a, b) => {
+                    const timeA = a.createdAt?.seconds || 0;
+                    const timeB = b.createdAt?.seconds || 0;
+                    return timeB - timeA;
+                });
+                
                 setUserPosts(posts);
-                setLastPostDoc(snapshot.docs[snapshot.docs.length - 1]);
-                setHasMorePosts(snapshot.docs.length === 20);
+                setHasMorePosts(false); // Disabled pagination for now since we fetch 100
 
             } catch (err) {
                 console.error("Error fetching user posts:", err);
@@ -260,27 +265,30 @@ export function useProfile(username: string | undefined) {
                     const postsSnapshot = await getDocs(postsQuery);
                     await executeChunkedBatches(db, writeBatch, postsSnapshot.docs, updateData);
                 } catch (batchError) {
-                    console.error("Error updating past posts:", batchError);
+                    console.error("Error updating past posts (FAN-OUT FAILED):", batchError);
+                    alert("Error Fan-out Posts: " + (batchError as Error).message);
                 }
 
                 try {
                     const repliesQuery = query(collectionGroup(db, 'replies'), where('userId', '==', authUser.id));
                     const repliesSnapshot = await getDocs(repliesQuery);
                     const replyUpdate = { ...updateData };
-                    if (data.avatar) replyUpdate.fromUserAvatar = data.avatar;
+                    if (data.avatar) replyUpdate.userAvatar = data.avatar;
                     await executeChunkedBatches(db, writeBatch, repliesSnapshot.docs, replyUpdate);
                 } catch (e) {
-                    console.warn("No s'ha pogut actualitzar els replies:", e);
+                    console.error("No s'ha pogut actualitzar els replies (FAN-OUT FAILED):", e);
+                    alert("Error Fan-out Replies: " + (e as Error).message);
                 }
 
                 try {
                     const commentsQuery = query(collectionGroup(db, 'comments'), where('userId', '==', authUser.id));
                     const commentsSnapshot = await getDocs(commentsQuery);
                     const commentUpdate = { ...updateData };
-                    if (data.avatar) commentUpdate.fromUserAvatar = data.avatar;
+                    if (data.avatar) commentUpdate.userAvatar = data.avatar;
                     await executeChunkedBatches(db, writeBatch, commentsSnapshot.docs, commentUpdate);
                 } catch (e) {
-                    console.warn("No s'ha pogut actualitzar els comentaris:", e);
+                    console.error("No s'ha pogut actualitzar els comentaris (FAN-OUT FAILED):", e);
+                    alert("Error Fan-out Comentaris: " + (e as Error).message);
                 }
             }
 
@@ -288,7 +296,8 @@ export function useProfile(username: string | undefined) {
             updateUser(data);
             
             if (data.username !== authUser.username && data.username) {
-                window.location.reload();
+                // Redirigir al nou username utilitzant window.location.href en lloc de reload per evitar confusions
+                window.location.href = `/profile/${data.username}`;
             }
         } catch (error) {
             console.error("Error updating profile:", error);

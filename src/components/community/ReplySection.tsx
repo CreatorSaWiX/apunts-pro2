@@ -143,8 +143,8 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                         {visibleReplies.map((reply) => (
                             <div key={reply.id} className="flex gap-3 group">
                                 <img loading="lazy"
-                                    src={reply.userAvatar} 
-                                    alt={reply.username} 
+                                    src={reply.userId === user?.id ? (user?.avatar || reply.userAvatar) : reply.userAvatar} 
+                                    alt={reply.userId === user?.id ? (user?.username || reply.username) : reply.username} 
                                     className={`w-8 h-8 rounded-xl object-cover shrink-0 ${onNavigateToProfile ? 'cursor-pointer' : ''}`}
                                     onClick={() => onNavigateToProfile && reply.username && onNavigateToProfile(reply.username)}
                                 />
@@ -154,7 +154,7 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                                             className={`text-xs font-bold text-slate-300 group-hover:text-primary transition-colors ${onNavigateToProfile ? 'cursor-pointer' : ''}`}
                                             onClick={() => onNavigateToProfile && reply.username && onNavigateToProfile(reply.username)}
                                         >
-                                            {reply.username}
+                                            {reply.userId === user?.id ? (user?.username || reply.username) : reply.username}
                                         </span>
                                         <span className="text-[10px] text-slate-500">
                                             {reply.createdAt?.toDate ? formatDistanceToNow(reply.createdAt.toDate(), { locale: ca, addSuffix: true }) : 'Ara'}

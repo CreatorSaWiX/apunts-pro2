@@ -88,10 +88,10 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                 className={`flex gap-3 group/comment mt-4`}
             >
                 {/* Avatar */}
-                <Link to={`/profile/${comment.username}`} className="shrink-0 hover:opacity-80 transition-opacity">
+                <Link to={`/profile/${(user && comment.userId === user.id) ? user.username : comment.username}`} className="shrink-0 hover:opacity-80 transition-opacity">
                     <img loading="lazy"
-                        src={comment.userAvatar || `https://ui-avatars.com/api/?name=${comment.username}&background=random`}
-                        alt={comment.username}
+                        src={(user && comment.userId === user.id) ? (user.avatar || comment.userAvatar) : (comment.userAvatar || `https://ui-avatars.com/api/?name=${comment.username}&background=random`)}
+                        alt={(user && comment.userId === user.id) ? user.username : comment.username}
                         className={`${isReply ? 'w-8 h-8' : 'w-10 h-10'} rounded-full bg-slate-800 object-cover ring-2 ring-slate-900`}
                     />
                 </Link>
@@ -101,10 +101,10 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                     {/* Header */}
                     <div className="flex items-center gap-2 mb-1">
                         <Link
-                            to={`/profile/${comment.username}`}
+                            to={`/profile/${(user && comment.userId === user.id) ? user.username : comment.username}`}
                             className="font-bold text-slate-200 text-sm hover:underline hover:text-sky-400 transition-colors"
                         >
-                            {comment.username}
+                            {(user && comment.userId === user.id) ? user.username : comment.username}
                         </Link>
 
                         {/* TikTok style "replying to" indicator inside the reply item if it's a nested reply */}
