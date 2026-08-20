@@ -825,6 +825,8 @@
     "wait": "Wait {{cooldown}}s",
     "newChat": "New Chat",
     "conversation": "Conversation",
+    "searchHistory": "Search...",
+    "noSearchResults": "No results found",
     "errors": {
       "invalidFileType": "Only images and PDFs are accepted.",
       "fileTooLarge": "File is too large. Maximum 5MB.",
@@ -853,6 +855,8 @@
       "modelDenied": "{{model}} denied ({{reason}}). Seeking alternative...",
       "defaultTitle": "Process",
       "thoughtTitle": "AI Thought Process",
+      "worked": "Process",
+      "workedTime": "Worked for {{time}}",
       "reasonSaturation": "Saturation",
       "reasonQuota": "Quota 429 / Too Many Requests",
       "reason503": "Server unavailable 503"

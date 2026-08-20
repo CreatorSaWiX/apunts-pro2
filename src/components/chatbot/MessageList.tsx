@@ -13,15 +13,41 @@ import { ThoughtBlock, parseThoughtText } from '../ThoughtBlock';
 const remarkPluginsConfig = [remarkGfm, remarkMath];
 const rehypePluginsConfig = [rehypeKatex];
 
-const ThoughtAccordion = React.memo(({ thoughtText, t }: { thoughtText: string, t: any }) => {
+const formatTime = (ms: number | undefined) => {
+  if (!ms) return '';
+  const s = Math.floor(ms / 1000);
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  const remainingS = s % 60;
+  return remainingS > 0 ? `${m}m ${remainingS}s` : `${m}m`;
+};
+
+const ThoughtAccordion = React.memo(({ thoughtText, thoughtTimeMs, t }: { thoughtText: string, thoughtTimeMs?: number, t: any }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  
   if (!thoughtText || !thoughtText.trim()) return null;
   const blocks = React.useMemo(() => parseThoughtText(thoughtText, t), [thoughtText, t]);
+  const timeString = formatTime(thoughtTimeMs);
 
   return (
-    <div className="mb-4 w-full max-w-2xl flex flex-col gap-0.5">
-      {blocks.map((block, idx) => (
-         <ThoughtBlock key={idx} block={block} />
-      ))}
+    <div className="mb-1 w-full flex flex-col">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-1.5 text-slate-400 hover:text-slate-200 transition-colors py-1 w-fit select-none focus:outline-none"
+      >
+        <span className="text-[14px] font-medium tracking-tight">
+          {timeString ? t('chat.process.workedTime', 'Worked for {{time}}', { time: timeString }) : t('chat.process.worked', 'Process')}
+        </span>
+        <ChevronDown size={14} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : '-rotate-90'}`} />
+      </button>
+      
+      {isOpen && (
+        <div className="flex flex-col gap-1.5 mt-2 mb-1 pl-1 max-w-2xl">
+          {blocks.map((block, idx) => (
+             <ThoughtBlock key={idx} block={block} />
+          ))}
+        </div>
+      )}
     </div>
   );
 });
@@ -159,7 +185,7 @@ export const MessageList = React.memo<MessageListProps>(({
             ) : (
               <div className="flex flex-col items-start w-full">
                 {msg.thoughtText && (
-                  <ThoughtAccordion thoughtText={msg.thoughtText} t={t} />
+                  <ThoughtAccordion thoughtText={msg.thoughtText} thoughtTimeMs={msg.thoughtTimeMs} t={t} />
                 )}
                 {msg.groundingMetadata?.groundingChunks && (
                   <GroundingAccordion chunks={msg.groundingMetadata.groundingChunks} t={t} />

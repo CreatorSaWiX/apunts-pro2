@@ -238,8 +238,8 @@ Respon 1 si requereix cerca a internet, o 0 si no en requereix.`;
                                         if (part.thought && part.text) {
                                             emit('thought', { text: part.text });
                                         }
-                                        else if (part.text) {
-                                            if (!hasStartedWriting) {
+                                        else if (part.text !== undefined && part.text !== null) {
+                                            if (!hasStartedWriting && part.text.trim().length > 0) {
                                                 emit('status', { phase: 'writing' });
                                                 hasStartedWriting = true;
                                             }

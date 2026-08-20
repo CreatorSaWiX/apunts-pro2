@@ -7,12 +7,14 @@ export interface Message {
   addedMemories?: string[];
   groundingMetadata?: any;
   thoughtText?: string;
+  thoughtTimeMs?: number;
 }
 
 export interface ChatMeta {
   id: string;
   title: string;
   updatedAt: number;
+  searchableText?: string;
 }
 
 export const MARKDOWN_CLS = `text-sm md:text-[15px]
@@ -28,4 +30,5 @@ export const MARKDOWN_CLS = `text-sm md:text-[15px]
   [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-4 [&_ol]:marker:text-slate-500
   [&_li]:my-1.5 [&_li>p]:inline
   [&_strong]:text-slate-200 [&_strong]:font-semibold
-  [&_blockquote]:border-l-2 [&_blockquote]:border-slate-600 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-400`;
+  [&_blockquote]:border-l-2 [&_blockquote]:border-slate-600 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-400
+  [&_hr]:hidden`;

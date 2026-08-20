@@ -78,35 +78,21 @@ export const parseThoughtText = (text: string, t?: any) => {
     return blocks;
 };
 
-export const ThoughtBlock = ({ block, initiallyOpen = false }: { block: any, initiallyOpen?: boolean }) => {
-    const [isOpen, setIsOpen] = useState(initiallyOpen);
+export const ThoughtBlock = ({ block }: { block: any }) => {
     const hasContent = block.content.length > 0;
     
     return (
-        <div className="flex flex-col mb-0.5 font-mono">
-            <div 
-                className={`flex items-center gap-2 py-1.5 px-2 rounded-md ${hasContent ? 'cursor-pointer hover:bg-white/[0.04] text-slate-300' : 'text-slate-400'}`}
-                onClick={() => hasContent && setIsOpen(!isOpen)}
-            >
+        <div className="flex flex-col mb-1 font-mono">
+            <div className="flex items-center gap-2 py-1 px-2 text-slate-300">
                 <div className="w-4 h-4 flex items-center justify-center shrink-0">
-                   {hasContent ? (
-                       <ChevronRight size={14} className={`text-slate-500 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
-                   ) : (
-                       getIcon(block.icon)
-                   )}
+                    {getIcon(block.icon)}
                 </div>
-                
-                {hasContent && getIcon(block.icon)}
-                
                 <span className="flex-1 text-[13px] font-medium tracking-tight truncate select-none">{block.title}</span>
             </div>
             
-            {isOpen && hasContent && (
+            {hasContent && (
                 <div className="flex mt-0.5 mb-1">
-                    <div className="w-4 flex justify-center shrink-0 ml-2">
-                        <div className="w-[2px] bg-white/[0.08] rounded-full my-0.5"></div>
-                    </div>
-                    <div className="flex-1 pl-3 pr-4 py-1 text-[12px] text-slate-400 whitespace-pre-wrap leading-relaxed">
+                    <div className="flex-1 pl-8 pr-4 py-0.5 text-[12px] text-slate-400/90 whitespace-pre-wrap leading-relaxed">
                         {block.content}
                     </div>
                 </div>

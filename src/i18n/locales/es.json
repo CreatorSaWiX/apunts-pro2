@@ -830,6 +830,8 @@
     "wait": "Espera {{cooldown}}s",
     "newChat": "Nuevo Chat",
     "conversation": "Conversación",
+    "searchHistory": "Buscar...",
+    "noSearchResults": "No se encontraron resultados",
     "errors": {
       "invalidFileType": "Solo se aceptan imágenes y PDFs.",
       "fileTooLarge": "El archivo es demasiado grande. Máximo 5MB.",
@@ -858,6 +860,8 @@
       "modelDenied": "{{model}} denegado ({{reason}}). Buscando alternativa...",
       "defaultTitle": "Proceso",
       "thoughtTitle": "Pensamiento de la IA",
+      "worked": "Proceso",
+      "workedTime": "Procesado en {{time}}",
       "reasonSaturation": "Saturación",
       "reasonQuota": "Cuota 429 / Demasiadas peticiones",
       "reason503": "Servidor no disponible 503"

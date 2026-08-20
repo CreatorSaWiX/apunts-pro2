@@ -1,6 +1,6 @@
 import React from 'react';
 import { m as motion } from 'framer-motion';
-import { X, Check, Pencil, Trash2, Plus } from 'lucide-react';
+import { X, Check, Pencil, Trash2, Plus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChatMeta } from './constants';
 
@@ -32,6 +32,16 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
   startNewChat
 }) => {
   const { t } = useTranslation();
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+  const filteredChats = React.useMemo(() => {
+    if (!searchTerm.trim()) return chatList;
+    const lower = searchTerm.toLowerCase();
+    return chatList.filter(c => 
+      c.title.toLowerCase().includes(lower) || 
+      (c.searchableText && c.searchableText.includes(lower))
+    );
+  }, [chatList, searchTerm]);
 
   return (
     <motion.div
@@ -43,11 +53,25 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
         <span className="text-sm font-medium text-slate-200">{t('chat.history', 'Historial de converses')}</span>
         <button type="button" onClick={() => setShowHistory(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"><X size={18} /></button>
       </div>
+      <div className="px-4 py-2 border-b border-white/5 shrink-0">
+        <div className="relative">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <input 
+            type="text" 
+            placeholder={t('chat.searchHistory', 'Cercar...')}
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-white/20 transition-colors"
+          />
+        </div>
+      </div>
       <div className="flex-1 overflow-y-auto custom-scrollbar py-3 px-3 space-y-1">
-        {chatList.length === 0 && (
-          <p className="text-slate-500 text-sm text-center mt-10">{t('chat.noSavedChats', 'Sense converses desades')}</p>
+        {filteredChats.length === 0 && (
+          <p className="text-slate-500 text-sm text-center mt-10">
+            {searchTerm ? t('chat.noSearchResults', 'Cap resultat trobat') : t('chat.noSavedChats', 'Sense converses desades')}
+          </p>
         )}
-        {chatList.map(chat => (
+        {filteredChats.map(chat => (
           <div
             key={chat.id}
             className={`group flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-pointer transition-colors ${chat.id === currentChatId ? 'bg-white/10' : 'hover:bg-white/5'}`}

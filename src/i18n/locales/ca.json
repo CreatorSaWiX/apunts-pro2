@@ -830,6 +830,8 @@
     "wait": "Espera {{cooldown}}s",
     "newChat": "Nou Xat",
     "conversation": "Conversa",
+    "searchHistory": "Cercar...",
+    "noSearchResults": "Cap resultat trobat",
     "errors": {
       "invalidFileType": "Només s'accepten imatges i PDFs.",
       "fileTooLarge": "L'arxiu és massa gran. Màxim 5MB.",
@@ -858,6 +860,8 @@
       "modelDenied": "{{model}} denegat ({{reason}}). Buscant alternativa...",
       "defaultTitle": "Procés",
       "thoughtTitle": "Pensament de l'IA",
+      "worked": "Processat",
+      "workedTime": "Treballat durant {{time}}",
       "reasonSaturation": "Saturació",
       "reasonQuota": "Quota 429 / Massa Peticions",
       "reason503": "Servidor no disponible 503"

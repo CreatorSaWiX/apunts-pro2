@@ -65,7 +65,16 @@ export const ChatBot: React.FC = () => {
     ]);
     const q = query(collection(db, 'users', user.id, 'chats'), orderBy('updatedAt', 'desc'));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, title: d.data().title || t('chat.conversation', 'Conversa'), updatedAt: d.data().updatedAt || 0 }));
+    return snap.docs.map(d => {
+      const data = d.data();
+      const historyText = data.history ? data.history.map((m: any) => m.content).join(' ').toLowerCase() : '';
+      return { 
+        id: d.id, 
+        title: data.title || t('chat.conversation', 'Conversa'), 
+        updatedAt: data.updatedAt || 0,
+        searchableText: historyText
+      };
+    });
   }, [user, t]);
 
   const saveChat = useCallback(async (id: string, history: Message[], title: string) => {
@@ -116,21 +125,21 @@ export const ChatBot: React.FC = () => {
   }, []);
 
   // ── Actions ───────────────────────────────────────────────────────────────
-  const startNewChat = useCallback(async () => {
-    if (messages.length > 0 && currentChatId) await saveChat(currentChatId, messages, currentChatTitle);
+  const startNewChat = useCallback(async (closeHistory = true, skipSave = false) => {
+    if (!skipSave && messages.length > 0 && currentChatId) await saveChat(currentChatId, messages, currentChatTitle);
     const id = newId();
     setCurrentChatId(id);
     setMessages([]);
     setCurrentChatTitle(t('chat.newChat', 'Nou Xat'));
     setInput('');
-    setShowHistory(false);
+    if (closeHistory) setShowHistory(false);
   }, [messages, currentChatId, currentChatTitle, saveChat, t]);
 
-  const switchChat = useCallback(async (id: string) => {
-    if (messages.length > 0 && currentChatId) await saveChat(currentChatId, messages, currentChatTitle);
+  const switchChat = useCallback(async (id: string, closeHistory = true, skipSave = false) => {
+    if (!skipSave && messages.length > 0 && currentChatId) await saveChat(currentChatId, messages, currentChatTitle);
     setCurrentChatId(id);
     await loadChat(id);
-    setShowHistory(false);
+    if (closeHistory) setShowHistory(false);
   }, [messages, currentChatId, currentChatTitle, saveChat, loadChat]);
 
   const deleteChat = useCallback(async (id: string) => {
@@ -143,8 +152,8 @@ export const ChatBot: React.FC = () => {
     const newList = chatList.filter(c => c.id !== id);
     setChatList(newList);
     if (id === currentChatId) {
-      if (newList.length > 0) switchChat(newList[0].id);
-      else startNewChat();
+      if (newList.length > 0) switchChat(newList[0].id, false, true);
+      else startNewChat(false, true);
     }
   }, [user, chatList, currentChatId, switchChat, startNewChat]);
 
@@ -268,6 +277,8 @@ export const ChatBot: React.FC = () => {
     abortControllerRef.current = controller;
 
     let fullThoughtText = '';
+    const requestStartTime = Date.now();
+    let thoughtDurationMs = 0;
 
     try {
       let pageText = '';
@@ -348,7 +359,12 @@ export const ChatBot: React.FC = () => {
                 setThoughtText(fullThoughtText);
                 break;
               case 'delta':
-                if (fullReplyText === '') setStreamPhase('writing');
+                if (fullReplyText === '') {
+                  setStreamPhase('writing');
+                  if (fullThoughtText.length > 0) {
+                     thoughtDurationMs = Date.now() - requestStartTime;
+                  }
+                }
                 fullReplyText += parsed.text;
                 setStreamingText(fullReplyText);
                 break;
@@ -368,7 +384,20 @@ export const ChatBot: React.FC = () => {
       }
 
       const finalText = fullReplyText || streamingText || t('chat.noResponse', 'Sense resposta.');
-      const final = [...newMessages, { role: 'model' as const, content: finalText, addedMemories: metadata.memories_to_add || [], groundingMetadata: grounding, thoughtText: fullThoughtText }];
+      
+      // If we never hit 'delta' but we had thoughts (e.g. error happened right after thinking), set duration
+      if (thoughtDurationMs === 0 && fullThoughtText.length > 0) {
+          thoughtDurationMs = Date.now() - requestStartTime;
+      }
+      
+      const final = [...newMessages, { 
+          role: 'model' as const, 
+          content: finalText, 
+          addedMemories: metadata.memories_to_add || [], 
+          groundingMetadata: grounding, 
+          thoughtText: fullThoughtText,
+          thoughtTimeMs: thoughtDurationMs 
+      }];
       setMessages(final);
       setStreamingText('');
       setStreamPhase('done');
@@ -393,7 +422,8 @@ export const ChatBot: React.FC = () => {
       setMessages(prev => [...prev, { 
         role: 'model', 
         content: `**Error:** ${errorObj?.message || 'Error desconegut'}`,
-        thoughtText: fullThoughtText
+        thoughtText: fullThoughtText,
+        thoughtTimeMs: fullThoughtText ? (Date.now() - requestStartTime) : undefined
       }]);
     } finally {
       setStreamPhase('idle');
