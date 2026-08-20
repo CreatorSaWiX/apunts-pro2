@@ -847,7 +847,21 @@
     "newConversation": "Nueva conversación",
     "placeholder": "Escribe a {{aiName}}...",
     "attachFile": "Adjuntar imagen o PDF",
-    "warning": "La IA puede cometer errores. No compartas datos sensibles ni personales."
+    "warning": "La IA puede cometer errores. No compartas datos sensibles ni personales.",
+    "process": {
+      "analyzingIntent": "Analizando si la consulta requiere acceso a internet...",
+      "searchDetected": "Se ha detectado necesidad de búsqueda. Se activará el acceso a internet.",
+      "searchNotNeeded": "No es necesaria la búsqueda. Utilizando conocimiento interno y documentos...",
+      "searchFailed": "No se ha podido verificar la necesidad de búsqueda. Se desactiva por defecto.",
+      "requestingModel": "Solicitando modelo: {{model}}...",
+      "modelNoSearch": "{{model}} no admite el uso del buscador gratuito. Saltando al siguiente modelo...",
+      "modelDenied": "{{model}} denegado ({{reason}}). Buscando alternativa...",
+      "defaultTitle": "Proceso",
+      "thoughtTitle": "Pensamiento de la IA",
+      "reasonSaturation": "Saturación",
+      "reasonQuota": "Cuota 429 / Demasiadas peticiones",
+      "reason503": "Servidor no disponible 503"
+    }
   },
   "roadmapSubjectEvaluation": {
     "title": "Distribución de Evaluación",

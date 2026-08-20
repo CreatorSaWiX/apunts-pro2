@@ -5,6 +5,8 @@ export interface Message {
   attachmentName?: string;
   attachmentType?: 'image' | 'pdf';
   addedMemories?: string[];
+  groundingMetadata?: any;
+  thoughtText?: string;
 }
 
 export interface ChatMeta {

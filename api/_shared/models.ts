@@ -18,10 +18,10 @@ const LITE_MODELS = [
 
 // Models que suporten Thinking (Raonament intern previ)
 const THINKING_MODELS = new Set([
-    'gemini-3.7-flash', 
-    'gemini-3.6-flash', 
-    'gemini-3.5-flash', 
-    'gemini-3-flash-preview', 
+    'gemini-3.7-flash',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash',
+    'gemini-3-flash-preview',
     'gemini-2.5-flash'
 ]);
 
@@ -57,13 +57,5 @@ export interface ThinkingStreamConfig {
 export function applyThinkingConfig(streamConfig: ThinkingStreamConfig, modelName: string): void {
     if (THINKING_MODELS.has(modelName)) {
         streamConfig.thinkingConfig = { includeThoughts: true };
-        
-        if (modelName.includes('2.5')) {
-            streamConfig.thinkingConfig.thinkingBudget = 32768; // Màxim permès per Gemini 2.5
-        } else {
-            // Per Gemini 3.0 i superiors
-            // Li donem més marge perquè tenen arquitectures més potents
-            streamConfig.thinkingConfig.thinkingBudget = 65536; 
-        }
     }
 }

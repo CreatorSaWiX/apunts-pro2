@@ -847,7 +847,21 @@
     "newConversation": "Nova conversa",
     "placeholder": "Escriu a {{aiName}}...",
     "attachFile": "Adjuntar imatge o PDF",
-    "warning": "L'IA pot cometre errors. No comparteixis dades sensibles ni personals."
+    "warning": "L'IA pot cometre errors. No comparteixis dades sensibles ni personals.",
+    "process": {
+      "analyzingIntent": "Analitzant si la consulta requereix accés a internet...",
+      "searchDetected": "S'ha detectat necessitat de cerca. S'activarà l'accés a internet.",
+      "searchNotNeeded": "No cal cerca a internet. Utilitzant coneixement intern i documents...",
+      "searchFailed": "No s'ha pogut verificar la necessitat de cerca. Es desactiva per defecte.",
+      "requestingModel": "Sol·licitant model: {{model}}...",
+      "modelNoSearch": "{{model}} no admet l'ús del cercador gratuït. Saltant al següent model...",
+      "modelDenied": "{{model}} denegat ({{reason}}). Buscant alternativa...",
+      "defaultTitle": "Procés",
+      "thoughtTitle": "Pensament de l'IA",
+      "reasonSaturation": "Saturació",
+      "reasonQuota": "Quota 429 / Massa Peticions",
+      "reason503": "Servidor no disponible 503"
+    }
   },
   "roadmapSubjectEvaluation": {
     "title": "Distribució d'Avaluació",

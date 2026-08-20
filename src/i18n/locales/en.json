@@ -842,7 +842,21 @@
     "newConversation": "New conversation",
     "placeholder": "Message {{aiName}}...",
     "attachFile": "Attach image or PDF",
-    "warning": "AI can make mistakes. Do not share sensitive or personal data."
+    "warning": "AI can make mistakes. Do not share sensitive or personal data.",
+    "process": {
+      "analyzingIntent": "Analyzing if the query requires internet access...",
+      "searchDetected": "Search need detected. Internet access will be enabled.",
+      "searchNotNeeded": "No internet search needed. Using internal knowledge and documents...",
+      "searchFailed": "Could not verify the need for search. Disabled by default.",
+      "requestingModel": "Requesting model: {{model}}...",
+      "modelNoSearch": "{{model}} does not support free search. Skipping to next model...",
+      "modelDenied": "{{model}} denied ({{reason}}). Seeking alternative...",
+      "defaultTitle": "Process",
+      "thoughtTitle": "AI Thought Process",
+      "reasonSaturation": "Saturation",
+      "reasonQuota": "Quota 429 / Too Many Requests",
+      "reason503": "Server unavailable 503"
+    }
   },
   "roadmapSubjectEvaluation": {
     "title": "Evaluation Distribution",

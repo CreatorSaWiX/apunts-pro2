@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
+import { ThoughtBlock, parseThoughtText } from './ThoughtBlock';
+import { useTranslation } from 'react-i18next';
 
-export type StreamPhase = 'idle' | 'connecting' | 'thinking' | 'writing' | 'done';
+export type StreamPhase = 'idle' | 'connecting' | 'thinking' | 'writing' | 'done' | 'analyzing_intent' | 'searching_vector' | 'searching_web';
 
 interface AIStreamingIndicatorProps {
     phase: StreamPhase;
@@ -29,19 +31,15 @@ const ElapsedTimer: React.FC<{ startTime: number }> = ({ startTime }) => {
 };
 
 // ── Main Component ───────────────────────────────────────────────────────────
-const AIStreamingIndicator: React.FC<AIStreamingIndicatorProps> = ({
-    phase,
-    thoughtText,
-    renderAvatar,
-    hideAvatar = false
-}) => {
+const AIStreamingIndicator: React.FC<AIStreamingIndicatorProps> = ({ phase, thoughtText, renderAvatar, hideAvatar = false }) => {
+    const { t } = useTranslation();
     const [initialTime] = useState(() => Date.now());
     const thinkStartRef = useRef<number>(initialTime);
     const thoughtPanelRef = useRef<HTMLDivElement>(null);
 
     // Reset timer when entering thinking phase
     useEffect(() => {
-        if (phase === 'thinking' || phase === 'connecting') {
+        if (['thinking', 'connecting', 'analyzing_intent', 'searching_vector', 'searching_web'].includes(phase)) {
             thinkStartRef.current = Date.now();
         }
     }, [phase]);
@@ -86,6 +84,66 @@ const AIStreamingIndicator: React.FC<AIStreamingIndicatorProps> = ({
                         </motion.div>
                     )}
 
+                    {/* ── ANALYZING INTENT ────────────────────────────── */}
+                    {phase === 'analyzing_intent' && (
+                        <motion.div
+                            key="analyzing"
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4, filter: 'blur(4px)' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="flex items-center gap-2.5"
+                        >
+                            <motion.span 
+                                animate={{ opacity: [0.5, 1, 0.5] }}
+                                transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+                                className="text-sm text-slate-500 font-medium"
+                            >
+                                Analitzant la pregunta...
+                            </motion.span>
+                        </motion.div>
+                    )}
+
+                    {/* ── SEARCHING VECTOR ────────────────────────────── */}
+                    {phase === 'searching_vector' && (
+                        <motion.div
+                            key="searching_vector"
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4, filter: 'blur(4px)' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="flex items-center gap-2.5"
+                        >
+                            <motion.span 
+                                animate={{ opacity: [0.5, 1, 0.5] }}
+                                transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+                                className="text-sm text-slate-500 font-medium"
+                            >
+                                Buscant als apunts...
+                            </motion.span>
+                        </motion.div>
+                    )}
+
+                    {/* ── SEARCHING WEB ────────────────────────────── */}
+                    {phase === 'searching_web' && (
+                        <motion.div
+                            key="searching_web"
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4, filter: 'blur(4px)' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="flex items-center gap-2.5"
+                        >
+                            <motion.span 
+                                animate={{ opacity: [0.5, 1, 0.5] }}
+                                transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+                                className="text-sm text-slate-500 font-medium"
+                            >
+                                Buscant a la web...
+                            </motion.span>
+                        </motion.div>
+                    )}
+
                     {/* ── THINKING ────────────────────────────────── */}
                     {phase === 'thinking' && (
                         <motion.div
@@ -119,21 +177,17 @@ const AIStreamingIndicator: React.FC<AIStreamingIndicatorProps> = ({
                                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="relative rounded-xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] overflow-hidden">
-                                            {/* Top fade gradient */}
-                                            <div className="absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-[#020617]/80 to-transparent z-10 pointer-events-none rounded-t-xl" />
-
-                                            <div
-                                                ref={thoughtPanelRef}
-                                                className="max-h-[100px] overflow-y-auto custom-scrollbar px-3 py-2.5"
-                                            >
-                                                <p className="text-[11px] font-mono leading-relaxed text-slate-400/80 whitespace-pre-wrap">
-                                                    {thoughtText}
-                                                </p>
-                                            </div>
-
-                                            {/* Bottom shimmer line */}
-                                            <div className="h-px w-full ai-shimmer-line" />
+                                        <div className="relative mt-2 w-full max-w-2xl flex flex-col gap-0.5">
+                                            {(() => {
+                                                const blocks = parseThoughtText(thoughtText, t);
+                                                return blocks.map((block, idx) => (
+                                                    <ThoughtBlock 
+                                                        key={idx} 
+                                                        block={block} 
+                                                        initiallyOpen={idx === blocks.length - 1} // Keep the last one open by default
+                                                    />
+                                                ));
+                                            })()}
                                         </div>
                                     </motion.div>
                                 )}

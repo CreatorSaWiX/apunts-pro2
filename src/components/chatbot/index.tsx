@@ -267,6 +267,8 @@ export const ChatBot: React.FC = () => {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
+    let fullThoughtText = '';
+
     try {
       let pageText = '';
       try { pageText = (document.querySelector('main') || document.body).innerText.slice(0, 4000); } catch (_) {
@@ -306,6 +308,7 @@ export const ChatBot: React.FC = () => {
       let sseBuffer = '';
       let fullReplyText = '';
       let metadata: { keywords?: string[]; memories_to_add?: string[] } = {};
+      let grounding: any = null;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -341,7 +344,8 @@ export const ChatBot: React.FC = () => {
                 break;
               case 'thought':
                 setStreamPhase('thinking');
-                setThoughtText(prev => prev + parsed.text);
+                fullThoughtText += parsed.text;
+                setThoughtText(fullThoughtText);
                 break;
               case 'delta':
                 if (fullReplyText === '') setStreamPhase('writing');
@@ -350,6 +354,9 @@ export const ChatBot: React.FC = () => {
                 break;
               case 'metadata':
                 metadata = parsed;
+                break;
+              case 'grounding':
+                grounding = parsed;
                 break;
               case 'error':
                 throw new Error(parsed.message || t('chat.errors.serverError', 'Error del servidor'));
@@ -361,7 +368,7 @@ export const ChatBot: React.FC = () => {
       }
 
       const finalText = fullReplyText || streamingText || t('chat.noResponse', 'Sense resposta.');
-      const final = [...newMessages, { role: 'model' as const, content: finalText, addedMemories: metadata.memories_to_add }];
+      const final = [...newMessages, { role: 'model' as const, content: finalText, addedMemories: metadata.memories_to_add || [], groundingMetadata: grounding, thoughtText: fullThoughtText }];
       setMessages(final);
       setStreamingText('');
       setStreamPhase('done');
@@ -382,7 +389,12 @@ export const ChatBot: React.FC = () => {
     } catch (err: unknown) {
       const errorObj = err as Error;
       if (errorObj?.name === 'AbortError') return;
-      setMessages(prev => [...prev, { role: 'model', content: `**Error:** ${errorObj?.message || 'Error desconegut'}` }]);
+      // Preserve accumulated thoughts even if the request fails
+      setMessages(prev => [...prev, { 
+        role: 'model', 
+        content: `**Error:** ${errorObj?.message || 'Error desconegut'}`,
+        thoughtText: fullThoughtText
+      }]);
     } finally {
       setStreamPhase('idle');
       setThoughtText('');
