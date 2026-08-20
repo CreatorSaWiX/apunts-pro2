@@ -1,4 +1,16 @@
 {
+  "chat": {
+    "searchedWeb": "Searched the web",
+    "process": {
+      "worked": "Process",
+      "workedTime": "Worked for {{time}}"
+    },
+    "errors": {
+      "invalidFileType": "Only images and PDFs are accepted.",
+      "fileTooLarge": "File is too large. Maximum 5MB."
+    },
+    "memoryUpdated": "Memory updated"
+  },
   "navigation": {
     "courseSyllabus": "Course Syllabus",
     "labs": "Laboratories",

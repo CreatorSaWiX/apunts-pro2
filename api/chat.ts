@@ -1,31 +1,51 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import { getLoadBalancedModels, getLiteModels, applyThinkingConfig } from './_shared/models';
-import { allPersonalNotes } from '../.content-collections/generated/index.js';
 import { withMiddleware } from './_shared/middleware';
 import { chatRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
 import { Index } from "@upstash/vector";
 import { buildChatSystemInstruction } from './_shared/prompts';
 
+// ── Singletons a nivell de mòdul ─────────────────────────────────────────────
+let vectorIndex: Index | null = null;
+function getVectorIndex(): Index | null {
+    const url = process.env.UPSTASH_VECTOR_REST_URL;
+    const token = process.env.UPSTASH_VECTOR_REST_TOKEN;
+    if (!url || !token) return null;
+    if (!vectorIndex) vectorIndex = new Index({ url, token });
+    return vectorIndex;
+}
+
+/** Trunca a un límit de caràcters respectant fronteres de paraules. */
+function truncateAtWordBoundary(text: string, maxLen: number): string {
+    if (text.length <= maxLen) return text;
+    const truncated = text.substring(0, maxLen);
+    const lastSpace = truncated.lastIndexOf(' ');
+    return lastSpace > maxLen * 0.7 ? truncated.substring(0, lastSpace) : truncated;
+}
+
 // ── Eines (Tools) ────────────────────────────────────────────────────────────
-const saveMetadataTool = {
-    name: "save_metadata",
-    description: "Utilitza aquesta eina EXCLUSIVAMENT quan l'usuari reveli explícitament informació personal, preferències o fets sobre ell mateix (ex. 'M'agrada el futbol', 'Sóc estudiant', 'Tinc 20 anys'). NO la facis servir sota cap concepte per preguntes de coneixement general, dades objectives, actualitat, ni preguntes sobre esports (ex. 'Qui va guanyar l'Eurocopa?'). Si tens dubtes, NO la facis servir.",
+const manageMemoryTool = {
+    name: "manage_memory",
+    description: "Utilitza aquesta eina EXCLUSIVAMENT quan l'usuari reveli fets personals clars, canvis en la seva vida acadèmica o aficions, o t'ordeni explícitament que oblidis alguna cosa que sabies d'ell.",
     parameters: {
         type: Type.OBJECT,
         properties: {
-            keywords: {
+            actions: {
                 type: Type.ARRAY,
-                description: "Paraules clau sobre les preferències de l'usuari.",
-                items: { type: Type.STRING }
-            },
-            memories_to_add: {
-                type: Type.ARRAY,
-                description: "Informació personal rellevant a recordar (ex. 'Li agrada el tennis').",
-                items: { type: Type.STRING }
+                description: "Llista d'accions CRUD per mantenir el perfil al dia.",
+                items: {
+                    type: Type.OBJECT,
+                    properties: {
+                        action: { type: Type.STRING, description: "Pot ser: ADD, UPDATE, DELETE" },
+                        old_fact: { type: Type.STRING, description: "Només per UPDATE i DELETE. La cadena EXACTA de la memòria a modificar o esborrar de la llista que has rebut." },
+                        new_fact: { type: Type.STRING, description: "Només per ADD i UPDATE. El nou fet pur a guardar." }
+                    },
+                    required: ["action"]
+                }
             }
         },
-        required: ["keywords"]
+        required: ["actions"]
     }
 };
 
@@ -40,7 +60,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
         });
     }
 
-    const { message, history, currentPath, pageText, image, aiSettings } = parseResult.data;
+    const { message, history, currentPath, pageText, image, aiSettings, language } = parseResult.data;
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -59,126 +79,170 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             let success = false;
             let lastError: any;
             let hasStartedWriting = false;
-            let extractedKeywords: string[] = [];
-            let extractedMemories: string[] = [];
 
             try {
-                // ── A. RAG mitjançant Upstash Vector ───────────────────────────────────
-                emit('status', { phase: 'searching_vector' });
-
-                let notesContext = "";
                 const ai = new GoogleGenAI({ apiKey });
 
-                try {
-                    const embedResponse = await ai.models.embedContent({
-                        model: 'gemini-embedding-2',
-                        contents: message.length > 500 ? message.substring(0, 500) : message,
-                        config: { outputDimensionality: 1536 }
-                    });
-                    const userVector = embedResponse.embeddings?.[0]?.values;
+                // ── A & B.5 Execució en paral·lel (RAG + Classificador d'Intenció) ──
+                emit('status', { phase: 'analyzing_intent' });
 
-                    if (userVector && process.env.UPSTASH_VECTOR_REST_URL && process.env.UPSTASH_VECTOR_REST_TOKEN) {
-                        const index = new Index({
-                            url: process.env.UPSTASH_VECTOR_REST_URL,
-                            token: process.env.UPSTASH_VECTOR_REST_TOKEN,
+                const ragPromise = (async () => {
+                    let notesCtx = "";
+                    try {
+                        const embedResponse = await ai.models.embedContent({
+                            model: 'gemini-embedding-2',
+                            contents: truncateAtWordBoundary(message, 500),
+                            config: { outputDimensionality: 1536 }
+                        });
+                        const userVector = embedResponse.embeddings?.[0]?.values;
+
+                        const index = getVectorIndex();
+                        if (userVector && index) {
+                            const queryResponse = await index.query({
+                                vector: userVector,
+                                topK: 7,
+                                includeMetadata: true
+                            });
+                            notesCtx = queryResponse
+                                .map((r) => {
+                                    const meta = r.metadata as Record<string, string> | undefined;
+                                    return `## Tema: ${meta?.title ?? 'Sense títol'} (Relevància: ${(r.score * 100).toFixed(1)}%)\n\n${meta?.content ?? ''}`;
+                                })
+                                .join('\n\n---\n\n');
+                        } else {
+                            throw new Error("Missing Upstash Keys or Vector");
+                        }
+                    } catch (error) {
+                        console.warn("Error calculant RAG per embeddings, utilitzant fallback:", error);
+                        // Lazy import: només carrega les notes quan el RAG per embeddings falla
+                        const { allPersonalNotes } = await import('../.content-collections/generated/index.js');
+                        const pathLower = currentPath.toLowerCase();
+                        let activeSubject: string | null = null;
+                        if (pathLower.includes('pro2')) activeSubject = 'pro2';
+                        else if (pathLower.includes('m1')) activeSubject = 'm1';
+                        else if (pathLower.includes('m2')) activeSubject = 'm2';
+
+                        let count = 0;
+                        for (const note of allPersonalNotes) {
+                            if (!activeSubject || note.subject === activeSubject) {
+                                notesCtx += `## Tema: ${note.title}\n\n${note.content}\n\n---\n\n`;
+                                count++;
+                                if (count >= 5) break;
+                            }
+                        }
+                    }
+                    return notesCtx;
+                })();
+
+                const intentPromise = (async () => {
+                    let search = false;
+                    try {
+                        emit('thought', { text: `🔍 i18n:analyzingIntent\n` });
+                        const classifierPrompt = `Ets un classificador. Respon NOMÉS amb el número 1 o 0.\nL'usuari ha fet la següent consulta: "${message}"\nAquesta consulta demana informació actualitzada, notícies recents, o dades del món real que no es puguin deduir sense buscar a internet?\nRespon 1 si requereix cerca a internet, o 0 si no en requereix.`;
+
+                        const classifierController = new AbortController();
+                        const timeoutId = setTimeout(() => classifierController.abort(), 1500);
+
+                        const classifierResponse = await ai.models.generateContent({
+                            model: 'gemini-3.5-flash-lite',
+                            contents: classifierPrompt,
+                            config: {
+                                temperature: 0,
+                                maxOutputTokens: 5,
+                                abortSignal: classifierController.signal,
+                            }
                         });
 
-                        const queryResponse = await index.query({
-                            vector: userVector,
-                            topK: 7,
-                            includeMetadata: true
-                        });
+                        clearTimeout(timeoutId);
+                        const classifierText = (classifierResponse.text || "").trim();
 
-                        notesContext = queryResponse
-                            .map((r: any) => `## Tema: ${r.metadata?.title} (Relevància: ${(r.score * 100).toFixed(1)}%)\n\n${r.metadata?.content}`)
-                            .join('\n\n---\n\n');
-                    } else {
-                        throw new Error("Missing Upstash Keys or Vector");
+                        if (classifierText === '1') {
+                            search = true;
+                            emit('thought', { text: `i18n:searchDetected\n\n` });
+                        } else {
+                            emit('thought', { text: `i18n:searchNotNeeded\n\n` });
+                        }
+                    } catch (e) {
+                        console.warn("Error al classificador d'intenció. Es desactiva la cerca per defecte:", e);
+                        emit('thought', { text: `i18n:searchFailed\n\n` });
                     }
-                } catch (error) {
-                    console.warn("Error calculant RAG per embeddings, utilitzant fallback:", error);
-                    const pathLower = currentPath.toLowerCase();
-                    let activeSubject = null;
-                    if (pathLower.includes('pro2')) activeSubject = 'pro2';
-                    else if (pathLower.includes('m1')) activeSubject = 'm1';
-                    else if (pathLower.includes('m2')) activeSubject = 'm2';
+                    return search;
+                })();
 
-                    let relevantNotes = allPersonalNotes;
-                    if (activeSubject) {
-                        relevantNotes = relevantNotes.filter((n: any) => n.subject === activeSubject);
+                const metadataPromise = (async () => {
+                    let memoryActions: any[] = [];
+                    const currentMemories = (aiSettings?.userContext?.memories || []);
+                    const memoryCtx = currentMemories.length > 0 
+                      ? "La llista actual de memòries de l'usuari és:\n" + currentMemories.map((m:string) => `- "${m}"`).join('\n')
+                      : "Actualment no tens cap memòria de l'usuari.";
+
+                    try {
+                        let metaSuccess = false;
+                        for (const liteModel of getLiteModels()) {
+                            if (metaSuccess) break;
+                            try {
+                                const metadataResponse = await ai.models.generateContent({
+                                    model: liteModel,
+                                    contents: `${memoryCtx}\n\nAnalitza el NOU missatge de l'usuari: \"${truncateAtWordBoundary(message, 500).replace(/"/g, '\\"')}\"`,
+                                    config: {
+                                        systemInstruction: "Ets el Gestor de Memòria. Si l'usuari revela detalls nous rellevants, usa manage_memory amb ADD. Si diu quelcom que contradiu o actualitza una memòria de la llista, usa UPDATE. Si exigeix oblidar alguna memòria, usa DELETE. Retorna SKIP en text lliure només si no hi ha canvis a fer.",
+                                        tools: [{ functionDeclarations: [manageMemoryTool] }],
+                                        temperature: 0.1,
+                                        maxOutputTokens: 250
+                                    }
+                                });
+
+                                if (metadataResponse.functionCalls && metadataResponse.functionCalls.length > 0) {
+                                    for (const call of metadataResponse.functionCalls) {
+                                        if (call.name === 'manage_memory' && call.args) {
+                                            const args = call.args as any;
+                                            if (args.actions) memoryActions = args.actions as any[];
+                                        }
+                                    }
+                                }
+                                metaSuccess = true;
+                            } catch (e: any) {
+                                const status = e?.status;
+                                if (status === 429 || status === 503) continue; // Try next lite model
+                                break; // Stop trying if it's another error (like format)
+                            }
+                        }
+                    } catch (metaError) {
+                        console.warn("Metadata extraction failed (non-critical):", metaError);
                     }
-                    if (relevantNotes.length > 5) {
-                        relevantNotes = relevantNotes.slice(0, 5);
-                    }
-                    notesContext = relevantNotes
-                        .map((note: any) => `## Tema: ${note.title}\n\n${note.content}`)
-                        .join('\n\n---\n\n');
+                    return { memory_actions: memoryActions };
+                })();
+
+                const [notesContext, attemptWithSearch] = await Promise.all([ragPromise, intentPromise]);
+
+                if (req.signal.aborted) {
+                    controller.close();
+                    return;
                 }
 
-                // ── B. Gemini Config ─────────────────────────────────────────────────
-                const systemInstruction = buildChatSystemInstruction(
-                    aiSettings as any,
-                    currentPath,
-                    pageText,
-                    notesContext
-                );
-
-                const formattedHistory = history.map((msg: any) => ({
-                    role: msg.role === 'user' ? 'user' : 'model',
+                const formattedHistory = history.map((msg) => ({
+                    role: msg.role === 'user' ? 'user' as const : 'model' as const,
                     parts: [{ text: msg.content }]
                 }));
 
-                const msgParts: any[] = [{ text: message }];
+                const msgParts: Array<{ text: string } | { inlineData: { data: string; mimeType: string } }> = [{ text: message }];
                 if (image && image.data && image.mimeType) {
                     msgParts.push({ inlineData: { data: image.data, mimeType: image.mimeType } });
                 }
 
-                // ── B.5 Classificador d'Intenció (Cerca a Internet Automàtica) ──
-                let attemptWithSearch = false;
-                try {
-                    emit('status', { phase: 'thinking', model: 'intent-classifier' });
-                    emit('thought', { text: `🔍 i18n:analyzingIntent\n` });
+                // ── C. Loop de cascada ───────────────────────────────────────────
+                // System instruction: computed once and reused across all model attempts.
+                const systemInstruction = buildChatSystemInstruction(
+                    aiSettings,
+                    currentPath,
+                    pageText,
+                    notesContext,
+                    attemptWithSearch,
+                    language
+                );
 
-                    const classifierPrompt = `Ets un classificador. Respon NOMÉS amb el número 1 o 0.
-L'usuari ha fet la següent consulta: "${message}"
-Aquesta consulta demana informació actualitzada, notícies recents, o dades del món real que no es puguin deduir sense buscar a internet?
-Respon 1 si requereix cerca a internet, o 0 si no en requereix.`;
-
-                    // Usem gemini-3.5-flash-lite amb un timeout ràpid
-                    const classifierController = new AbortController();
-                    const timeoutId = setTimeout(() => classifierController.abort(), 1500); // 1.5s max
-
-                    const classifierResponse = await ai.models.generateContent({
-                        model: 'gemini-3.5-flash-lite',
-                        contents: classifierPrompt,
-                        config: {
-                            temperature: 0,
-                            maxOutputTokens: 5,
-                            abortSignal: classifierController.signal,
-                        }
-                    });
-
-                    clearTimeout(timeoutId);
-                    const classifierText = (classifierResponse.text || "").trim();
-
-                    if (classifierText === '1') {
-                        attemptWithSearch = true;
-                        emit('thought', { text: `i18n:searchDetected\n\n` });
-                    } else {
-                        emit('thought', { text: `i18n:searchNotNeeded\n\n` });
-                    }
-                } catch (e) {
-                    console.warn("Error al classificador d'intenció. Es desactiva la cerca per defecte:", e);
-                    emit('thought', { text: `i18n:searchFailed\n\n` });
-                }
-
-                // ── C. Loop de cascada ───────────────────────────────────────────────
-                // Google Search s'activa segons attemptWithSearch.
-                // save_metadata s'extreu en una crida post-resposta separada.
                 let targetModels = getLoadBalancedModels();
                 if (attemptWithSearch) {
-                    // Google Cloud (Free Tier) bloqueja el Grounding a tota la família Gemini 3 (0 de quota).
-                    // Filtrem els models 3.x per anar directament als 2.x i estalviar latència de reintents.
                     targetModels = targetModels.filter(m => !m.startsWith('gemini-3'));
                 }
 
@@ -186,16 +250,8 @@ Respon 1 si requereix cerca a internet, o 0 si no en requereix.`;
                     if (success) break;
 
                     try {
-                        const dynamicSystemInstruction = buildChatSystemInstruction(
-                            aiSettings as any,
-                            currentPath,
-                            pageText,
-                            notesContext,
-                            attemptWithSearch
-                        );
-
-                        const streamConfig: any = {
-                            systemInstruction: dynamicSystemInstruction
+                        const streamConfig: Record<string, unknown> = {
+                            systemInstruction
                         };
                         if (attemptWithSearch) {
                             streamConfig.tools = [{ googleSearch: {} }];
@@ -342,49 +398,10 @@ Respon 1 si requereix cerca a internet, o 0 si no en requereix.`;
                     emit('done', {});
                 } else {
                     // ── D. Extracció de memòries (post-resposta, best-effort) ────────
-                    // Crida lleugera i separada amb un model lite per extreure
-                    // informació personal de l'usuari sense bloquejar la resposta principal.
-                    try {
-                        let metaSuccess = false;
-                        for (const liteModel of getLiteModels()) {
-                            if (metaSuccess) break;
-                            try {
-                                const metadataResponse = await ai.models.generateContent({
-                                    model: liteModel,
-                                    contents: `Missatge de l'usuari: "${message.slice(0, 500)}"`,
-                                    config: {
-                                        systemInstruction: "Analitza el missatge de l'usuari. Si ha revelat informació personal, preferències o fets sobre ell mateix (ex: el seu nom, edat, gustos, objectius acadèmics), crida l'eina save_metadata. Si el missatge és una pregunta de coneixement o no conté informació personal, NO cridis l'eina i respon amb la paraula 'SKIP'.",
-                                        tools: [{ functionDeclarations: [saveMetadataTool] }],
-                                        temperature: 0.1,
-                                        maxOutputTokens: 100
-                                    }
-                                });
-
-                                if (metadataResponse.functionCalls && metadataResponse.functionCalls.length > 0) {
-                                    for (const call of metadataResponse.functionCalls) {
-                                        if (call.name === 'save_metadata' && call.args) {
-                                            const args = call.args as any;
-                                            if (args.keywords) extractedKeywords = args.keywords as any[];
-                                            if (args.memories_to_add) extractedMemories = args.memories_to_add as any[];
-                                        }
-                                    }
-                                }
-                                metaSuccess = true;
-                            } catch (e: any) {
-                                const status = e?.status;
-                                if (status === 429 || status === 503) continue; // Try next lite model
-                                break; // Stop trying if it's another error (like format)
-                            }
-                        }
-                    } catch (metaError) {
-                        // Best-effort: si falla la metadata, no afecta la resposta principal
-                        console.warn("Metadata extraction failed (non-critical):", metaError);
-                    }
-
-                    emit('metadata', {
-                        memories_to_add: extractedMemories,
-                        keywords: extractedKeywords
-                    });
+                    // Esperem la promesa paral·lela que hem llançat a l'inici. 
+                    // D'aquesta manera amaguem totalment la latència (1-3s) darrere del temps de resposta de la IA.
+                    const metadataResult = await metadataPromise;
+                    emit('metadata', metadataResult);
                     emit('done', {});
                 }
             } catch (fatalError: any) {

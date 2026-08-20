@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Server, AlertCircle, XCircle, Brain, Terminal, ChevronRight } from 'lucide-react';
+import { Search, Server, AlertCircle, XCircle, Brain, Terminal } from 'lucide-react';
 
 export const getIcon = (emoji: string) => {
     switch(emoji) {
@@ -78,7 +78,7 @@ export const parseThoughtText = (text: string, t?: any) => {
     return blocks;
 };
 
-export const ThoughtBlock = ({ block }: { block: any }) => {
+export const ThoughtBlock = React.memo(({ block, initiallyOpen = false }: { block: any; initiallyOpen?: boolean }) => {
     const hasContent = block.content.length > 0;
     
     return (
@@ -99,4 +99,6 @@ export const ThoughtBlock = ({ block }: { block: any }) => {
             )}
         </div>
     );
-};
+});
+
+ThoughtBlock.displayName = 'ThoughtBlock';

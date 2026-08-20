@@ -9,11 +9,22 @@ import type { StreamPhase } from '../AIStreamingIndicator';
 
 import { LoginGate } from './LoginGate';
 import { ChatHistoryPanel } from './ChatHistoryPanel';
-import { MessageList } from './MessageList';
+import { MessagesOnly, ActiveStreamingMessage } from './MessageList';
 import { SendButton } from './SendButton';
 import type { Message, ChatMeta } from './constants';
 
 const newId = () => `chat_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+
+let firebaseModulesPromise: Promise<any> | null = null;
+const getFirebase = () => {
+  if (!firebaseModulesPromise) {
+    firebaseModulesPromise = Promise.all([
+      import('../../lib/firebase'),
+      import('firebase/firestore')
+    ]);
+  }
+  return firebaseModulesPromise;
+};
 
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
@@ -45,7 +56,6 @@ export const ChatBot: React.FC = () => {
   const [streamingText, setStreamingText] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [attachedFile, setAttachedFile] = useState<{ data: string; mimeType: string; name: string } | null>(null);
-  const [lastSentTime, setLastSentTime] = useState(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -53,19 +63,17 @@ export const ChatBot: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isInitialLoad = useRef(true);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const streamingUpdateRAF = useRef<number | null>(null);
   const lastSentAt = useRef<number>(0);
   const COOLDOWN_MS = 15_000;
 
   // ── Firebase helpers ──────────────────────────────────────────────────────
   const fetchChatList = useCallback(async (): Promise<ChatMeta[]> => {
     if (!user) return [];
-    const [{ db }, { collection, getDocs, orderBy, query }] = await Promise.all([
-      import('../../lib/firebase'),
-      import('firebase/firestore')
-    ]);
+    const [{ db }, { collection, getDocs, orderBy, query }] = await getFirebase();
     const q = query(collection(db, 'users', user.id, 'chats'), orderBy('updatedAt', 'desc'));
     const snap = await getDocs(q);
-    return snap.docs.map(d => {
+    return snap.docs.map((d: any) => {
       const data = d.data();
       const historyText = data.history ? data.history.map((m: any) => m.content).join(' ').toLowerCase() : '';
       return { 
@@ -79,19 +87,13 @@ export const ChatBot: React.FC = () => {
 
   const saveChat = useCallback(async (id: string, history: Message[], title: string) => {
     if (!user || !id) return;
-    const [{ db }, { doc, setDoc }] = await Promise.all([
-      import('../../lib/firebase'),
-      import('firebase/firestore')
-    ]);
+    const [{ db }, { doc, setDoc }] = await getFirebase();
     await setDoc(doc(db, 'users', user.id, 'chats', id), { history, title, updatedAt: Date.now() });
   }, [user]);
 
   const loadChat = useCallback(async (id: string) => {
     if (!user) return;
-    const [{ db }, { doc, getDoc }] = await Promise.all([
-      import('../../lib/firebase'),
-      import('firebase/firestore')
-    ]);
+    const [{ db }, { doc, getDoc }] = await getFirebase();
     const snap = await getDoc(doc(db, 'users', user.id, 'chats', id));
     if (snap.exists()) {
       setMessages(snap.data().history || []);
@@ -121,6 +123,9 @@ export const ChatBot: React.FC = () => {
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
+      if (streamingUpdateRAF.current) {
+        cancelAnimationFrame(streamingUpdateRAF.current);
+      }
     };
   }, []);
 
@@ -144,10 +149,7 @@ export const ChatBot: React.FC = () => {
 
   const deleteChat = useCallback(async (id: string) => {
     if (!user) return;
-    const [{ db }, { doc, deleteDoc }] = await Promise.all([
-      import('../../lib/firebase'),
-      import('firebase/firestore')
-    ]);
+    const [{ db }, { doc, deleteDoc }] = await getFirebase();
     await deleteDoc(doc(db, 'users', user.id, 'chats', id));
     const newList = chatList.filter(c => c.id !== id);
     setChatList(newList);
@@ -159,10 +161,7 @@ export const ChatBot: React.FC = () => {
 
   const renameChat = useCallback(async (id: string, title: string) => {
     if (!user || !title.trim()) return;
-    const [{ db }, { doc, updateDoc }] = await Promise.all([
-      import('../../lib/firebase'),
-      import('firebase/firestore')
-    ]);
+    const [{ db }, { doc, updateDoc }] = await getFirebase();
     
     await updateDoc(doc(db, 'users', user.id, 'chats', id), { title: title.trim() });
     setChatList(prev => prev.map(c => c.id === id ? { ...c, title: title.trim() } : c));
@@ -185,16 +184,37 @@ export const ChatBot: React.FC = () => {
   }, [isOpen, sidebarWidth]);
 
   useEffect(() => {
+    let rafId: number | null = null;
     const onMove = (e: MouseEvent) => {
       if (!isResizing) return;
-      const w = window.innerWidth - e.clientX;
-      if (w > 350 && w < window.innerWidth * 0.9) setSidebarWidth(w);
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const w = window.innerWidth - e.clientX;
+        if (w > 350 && w < window.innerWidth * 0.9) setSidebarWidth(w);
+      });
     };
 
-    const onUp = () => { setIsResizing(false); document.body.style.cursor = 'default'; document.body.style.userSelect = 'auto'; };
-    if (isResizing) { window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp); }
+    const onUp = () => { 
+      setIsResizing(false); 
+      document.body.style.cursor = 'default'; 
+      document.body.style.userSelect = 'auto'; 
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    };
     
-    return () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+    if (isResizing) { 
+      window.addEventListener('mousemove', onMove); 
+      window.addEventListener('mouseup', onUp); 
+    }
+    
+    return () => { 
+      window.removeEventListener('mousemove', onMove); 
+      window.removeEventListener('mouseup', onUp); 
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [isResizing]);
 
   // ── File handling ─────────────────────────────────────────────────────────
@@ -209,7 +229,6 @@ export const ChatBot: React.FC = () => {
       setAttachedFile({ data: b64, mimeType: file.type, name: file.name });
     };
     reader.readAsDataURL(file);
-    // Return cleanup for consumers that need abort support
     return () => { aborted = true; reader.abort(); };
   }, [t]);
 
@@ -244,16 +263,16 @@ export const ChatBot: React.FC = () => {
     } else {
       scrollToBottom(false);
     }
-  }, [messages, streamPhase, streamingText, scrollToBottom]);
+  }, [messages, streamPhase, scrollToBottom]);
 
   // ── Send ──────────────────────────────────────────────────────────────────
-  const handleSend = async () => {
+  const handleSend = useCallback(async () => {
     const elapsed = Date.now() - lastSentAt.current;
     if (elapsed < COOLDOWN_MS) return;
     if ((!input.trim() && !attachedFile) || streamPhase !== 'idle') return;
 
-    lastSentAt.current = Date.now();
-    setLastSentTime(Date.now());
+    const now = Date.now();
+    lastSentAt.current = now;
     const userMsg = input.trim() || `[Fitxer: ${attachedFile?.name}]`;
     setInput('');
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
@@ -262,7 +281,8 @@ export const ChatBot: React.FC = () => {
     const isFirst = messages.length === 0;
     const autoTitle = isFirst ? userMsg.slice(0, 45) : currentChatTitle;
     if (isFirst) setCurrentChatTitle(autoTitle);
-    const newMessages = [...messages, {
+    const newMessages: Message[] = [...messages, {
+      id: crypto.randomUUID(),
       role: 'user' as const,
       content: userMsg,
       ...(fileToSend ? { attachmentName: fileToSend.name, attachmentType: (fileToSend.mimeType === 'application/pdf' ? 'pdf' : 'image') as 'image' | 'pdf' } : {})
@@ -282,7 +302,7 @@ export const ChatBot: React.FC = () => {
 
     try {
       let pageText = '';
-      try { pageText = (document.querySelector('main') || document.body).innerText.slice(0, 4000); } catch (_) {
+      try { pageText = (document.querySelector('main') || document.body).textContent?.replace(/\s+/g, ' ').slice(0, 4000) || ''; } catch (_) {
           console.debug('Failed to read page text');
       }
 
@@ -318,7 +338,7 @@ export const ChatBot: React.FC = () => {
       const decoder = new TextDecoder();
       let sseBuffer = '';
       let fullReplyText = '';
-      let metadata: { keywords?: string[]; memories_to_add?: string[] } = {};
+      let metadata: { memory_actions?: { action: string, old_fact?: string, new_fact?: string }[] } = {};
       let grounding: any = null;
 
       while (true) {
@@ -366,7 +386,14 @@ export const ChatBot: React.FC = () => {
                   }
                 }
                 fullReplyText += parsed.text;
-                setStreamingText(fullReplyText);
+                if (!streamingUpdateRAF.current) {
+                  streamingUpdateRAF.current = requestAnimationFrame(() => {
+                    streamingUpdateRAF.current = null;
+                    if (controller.signal.aborted) return;
+                    setStreamingText(fullReplyText);
+                    scrollToBottom(false);
+                  });
+                }
                 break;
               case 'metadata':
                 metadata = parsed;
@@ -390,10 +417,44 @@ export const ChatBot: React.FC = () => {
           thoughtDurationMs = Date.now() - requestStartTime;
       }
       
-      const final = [...newMessages, { 
+      let finalMemories = [...(aiSettings?.userContext?.memories || [])];
+      let memoriesAdded: string[] = [];
+
+      if (metadata.memory_actions && metadata.memory_actions.length > 0) {
+        metadata.memory_actions.forEach((act) => {
+          if (act.action === 'ADD' && act.new_fact) {
+            if (!finalMemories.includes(act.new_fact)) {
+               finalMemories.push(act.new_fact);
+               memoriesAdded.push(act.new_fact);
+            }
+          } else if (act.action === 'UPDATE' && act.old_fact && act.new_fact) {
+            const idx = finalMemories.findIndex(m => m === act.old_fact);
+            if (idx !== -1) {
+              finalMemories[idx] = act.new_fact;
+            } else {
+              finalMemories.push(act.new_fact);
+            }
+            memoriesAdded.push(act.new_fact);
+          } else if (act.action === 'DELETE' && act.old_fact) {
+            finalMemories = finalMemories.filter(m => m !== act.old_fact);
+          }
+        });
+
+        setAiSettings({
+          ...aiSettings,
+          userContext: {
+            ...aiSettings.userContext,
+            userPreferredName: aiSettings.userContext?.userPreferredName || '',
+            memories: finalMemories
+          }
+        });
+      }
+
+      const final: Message[] = [...newMessages, { 
+          id: crypto.randomUUID(),
           role: 'model' as const, 
           content: finalText, 
-          addedMemories: metadata.memories_to_add || [], 
+          addedMemories: memoriesAdded, 
           groundingMetadata: grounding, 
           thoughtText: fullThoughtText,
           thoughtTimeMs: thoughtDurationMs 
@@ -404,33 +465,27 @@ export const ChatBot: React.FC = () => {
 
       await saveChat(currentChatId, final, autoTitle);
       fetchChatList().then(setChatList).catch(console.error);
-
-      if (metadata.memories_to_add && metadata.memories_to_add.length > 0) {
-        setAiSettings({
-          ...aiSettings,
-          userContext: {
-            ...aiSettings.userContext,
-            userPreferredName: aiSettings.userContext?.userPreferredName || '',
-            memories: [...(aiSettings.userContext?.memories || []), ...metadata.memories_to_add]
-          }
-        });
-      }
     } catch (err: unknown) {
       const errorObj = err as Error;
       if (errorObj?.name === 'AbortError') return;
       // Preserve accumulated thoughts even if the request fails
       setMessages(prev => [...prev, { 
+        id: crypto.randomUUID(),
         role: 'model', 
         content: `**Error:** ${errorObj?.message || 'Error desconegut'}`,
         thoughtText: fullThoughtText,
         thoughtTimeMs: fullThoughtText ? (Date.now() - requestStartTime) : undefined
       }]);
     } finally {
+      if (streamingUpdateRAF.current) {
+        cancelAnimationFrame(streamingUpdateRAF.current);
+        streamingUpdateRAF.current = null;
+      }
       setStreamPhase('idle');
       setThoughtText('');
       setStreamingText('');
     }
-  };
+  }, [input, attachedFile, streamPhase, messages, currentChatId, currentChatTitle, saveChat, fetchChatList, aiSettings, setAiSettings, i18n.language, t]);
 
   const isHomePage = location.pathname === '/';
 
@@ -463,7 +518,7 @@ export const ChatBot: React.FC = () => {
               <img 
                 src="data:image/webp;base64,UklGRlgBAABXRUJQVlA4IEwBAADQDQCdASrwAIcAPpFIoU0lpCMiIEgAsBIJaW7hAuE9nqvHMvZz5AKzeirh8/MXUVsn8uejLKAJOaFT0RDVQG2aHVUmu7TV/MW8j8bTN74Mxrlelr+L7wcXw5pDOQHcVRQLnomMfEmpbhaOIvvm+LKDGc8jcs9ZAAD+5RuPgy22KjEYaHVb/T4KpzaboZ837cgmaZuQ3AfJ/358UVn7Kor7PdSWeglnfN6PBnqZbM4phUlVCpp93nLmZD/W3pTt8oXiW3HHPu1UMHJM9cj/ahOwtz1QIbtlKAufGoEur39+8R85ZqgI/6VvmNXkb1zmSE1M2DWUQYWmdTAm5afHnOI3mPL7nWXOxmnQumrDC/WfEhJc8dfb82tQdGbrrxzlRWxMy3QqBSKY5TKH+OKRxeHz/vuIC97FEPVmQ2+C6CrkgsNcEKf5Cafa2gAAAA==" 
                 alt="" 
-                className="absolute inset-0 w-full h-full object-cover blur-[50px] scale-[1.4] select-none pointer-events-none" 
+                className="absolute inset-0 w-full h-full object-cover blur-[50px] scale-[1.4] select-none pointer-events-none transform-gpu translate-z-0 will-change-transform" 
               />
               <div className="absolute inset-0 bg-[#020617]/30 backdrop-blur-xl" />
             </div>
@@ -512,22 +567,26 @@ export const ChatBot: React.FC = () => {
               onMouseDown={() => { setIsResizing(true); document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none'; }} />
 
             {/* Messages */}
-            <MessageList 
-              messages={messages}
-              user={user}
-              streamPhase={streamPhase}
-              thoughtText={thoughtText}
-              streamingText={streamingText}
-              renderAIAvatar={renderAIAvatar}
-              messagesEndRef={messagesEndRef}
-              messagesContainerRef={messagesContainerRef}
-            />
+            <div ref={messagesContainerRef} className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-28 md:px-6 space-y-8 custom-scrollbar z-0 flex flex-col">
+              <MessagesOnly 
+                messages={messages}
+                user={user}
+                renderAIAvatar={renderAIAvatar}
+              />
+              <ActiveStreamingMessage
+                streamPhase={streamPhase}
+                thoughtText={thoughtText}
+                streamingText={streamingText}
+                renderAIAvatar={renderAIAvatar}
+              />
+              <div ref={messagesEndRef} className="h-4" />
+            </div>
 
             {/* Floating Header */}
             <div className="absolute top-0 left-0 w-full h-16 px-4 border-b border-white/5 flex justify-between items-center bg-[#020617]/50 backdrop-blur-xl z-10">
               <div className="text-sm font-medium text-slate-300 truncate max-w-[55%] ml-2">{currentChatTitle}</div>
               <div className="flex items-center gap-1">
-                <button type="button" onClick={startNewChat} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Nova conversa"><Plus size={18} /></button>
+                <button type="button" onClick={() => startNewChat()} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Nova conversa"><Plus size={18} /></button>
                 <button type="button" onClick={() => { fetchChatList().then(setChatList).catch(console.error); setShowHistory(true); }} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors" title="Historial"><Clock size={18} /></button>
                 <button type="button" onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors ml-1"><X size={18} /></button>
               </div>
@@ -568,7 +627,7 @@ export const ChatBot: React.FC = () => {
                     onClick={handleSend}
                     disabled={(!input.trim() && !attachedFile) || streamPhase !== 'idle'}
                     hasInput={!!(input.trim() || attachedFile)}
-                    lastSentTime={lastSentTime}
+                    lastSentAt={lastSentAt}
                     cooldownMs={COOLDOWN_MS}
                   />
                 </div>

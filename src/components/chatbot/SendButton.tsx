@@ -6,34 +6,31 @@ interface SendButtonProps {
     onClick: () => void;
     disabled: boolean;
     hasInput: boolean;
-    lastSentTime: number;
+    lastSentAt: React.RefObject<number>;
     cooldownMs: number;
 }
 
-export const SendButton: React.FC<SendButtonProps> = ({ 
+export const SendButton = React.memo<SendButtonProps>(({ 
     onClick, 
     disabled, 
     hasInput, 
-    lastSentTime, 
+    lastSentAt, 
     cooldownMs 
 }) => {
     const [cooldown, setCooldown] = useState(0);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const check = () => {
-             const elapsed = Date.now() - lastSentTime;
+             const elapsed = Date.now() - (lastSentAt.current ?? 0);
              const remaining = Math.ceil((cooldownMs - elapsed) / 1000);
-             if (remaining > 0) setCooldown(remaining);
-             else setCooldown(0);
+             setCooldown(remaining > 0 ? remaining : 0);
         };
+        // Poll every second to pick up ref changes
+        const timer = setInterval(check, 1000);
         check();
-        if (Date.now() - lastSentTime < cooldownMs) {
-            const timer = setInterval(check, 1000);
-            return () => clearInterval(timer);
-        }
-    }, [lastSentTime, cooldownMs]);
-
-    const { t } = useTranslation();
+        return () => clearInterval(timer);
+    }, [lastSentAt, cooldownMs]);
 
     return (
         <button type="button"
@@ -51,4 +48,6 @@ export const SendButton: React.FC<SendButtonProps> = ({
             {cooldown > 0 ? cooldown : <ArrowUp size={18} strokeWidth={3} />}
         </button>
     );
-};
+});
+
+SendButton.displayName = 'SendButton';

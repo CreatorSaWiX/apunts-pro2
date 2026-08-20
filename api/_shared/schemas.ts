@@ -38,6 +38,7 @@ export const chatRequestSchema = z.object({
     })
     .optional(),
   aiSettings: aiSettingsSchema,
+  language: z.string().max(10).optional().default("ca"),
 });
 
 // --- Roadmap Schemas ---

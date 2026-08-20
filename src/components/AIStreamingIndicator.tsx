@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { ThoughtBlock, parseThoughtText } from './ThoughtBlock';
 import { useTranslation } from 'react-i18next';
@@ -18,17 +18,33 @@ const ElapsedTimer: React.FC<{ startTime: number }> = ({ startTime }) => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setElapsed(((Date.now() - startTime) / 1000));
-        }, 100);
+            setElapsed(Math.floor((Date.now() - startTime) / 1000));
+        }, 1000);
         return () => clearInterval(interval);
     }, [startTime]);
 
     return (
         <span className="text-[10px] font-mono text-slate-500/70 tabular-nums ml-2">
-            {elapsed.toFixed(1)}s
+            {elapsed}s
         </span>
     );
 };
+// ── Memoized thought blocks ──────────────────────────────────────────────────
+const MemoizedThoughtBlocks = React.memo(({ thoughtText, t }: { thoughtText: string; t: any }) => {
+    const blocks = useMemo(() => parseThoughtText(thoughtText, t), [thoughtText, t]);
+    return (
+        <>
+            {blocks.map((block, idx) => (
+                <ThoughtBlock
+                    key={idx}
+                    block={block}
+                    initiallyOpen={idx === blocks.length - 1}
+                />
+            ))}
+        </>
+    );
+});
+MemoizedThoughtBlocks.displayName = 'MemoizedThoughtBlocks';
 
 // ── Main Component ───────────────────────────────────────────────────────────
 const AIStreamingIndicator: React.FC<AIStreamingIndicatorProps> = ({ phase, thoughtText, renderAvatar, hideAvatar = false }) => {
@@ -178,16 +194,7 @@ const AIStreamingIndicator: React.FC<AIStreamingIndicatorProps> = ({ phase, thou
                                         className="overflow-hidden"
                                     >
                                         <div className="relative mt-2 w-full max-w-2xl flex flex-col gap-0.5">
-                                            {(() => {
-                                                const blocks = parseThoughtText(thoughtText, t);
-                                                return blocks.map((block, idx) => (
-                                                    <ThoughtBlock 
-                                                        key={idx} 
-                                                        block={block} 
-                                                        initiallyOpen={idx === blocks.length - 1} // Keep the last one open by default
-                                                    />
-                                                ));
-                                            })()}
+                                            <MemoizedThoughtBlocks thoughtText={thoughtText} t={t} />
                                         </div>
                                     </motion.div>
                                 )}
