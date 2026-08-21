@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import cerca_height_code from "../code/cerca_height/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -97,7 +98,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const cerca_height: Simulation = {
     id: legacyAlgo.cerca_height.id,
     renderer: "graph",
-    code: legacyAlgo.cerca_height.code,
+    code: cerca_height_code,
     initialState: legacyAlgo.cerca_height.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.cerca_height.generateSteps().map((step: AlgoStep) => ({

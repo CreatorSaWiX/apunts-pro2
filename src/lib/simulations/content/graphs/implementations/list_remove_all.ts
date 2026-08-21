@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import list_remove_all_code from "../code/list_remove_all/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -90,7 +91,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const list_remove_all: Simulation = {
     id: legacyAlgo.list_remove_all.id,
     renderer: "graph",
-    code: legacyAlgo.list_remove_all.code,
+    code: list_remove_all_code,
     initialState: legacyAlgo.list_remove_all.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.list_remove_all.generateSteps().map((step: AlgoStep) => ({

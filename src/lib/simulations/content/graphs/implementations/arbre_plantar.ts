@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import arbre_plantar_code from "../code/arbre_plantar/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -63,7 +64,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const arbre_plantar: Simulation = {
     id: legacyAlgo.arbre_plantar.id,
     renderer: "graph",
-    code: legacyAlgo.arbre_plantar.code,
+    code: arbre_plantar_code,
     initialState: legacyAlgo.arbre_plantar.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.arbre_plantar.generateSteps().map((step: AlgoStep) => ({

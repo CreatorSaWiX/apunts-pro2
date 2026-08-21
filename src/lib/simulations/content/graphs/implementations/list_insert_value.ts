@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import list_insert_value_code from "../code/list_insert_value/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -66,7 +67,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const list_insert_value: Simulation = {
     id: legacyAlgo.list_insert_value.id,
     renderer: "graph",
-    code: legacyAlgo.list_insert_value.code,
+    code: list_insert_value_code,
     initialState: legacyAlgo.list_insert_value.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.list_insert_value.generateSteps().map((step: AlgoStep) => ({

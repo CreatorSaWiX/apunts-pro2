@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import reconstruccio_preordre_code from "../code/reconstruccio_preordre/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -106,7 +107,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const reconstruccio_preordre: Simulation = {
     id: legacyAlgo.reconstruccio_preordre.id,
     renderer: "graph",
-    code: legacyAlgo.reconstruccio_preordre.code,
+    code: reconstruccio_preordre_code,
     initialState: legacyAlgo.reconstruccio_preordre.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.reconstruccio_preordre.generateSteps().map((step: AlgoStep) => ({

@@ -1,101 +1,82 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
-
-export interface OOPStep {
-    activeFile: string;
-    line: number;
-    description: string;
-    terminalOutput: string[];
-    variables: Record<string, string>;
-}
-
-const legacyAlgo: Record<string, { id: string; files: Record<string, string>; generateSteps: () => OOPStep[] }> = {
-    stack_reverse: {
-        id: "stack_reverse",
-        files: {
-            "Makefile": `CXX = g++
-CXX_FLAGS = -std=c++17
-
-test: test_reverse
-	@./test_reverse -ni
-
-test_reverse: test_reverse.cc reverse.cc
-	$(CXX) $(CXX_FLAGS) -o test_reverse test_reverse.cc reverse.cc`,
-            "test_reverse.cc": `#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-#include <iostream>
-using namespace std;
-
-void reverse(istream& in, ostream& out);
-
-TEST_CASE("dos elements") {
-    istringstream sin("7 3");
-    ostringstream sout;
-
-    reverse(sin, sout);
-
-    CHECK(sout.str() == "3 7\\n");
-}`,
-            "reverse.cc": `#include <iostream>
-using namespace std;
-#include "stack.hh"
-using namespace pro2;
-
-void reverse(istream& in, ostream& out) {
-    Stack<int> s;
-    int n;
-    while (in >> n) {
-        s.push(n);
-    }
-    
-    // Anem desapilant i cridant el TOP per extreure en invers
-    while (!s.empty()) {
-        out << s.top();
-        s.pop();
-        if (!s.empty()) out << " ";
-    }
-    out << endl;
-}`
-        },
-        generateSteps: () => {
-            return [
-                { activeFile: "Makefile", line: 4, description: "pro.stack_reverse.step_1", terminalOutput: ["pro.stack_reverse.term_1", "pro.stack_reverse.term_2"], variables: {} },
-                { activeFile: "test_reverse.cc", line: 8, description: "pro.stack_reverse.step_2", terminalOutput: ["pro.stack_reverse.term_3", "pro.stack_reverse.term_4", "[doctest] doctest version is 2.4.11"], variables: {} },
-                { activeFile: "test_reverse.cc", line: 9, description: "pro.stack_reverse.step_3", terminalOutput: [], variables: { "sin": "istringstream", "sout": "ostringstream" } },
-                { activeFile: "test_reverse.cc", line: 12, description: "pro.stack_reverse.step_4", terminalOutput: [], variables: {} },
-                { activeFile: "reverse.cc", line: 7, description: "pro.stack_reverse.step_5", terminalOutput: [], variables: { "s": "[]", "n": "?" } },
-                { activeFile: "reverse.cc", line: 9, description: "pro.stack_reverse.step_6", terminalOutput: [], variables: { "s": "[]", "n": "7" } },
-                { activeFile: "reverse.cc", line: 10, description: "pro.stack_reverse.step_7", terminalOutput: [], variables: { "s": "[7] <- top", "n": "7" } },
-                { activeFile: "reverse.cc", line: 9, description: "pro.stack_reverse.step_8", terminalOutput: [], variables: { "s": "[7] <- top", "n": "3" } },
-                { activeFile: "reverse.cc", line: 10, description: "pro.stack_reverse.step_9", terminalOutput: [], variables: { "s": "[7, 3] <- top", "n": "3" } },
-                { activeFile: "reverse.cc", line: 9, description: "pro.stack_reverse.step_10", terminalOutput: [], variables: { "s": "[7, 3] <- top", "n": "3" } },
-                { activeFile: "reverse.cc", line: 14, description: "pro.stack_reverse.step_11", terminalOutput: [], variables: { "s": "[7, 3] <- top" } },
-                { activeFile: "reverse.cc", line: 15, description: "pro.stack_reverse.step_12", terminalOutput: ["pro.stack_reverse.term_5"], variables: { "s": "[7, 3] <- top" } },
-                { activeFile: "reverse.cc", line: 16, description: "pro.stack_reverse.step_13", terminalOutput: [], variables: { "s": "[7] <- top" } },
-                { activeFile: "reverse.cc", line: 14, description: "pro.stack_reverse.step_14", terminalOutput: [], variables: { "s": "[7] <- top" } },
-                { activeFile: "reverse.cc", line: 15, description: "pro.stack_reverse.step_15", terminalOutput: ["pro.stack_reverse.term_6"], variables: { "s": "[7] <- top" } },
-                { activeFile: "reverse.cc", line: 16, description: "pro.stack_reverse.step_16", terminalOutput: [], variables: { "s": "[]" } },
-                { activeFile: "reverse.cc", line: 14, description: "pro.stack_reverse.step_17", terminalOutput: [], variables: { "s": "[]" } },
-                { activeFile: "reverse.cc", line: 19, description: "pro.stack_reverse.step_18", terminalOutput: ["pro.stack_reverse.term_7"], variables: { "s": "[]" } },
-                { activeFile: "test_reverse.cc", line: 14, description: "pro.stack_reverse.step_19", terminalOutput: [], variables: { "sout.str()": "3 7\\n" } },
-                { activeFile: "test_reverse.cc", line: 15, description: "pro.stack_reverse.step_20", terminalOutput: ["pro.stack_reverse.term_8", "pro.stack_reverse.term_9", "[doctest] Status: SUCCESS!"], variables: {} }
-            ] as OOPStep[];
-        }
-    }
-};
+import { OOPBuilder } from "../OOPBuilder";
+import Makefile_raw from "../code/stack_reverse/Makefile?raw";
+import test_reverse_cc_raw from "../code/stack_reverse/test_reverse.cc?raw";
+import reverse_cc_raw from "../code/stack_reverse/reverse.cc?raw";
 
 export const stack_reverse: Simulation = {
-    id: legacyAlgo.stack_reverse.id,
+    id: "stack_reverse",
     renderer: "oop",
-    files: legacyAlgo.stack_reverse.files,
+    files: {
+        "Makefile": Makefile_raw,
+        "test_reverse.cc": test_reverse_cc_raw,
+        "reverse.cc": reverse_cc_raw,
+    },
     generateSteps: (): SimulationStep[] => {
-        return legacyAlgo.stack_reverse.generateSteps().map((step: OOPStep) => ({
-            line: step.line,
-            description: step.description,
-            variables: step.variables,
-            visual: {
-                activeFile: step.activeFile,
-                terminalOutput: step.terminalOutput
-            }
-        }));
+        const builder = new OOPBuilder()
+        .setActiveFile("Makefile")
+        .setTerminalOutput(["pro.stack_reverse.term_1", "pro.stack_reverse.term_2"])
+        .addStep(4, "pro.stack_reverse.step_1")
+        .setActiveFile("test_reverse.cc")
+        .setTerminalOutput(["pro.stack_reverse.term_3", "pro.stack_reverse.term_4", "[doctest] doctest version is 2.4.11"])
+        .addStep(8, "pro.stack_reverse.step_2")
+        .setActiveFile("test_reverse.cc")
+        .setVariables({ "sin": "istringstream", "sout": "ostringstream" })
+        .addStep(9, "pro.stack_reverse.step_3")
+        .setActiveFile("test_reverse.cc")
+        .addStep(12, "pro.stack_reverse.step_4")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[]", "n": "?" })
+        .addStep(7, "pro.stack_reverse.step_5")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[]", "n": "7" })
+        .addStep(9, "pro.stack_reverse.step_6")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[7] <- top", "n": "7" })
+        .addStep(10, "pro.stack_reverse.step_7")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[7] <- top", "n": "3" })
+        .addStep(9, "pro.stack_reverse.step_8")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[7, 3] <- top", "n": "3" })
+        .addStep(10, "pro.stack_reverse.step_9")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[7, 3] <- top", "n": "3" })
+        .addStep(9, "pro.stack_reverse.step_10")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[7, 3] <- top" })
+        .addStep(14, "pro.stack_reverse.step_11")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[7, 3] <- top" })
+        .setTerminalOutput(["pro.stack_reverse.term_5"])
+        .addStep(15, "pro.stack_reverse.step_12")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[7] <- top" })
+        .addStep(16, "pro.stack_reverse.step_13")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[7] <- top" })
+        .addStep(14, "pro.stack_reverse.step_14")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[7] <- top" })
+        .setTerminalOutput(["pro.stack_reverse.term_6"])
+        .addStep(15, "pro.stack_reverse.step_15")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[]" })
+        .addStep(16, "pro.stack_reverse.step_16")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[]" })
+        .addStep(14, "pro.stack_reverse.step_17")
+        .setActiveFile("reverse.cc")
+        .setVariables({ "s": "[]" })
+        .setTerminalOutput(["pro.stack_reverse.term_7"])
+        .addStep(19, "pro.stack_reverse.step_18")
+        .setActiveFile("test_reverse.cc")
+        .setVariables({ "sout.str()": "3 7\\n" })
+        .addStep(14, "pro.stack_reverse.step_19")
+        .setActiveFile("test_reverse.cc")
+        .setTerminalOutput(["pro.stack_reverse.term_8", "pro.stack_reverse.term_9", "[doctest] Status: SUCCESS!"])
+        .addStep(15, "pro.stack_reverse.step_20");
+
+        return builder.build();
     }
 };

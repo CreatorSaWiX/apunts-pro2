@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import bst_search_code from "../code/bst_search/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -87,7 +88,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const bst_search: Simulation = {
     id: legacyAlgo.bst_search.id,
     renderer: "graph",
-    code: legacyAlgo.bst_search.code,
+    code: bst_search_code,
     initialState: legacyAlgo.bst_search.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.bst_search.generateSteps().map((step: AlgoStep) => ({

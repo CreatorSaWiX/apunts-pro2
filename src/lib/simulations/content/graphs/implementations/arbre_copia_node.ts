@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import arbre_copia_node_code from "../code/arbre_copia_node/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -85,7 +86,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const arbre_copia_node: Simulation = {
     id: legacyAlgo.arbre_copia_node.id,
     renderer: "graph",
-    code: legacyAlgo.arbre_copia_node.code,
+    code: arbre_copia_node_code,
     initialState: legacyAlgo.arbre_copia_node.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.arbre_copia_node.generateSteps().map((step: AlgoStep) => ({

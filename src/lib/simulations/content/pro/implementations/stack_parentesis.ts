@@ -1,121 +1,103 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
-
-export interface OOPStep {
-    activeFile: string;
-    line: number;
-    description: string;
-    terminalOutput: string[];
-    variables: Record<string, string>;
-}
-
-const legacyAlgo: Record<string, { id: string; files: Record<string, string>; generateSteps: () => OOPStep[] }> = {
-    stack_parentesis: {
-        id: "stack_parentesis",
-        files: {
-            "Makefile": `CXX = g++
-CXX_FLAGS = -std=c++17
-
-test: test_parentesis
-	@./test_parentesis -ni
-
-test_parentesis: test_parentesis.cc parentesis.cc
-	$(CXX) $(CXX_FLAGS) -o test_parentesis test_parentesis.cc parentesis.cc`,
-            "test_parentesis.cc": `#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-#include <iostream>
-using namespace std;
-
-void parentesis(istream& in, ostream& out);
-
-TEST_CASE("seqüència correcta amb claudàtors") {
-    istringstream sin("(()[[]]).");
-    ostringstream sout;
-
-    parentesis(sin, sout);
-
-    CHECK(sout.str() == "Correcte\\n");
-}`,
-            "parentesis.cc": `#include <iostream>
-using namespace std;
-#include "stack.hh"
-using namespace pro2;
-
-void parentesis(istream& in, ostream& out) {
-    Stack<char> s;
-    char c;
-    int pos = 1;
-
-    while (in >> c and c != '.') {
-        if (c == '(' or c == '[') {
-            s.push(c);
-        } 
-        else if (c == ')' or c == ']') {
-            if (s.empty()) {
-                out << "Incorrecte " << pos << endl;
-                return;
-            }
-            char top = s.top();
-            if ((c == ')' and top == '(') or (c == ']' and top == '[')) {
-                s.pop();
-            } else {
-                out << "Incorrecte " << pos << endl;
-                return;
-            }
-        }
-        pos++;
-    }
-
-    if (s.empty()) out << "Correcte\\n";
-    else out << "Incorrecte " << pos << endl;
-}`
-        },
-        generateSteps: () => {
-            return [
-                { activeFile: "Makefile", line: 4, description: "pro.stack_parentesis.step_1", terminalOutput: ["pro.stack_parentesis.term_1", "pro.stack_parentesis.term_2"], variables: {} },
-                { activeFile: "test_parentesis.cc", line: 10, description: "pro.stack_parentesis.step_2", terminalOutput: ["pro.stack_parentesis.term_3", "pro.stack_parentesis.term_4", "[doctest] doctest version is 2.4.11"], variables: {} },
-                { activeFile: "test_parentesis.cc", line: 11, description: "pro.stack_parentesis.step_3", terminalOutput: [], variables: { "sin": "istringstream", "sout": "ostringstream" } },
-                { activeFile: "test_parentesis.cc", line: 14, description: "pro.stack_parentesis.step_4", terminalOutput: [], variables: {} },
-                { activeFile: "parentesis.cc", line: 7, description: "pro.stack_parentesis.step_5", terminalOutput: [], variables: { "s": "[]", "pos": "1" } },
-                { activeFile: "parentesis.cc", line: 11, description: "pro.stack_parentesis.step_6", terminalOutput: [], variables: { "s": "[]", "c": "(", "pos": "1" } },
-                { activeFile: "parentesis.cc", line: 12, description: "pro.stack_parentesis.step_7", terminalOutput: [], variables: { "s": "[]", "c": "(", "pos": "1" } },
-                { activeFile: "parentesis.cc", line: 13, description: "pro.stack_parentesis.step_8", terminalOutput: [], variables: { "s": "[(] <- top", "c": "(", "pos": "1" } },
-                { activeFile: "parentesis.cc", line: 28, description: "pro.stack_parentesis.step_9", terminalOutput: [], variables: { "s": "[(]", "c": "(", "pos": "2" } },
-                { activeFile: "parentesis.cc", line: 11, description: "pro.stack_parentesis.step_10", terminalOutput: [], variables: { "s": "[(]", "c": "(", "pos": "2" } },
-                { activeFile: "parentesis.cc", line: 13, description: "pro.stack_parentesis.step_11", terminalOutput: [], variables: { "s": "[(, (] <- top", "c": "(", "pos": "2" } },
-                { activeFile: "parentesis.cc", line: 28, description: "pro.stack_parentesis.step_12", terminalOutput: [], variables: { "s": "[(, (]", "c": "(", "pos": "3" } },
-                { activeFile: "parentesis.cc", line: 11, description: "pro.stack_parentesis.step_13", terminalOutput: [], variables: { "s": "[(, (] <- top", "c": ")", "pos": "3" } },
-                { activeFile: "parentesis.cc", line: 16, description: "pro.stack_parentesis.step_14", terminalOutput: [], variables: { "s": "[(, (] <- top", "c": ")" } },
-                { activeFile: "parentesis.cc", line: 17, description: "pro.stack_parentesis.step_15", terminalOutput: [], variables: { "s": "[(, (] <- top", "c": ")" } },
-                { activeFile: "parentesis.cc", line: 21, description: "pro.stack_parentesis.step_16", terminalOutput: [], variables: { "s": "[(, (] <- top", "top": "(" } },
-                { activeFile: "parentesis.cc", line: 22, description: "pro.stack_parentesis.step_17", terminalOutput: [], variables: { "c": ")", "top": "(" } },
-                { activeFile: "parentesis.cc", line: 23, description: "pro.stack_parentesis.step_18", terminalOutput: [], variables: { "s": "[(] <- top" } },
-                { activeFile: "parentesis.cc", line: 28, description: "pro.stack_parentesis.step_19", terminalOutput: [], variables: { "s": "[(] <- top", "pos": "4" } },
-                { activeFile: "parentesis.cc", line: 11, description: "pro.stack_parentesis.step_20", terminalOutput: ["pro.stack_parentesis.custom_1"], variables: { "s": "[(] <- top", "pos": "8", "c": "]" } },
-                { activeFile: "parentesis.cc", line: 11, description: "pro.stack_parentesis.step_21", terminalOutput: ["pro.stack_parentesis.term_8"], variables: { "s": "[(] <- top", "pos": "9", "c": ")" } },
-                { activeFile: "parentesis.cc", line: 23, description: "pro.stack_parentesis.step_22", terminalOutput: [], variables: { "s": "[]", "pos": "9" } },
-                { activeFile: "parentesis.cc", line: 11, description: "pro.stack_parentesis.step_23", terminalOutput: [], variables: { "s": "[]", "c": "." } },
-                { activeFile: "parentesis.cc", line: 31, description: "pro.stack_parentesis.step_24", terminalOutput: [], variables: { "s": "[]" } },
-                { activeFile: "parentesis.cc", line: 31, description: "pro.stack_parentesis.step_25", terminalOutput: ["pro.stack_parentesis.term_9"], variables: { "s": "[]" } },
-                { activeFile: "test_parentesis.cc", line: 16, description: "pro.stack_parentesis.step_26", terminalOutput: [], variables: { "sout.str()": "Correcte\\n" } },
-                { activeFile: "test_parentesis.cc", line: 17, description: "pro.stack_parentesis.step_27", terminalOutput: ["pro.stack_parentesis.term_10", "pro.stack_parentesis.term_11", "[doctest] Status: SUCCESS!"], variables: {} }
-            ] as OOPStep[];
-        }
-    }
-};
+import { OOPBuilder } from "../OOPBuilder";
+import Makefile_raw from "../code/stack_parentesis/Makefile?raw";
+import test_parentesis_cc_raw from "../code/stack_parentesis/test_parentesis.cc?raw";
+import parentesis_cc_raw from "../code/stack_parentesis/parentesis.cc?raw";
 
 export const stack_parentesis: Simulation = {
-    id: legacyAlgo.stack_parentesis.id,
+    id: "stack_parentesis",
     renderer: "oop",
-    files: legacyAlgo.stack_parentesis.files,
+    files: {
+        "Makefile": Makefile_raw,
+        "test_parentesis.cc": test_parentesis_cc_raw,
+        "parentesis.cc": parentesis_cc_raw,
+    },
     generateSteps: (): SimulationStep[] => {
-        return legacyAlgo.stack_parentesis.generateSteps().map((step: OOPStep) => ({
-            line: step.line,
-            description: step.description,
-            variables: step.variables,
-            visual: {
-                activeFile: step.activeFile,
-                terminalOutput: step.terminalOutput
-            }
-        }));
+        const builder = new OOPBuilder()
+            .setActiveFile("Makefile")
+            .setTerminalOutput(["pro.stack_parentesis.term_1", "pro.stack_parentesis.term_2"])
+            .addStep(4, "pro.stack_parentesis.step_1")
+            .setActiveFile("test_parentesis.cc")
+            .setTerminalOutput(["pro.stack_parentesis.term_3", "pro.stack_parentesis.term_4", "[doctest] doctest version is 2.4.11"])
+            .addStep(10, "pro.stack_parentesis.step_2")
+            .setActiveFile("test_parentesis.cc")
+            .setVariables({ "sin": "istringstream", "sout": "ostringstream" })
+            .addStep(11, "pro.stack_parentesis.step_3")
+            .setActiveFile("test_parentesis.cc")
+            .addStep(14, "pro.stack_parentesis.step_4")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[]", "pos": "1" })
+            .addStep(7, "pro.stack_parentesis.step_5")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[]", "c": "(", "pos": "1" })
+            .addStep(11, "pro.stack_parentesis.step_6")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[]", "c": "(", "pos": "1" })
+            .addStep(12, "pro.stack_parentesis.step_7")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(] <- top", "c": "(", "pos": "1" })
+            .addStep(13, "pro.stack_parentesis.step_8")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(]", "c": "(", "pos": "2" })
+            .addStep(28, "pro.stack_parentesis.step_9")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(]", "c": "(", "pos": "2" })
+            .addStep(11, "pro.stack_parentesis.step_10")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(, (] <- top", "c": "(", "pos": "2" })
+            .addStep(13, "pro.stack_parentesis.step_11")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(, (]", "c": "(", "pos": "3" })
+            .addStep(28, "pro.stack_parentesis.step_12")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(, (] <- top", "c": ")", "pos": "3" })
+            .addStep(11, "pro.stack_parentesis.step_13")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(, (] <- top", "c": ")" })
+            .addStep(16, "pro.stack_parentesis.step_14")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(, (] <- top", "c": ")" })
+            .addStep(17, "pro.stack_parentesis.step_15")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(, (] <- top", "top": "(" })
+            .addStep(21, "pro.stack_parentesis.step_16")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "c": ")", "top": "(" })
+            .addStep(22, "pro.stack_parentesis.step_17")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(] <- top" })
+            .addStep(23, "pro.stack_parentesis.step_18")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(] <- top", "pos": "4" })
+            .addStep(28, "pro.stack_parentesis.step_19")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(] <- top", "pos": "8", "c": "]" })
+            .setTerminalOutput(["pro.stack_parentesis.custom_1"])
+            .addStep(11, "pro.stack_parentesis.step_20")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[(] <- top", "pos": "9", "c": ")" })
+            .setTerminalOutput(["pro.stack_parentesis.term_8"])
+            .addStep(11, "pro.stack_parentesis.step_21")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[]", "pos": "9" })
+            .addStep(23, "pro.stack_parentesis.step_22")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[]", "c": "." })
+            .addStep(11, "pro.stack_parentesis.step_23")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[]" })
+            .addStep(31, "pro.stack_parentesis.step_24")
+            .setActiveFile("parentesis.cc")
+            .setVariables({ "s": "[]" })
+            .setTerminalOutput(["pro.stack_parentesis.term_9"])
+            .addStep(31, "pro.stack_parentesis.step_25")
+            .setActiveFile("test_parentesis.cc")
+            .setVariables({ "sout.str()": "Correcte\\n" })
+            .addStep(16, "pro.stack_parentesis.step_26")
+            .setActiveFile("test_parentesis.cc")
+            .setTerminalOutput(["pro.stack_parentesis.term_10", "pro.stack_parentesis.term_11", "[doctest] Status: SUCCESS!"])
+            .addStep(17, "pro.stack_parentesis.step_27");
+
+        return builder.build();
     }
 };

@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import tree_general_search_code from "../code/tree_general_search/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -97,7 +98,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const tree_general_search: Simulation = {
     id: legacyAlgo.tree_general_search.id,
     renderer: "graph",
-    code: legacyAlgo.tree_general_search.code,
+    code: tree_general_search_code,
     initialState: legacyAlgo.tree_general_search.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.tree_general_search.generateSteps().map((step: AlgoStep) => ({

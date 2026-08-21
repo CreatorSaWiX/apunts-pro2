@@ -1,15 +1,44 @@
 {
   "chat": {
-    "searchedWeb": "Searched the web",
-    "process": {
-      "worked": "Process",
-      "workedTime": "Worked for {{time}}"
-    },
+    "wait": "Wait {{cooldown}}s",
+    "newChat": "New Chat",
+    "conversation": "Conversation",
+    "searchHistory": "Search...",
+    "noSearchResults": "No results found",
     "errors": {
       "invalidFileType": "Only images and PDFs are accepted.",
-      "fileTooLarge": "File is too large. Maximum 5MB."
+      "fileTooLarge": "File is too large. Maximum 5MB.",
+      "unknown": "Unknown error",
+      "streamingNotSupported": "Browser does not support streaming",
+      "serverError": "Server error"
     },
-    "memoryUpdated": "Memory updated"
+    "noResponse": "No response.",
+    "memoryUpdated": "Memory updated",
+    "loginRequired": "The AI assistant is exclusive for registered members\nLog in to access history and chat",
+    "login": "Log in",
+    "dropToAttach": "Drop to attach",
+    "history": "Chat history",
+    "noSavedChats": "No saved chats",
+    "newConversation": "New conversation",
+    "placeholder": "Message {{aiName}}...",
+    "attachFile": "Attach image or PDF",
+    "warning": "AI can make mistakes. Do not share sensitive or personal data.",
+    "process": {
+      "analyzingIntent": "Analyzing if the query requires internet access...",
+      "searchDetected": "Search need detected. Internet access will be enabled.",
+      "searchNotNeeded": "No internet search needed. Using internal knowledge and documents...",
+      "searchFailed": "Could not verify the need for search. Disabled by default.",
+      "requestingModel": "Requesting model: {{model}}...",
+      "modelNoSearch": "{{model}} does not support free search. Skipping to next model...",
+      "modelDenied": "{{model}} denied ({{reason}}). Seeking alternative...",
+      "defaultTitle": "Process",
+      "thoughtTitle": "AI Thought Process",
+      "worked": "Process",
+      "workedTime": "Worked for {{time}}",
+      "reasonSaturation": "Saturation",
+      "reasonQuota": "Quota 429 / Too Many Requests",
+      "reason503": "Server unavailable 503"
+    }
   },
   "navigation": {
     "courseSyllabus": "Course Syllabus",
@@ -833,47 +862,6 @@
     "publish": "Publish Solution",
     "saveError": "Error saving the solution. Check the console."
   },
-  "chat": {
-    "wait": "Wait {{cooldown}}s",
-    "newChat": "New Chat",
-    "conversation": "Conversation",
-    "searchHistory": "Search...",
-    "noSearchResults": "No results found",
-    "errors": {
-      "invalidFileType": "Only images and PDFs are accepted.",
-      "fileTooLarge": "File is too large. Maximum 5MB.",
-      "unknown": "Unknown error",
-      "streamingNotSupported": "Browser does not support streaming",
-      "serverError": "Server error"
-    },
-    "noResponse": "No response.",
-    "memoryUpdated": "Memory updated",
-    "loginRequired": "The AI assistant is exclusive for registered members\nLog in to access history and chat",
-    "login": "Log in",
-    "dropToAttach": "Drop to attach",
-    "history": "Chat history",
-    "noSavedChats": "No saved chats",
-    "newConversation": "New conversation",
-    "placeholder": "Message {{aiName}}...",
-    "attachFile": "Attach image or PDF",
-    "warning": "AI can make mistakes. Do not share sensitive or personal data.",
-    "process": {
-      "analyzingIntent": "Analyzing if the query requires internet access...",
-      "searchDetected": "Search need detected. Internet access will be enabled.",
-      "searchNotNeeded": "No internet search needed. Using internal knowledge and documents...",
-      "searchFailed": "Could not verify the need for search. Disabled by default.",
-      "requestingModel": "Requesting model: {{model}}...",
-      "modelNoSearch": "{{model}} does not support free search. Skipping to next model...",
-      "modelDenied": "{{model}} denied ({{reason}}). Seeking alternative...",
-      "defaultTitle": "Process",
-      "thoughtTitle": "AI Thought Process",
-      "worked": "Process",
-      "workedTime": "Worked for {{time}}",
-      "reasonSaturation": "Saturation",
-      "reasonQuota": "Quota 429 / Too Many Requests",
-      "reason503": "Server unavailable 503"
-    }
-  },
   "roadmapSubjectEvaluation": {
     "title": "Evaluation Distribution",
     "percentTotal": "% of total"
@@ -1010,6 +998,62 @@
     }
   },
   "algo": {
+    "common": {
+      "queue": "Queue ({{name}})",
+      "visited": "Visited ({{name}})",
+      "distance": "Distance ({{name}})",
+      "stack": "Stack ({{name}})",
+      "result": "Result ({{name}})",
+      "action": "Action",
+      "final_tree": "Final tree",
+      "cost": "Cost",
+      "comparisons": "Comparisons",
+      "returned": "Returned",
+      "node": "Node {{name}}",
+      "empty": "Empty",
+      "inserted": "Inserted",
+      "extracted": "Extracted",
+      "destroyed": "Destroyed",
+      "dead": "Dead"
+    },
+    "eficiencia_multitasca": {
+      "step_1": "Let's solve both problems (Total sum and Amount) with a single Pair in one pass! Calling root (10).",
+      "step_2": "Tree 10 is not empty.",
+      "step_3": "First bounce to the left: t.left().",
+      "step_4": "Evaluating node 5. Not empty.",
+      "step_5": "Bouncing call to the left of node 5 (which is a hidden null leaf).",
+      "step_6": "Empty t.empty() returns neutral pair: {0.0 sum, 0 elements}.",
+      "step_7": "Now node 5 bounces the dead right branch it hides.",
+      "step_8": "Returns empty neutral pair {0.0, 0} again.",
+      "step_9": "Now comes the key to O(N): Node 5 merges the answers from its children into a new combined Tuple and keeps it directly in memory.",
+      "step_10": "Calculates and returns: {5 + 0.0 + 0.0, 1 pos + 0 + 0} -> {5, 1}. Pushes it up without repeating more lines of code.",
+      "step_11": "Back to the large root (10), which attacks to the right instigating node 15 before calculating anything.",
+      "step_12": "Evaluating 15. Not empty.",
+      "step_13": "Since we know it has two hidden null children receiving {0.0, 0} each, it directly resolves by merging: {15 + 0 + 0, 1 + 0 + 0}.",
+      "step_14": "Node 15 responds instantly disintegrating recursive death. Returns {15, 1}",
+      "step_15": "Final! The root consolidates the two stacks from the children: \nIterated total sum = 10 + 5.0 (Left) + 15.0 (Right)\nTotal node size = 1 + 1 (Left) + 1 (Right).",
+      "step_16": "We get both data points by reading the Tree's base EXACTLY 1 TIME with rigorous covering. If we had instantiated sum() and size() separately it would have cost the famous Theta(2N) which would be Theta(N^2) if it's internal unbalanced loop code."
+    },
+    "reconstruccio_preordre": {
+      "step_1": "Starting the terminal by reading from keyboard. The full text to read is: '10 5 # # 14 # #'.",
+      "step_2": "First space: reading the word from the terminal.",
+      "step_3": "Was it a hashtag '#' indicating Empty? No, meaning this is actual data and the tree is not dead here.",
+      "step_4": "Converting '10' text to numeric instance (T = int) and saving it.",
+      "step_5": "Now we can try to search and attach the entire left wing before doing anything else... Launch code again trusting where the terminal takes me.",
+      "step_6": "NEW Call. Reading word from terminal.",
+      "step_7": "Not empty, converting... Then, trust blindly once more to link the empty side of tree 5 to the left... Left call.",
+      "step_8": "NEW Call. Reading next token...",
+      "step_9": "BINGO! Jump for the detected '#' null! This leaf bounces back false stopping an infinite line and directly generating an 'Empty Tree' that detaches from the rest cutting nonexistent substructures.",
+      "step_10": "Reallocating L child of 5 with white leaf, starts to return to immediately invoke the attempt on the empty right wing. R of 5.",
+      "step_11": "NEW Call (Searching right of 5). Reading terminal:",
+      "step_12": "BINGO again, null '#'. Returns false.",
+      "step_13": "Incredible. The tree object of node (5) has merged itself together with the two null derivatives we just killed. Returns the node built dry towards the base recursive root as the Authentic left child of 10.",
+      "step_14": "Base Roots: The Root of the entire 10 structure breathes easy because it knows the whole left wing has been completed... Throw yourself into the same hell to search to the Right.",
+      "step_15": "Builds the expected 14... Reads two # for R and L, confirming it and the keyboard have been fully consumed... (Skipping sub-steps)",
+      "step_16": "The two 14 children of absorbed nulls validate that the machine has the 10 tree integrally united...",
+      "step_17": "All linked up, returns the general instantiated Crown closing and freeing the Stream Input.",
+      "step_18": "The Pre-Order Tree built and ready in perfect mathematical time and pure O(N) order."
+    },
     "bst_insert": {
       "step_2": "Node 50 is not empty. 25 ≠ 50, we pass.",
       "step_4": "Node 20 is not empty. 25 ≠ 20, we pass.",
@@ -1476,6 +1520,82 @@
       "step_272": "Validator checks that it indeed returns '1 2 2\\\\\\\\n'. Successful result asserting respective OS issued without human EOF interrupts!",
       "step_270": "And count how many are actually active after the antiquity is cleared. The above has told us that only 2 of the 3 active views remain alive.",
       "step_271": "The Loop ends. We close the Clean and Safe Game by sending a line break to the final validator."
+    },
+    "arbgen_copia": {
+      "step_1": "Starting general tree copy.",
+      "step_2": "Checking if current node is null.",
+      "step_3": "Creating a new node for the copy.",
+      "step_4": "Copying node information.",
+      "step_5": "Getting number of children of original node.",
+      "step_6": "Preparing children vector for the copy.",
+      "step_7": "Iterating over children to copy them recursively.",
+      "step_8": "Returning the new copied node."
+    },
+    "arbgen_esborra": {
+      "step_1": "Starting general tree deletion.",
+      "step_2": "Checking if node is null.",
+      "step_3": "Iterating over all children to delete them.",
+      "step_4": "Recursively deleting current child.",
+      "step_5": "Freeing memory of current node.",
+      "step_6": "Node deleted from memory.",
+      "step_7": "Finishing deletion process."
+    },
+    "arbgen_fills": {
+      "step_1": "Starting general tree children query.",
+      "step_2": "Checking if tree is empty.",
+      "step_3": "Accessing tree root.",
+      "step_4": "Getting children vector.",
+      "step_5": "Creating result tree with children.",
+      "step_6": "Returning number of children or result."
+    },
+    "arbgen_plantar": {
+      "step_1": "Starting general tree plant operation.",
+      "step_2": "Creating a new root node.",
+      "step_3": "Assigning value to the new root.",
+      "step_4": "Linking subtrees as children of the new root.",
+      "step_5": "Tree successfully planted."
+    },
+    "arbre_copia_node": {
+      "step_1": "Starting binary tree node copy.",
+      "step_2": "Checking if original node is null.",
+      "step_3": "Creating a new node instance.",
+      "step_4": "Copying original node value.",
+      "step_5": "Starting left subtree copy.",
+      "step_6": "Assigning copied left child.",
+      "step_7": "Starting right subtree copy.",
+      "step_8": "Assigning copied right child.",
+      "step_9": "Returning fully copied node."
+    },
+    "arbre_esborra_node": {
+      "step_1": "Starting binary tree node deletion.",
+      "step_2": "Checking if node is null.",
+      "step_3": "Recursively calling to delete left subtree.",
+      "step_4": "Recursively calling to delete right subtree.",
+      "step_5": "Freeing memory of current node.",
+      "step_6": "Binary node successfully destroyed."
+    },
+    "arbre_fills": {
+      "step_1": "Querying binary tree children.",
+      "step_2": "Validating that tree is not empty.",
+      "step_3": "Accessing left child.",
+      "step_4": "Accessing right child.",
+      "step_5": "Returning requested children structure."
+    },
+    "arbre_plantar": {
+      "step_1": "Starting planting of a new binary tree.",
+      "step_2": "Verifying that original root is empty.",
+      "step_3": "Instantiating new root node.",
+      "step_4": "Assigning left tree.",
+      "step_5": "Assigning right tree.",
+      "step_6": "Binary structure successfully linked and planted."
+    },
+    "bfs": {
+      "step_1": "Initializing BFS algorithm. Creating queue C and marking initial node as visited.",
+      "step_2": "Node added to queue and visited list.",
+      "step_3": "Dequeuing first element to process it.",
+      "step_4": "Exploring adjacent nodes.",
+      "step_5": "If adjacent hasn't been visited, adding it to queue and marking as visited.",
+      "step_6": "Queue is empty. BFS has finished exploring all reachable nodes."
     }
   },
   "pro": {

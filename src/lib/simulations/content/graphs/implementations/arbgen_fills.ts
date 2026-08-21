@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import arbgen_fills_code from "../code/arbgen_fills/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -72,7 +73,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const arbgen_fills: Simulation = {
     id: legacyAlgo.arbgen_fills.id,
     renderer: "graph",
-    code: legacyAlgo.arbgen_fills.code,
+    code: arbgen_fills_code,
     initialState: legacyAlgo.arbgen_fills.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.arbgen_fills.generateSteps().map((step: AlgoStep) => ({

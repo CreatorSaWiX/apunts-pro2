@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import heap_pop_code from "../code/heap_pop/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -120,7 +121,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const heap_pop: Simulation = {
     id: legacyAlgo.heap_pop.id,
     renderer: "graph",
-    code: legacyAlgo.heap_pop.code,
+    code: heap_pop_code,
     initialState: legacyAlgo.heap_pop.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.heap_pop.generateSteps().map((step: AlgoStep) => ({

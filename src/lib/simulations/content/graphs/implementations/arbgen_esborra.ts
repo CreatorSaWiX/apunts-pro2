@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import arbgen_esborra_code from "../code/arbgen_esborra/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -73,7 +74,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const arbgen_esborra: Simulation = {
     id: legacyAlgo.arbgen_esborra.id,
     renderer: "graph",
-    code: legacyAlgo.arbgen_esborra.code,
+    code: arbgen_esborra_code,
     initialState: legacyAlgo.arbgen_esborra.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.arbgen_esborra.generateSteps().map((step: AlgoStep) => ({

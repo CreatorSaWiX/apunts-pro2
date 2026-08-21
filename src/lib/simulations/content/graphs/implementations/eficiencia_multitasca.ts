@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import eficiencia_multitasca_code from "../code/eficiencia_multitasca/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -87,7 +88,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const eficiencia_multitasca: Simulation = {
     id: legacyAlgo.eficiencia_multitasca.id,
     renderer: "graph",
-    code: legacyAlgo.eficiencia_multitasca.code,
+    code: eficiencia_multitasca_code,
     initialState: legacyAlgo.eficiencia_multitasca.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.eficiencia_multitasca.generateSteps().map((step: AlgoStep) => ({

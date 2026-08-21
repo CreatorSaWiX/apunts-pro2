@@ -1,15 +1,44 @@
 {
   "chat": {
-    "searchedWeb": "Ha cercat a internet",
-    "process": {
-      "worked": "Procés",
-      "workedTime": "Ha treballat durant {{time}}"
-    },
+    "wait": "Espera {{cooldown}}s",
+    "newChat": "Nou Xat",
+    "conversation": "Conversa",
+    "searchHistory": "Cercar...",
+    "noSearchResults": "Cap resultat trobat",
     "errors": {
       "invalidFileType": "Només s'accepten imatges i PDFs.",
-      "fileTooLarge": "L'arxiu és massa gran. Màxim 5MB."
+      "fileTooLarge": "L'arxiu és massa gran. Màxim 5MB.",
+      "unknown": "Error desconegut",
+      "streamingNotSupported": "El navegador no suporta streaming",
+      "serverError": "Error del servidor"
     },
-    "memoryUpdated": "Memòria actualitzada"
+    "noResponse": "Sense resposta.",
+    "memoryUpdated": "Memòria actualitzada",
+    "loginRequired": "L'assistent d'IA és exclusiu per als membres registrats\nInicia sessió per accedir a l'historial i al xat",
+    "login": "Inicia sessió",
+    "dropToAttach": "Deixa anar per adjuntar",
+    "history": "Historial de converses",
+    "noSavedChats": "Sense converses desades",
+    "newConversation": "Nova conversa",
+    "placeholder": "Escriu a {{aiName}}...",
+    "attachFile": "Adjuntar imatge o PDF",
+    "warning": "L'IA pot cometre errors. No comparteixis dades sensibles ni personals.",
+    "process": {
+      "analyzingIntent": "Analitzant si la consulta requereix accés a internet...",
+      "searchDetected": "S'ha detectat necessitat de cerca. S'activarà l'accés a internet.",
+      "searchNotNeeded": "No cal cerca a internet. Utilitzant coneixement intern i documents...",
+      "searchFailed": "No s'ha pogut verificar la necessitat de cerca. Es desactiva per defecte.",
+      "requestingModel": "Sol·licitant model: {{model}}...",
+      "modelNoSearch": "{{model}} no admet l'ús del cercador gratuït. Saltant al següent model...",
+      "modelDenied": "{{model}} denegat ({{reason}}). Buscant alternativa...",
+      "defaultTitle": "Procés",
+      "thoughtTitle": "Pensament de l'IA",
+      "worked": "Processat",
+      "workedTime": "Treballat durant {{time}}",
+      "reasonSaturation": "Saturació",
+      "reasonQuota": "Quota 429 / Massa Peticions",
+      "reason503": "Servidor no disponible 503"
+    }
   },
   "navigation": {
     "courseSyllabus": "Temari del Curs",
@@ -838,47 +867,6 @@
     "publish": "Publicar Solució",
     "saveError": "Error al guardar la solució. Comprova la consola."
   },
-  "chat": {
-    "wait": "Espera {{cooldown}}s",
-    "newChat": "Nou Xat",
-    "conversation": "Conversa",
-    "searchHistory": "Cercar...",
-    "noSearchResults": "Cap resultat trobat",
-    "errors": {
-      "invalidFileType": "Només s'accepten imatges i PDFs.",
-      "fileTooLarge": "L'arxiu és massa gran. Màxim 5MB.",
-      "unknown": "Error desconegut",
-      "streamingNotSupported": "El navegador no suporta streaming",
-      "serverError": "Error del servidor"
-    },
-    "noResponse": "Sense resposta.",
-    "memoryUpdated": "Memòria actualitzada",
-    "loginRequired": "L'assistent d'IA és exclusiu per als membres registrats\nInicia sessió per accedir a l'historial i al xat",
-    "login": "Inicia sessió",
-    "dropToAttach": "Deixa anar per adjuntar",
-    "history": "Historial de converses",
-    "noSavedChats": "Sense converses desades",
-    "newConversation": "Nova conversa",
-    "placeholder": "Escriu a {{aiName}}...",
-    "attachFile": "Adjuntar imatge o PDF",
-    "warning": "L'IA pot cometre errors. No comparteixis dades sensibles ni personals.",
-    "process": {
-      "analyzingIntent": "Analitzant si la consulta requereix accés a internet...",
-      "searchDetected": "S'ha detectat necessitat de cerca. S'activarà l'accés a internet.",
-      "searchNotNeeded": "No cal cerca a internet. Utilitzant coneixement intern i documents...",
-      "searchFailed": "No s'ha pogut verificar la necessitat de cerca. Es desactiva per defecte.",
-      "requestingModel": "Sol·licitant model: {{model}}...",
-      "modelNoSearch": "{{model}} no admet l'ús del cercador gratuït. Saltant al següent model...",
-      "modelDenied": "{{model}} denegat ({{reason}}). Buscant alternativa...",
-      "defaultTitle": "Procés",
-      "thoughtTitle": "Pensament de l'IA",
-      "worked": "Processat",
-      "workedTime": "Treballat durant {{time}}",
-      "reasonSaturation": "Saturació",
-      "reasonQuota": "Quota 429 / Massa Peticions",
-      "reason503": "Servidor no disponible 503"
-    }
-  },
   "roadmapSubjectEvaluation": {
     "title": "Distribució d'Avaluació",
     "percentTotal": "% del total"
@@ -1015,6 +1003,62 @@
     }
   },
   "algo": {
+    "common": {
+      "queue": "Cua ({{name}})",
+      "visited": "Visitat ({{name}})",
+      "distance": "Distància ({{name}})",
+      "stack": "Pila ({{name}})",
+      "result": "Resultat ({{name}})",
+      "action": "Acció",
+      "final_tree": "Arbre final",
+      "cost": "Cost",
+      "comparisons": "Comparacions",
+      "returned": "Retorn",
+      "node": "Node {{name}}",
+      "empty": "Buit",
+      "inserted": "Inserit",
+      "extracted": "Extret",
+      "destroyed": "Destruït",
+      "dead": "Mort"
+    },
+    "eficiencia_multitasca": {
+      "step_1": "Anem a resoldre els 2 problemes (Suma total i Quantitat) amb un sol Pair d'una passada! Cridem arrel (10).",
+      "step_2": "L'arbre 10 no és buit.",
+      "step_3": "Primer rebot a l'esquerra: t.left().",
+      "step_4": "Avaluem node 5. No és buit.",
+      "step_5": "Rebotem la crida l'esquerra del node 5 (que és un full blanc null escondit).",
+      "step_6": "Buit t.empty() retornem pair neutre: {0.0 sum, 0 elements}.",
+      "step_7": "Ara el node 5 fa rebotar la branca dreta morta que amaga.",
+      "step_8": "Torna a retornar pair neutre buit {0.0, 0}.",
+      "step_9": "Ara ve la clau de L'O(N): El node 5 fusiona les respostes dels seus fills en una nova Tupla combinada i s'ho queda directament en memòria.",
+      "step_10": "Calcula i retorna: {5 + 0.0 + 0.0, 1 pos + 0 + 0} -> {5, 1}. Ho empenta a dalt sense mai repetir més línies de codi.",
+      "step_11": "Tornem a l'arrel gran (10), que ataca a la dreta instigant el node 15 abans de calcular res.",
+      "step_12": "Avaluant 15. No buida.",
+      "step_13": "Com sabem que té dos fills nulls ocults rebent {0.0, 0} cada un, directament resol fusionant: {15 + 0 + 0, 1 + 0 + 0}.",
+      "step_14": "El node 15 respon instantàniament desintegrant la mort recursiva. Retorna {15, 1}",
+      "step_15": "Final! L'arrel consolida els dos apilaments dels fills: \nSuma total iterada = 10 + 5.0 (Esquerra) + 15.0 (Dreta)\nMida nodes totals = 1 + 1 (Esq) + 1 (Dreta).",
+      "step_16": "Aconseguim les dues dades llegint la base de l'Arbre 1 COP rigorós de recobriment. Si haguéssim instanciat sum() i size() per separat hauria costat el famós Theta(2N) que seria Theta(N^2) si és codi de bucle desequilibrat intern."
+    },
+    "reconstruccio_preordre": {
+      "step_1": "Arrenca la terminal desponent el teclat. El text a llegir complet és: '10 5 # # 14 # #'.",
+      "step_2": "Primer espai: es llegeix la paraula del terminal.",
+      "step_3": "Era un hashtag '#' que indica Buit? No, vol dir que realment això és una dada i no està mort l'arbre aquí.",
+      "step_4": "Convertim '10' texte a instància numèrica (T = int) guardant-la al calaix.",
+      "step_5": "Ara ja podem intentar buscar i engatxar tota l'ala esquerre abans de fer res més... Llança'm codi un altre cop confiant a on el terminal em porti.",
+      "step_6": "NOVA Crida. Llegim paraula terminal.",
+      "step_7": "No era buit, convertim... Llavors, confia un cop més cec per lligar a l'esquerra el costat buit de l'arbre 5... Crida esquerre.",
+      "step_8": "NOVA Crida. Llegeix token següent...",
+      "step_9": "BINGO. Salt pel buit '#' detectat! Aquesta fulla sí que rebota falsa aturant una línia infinita i generant directament un 'Arbre Buit' que es desvincula de la resta tallant subestructures inexistents.",
+      "step_10": "Es recoloca al fill L del 5 amb fulla blanca, comença a fer el return per invocar de seguida l'intent a l'ala dreta buida. R del 5.",
+      "step_11": "NOVA Crida (Buscant dreta del 5). Llegeix terminal:",
+      "step_12": "BINGO un altre cop, null '#'. Retorna false.",
+      "step_13": "Increïble. L'objecte arbre del node (5) ha fusionat ell mateix junt a les dues derivades nulles que acabem de matar. Torna el node amunt construït en sec cap al recursiu root de base com l'Autèntic fill esquerre de 10.",
+      "step_14": "Roots base: L'Arrel de tota l'estructura de 10 respira tranquil perquè sap que tota l'ala esquerra del paper de format estava completada... Llança't al mateix infern per buscar a la Dreta.",
+      "step_15": "Construeix l'esperant 14... Llegeix dues # per R i L, confirmant que ell i el teclat de notes final ha estat consumit pel sencer... (Saltant sub-passos)",
+      "step_16": "Els dos fills 14 de buits absorbits validen que la màquina té l'arbre 10 unit integral...",
+      "step_17": "Lligat tot, torna la Corona general instanciada tancant i alliberant Stream Input.",
+      "step_18": "L'Arbre Pre-Ordre construït i llest a temps matemàtic perfecte i en ordre pur O(N)."
+    },
     "bfs2": {
       "step_1": "Inicialitzem les estructures: Cua C, Vectors W, D i visitat buits/a 0.",
       "step_2": "Afegim el vèrtex inicial v={{v}} a la cua, marquem com a visitat, a W i D[{{v}}]=0.",
@@ -1207,6 +1251,82 @@
       "step_14": "Subarbol pur 90 val un cert incontestable gràcies al t.value() == x. Talla absolut de cadena subministrant Return True com a bandera cap a adalt.",
       "step_15": "El 80 sent la notícia amb exultació de cop rebent l'if veritat tallant literalment el bucle que estava calculant i sense remordiments retorna True propagant pel forat del for en cadena recursiva d'alegria suprema.",
       "step_16": "Resultat total acabat al main. Tota la resta ha estat ignorada gràcies a aquest curtcircuit salvador estalviant N processaments al final O(logN)."
+    },
+    "arbgen_copia": {
+      "step_1": "Iniciant la còpia de l'arbre general.",
+      "step_2": "Comprovant si el node actual és null.",
+      "step_3": "Creant un nou node per a la còpia.",
+      "step_4": "Copiant la informació del node.",
+      "step_5": "Obtenint el nombre de fills del node original.",
+      "step_6": "Preparant el vector de fills per a la còpia.",
+      "step_7": "Iterant sobre els fills per copiar-los recursivament.",
+      "step_8": "Retornant el nou node copiat."
+    },
+    "arbgen_esborra": {
+      "step_1": "Iniciant l'esborrat de l'arbre general.",
+      "step_2": "Comprovant si el node és null.",
+      "step_3": "Iterant sobre tots els fills per esborrar-los.",
+      "step_4": "Esborrant recursivament el fill actual.",
+      "step_5": "Alliberant la memòria del node actual.",
+      "step_6": "Node eliminat de la memòria.",
+      "step_7": "Finalitzant el procés d'esborrat."
+    },
+    "arbgen_fills": {
+      "step_1": "Iniciant la consulta de fills de l'arbre general.",
+      "step_2": "Comprovant si l'arbre és buit.",
+      "step_3": "Accedint a l'arrel de l'arbre.",
+      "step_4": "Obtenint el vector de fills.",
+      "step_5": "Creant l'arbre resultat amb els fills.",
+      "step_6": "Retornant el nombre de fills o el resultat."
+    },
+    "arbgen_plantar": {
+      "step_1": "Iniciant l'operació de plantar un arbre general.",
+      "step_2": "Creant un nou node arrel.",
+      "step_3": "Assignant el valor a la nova arrel.",
+      "step_4": "Enllaçant els subarbres com a fills de la nova arrel.",
+      "step_5": "Arbre plantat amb èxit."
+    },
+    "arbre_copia_node": {
+      "step_1": "Iniciant la còpia del node de l'arbre binari.",
+      "step_2": "Comprovant si el node original és null.",
+      "step_3": "Creant una instància del nou node.",
+      "step_4": "Copiant el valor del node original.",
+      "step_5": "Iniciant la còpia del subarbre esquerre.",
+      "step_6": "Assignant el fill esquerre copiat.",
+      "step_7": "Iniciant la còpia del subarbre dret.",
+      "step_8": "Assignant el fill dret copiat.",
+      "step_9": "Retornant el node completament copiat."
+    },
+    "arbre_esborra_node": {
+      "step_1": "Iniciant l'eliminació del node de l'arbre binari.",
+      "step_2": "Comprovant si el node és null.",
+      "step_3": "Cridant recursivament per esborrar el subarbre esquerre.",
+      "step_4": "Cridant recursivament per esborrar el subarbre dret.",
+      "step_5": "Alliberant la memòria del node actual.",
+      "step_6": "Node binari destruït amb èxit."
+    },
+    "arbre_fills": {
+      "step_1": "Consultant els fills de l'arbre binari.",
+      "step_2": "Validant que l'arbre no estigui buit.",
+      "step_3": "Accedint al fill esquerre.",
+      "step_4": "Accedint al fill dret.",
+      "step_5": "Retornant l'estructura dels fills sol·licitats."
+    },
+    "arbre_plantar": {
+      "step_1": "Iniciant la plantació d'un nou arbre binari.",
+      "step_2": "Verificant que l'arrel original estigui buida.",
+      "step_3": "Instanciant el nou node arrel.",
+      "step_4": "Assignant l'arbre esquerre.",
+      "step_5": "Assignant l'arbre dret.",
+      "step_6": "Estructura binària enllaçada i plantada correctament."
+    },
+    "bfs": {
+      "step_1": "Inicialitzant l'algorisme BFS. Creem la cua C i marquem el node inicial com a visitat.",
+      "step_2": "S'ha afegit el node a la cua i a la llista de visitats.",
+      "step_3": "Traient el primer element de la cua per processar-lo.",
+      "step_4": "Explorant els nodes adjacents.",
+      "step_5": "Si l'adjacent no ha estat visitat, l'afegim a la cua i el marquem com a visitat.",
+      "step_6": "La cua està buida. El BFS ha acabat d'explorar tots els nodes accessibles."
     }
   },
   "pro": {

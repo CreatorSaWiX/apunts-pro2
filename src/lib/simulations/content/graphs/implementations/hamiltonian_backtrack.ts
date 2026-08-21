@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import hamiltonian_backtrack_code from "../code/hamiltonian_backtrack/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -117,7 +118,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const hamiltonian_backtrack: Simulation = {
     id: legacyAlgo.hamiltonian_backtrack.id,
     renderer: "graph",
-    code: legacyAlgo.hamiltonian_backtrack.code,
+    code: hamiltonian_backtrack_code,
     initialState: legacyAlgo.hamiltonian_backtrack.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.hamiltonian_backtrack.generateSteps().map((step: AlgoStep) => ({

@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import eulerian_check_code from "../code/eulerian_check/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -89,7 +90,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const eulerian_check: Simulation = {
     id: legacyAlgo.eulerian_check.id,
     renderer: "graph",
-    code: legacyAlgo.eulerian_check.code,
+    code: eulerian_check_code,
     initialState: legacyAlgo.eulerian_check.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.eulerian_check.generateSteps().map((step: AlgoStep) => ({

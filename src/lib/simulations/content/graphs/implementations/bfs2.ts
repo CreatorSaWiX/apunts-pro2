@@ -1,4 +1,5 @@
 import type { Simulation, SimulationStep } from "../../../engine/types";
+import bfs2_code from "../code/bfs2/source.cpp?raw";
 
 interface AlgoStep {
     line: number;
@@ -130,7 +131,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 export const bfs2: Simulation = {
     id: legacyAlgo.bfs2.id,
     renderer: "graph",
-    code: legacyAlgo.bfs2.code,
+    code: bfs2_code,
     initialState: legacyAlgo.bfs2.initialGraph,
     generateSteps: (): SimulationStep[] => {
         return legacyAlgo.bfs2.generateSteps().map((step: AlgoStep) => ({

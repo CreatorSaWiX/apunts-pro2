@@ -1,15 +1,44 @@
 {
   "chat": {
-    "searchedWeb": "Ha buscado en internet",
-    "process": {
-      "worked": "Proceso",
-      "workedTime": "Ha trabajado durante {{time}}"
-    },
+    "wait": "Espera {{cooldown}}s",
+    "newChat": "Nuevo Chat",
+    "conversation": "Conversación",
+    "searchHistory": "Buscar...",
+    "noSearchResults": "No se encontraron resultados",
     "errors": {
       "invalidFileType": "Solo se aceptan imágenes y PDFs.",
-      "fileTooLarge": "El archivo es demasiado grande. Máximo 5MB."
+      "fileTooLarge": "El archivo es demasiado grande. Máximo 5MB.",
+      "unknown": "Error desconocido",
+      "streamingNotSupported": "El navegador no soporta streaming",
+      "serverError": "Error del servidor"
     },
-    "memoryUpdated": "Memoria actualizada"
+    "noResponse": "Sin respuesta.",
+    "memoryUpdated": "Memoria actualizada",
+    "loginRequired": "El asistente de IA es exclusivo para miembros registrados\nInicia sesión para acceder al historial y al chat",
+    "login": "Inicia sesión",
+    "dropToAttach": "Suelta para adjuntar",
+    "history": "Historial de conversaciones",
+    "noSavedChats": "Sin conversaciones guardadas",
+    "newConversation": "Nueva conversación",
+    "placeholder": "Escribe a {{aiName}}...",
+    "attachFile": "Adjuntar imagen o PDF",
+    "warning": "La IA puede cometer errores. No compartas datos sensibles ni personales.",
+    "process": {
+      "analyzingIntent": "Analizando si la consulta requiere acceso a internet...",
+      "searchDetected": "Se ha detectado necesidad de búsqueda. Se activará el acceso a internet.",
+      "searchNotNeeded": "No es necesaria la búsqueda. Utilizando conocimiento interno y documentos...",
+      "searchFailed": "No se ha podido verificar la necesidad de búsqueda. Se desactiva por defecto.",
+      "requestingModel": "Solicitando modelo: {{model}}...",
+      "modelNoSearch": "{{model}} no admite el uso del buscador gratuito. Saltando al siguiente modelo...",
+      "modelDenied": "{{model}} denegado ({{reason}}). Buscando alternativa...",
+      "defaultTitle": "Proceso",
+      "thoughtTitle": "Pensamiento de la IA",
+      "worked": "Proceso",
+      "workedTime": "Procesado en {{time}}",
+      "reasonSaturation": "Saturación",
+      "reasonQuota": "Cuota 429 / Demasiadas peticiones",
+      "reason503": "Servidor no disponible 503"
+    }
   },
   "navigation": {
     "courseSyllabus": "Temario del Curso",
@@ -838,47 +867,6 @@
     "publish": "Publicar Solución",
     "saveError": "Error al guardar la solución. Comprueba la consola."
   },
-  "chat": {
-    "wait": "Espera {{cooldown}}s",
-    "newChat": "Nuevo Chat",
-    "conversation": "Conversación",
-    "searchHistory": "Buscar...",
-    "noSearchResults": "No se encontraron resultados",
-    "errors": {
-      "invalidFileType": "Solo se aceptan imágenes y PDFs.",
-      "fileTooLarge": "El archivo es demasiado grande. Máximo 5MB.",
-      "unknown": "Error desconocido",
-      "streamingNotSupported": "El navegador no soporta streaming",
-      "serverError": "Error del servidor"
-    },
-    "noResponse": "Sin respuesta.",
-    "memoryUpdated": "Memoria actualizada",
-    "loginRequired": "El asistente de IA es exclusivo para miembros registrados\nInicia sesión para acceder al historial y al chat",
-    "login": "Inicia sesión",
-    "dropToAttach": "Suelta para adjuntar",
-    "history": "Historial de conversaciones",
-    "noSavedChats": "Sin conversaciones guardadas",
-    "newConversation": "Nueva conversación",
-    "placeholder": "Escribe a {{aiName}}...",
-    "attachFile": "Adjuntar imagen o PDF",
-    "warning": "La IA puede cometer errores. No compartas datos sensibles ni personales.",
-    "process": {
-      "analyzingIntent": "Analizando si la consulta requiere acceso a internet...",
-      "searchDetected": "Se ha detectado necesidad de búsqueda. Se activará el acceso a internet.",
-      "searchNotNeeded": "No es necesaria la búsqueda. Utilizando conocimiento interno y documentos...",
-      "searchFailed": "No se ha podido verificar la necesidad de búsqueda. Se desactiva por defecto.",
-      "requestingModel": "Solicitando modelo: {{model}}...",
-      "modelNoSearch": "{{model}} no admite el uso del buscador gratuito. Saltando al siguiente modelo...",
-      "modelDenied": "{{model}} denegado ({{reason}}). Buscando alternativa...",
-      "defaultTitle": "Proceso",
-      "thoughtTitle": "Pensamiento de la IA",
-      "worked": "Proceso",
-      "workedTime": "Procesado en {{time}}",
-      "reasonSaturation": "Saturación",
-      "reasonQuota": "Cuota 429 / Demasiadas peticiones",
-      "reason503": "Servidor no disponible 503"
-    }
-  },
   "roadmapSubjectEvaluation": {
     "title": "Distribución de Evaluación",
     "percentTotal": "% del total"
@@ -1015,6 +1003,62 @@
     }
   },
   "algo": {
+    "common": {
+      "queue": "Cola ({{name}})",
+      "visited": "Visitado ({{name}})",
+      "distance": "Distancia ({{name}})",
+      "stack": "Pila ({{name}})",
+      "result": "Resultado ({{name}})",
+      "action": "Acción",
+      "final_tree": "Árbol final",
+      "cost": "Coste",
+      "comparisons": "Comparaciones",
+      "returned": "Retorno",
+      "node": "Nodo {{name}}",
+      "empty": "Vacío",
+      "inserted": "Insertado",
+      "extracted": "Extraído",
+      "destroyed": "Destruido",
+      "dead": "Muerto"
+    },
+    "eficiencia_multitasca": {
+      "step_1": "¡Vamos a resolver los 2 problemas (Suma total y Cantidad) con un solo Pair de una pasada! Llamamos a la raíz (10).",
+      "step_2": "El árbol 10 no está vacío.",
+      "step_3": "Primer rebote a la izquierda: t.left().",
+      "step_4": "Evaluamos el nodo 5. No está vacío.",
+      "step_5": "Rebotamos la llamada a la izquierda del nodo 5 (que es una hoja blanca nula escondida).",
+      "step_6": "Vacío t.empty() retornamos pair neutro: {0.0 sum, 0 elementos}.",
+      "step_7": "Ahora el nodo 5 rebota la rama derecha muerta que esconde.",
+      "step_8": "Vuelve a retornar pair neutro vacío {0.0, 0}.",
+      "step_9": "Ahora viene la clave del O(N): El nodo 5 fusiona las respuestas de sus hijos en una nueva Tupla combinada y se la guarda directamente en memoria.",
+      "step_10": "Calcula y retorna: {5 + 0.0 + 0.0, 1 pos + 0 + 0} -> {5, 1}. Lo empuja hacia arriba sin repetir más líneas de código.",
+      "step_11": "Volvemos a la raíz grande (10), que ataca a la derecha instigando al nodo 15 antes de calcular nada.",
+      "step_12": "Evaluando 15. No vacío.",
+      "step_13": "Como sabemos que tiene dos hijos nulos ocultos recibiendo {0.0, 0} cada uno, directamente resuelve fusionando: {15 + 0 + 0, 1 + 0 + 0}.",
+      "step_14": "El nodo 15 responde instantáneamente desintegrando la muerte recursiva. Retorna {15, 1}",
+      "step_15": "¡Final! La raíz consolida los dos apilamientos de los hijos: \nSuma total iterada = 10 + 5.0 (Izquierda) + 15.0 (Derecha)\nTamaño nodos totales = 1 + 1 (Izq) + 1 (Der).",
+      "step_16": "Conseguimos ambos datos leyendo la base del Árbol 1 VEZ con recubrimiento riguroso. Si hubiéramos instanciado sum() y size() por separado habría costado el famoso Theta(2N) que sería Theta(N^2) si es código de bucle desequilibrado interno."
+    },
+    "reconstruccio_preordre": {
+      "step_1": "Arranca la terminal leyendo del teclado. El texto a leer completo es: '10 5 # # 14 # #'.",
+      "step_2": "Primer espacio: se lee la palabra del terminal.",
+      "step_3": "¿Era un hashtag '#' que indica Vacío? No, significa que realmente esto es un dato y el árbol no está muerto aquí.",
+      "step_4": "Convertimos el texto '10' a instancia numérica (T = int) guardándola.",
+      "step_5": "Ahora ya podemos intentar buscar y enganchar toda el ala izquierda antes de hacer nada más... Lanza código otra vez confiando en donde el terminal me lleve.",
+      "step_6": "NUEVA Llamada. Leemos palabra del terminal.",
+      "step_7": "No era vacío, convertimos... Entonces, confía una vez más a ciegas para enlazar a la izquierda el lado vacío del árbol 5... Llamada izquierda.",
+      "step_8": "NUEVA Llamada. Lee token siguiente...",
+      "step_9": "¡BINGO! ¡Salto por el vacío '#' detectado! Esta hoja sí rebota falsa parando una línea infinita y generando directamente un 'Árbol Vacío' que se desvincula del resto cortando subestructuras inexistentes.",
+      "step_10": "Se recoloca el hijo L del 5 con hoja blanca, comienza a hacer el return para invocar enseguida el intento del ala derecha vacía. R del 5.",
+      "step_11": "NUEVA Llamada (Buscando derecha del 5). Lee terminal:",
+      "step_12": "BINGO otra vez, nulo '#'. Retorna false.",
+      "step_13": "Increíble. El objeto árbol del nodo (5) se ha fusionado junto a las dos derivadas nulas que acabamos de matar. Vuelve el nodo construido en seco hacia el root recursivo base como el Auténtico hijo izquierdo del 10.",
+      "step_14": "Roots base: La Raíz de toda la estructura de 10 respira tranquila porque sabe que toda el ala izquierda está completada... Lánzate al mismo infierno para buscar a la Derecha.",
+      "step_15": "Construye el esperado 14... Lee dos # para R y L, confirmando que él y el teclado han sido consumidos por completo... (Saltando sub-pasos)",
+      "step_16": "Los dos hijos 14 de vacíos absorbidos validan que la máquina tiene el árbol 10 unido integralmente...",
+      "step_17": "Todo enlazado, retorna la Corona general instanciada cerrando y liberando el Stream Input.",
+      "step_18": "El Árbol Pre-Orden construido y listo en tiempo matemático perfecto y en orden puro O(N)."
+    },
     "bfs2": {
       "step_2": "Añadimos el vértice inicial v={{v}} a la cola, marcamos como visitado, a W y D[{{v}}]=0.",
       "step_3": "Miremos el primer elemento de la cola sin quitarlo: x={{x}}.",
@@ -1207,6 +1251,82 @@
       "step_13": "El foro del Gran 80 salta al child 1: El glorificado nodo '90'!! Envía un rayo buscador hacia este sitio...",
       "step_8": "Bucle (1 de 3). Child central (1), llamamos nodo valor 30.",
       "step_16": "Resultado total terminado en el main. Todo lo demás ha sido ignorado gracias a este cortocircuito salvador ahorrando N procesamientos al final O(logN)."
+    },
+    "arbgen_copia": {
+      "step_1": "Iniciando la copia del árbol general.",
+      "step_2": "Comprobando si el nodo actual es null.",
+      "step_3": "Creando un nuevo nodo para la copia.",
+      "step_4": "Copiando la información del nodo.",
+      "step_5": "Obteniendo el número de hijos del nodo original.",
+      "step_6": "Preparando el vector de hijos para la copia.",
+      "step_7": "Iterando sobre los hijos para copiarlos recursivamente.",
+      "step_8": "Retornando el nuevo nodo copiado."
+    },
+    "arbgen_esborra": {
+      "step_1": "Iniciando el borrado del árbol general.",
+      "step_2": "Comprobando si el nodo es null.",
+      "step_3": "Iterando sobre todos los hijos para borrarlos.",
+      "step_4": "Borrando recursivamente el hijo actual.",
+      "step_5": "Liberando la memoria del nodo actual.",
+      "step_6": "Nodo eliminado de la memoria.",
+      "step_7": "Finalizando el proceso de borrado."
+    },
+    "arbgen_fills": {
+      "step_1": "Iniciando la consulta de hijos del árbol general.",
+      "step_2": "Comprobando si el árbol está vacío.",
+      "step_3": "Accediendo a la raíz del árbol.",
+      "step_4": "Obteniendo el vector de hijos.",
+      "step_5": "Creando el árbol resultado con los hijos.",
+      "step_6": "Retornando el número de hijos o el resultado."
+    },
+    "arbgen_plantar": {
+      "step_1": "Iniciando la operación de plantar un árbol general.",
+      "step_2": "Creando un nuevo nodo raíz.",
+      "step_3": "Asignando el valor a la nueva raíz.",
+      "step_4": "Enlazando los subárboles como hijos de la nueva raíz.",
+      "step_5": "Árbol plantado con éxito."
+    },
+    "arbre_copia_node": {
+      "step_1": "Iniciando la copia del nodo del árbol binario.",
+      "step_2": "Comprobando si el nodo original es null.",
+      "step_3": "Creando una instancia del nuevo nodo.",
+      "step_4": "Copiando el valor del nodo original.",
+      "step_5": "Iniciando la copia del subárbol izquierdo.",
+      "step_6": "Asignando el hijo izquierdo copiado.",
+      "step_7": "Iniciando la copia del subárbol derecho.",
+      "step_8": "Asignando el hijo derecho copiado.",
+      "step_9": "Retornando el nodo completamente copiado."
+    },
+    "arbre_esborra_node": {
+      "step_1": "Iniciando la eliminación del nodo del árbol binario.",
+      "step_2": "Comprobando si el nodo es null.",
+      "step_3": "Llamando recursivamente para borrar el subárbol izquierdo.",
+      "step_4": "Llamando recursivamente para borrar el subárbol derecho.",
+      "step_5": "Liberando la memoria del nodo actual.",
+      "step_6": "Nodo binario destruido con éxito."
+    },
+    "arbre_fills": {
+      "step_1": "Consultando los hijos del árbol binario.",
+      "step_2": "Validando que el árbol no esté vacío.",
+      "step_3": "Accediendo al hijo izquierdo.",
+      "step_4": "Accediendo al hijo derecho.",
+      "step_5": "Retornando la estructura de los hijos solicitados."
+    },
+    "arbre_plantar": {
+      "step_1": "Iniciando la plantación de un nuevo árbol binario.",
+      "step_2": "Verificando que la raíz original esté vacía.",
+      "step_3": "Instanciando el nuevo nodo raíz.",
+      "step_4": "Asignando el árbol izquierdo.",
+      "step_5": "Asignando el árbol derecho.",
+      "step_6": "Estructura binaria enlazada y plantada correctamente."
+    },
+    "bfs": {
+      "step_1": "Inicializando el algoritmo BFS. Creamos la cola C y marcamos el nodo inicial como visitado.",
+      "step_2": "Se ha añadido el nodo a la cola y a la lista de visitados.",
+      "step_3": "Sacando el primer elemento de la cola para procesarlo.",
+      "step_4": "Explorando los nodos adyacentes.",
+      "step_5": "Si el adyacente no ha sido visitado, lo añadimos a la cola y lo marcamos como visitado.",
+      "step_6": "La cola está vacía. El BFS ha terminado de explorar todos los nodos accesibles."
     }
   },
   "pro": {
