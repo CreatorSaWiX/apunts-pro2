@@ -136,7 +136,7 @@ main.o: main.cc Punt.hpp
 
 ---
 
-## 1.5 Per si no t'agrada llegir teoria
+## 1.5 Resum
 
 Aquest simulador conté un projecte sencer amb classes, mètodes, `this`, `inline`, `static` i un `Makefile`.
 

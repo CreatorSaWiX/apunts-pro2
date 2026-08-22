@@ -20,6 +20,11 @@ export class StepBuilder<V extends SimulationStep['visual'] = Record<string, unk
         return this;
     }
 
+    clearVariables(): this {
+        this.variables = {};
+        return this;
+    }
+
     setVisual(visualUpdates: Partial<V>): this {
         this.visual = { ...this.visual, ...visualUpdates };
         return this;
