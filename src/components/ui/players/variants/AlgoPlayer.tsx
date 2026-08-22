@@ -76,6 +76,21 @@ function AlgoPlayerContent({ algo }: { algo: Simulation }) {
         links: ((step?.visual?.links || algo.initialState?.links || []) as any[]).map((l: any) => ({ ...l }))
     }), [graphData.nodes, step?.visual?.links, algo.initialState?.links]);
 
+    const controls = (
+        <PlayerControls
+            currentStep={currentStep}
+            totalSteps={steps.length}
+            description={step.description ? (t(step.description, step.variables) as string) : ''}
+            isPlaying={isPlaying}
+            onStepChange={setCurrentStep}
+            onPlayPause={() => handlePlayPause(() => setActiveTab('code'))}
+            onNext={handleNext}
+            onPrev={handlePrev}
+            onReset={() => handleReset(() => setActiveTab('code'))}
+            onFullEnd={handleFullEnd}
+        />
+    );
+
     return (
         <PlayerShell
             tabs={[
@@ -85,18 +100,9 @@ function AlgoPlayerContent({ algo }: { algo: Simulation }) {
             activeTab={activeTab}
             onTabChange={(id) => setActiveTab(id as 'viz' | 'code')}
             controls={
-                <PlayerControls
-                    currentStep={currentStep}
-                    totalSteps={steps.length}
-                    description={step.description ? (t(step.description, step.variables) as string) : ''}
-                    isPlaying={isPlaying}
-                    onStepChange={setCurrentStep}
-                    onPlayPause={() => handlePlayPause(() => setActiveTab('code'))}
-                    onNext={handleNext}
-                    onPrev={handlePrev}
-                    onReset={() => handleReset(() => setActiveTab('code'))}
-                    onFullEnd={handleFullEnd}
-                />
+                <div className="lg:hidden">
+                    {controls}
+                </div>
             }
             leftPanel={
                 <div className={`flex-1 flex-col relative bg-linear-to-br from-[#0B0F17] via-[#0F1420] to-[#0A0D14] h-full ${activeTab === 'viz' ? 'flex' : 'hidden'} group-data-[fullscreen=true]/player:flex lg:flex order-last lg:order-none`}>
@@ -117,6 +123,10 @@ function AlgoPlayerContent({ algo }: { algo: Simulation }) {
                             isAnimating={isPlaying}
                             transparentBg={true}
                         />
+                    </div>
+
+                    <div className="hidden lg:block">
+                        {controls}
                     </div>
                 </div>
             }

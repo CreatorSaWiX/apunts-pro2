@@ -46,6 +46,21 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
     const step: Partial<SimulationStep> = steps[currentStep] || {};
     const displayFile = userSelectedFile || (step.visual?.activeFile as string) || Object.keys(sim.files || {})[0];
 
+    const controls = (
+        <PlayerControls
+            currentStep={currentStep}
+            totalSteps={steps.length}
+            description={step.description ? (t(step.description, step.variables) as string) : ''}
+            isPlaying={isPlaying}
+            onStepChange={setCurrentStep}
+            onPlayPause={() => handlePlayPause(() => setActiveTab('code'))}
+            onNext={handleNext}
+            onPrev={handlePrev}
+            onReset={() => handleReset(() => setActiveTab('code'))}
+            onFullEnd={handleFullEnd}
+        />
+    );
+
     return (
         <PlayerShell
             tabs={[
@@ -55,18 +70,9 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
             activeTab={activeTab}
             onTabChange={(id: string) => setActiveTab(id as 'term' | 'code')}
             controls={
-                <PlayerControls
-                    currentStep={currentStep}
-                    totalSteps={steps.length}
-                    description={step.description ? (t(step.description, step.variables) as string) : ''}
-                    isPlaying={isPlaying}
-                    onStepChange={setCurrentStep}
-                    onPlayPause={() => handlePlayPause(() => setActiveTab('code'))}
-                    onNext={handleNext}
-                    onPrev={handlePrev}
-                    onReset={() => handleReset(() => setActiveTab('code'))}
-                    onFullEnd={handleFullEnd}
-                />
+                <div className="lg:hidden">
+                    {controls}
+                </div>
             }
             leftPanel={
                 <div className={`flex-1 min-w-0 flex-col relative bg-[#0d1117] h-full shadow-[15px_0_30px_rgba(0,0,0,0.3)] lg:border-r border-white/5 ${activeTab === 'code' ? 'flex' : 'hidden'} group-data-[fullscreen=true]/player:flex lg:flex`}>
@@ -150,6 +156,10 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
                         output={(step.visual?.terminalOutput as string[]) || []} 
                         variables={step.variables || {}} 
                     />
+
+                    <div className="hidden lg:block">
+                        {controls}
+                    </div>
                 </div>
             }
         />
