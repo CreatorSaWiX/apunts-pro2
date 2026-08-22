@@ -12,7 +12,8 @@ export const arbre_bintree_immersio: Simulation = {
     generateSteps: (): SimulationStep[] => {
         const builder = new OOPBuilder()
             .setActiveFile("main.cpp");
-        const emptyText = i18n.t("algo.common.empty")
+        const emptyText = i18n.t("algo.common.empty") as string;
+        builder
             .setTerminalOutput(["pro.arbre_bintree_immersio.term_1"])
             .addStep(26, "pro.arbre_bintree_immersio.step_1")
             .setVariables({ "ArbreTotal": "  1  \\n / \\ \\n2   3" })

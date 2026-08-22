@@ -17,17 +17,14 @@ import { remarkCodeMetadata } from "./remarkCodeMetadata";
 import CodeBlock from "../components/ui/editors/CodeBlock";
 import Spinner from "../components/ui/Spinner";
 import Callout from "../components/ui/Callout";
+import SimulationPlayer from "../components/ui/players/SimulationPlayer";
 
 const GraphVisualizer = React.lazy(() => import("../components/ui/visualizers/GraphVisualizer"));
-const AlgoPlayer = React.lazy(() => import("../components/ui/players/AlgoPlayer"));
-const OOPPlayer = React.lazy(() => import("../components/ui/players/OOPPlayer"));
 const StackVisualizer = React.lazy(() => import("../components/ui/visualizers/StackVisualizer"));
 const QueueVisualizer = React.lazy(() => import("../components/ui/visualizers/QueueVisualizer"));
 const ListGraphVisualizer = React.lazy(() => import("../components/ui/visualizers/ListGraphVisualizer"));
 const BinTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/BinTreeVisualizer"));
-const ProofPlayer = React.lazy(() => import("../components/ui/players/ProofPlayer"));
 const MafsVisualizer = React.lazy(() => import("../components/ui/visualizers/MafsVisualizer"));
-const VideoPlayer = React.lazy(() => import("../components/ui/players/VideoPlayer"));
 const VectorVisualizer = React.lazy(() => import("../components/ui/visualizers/VectorVisualizer"));
 const ListVisualizer = React.lazy(() => import("../components/ui/visualizers/ListVisualizer"));
 const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/PointerVisualizer"));
@@ -69,11 +66,7 @@ type MarkdownComponentProps = Record<string, unknown>;
 const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     // Custom directive for videos: ::videoviz[src="/m2/video.webm" delay="3500"]
     videoviz: (props: MarkdownComponentProps) => {
-        return (
-            <React.Suspense fallback={<VizFallback />}>
-                <VideoPlayer {...(props as unknown as React.ComponentProps<typeof VideoPlayer>)} />
-            </React.Suspense>
-        );
+        return <SimulationPlayer type="video" {...(props as any)} />;
     },
     accordion: (props: MarkdownComponentProps) => {
         return (
@@ -95,18 +88,10 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         return <Callout {...(props as unknown as React.ComponentProps<typeof Callout>)} />;
     },
     algoviz: (props: MarkdownComponentProps) => {
-        return (
-            <React.Suspense fallback={<VizFallback />}>
-                <AlgoPlayer algorithm={props.algorithm as string} />
-            </React.Suspense>
-        );
+        return <SimulationPlayer type="algo" algorithm={props.algorithm as string} />;
     },
     oopviz: (props: MarkdownComponentProps) => {
-        return (
-            <React.Suspense fallback={<VizFallback />}>
-                <OOPPlayer simulation={props.simulation as string} />
-            </React.Suspense>
-        );
+        return <SimulationPlayer type="oop" simulation={props.simulation as string} />;
     },
     stackviz: () => {
         return (
@@ -158,11 +143,7 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         );
     },
     proofviz: (props: MarkdownComponentProps) => {
-        return (
-            <React.Suspense fallback={<VizFallback />}>
-                <ProofPlayer proofId={props.proof as string} />
-            </React.Suspense>
-        );
+        return <SimulationPlayer type="proof" proofId={props.proof as string} />;
     },
     mafs: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
