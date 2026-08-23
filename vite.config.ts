@@ -1,4 +1,4 @@
-import { apiDevServerPlugin } from './scripts/api-dev-server';
+import { apiDevServerPlugin } from './scripts/api-dev-server.ts';
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -92,15 +92,19 @@ export default defineConfig(({ mode }) => {
           manualChunks(id) {
             if (id.includes('node_modules')) {
               if (id.includes('firebase')) return 'vendor-firebase';
-              if (id.includes('@uiw') || id.includes('@codemirror')) return 'vendor-codemirror';
-              if (id.includes('react-force-graph') || id.includes('d3-') || id.includes('kapsule')) return 'vendor-graphs';
-              if (id.includes('react-markdown') || id.includes('rehype') || id.includes('remark')) return 'vendor-markdown';
+              if (id.includes('@uiw') || id.includes('@codemirror') || id.includes('@lezer')) return 'vendor-codemirror';
+              if (id.includes('force-graph') || id.includes('d3-') || id.includes('kapsule')) return 'vendor-graphs';
+              if (id.includes('react-markdown') || id.includes('rehype') || id.includes('remark') || id.includes('micromark') || id.includes('mdast') || id.includes('unified') || id.includes('bidi-js')) return 'vendor-markdown';
               if (id.includes('lucide-react')) return 'vendor-icons';
-              if (id.includes('framer-motion')) return 'vendor-framer';
+              if (id.includes('framer-motion') || id.includes('motion-dom') || id.includes('motion-utils')) return 'vendor-framer';
               if (id.includes('@tiptap') || id.includes('tiptap') || id.includes('prosemirror')) return 'vendor-tiptap';
               if (id.includes('katex')) return 'vendor-katex';
-              if (id.includes('three') || id.includes('@react-three')) return 'vendor-three';
+              if (id.includes('@react-three')) return 'vendor-react-three';
+              if (id.includes('three')) return 'vendor-threejs';
               if (id.includes('algoliasearch')) return 'vendor-algolia';
+              if (id.includes('date-fns')) return 'vendor-date';
+              if (id.includes('dompurify')) return 'vendor-dompurify';
+              if (id.includes('parse5')) return 'vendor-parse5';
               // Be more specific with React core to avoid circular dependencies
               if (
                 id.includes('node_modules/react/') ||
@@ -118,7 +122,6 @@ export default defineConfig(({ mode }) => {
               if (id.includes('i18next')) return 'vendor-i18n';
               if (id.includes('mafs')) return 'vendor-mafs';
               if (id.includes('lowlight') || id.includes('highlight.js')) return 'vendor-lowlight';
-              return 'vendor';
             }
           }
         }

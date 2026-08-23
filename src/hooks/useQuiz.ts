@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { allPersonalNotes } from 'content-collections';
-import type { Quiz, QuizQuestion } from '../types/quiz';
+import type { Quiz } from '../types/quiz';
 import { fisherYatesShuffle } from '../utils/quizUtils';
 
 export type AIPhase = 'idle' | 'connecting' | 'thinking' | 'writing';
@@ -44,10 +43,11 @@ export const useQuiz = (topicId: string | undefined) => {
             }
 
             // 2. Not found locally, attempt to generate dynamically via AI
+            const { allPersonalNotes } = await import('content-collections');
             const normalizedTopicId = topicId.replace(/tema(\d)/, 'tema-$1');
-            const topicNote = allPersonalNotes.find(note => note.slug === normalizedTopicId && note.lang === 'ca') || 
-                              allPersonalNotes.find(note => note.slug === normalizedTopicId) ||
-                              allPersonalNotes.find(note => note.slug.startsWith(normalizedTopicId + '-'));
+            const topicNote = allPersonalNotes.find((note: any) => note.slug === normalizedTopicId && note.lang === 'ca') || 
+                              allPersonalNotes.find((note: any) => note.slug === normalizedTopicId) ||
+                              allPersonalNotes.find((note: any) => note.slug.startsWith(normalizedTopicId + '-'));
                               
             if (!topicNote || !topicNote.content) {
                 if (isMounted) setIsGenerating(false);

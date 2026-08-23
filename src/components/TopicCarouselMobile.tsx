@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { allPersonalNotes } from 'content-collections';
+import type { allPersonalNotes } from 'content-collections';
 import { ArrowRight, Book, Terminal, Calculator, RefreshCw, Sparkles } from 'lucide-react';
 import { m as motion, MotionConfig, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -399,6 +399,11 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
     const [activeIndex, setActiveIndex] = useState(0);
     const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
     const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
+    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
+
+    useEffect(() => {
+        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
+    }, []);
     
     const isInteractive = !(isMobile && isMenuOpen);
 
@@ -428,7 +433,7 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
             .sort((a, b) => a.order - b.order);
 
         return { sortedTopics: topics, topicMeta: meta };
-    }, [subject, preferredLang]);
+    }, [subject, preferredLang, allPersonalNotes]);
 
     const carouselRef = useRef<HTMLDivElement>(null);
     const { scrollX } = useScroll({ container: carouselRef });
@@ -636,6 +641,11 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
     
     const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
     const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
+    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
+
+    useEffect(() => {
+        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
+    }, []);
     
     useEffect(() => {
         try {
@@ -696,7 +706,7 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
             .sort((a, b) => a.order - b.order);
 
         return { sortedTopics: topics, topicMeta: meta };
-    }, [subject, preferredLang]);
+    }, [subject, preferredLang, allPersonalNotes]);
         return (
             <div className="fixed inset-0 z-0 w-full flex flex-col overflow-hidden pointer-events-none">
                 <div className="flex-1 w-full h-full overflow-y-auto px-6 pt-24 pb-12 pointer-events-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

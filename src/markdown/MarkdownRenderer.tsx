@@ -14,8 +14,9 @@ import "mafs/font.css"; // Mafs fonts
 
 import { remarkDirectiveRehype } from "./remarkDirectiveRehype";
 import { remarkCodeMetadata } from "./remarkCodeMetadata";
-import CodeBlock from "../components/ui/editors/CodeBlock";
 import Spinner from "../components/ui/Spinner";
+
+const CodeBlock = React.lazy(() => import("../components/ui/editors/CodeBlock"));
 import Callout from "../components/ui/Callout";
 import SimulationPlayer from "../components/ui/players/SimulationPlayer";
 
@@ -197,11 +198,13 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
 
         return match ? (
             <div className="not-prose my-8 -mx-4 md:mx-0">
-                <CodeBlock
-                    code={String(children).replace(/\n$/, '')}
-                    language={match[1]}
-                    title={title}
-                />
+                <React.Suspense fallback={<VizFallback />}>
+                    <CodeBlock
+                        code={String(children).replace(/\n$/, '')}
+                        language={match[1]}
+                        title={title}
+                    />
+                </React.Suspense>
             </div>
         ) : (
             <code {...rest}

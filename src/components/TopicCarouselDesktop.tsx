@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react'
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { allPersonalNotes } from 'content-collections';
 import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { m as motion, useMotionTemplate, useMotionValue, MotionConfig } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -78,6 +77,11 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const preferredLang = i18n.language;
     const { shortcuts } = useSettingsStore();
     const [activeIndex, setActiveIndex] = useState(0);
+    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
+
+    useEffect(() => {
+        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
+    }, []);
 
     const enterShortcut = shortcuts?.carouselEnter || { key: 'Enter', meta: false };
     const leftShortcut = shortcuts?.carouselLeft || { key: 'ArrowLeft', meta: false };
@@ -139,7 +143,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             .sort((a, b) => a.order - b.order);
 
         return { sortedTopics: topics, topicMeta: meta };
-    }, [subject, preferredLang]);
+    }, [subject, preferredLang, allPersonalNotes]);
 
     // Save activeIndex to session storage whenever it updates (skip during restoration)
     useEffect(() => {

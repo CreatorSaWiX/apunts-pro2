@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { m as motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
-import { allPersonalNotes } from 'content-collections';
+import type { allPersonalNotes } from 'content-collections';
 
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +13,12 @@ const TopicPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
+    
+    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
+
+    useEffect(() => {
+        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
+    }, []);
     
     // PDF Download state
     const [availablePdfs, setAvailablePdfs] = useState<{ ca: boolean; es: boolean }>({ ca: false, es: false });
@@ -27,7 +33,7 @@ const TopicPage: React.FC = () => {
             found = allPersonalNotes.find(note => note.slug === id && note.lang === 'ca');
         }
         return found;
-    }, [id, preferredLang]);
+    }, [id, preferredLang, allPersonalNotes]);
 
     // Scroll Progress
     const { scrollYProgress } = useScroll();
@@ -67,7 +73,7 @@ const TopicPage: React.FC = () => {
             prevTopic: currentIndex > 0 ? sorted[currentIndex - 1] : undefined,
             nextTopic: currentIndex >= 0 && currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : undefined
         };
-    }, [topic, isLab, preferredLang, id]);
+    }, [topic, isLab, preferredLang, id, allPersonalNotes]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
