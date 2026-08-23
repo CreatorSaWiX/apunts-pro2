@@ -25,8 +25,8 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": ".",
     "paths": {
+      "*": ["./*"],
       "content-collections": [
         "./.content-collections/generated/index"
       ]
