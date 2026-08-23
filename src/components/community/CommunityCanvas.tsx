@@ -5,6 +5,7 @@ import { DrawProvider, useDrawContext, type Stroke, type DrawTool } from '../../
 import { useShallow } from 'zustand/react/shallow';
 import CommunityDrawLayer from './CommunityDrawLayer';
 import { LiquidToolbar, LiquidToolbarButton } from '../ui/glass/LiquidToolbar';
+import LiquidPanel from '../ui/glass/LiquidPanel';
 import { Palette, X, Undo2, Redo2, Trash2, Pen, Eraser, Hand } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { m as motion, AnimatePresence } from 'framer-motion';
@@ -60,6 +61,9 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         { id: 'purple', value: '#a855f7' },
     ];
 
+    const [isColorMenuOpen, setIsColorMenuOpen] = useState(false);
+    const [isSizeMenuOpen, setIsSizeMenuOpen] = useState(false);
+
     return (
         <div className="w-full h-full relative bg-[#09090b] overflow-hidden">
             {/* Background grids */}
@@ -88,88 +92,145 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             </div>
 
             {/* Drawing Toolbar */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
-                <LiquidToolbar>
-                    <LiquidToolbarButton key="pan" onClick={() => setCurrentTool('pan')} active={currentTool === 'pan'} title={t('canvas.tools.pan', 'Moure / Panoràmica (H / 1 / Espai)')}>
-                        <Hand size={18} />
-                    </LiquidToolbarButton>
-                    <LiquidToolbarButton key="pen" onClick={() => setCurrentTool('pen')} active={currentTool === 'pen'} title={t('canvas.tools.pen', 'Dibuixar (P / 2)')}>
-                        <Pen size={18} />
-                    </LiquidToolbarButton>
-                    <LiquidToolbarButton key="eraser" onClick={() => setCurrentTool('eraser')} active={currentTool === 'eraser'} title={t('canvas.tools.eraser', 'Esborrar (E / 3)')}>
-                        <Eraser size={18} />
-                    </LiquidToolbarButton>
+            <LiquidToolbar>
+                <LiquidToolbarButton key="pan" onClick={() => setCurrentTool('pan')} active={currentTool === 'pan'} title={t('canvas.tools.pan', 'Moure / Panoràmica (H / 1 / Espai)')}>
+                    <Hand size={18} />
+                </LiquidToolbarButton>
+                <LiquidToolbarButton key="pen" onClick={() => setCurrentTool('pen')} active={currentTool === 'pen'} title={t('canvas.tools.pen', 'Dibuixar (P / 2)')}>
+                    <Pen size={18} />
+                </LiquidToolbarButton>
+                <LiquidToolbarButton key="eraser" onClick={() => setCurrentTool('eraser')} active={currentTool === 'eraser'} title={t('canvas.tools.eraser', 'Esborrar (E / 3)')}>
+                    <Eraser size={18} />
+                </LiquidToolbarButton>
 
-                    <AnimatePresence mode="popLayout">
-                        {currentTool === 'pen' && (
-                            <motion.div
-                                key="pen-controls"
-                                layout
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                                className="flex items-center gap-1"
-                            >
-                                <div className="w-px h-6 bg-white/10 mx-1" />
+                <AnimatePresence mode="popLayout">
+                    {currentTool === 'pen' && (
+                        <motion.div
+                            key="pen-controls"
+                            layout
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                            className="flex items-center gap-1"
+                        >
+                            <div className="w-px h-6 bg-white/10 mx-1" />
 
-                                {/* Size controls */}
-                                {[2, 4, 8].map(size => (
-                                    <button
-                                        key={size}
-                                        type="button"
-                                        onClick={() => setCurrentWidth(size)}
-                                        title={t('canvas.tools.size', 'Mida {{size}}px ([ / ])', { size })}
-                                        className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition duration-300 ${currentWidth === size ? 'bg-white/20 shadow-inner' : 'hover:bg-white/10 opacity-70 hover:opacity-100'}`}
-                                        aria-label="Obrir panell">
-                                        <div 
-                                            className="rounded-full bg-white transition duration-300"
-                                            style={{ width: size + 2, height: size + 2 }}
-                                        />
-                                    </button>
-                                ))}
+                            {/* Size controls */}
+                            <motion.div layout key="size-selector" className="relative">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsSizeMenuOpen(!isSizeMenuOpen)}
+                                    title={t('canvas.tools.sizeSelect', 'Seleccionar Mida')}
+                                    className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition duration-300 hover:bg-white/10"
+                                >
+                                    <div 
+                                        className="rounded-full bg-white transition duration-300"
+                                        style={{ width: currentWidth + 2, height: currentWidth + 2 }}
+                                    />
+                                </button>
 
-                                <div className="w-px h-6 bg-white/10 mx-1" />
-
-                                {/* Color controls */}
-                                {drawColors.map(c => {
-                                    const colorTitles: Record<string, string> = {
-                                        red: t('canvas.colors.red', 'Vermell (R / 4 / C)'),
-                                        blue: t('canvas.colors.blue', 'Blau (B / 5 / C)'),
-                                        yellow: t('canvas.colors.yellow', 'Groc (Y / 6 / C)'),
-                                        purple: t('canvas.colors.purple', 'Lila (U / 7 / C)')
-                                    };
-                                    return (
-                                        <button
-                                            key={c.id}
-                                            type="button"
-                                            onClick={() => setCurrentColor(c.value)}
-                                            title={colorTitles[c.id] || t('canvas.colors.cycle', 'Canviar color (C)')}
-                                            className={`w-8 h-8 shrink-0 rounded-full transition duration-300 relative ${currentColor === c.value ? 'scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)] z-10' : 'scale-90 hover:scale-100 opacity-70 hover:opacity-100'}`}
-                                            style={{ backgroundColor: c.value, boxShadow: currentColor === c.value ? `0 0 20px ${c.value}66` : 'none' }}
-                                            aria-label="Botó" />
-                                    );
-                                })}
-
-                                <div className="w-px h-6 bg-white/10 mx-1" />
+                                <AnimatePresence>
+                                    {isSizeMenuOpen && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 flex gap-1 p-2 rounded-[2rem] pointer-events-auto"
+                                        >
+                                            <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
+                                            
+                                            <div className="relative z-10 flex gap-2 px-2 items-center">
+                                                {[2, 4, 8].map(size => (
+                                                    <button
+                                                        key={size}
+                                                        type="button"
+                                                        onClick={() => { setCurrentWidth(size); setIsSizeMenuOpen(false); }}
+                                                        title={t('canvas.tools.size', 'Mida {{size}}px ([ / ])', { size })}
+                                                        className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition duration-300 ${currentWidth === size ? 'bg-white/20 shadow-inner scale-110' : 'hover:bg-white/10 opacity-70 hover:opacity-100'}`}
+                                                        aria-label="Obrir panell">
+                                                        <div 
+                                                            className="rounded-full bg-white transition duration-300"
+                                                            style={{ width: size + 2, height: size + 2 }}
+                                                        />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </motion.div>
-                        )}
-                    </AnimatePresence>
 
-                    <LiquidToolbarButton key="undo" onClick={undoStroke} active={false} className={!canUndo ? 'opacity-30 cursor-not-allowed' : ''} title={t('canvas.actions.undo', 'Desfer (Ctrl+Z)')}>
-                        <Undo2 size={18} />
-                    </LiquidToolbarButton>
+                            <div className="w-px h-6 bg-white/10 mx-1" />
 
-                    <LiquidToolbarButton key="redo" onClick={redoStroke} active={false} className={!canRedo ? 'opacity-30 cursor-not-allowed' : ''} title={t('canvas.actions.redo', 'Refer (Ctrl+Y / Ctrl+Shift+Z)')}>
-                        <Redo2 size={18} />
-                    </LiquidToolbarButton>
+                            {/* Color controls */}
+                            <motion.div layout key="color-selector" className="relative">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsColorMenuOpen(!isColorMenuOpen)}
+                                    title={t('canvas.colors.select', 'Seleccionar Color')}
+                                    className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition duration-300 hover:bg-white/10"
+                                >
+                                    <div className="w-5 h-5 rounded-full border border-white/20" style={{ backgroundColor: currentColor, boxShadow: `0 0 12px ${currentColor}80` }} />
+                                </button>
 
-                    <LiquidToolbarButton key="clear" onClick={() => { if(window.confirm(t('canvas.confirmClear', 'Vols esborrar tot el llenç?'))) { clearStrokes(); broadcastClear(); } }} active={false} className="text-red-400 hover:text-red-300 hover:bg-red-500/10" title={t('canvas.actions.clear', 'Netejar tot el llenç (Shift+Supr)')}>
-                        <Trash2 size={18} />
-                    </LiquidToolbarButton>
+                                <AnimatePresence>
+                                    {isColorMenuOpen && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 flex gap-1 p-2 rounded-[2rem] pointer-events-auto"
+                                        >
+                                            <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
+                                            
+                                            <div className="relative z-10 flex gap-1 px-1">
+                                                {drawColors.map(c => {
+                                                    const colorTitles: Record<string, string> = {
+                                                        red: t('canvas.colors.red', 'Vermell (R / 4 / C)'),
+                                                        blue: t('canvas.colors.blue', 'Blau (B / 5 / C)'),
+                                                        yellow: t('canvas.colors.yellow', 'Groc (Y / 6 / C)'),
+                                                        purple: t('canvas.colors.purple', 'Lila (U / 7 / C)')
+                                                    };
+                                                    return (
+                                                        <button
+                                                            key={c.id}
+                                                            type="button"
+                                                            onClick={() => { setCurrentColor(c.value); setIsColorMenuOpen(false); }}
+                                                            title={colorTitles[c.id] || t('canvas.colors.cycle', 'Canviar color (C)')}
+                                                            className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === c.value ? 'bg-white/10 scale-110' : ''}`}
+                                                            aria-label="Botó"
+                                                        >
+                                                            <div className="w-5 h-5 rounded-full" style={{ backgroundColor: c.value, boxShadow: `0 0 8px ${c.value}80` }} />
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </motion.div>
 
-                </LiquidToolbar>
-            </div>
+                            <div className="w-px h-6 bg-white/10 mx-1" />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <LiquidToolbarButton key="undo" onClick={undoStroke} active={false} className={!canUndo ? 'opacity-30 cursor-not-allowed' : ''} title={t('canvas.actions.undo', 'Desfer (Ctrl+Z)')}>
+                    <Undo2 size={18} />
+                </LiquidToolbarButton>
+
+                <LiquidToolbarButton key="redo" onClick={redoStroke} active={false} className={!canRedo ? 'opacity-30 cursor-not-allowed' : ''} title={t('canvas.actions.redo', 'Refer (Ctrl+Y / Ctrl+Shift+Z)')}>
+                    <Redo2 size={18} />
+                </LiquidToolbarButton>
+
+                <LiquidToolbarButton key="clear" onClick={() => { if(window.confirm(t('canvas.confirmClear', 'Vols esborrar tot el llenç?'))) { clearStrokes(); broadcastClear(); } }} active={false} className="text-red-400 hover:text-red-300 hover:bg-red-500/10" title={t('canvas.actions.clear', 'Netejar tot el llenç (Shift+Supr)')}>
+                    <Trash2 size={18} />
+                </LiquidToolbarButton>
+
+            </LiquidToolbar>
         </div>
     );
 };

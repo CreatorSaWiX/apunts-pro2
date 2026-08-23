@@ -17,6 +17,7 @@ import { ca, es, enUS } from 'date-fns/locale';
 import BottomSheet from '../ui/mobile/BottomSheet';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import ConfirmModal from '../ui/modals/ConfirmModal';
+import { resolveMediaUrl } from '../../lib/mediaUtils';
 
 const dateLocales: Record<string, Locale> = { ca, es, en: enUS };
 
@@ -310,7 +311,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete, onEd
                                             setTimeout(() => navigate(`/profile/${post.username}`), 100);
                                         }}
                                     >
-                                        <img src={(user && user.id === post.userId) ? user.avatar : post.userAvatar} alt={(user && user.id === post.userId) ? user.username : post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800 border border-white/10 shrink-0" />
+                                        <img src={resolveMediaUrl((user && user.id === post.userId) ? user.avatar : post.userAvatar)} alt={(user && user.id === post.userId) ? user.username : post.username} loading="lazy" className="w-10 h-10 rounded-full object-cover bg-slate-800 border border-white/10 shrink-0" />
                                         <div className="min-w-0">
                                             <h3 className="font-bold text-slate-100 truncate group-hover:text-primary transition-colors">{(user && user.id === post.userId) ? user.username : post.username}</h3>
                                             {timeAgo && <p className="text-xs text-slate-500 font-medium capitalize first-letter:capitalize truncate">{timeAgo}</p>}
@@ -408,7 +409,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete, onEd
                                         <AnimatePresence mode="wait">
                                             <motion.img
                                                 key={currentImageIndex}
-                                                src={postImages[currentImageIndex]?.url}
+                                                src={resolveMediaUrl(postImages[currentImageIndex]?.url)}
                                                 alt={`Image ${currentImageIndex + 1}`}
                                                 initial={{ opacity: 0, scale: 0.98 }}
                                                 animate={{ opacity: 1, scale: 1 }}

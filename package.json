@@ -11,7 +11,7 @@
     "build:pdfs": "node scripts/build-pdfs.js",
     "build:solucionaris-pdfs": "tsx scripts/build-solucionaris-pdfs.ts",
     "build:offline-manifest": "node scripts/build-offline-manifest.js",
-    "build:embeddings": "tsx --env-file=.env.local scripts/build-embeddings.ts",
+    "build:embeddings": "tsx scripts/build-embeddings.ts",
     "doctor": "npx react-doctor@latest"
   },
   "dependencies": {

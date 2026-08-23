@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import VideoViewer from './VideoViewer';
 import { Download, File, Box } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
+import { resolveMediaUrl } from '../../../lib/mediaUtils';
 
 const PdfViewer = lazy(() => import('./PdfViewer'));
 const CodeViewer = lazy(() => import('./CodeViewer'));
@@ -28,16 +29,17 @@ const MODEL_EXTENSIONS = ['gltf', 'glb', 'obj'];
 
 const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererProps) => {
     const ext = filename.split('.').pop()?.toLowerCase() || '';
+    const resolvedUrl = resolveMediaUrl(url) || url;
 
     // Route to the correct viewer based on type or extension
     if (type.startsWith('video/')) {
-        return <VideoViewer url={url} filename={filename} />;
+        return <VideoViewer url={resolvedUrl} filename={filename} />;
     }
 
     if (type === 'application/pdf') {
         return (
             <Suspense fallback={<ViewerSkeleton text="Carregant visor PDF..." />}>
-                <PdfViewer url={url} filename={filename} />
+                <PdfViewer url={resolvedUrl} filename={filename} />
             </Suspense>
         );
     }
@@ -45,7 +47,7 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
     if (CODE_EXTENSIONS.includes(ext) || type.startsWith('text/')) {
         return (
             <Suspense fallback={<ViewerSkeleton text="Carregant codi..." />}>
-                <CodeViewer url={url} filename={filename} />
+                <CodeViewer url={resolvedUrl} filename={filename} />
             </Suspense>
         );
     }
@@ -53,7 +55,7 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
     if (MODEL_EXTENSIONS.includes(ext) || type.includes('model')) {
         return (
             <Suspense fallback={<ViewerSkeleton text="Carregant visor 3D..." />}>
-                <Model3DViewer url={url} filename={filename} />
+                <Model3DViewer url={resolvedUrl} filename={filename} />
             </Suspense>
         );
     }
@@ -78,7 +80,7 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
             </div>
             
             <a 
-                href={url} 
+                href={resolvedUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="px-6 py-3 rounded-xl bg-white/10 hover:bg-primary text-white font-bold text-sm flex items-center gap-2 transition active:scale-95 shadow-lg shrink-0"

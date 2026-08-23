@@ -14,6 +14,8 @@ import InlineEditableText from '../components/ui/inputs/InlineEditableText';
 import { useProfile } from '../hooks/useProfile';
 import { useAuth } from '../contexts/AuthContext';
 
+import { resolveMediaUrl, isVideoUrl } from '../lib/mediaUtils';
+
 const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
 
 const ProfilePage = () => {
@@ -40,6 +42,19 @@ const ProfilePage = () => {
     const [isComposeOpen, setIsComposeOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
     const bannerRef = React.useRef<HTMLDivElement>(null);
+
+    const setupVideo = (el: HTMLVideoElement | null) => {
+        if (el) {
+            el.muted = true;
+            el.defaultMuted = true;
+            el.playsInline = true;
+            el.play().catch(() => {});
+        }
+    };
+
+    const bannerUrl = resolveMediaUrl(extendedUser?.banner) || `https://picsum.photos/seed/${extendedUser?.username || 'Apunts'}/1920/1080`;
+    const avatarUrl = resolveMediaUrl(extendedUser?.avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`;
+    const isBannerVideo = Boolean(bannerUrl && isVideoUrl(bannerUrl));
 
     // Parallax effect for the banner
     useEffect(() => {
@@ -97,20 +112,6 @@ const ProfilePage = () => {
         );
     }
 
-    const getProxyUrl = (url: string | undefined | null) => {
-        if (!url) return undefined;
-        if (import.meta.env.DEV && url.includes('.r2.dev/')) {
-            const path = new URL(url).pathname;
-            return `/api/cdn${path}`;
-        } 
-        return url;
-    };
-
-    const isVideoUrl = (url: string) => /\.(mp4|webm|mov|ogg)$/i.test(url.split('?')[0]);
-    const bannerUrl = getProxyUrl(extendedUser?.banner) || `https://picsum.photos/seed/${extendedUser?.username || 'Apunts'}/1920/1080`;
-    const avatarUrl = getProxyUrl(extendedUser?.avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`;
-    const isBannerVideo = bannerUrl && isVideoUrl(bannerUrl);
-
     return (
         <div className="min-h-screen w-full relative z-10 font-sans bg-transparent">
             {/* HERO SECTION */}
@@ -119,8 +120,26 @@ const ProfilePage = () => {
                     <div ref={bannerRef} className="absolute inset-0 apple-mask-hero pointer-events-none select-none overflow-hidden" style={{ transformOrigin: 'top', willChange: 'transform' }}>
                         {isBannerVideo ? (
                             <>
-                                <video src={bannerUrl} autoPlay loop muted playsInline className="absolute inset-0 object-cover w-full h-full opacity-40 blur-[40px] scale-110 transition-opacity duration-1000" />
-                                <video src={bannerUrl} autoPlay loop muted playsInline className="absolute inset-0 object-cover w-full h-full opacity-70 transition-opacity duration-1000" />
+                                <video 
+                                    ref={setupVideo}
+                                    src={bannerUrl} 
+                                    autoPlay 
+                                    loop 
+                                    muted 
+                                    playsInline 
+                                    preload="auto"
+                                    className="absolute inset-0 object-cover w-full h-full opacity-40 blur-2xl scale-110 transition-opacity duration-700" 
+                                />
+                                <video 
+                                    ref={setupVideo}
+                                    src={bannerUrl} 
+                                    autoPlay 
+                                    loop 
+                                    muted 
+                                    playsInline 
+                                    preload="auto"
+                                    className="absolute inset-0 object-cover w-full h-full opacity-70 transition-opacity duration-700" 
+                                />
                             </>
                         ) : (
                             <>
@@ -149,7 +168,7 @@ const ProfilePage = () => {
                     <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="relative shrink-0 group/avatar mx-auto md:mx-0">
                         <div className="absolute inset-0 bg-primary/20 blur-[30px] rounded-full pointer-events-none md:opacity-50 opacity-100" />
                         <div className="w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-[1.25rem] md:rounded-[2rem] p-1 bg-[#020617]/60 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/20 relative overflow-hidden z-10">
-                            <img src={avatarUrl} alt={extendedUser?.username} loading="lazy" className="w-full h-full rounded-[1rem] md:rounded-[1.7rem] object-cover bg-[#111]" />
+                            <img src={avatarUrl} alt={extendedUser?.username} loading="eager" fetchPriority="high" className="w-full h-full rounded-[1rem] md:rounded-[1.7rem] object-cover bg-[#111]" />
                             {isOwnProfile && (
                                 <div className="absolute inset-1 rounded-[1rem] md:rounded-[1.7rem] bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white cursor-pointer overflow-hidden z-10">
                                     <Upload size={24} className="mb-1 relative z-20 pointer-events-none" />

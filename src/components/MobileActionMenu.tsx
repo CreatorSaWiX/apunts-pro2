@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Spinner from './ui/Spinner';
 import BottomSheet from './ui/mobile/BottomSheet';
+import { resolveMediaUrl } from '../lib/mediaUtils';
 
 interface Contributor {
     uid: string;
@@ -191,7 +192,7 @@ const MobileActionMenu: React.FC<{
                                         <Link to={`/profile/${user.username}`} onClick={() => setIsOpen(false)} key={user.uid} className="flex flex-col gap-1 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center text-white text-xs">
-                                                    {user.avatar ? <img src={user.avatar} className="w-full h-full object-cover" loading="lazy" alt={`${user.username} avatar`} /> : user.username[0].toUpperCase()}
+                                                    {user.avatar ? <img src={resolveMediaUrl(user.avatar) || user.avatar} className="w-full h-full object-cover" loading="lazy" alt={`${user.username} avatar`} /> : user.username[0].toUpperCase()}
                                                 </div>
                                                 <div>
                                                     <div className="text-sm text-white font-medium">{user.username}</div>

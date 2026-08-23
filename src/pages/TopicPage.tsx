@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ArrowLeft, ArrowRight, FileText, X } from 'lucide-react';
 import { MarkdownRenderer } from "../markdown/MarkdownRenderer";
+import Spinner from '../components/ui/Spinner';
 
 
 const TopicPage: React.FC = () => {
@@ -15,9 +16,18 @@ const TopicPage: React.FC = () => {
     const preferredLang = i18n.language;
     
     const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
+        import('content-collections')
+            .then(m => {
+                setAllPersonalNotes(m.allPersonalNotes);
+                setIsLoading(false);
+            })
+            .catch(e => {
+                console.error(e);
+                setIsLoading(false);
+            });
     }, []);
     
     // PDF Download state
@@ -102,6 +112,14 @@ const TopicPage: React.FC = () => {
             checkPdfs();
         }
     }, [id, topic]);
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center w-full relative z-10">
+                <Spinner size="xl" variant="primary" />
+            </div>
+        );
+    }
 
     if (!topic || topic.draft) {
         return <Navigate to="/" replace />;

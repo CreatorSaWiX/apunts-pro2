@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import type { User as FirebaseUser } from 'firebase/auth';
+import { resolveMediaUrl } from '../lib/mediaUtils';
 
 export interface User {
     id: string;
     username: string;
     email: string;
     avatar?: string;
+    banner?: string;
     role?: string;
 }
 
@@ -25,7 +27,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [user, setUser] = useState<User | null>(() => {
         try {
             const cachedUser = localStorage.getItem('auth_user');
-            return cachedUser ? JSON.parse(cachedUser) : null;
+            if (cachedUser) {
+                const parsed = JSON.parse(cachedUser);
+                if (parsed.avatar) parsed.avatar = resolveMediaUrl(parsed.avatar);
+                if (parsed.banner) parsed.banner = resolveMediaUrl(parsed.banner);
+                return parsed;
+            }
+            return null;
         } catch {
             return null;
         }
@@ -63,12 +71,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         }
 
                         const username = (firestoreData.username as string) || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
+                        const rawAvatar = (firestoreData.avatar as string) || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${username}`;
+                        const rawBanner = (firestoreData.banner as string) || undefined;
 
                         const newUser = {
                             id: firebaseUser.uid,
                             username: username,
                             email: firebaseUser.email || '',
-                            avatar: (firestoreData.avatar as string) || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${username}`,
+                            avatar: resolveMediaUrl(rawAvatar) || rawAvatar,
+                            banner: resolveMediaUrl(rawBanner) || rawBanner,
                             role: role
                         };
                         setUser(newUser);
@@ -190,7 +201,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const updateUser = useCallback((updates: Partial<User>) => {
         if (!user) return;
-        const updated = { ...user, ...updates };
+        const normalizedUpdates = { ...updates };
+        if (normalizedUpdates.avatar) normalizedUpdates.avatar = resolveMediaUrl(normalizedUpdates.avatar);
+        if (normalizedUpdates.banner) normalizedUpdates.banner = resolveMediaUrl(normalizedUpdates.banner);
+        const updated = { ...user, ...normalizedUpdates };
         localStorage.setItem('auth_user', JSON.stringify(updated));
         setUser(updated);
     }, [user]);

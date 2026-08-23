@@ -49,7 +49,7 @@ export default defineConfig(({ mode }) => {
           navigateFallbackDenylist: [/^\/pdfs\//, /^\/api\//], // EXCLOURE ELS PDFS DEL SERVICE WORKER
           runtimeCaching: [
             {
-              urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
+              urlPattern: ({ url }) => url.pathname.startsWith('/api/') && !url.pathname.startsWith('/api/cdn/'),
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'api-cache',

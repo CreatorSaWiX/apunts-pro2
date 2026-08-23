@@ -14,6 +14,10 @@ export function apiDevServerPlugin(mode: string): Plugin {
   return {
     name: 'jutge-api-dev-server',
     configureServer(server) {
+      server.middlewares.use('/cdn', async (req: IncomingMessage, res: ServerResponse) => {
+        await handleLocalCdn(req, res, env);
+      });
+
       server.middlewares.use('/api', async (req: IncomingMessage, res: ServerResponse, next: Function) => {
         try {
           const urlStr = req.url || '/';
@@ -121,34 +125,16 @@ export function apiDevServerPlugin(mode: string): Plugin {
   };
 }
 
-// Local implementation for /api/cdn
+// Local implementation for /cdn (Redirect to Cloudflare public CDN)
 async function handleLocalCdn(req: IncomingMessage, res: ServerResponse, env: Record<string, string>) {
   try {
-    const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
-    const { getSignedUrl } = await import('@aws-sdk/s3-request-presigner');
+    const rawUrl = req.url || '/';
+    let path = rawUrl.split('?')[0];
+    if (path.startsWith('/cdn/')) path = path.substring(5);
+    else if (path.startsWith('/api/cdn/')) path = path.substring(9);
+    else if (path.startsWith('/')) path = path.substring(1);
 
-    const accountId = env.R2_ACCOUNT_ID;
-    const endpoint = env.R2_ENDPOINT || (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : null);
-    const accessKeyId = env.R2_ACCESS_KEY_ID;
-    const secretAccessKey = env.R2_SECRET_ACCESS_KEY;
-    const bucketName = env.R2_BUCKET_NAME;
-
-    if (!endpoint || !accessKeyId || !secretAccessKey || !bucketName) {
-      res.statusCode = 500;
-      res.end('Falta configuració de R2');
-      return;
-    }
-
-    const S3 = new S3Client({
-      region: 'auto',
-      endpoint: endpoint ? new URL(endpoint).origin : undefined,
-      credentials: { accessKeyId, secretAccessKey },
-      forcePathStyle: true,
-    });
-
-    const urlParts = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
-    const pathWithoutCdn = urlParts.pathname.substring(5); // remove /cdn/
-    const objectKey = decodeURIComponent(pathWithoutCdn);
+    const objectKey = decodeURIComponent(path);
 
     if (!objectKey) {
       res.statusCode = 400;
@@ -156,14 +142,13 @@ async function handleLocalCdn(req: IncomingMessage, res: ServerResponse, env: Re
       return;
     }
 
-    const command = new GetObjectCommand({
-      Bucket: bucketName,
-      Key: objectKey,
-    });
-
-    const presignedUrl = await getSignedUrl(S3, command, { expiresIn: 3600 });
+    const publicBase = env.VITE_R2_PUBLIC_URL || 'https://pub-b67ee6442b98462db44a968a86d3b036.r2.dev';
+    const targetUrl = `${publicBase.replace(/\/$/, '')}/${objectKey}`;
     
-    res.writeHead(302, { Location: presignedUrl });
+    res.writeHead(302, { 
+      Location: targetUrl,
+      'Access-Control-Allow-Origin': '*'
+    });
     res.end();
   } catch (e: unknown) {
     console.error("[DevServer R2 CDN Error]:", e);

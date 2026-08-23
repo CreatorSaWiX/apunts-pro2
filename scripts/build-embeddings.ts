@@ -1,7 +1,17 @@
-// import { GoogleGenAI } from '@google/genai';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+// Carrega .env.local o .env si existeixen localment
+if (typeof process.loadEnvFile === 'function') {
+    try {
+        process.loadEnvFile('.env.local');
+    } catch {
+        try {
+            process.loadEnvFile('.env');
+        } catch {}
+    }
+}
 
 // Per suportar __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -9,8 +19,7 @@ const __dirname = path.dirname(__filename);
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
-    console.error('ERROR: Falta GEMINI_API_KEY a .env.local');
-    process.exit(1);
+    console.warn('Avís: GEMINI_API_KEY no detectada. S\'omet la generació de nous embeddings.');
 }
 
 // const ai = new GoogleGenAI({ apiKey });

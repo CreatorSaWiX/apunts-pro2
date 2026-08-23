@@ -230,7 +230,11 @@ const CommunityPage = () => {
                     <button type="button"
                         onClick={() => {
                             if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(20);
-                            handleOpenCanvas();
+                            if (!user) {
+                                navigate('/login');
+                            } else {
+                                handleOpenCanvas();
+                            }
                         }}
                         aria-label={t('community.canvas', 'Llenç')}
                         className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}

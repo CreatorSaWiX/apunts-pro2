@@ -13,7 +13,12 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
     const { filename, contentType } = parseResult.data;
 
-    const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+    const ALLOWED_MIME_TYPES = [
+        'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 
+        'application/pdf', 
+        'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime',
+        'application/zip', 'application/x-zip-compressed'
+    ];
     if (!ALLOWED_MIME_TYPES.includes(contentType)) {
         return jsonResponse({ error: 'Tipus de fitxer no permès' }, 415);
     }

@@ -30,7 +30,7 @@ export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, classNam
                 <motion.div className="absolute inset-0 pointer-events-none" style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}>
                     <LiquidPanel className="w-full h-full !rounded-full">{null}</LiquidPanel>
                 </motion.div>
-                <div className="relative flex items-center gap-1 p-2 max-w-full">
+                <div className="relative flex items-center gap-1 p-2 max-w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     <AnimatePresence mode="popLayout">
                         {children}
                     </AnimatePresence>
@@ -59,7 +59,7 @@ export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active
             whileTap="tap"
             variants={{ hover: {}, tap: {} }}
             className={`
-                relative shrink-0 px-3 sm:px-5 py-2.5 rounded-full text-sm font-bold transition duration-300 group
+                relative shrink-0 px-2 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold transition duration-300 group
                 ${variant === 'default' ? (
                     active 
                         ? 'text-white' 

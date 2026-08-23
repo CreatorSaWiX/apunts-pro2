@@ -12,6 +12,7 @@ import { ImagePlus } from 'lucide-react';
 import subjectsData from '../../data/subjects.json';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { tailwindColors } from '../../stores/useSubjectStore';
+import { resolveMediaUrl } from '../../lib/mediaUtils';
 
 interface PublicationCardProps {
     post: CommunityPost;
@@ -32,7 +33,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
     const firstAttachment = post.attachments?.[0];
     const imageAttachment = post.attachments?.find(a => a.type.startsWith('image/'));
 
-    const coverUrl = firstAttachment?.thumbnailUrl || imageAttachment?.url;
+    const coverUrl = resolveMediaUrl(firstAttachment?.thumbnailUrl || imageAttachment?.url);
 
     const ext = firstAttachment?.name.split('.').pop()?.toLowerCase() || '';
     const type = firstAttachment?.type || '';
@@ -108,7 +109,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
             />
             {isVideo && isHovered && firstAttachment ? (
                 <video
-                    src={firstAttachment.url}
+                    src={resolveMediaUrl(firstAttachment.url)}
                     autoPlay
                     muted
                     loop
@@ -229,7 +230,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                             navigate(`/profile/${post.username}`);
                         }}
                     >
-                        <img src={(user && user.id === post.userId) ? user.avatar : post.userAvatar} alt={(user && user.id === post.userId) ? user.username : post.username} loading="lazy" decoding="async" className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
+                        <img src={resolveMediaUrl((user && user.id === post.userId) ? user.avatar : post.userAvatar)} alt={(user && user.id === post.userId) ? user.username : post.username} loading="lazy" decoding="async" className="w-4 h-4 rounded-full object-cover bg-slate-800 shrink-0 border border-white/10" />
                         <span className="text-[11px] text-slate-300 truncate group-hover/author:text-white transition-colors">
                             {(user && user.id === post.userId) ? user.username : post.username}
                         </span>

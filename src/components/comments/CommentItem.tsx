@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CUSTOM_EMOJIS } from '../../lib/emojis';
+import { resolveMediaUrl } from '../../lib/mediaUtils';
 
 const CUSTOM_EMOTES = Object.values(CUSTOM_EMOJIS);
 
@@ -90,7 +91,7 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                 {/* Avatar */}
                 <Link to={`/profile/${(user && comment.userId === user.id) ? user.username : comment.username}`} className="shrink-0 hover:opacity-80 transition-opacity">
                     <img loading="lazy"
-                        src={(user && comment.userId === user.id) ? (user.avatar || comment.userAvatar) : (comment.userAvatar || `https://ui-avatars.com/api/?name=${comment.username}&background=random`)}
+                        src={resolveMediaUrl((user && comment.userId === user.id) ? (user.avatar || comment.userAvatar) : (comment.userAvatar)) || `https://ui-avatars.com/api/?name=${comment.username}&background=random`}
                         alt={(user && comment.userId === user.id) ? user.username : comment.username}
                         className={`${isReply ? 'w-8 h-8' : 'w-10 h-10'} rounded-full bg-slate-800 object-cover ring-2 ring-slate-900`}
                     />
