@@ -46,10 +46,10 @@ export default defineConfig(({ mode }) => {
           globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
           globIgnores: ['**/embeddings*.json', '**/node_modules/**/*'],
           maximumFileSizeToCacheInBytes: 4000000,
-          navigateFallbackDenylist: [/^\/pdfs\//, /^\/api\//], // EXCLOURE ELS PDFS DEL SERVICE WORKER
+          navigateFallbackDenylist: [/^\/pdfs\//, /^\/api\//, /^\/cdn\//], // Excloure PDFs, APIs i CDN del Service Worker
           runtimeCaching: [
             {
-              urlPattern: ({ url }) => url.pathname.startsWith('/api/') && !url.pathname.startsWith('/api/cdn/'),
+              urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'api-cache',

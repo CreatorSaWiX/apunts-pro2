@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { LogOut, Upload, Mail, Send, Bell, ExternalLink } from 'lucide-react';
 import { useParams, Navigate } from 'react-router-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
@@ -43,14 +43,14 @@ const ProfilePage = () => {
     const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
     const bannerRef = React.useRef<HTMLDivElement>(null);
 
-    const setupVideo = (el: HTMLVideoElement | null) => {
+    const setupVideo = useCallback((el: HTMLVideoElement | null) => {
         if (el) {
             el.muted = true;
             el.defaultMuted = true;
             el.playsInline = true;
             el.play().catch(() => {});
         }
-    };
+    }, []);
 
     const bannerUrl = resolveMediaUrl(extendedUser?.banner) || `https://picsum.photos/seed/${extendedUser?.username || 'Apunts'}/1920/1080`;
     const avatarUrl = resolveMediaUrl(extendedUser?.avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`;
