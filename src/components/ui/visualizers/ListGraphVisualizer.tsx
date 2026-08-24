@@ -15,12 +15,14 @@ interface GraphLink {
     source: string;
     target: string;
     label?: string;
+    curvature?: number;
+    color?: string;
 }
 
 export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { initialList?: number[] }) {
     const [list, setList] = useState<number[]>(initialList);
     const [inputVal, setInputVal] = useState<string>("");
-    const [lastAction, setLastAction] = useState<string>("Inici (Llista estàtica generada automàticament pre-estesa)");
+    const [lastAction, setLastAction] = useState<string>("Inici (Llista doblement encadenada std::list)");
     const [updateKey, setUpdateKey] = useState<number>(0);
 
     const handlePushBack = () => {
@@ -63,7 +65,7 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
         setUpdateKey(k => k + 1);
     };
 
-    // Construcció dinàmica del JSON del Graf basat en l'estat actual de 'list'
+    // Construcció dinàmica del JSON del Graf basat en l'estat actual de 'list' (Doble Enllaç / Bidireccional)
     const graphData = useMemo(() => {
         const nodes: GraphNode[] = [{ id: "begin", label: "begin()", color: "#10b981" }];
         const links: GraphLink[] = [];
@@ -71,21 +73,25 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
         // Els elements reals de la llista
         list.forEach((val, index) => {
             // Assignem IDs forts usant identificadors únics basats en instància i dada o en index i valor
-            // Com que en un Node la memòria és qui fixa, la key real seria referencial. Simplifiquem usant "node_X"
             nodes.push({ id: `node_${index}`, label: `Val: ${val}`, color: "#3b82f6", overrideVal: val });
         });
 
         nodes.push({ id: "end", label: "end()", color: "#ef4444" });
 
-        // Enllaçar
+        const addBidirectionalLink = (source: string, target: string) => {
+            links.push({ source, target, curvature: 0.2 });
+            links.push({ source: target, target: source, curvature: 0.2 });
+        };
+
+        // Enllaçar bidireccionalment (next i prev de la llista doblement encadenada)
         if (list.length === 0) {
-            links.push({ source: "begin", target: "end" });
+            addBidirectionalLink("begin", "end");
         } else {
-            links.push({ source: "begin", target: "node_0" });
+            addBidirectionalLink("begin", "node_0");
             for (let i = 0; i < list.length - 1; i++) {
-                links.push({ source: `node_${i}`, target: `node_${i + 1}` });
+                addBidirectionalLink(`node_${i}`, `node_${i + 1}`);
             }
-            links.push({ source: `node_${list.length - 1}`, target: "end" });
+            addBidirectionalLink(`node_${list.length - 1}`, "end");
         }
 
         return { nodes, links };
@@ -113,7 +119,7 @@ export default function ListGraphVisualizer({ initialList = [10, 20, 30] }: { in
                         value={inputVal}
                         onChange={(e) => setInputVal(e.target.value)}
                         placeholder="Valor Node (ex: 42)"
-                        className="w-full h-11 bg-slate-900/60 border border-slate-700/80 rounded-full px-4 text-center text-sky-200 font-bold focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition placeholder:text-slate-500 shadow-inner"
+                        className="w-full h-11 bg-slate-900/60 border border-slate-700/80 rounded-full px-4 text-center text-sky-200 font-bold focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition placeholder:text-slate-500 shadow-inner [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                 </div>
 

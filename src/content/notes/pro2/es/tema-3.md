@@ -7,15 +7,16 @@ order: 3
 
 ## 3.1 Listas vs vectores
 
-Las **listas (`list`)** solucionan el alto coste de inserción en medio de los vectores $\mathcal{O}(n)$. Están formadas por nodos independientes enlazados. Añadir o borrar un elemento intermedio cuesta solo $\mathcal{O}(1)$.
+Las **listas (`list`)** solucionen el alto coste de inserción en medio de los vectores $\mathcal{O}(n)$. Están formadas por nodos independientes enlazados. Añadir o borrar un elemento intermedio cuesta solo $\mathcal{O}(1)$.
 
-> En algoritmia, $\mathcal{O}(n)$ (se pronuncia "O de n") significa que **el tiempo o coste de ejecución crece de forma lineal** a medida que entran más datos. Por ejemplo: `cout << "Hello World" << endl;` es $\mathcal{O}(1)$, un elemento constante. Una peor: $\mathcal{O}(n^2)$ `for (int i = 0; i < n; i++) { for (int j = 0; j < n; j++) { ... } }`.
+<br>
 
-**Desventajas algorítmicas:**
+**Desventajas:**
+
 - **Sin posiciones directas:** Utilizar `L[i]` genera error de compilación.
 - **Coste de travesía:** Para llegar a $n$, hay que recorrer secuencialmente todos los nodos anteriores.
 
-**Métodos de Listas (garantizado $\mathcal{O}(1)$):** `push_back()`, `push_front()`, `pop_back()`, `pop_front()`, `front()` y `back()`.
+**Métodos $\mathcal{O}(1)$:** `push_back()`, `push_front()`, `pop_back()`, `pop_front()`, `front()` y `back()`.
 
 :::listviz
 :::
@@ -28,7 +29,7 @@ Aunque las listas sean de coste constante en medio de la secuencia, en términos
 
 ## 3.2 Iteradores
 
-Ante la falta de índices numéricos (como `[i]`), las listas se deben recorrer usando **Iteradores**. El iterador funciona de factor formal como un puntero táctico de aquel elemento activo:
+Las listas se deben recorrer usando **iteradores**:
 
 - `L.begin()`: Devuelve el iterador apuntando al **primer** elemento.
 - `L.end()`: Devuelve el iterador que señala la celda virtual **después del último** elemento (fuera de rango).
@@ -55,18 +56,16 @@ Retroceder manualmente desde `L.end()` con iteradores trae problemas técnicos d
 
 ---
 
-## 3.3 El peligro de alterar el itinerario avanzado: Inserciones
+## 3.3 Modificar listas mientras se recorren: `insert` y `erase`
 
-Borrar o añadir un elemento donde tenemos actualmente anclado el puntero en la mitad de una secuencia generará prácticamente la pérdida de orientación interna lanzando un *Segmentation Fault*: la dirección activa anterior ha quedado completamente alienada e `it++` ya no sabe a qué objeto "siguiente" enlazar.
+Cuando borramos o insertamos elementos en una lista mientras la recorremos con un iterador, el iterador antiguo queda invalidado. Para solucionarlo, C++ devuelve **un nuevo iterador válido**:
 
-Por eso en un uso de ingeniería, C++ devuelve **un nuevo iterador ya enfocado en localización lícita** siguiente cuando usas:
+- `it = L.insert(it, x)`: Inserta `x` **antes** de la posición actual y devuelve el iterador al nuevo elemento insertado.
+- `it = L.erase(it)`: Borra el elemento actual y devuelve el iterador al **siguiente elemento**.
 
-- `it = L.insert(it, valor)`: Inserta **antes** de la posición y lo fija en el punto original.
-- `it = L.erase(it)`: Borra el elemento y lo fija sobre el elemento a la derecha que ocupará actualmente este vacío.
+### Cómo recorrer y borrar con `while`
 
-<!-- Animació interactiva -->
-
-El protocolo para gestionarlo correctamente exige evitar bucles for basándose en declaraciones por patrón `while`:
+Si borramos un elemento, **no debemos hacer `it++`**, ya que `erase` ya nos coloca en el siguiente:
 
 ```cpp
 void netejar_llista(list<int>& L) {
@@ -74,24 +73,18 @@ void netejar_llista(list<int>& L) {
     
     while (it != L.end()) {
         if (*it == 10) {
-            it = L.erase(it);   // ¡Salvamos del olvido el desvincular! Devuelve el siguiente
+            it = L.erase(it);   // Ya avanza al siguiente (no hacemos it++)
         } 
         else if (*it == -1) {
-            it = L.insert(it, 0); 
-            advance(it, 2);     // Avanzamos el enfocado fuera del radio de lectura de la memoria 
+            L.insert(it, 0);    // Inserta 0 antes de -1 (it sigue en -1)
+            it++;               // Avanzamos para pasar el -1
         } 
         else {
-            it++;               // Paso de iteración ordinaria natural
+            it++;               // Solo avanzamos si no hemos borrado
         }
     }
 }
 ```
-
-:::warning
-Este fenómeno no es único. Utilizar y recorrer con `std::vector` está sometido a los mismos efectos destructivos por el sistema si eliminas valores usando vector.erase(it) e intentas hacer `it++` corriendo ciegamente seguidamente en C++.
-:::
-
-¡Visualiza paso a paso en primera persona en el proyecto el aseguramiento técnico del iterador observando qué roles devuelven para reenganchar al siglo!  
 
 :::oopviz{simulation="llista_iteradors"}
 :::

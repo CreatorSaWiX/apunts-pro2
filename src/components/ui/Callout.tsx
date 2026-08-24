@@ -52,7 +52,7 @@ const Callout: React.FC<CalloutProps> = ({ type = 'note', title, children }) => 
                             {title}
                         </h4>
                     )}
-                    <div className="text-slate-300 text-base leading-7 font-light [&>p]:mb-2 [&>p:last-child]:mb-0">
+                    <div className="text-slate-300 text-base leading-relaxed font-normal [&>p]:mb-2 [&>p:last-child]:mb-0 [&_strong]:text-white [&_strong]:font-semibold">
                         {children}
                     </div>
                 </div>

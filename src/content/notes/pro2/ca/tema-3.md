@@ -7,15 +7,16 @@ order: 3
 
 ## 3.1 Llistes vs vectors
 
-Les **llistes (`list`)** solucionen l'alt cost d'inserció al mig dels vectors $\mathcal{O}(n)$. Estan formades per nodes independents enllaçats. Afegir o esborrar un element intermig costa només $\mathcal{O}(1)$.
+Les **llistes (`list`)** solucionen l'alt cost d'inserció al mig dels vectors $\mathcal{O}(n)$. Estan formades per nodes independents enllaçats. Afegir o esborrar un element intermig costa només $\mathcal{O}(1)$. 
 
-> En algorísmia, $\mathcal{O}(n)$ (es pronuncia "O de n") significa que **el temps o cost d'execució creix de manera lineal** a mesura que entren més dades. Per exemple: `cout << "Hello World" << endl;` és $\mathcal{O}(1)$, un element constant. Una pitjor: $\mathcal{O}(n^2)$ `for (int i = 0; i < n; i++) { for (int j = 0; j < n; j++) { ... } }`.
+<br>
 
-**Desavantatges algorísmics:**
+**Desavantatges:**
+
 - **Sense posicions directes:** Utilitzar `L[i]` genera error de compilació.
 - **Cost de travessia:** Per arribar a $n$, cal recórrer seqüencialment tots els nodes anteriors.
 
-**Mètodes de Llistes ($\mathcal{O}(1)$ garantit):** `push_back()`, `push_front()`, `pop_back()`, `pop_front()`, `front()` i `back()`.
+**Mètodes $\mathcal{O}(1)$:** `push_back()`, `push_front()`, `pop_back()`, `pop_front()`, `front()` i `back()`.
 
 :::listviz
 :::
@@ -28,7 +29,7 @@ Encara que les llistes siguin de cost constant en mig de la seqüència, en term
 
 ## 3.2 Iteradors
 
-Davant la manca d'índexs numèrics (com `[i]`), les llistes s'han de recórrer usant **Iteradors**. L'iterador funciona de factor formal com a un punter tàctic d'aquell element actiu:
+Les llistes s'han de recórrer usant **iteradors**:
 
 - `L.begin()`: Retorna l'iterador apuntant al **primer** element.
 - `L.end()`: Retorna l'iterador que assenyala la cel·la virtual **després de l'últim** element (fora de rang).
@@ -55,18 +56,16 @@ Retrocedir manualment des de `L.end()` amb iteradors porta problemes tècnics d'
 
 ---
 
-## 3.3 El perill d'alterar l'itinerari avançat: Insercions
+## 3.3 Modificar llistes mentre es recorren: `insert` i `erase`
 
-Esborrar o afegir un element on tenim actualment ancorat el punter a la meitat d'una seqüència generarà pràcticament la pèrdua d'orientació interna llançant un *Segmentation Fault*: l'adreça activa anterior ha quedat completament alienada i `it++` ja no sap a quin objecte "següent" enllaçar.
+Quan esborrem o inserim elements en una llista mentre la recorrem amb un iterador, l'iterador antic queda invalidat. Per solucionar-ho, C++ retorna **un nou iterador vàlid**:
 
-Per això en un ús d'enginyeria, C++ retorna **un nou iterador ja enfocat en localització lícita** següent quan uses:
+- `it = L.insert(it, x)`: Insereix `x` **abans** de la posició actual i retorna l'iterador al nou element inserit.
+- `it = L.erase(it)`: Esborra l'element actual i retorna l'iterador al **següent element**.
 
-- `it = L.insert(it, valor)`: Insereix **abans** de la posició i el fixa al punt original.
-- `it = L.erase(it)`: Esborra element i el fixa sobre l'element a la dreta que ocuparà actualment aquest buit.
+### Com recórrer i esborrar amb `while`
 
-<!-- Animació interactiva -->
-
-El protocol per gestionar-ho correctament exigeix evitar for loops basant-se en declaracions per patró `while`:
+Si esborrem un element, **no hem de fer `it++`**, ja que `erase` ja ens col·loca al següent:
 
 ```cpp
 void netejar_llista(list<int>& L) {
@@ -74,24 +73,18 @@ void netejar_llista(list<int>& L) {
     
     while (it != L.end()) {
         if (*it == 10) {
-            it = L.erase(it);   // Salvem de l'oblit el desvincular! Torna el següent
+            it = L.erase(it);   // Ja avança al següent (no fem it++)
         } 
         else if (*it == -1) {
-            it = L.insert(it, 0); 
-            advance(it, 2);     // Avancem l'enfocat fora del radi de read paper de la memòria 
+            L.insert(it, 0);    // Insereix 0 abans de -1 (it segueix a -1)
+            it++;               // Avancem per passar el -1
         } 
         else {
-            it++;               // Pas d'iteració ordinària natural
+            it++;               // Només avancem si no hem esborrat
         }
     }
 }
 ```
-
-:::warning
-Aquest fenomen no és únic. Utilitzar i recórrer amb `std::vector` està sotmès sota els mateixos efectes destructius pel sistema si elimines valors usant vector.erase(it) i intentes fer `it++` corrent cecament seguidament a C++.
-:::
-
-Visualitza pas a pas en primera persona al projecte l'assecurament tècnic iterador observant quins rols tornen per reengantxar al segle!  
 
 :::oopviz{simulation="llista_iteradors"}
 :::

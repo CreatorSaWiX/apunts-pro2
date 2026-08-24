@@ -9,13 +9,14 @@ order: 3
 
 **Lists (`list`)** solve the high insertion cost in the middle of vectors $\mathcal{O}(n)$. They are formed by independent linked nodes. Adding or deleting an intermediate element costs only $\mathcal{O}(1)$.
 
-> In algorithmics, $\mathcal{O}(n)$ (pronounced "O of n") means that **execution time or cost grows linearly** as more data comes in. For example: `cout << "Hello World" << endl;` is $\mathcal{O}(1)$, a constant element. A worse one: $\mathcal{O}(n^2)$ `for (int i = 0; i < n; i++) { for (int j = 0; j < n; j++) { ... } }`.
+<br>
 
-**Algorithmic disadvantages:**
+**Disadvantages:**
+
 - **No direct positions:** Using `L[i]` generates a compilation error.
 - **Traversal cost:** To reach $n$, all previous nodes must be sequentially traversed.
 
-**List Methods ($\mathcal{O}(1)$ guaranteed):** `push_back()`, `push_front()`, `pop_back()`, `pop_front()`, `front()` and `back()`.
+**Methods $\mathcal{O}(1)$:** `push_back()`, `push_front()`, `pop_back()`, `pop_front()`, `front()` and `back()`.
 
 :::listviz
 :::
@@ -28,7 +29,7 @@ Although lists have a constant cost in the middle of the sequence, in general ef
 
 ## 3.2 Iterators
 
-Faced with the lack of numerical indices (like `[i]`), lists must be traversed using **Iterators**. The iterator formally works as a tactical pointer of that active element:
+Lists must be traversed using **iterators**:
 
 - `L.begin()`: Returns the iterator pointing to the **first** element.
 - `L.end()`: Returns the iterator that points to the virtual cell **after the last** element (out of bounds).
@@ -55,18 +56,16 @@ Manually reversing from `L.end()` with iterators brings technical index problems
 
 ---
 
-## 3.3 The danger of altering the advanced itinerary: Insertions
+## 3.3 Modifying lists while traversing: `insert` and `erase`
 
-Deleting or adding an element where we currently have the pointer anchored in the middle of a sequence will practically generate the loss of internal orientation throwing a *Segmentation Fault*: the previous active address has been completely alienated and `it++` no longer knows which "next" object to link to.
+When deleting or inserting elements in a list while traversing with an iterator, the old iterator becomes invalidated. To fix this, C++ returns **a new valid iterator**:
 
-That is why in engineering use, C++ returns **a new iterator already focused on the valid next location** when you use:
+- `it = L.insert(it, x)`: Inserts `x` **before** the current position and returns an iterator to the newly inserted element.
+- `it = L.erase(it)`: Deletes the current element and returns an iterator to the **next element**.
 
-- `it = L.insert(it, value)`: Inserts **before** the position and fixes it at the original point.
-- `it = L.erase(it)`: Deletes the element and fixes it on the element to the right that will currently occupy this gap.
+### How to traverse and delete with `while`
 
-<!-- Animació interactiva -->
-
-The protocol to manage it correctly requires avoiding for loops based on `while` pattern declarations:
+If we delete an element, **we must not do `it++`**, because `erase` already moves to the next one:
 
 ```cpp
 void netejar_llista(list<int>& L) {
@@ -74,24 +73,18 @@ void netejar_llista(list<int>& L) {
     
     while (it != L.end()) {
         if (*it == 10) {
-            it = L.erase(it);   // Save the unlink from oblivion! Returns the next
+            it = L.erase(it);   // Already advances to next (no it++)
         } 
         else if (*it == -1) {
-            it = L.insert(it, 0); 
-            advance(it, 2);     // Advance the focused out of the memory reading radius 
+            L.insert(it, 0);    // Inserts 0 before -1 (it stays on -1)
+            it++;               // Advance to pass -1
         } 
         else {
-            it++;               // Natural ordinary iteration step
+            it++;               // Only advance if nothing was deleted
         }
     }
 }
 ```
-
-:::warning
-This phenomenon is not unique. Using and traversing with `std::vector` is subject to the same destructive effects by the system if you remove values using vector.erase(it) and try to blindly run `it++` next in C++.
-:::
-
-Visualize step by step in first person in the project the technical assurance of the iterator observing which roles they return to hook up to the century!  
 
 :::oopviz{simulation="llista_iteradors"}
 :::

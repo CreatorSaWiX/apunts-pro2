@@ -36,7 +36,7 @@ interface ForceGraphMethods {
 interface GraphVisualizerProps {
     initialData?: {
         nodes: { id: string | number; label?: string; group?: number; color?: string }[];
-        links: { source: string | number; target: string | number; label?: string }[];
+        links: { source: string | number; target: string | number; label?: string; curvature?: number; color?: string }[];
     };
     edges?: string;
     nodes?: string;

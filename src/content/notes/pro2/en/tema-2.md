@@ -28,7 +28,39 @@ Box::Box(int initial_value) : value_(initial_value) {
 
 ---
 
-## 2.2 The stack (`stack`)
+## 2.2 Efficiency and Big-O Notation ($\mathcal{O}$)
+
+In algorithmics, **Big-O notation ($\mathcal{O}$)** (from the German *Ordnung*, order of growth) is used to measure how program **execution time** scales as input data size ($n$) grows:
+
+- **$\mathcal{O}(1)$ (Constant time):** Time is fixed and does not depend on $n$.
+  ```cpp
+  int first = v[0];  // Direct index access
+  int sum = a + b;   // Simple arithmetic operation
+  ```
+
+- **$\mathcal{O}(n)$ (Linear time):** Time grows proportionally to $n$.
+  ```cpp
+  // Traverses n elements once
+  for (int i = 0; i < n; ++i) {
+      cout << v[i] << " ";
+  }
+  ```
+
+- **$\mathcal{O}(n^2)$ (Quadratic time):** Time grows with the square of $n$.
+  ```cpp
+  // Nested loops: n x n operations
+  for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+          // Operations for each pair (i, j)
+      }
+  }
+  ```
+
+In PRO2 we design and choose data structures ensuring that frequent operations (insert, query, delete) have minimal cost, ideally **$\mathcal{O}(1)$**.
+
+---
+
+## 2.3 The stack (`stack`)
 
 Linear data structure with **LIFO (Last In, First Out)** policy: the last element to enter is the first to leave.
 
@@ -91,7 +123,7 @@ S.pop();         // Extracts the 20. S: [10] <- Top
 
 ---
 
-## 2.3 The queue (`queue`) 
+## 2.4 The queue (`queue`) 
 
 Linear data structure with **FIFO (First In, First Out)** policy: the first to enter is the first to leave. It is a conventional queue (arrives at the back, extracted from the front).
 

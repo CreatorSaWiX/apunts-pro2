@@ -10,8 +10,8 @@ void netejar_llista(list<int>& L) {
             it = L.erase(it); 
         } 
         else if (*it == -1) {
-            it = L.insert(it, 0); 
-            advance(it, 2); 
+            L.insert(it, 0); 
+            it++;
         } 
         else {
             it++;

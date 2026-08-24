@@ -117,7 +117,7 @@ export default function QueueVisualizer() {
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handlePush()}
                         placeholder="Val"
-                        className="w-16 h-10 bg-slate-900/40 border border-slate-800 rounded-lg px-2 text-center text-fuchsia-200 focus:outline-none focus:border-fuchsia-500/50 transition-colors"
+                        className="w-16 h-10 bg-slate-900/40 border border-slate-800 rounded-lg px-2 text-center text-fuchsia-200 focus:outline-none focus:border-fuchsia-500/50 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                     <button type="button"
                         onClick={handlePush}

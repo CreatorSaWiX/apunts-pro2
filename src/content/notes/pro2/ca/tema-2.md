@@ -28,7 +28,39 @@ Caixa::Caixa(int valor_inicial) : valor_(valor_inicial) {
 
 ---
 
-## 2.2 La pila (`stack`)
+## 2.2 Eficiència i notació Big-O ($\mathcal{O}$)
+
+En algorísmia, la **notació Big-O ($\mathcal{O}$)** (de l'alemany *Ordnung*, ordre de creixement) s'utilitza per mesurar com augmenta el **temps d'execució** d'un programa a mesura que creix el volum de dades d'entrada ($n$):
+
+- **$\mathcal{O}(1)$ (Cost constant):** El temps és fix i no depèn de $n$.
+  ```cpp
+  int primer = v[0]; // Accés directe per índex
+  int suma = a + b;  // Operació aritmètica simple
+  ```
+
+- **$\mathcal{O}(n)$ (Cost lineal):** El temps creix proporcionalment a $n$.
+  ```cpp
+  // Recorre n elements un cop
+  for (int i = 0; i < n; ++i) {
+      cout << v[i] << " ";
+  }
+  ```
+
+- **$\mathcal{O}(n^2)$ (Cost quadràtic):** El temps creix amb el quadrat de $n$.
+  ```cpp
+  // Bucles niats: n x n operacions
+  for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+          // Operacions per a cada parella (i, j)
+      }
+  }
+  ``` 
+
+A PRO2 dissenyem i triem estructures de dades procurant que les operacions freqüents (inserir, consultar, esborrar) tinguin un cost mínim, idealment **$\mathcal{O}(1)$**.
+
+---
+
+## 2.3 La pila (`stack`)
 
 Estructura de dades lineal amb política **LIFO (Last In, First Out)**: l'últim element a entrar és el primer a sortir.
 
@@ -91,7 +123,7 @@ S.pop();         // Extreu el 20. S: [10] <- Cim
 
 ---
 
-## 2.3 La cua (`queue`) 
+## 2.4 La cua (`queue`) 
 
 Estructura de dades lineal amb política **FIFO (First In, First Out)**: el primer a entrar és el primer a sortir. Es tracta d'una cua convencional (s'arriba pel darrere, s'extreu pel davant).
 
