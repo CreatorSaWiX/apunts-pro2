@@ -1,4 +1,4 @@
-void inordre(BinTree<int> t) {
+void inordre(const BinTree<int>& t) {
     if (!t.empty()) {
         inordre(t.left());
         cout << t.value() << ' ';

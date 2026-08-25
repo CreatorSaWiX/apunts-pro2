@@ -2,6 +2,7 @@ import type { Simulation } from '../../engine/types';
 import { eulerian_check } from './implementations/eulerian_check';
 import { hamiltonian_backtrack } from './implementations/hamiltonian_backtrack';
 
+import { height } from './implementations/height';
 import { cerca_height } from './implementations/cerca_height';
 import { dfs } from './implementations/dfs';
 import { bfs } from './implementations/bfs';
@@ -9,8 +10,6 @@ import { bfs2 } from './implementations/bfs2';
 import { preordre } from './implementations/preordre';
 import { inordre } from './implementations/inordre';
 import { postordre } from './implementations/postordre';
-import { eficiencia_multitasca } from './implementations/eficiencia_multitasca';
-import { reconstruccio_preordre } from './implementations/reconstruccio_preordre';
 import { heap_push } from './implementations/heap_push';
 import { heap_pop } from './implementations/heap_pop';
 import { tree_general_search } from './implementations/tree_general_search';
@@ -35,6 +34,7 @@ export const graphs: Record<string, Simulation> = {
     eulerian_check,
     hamiltonian_backtrack,
 
+    height,
     cerca_height,
     dfs,
     bfs,
@@ -42,8 +42,6 @@ export const graphs: Record<string, Simulation> = {
     preordre,
     inordre,
     postordre,
-    eficiencia_multitasca,
-    reconstruccio_preordre,
     heap_push,
     heap_pop,
     tree_general_search,

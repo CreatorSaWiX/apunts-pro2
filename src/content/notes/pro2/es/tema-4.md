@@ -7,182 +7,87 @@ order: 4
 
 ## 4.1 La inmersión
 
-Cuando una función se llama a sí misma de forma recursiva, la memoria pide un nuevo bloque (*frame*) para ejecutar su instancia particular. En el examen no podemos alterar la "firma pública" (si te dicen haz `reverse(string s)`, no puedes añadir argumentos por tu cuenta). La estrategia de la **Inmersión** responde de esta manera:
-1. Crear una segunda función auxiliar.
-2. Hacer que la función pública pre-cargue esta función de inmersión oculta.
+A menudo en el examen nos piden una función con una cabecera fija (como `reverse(string s)`), pero para resolverla recursivamente necesitamos **parámetros adicionales** (como un acumulador o contadores).
 
-### Invertir String (`reverse`)
-Necesitamos un acumulador para guardar el *string* girado. Pasando un simple segundo parámetro por inmersión conseguimos llevar el cálculo entre instancias:
+<br>
 
-```cpp
-// 1. Función inmersa (auxiliar)
-string reverse__(string s, string reversed) {
-    if (s.empty()) return reversed;
-    return reverse__(s.substr(1), s[0] + reversed);
-}
+La **inmersión** consiste en:
+1. Crear una **función auxiliar** (inmersa) con los parámetros extra necesarios.
+2. Hacer que la **función pública** solo llame a la función auxiliar con los valores iniciales.
 
-// 2. Función pública (Interfaz original)
-string reverse(string s) {
-    return reverse__(s, ""); 
-}
-```
+### Ejemplo 1: Invertir un texto (`reverse`)
 
-### Fibonacci en $\mathcal{O}(n)$
+Necesitamos un parámetro índice `i` para recorrer el texto sin hacer copias:
 
-La recursión exponencial convencional al calcular Fibonacci repetía llamadas sobre llamadas lastimosamente provocando parálisis matemáticas de $\mathcal{O}(2^n)$. Con una única Inmersión bajamos y solucionamos el coste a lineal $\mathcal{O}(n)$ pasando por el viaje directamente la evolución de los dos últimos números obtenidos.
+:::oopviz{simulation="immersio_reverse"}
+:::
 
-```cpp
-int fibonacci__(int n, int a, int b) {
-    if (n == 0) return a;
-    return fibonacci__(n - 1, b, a + b); 
-}
+### Ejemplo 2: Fibonacci lineal $\mathcal{O}(n)$
 
-int fibonacci(int n) {
-    return fibonacci__(n, 0, 1);
-}
-```
+El Fibonacci recursivo simple tiene un coste exponencial $\mathcal{O}(2^n)$ porque repite cálculos. Con inmersión pasamos los dos últimos números y reducimos el coste a **$\mathcal{O}(n)$**:
+
+:::oopviz{simulation="immersio_fibonacci"}
+:::
 
 ---
 
 ## 4.2 El árbol binario (`BinTree<T>`)
 
-Es una estructura de datos estrictamente recursiva: o es un *vacío absoluto*, o tiene un nodo central (*raíz*) asociado como máximo a dos descendientes exactos (`izquierdo` y `derecho`) que a la vez, son considerados subárboles `BinTree` respectivos en sí mismos.
+Un **árbol binario (`BinTree`)** es una estructura de datos recursiva: o bien está **vacío**, o bien tiene un nodo **raíz** (`value()`) y dos subárboles: el **hijo izquierdo** (`left()`) y el **hijo derecho** (`right()`).
 
-:::graph
-```json
-{
-  "nodes": [
-    { "id": "1", "label": "Raíz", "color": "#10b981" },
-    { "id": "2", "label": "Izquierdo", "color": "#3b82f6" },
-    { "id": "3", "label": "Derecho", "color": "#3b82f6" },
-    { "id": "4", "label": "Hijo izq" },
-    { "id": "5", "label": "Hijo izq", "color": "#ef4444" },
-    { "id": "6", "label": "Hijo der" },
-    { "id": "7", "label": "Hijo der", "color": "#ef4444" }
-  ],
-  "links": [
-    { "source": "1", "target": "2", "label": "left()" },
-    { "source": "1", "target": "3", "label": "right()" },
-    { "source": "2", "target": "4" },
-    { "source": "2", "target": "5" },
-    { "source": "3", "target": "6" },
-    { "source": "3", "target": "7" }
-  ]
-}
-```
+:::warning
+**Los árboles `BinTree` son inmutables:** una vez creados, no se pueden modificar directamente (no tienen métodos como `set_value()`). Para alterar un árbol es necesario construir uno nuevo combinando las ramas con el constructor `BinTree(x, left, right)`.
 :::
-
-> Un árbol BinTree **NO se puede modificar**. Una vez haces el constructor y lo cierras, nunca podrás acceder a licencias como *"coger su rama derecha nativa y borrarla con un delete o set"*. Para alterar datos, se opera **re-construyendo completamente el mismo árbol como Instancia Nueva** gracias a aprovechar todas las partes antiguas junto con el cambio. (Mira debajo, el apartado 4.3).
 
 :::bintreeviz
 :::
 
 ---
 
-## 4.3 Funciones básicas y de mutación
+## 4.3 Funciones básicas: búsqueda y altura
 
-Vamos a transformar los dos problemas más comunes a la clase `BinTree` (Saber la altura total `height` o buscar si existe una hoja `cerca`):
+Las funciones sobre `BinTree` se resuelven de forma natural con **recursión**:
+
+### 1. Calcular la altura (`height`)
+La altura de un árbol vacío es `0`. Si no está vacío, es `1 + max(altura(izquierdo), altura(derecho))`:
+
+:::algoviz{algorithm="height"}
+:::
+
+### 2. Buscar un elemento (`cerca`)
+Comprueba si la raíz es el valor buscado `x`. Si no, busca a la izquierda o a la derecha aprovechando el cortocircuito del operador `||`:
 
 :::algoviz{algorithm="cerca_height"}
 :::
-
-Como el árbol no tiene punteros libres o licencias de asignación de variables nativas como Vectores positivos, **cualquier operación que "modifique" un árbol** en teoría, en la práctica C++, ¡lo que hace es reconstruirlo entero creando nuevos nodos por la zona o rama que haya sufrido el cambio! Revisiones inmutables.
 
 ---
 
 ## 4.4 Los recorridos globales
 
-### Búsqueda en profundidad (DFS)
-Bajar por el túnel hasta el final antes de escanear lateralmente. 
+Un **recorrido** visita todos los nodos del árbol exactamente una vez. Según el orden en el que se procesa la raíz respecto a sus hijos:
 
-- **Preorden:** *Raíz → Izquierdo → Derecho.*
+### Búsqueda en profundidad (DFS)
+
+- **Preorden:** *Raíz → Izquierdo → Derecho* (procesa la raíz antes de bajar a los hijos):
 :::algoviz{algorithm="preordre"}
 :::
 
-- **Inorden:** *Izquierdo → Raíz → Derecho.*
+- **Inorden:** *Izquierdo → Raíz → Derecho* (procesa el hijo izquierdo, después la raíz, y finalmente el hijo derecho):
 :::algoviz{algorithm="inordre"}
 :::
 
-- **Postorden:** *Izquierdo → Derecho → Raíz.*
+- **Postorden:** *Izquierdo → Derecho → Raíz* (procesa primero ambos hijos y la raíz al final):
 :::algoviz{algorithm="postordre"}
 :::
 
 ### Búsqueda en anchura (BFS)
+Visita los nodos nivel por nivel (de izquierda a derecha) utilizando una **cola (`queue`)**:
 
 :::algoviz{algorithm="bfs"}
 :::
 
----
-
-## 4.5 Eficiencia multitarea (`pair<A, B>`)
-
-Si nos piden resolver dos cosas a la vez (ej: *¿Está sub-equilibrado? ¿Y qué altura tiene?*), lanzar dos funciones de búsqueda separadas provocará un desastre de eficiencia a $\Theta(N^2)$.
-**La solución:** Buscar en una sola pasada, devolviendo los dos datos a la vez dentro de una tupla `std::pair` ($\Theta(N)$).
-
-A continuación vemos cómo extraer tanto la suma de todos los valores *como* la cantidad de nodos con un solo `std::pair` para averiguar la media global:
-
-:::algoviz{algorithm="eficiencia_multitasca"}
+:::tip
+**Consejo de examen (Cálculos en una sola pasada):**
+Si tienes que calcular dos propiedades de un árbol a la vez (por ejemplo, la suma y la cantidad de nodos para hacer la media, o la altura y si está equilibrado), **no hagas dos llamadas recursivas separadas**. Haz una sola pasada $\mathcal{O}(n)$ devolviendo un `pair<A, B>` o pasando parámetros por referencia (`&`).
 :::
 
----
-
-## 4.6 Leer y Reconstruir Árboles
-
-En los Jueces del laboratorio recibirás los árboles representados en una línea de texto plano (ej: `10 5 # # 14 # #`), donde un **`#`** indica "Sub-árbol Vacío".
-Aquí tienes una utilidad rápida auxiliar de conversión:
-
-```cpp
-template <typename T>
-T read_value(string text) {
-    istringstream iss(text);
-    T elem;
-    iss >> elem;
-    return elem;
-}
-```
-
-### 1. Leyendo en formato Preorden (Lo habitual)
-Muy directo: La raíz siempre es la primera en entrar por el `cin`. Después vienen los de la izquierda, y finalmente los de la derecha.
-
-:::algoviz{algorithm="reconstruccio_preordre"}
-:::
-
-### 2. Leyendo en formato Postorden (Con Pila `stack`)
-Si no hay más remedio y te lo dan en Postorden, la lectura normal falla porque "la información de la raíz llega en el último segundo a tu teclado". Tendremos que leerlo todo al revés apilando directamente en un `stack` hasta resolver el camino entero hacia arriba:
-
-<!-- ```cpp
-template<typename T>
-pro2::BinTree<T> bintree_from_postorder(istream& in) {
-    stack<pro2::BinTree<T>> S;
-    string token;
-    
-    while (in >> token) {
-        if (token == "#" || !in) {
-            S.push(pro2::BinTree<T>()); 
-        } else {
-            T value = read_value<T>(token);
-            
-            // Ligadura fuerte de examen clásico por si la entrada rompe el índice assert.
-            assert(S.size() >= 2);
-            
-            // ¡Vigilar el voltear! La Derecha domina en lo superior del espacio y va a recibir pop primero
-            auto right = S.top(); S.pop();  
-            auto left = S.top(); S.pop();
-            
-            // ¡Árbol entero reconstruido hacia arriba!
-            S.push(pro2::BinTree<T>(value, left, right));
-        }
-    }
-    assert(S.size() == 1);
-    return S.top();
-}
-``` -->
-
-<!-- ---
-
-## 4.7 Simulador Interactivo de Árboles
-
-Mira cómo avanza recursivamente el código a través de los sub-árboles hasta alcanzar la hoja y arrastra hacia arriba gracias a la arquitectura de los frames en la inmersión por parejas.
-
-:::oopviz{simulation="arbre_bintree_immersio"}
-::: -->

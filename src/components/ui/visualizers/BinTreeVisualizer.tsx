@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import GraphVisualizer from './GraphVisualizer';
 import { Maximize, Minimize } from 'lucide-react';
 
 type TreeState = "EMPTY" | "SINGLE" | "COMPLEX" | "LEFT_SUB" | "RIGHT_SUB";
 
 export default function BinTreeVisualizer() {
+    const { t } = useTranslation();
     const [treeState, setTreeState] = useState<TreeState>("COMPLEX");
-    const [lastAction, setLastAction] = useState<string>('Esperant ordres per BinTree<int> t...');
+    const [lastActionKey, setLastActionKey] = useState<string>('pro.bintreeviz.waiting');
     const [updateKey, setUpdateKey] = useState(0);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -37,67 +39,67 @@ export default function BinTreeVisualizer() {
 
     const handleEmptyConstr = () => {
         setTreeState("EMPTY");
-        setLastAction("BinTree() -> Arbre buit creat!");
+        setLastActionKey("pro.bintreeviz.empty_constr");
         setUpdateKey(k => k + 1);
     };
 
     const handleSingleConstr = () => {
         setTreeState("SINGLE");
-        setLastAction("BinTree(10) -> Arbre d'un node creat!");
+        setLastActionKey("pro.bintreeviz.single_constr");
         setUpdateKey(k => k + 1);
     };
 
     const handleComplexConstr = () => {
         setTreeState("COMPLEX");
-        setLastAction("BinTree(10, L, R) -> Arbre de 3 nodes creat!");
+        setLastActionKey("pro.bintreeviz.complex_constr");
         setUpdateKey(k => k + 1);
     };
 
     const handleCallEmpty = () => {
         const isEmpty = treeState === "EMPTY";
-        setLastAction(`t.empty() -> Retorna ${isEmpty ? 'true' : 'false'}`);
+        setLastActionKey(isEmpty ? "pro.bintreeviz.empty_true" : "pro.bintreeviz.empty_false");
     };
 
     const handleCallValue = () => {
         if (treeState === "EMPTY") {
-            setLastAction("t.value() -> ERROR (Segmentation Fault)! L'arbre està empty()");
+            setLastActionKey("pro.bintreeviz.value_error");
         } else {
-            setLastAction("t.value() -> Retorna 10 (l'Arrel)");
+            setLastActionKey("pro.bintreeviz.value_success");
         }
     };
 
     const handleCallLeft = () => {
         if (treeState === "EMPTY") {
-            setLastAction("t.left() -> ERROR! L'arbre està buit.");
+            setLastActionKey("pro.bintreeviz.left_error");
         } else if (treeState === "SINGLE") {
             setTreeState("EMPTY");
-            setLastAction("t.left() -> Retorna un Subarbre Buit");
+            setLastActionKey("pro.bintreeviz.left_empty");
             setUpdateKey(k => k + 1);
         } else if (treeState === "COMPLEX") {
             setTreeState("LEFT_SUB");
-            setLastAction("t.left() -> Accedim al Subarbre Esquerre sencer");
+            setLastActionKey("pro.bintreeviz.left_sub");
             setUpdateKey(k => k + 1);
         } else if (treeState === "LEFT_SUB" || treeState === "RIGHT_SUB") {
             setTreeState("EMPTY");
-            setLastAction("t.left() -> Retorna un Subarbre Buit");
+            setLastActionKey("pro.bintreeviz.left_empty");
             setUpdateKey(k => k + 1);
         }
     };
 
     const handleCallRight = () => {
         if (treeState === "EMPTY") {
-            setLastAction("t.right() -> ERROR! L'arbre està buit.");
+            setLastActionKey("pro.bintreeviz.right_error");
         } else if (treeState === "SINGLE") {
             setTreeState("EMPTY");
-            setLastAction("t.right() -> Retorna un Subarbre Buit");
+            setLastActionKey("pro.bintreeviz.right_empty");
             setUpdateKey(k => k + 1);
         } else if (treeState === "COMPLEX") {
             setTreeState("RIGHT_SUB");
-            setLastAction("t.right() -> Accedim al Subarbre Dret sencer");
+            setLastActionKey("pro.bintreeviz.right_sub");
             setUpdateKey(k => k + 1);
         } else if (treeState === "LEFT_SUB" || treeState === "RIGHT_SUB") {
             setTreeState("EMPTY");
-            setLastAction("t.right() -> Retorna un Subarbre Buit");
+            setLastActionKey("pro.bintreeviz.right_empty");
             setUpdateKey(k => k + 1);
         }
     };
@@ -111,34 +113,57 @@ export default function BinTreeVisualizer() {
     interface TreeLinkItem {
         source: string;
         target: string;
-        label: string;
+        label?: string;
     }
 
     // Graph JSON Generator
     const graphData = useMemo(() => {
         const nodes: TreeNodeItem[] = [];
         const links: TreeLinkItem[] = [];
+        const nullLabel = t("pro.bintreeviz.node_null", { defaultValue: "NULL" });
 
         if (treeState === "EMPTY") {
-            nodes.push({ id: "ghost", label: "Buit (Null)", color: "#1e293b" });
+            nodes.push({ id: "null_root", label: nullLabel, color: "#334155" });
         } else if (treeState === "SINGLE") {
-            nodes.push({ id: "1", label: "Val: 10", color: "#10b981" });
+            nodes.push({ id: "1", label: t("pro.bintreeviz.node_val", { val: 10, defaultValue: "Val: 10" }), color: "#10b981" });
+            nodes.push({ id: "null_1_l", label: nullLabel, color: "#334155" });
+            nodes.push({ id: "null_1_r", label: nullLabel, color: "#334155" });
+            links.push({ source: "1", target: "null_1_l", label: "left()" });
+            links.push({ source: "1", target: "null_1_r", label: "right()" });
         } else if (treeState === "COMPLEX") {
-            nodes.push({ id: "1", label: "Val: 10", color: "#10b981" });
-            nodes.push({ id: "2", label: "Val: 20", color: "#3b82f6" });
-            nodes.push({ id: "3", label: "Val: 30", color: "#3b82f6" });
+            nodes.push({ id: "1", label: t("pro.bintreeviz.node_val", { val: 10, defaultValue: "Val: 10" }), color: "#10b981" });
+            nodes.push({ id: "2", label: t("pro.bintreeviz.node_val", { val: 20, defaultValue: "Val: 20" }), color: "#3b82f6" });
+            nodes.push({ id: "3", label: t("pro.bintreeviz.node_val", { val: 30, defaultValue: "Val: 30" }), color: "#3b82f6" });
+            
+            nodes.push({ id: "null_2_l", label: nullLabel, color: "#334155" });
+            nodes.push({ id: "null_2_r", label: nullLabel, color: "#334155" });
+            nodes.push({ id: "null_3_l", label: nullLabel, color: "#334155" });
+            nodes.push({ id: "null_3_r", label: nullLabel, color: "#334155" });
+
             links.push({ source: "1", target: "2", label: "left()" });
             links.push({ source: "1", target: "3", label: "right()" });
+            links.push({ source: "2", target: "null_2_l" });
+            links.push({ source: "2", target: "null_2_r" });
+            links.push({ source: "3", target: "null_3_l" });
+            links.push({ source: "3", target: "null_3_r" });
         } else if (treeState === "LEFT_SUB") {
-            // Un subarbre arrel=20
-            nodes.push({ id: "2", label: "Val: 20", color: "#10b981" });
+            nodes.push({ id: "2", label: t("pro.bintreeviz.node_val", { val: 20, defaultValue: "Val: 20" }), color: "#10b981" });
+            nodes.push({ id: "null_2_l", label: nullLabel, color: "#334155" });
+            nodes.push({ id: "null_2_r", label: nullLabel, color: "#334155" });
+            links.push({ source: "2", target: "null_2_l", label: "left()" });
+            links.push({ source: "2", target: "null_2_r", label: "right()" });
         } else if (treeState === "RIGHT_SUB") {
-            // Un subarbre arrel=30
-            nodes.push({ id: "3", label: "Val: 30", color: "#10b981" });
+            nodes.push({ id: "3", label: t("pro.bintreeviz.node_val", { val: 30, defaultValue: "Val: 30" }), color: "#10b981" });
+            nodes.push({ id: "null_3_l", label: nullLabel, color: "#334155" });
+            nodes.push({ id: "null_3_r", label: nullLabel, color: "#334155" });
+            links.push({ source: "3", target: "null_3_l", label: "left()" });
+            links.push({ source: "3", target: "null_3_r", label: "right()" });
         }
 
         return { nodes, links };
-    }, [treeState]);
+    }, [treeState, t]);
+
+    const lastActionText = t(lastActionKey);
 
     return (
         <>
@@ -153,7 +178,7 @@ export default function BinTreeVisualizer() {
                 {/* Fullscreen Toggle */}
                 <button type="button"
                     onClick={() => setIsFullscreen(!isFullscreen)}
-                    className="absolute top-4 right-4 md:top-6 md:right-6 z-50 p-2 text-slate-400 hover:text-white bg-[#1a212e]/80 hover:bg-[#232c3d]/90 backdrop-blur-md rounded-lg transition border border-white/10 shadow-lg active:scale-95"
+                    className="absolute top-4 right-4 md:top-6 md:right-6 z-50 p-2 text-slate-400 hover:text-white bg-[#1a212e]/80 hover:bg-[#232c3d]/90 backdrop-blur-md rounded-lg transition border border-white/10 shadow-lg active:scale-95 cursor-pointer"
                     title={isFullscreen ? "Minimitza (Esc)" : "Pantalla completa"}
                 >
                     {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
@@ -165,16 +190,16 @@ export default function BinTreeVisualizer() {
                     {/* Constructors */}
                     <div>
                         <div className="flex items-center gap-2 mb-3 border-b border-emerald-500/20 pb-2">
-                            <h3 className="text-emerald-400 text-[10px] font-bold tracking-widest uppercase">CONSTRUCTORS (CREACIÓ)</h3>
+                            <h3 className="text-emerald-400 text-[10px] font-bold tracking-widest uppercase">{t("pro.bintreeviz.constructors", { defaultValue: "CONSTRUCTORS (CREACIÓ)" })}</h3>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <button type="button" onClick={handleEmptyConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition" aria-label="Botó interactiu">
+                            <button type="button" onClick={handleEmptyConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition cursor-pointer" aria-label="Botó interactiu">
                                 BinTree()
                             </button>
-                            <button type="button" onClick={handleSingleConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition" aria-label="Botó interactiu">
+                            <button type="button" onClick={handleSingleConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition cursor-pointer" aria-label="Botó interactiu">
                                 BinTree(x)
                             </button>
-                            <button type="button" onClick={handleComplexConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition" aria-label="Botó interactiu">
+                            <button type="button" onClick={handleComplexConstr} className="h-10 text-left px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 text-xs font-bold tracking-wide rounded-lg border border-emerald-500/20 transition cursor-pointer" aria-label="Botó interactiu">
                                 BinTree(x, left, right)
                             </button>
                         </div>
@@ -183,19 +208,19 @@ export default function BinTreeVisualizer() {
                     {/* Consultes */}
                     <div>
                         <div className="flex items-center gap-2 mb-3 border-b border-sky-500/20 pb-2 mt-4">
-                            <h3 className="text-sky-400 text-[10px] font-bold tracking-widest uppercase">MÈTODES DE CONSULTA ("LLEGIR")</h3>
+                            <h3 className="text-sky-400 text-[10px] font-bold tracking-widest uppercase">{t("pro.bintreeviz.queries", { defaultValue: "MÈTODES DE CONSULTA (\"LLEGIR\")" })}</h3>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
-                            <button type="button" onClick={handleCallEmpty} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition" aria-label="Botó interactiu">
+                            <button type="button" onClick={handleCallEmpty} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition cursor-pointer" aria-label="Botó interactiu">
                                 t.empty()
                             </button>
-                            <button type="button" onClick={handleCallValue} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition" aria-label="Botó interactiu">
+                            <button type="button" onClick={handleCallValue} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition cursor-pointer" aria-label="Botó interactiu">
                                 t.value()
                             </button>
-                            <button type="button" onClick={handleCallLeft} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition" aria-label="Botó interactiu">
+                            <button type="button" onClick={handleCallLeft} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition cursor-pointer" aria-label="Botó interactiu">
                                 t.left()
                             </button>
-                            <button type="button" onClick={handleCallRight} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition" aria-label="Botó interactiu">
+                            <button type="button" onClick={handleCallRight} className="h-10 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/20 transition cursor-pointer" aria-label="Botó interactiu">
                                 t.right()
                             </button>
                         </div>
@@ -210,8 +235,8 @@ export default function BinTreeVisualizer() {
 
                     {/* Status Box sota el graf (Minimalista, sense fons) */}
                     <div className="w-full mt-4 flex items-center justify-center">
-                        <span className={`text-sm tracking-wide ${lastAction.includes('ERROR') ? 'text-rose-400 font-bold' : 'text-slate-400'}`}>
-                            <span className="opacity-50 mr-2">&gt;</span>{lastAction}
+                        <span className={`text-sm tracking-wide ${lastActionText.includes('ERROR') ? 'text-rose-400 font-bold' : 'text-slate-400'}`}>
+                            <span className="opacity-50 mr-2">&gt;</span>{lastActionText}
                         </span>
                     </div>
                 </div>

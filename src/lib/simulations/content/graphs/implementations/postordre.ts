@@ -4,18 +4,11 @@ import postordre_code from "../code/postordre/source.cpp?raw";
 interface AlgoStep {
     line: number;
     description: string;
-    highlights: Record<string | number, string>; // nodeId -> color
-    nodeLabels?: Record<string | number, string>; // nodeId -> label text
+    highlights: Record<string | number, string>;
+    nodeLabels?: Record<string | number, string>;
     links?: { source: string | number; target: string | number; label?: string; color?: string; curvature?: number }[];
     variables: Record<string, string>;
 }
-
-const postordreCode = `void postordre(Node* node) {
-    if (node == nullptr) return;
-    postordre(node->left);
-    postordre(node->right);
-    cout << node->value << " ";
-}`;
 
 const treeGraph = {
     nodes: [
@@ -38,50 +31,55 @@ const treeGraph = {
 };
 
 const treeLeft: Record<number, number | null> = { 1: 2, 2: 4, 3: 6, 4: null, 5: null, 6: null, 7: null };
-
 const treeRight: Record<number, number | null> = { 1: 3, 2: 5, 3: 7, 4: null, 5: null, 6: null, 7: null };
 
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo = {
     postordre: {
         id: "postordre",
-        code: postordreCode,
         initialGraph: treeGraph,
-        generateSteps: () => {
+        generateSteps: (): AlgoStep[] => {
             const steps: AlgoStep[] = [];
             const W: number[] = [];
             const highlights: Record<number, string> = {};
 
-            const addStep = (line: number, desc: string, currentNode: number) => {
-                const nodeStr = currentNode === 0 ? "null" : currentNode.toString();
+            const addStep = (line: number, desc: string, currentNode: number | null) => {
+                const nodeStr = currentNode === null ? "null" : currentNode.toString();
                 steps.push({
                     line,
                     description: desc,
                     highlights: { ...highlights },
-                    variables: { "Crida actual (t.value)": nodeStr, "Resultat (cout)": `[${W.join(', ')}]` }
+                    variables: {
+                        node: nodeStr,
+                        "Node actual": nodeStr,
+                        "Sortida (cout)": W.length > 0 ? W.join(' ') : "(buit)"
+                    }
                 });
             };
 
             const recurse = (node: number | null) => {
-                const nodeVal = node || 0;
-                addStep(1, "algo.postordre.step_1", nodeVal);
                 if (node === null) {
-                    addStep(2, "algo.postordre.step_2", 0);
+                    addStep(1, "algo.postordre.step_1_null", null);
+                    addStep(2, "algo.postordre.step_2_empty", null);
                     return;
                 }
 
-                highlights[node] = "#facc15"; // Yellow for visiting
+                addStep(1, "algo.postordre.step_1", node);
+                addStep(2, "algo.postordre.step_2_not_empty", node);
 
+                // Fill esquerre
                 addStep(3, "algo.postordre.step_3", node);
                 recurse(treeLeft[node]);
 
+                // Fill dret
                 addStep(4, "algo.postordre.step_4", node);
                 recurse(treeRight[node]);
 
+                // Imprimeix arrel
                 W.push(node);
                 highlights[node] = "#10b981"; // Green for printed
                 addStep(5, "algo.postordre.step_5", node);
 
-                highlights[node] = "#3b82f6"; // Blue for finished
+                highlights[node] = "#3b82f6"; // Blue for completed
                 addStep(6, "algo.postordre.step_6", node);
             };
 

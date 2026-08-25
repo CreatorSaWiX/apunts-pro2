@@ -1,4 +1,4 @@
-void preordre(BinTree<int> t) {
+void preordre(const BinTree<int>& t) {
     if (!t.empty()) {
         cout << t.value() << ' ';
         preordre(t.left());

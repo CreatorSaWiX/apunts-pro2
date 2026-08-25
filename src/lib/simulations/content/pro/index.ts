@@ -4,7 +4,6 @@ import { pila_cpp } from './implementations/pila_cpp';
 import { cua_cpp } from './implementations/cua_cpp';
 import { llista_iteradors } from './implementations/llista_iteradors';
 import { convencions_cpp } from './implementations/convencions_cpp';
-import { arbre_bintree_immersio } from './implementations/arbre_bintree_immersio';
 import { projecte_sencer_oop } from './implementations/projecte_sencer_oop';
 import { iteradors_reversos } from './implementations/iteradors_reversos';
 import { data_class } from './implementations/data_class';
@@ -14,6 +13,8 @@ import { stack_parentesis } from './implementations/stack_parentesis';
 import { stack_recursivitat } from './implementations/stack_recursivitat';
 import { queue_patata } from './implementations/queue_patata';
 import { queue_recents } from './implementations/queue_recents';
+import { immersio_reverse } from './implementations/immersio_reverse';
+import { immersio_fibonacci } from './implementations/immersio_fibonacci';
 
 export const pro: Record<string, Simulation> = {
     punt_basic,
@@ -21,7 +22,6 @@ export const pro: Record<string, Simulation> = {
     cua_cpp,
     llista_iteradors,
     convencions_cpp,
-    arbre_bintree_immersio,
     projecte_sencer_oop,
     iteradors_reversos,
     data_class,
@@ -30,5 +30,7 @@ export const pro: Record<string, Simulation> = {
     stack_parentesis,
     stack_recursivitat,
     queue_patata,
-    queue_recents
+    queue_recents,
+    immersio_reverse,
+    immersio_fibonacci
 };

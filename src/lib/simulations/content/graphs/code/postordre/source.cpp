@@ -1,6 +1,7 @@
-void postordre(Node* node) {
-    if (node == nullptr) return;
-    postordre(node->left);
-    postordre(node->right);
-    cout << node->value << " ";
+void postordre(const BinTree<int>& t) {
+    if (!t.empty()) {
+        postordre(t.left());
+        postordre(t.right());
+        cout << t.value() << ' ';
+    }
 }
