@@ -18,13 +18,21 @@ isUpdated: 1
 
 ### Errors comuns
 1.  **Segmentation Fault (SEGFAULT)**: Intentar accedir a una adreça que no et pertany o desreferenciar `nullptr`.
-Exemple
+    ```cpp
+    int *p = nullptr; *p = 5; // ERROR: Desreferenciació de punter nul
+    ```
 2.  **Memory Leak**: Perdre l'únic punter que apuntava a memòria demanada amb `new` sense fer-ne el `delete` corresponent.
-Exemple
+    ```cpp
+    int *p = new int(5); p = nullptr; // ERROR: La memòria queda orfe al Heap
+    ```
 3.  **Dangling Pointer (Punter penjant)**: Punter que apunta a una adreça de memòria que ja ha estat alliberada amb `delete`.
-Exemple
-4.  **Double-Delete**: Intentar fer `delete` dues vegades sobre la mateixa adreça de memòria (corromp la pila del Heap).
-Exemple
+    ```cpp
+    int *p = new int(5); delete p; cout << *p; // ERROR: Memòria ja no és nostra
+    ```
+4.  **Double-Delete**: Intentar fer `delete` dues vegades sobre la mateixa adreça de memòria (corromp la memòria del Heap).
+    ```cpp
+    int *p = new int(5); delete p; delete p; // ERROR: Doble alliberament
+    ```
 
 ### Pas de Paràmetres
 *   **Per valor (`f(int x)`)**: Còpia del valor. Ineficient per a estructures/objectes grans.
@@ -280,103 +288,64 @@ Com que el grau dels nodes és dinàmic, les operacions recursives ja no es pode
 *   **`plantar(x, v)`**: Transfereix de forma eficient els punters de tots els subarbres continguts en el vector `v` com a fills de la nova arrel `x` en temps $\mathcal{O}(N)$ (essent $N$ el nombre de fills), i immediatament **estableix els arbres de `v` com a buits** (`v[i].primer_node = nullptr`) per evitar aliasing.
 *   **`fills(v)`**: Allibera memòria del node arrel actual amb `delete aux` i col·loca tots els fills exactament com a nous arbres dins del vector `v` en $\mathcal{O}(N)$.
 
-### B. Còpia profunda forçada a `afegir_fill(a)` i `fill(a, i)`
-*   **`afegir_fill(a)`**: **Alerta!** A diferència de `plantar`, aquest mètode **no transfereix punters** directament; en lloc d'això, fa una **còpia profunda de l'arbre `a`** a través de `copia_node_arbreGen(a.primer_node)`.
-*   **`fill(a, i)`**: Pren el fill `i`-èssim de l'arbre `a` i en fa una còpia profunda com a nou arbre actual. Recorda que la crida és **1-indexed** (és a dir, el fill 1 de l'arbre equival internament a la posició indexada `0` del vector de fills `seg[i-1]`).
+### B. Mètodes `afegir_fill(a)` i `fill(a, i)`
+*   **`afegir_fill(a)`**: Afegeix el subarbre `a` al final del vector de fills `seg` (`push_back`) i en transfereix la propietat (`a.primer_node = nullptr`) en temps $\mathcal{O}(1)$ amortitzat.
+*   **`fill(a, i)`**: Retorna el fill $i$-èssim de l'arbre `a` (indexació 1-based, corresponent a la posició interna `seg[i-1]`).
 
 ---
 
-## 6. Estratègia per exercicis d'arbres (Salt de fe)
+## 6. Patrons de Recursió en Arbres (Exàmens PRO2)
 
-La gran majoria de problemes d'arbres es resolen amb una funció recursiva immersiva. Aquesta estratègia permet escriure codis d'examen ultra-nets sense haver d'intentar simular mentalment la pila de crides del processador:
+Tots els problemes d'arbres es resolen seguint 4 passos sistemàtics:
 
-1.  **El Cas Base (La condició de parada)**: Oblida't de l'arbre sencer i pregunta't: *Què és el més simple que em poden passar?* 
-    *   En arbres, gairebé sempre és un arbre buit (`node == nullptr`). Exemple `X75329`: Quina és la freqüència d'un valor en un arbre buit? `0`. Aquest és el teu cas base.
-    *   Si el problema requereix calcular una propietat sobre **camins que van des de l'arrel fins a una fulla**, el cas base **no pot ser l'arbre buit**, ja que no sabríem què retornar per a un punter nul sense alterar la semàntica o violar la definició de camí. Per tant, en aquests casos especials, el cas base és el **node fulla** (`m->segE == nullptr && m->segD == nullptr`). A més, caldrà gestionar de manera explícita els casos on el node només té un únic fill actiu per obligar el camí a continuar cap a ell. Exemple: `X67695`.
-2.  **La Fe Cega (El Salt de Fe)**: **Escriu les crides recursives** sobre els fills actius (ex: `T res = f(m->segE);`), assumint i confiant cegament que cadascuna d'aquestes crides et retornarà *màgicament* la resposta correcta de tot el seu respectiu subarbre. 
-    *   *Regla d'or:* No intentis simular ni imaginar mentalment com la funció anirà baixant pels subarbres; simplement crida-la i desa'n el resultat.
-3.  **La Teva Única Feina (El node actual)**: Identifica quina dada local necessites del node actual. Normalment és el valor de l'arrel en la qual et trobes en el present (`m->info`).
-4.  **La Combinació Final (El muntatge)**: Com uneixes la dada local del present (Pas 3) amb els resultats que t'han retornat les crides recursives dels teus fills (Pas 2)?
-    *   Aquí és on apliques la lògica algebraica del problema (operacions com `+`, `&&`, comparacions `>` o condicionals per triar el millor resultat). 
-    *   Exemple: Retornes `m->info + (esquerra > dreta ? esquerra : dreta)`.
+1. **Cas base**:
+   - Problemes globals (mida, cerca, sumes): `if (m == nullptr) return ...;`
+   - Problemes de **camins arrel-fulla**: El cas base és la **fulla** (`if (m->segE == nullptr && m->segD == nullptr) return m->info;`) i cal bifurcar si només té un fill.
+2. **Crida recursiva als fills**: Invocar la funció sobre els fills existents.
+3. **Dada local**: Obtenir la informació del node actual (`m->info`).
+4. **Combinació**: Operar la dada local amb els resultats retornats pels fills (`+`, `max`, `&&`, etc.).
 
-### Equivalència de l'Estratègia: Binari vs General (n-ari)
+---
 
-| Fase | Arbre Binari (`Arbre.hh`) | Arbre General (`ArbreG.hh`) |
-| :--- | :--- | :--- |
-| **1. Cas Base** | `if (m == nullptr) return ...;`<br>*(O cas de node fulla si parlem de camins)* | `if (m == nullptr) return ...;`<br>*(O cas de node fulla si parlem de camins)* |
-| **2. Salt de Fe** | Crides recursives directes a fill esquerre (`m->segE`) i dret (`m->segD`). | Bucle `for` que acumula recursivament el resultat de cadascun dels fills al vector `m->seg`. |
-| **3. Feina al Node** | Processar la dada del node actual (`m->info`). | Processar la dada del node actual (`m->info`). |
-| **4. Combinació** | Combinar la feina local amb la de l'esquerra i la dreta. | Combinar la feina local amb la suma/acumulació obtinguda al bucle de fills. |
-
-### Exemple 1: Suma del camí màxim (`max_suma_cami` - Binari)
-*Enunciat: Calcula la suma del camí de suma màxima des de l'arrel a una fulla d'un arbre binari no buit.*
-
-*   **Cas Base**: Si un node és una fulla (fills nuls), el camí màxim és simplement el seu propi valor.
-*   **Salt de Fe**: Assumim que el fill esquerre em dona el seu camí màxim `maxE`, i el dret `maxD`.
-*   **Combinació**: El meu camí màxim serà el meu valor (`m->info`) més el màxim dels camins dels dos subarbres.
-
+### Patró 1: Càlcul sobre Camins (Binari)
 ```cpp
-T max_suma_cami_aux(node_arbre* m) {
-    // Cas Base: Node Fulla
-    if (m->segE == nullptr && m->segD == nullptr) return m->info;
-
-    // Salt de Fe: Assumim que per sota ja funciona
-    T maxE = max_suma_cami_aux(m->segE);
-    T maxD = max_suma_cami_aux(m->segD);
-
-    // Combinació
-    if (m->segE == nullptr) return m->info + maxD;
-    if (m->segD == nullptr) return m->info + maxE;
-    return m->info + max(maxE, maxD);
+// Suma del camí màxim d'arrel a fulla (Cas base = Fulla)
+T max_suma_cami(node_arbre* m) {
+    if (m->segE == nullptr && m->segD == nullptr) return m->info; // 1. Fulla
+    if (m->segE == nullptr) return m->info + max_suma_cami(m->segD); // 2. Un sol fill
+    if (m->segD == nullptr) return m->info + max_suma_cami(m->segE);
+    return m->info + max(max_suma_cami(m->segE), max_suma_cami(m->segD)); // 3. Dos fills
 }
 ```
 
-### Exemple 2: Cerca d'un valor (`buscar` - Arbre General)
-*Enunciat: Indica si un valor `x` es troba o no en un arbre general n-ari.*
+---
 
-*   **Cas Base**: Si l'arbre és buit, és impossible que hi sigui (`return false`).
-*   **La meva feina**: Sóc jo el node que busquem? `if (m->info == x) return true;`.
-*   **Salt de Fe en n-aris**: Si no sóc jo, demano en bucle a cadascun dels meus fills si el tenen. Si qualsevol fill em diu `true`, propago el `true` cap a dalt. Si cap fill el té, retorno `false`.
-
+### Patró 2: Cerca / Booleà (Arbre General)
 ```cpp
-bool buscar_aux(node_arbreGen* m, const T& x) {
-    if (m == nullptr) return false; // Cas Base
-    
-    if (m->info == x) return true; // La meva feina
-
-    // Salt de Fe en n-aris: bucle sobre el vector de fills
-    int n = m->seg.size();
-    for (int i = 0; i < n; ++i) {
-        if (buscar_aux(m->seg[i], x)) return true; // Si un fill el troba, tornem true
+// Cerca d'un element en arbre n-ari
+bool buscar(node_arbreGen* m, const T& x) {
+    if (m == nullptr) return false;          // 1. Cas base
+    if (m->info == x) return true;           // 2. Dada local
+    for (node_arbreGen* fill : m->seg) {     // 3. Iteració recursiva sobre fills
+        if (buscar(fill, x)) return true;
     }
-    return false; // Cap fill l'ha trobat
+    return false;
 }
 ```
 
-### Exemple 3: L'Arbre de Sumes (`arb_sumes` - Binari)
-*Enunciat: Retorna un nou arbre idèntic en forma on cada node conté la suma de tot el seu subarbre corresponent.*
+---
 
-*   **Cas Base**: Si l'arbre és buit, el subarbre suma és nul i la suma és `0`.
-*   **Salt de Fe**: Assumim que el fill esquerre calcula correctament el seu arbre de sumes `asumE` i em retorna la seva suma acumulada `sumE`. El mateix per a la dreta amb `asumD` i `sumD`.
-*   **La meva feina + Combinació**: La meva suma és `m->info + sumE + sumD`. Creo un nou node amb aquest valor i el connecto amb els dos subarbres resultants.
-
+### Patró 3: Construcció / Clonació d'Arbre amb Punter per Referència
 ```cpp
-// Auxiliar que rep el node actual, construeix el subarbre de sumes en 'res' i en retorna la suma
-static int arb_sumes_aux(node_arbre* m, node_arbre*& res) {
-    if (m == nullptr) {
-        res = nullptr;
-        return 0; // Cas base
-    }
-
-    res = new node_arbre;
+// Genera un nou arbre on cada node guarda la suma del seu subarbre
+static int arb_sumes(node_arbre* m, node_arbre*& res) {
+    if (m == nullptr) { res = nullptr; return 0; } // 1. Cas base
     
-    // Salt de Fe: Assumim que esquerra i dreta es construeixen soles i ens donen les sumes
-    int sumE = arb_sumes_aux(m->segE, res->segE);
-    int sumD = arb_sumes_aux(m->segD, res->segD);
-
-    // La meva feina + Combinació
-    res->info = m->info + sumE + sumD;
+    res = new node_arbre; // 2. Creació del nou node
+    int sumE = arb_sumes(m->segE, res->segE); // 3. Recursió a fills
+    int sumD = arb_sumes(m->segD, res->segD);
+    
+    res->info = m->info + sumE + sumD; // 4. Combinació
     return res->info;
 }
 ```

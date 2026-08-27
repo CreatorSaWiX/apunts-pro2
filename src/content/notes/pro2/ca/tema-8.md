@@ -7,208 +7,217 @@ draft: false
 isUpdated: 2
 ---
 
-## 1. La memòria en C++: Stack vs Heap
+## 8.1 La memòria en C++: Stack vs Heap
 
-Per entendre els punters, primer hem de saber on s'emmagatzemen les dades. La memòria d'un programa es divideix principalment en dues zones:
+Per entendre els punters, primer cal conèixer com s'organitza la memòria RAM d'un programa en C++:
 
 | Característica | Stack (Pila) | Heap (Monticle) |
 | :--- | :--- | :--- |
-| **Gestió** | Automàtica (per l'ordinador). | Manual (pel programador). |
-| **Velocitat** | Molt ràpida. | Més lenta. |
-| **Mida** | Limitada i fixa. | Molt gran (memòria RAM disponible). |
-| **Cicle de vida** | Lligat a les claus `{}` (stack frames). | Decidim quan neixen (`new`) i moren (`delete`). |
+| **Gestió** | **Automàtica**: el compilador reserva i allibera espai. | **Manual**: el programador decideix quan demanar (`new`) i alliberar (`delete`). |
+| **Velocitat** | Molt ràpida (punter de pila contigu). | Més lenta (cerca de blocs lliures al sistema). |
+| **Mida** | Limitada i fixa (uns quants MB, risc d'*Stack Overflow*). | Molt gran (tota la memòria RAM disponible). |
+| **Cicle de vida** | Lligat a l'àmbit (*scope*) entre claus `{}`. | Persistent fins que s'executa `delete`. |
 
-**Exemple de scope (Pila)**:
 ```cpp
 int f(int a, int b) {
-    int n = a;
+    int n = a;      // Reserva espai a la pila
     if (b > n) {
-        int m = 2; // Neix aquí
+        int m = 2;  // 'm' neix a la pila en entrar al bloc if
         a = b;
-    } // m Mor aquí automàticament
+    }               // 'm' s'allibera automàticament aquí
     return a;
-} // n i a Moren aquí
+}                   // 'n', 'a' i 'b' s'alliberen automàticament en acabar la funció
 ```
 
-## 2. Què és un punter?
+---
 
-Un **punter** és una variable que, en lloc d'emmagatzemar un valor (com un `int` o `char`), emmagatzema una **adreça de memòria**.
+## 8.2 Què és un punter?
+
+Un **punter** és una variable que, en lloc de guardar una dada directa (com `int` o `char`), emmagatzema una **adreça de memòria** d'una altra variable.
+
+### Els tres operadors fonamentals
 
 | Operador | Nom | Funció | Exemple |
 | :--- | :--- | :--- | :--- |
-| **`&`** | Adreça de | Obté l'adreça de memòria d'una variable. | `p = &x;` |
-| **`*`** | Desreferència | Accedeix al contingut de l'adreça que guarda el punter. | `cout << *p;` |
-| **`->`** | Fletxa | Accés a membre via punter. Equivalent a `(*p).membre`. | `pp->first = "b";` |
+| **`&`** | **Adreça de** | Obté l'adreça de memòria d'una variable existent. | `int* p = &x;` |
+| **`*`** | **Desreferència** | Accedeix/modifica el valor situat a l'adreça que guarda el punter. | `*p = 20;` |
+| **`->`** | **Accés a membre** | Accedeix directament a un camp d'un `struct`/`class`. Equivalent a `(*p).camp`. | `p_node->value = 5;` |
 
-### Trampes de declaració i sintaxi
-
-- **Declaració múltiple**: L'asterisc `*` s'ha de posar per cada variable.
-  ```cpp
-  int *pb, *pc; // Dos punters que apunten a enters
-  int* pb, pc;  // pb és punter, pc és un enter normal! (Error típic)
-  ```
-- **Punter a elements de contenidors**:
-  ```cpp
-  vector<int> v = {1, 2, 3};
-  int *p = &v[1]; // Apunta al '2'
-  *p += 1;        // v[1] ara és 3
-  ```
-- **Punter a membres de `pair` o `struct`**:
-  ```cpp
-  pair<string, int> a = {"a", 7};
-  int *pi = &a.second;
-  *pi = 0; // a.second ara és 0
-  ```
-
-> **`nullptr` vs Inicialització**:
-> - `int *p = nullptr;` -> El punter apunta a "res". Segur.
-> - `int *p;` -> El punter apunta a una **adreça aleatòria** (brossa). Molt perillós.
-> - `int *p = 5;` -> **ERROR**. Estàs dient que l'adreça de memòria es la número 5. Això provocarà un **SEGFAULT** segur.
+### Distinció fonamental: `p` vs `*p`
 
 ```cpp
 int x = 10;
-int* p = &x; // p apunta a x
+int y = 99;
+int* p = &x; // 'p' guarda l'adreça de 'x' (ex: 0x7ffd8)
 
-cout << p;   // Imprimeix una adreça: 0x7ffe...
-cout << *p;  // Imprimeix el valor de x: 10
+// 1. Llegir
+cout << p;   // Imprimeix l'adreça: 0x7ffd8
+cout << *p;  // Imprimeix el contingut de x: 10
+
+// 2. Modificar el contingut (*p)
+*p = 25;     // Canvia el valor de 'x' a 25!
+
+// 3. Modificar la referència (p)
+p = &y;      // Ara 'p' apunta a 'y'. 'x' es manté en 25 i *p val 99.
 ```
 
-## 3. Gestió dinàmica de memòria
+### Trampes típiques de declaració
 
-Aquesta és la utilitat real dels punters: demanar memòria en temps d'execució.
+1. **Declaració múltiple d'asteriscs:**
+   ```cpp
+   int *pa, *pb; // Correcte: dos punters a enter
+   int* pa, pb;  // Perill: 'pa' és punter, però 'pb' és un int normal!
+   ```
+2. **Punters a membres de contenidors o tuples:**
+   ```cpp
+   vector<int> v = {10, 20, 30};
+   int* pv = &v[1]; // Apunta al 20
+   *pv += 5;        // v[1] ara val 25
 
-### Objectes vs vectors dinàmics
+   pair<string, int> persona = {"Anna", 21};
+   int* pedat = &persona.second;
+   *pedat = 22;     // persona.second ara val 22
+   ```
 
-Podem demanar un sol objecte o un bloc sencer (vector) al Heap usant `new`, i alliberar-lo amb `delete`.
-
+:::warning
+Un punter no inicialitzat (`int* p;`) conté **brossa** (apunta a una adreça aleatòria de memòria). Intentar llegir o escriure amb `*p` provocarà un **Segmentation Fault** o corrupció de dades. Si un punter no apunta a cap lloc inicialment, assigna-li sempre **`nullptr`**:
 ```cpp
-// Objectes simples
-Data *pd = new Data(2025, 4, 2);
-pair<int, int> *pp = new pair<int, int>(1, 2);
-
-// Vectors dinàmics (Molt comú a C)
-int *pv = new int[100]; 
-char *pc = new char[100000];
+int* p = nullptr; // Apunta de forma segura a "enlloc"
 ```
+:::
 
-**Memory Leak**: Es produeix quan perds l'adreça i ja no pots fer `delete`.
+## 8.3 Gestió dinàmica de memòria: `new` i `delete`
+
+La utilitat principal dels punters és gestionar memòria al **Heap** en temps d'execució:
+
+### 1. Objectes individuals
 ```cpp
-int *p = new int[100];
-p = new int[100]; // ERROR: S'ha perdut l'adreça del primer vector! Fuga de memòria.
+int* p_int = new int(42);       // Reserva espai per a un int amb valor 42
+delete p_int;                   // Allibera la memòria
+p_int = nullptr;                // Evita deixar un punter penjant (dangling pointer)
 ```
 
-## 4. Aliasing i assignació
+### 2. Blocs / Vectors dinàmics (`new[]` i `delete[]`)
+```cpp
+int* arr = new int[100];        // Reserva un bloc continu de 100 enters
+delete[] arr;                   // Allibera el bloc sencer (sempre amb [])
+arr = nullptr;
+```
 
-L'**aliasing** passa quan dos o més punters apunten a la mateixa adreça de memòria. Modificar el valor a través d'un punter afecta a tots els altres "àlies".
+:::warning
+- **`delete` vs `delete[]`:** Alliberar un bloc creat amb `new[]` fent servir només `delete` (sense claudàtors) produeix **comportament indefinit** i fuites de memòria.
+- **Fuga de memòria (*Memory Leak*):** Es produeix quan es perd l'últim punter que apuntava a un bloc del Heap abans d'haver fet `delete`:
+  ```cpp
+  int* p = new int(10);
+  p = new int(20); // ERROR: L'enter inicial (10) queda orfe a la RAM per sempre!
+  ```
+:::
+
+---
+
+## 8.4 Aliasing i Còpia Superficial vs Profunda
+
+L'**aliasing** es produeix quan dos o més punters emmagatzemen la **mateixa adreça de memòria**. Qualsevol canvi fet a través d'un àlies modifica la dada per a tots els altres.
 
 ```cpp
 int x = 10;
 int* p1 = &x;
-int* p2 = p1; // Aliasing: p2 apunta on apunta p1
+int* p2 = p1; // Aliasing: p2 apunta exactament a la mateixa casella que p1
 
-*p2 = 20;
-cout << x; // Imprimirà 20!
+*p2 = 99;
+cout << *p1;  // Imprimeix 99!
 ```
 
-**Exemple avançat**: Un vector de punters apuntant al mateix objecte.
-```cpp
-int x = 3;
-vector<int*> v(10, &x); // 10 punters que apunten TOTS a la x
-
-for (int i = 0; i < v.size(); ++i) {
-    (*v[i])++; // Incrementem x 10 vegades!
-}
-cout << x; // Imprimirà 13
-```
-
-## 5. El perill dels punters: errors comuns
-
-L'ús de punters requereix molta disciplina. Els errors més habituals a PRO2 són:
-
-1.  **Segmentation Fault (SEGFAULT)**: Intentar accedir a una adreça que no et pertany.
-    - Desreferenciar `nullptr`: `int *p = nullptr; *p = 5;`.
-    - Accés fora de rang en vectors: `vector<int> v; v[13] = 0;`
-2.  **Memory Leak**: Destruir l'única referència a una memòria dinàmica sense alliberar-la.
-3.  **Dangling Pointer (Punter penjant)**: Punter que apunta a una adreça que ja ha estat alliberada amb `delete`.
-4.  **Double-Delete**: Fer `delete` dues vegades sobre la mateixa adreça (corromp el heap).
-
-> Al `Makefile`, utilitza el flag `-D_GLIBCXX_DEBUG`. Això activa comprovacions de seguretat en els contenidors de la STL i t'avisarà dels accessos fora de rang en lloc de donar-te un SEGFAULT silent o dades brossa.
-
-| Operació | Iterador (STL) | Punter (Baix Nivell) |
-| :--- | :--- | :--- |
-| **Inici** | `auto it = v.begin();` | `int *px = &x;` |
-| **Accés** | `*it = 5;` | `*px = 5;` |
-| **Avançar** | `it++;` | `px++;` (Avança una adreça) |
-| **Reassignar** | `it = v.erase(it);` | `px = &y;` |
-
-> Un punter pot ser vist com un iterador d'un vector, però un iterador d'un `std::list` no és necessàriament un punter (internament pot ser més complex).
+### Còpia superficial vs profunda
+- **Còpia superficial:** Copia les adreces dels punters. Ambdós objectes comparteixen la mateixa memòria.
+- **Còpia profunda:** Reserva nova memòria al Heap i duplica el contingut.
 
 ---
 
-## 6. Pas de paràmetres 
+## 8.5 Errors crítics amb punters
 
-| Tipus | Sintaxi | Efecte | Eficiència |
+| Error | Causa | Conseqüència | Solució |
 | :--- | :--- | :--- | :--- |
-| **Per valor** | `f(int x)` | Còpia del valor. | Baixa (si l'objecte és gran). |
-| **Per referència** | `f(int& x)` | Àlies directe. | Alta. |
-| **Per punter** | `f(int* pi)` | Passa l'adreça. Més ràpid que per valor. |
+| **Segmentation Fault** | Desreferenciar `nullptr` o adreces brossa/fora de rang. | El programa s'atura immediatament (*crash*). | Comprovar sempre `if (p != nullptr)` abans d'usar `*p` o `p->`. |
+| **Memory Leak** | Perdre la referència a un bloc del Heap sense `delete`. | Consum continu i innecessari de memòria RAM. | Assegurar un `delete` per cada `new`. |
+| **Dangling Pointer** | Punter que segueix guardant una adreça que ja s'ha alliberat. | Dades corromptes o SEGFAULT en accedir-hi. | Assignar `p = nullptr;` immediatament després del `delete`. |
+| **Double Delete** | Fer `delete` dues vegades sobre el mateix bloc de memòria. | Corrupció de l'administrador del Heap (*crash*). | Fer `p = nullptr;` (en C++, `delete nullptr;` no fa res i és segur). |
 
-**Exemple d'increment**:
-```cpp
-void inc(int *pi) {
-    (*pi)++; // vol dir *pi += 1;
-}
-
-int i = 5;
-inc(&i); // i ara val 6
-```
-
-A PRO2, preferim **referències constants** (`const T& x`) per a objectes grans que no volem modificar, i **punters** només quan necessitem que el paràmetre pugui ser opcional (`nullptr`) o per a estructures dinàmiques.
+> **Consell per al Jutge/Compilació:** Utilitza el flag `-D_GLIBCXX_DEBUG` al compilar perquè els contenidors de la STL avisin de qualsevol accés fora de rang en lloc de produir errors silenciosos.
 
 ---
 
-## 7. Aplicació: Estructures Enllaçades (Nodes)
+## 8.6 Pas de paràmetres en funcions
 
-La utilitat real dels punters a PRO2 és crear col·leccions de dades que creixen i decreixen node a node. Cada element s'emmagatzema en un **Node** (o `Item`).
+| Tipus de pas | Sintaxi | Quan utilitzar-lo a PRO2 |
+| :--- | :--- | :--- |
+| **Per valor** | `void f(int x)` | Tipus primitius petits (`int`, `char`, `bool`, `double`). |
+| **Per referència constant** | `void f(const string& s)` | **L'estàndard a PRO2** per a estructures grans (`vector`, `list`, `BinTree`, `string`) que només volem llegir sense cost de còpia. |
+| **Per referència** | `void f(int& x)` | Quan la funció ha de **modificar directament** l'objecte original. |
+| **Per punter** | `void f(Node* p)` | Quan el paràmetre és **opcional** (pot ser `nullptr`) o en estructures enllaçades. |
 
-### El Node Bàsic
+
+---
+
+## 8.7 Aplicació: Estructures Enllaçades (Nodes)
+
+La utilitat principal dels punters a PRO2 és crear estructures de dades dinàmiques que creixen i decreixen node a node en memòria. Cada element s'emmagatzema en un **Node** (o `Item`):
+
 ```cpp
-struct Item {
-    T value;    // La dada
-    Item* next; // El "cable" cap al següent node
+template <typename T>
+struct Node {
+    T value;        // Dada emmagatzemada
+    Node* next;     // Punter cap al següent node (o nullptr si és l'últim)
 };
 ```
 
-### 7.1 La Pila (Stack) - Model LIFO
-En una pila enllaçada, només tenim un punter al cim (`ptopitem`). Cada vegada que fem `push`, el nou node apunta a l'antic cim.
+### 8.7.1 La Pila enllaçada (Stack — LIFO)
+En una pila dinàmica, només cal mantenir un punter al cim (`top` o `p_top`):
+- **`push(x)`**: Es crea un nou node que apunta a l'antic cim, i s'actualitza el cim.
+- **`pop()`**: Es guarda el cim temporalment, s'avança el cim al següent node (`top = top->next`) i s'allibera la memòria de l'antic cim.
 
-::stackviz
+:::stackviz
+:::
 
-> **Exercici `swap2Topmost()`**: Per intercanviar els dos primers nodes sense tocar els `.value`, has de:
-> 1. Guardar el segon node en un punter auxiliar: `Item *p2 = ptopitem->next;`
-> 2. Reenllaçar: `ptopitem->next = p2->next;`
-> 3. Fer que el nou primer sigui el que era segon: `p2->next = ptopitem;`
-> 4. Actualitzar el cim: `ptopitem = p2;`
-
-### 7.2 La Cua (Queue) - Model FIFO
-En una cua, necessitem dos punters: `first` (per treure) i `last` (per afegir).
-
-::queueviz
-
-> **Exercici `operator[]`**: Com que una cua enllaçada no és un vector, per trobar l'element `i` has de fer un bucle `for` que avanci el punter `p = p->next` exactament `i` vegades començant des de `first`.
-
-### 7.3 Com esborrar nodes pel mig
-Per esborrar un node (com a `removeFirstOccurrence` - Jutge: X87185), necessites "saltar-te'l":
-1. Trobar el node **anterior** al que vols esborrar (`ant`).
-2. Fer el salt: `ant->next = ant->next->next;`
-3. Alliberar la memòria: `delete p_a_esborrar;`
-
-::pointerviz
+> **Reenllaçament (`swap2Topmost`):** Per intercanviar els dos primers nodes sense copiar els seus valors:
+> 1. `Node* p2 = top->next;` (guardem el segon node)
+> 2. `top->next = p2->next;` (el primer ara apunta al tercer)
+> 3. `p2->next = top;` (el segon ara apunta a l'antic primer)
+> 4. `top = p2;` (el nou cim és p2)
 
 ---
 
-## Checklist per al Jutge (Punters)
-- **Has posat `nullptr`?** Comprova sempre si un punter és nul abans de fer `p->next`.
-- **Has fet `delete`?** Cada `new` ha de tenir el seu `delete` per evitar Memory Leaks.
-- **Casos buits**: Què fa el teu codi si la pila/cua està buida? I si té només 1 element?
-- **Auto-assignació**: En l'ús de `operator=`, has comprovat `if (this != &s)`?
+### 8.7.2 La Cua enllaçada (Queue — FIFO)
+En una cua dinàmica calen dos punters: **`first`** (per extreure per davant) i **`last`** (per afegir pel final):
+
+:::queueviz
+:::
+
+> **Casos especials:**
+> - Inserir en cua buida: tant `first` com `last` passen a apuntar al nou node.
+> - Treure l'últim element: si després del `pop` la cua queda buida (`first == nullptr`), cal fer també `last = nullptr;`.
+
+---
+
+### 8.7.3 Esborrat de nodes pel mig
+Per esborrar un node situat a l'interior d'una seqüència enllaçada:
+
+1. Localitzar el node **anterior** (`ant`) al que volem eliminar.
+2. Guardar el node a esborrar: `Node* p_del = ant->next;`
+3. Saltar el node: `ant->next = p_del->next;`
+4. Alliberar la memòria: `delete p_del;`
+
+:::pointerviz
+:::
+
+---
+
+## 8.8 Checklist per a problemes de punters al Jutge
+
+- **Comprovació de `nullptr`:** Assegura't de no fer mai `p->next` o `p->value` si `p == nullptr`.
+- **Alliberament amb `delete`:** Cada `new` ha de tenir el seu `delete` corresponent (o en el destructor de la classe).
+- **Gestió dels casos límit:**
+  - Estructura completament buida (`top == nullptr` o `first == nullptr`).
+  - Estructura amb un sol element (on eliminar-lo requereix actualitzar tant `first` com `last` a `nullptr`).
+  - Esborrat del primer node vs un node intermedi.
+- **Control d'auto-assignació:** En sobrecarregar l'`operator=`, comprova sempre `if (this != &other)` abans d'esborrar la memòria pròpia.

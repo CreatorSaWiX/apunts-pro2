@@ -7,28 +7,29 @@ draft: false
 isNew: true
 ---
 
-## 1. Estructura de dades
+## 11.1 Estructura interna: Nodes i Punters
 
-La representació habitual utilitza nodes enllaçats on cada node té un valor i dos punters als seus fills.
+La representació interna d'un arbre binari a PRO2 utilitza estructures enllaçades on cada node emmagatzema una dada i dos punters als seus fills:
 
 ```cpp
-template <class T> class Arbre {
+template <typename T>
+class Arbre {
 private:
-  struct node_arbre {
-    T info;             // Dada continguda al node
-    node_arbre *segE;   // Punter al fill esquerre
-    node_arbre *segD;   // Punter al fill dret
-  };
-  node_arbre *primer_node; // Punter a l'arrel (NULL si l'arbre és buit)
+    struct node_arbre {
+        T info;                 // Dada continguda al node
+        node_arbre *segE;       // Punter al fill esquerre (nullptr si buit)
+        node_arbre *segD;       // Punter al fill dret (nullptr si buit)
+    };
+    node_arbre *primer_node;    // Punter a l'arrel (nullptr si l'arbre és buit)
 };
 ```
 
-### Visualització de l'estructura
+### Visualització de l'estructura en memòria
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-6 items-start">
 <div>
 
-Un node a nivell físic en memòria es veu així:
+**Node físic en memòria:**
 
 :::graph
 ```json
@@ -51,7 +52,7 @@ Un node a nivell físic en memòria es veu així:
 </div>
 <div>
 
-Un arbre binari complet:
+**Arbre binari complet:**
 
 :::graph
 ```json
@@ -80,42 +81,132 @@ Un arbre binari complet:
 </div>
 </div>
 
-## 2. Operacions de gestió de memòria
+---
 
+## 11.2 El patró de Recursivitat Privada i la Regla dels Tres
 
-Com que treballem amb punters i l'operador `new`, hem d'implementar la **Regla dels Tres** per evitar fuites de memòria o còpies superficials (*shallow copies*) que podrien corrompre la memòria.
+Totes les operacions que recorren l'arbre es dissenyen seguint el patró de **mètode públic** (sense paràmetres de punter) que crida a una **funció privada/estàtica recursiva** sobre `node_arbre*`:
 
-### 2.1 Còpia profunda (Deep Copy)
-Per copiar un arbre, no n'hi ha prou amb copiar el punter arrel; hem de duplicar tots els nodes recursivament.
+### 11.2.1 Còpia profunda: `copia_node_arbre(m)`
+Duplica tots els nodes recursivament en pre-ordre reservant nova memòria:
+
+```cpp
+static node_arbre* copia_node_arbre(node_arbre* m) {
+    if (m == nullptr) return nullptr;
+    node_arbre* n = new node_arbre;
+    n->info = m->info;
+    n->segE = copia_node_arbre(m->segE);
+    n->segD = copia_node_arbre(m->segD);
+    return n;
+}
+```
 
 ::algoviz{algorithm="arbre_copia_node"}
 
-### 2.2 Alliberament de memòria (Destrucció)
-La destrucció s'ha de fer en **post-ordre**: primer eliminem els subarbres i finalment el node actual.
+---
+
+### 11.2.2 Destrucció: `esborra_node_arbre(m)`
+Allibera la memòria recursivament en **post-ordre** (primer els subarbres i al final l'arrel):
+
+```cpp
+static void esborra_node_arbre(node_arbre* m) {
+    if (m != nullptr) {
+        esborra_node_arbre(m->segE);
+        esborra_node_arbre(m->segD);
+        delete m;
+    }
+}
+```
 
 ::algoviz{algorithm="arbre_esborra_node"}
 
-## 3. Transferència de propietat (Plantar i Fills)
+---
 
-En la implementació de PRO2, les operacions `plantar` i `fills` són especialment eficients perquè **mouen punters** en lloc de copiar dades, però això buida els paràmetres d'entrada.
+### 11.2.3 La Regla dels Tres
+```cpp
+// 1. Destructor
+~Arbre() {
+    esborra_node_arbre(primer_node);
+}
 
-| Operació | Efecte | Complexitat |
-| :--- | :--- | :--- |
-| `plantar(x, a1, a2)` | Crea una arrel `x` i "roba" les estructures d' `a1` i `a2`. | $O(1)$ |
-| `fills(fe, fd)` | "Talla" l'arrel actual i passa els subarbres a `fe` i `fd`. | $O(1)$ |
-| `arrel()` | Retorna la dada del node arrel. | $O(1)$ |
+// 2. Constructor de còpia
+Arbre(const Arbre& a) {
+    primer_node = copia_node_arbre(a.primer_node);
+}
+
+// 3. Operador d'assignació
+Arbre& operator=(const Arbre& a) {
+    if (this != &a) {
+        esborra_node_arbre(primer_node);
+        primer_node = copia_node_arbre(a.primer_node);
+    }
+    return *this;
+}
+```
+
+---
+
+## 11.3 Transferència de punters en $\mathcal{O}(1)$: `plantar` i `fills`
+
+A diferència de fer còpies profundes, `plantar` i `fills` funcionen en temps constant $\mathcal{O}(1)$ perquè **transfereixen la propietat dels punters** directament:
+
+### 11.3.1 Plantar: `plantar(x, a1, a2)`
+Crea una nova arrel amb valor `x`, enllaça els subarbres d'`a1` i `a2` i buida els arbres originals:
+
+```cpp
+void plantar(const T &x, Arbre &a1, Arbre &a2) {
+    if (this != &a1 && this != &a2) {
+        if (&a1 == &a2) { // Evita cicles si a1 i a2 són el mateix arbre
+            a2.primer_node = copia_node_arbre(a1.primer_node);
+        }
+        node_arbre* aux = new node_arbre;
+        aux->info = x;
+        aux->segE = a1.primer_node;
+        aux->segD = a2.primer_node;
+        primer_node = aux;
+        a1.primer_node = nullptr;
+        a2.primer_node = nullptr;
+    }
+}
+```
 
 ::algoviz{algorithm="arbre_plantar"}
 
+---
+
+### 11.3.2 Fills: `fills(fe, fd)`
+Transfereix els subarbres esquerre i dret a `fe` i `fd`, i destrueix el node arrel actual:
+
+```cpp
+void fills(Arbre &fe, Arbre &fd) {
+    node_arbre* aux = primer_node;
+    fe.primer_node = aux->segE;
+    fd.primer_node = aux->segD;
+    primer_node = nullptr;
+    delete aux;
+}
+```
+
 ::algoviz{algorithm="arbre_fills"}
 
-En l'operació `plantar(x, a, a)`, si s'intenta usar el mateix arbre com a fill esquerre i dret, la implementació ha de fer una còpia d'un d'ells per evitar cicles.
+---
 
-## 4. Tipus de recorreguts
+## 11.4 Tipus de recorreguts
 
-Per processar la informació d'un arbre, podem fer-ho en diferents ordres:
+| Ordre | Seqüència de visita | Aplicació típica a PRO2 |
+| :--- | :--- | :--- |
+| **Pre-ordre** | Arrel $\rightarrow$ Esquerre $\rightarrow$ Dret | Duplicar/clonar l'arbre (`copia_node_arbre`), serialització. |
+| **In-ordre** | Esquerre $\rightarrow$ Arrel $\rightarrow$ Dret | Llistar elements ordenats en un Arbre Binari de Cerca (BST). |
+| **Post-ordre** | Esquerre $\rightarrow$ Dret $\rightarrow$ Arrel | Destruir l'arbre (`esborra_node_arbre`), calcular alçada o mida. |
+| **Per nivells** | Nivell a nivell d'esquerra a dreta | Algorismes BFS (requereix una `queue<node_arbre*>`). |
 
-1.  **Pre-ordre**: Arrel $\rightarrow$ Esquerre $\rightarrow$ Dret (Útil per copiar).
-2.  **In-ordre**: Esquerre $\rightarrow$ Arrel $\rightarrow$ Dret (Útil per llistar elements ordenats en un BST).
-3.  **Post-ordre**: Esquerre $\rightarrow$ Dret $\rightarrow$ Arrel (Útil per esborrar o calcular sumes de subarbres).
-4.  **Per nivells**: De dalt a baix i d'esquerra a dreta (Requereix una cua).
+---
+
+## 11.5 Resum de Complexitat
+
+| Mètode | Complexitat temporal | Explicació |
+| :--- | :---: | :--- |
+| **`plantar(x, a1, a2)`** | $\mathcal{O}(1)$ | Transferència directa de punters (sense copiar). |
+| **`fills(fe, fd)`** | $\mathcal{O}(1)$ | Transferència de punters i `delete` de l'arrel. |
+| **`arrel()` / `es_buit()`** | $\mathcal{O}(1)$ | Accés directe al camp de l'arrel o comparació `nullptr`. |
+| **Destructor / Còpia** | $\Theta(n)$ | Visita i gestiona cadascun dels $n$ nodes de l'arbre. |

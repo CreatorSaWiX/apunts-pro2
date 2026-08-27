@@ -7,28 +7,29 @@ draft: false
 isNew: true
 ---
 
-## 1. Estructura de datos
+## 11.1 Estructura interna: Nodos y Punteros
 
-La representación habitual utiliza nodos enlazados donde cada nodo tiene un valor y dos punteros a sus hijos.
+La representación interna de un árbol binario en PRO2 utiliza estructuras enlazadas donde cada nodo almacena un dato y dos punteros a sus hijos:
 
 ```cpp
-template <class T> class Arbre {
+template <typename T>
+class Arbre {
 private:
-  struct node_arbre {
-    T info;             // Dato contenido en el nodo
-    node_arbre *segE;   // Puntero al hijo izquierdo
-    node_arbre *segD;   // Puntero al hijo derecho
-  };
-  node_arbre *primer_node; // Puntero a la raíz (NULL si el árbol está vacío)
+    struct node_arbre {
+        T info;                 // Dato contenido en el nodo
+        node_arbre *segE;       // Puntero al hijo izquierdo (nullptr si vacío)
+        node_arbre *segD;       // Puntero al hijo derecho (nullptr si vacío)
+    };
+    node_arbre *primer_node;    // Puntero a la raíz (nullptr si el árbol está vacío)
 };
 ```
 
-### Visualización de la estructura
+### Visualización de la estructura en memoria
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-6 items-start">
 <div>
 
-Un nodo a nivel físico en memoria se ve así:
+**Nodo físico en memoria:**
 
 :::graph
 ```json
@@ -51,7 +52,7 @@ Un nodo a nivel físico en memoria se ve así:
 </div>
 <div>
 
-Un árbol binario completo:
+**Árbol binario completo:**
 
 :::graph
 ```json
@@ -80,42 +81,132 @@ Un árbol binario completo:
 </div>
 </div>
 
-## 2. Operaciones de gestión de memoria
+---
 
+## 11.2 El patrón de Recursividad Privada y la Regla de los Tres
 
-Como trabajamos con punteros y el operador `new`, debemos implementar la **Regla de los Tres** para evitar fugas de memoria o copias superficiales (*shallow copies*) que podrían corromper la memoria.
+Todas las operaciones que recorren el árbol se diseñan siguiendo el patrón de **método público** (sin parámetros de puntero) que llama a una **función privada/estática recursiva** sobre `node_arbre*`:
 
-### 2.1 Copia profunda (Deep Copy)
-Para copiar un árbol, no basta con copiar el puntero raíz; debemos duplicar todos los nodos recursivamente.
+### 11.2.1 Copia profunda: `copia_node_arbre(m)`
+Duplica todos los nodos recursivamente en pre-orden reservando nueva memoria:
+
+```cpp
+static node_arbre* copia_node_arbre(node_arbre* m) {
+    if (m == nullptr) return nullptr;
+    node_arbre* n = new node_arbre;
+    n->info = m->info;
+    n->segE = copia_node_arbre(m->segE);
+    n->segD = copia_node_arbre(m->segD);
+    return n;
+}
+```
 
 ::algoviz{algorithm="arbre_copia_node"}
 
-### 2.2 Liberación de memoria (Destrucción)
-La destrucción se debe hacer en **post-orden**: primero eliminamos los subárboles y finalmente el nodo actual.
+---
+
+### 11.2.2 Destrucción: `esborra_node_arbre(m)`
+Libera la memoria recursivamente en **post-orden** (primero los subárboles y al final la raíz):
+
+```cpp
+static void esborra_node_arbre(node_arbre* m) {
+    if (m != nullptr) {
+        esborra_node_arbre(m->segE);
+        esborra_node_arbre(m->segD);
+        delete m;
+    }
+}
+```
 
 ::algoviz{algorithm="arbre_esborra_node"}
 
-## 3. Transferencia de propiedad (Plantar e Hijos)
+---
 
-En la implementación de PRO2, las operaciones `plantar` y `fills` son especialmente eficientes porque **mueven punteros** en lugar de copiar datos, pero esto vacía los parámetros de entrada.
+### 11.2.3 La Regla de los Tres
+```cpp
+// 1. Destructor
+~Arbre() {
+    esborra_node_arbre(primer_node);
+}
 
-| Operación | Efecto | Complejidad |
-| :--- | :--- | :--- |
-| `plantar(x, a1, a2)` | Crea una raíz `x` y "roba" las estructuras de `a1` y `a2`. | $O(1)$ |
-| `fills(fe, fd)` | "Corta" la raíz actual y pasa los subárboles a `fe` y `fd`. | $O(1)$ |
-| `arrel()` | Devuelve el dato del nodo raíz. | $O(1)$ |
+// 2. Constructor de copia
+Arbre(const Arbre& a) {
+    primer_node = copia_node_arbre(a.primer_node);
+}
+
+// 3. Operador de asignación
+Arbre& operator=(const Arbre& a) {
+    if (this != &a) {
+        esborra_node_arbre(primer_node);
+        primer_node = copia_node_arbre(a.primer_node);
+    }
+    return *this;
+}
+```
+
+---
+
+## 11.3 Transferencia de punteros en $\mathcal{O}(1)$: `plantar` y `fills`
+
+A diferencia de realizar copias profundas, `plantar` y `fills` funcionan en tiempo constante $\mathcal{O}(1)$ porque **transfieren la propiedad de los punteros** directamente:
+
+### 11.3.1 Plantar: `plantar(x, a1, a2)`
+Crea una nueva raíz con valor `x`, enlaza los subárboles de `a1` y `a2` y vacía los árboles originales:
+
+```cpp
+void plantar(const T &x, Arbre &a1, Arbre &a2) {
+    if (this != &a1 && this != &a2) {
+        if (&a1 == &a2) { // Evita ciclos si a1 y a2 son el mismo árbol
+            a2.primer_node = copia_node_arbre(a1.primer_node);
+        }
+        node_arbre* aux = new node_arbre;
+        aux->info = x;
+        aux->segE = a1.primer_node;
+        aux->segD = a2.primer_node;
+        primer_node = aux;
+        a1.primer_node = nullptr;
+        a2.primer_node = nullptr;
+    }
+}
+```
 
 ::algoviz{algorithm="arbre_plantar"}
 
+---
+
+### 11.3.2 Hijos: `fills(fe, fd)`
+Transfiere los subárboles izquierdo y derecho a `fe` y `fd`, y destruye el nodo raíz actual:
+
+```cpp
+void fills(Arbre &fe, Arbre &fd) {
+    node_arbre* aux = primer_node;
+    fe.primer_node = aux->segE;
+    fd.primer_node = aux->segD;
+    primer_node = nullptr;
+    delete aux;
+}
+```
+
 ::algoviz{algorithm="arbre_fills"}
 
-En la operación `plantar(x, a, a)`, si se intenta usar el mismo árbol como hijo izquierdo y derecho, la implementación debe hacer una copia de uno de ellos para evitar ciclos.
+---
 
-## 4. Tipos de recorridos
+## 11.4 Tipos de recorridos
 
-Para procesar la información de un árbol, podemos hacerlo en diferentes órdenes:
+| Orden | Secuencia de visita | Aplicación típica en PRO2 |
+| :--- | :--- | :--- |
+| **Pre-orden** | Raíz $\rightarrow$ Izquierdo $\rightarrow$ Derecho | Duplicar/clonar el árbol (`copia_node_arbre`), serialización. |
+| **In-orden** | Izquierdo $\rightarrow$ Raíz $\rightarrow$ Derecho | Listar elementos ordenados en un Árbol Binario de Búsqueda (BST). |
+| **Post-orden** | Izquierdo $\rightarrow$ Derecho $\rightarrow$ Raíz | Destruir el árbol (`esborra_node_arbre`), calcular altura o tamaño. |
+| **Por niveles** | Nivel a nivel de izquierda a derecha | Algoritmos BFS (requiere una `queue<node_arbre*>`). |
 
-1.  **Pre-orden**: Raíz $\rightarrow$ Izquierdo $\rightarrow$ Derecho (Útil para copiar).
-2.  **In-orden**: Izquierdo $\rightarrow$ Raíz $\rightarrow$ Derecho (Útil para listar elementos ordenados en un BST).
-3.  **Post-orden**: Izquierdo $\rightarrow$ Derecho $\rightarrow$ Raíz (Útil para borrar o calcular sumas de subárboles).
-4.  **Por niveles**: De arriba a abajo y de izquierda a derecha (Requiere una cola).
+---
+
+## 11.5 Resumen de Complejidad
+
+| Método | Complejidad temporal | Explicación |
+| :--- | :---: | :--- |
+| **`plantar(x, a1, a2)`** | $\mathcal{O}(1)$ | Transferencia directa de punteros (sin copiar). |
+| **`fills(fe, fd)`** | $\mathcal{O}(1)$ | Transferencia de punteros y `delete` de la raíz. |
+| **`arrel()` / `es_buit()`** | $\mathcal{O}(1)$ | Acceso directo al campo de la raíz o comparación `nullptr`. |
+| **Destructor / Copia** | $\Theta(n)$ | Visita y gestiona cada uno de los $n$ nodos del árbol. |

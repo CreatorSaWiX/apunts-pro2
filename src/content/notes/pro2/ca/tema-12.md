@@ -7,27 +7,28 @@ draft: false
 isNew: true
 ---
 
-## 1. Estructura de dades
+## 12.1 Estructura interna: Nodes N-aris amb `std::vector`
 
-L'estructura del node canvia per encabir una llista dinàmica de descendents:
+Un arbre general (o N-ari) no limita el nombre de fills de cada node a dos. L'estructura interna utilitza un vector dinàmic de punters `vector<node_arbreGen*> seg` per guardar les adreces dels fills:
 
 ```cpp
-template <class T> class ArbreGen {
+template <typename T>
+class ArbreGen {
 private:
-  struct node_arbreGen {
-    T info;                         // Dada del node
-    vector<node_arbreGen*> seg;     // Vector de punters als fills
-  };
-  node_arbreGen* primer_node;       // Punter a l'arrel
+    struct node_arbreGen {
+        T info;                         // Dada continguda al node
+        vector<node_arbreGen*> seg;     // Vector de punters als fills
+    };
+    node_arbreGen* primer_node;         // Punter a l'arrel (nullptr si buit)
 };
 ```
 
-### Visualització del node general
+### Visualització de l'estructura en memòria
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-6 items-start">
 <div>
 
-En memòria, un node d'un arbre general es representa amb un vector que apunta a cada fill:
+**Node amb vector de fills en memòria:**
 
 :::graph
 ```json
@@ -54,7 +55,7 @@ En memòria, un node d'un arbre general es representa amb un vector que apunta a
 </div>
 <div>
 
-L'estructura jeràrquica permet qualsevol grau per node:
+**Arbre general de grau variable:**
 
 :::graph
 ```json
@@ -83,39 +84,148 @@ L'estructura jeràrquica permet qualsevol grau per node:
 </div>
 </div>
 
-## 2. Gestió de memòria recursiva
+---
 
-La recursivitat en arbres generals ja no es limita a dues crides (esquerra i dreta), sinó que s'ha d'iterar sobre el vector de fills.
+## 12.2 Recursivitat sobre Vectors i la Regla dels Tres
 
-### 2.1 Còpia de nodes
-Per copiar un node general, hem de reservar el vector amb la mida correcta i copiar cada fill:
+La recursivitat sobre arbres generals substitueix les dues crides fixes (`segE` i `segD`) per un bucle `for` que itera sobre la mida del vector `m->seg.size()`:
+
+### 12.2.1 Còpia profunda: `copia_node_arbreGen(m)`
+Duplica tots els nodes recursivament reservant el vector de la mida exacta:
+
+```cpp
+static node_arbreGen* copia_node_arbreGen(node_arbreGen* m) {
+    if (m == nullptr) return nullptr;
+    node_arbreGen* n = new node_arbreGen;
+    n->info = m->info;
+    int ari = m->seg.size();
+    n->seg = vector<node_arbreGen*>(ari);
+    for (int i = 0; i < ari; ++i) {
+        n->seg[i] = copia_node_arbreGen(m->seg[i]);
+    }
+    return n;
+}
+```
 
 ::algoviz{algorithm="arbgen_copia"}
 
-### 2.2 Esborrat de nodes
-L'esborrat també requereix un bucle per recórrer tots els subarbres abans de fer el `delete` del node pare:
+---
+
+### 12.2.2 Destrucció: `esborra_node_arbreGen(m)`
+Allibera la memòria recursivament en **post-ordre** (primer tots els fills i després el pare):
+
+```cpp
+static void esborra_node_arbreGen(node_arbreGen* m) {
+    if (m != nullptr) {
+        int ari = m->seg.size();
+        for (int i = 0; i < ari; ++i) {
+            esborra_node_arbreGen(m->seg[i]);
+        }
+        delete m;
+    }
+}
+```
 
 ::algoviz{algorithm="arbgen_esborra"}
 
-## 3. Operacions de construcció i consulta
+---
 
-Les operacions de "plantar" i "fills" s'adapten per treballar amb vectors d'arbres sencers.
+### 12.2.3 La Regla dels Tres
+```cpp
+// 1. Destructor
+~ArbreGen() {
+    esborra_node_arbreGen(primer_node);
+}
 
-| Operació | Descripció | Complexitat |
-| :--- | :--- | :--- |
-| `plantar(x, v)` | Crea una arrel `x` i li assigna el vector d'arbres `v` com a fills. | $O(N)$ (on $N$ és el nombre de fills) |
-| `fills(v)` | Bua l'arbre actual i passa tots els seus fills al vector `v`. | $O(N)$ |
-| `nombre_fills()` | Retorna la mida del vector `seg` de l'arrel. | $O(1)$ |
+// 2. Constructor de còpia
+ArbreGen(const ArbreGen& a) {
+    primer_node = copia_node_arbreGen(a.primer_node);
+}
+
+// 3. Operador d'assignació
+ArbreGen& operator=(const ArbreGen& a) {
+    if (this != &a) {
+        esborra_node_arbreGen(primer_node);
+        primer_node = copia_node_arbreGen(a.primer_node);
+    }
+    return *this;
+}
+```
+
+---
+
+## 12.3 Transferència de Propietat: `plantar`, `fills` i `afegir_fill`
+
+### 12.3.1 Plantar: `plantar(x, v)`
+Crea un node arrel amb valor `x` i "roba" els punters `primer_node` de cadascun dels arbres del vector `v`:
+
+```cpp
+void plantar(const T &x, vector<ArbreGen> &v) {
+    node_arbreGen* aux = new node_arbreGen;
+    aux->info = x;
+    int ari = v.size();
+    aux->seg = vector<node_arbreGen*>(ari);
+    for (int i = 0; i < ari; ++i) {
+        aux->seg[i] = v[i].primer_node;
+        v[i].primer_node = nullptr; // Buida l'arbre original
+    }
+    primer_node = aux;
+}
+```
 
 ::algoviz{algorithm="arbgen_plantar"}
 
+---
+
+### 12.3.2 Fills: `fills(v)`
+Transfereix tots els subarbres de l'arrel al vector `v` i allibera l'arrel amb `delete`:
+
+```cpp
+void fills(vector<ArbreGen> &v) {
+    node_arbreGen* aux = primer_node;
+    int ari = aux->seg.size();
+    v = vector<ArbreGen>(ari);
+    for (int i = 0; i < ari; ++i) {
+        v[i].primer_node = aux->seg[i];
+    }
+    primer_node = nullptr;
+    delete aux;
+}
+```
+
 ::algoviz{algorithm="arbgen_fills"}
 
-> **Transferència de propietat**: Igual que en els arbres binaris, quan fem un `plantar` amb un vector d'arbres, els arbres originals dins del vector es queden buits per evitar duplicitats de memòria.
+---
 
-## 4. Diferències clau amb Arbre Binari
+### 12.3.3 Afegir fill: `afegir_fill(a)`
+Permet fer créixer l'aritat de l'arrel afegint un nou subarbre al final del vector `seg`:
 
-1.  **Representació**: Useu `vector<node*>` en lloc de dos punters fixos.
-2.  **Iteració**: Tots els mètodes recursius canvien les dues crides fixes per un bucle `for` que recorre el vector.
-3.  **Flexibilitat**: Podem afegir fills a posteriori amb `afegir_fill(a)`, operació que no existeix en l'arbre binari estàndard de teoria.
+```cpp
+void afegir_fill(ArbreGen &a) {
+    if (primer_node != nullptr) {
+        primer_node->seg.push_back(a.primer_node);
+        a.primer_node = nullptr; // Transfereix la propietat
+    }
+}
+```
+
+---
+
+## 12.4 Diferències clau respecte a l'Arbre Binari
+
+1. **Sense In-ordre**: En un arbre general no hi ha cap posició "intermèdia" canònica. Només s'utilitzen recorreguts en **Pre-ordre**, **Post-ordre** o **Per nivells** (BFS).
+2. **Grau/Aritat dinàmica**: Cada node pot tenir un nombre arbitrari de fills ($0, 1, 2, \dots, k$).
+3. **Mètodes amb vectors**: `plantar` i `fills` reben i retornen un `vector<ArbreGen>` en lloc de dos paràmetres separats.
+
+---
+
+## 12.5 Resum de Complexitat
+
+| Mètode | Complexitat temporal | Explicació |
+| :--- | :---: | :--- |
+| **`plantar(x, v)`** | $\mathcal{O}(k)$ | On $k = v.\text{size}()$ (bucle per transferir punters). |
+| **`fills(v)`** | $\mathcal{O}(k)$ | On $k$ és el nombre de fills de l'arrel. |
+| **`afegir_fill(a)`** | $\mathcal{O}(1)$ amortitzat | Inserció al final del vector `push_back`. |
+| **`arrel()` / `nombre_fills()`** | $\mathcal{O}(1)$ | Accés directe a `info` o a `seg.size()`. |
+| **Destructor / Còpia** | $\Theta(n)$ | Recorre i allibera/copia els $n$ nodes de l'arbre. |
 

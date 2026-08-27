@@ -7,208 +7,216 @@ draft: false
 isUpdated: 2
 ---
 
-## 1. Memory in C++: Stack vs Heap
+## 8.1 Memory in C++: Stack vs Heap
 
-To understand pointers, we first need to know where data is stored. A program's memory is primarily divided into two zones:
+To understand pointers, we first need to know how RAM is organized for a C++ program:
 
 | Feature | Stack | Heap |
 | :--- | :--- | :--- |
-| **Management** | Automatic (by the computer). | Manual (by the programmer). |
-| **Speed** | Very fast. | Slower. |
-| **Size** | Limited and fixed. | Very large (available RAM). |
-| **Lifecycle** | Tied to the curly braces `{}` (stack frames). | We decide when they are born (`new`) and die (`delete`). |
+| **Management** | **Automatic**: compiler allocates and frees space. | **Manual**: programmer decides when to allocate (`new`) and free (`delete`). |
+| **Speed** | Very fast (contiguous stack pointer). | Slower (searching for available blocks in OS). |
+| **Size** | Limited and fixed (a few MB, risk of *Stack Overflow*). | Very large (all available RAM). |
+| **Lifecycle** | Tied to scope within curly braces `{}`. | Persistent until `delete` is executed. |
 
-**Scope example (Stack)**:
 ```cpp
 int f(int a, int b) {
-    int n = a;
+    int n = a;      // Allocates space on the stack
     if (b > n) {
-        int m = 2; // Born here
+        int m = 2;  // 'm' is born on the stack entering the if block
         a = b;
-    } // m Dies here automatically
+    }               // 'm' is automatically destroyed here
     return a;
-} // n and a Die here
+}                   // 'n', 'a', and 'b' are automatically destroyed when function ends
 ```
 
-## 2. What is a pointer?
+---
 
-A **pointer** is a variable that, instead of storing a value (like an `int` or `char`), stores a **memory address**.
+## 8.2 What is a pointer?
+
+A **pointer** is a variable that, instead of storing a direct value (like `int` or `char`), stores the **memory address** of another variable.
+
+### The Three Fundamental Operators
 
 | Operator | Name | Function | Example |
 | :--- | :--- | :--- | :--- |
-| **`&`** | Address of | Gets the memory address of a variable. | `p = &x;` |
-| **`*`** | Dereference | Accesses the content of the address the pointer holds. | `cout << *p;` |
-| **`->`** | Arrow | Member access via pointer. Equivalent to `(*p).member`. | `pp->first = "b";` |
+| **`&`** | **Address-of** | Gets the memory address of an existing variable. | `int* p = &x;` |
+| **`*`** | **Dereference** | Accesses/modifies the value located at the address held by the pointer. | `*p = 20;` |
+| **`->`** | **Member access** | Directly accesses a field of a `struct`/`class`. Equivalent to `(*p).field`. | `p_node->value = 5;` |
 
-### Declaration traps and syntax
-
-- **Multiple declaration**: The asterisk `*` must be placed for each variable.
-  ```cpp
-  int *pb, *pc; // Two pointers pointing to integers
-  int* pb, pc;  // pb is a pointer, pc is a normal integer! (Typical error)
-  ```
-- **Pointer to container elements**:
-  ```cpp
-  vector<int> v = {1, 2, 3};
-  int *p = &v[1]; // Points to '2'
-  *p += 1;        // v[1] is now 3
-  ```
-- **Pointer to `pair` or `struct` members**:
-  ```cpp
-  pair<string, int> a = {"a", 7};
-  int *pi = &a.second;
-  *pi = 0; // a.second is now 0
-  ```
-
-> **`nullptr` vs Initialization**:
-> - `int *p = nullptr;` -> The pointer points to "nothing". Safe.
-> - `int *p;` -> The pointer points to a **random address** (garbage). Very dangerous.
-> - `int *p = 5;` -> **ERROR**. You are saying that the memory address is number 5. This will cause a **SEGFAULT** for sure.
+### Fundamental Distinction: `p` vs `*p`
 
 ```cpp
 int x = 10;
-int* p = &x; // p points to x
+int y = 99;
+int* p = &x; // 'p' stores the address of 'x' (e.g. 0x7ffd8)
 
-cout << p;   // Prints an address: 0x7ffe...
+// 1. Read
+cout << p;   // Prints the address: 0x7ffd8
 cout << *p;  // Prints the value of x: 10
+
+// 2. Modify value (*p)
+*p = 25;     // Modifies 'x' to 25!
+
+// 3. Modify target (p)
+p = &y;      // Now 'p' points to 'y'. 'x' remains 25 and *p is 99.
 ```
 
-## 3. Dynamic memory management
+### Common Declaration Traps
 
-This is the real utility of pointers: requesting memory at runtime.
+1. **Multiple asterisk declaration:**
+   ```cpp
+   int *pa, *pb; // Correct: two pointers to int
+   int* pa, pb;  // Danger: 'pa' is a pointer, but 'pb' is a plain int!
+   ```
+2. **Pointers to container or pair elements:**
+   ```cpp
+   vector<int> v = {10, 20, 30};
+   int* pv = &v[1]; // Points to 20
+   *pv += 5;        // v[1] is now 25
 
-### Objects vs dynamic vectors
+   pair<string, int> person = {"Anna", 21};
+   int* page = &person.second;
+   *page = 22;      // person.second is now 22
+   ```
 
-We can request a single object or an entire block (vector) from the Heap using `new`, and free it with `delete`.
-
+:::warning
+An uninitialized pointer (`int* p;`) holds **garbage** (points to a random memory address). Attempting to read or write with `*p` will cause a **Segmentation Fault** or data corruption. If a pointer has no immediate target, always initialize it with **`nullptr`**:
 ```cpp
-// Simple objects
-Data *pd = new Data(2025, 4, 2);
-pair<int, int> *pp = new pair<int, int>(1, 2);
-
-// Dynamic vectors (Very common in C)
-int *pv = new int[100]; 
-char *pc = new char[100000];
+int* p = nullptr; // Safely points to "nowhere"
 ```
+:::
 
-**Memory Leak**: Occurs when you lose the address and can no longer do `delete`.
+## 8.3 Dynamic Memory Management: `new` and `delete`
+
+The primary use of pointers is managing memory on the **Heap** at runtime:
+
+### 1. Individual Objects
 ```cpp
-int *p = new int[100];
-p = new int[100]; // ERROR: The address of the first vector is lost! Memory leak.
+int* p_int = new int(42);       // Allocates space for an int with value 42
+delete p_int;                   // Frees the memory
+p_int = nullptr;                // Prevents leaving a dangling pointer
 ```
 
-## 4. Aliasing and assignment
+### 2. Blocks / Dynamic Arrays (`new[]` and `delete[]`)
+```cpp
+int* arr = new int[100];        // Allocates a contiguous block of 100 ints
+delete[] arr;                   // Frees the entire block (always with [])
+arr = nullptr;
+```
 
-**Aliasing** occurs when two or more pointers point to the same memory address. Modifying the value through a pointer affects all other "aliases".
+:::warning
+- **`delete` vs `delete[]`:** Freeing a block created with `new[]` using just `delete` (without brackets) causes **undefined behavior** and memory corruption.
+- **Memory Leak:** Occurs when the last pointer pointing to a Heap block is lost before calling `delete`:
+  ```cpp
+  int* p = new int(10);
+  p = new int(20); // ERROR: The initial int (10) remains orphaned in RAM forever!
+  ```
+:::
+
+---
+
+## 8.4 Aliasing and Shallow vs Deep Copy
+
+**Aliasing** occurs when two or more pointers hold the **same memory address**. Any modification through one alias alters the data for all others.
 
 ```cpp
 int x = 10;
 int* p1 = &x;
-int* p2 = p1; // Aliasing: p2 points to where p1 points
+int* p2 = p1; // Aliasing: p2 points to the exact same cell as p1
 
-*p2 = 20;
-cout << x; // Will print 20!
+*p2 = 99;
+cout << *p1;  // Prints 99!
 ```
 
-**Advanced example**: A vector of pointers pointing to the same object.
-```cpp
-int x = 3;
-vector<int*> v(10, &x); // 10 pointers pointing ALL to x
-
-for (int i = 0; i < v.size(); ++i) {
-    (*v[i])++; // We increment x 10 times!
-}
-cout << x; // Will print 13
-```
-
-## 5. The danger of pointers: common errors
-
-Using pointers requires a lot of discipline. The most common errors in PRO2 are:
-
-1.  **Segmentation Fault (SEGFAULT)**: Trying to access an address that does not belong to you.
-    - Dereferencing `nullptr`: `int *p = nullptr; *p = 5;`.
-    - Out-of-bounds access in vectors: `vector<int> v; v[13] = 0;`
-2.  **Memory Leak**: Destroying the only reference to dynamic memory without freeing it.
-3.  **Dangling Pointer**: Pointer pointing to an address that has already been freed with `delete`.
-4.  **Double-Delete**: Doing `delete` twice on the same address (corrupts the heap).
-
-> In the `Makefile`, use the `-D_GLIBCXX_DEBUG` flag. This activates security checks in the STL containers and will warn you of out-of-bounds accesses instead of giving you a silent SEGFAULT or garbage data.
-
-| Operation | Iterator (STL) | Pointer (Low Level) |
-| :--- | :--- | :--- |
-| **Start** | `auto it = v.begin();` | `int *px = &x;` |
-| **Access** | `*it = 5;` | `*px = 5;` |
-| **Advance** | `it++;` | `px++;` (Advances one address) |
-| **Reassign** | `it = v.erase(it);` | `px = &y;` |
-
-> A pointer can be seen as a vector iterator, but a `std::list` iterator is not necessarily a pointer (internally it can be more complex).
+### Shallow vs Deep Copy
+- **Shallow Copy:** Copies pointer addresses. Both objects share the same memory.
+- **Deep Copy:** Allocates new memory on the Heap and duplicates the content.
 
 ---
 
-## 6. Parameter passing
+## 8.5 Critical Pointer Errors
 
-| Type | Syntax | Effect | Efficiency |
+| Error | Cause | Consequence | Solution |
 | :--- | :--- | :--- | :--- |
-| **By value** | `f(int x)` | Value copy. | Low (if the object is large). |
-| **By reference** | `f(int& x)` | Direct alias. | High. |
-| **By pointer** | `f(int* pi)` | Passes the address. Faster than by value. |
+| **Segmentation Fault** | Dereferencing `nullptr` or garbage/out-of-bounds addresses. | Program terminates immediately (*crash*). | Always check `if (p != nullptr)` before using `*p` or `p->`. |
+| **Memory Leak** | Losing the reference to a Heap block without `delete`. | Continuous and wasteful RAM consumption. | Ensure a matching `delete` for every `new`. |
+| **Dangling Pointer** | Pointer that still stores an address after it was freed. | Corrupted data or SEGFAULT on access. | Assign `p = nullptr;` immediately after `delete`. |
+| **Double Delete** | Calling `delete` twice on the same memory block. | Heap manager corruption (*crash*). | Set `p = nullptr;` (in C++, `delete nullptr;` is a no-op and safe). |
 
-**Increment example**:
-```cpp
-void inc(int *pi) {
-    (*pi)++; // means *pi += 1;
-}
-
-int i = 5;
-inc(&i); // i is now 6
-```
-
-In PRO2, we prefer **constant references** (`const T& x`) for large objects we don't want to modify, and **pointers** only when we need the parameter to be optional (`nullptr`) or for dynamic structures.
+> **PRO2 Exam/Judge Tip:** Use the `-D_GLIBCXX_DEBUG` compiler flag so that STL containers report out-of-bounds accesses instead of causing silent errors.
 
 ---
 
-## 7. Application: Linked Structures (Nodes)
+## 8.6 Function Parameter Passing
 
-The real utility of pointers in PRO2 is to create data collections that grow and shrink node by node. Each element is stored in a **Node** (or `Item`).
+| Passing Type | Syntax | When to Use in PRO2 |
+| :--- | :--- | :--- |
+| **By value** | `void f(int x)` | Small primitive types (`int`, `char`, `bool`, `double`). |
+| **By constant reference** | `void f(const string& s)` | **The PRO2 standard** for large structures (`vector`, `list`, `BinTree`, `string`) to read without copy overhead. |
+| **By reference** | `void f(int& x)` | When the function needs to **mutate the original object directly**. |
+| **By pointer** | `void f(Node* p)` | When the parameter is **optional** (can be `nullptr`) or in linked structures. |
 
-### The Basic Node
+---
+
+## 8.7 Application: Linked Structures (Nodes)
+
+The primary purpose of pointers in PRO2 is building dynamic data structures that grow and shrink node by node in memory. Each element is stored in a **Node** (or `Item`):
+
 ```cpp
-struct Item {
-    T value;    // The data
-    Item* next; // The "cable" to the next node
+template <typename T>
+struct Node {
+    T value;        // Stored data
+    Node* next;     // Pointer to next node (or nullptr if last)
 };
 ```
 
-### 7.1 The Stack - LIFO Model
-In a linked stack, we only have one pointer to the top (`ptopitem`). Every time we do `push`, the new node points to the old top.
+### 8.7.1 Linked Stack (LIFO)
+In a dynamic stack, we only need to keep a pointer to the top node (`top` or `p_top`):
+- **`push(x)`**: Allocate a new node pointing to the previous top, and update the top pointer.
+- **`pop()`**: Save the top node pointer, advance the top pointer (`top = top->next`), and `delete` the old top.
 
-::stackviz
+:::stackviz
+:::
 
-> **`swap2Topmost()` Exercise**: To swap the first two nodes without touching the `.value`s, you have to:
-> 1. Save the second node in an auxiliary pointer: `Item *p2 = ptopitem->next;`
-> 2. Relink: `ptopitem->next = p2->next;`
-> 3. Make the new first the one that was second: `p2->next = ptopitem;`
-> 4. Update the top: `ptopitem = p2;`
-
-### 7.2 The Queue - FIFO Model
-In a queue, we need two pointers: `first` (to pop) and `last` (to add).
-
-::queueviz
-
-> **`operator[]` Exercise**: Since a linked queue is not a vector, to find element `i` you have to do a `for` loop that advances the pointer `p = p->next` exactly `i` times starting from `first`.
-
-### 7.3 How to delete nodes in the middle
-To delete a node (like in `removeFirstOccurrence` - Judge: X87185), you need to "skip" it:
-1. Find the node **before** the one you want to delete (`ant`).
-2. Make the jump: `ant->next = ant->next->next;`
-3. Free the memory: `delete p_to_delete;`
-
-::pointerviz
+> **Relinking (`swap2Topmost`):** To swap the first two nodes without copying their values:
+> 1. `Node* p2 = top->next;` (save second node)
+> 2. `top->next = p2->next;` (first node now points to third)
+> 3. `p2->next = top;` (second node now points to old first)
+> 4. `top = p2;` (new top is p2)
 
 ---
 
-## Checklist for the Judge (Pointers)
-- **Did you put `nullptr`?** Always check if a pointer is null before doing `p->next`.
-- **Did you do `delete`?** Every `new` must have its `delete` to avoid Memory Leaks.
-- **Empty cases**: What does your code do if the stack/queue is empty? What if it has only 1 element?
-- **Self-assignment**: In the use of `operator=`, did you check `if (this != &s)`?
+### 8.7.2 Linked Queue (FIFO)
+In a dynamic queue, two pointers are maintained: **`first`** (to pop from front) and **`last`** (to append at back):
+
+:::queueviz
+:::
+
+> **Special Cases:**
+> - Enqueueing into an empty queue: both `first` and `last` point to the new node.
+> - Dequeueing the last element: if after `pop` the queue becomes empty (`first == nullptr`), make sure to also set `last = nullptr;`.
+
+---
+
+### 8.7.3 Deleting Nodes from the Middle
+To remove a node from inside a singly linked sequence:
+
+1. Locate the **previous** node (`ant`) before the one to be removed.
+2. Store the target node: `Node* p_del = ant->next;`
+3. Skip the node: `ant->next = p_del->next;`
+4. Free memory: `delete p_del;`
+
+:::pointerviz
+:::
+
+---
+
+## 8.8 Judge Problem Checklist for Pointers
+
+- **`nullptr` check:** Never access `p->next` or `p->value` if `p == nullptr`.
+- **Proper deallocation with `delete`:** Every `new` must have a matching `delete` (or inside the class destructor).
+- **Edge case handling:**
+  - Completely empty structure (`top == nullptr` or `first == nullptr`).
+  - Single-element structure (removal must reset both `first` and `last` to `nullptr`).
+  - Deleting head node vs interior node.
+- **Self-assignment guard:** When overloading `operator=`, always check `if (this != &other)` before deallocating own dynamic memory.

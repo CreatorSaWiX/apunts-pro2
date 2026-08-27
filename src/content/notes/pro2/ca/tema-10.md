@@ -7,14 +7,15 @@ draft: false
 isUpdated: 1
 ---
 
-## 1. Estructura interna: doble enllaç i sentinelles
+## 10.1 Estructura interna: Doble enllaç i Sentinelles
 
-A diferència del vector, una llista no guarda els elements junts en memòria. Cada element està en un **Node** (o `Item`) independent que sap qui té davant i qui té darrere.
+A diferència del vector, una llista no emmagatzema els elements de forma contigua a la memòria. Cada element resideix en un **Node** (o `Item`) independent amb dos punters: un cap a l'element anterior (`prev`) i un cap al següent (`next`).
 
 ### Nodes sentinella (`iteminf` i `itemsup`)
-Aquesta implementació utilitza dos nodes especials que **sempre existeixen**, encara que la llista estigui buida:
-- **`iteminf`**: El node "fictici" inicial. El seu `next` apunta al primer element real.
-- **`itemsup`**: El node "fictici" final. El seu `prev` apunta a l'últim element real.
+Per evitar tractar casos especials quan la llista és buida o quan s'opera als extrems, la llista conté dos nodes sentinella ficticis que **sempre existeixen** (són membres directes de la classe, no punters):
+
+- **`iteminf`**: Sentinella inicial. El seu `next` apunta al primer element real.
+- **`itemsup`**: Sentinella final. El seu `prev` apunta a l'últim element real.
 
 ```cpp
 template <typename T>
@@ -24,113 +25,215 @@ class List {
         Item *next, *prev;
     };
     int _size;
-    Item iteminf, itemsup; // Nodes reals (no punters)
-public:
-    // ...
-};
-```
-
-## 2. El motor: inserir i esborrar en $\Theta(1)$
-
-La llista és l'estructura ideal per inserir/esborrar en qualsevol punt si ja tenim la posició. Només cal "recosir" els punters.
-
-### Inserir un element per punter de node (`insertItem(punterPrevi, punterNode)`)
-
-1. Connectem el nou node amb el seu següent i anterior respectius.
-2. Actualitzem els punters dels veïns (`pitemprev` i `pitemprev->next`) perquè recosin l'enllaç amb el node introduït.
-
-::algoviz{algorithm="list_insert_node"}
-
-### Inserir un element per valor (`insertItem(punterPrevi, valor)`)
-
-1. Creem el nou node `Item` amb `new`.
-2. Emplenem el valor de la dada del node.
-3. Cridem a la funció anterior `insertItem` per recosir el node instanciat.
-
-::algoviz{algorithm="list_insert_value"}
-
-### Extreure un element (`extractItem(punterNode)`)
-
-1. El node següent passa a apuntar directament a l'anterior.
-2. El node anterior passa a apuntar directament al següent.
-3. Restem 1 a la mida de la llista.
-
-::algoviz{algorithm="list_extract_item"}
-
-### Eliminar un element de memòria (`removeItem(punterNode)`)
-
-1. Cridem a `extractItem` per desconnectar de forma segura el node.
-2. Alliberem la memòria del node utilitzant `delete`.
-
-::algoviz{algorithm="list_remove_item"}
-
-### Buidar tota la llista (`removeItem()`)
-
-1. Mentre la mida sigui més gran que 0.
-2. Anem extraient i esborrant sempre el primer element de la llista (`iteminf.next`).
-
-::algoviz{algorithm="list_remove_all"}
-
-### Copiar nodes d'una altra llista (`copyItems(llista_original)`)
-
-1. Iterem la llista original al revés (des de l'últim node cap al primer).
-2. Per cada node original, cridem a `insertItem` al davant de tot (`&iteminf`, fent un efecte _push_front_). En afegir els elements al revés sempre per davant, l'ordre final de la còpia és l'original.
-
-::algoviz{algorithm="list_copy_items"}
-### Com moure nodes (la regla dels 4 punters)
-En molts exercicis (com `moveToEnd` o `moveSecondToLast`), el Jutge prohibeix intercanviar els `.value`. Has de moure el node físicament:
-1. **Desconnectar**: Uneix el veí anterior amb el següent (`p->prev->next = p->next` i `p->next->prev = p->prev`).
-2. **Reconnectar**: Insereix el node a la nova posició ajustant els seus nous `next` i `prev` i els dels seus nous veïns.
-
-> Si moure un node implica que aquest sigui veí d'ell mateix (casos de 2 elements), ves amb compte de no perdre el punter abans d'hora! Ús de punters temporals és recomanat.
-
-## 3. Iteradors: El pont cap a les dades
-
-Com que els nodes estan dispersos, no podem usar `[i]`. Usem **iteradors**, que actuen com un punter intel·ligent que sap com moure's per la llista.
-
-- **`begin()`**: Apunta al primer element real (`iteminf.next`).
-- **`end()`**: Apunta al node sentinella final (`itemsup`). **Mai s'ha de desreferenciar!**
-
-```cpp
-class iterator {
-    List *plist;
-    Item *pitem;
-public:
-    T& operator*() { return pitem->value; }
-    iterator operator++() { // Preincrement (++it)
-        pitem = pitem->next;
-        return *this;
+    Item iteminf, itemsup; // Sentinelles reals a l'objecte (no punters)
+    
+    // Inicialització en llista buida:
+    void init() {
+        _size = 0;
+        iteminf.prev = nullptr;
+        iteminf.next = &itemsup;
+        itemsup.prev = &iteminf;
+        itemsup.next = nullptr;
     }
 };
 ```
 
-::linkedlistviz
-
-## 4. Gestió de memòria: La Regla dels Tres
-
-Com que gestionem nodes amb `new`, hem de ser molt curosos:
-1. **Destructor**: Ha d'esborrar TOTS els nodes (usant `removeItem` en bucle).
-2. **Constructor de còpia**: Ha de crear nodes nous i copiar els valors.
-3. **Operador d'assignació**: Netejar la llista actual i copiar la nova.
-
-> A l'assignació `l1 = l2`, sempre hem de comprovar l'**auto-assignació** (`this != &l`) per no esborrar les dades que volem copiar.
+> **El gran avantatge dels sentinelles:** Tot node real té **sempre** un veí anterior i un de posterior. No cal cap `if` per comprovar si inserim o esborrem al principi o al final!
 
 ---
 
-## Vector vs Llista: Quan usar quina?
+## 10.2 El motor intern: els 6 mètodes privats
 
-| Característica | Vector (`std::vector`) | Llista (`std::list`) |
-| :--- | :--- | :--- |
-| **Accés aleatori `[i]`** | $\Theta(1)$ | $\Theta(n)$ (cal recórrer) |
-| **Inserir al final** | $\mathcal{O}(1)$ amortitzat | $\Theta(1)$ |
-| **Inserir al principi** | $\Theta(n)$ | $\Theta(1)$ |
-| **Inserir al mig (amb it)** | $\Theta(n)$ | $\Theta(1)$ |
-| **Memòria** | Bloc contigu (més ràpid per la CPU) | Nodes dispersos (més overhead) |
+Tota la lògica de la llista es construeix sobre 6 mètodes auxiliars privats que operen directament sobre punters `Item*` en temps constant $\Theta(1)$:
 
-## Operacions amb Iteradors
+### 10.2.1 Inserció per punter de node: `insertItem(pitemprev, pitem)`
+Insereix el node `pitem` just després de `pitemprev` recosint els 4 punters d'enllaç:
 
-| Operació | Codi | Explicació |
-| :--- | :--- | :--- |
-| **Inserir** | `it = l.insert(it, val)` | Insereix **abans** de `it`. |
-| **Esborrar** | `it = l.erase(it)` | Esborra `it` i retorna el **següent**. |
-| **Recórrer** | `for(auto it=l.begin(); it!=l.end(); ++it)` | El patró estàndard. |
+```cpp
+void insertItem(Item *pitemprev, Item *pitem) {
+    pitem->next = pitemprev->next;
+    pitem->next->prev = pitem;
+    pitem->prev = pitemprev;
+    pitemprev->next = pitem;
+    _size++;
+}
+```
+
+::algoviz{algorithm="list_insert_node"}
+
+---
+
+### 10.2.2 Inserció per valor: `insertItem(pitemprev, val)`
+Reserva un nou node amb `new`, assigna el valor i delega el reenllaçament a la funció anterior:
+
+```cpp
+void insertItem(Item *pitemprev, const T& val) {
+    Item *pitem = new Item;
+    pitem->value = val;
+    insertItem(pitemprev, pitem);
+}
+```
+
+::algoviz{algorithm="list_insert_value"}
+
+---
+
+### 10.2.3 Extracció de node: `extractItem(pitem)`
+Desconnecta el node de la llista ajustant els punters dels seus veïns. **No allibera la memòria.**
+
+```cpp
+void extractItem(Item *pitem) {
+    pitem->next->prev = pitem->prev;
+    pitem->prev->next = pitem->next;
+    _size--;
+}
+```
+
+::algoviz{algorithm="list_extract_item"}
+
+---
+
+### 10.2.4 Eliminació de memòria: `removeItem(pitem)`
+Desconnecta el node de la seqüència i n'allibera la memòria amb `delete`:
+
+```cpp
+void removeItem(Item *pitem) {
+    extractItem(pitem);
+    delete pitem;
+}
+```
+
+::algoviz{algorithm="list_remove_item"}
+
+---
+
+### 10.2.5 Buidar la llista: `removeItems()`
+Allibera tots els nodes un per un esborrant sempre el primer element real:
+
+```cpp
+void removeItems() {
+    while (_size > 0) {
+        removeItem(iteminf.next);
+    }
+}
+```
+
+::algoviz{algorithm="list_remove_all"}
+
+---
+
+### 10.2.6 Còpia de llista: `copyItems(l)`
+Recorre la llista original **des del final cap a l'inici** (`itemsup.prev` fins a `&iteminf`) inserint sempre a `&iteminf` (al davant). Com que inserir al davant inverteix l'ordre, fer-ho del final cap a l'inici manté l'ordre original exacte en temps $\Theta(n)$:
+
+```cpp
+void copyItems(const List& l) {
+    for (Item *pitem = l.itemsup.prev; pitem != &l.iteminf; pitem = pitem->prev) {
+        insertItem(&iteminf, pitem->value);
+    }
+}
+```
+
+::algoviz{algorithm="list_copy_items"}
+
+---
+
+### Moure nodes físicament (exercicis del Jutge)
+En molts problemes (com `moveToEnd` o `splice`), es demana moure nodes sense copiar ni modificar `.value`:
+```cpp
+// Per moure el node 'p' just després de 'dest_prev':
+extractItem(p);             // 1. Desconnectar
+insertItem(dest_prev, p);   // 2. Reconnectar a la nova posició
+```
+
+## 10.3 Iteradors: El pont cap a les dades
+
+Com que els nodes d'una llista estan dispersos al Heap, no és possible fer accés aleatori `[i]`. La classe `iterator` encapsula un punter al node actual (`Item *pitem`) i sobrecarrega els operadors per navegar per la seqüència:
+
+```cpp
+class iterator {
+    Item *pitem;
+    friend class List; // Permet a List accedir a pitem
+public:
+    T& operator*() const { return pitem->value; }
+    
+    iterator& operator++() { // ++it (avançar)
+        pitem = pitem->next;
+        return *this;
+    }
+    
+    iterator& operator--() { // --it (retrocedir)
+        pitem = pitem->prev;
+        return *this;
+    }
+    
+    bool operator==(const iterator& it) const { return pitem == it.pitem; }
+    bool operator!=(const iterator& it) const { return pitem != it.pitem; }
+};
+```
+
+### Extrems de la llista
+- **`begin()`**: Retorna un iterador al primer element real (`iterator(iteminf.next)`).
+- **`end()`**: Retorna un iterador al sentinella final (`iterator(&itemsup)`).
+
+:::warning
+**Mai desreferenciar `*l.end()`:** `itemsup` és un sentinella buit i no conté cap dada vàlida de tipus `T`.
+:::
+
+### Inserir i esborrar per iterador
+```cpp
+// Insereix 'val' ABANS de la posició 'it' en Θ(1):
+iterator insert(iterator it, const T& val) {
+    insertItem(it.pitem->prev, val);
+    return iterator(it.pitem->prev);
+}
+
+// Esborra l'element apuntat per 'it' i retorna un iterador al següent en Θ(1):
+iterator erase(iterator it) {
+    Item *pnext = it.pitem->next;
+    removeItem(it.pitem);
+    return iterator(pnext);
+}
+```
+
+:::linkedlistviz
+:::
+
+---
+
+## 10.4 Gestió de memòria: La Regla dels Tres
+
+Gràcies als mètodes auxiliars `removeItems()` i `copyItems()`, la Regla dels Tres s'escriu de forma compacta i robusta:
+
+```cpp
+// 1. Destructor: allibera tots els nodes
+~List() {
+    removeItems();
+}
+
+// 2. Constructor de còpia: crea nova llista i duplica els nodes
+List(const List& l) {
+    init();
+    copyItems(l);
+}
+
+// 3. Operador d'assignació: neteja la pròpia i copia l'altra
+List& operator=(const List& l) {
+    if (this != &l) {
+        removeItems();
+        copyItems(l);
+    }
+    return *this;
+}
+```
+
+---
+
+## 10.5 Comparativa de Rendiment: Vector vs Llista
+
+| Operació | Vector (`std::vector`) | Llista (`std::list`) |
+| :--- | :---: | :---: |
+| **Accés aleatori (`[i]`)** | $\Theta(1)$ | $\Theta(n)$ |
+| **Inserir/Eliminar al final** | $\mathcal{O}(1)^*$ *(amortitzat)* | $\Theta(1)$ |
+| **Inserir/Eliminar al principi** | $\Theta(n)$ | $\Theta(1)$ |
+| **Inserir/Eliminar al mig amb iterador** | $\Theta(n)$ | $\Theta(1)$ |
+| **Eficiència de memòria / Caché** | Excel·lent (bloc continu) | Regular (overhead de 2 punters per dada) |

@@ -18,13 +18,21 @@ isUpdated: 1
 
 ### Common errors
 1.  **Segmentation Fault (SEGFAULT)**: Trying to access an address that does not belong to you or dereferencing `nullptr`.
-Example
+    ```cpp
+    int *p = nullptr; *p = 5; // ERROR: Dereferencing null pointer
+    ```
 2.  **Memory Leak**: Losing the only pointer that pointed to memory requested with `new` without making the corresponding `delete`.
-Example
+    ```cpp
+    int *p = new int(5); p = nullptr; // ERROR: Memory is orphaned on the Heap
+    ```
 3.  **Dangling Pointer**: Pointer that points to a memory address that has already been freed with `delete`.
-Example
-4.  **Double-Delete**: Trying to `delete` twice on the same memory address (corrupts the Heap stack).
-Example
+    ```cpp
+    int *p = new int(5); delete p; cout << *p; // ERROR: Memory no longer belongs to us
+    ```
+4.  **Double-Delete**: Trying to `delete` twice on the same memory address (corrupts the Heap memory).
+    ```cpp
+    int *p = new int(5); delete p; delete p; // ERROR: Double free
+    ```
 
 ### Parameter Passing
 *   **By value (`f(int x)`)**: Copy of the value. Inefficient for large structures/objects.
@@ -280,103 +288,64 @@ Since the degree of the nodes is dynamic, recursive operations can no longer be 
 *   **`plantar(x, v)`**: Efficiently transfers the pointers of all the subtrees contained in the vector `v` as children of the new root `x` in time $\mathcal{O}(N)$ (where $N$ is the number of children), and immediately **sets the trees in `v` as empty** (`v[i].primer_node = nullptr`) to prevent aliasing.
 *   **`fills(v)`**: Frees memory of the current root node with `delete aux` and places all the children exactly as new trees inside the vector `v` in $\mathcal{O}(N)$.
 
-### B. Forced deep copy in `afegir_fill(a)` and `fill(a, i)`
-*   **`afegir_fill(a)`**: **Warning!** Unlike `plantar`, this method **does not transfer pointers** directly; instead, it makes a **deep copy of tree `a`** through `copia_node_arbreGen(a.primer_node)`.
-*   **`fill(a, i)`**: Takes the `i`-th child of tree `a` and makes a deep copy as the new current tree. Remember that the call is **1-indexed** (i.e., child 1 of the tree is internally equivalent to the indexed position `0` of the children vector `seg[i-1]`).
+### B. Methods `afegir_fill(a)` and `fill(a, i)`
+*   **`afegir_fill(a)`**: Appends subtree `a` to the end of child vector `seg` (`push_back`) and transfers ownership (`a.primer_node = nullptr`) in $\mathcal{O}(1)$ amortized time.
+*   **`fill(a, i)`**: Returns the $i$-th child of tree `a` (1-based indexing, corresponding to internal position `seg[i-1]`).
 
 ---
 
-## 6. Strategy for tree exercises (Leap of faith)
+## 6. Tree Recursion Patterns (PRO2 Exams)
 
-The vast majority of tree problems are solved with an immersive recursive function. This strategy allows writing ultra-clean exam codes without having to try to mentally simulate the processor's call stack:
+All tree problems follow 4 systematic steps:
 
-1.  **The Base Case (The stopping condition)**: Forget about the whole tree and ask yourself: *What is the simplest thing they can pass me?* 
-    *   In trees, it is almost always an empty tree (`node == nullptr`). Example `X75329`: What is the frequency of a value in an empty tree? `0`. This is your base case.
-    *   If the problem requires calculating a property on **paths from the root to a leaf**, the base case **cannot be the empty tree**, since we wouldn't know what to return for a null pointer without altering the semantics or violating the definition of a path. Therefore, in these special cases, the base case is the **leaf node** (`m->segE == nullptr && m->segD == nullptr`). In addition, cases where the node only has a single active child will have to be explicitly handled to force the path to continue towards it. Example: `X67695`.
-2.  **Blind Faith (The Leap of Faith)**: **Write the recursive calls** on the active children (e.g.: `T res = f(m->segE);`), blindly assuming and trusting that each of these calls will *magically* return the correct answer for its entire respective subtree. 
-    *   *Golden rule:* Do not try to mentally simulate or imagine how the function will go down through the subtrees; simply call it and save the result.
-3.  **Your Only Job (The current node)**: Identify what local data you need from the current node. It is usually the value of the root you are currently at (`m->info`).
-4.  **The Final Combination (The assembly)**: How do you join the current local data (Step 3) with the results returned by the recursive calls of your children (Step 2)?
-    *   This is where you apply the algebraic logic of the problem (operations like `+`, `&&`, comparisons `>` or conditionals to choose the best result). 
-    *   Example: You return `m->info + (left > right ? left : right)`.
+1. **Base case**:
+   - Global problems (size, search, sums): `if (m == nullptr) return ...;`
+   - **Root-to-leaf path** problems: The base case is the **leaf** (`if (m->segE == nullptr && m->segD == nullptr) return m->info;`), with separate checks for single-child nodes.
+2. **Recursive call to children**: Invoke function on existing children.
+3. **Local data**: Extract information from current node (`m->info`).
+4. **Combination**: Combine local data with results returned by children (`+`, `max`, `&&`, etc.).
 
-### Strategy Equivalence: Binary vs General (n-ary)
+---
 
-| Phase | Binary Tree (`Arbre.hh`) | General Tree (`ArbreG.hh`) |
-| :--- | :--- | :--- |
-| **1. Base Case** | `if (m == nullptr) return ...;`<br>*(Or leaf node case if talking about paths)* | `if (m == nullptr) return ...;`<br>*(Or leaf node case if talking about paths)* |
-| **2. Leap of Faith** | Direct recursive calls to left child (`m->segE`) and right (`m->segD`). | `for` loop that recursively accumulates the result of each of the children into the vector `m->seg`. |
-| **3. Job at the Node** | Process data from the current node (`m->info`). | Process data from the current node (`m->info`). |
-| **4. Combination** | Combine local job with left and right. | Combine local job with the sum/accumulation obtained in the children's loop. |
-
-### Example 1: Sum of the maximum path (`max_suma_cami` - Binary)
-*Statement: Calculate the sum of the maximum sum path from the root to a leaf of a non-empty binary tree.*
-
-*   **Base Case**: If a node is a leaf (null children), the maximum path is simply its own value.
-*   **Leap of Faith**: We assume that the left child gives me its maximum path `maxE`, and the right one `maxD`.
-*   **Combination**: My maximum path will be my value (`m->info`) plus the maximum of the paths of the two subtrees.
-
+### Pattern 1: Path Calculations (Binary Tree)
 ```cpp
-T max_suma_cami_aux(node_arbre* m) {
-    // Base Case: Leaf Node
-    if (m->segE == nullptr && m->segD == nullptr) return m->info;
-
-    // Leap of Faith: We assume that below it already works
-    T maxE = max_suma_cami_aux(m->segE);
-    T maxD = max_suma_cami_aux(m->segD);
-
-    // Combination
-    if (m->segE == nullptr) return m->info + maxD;
-    if (m->segD == nullptr) return m->info + maxE;
-    return m->info + max(maxE, maxD);
+// Maximum root-to-leaf path sum (Base case = Leaf)
+T max_suma_cami(node_arbre* m) {
+    if (m->segE == nullptr && m->segD == nullptr) return m->info; // 1. Leaf
+    if (m->segE == nullptr) return m->info + max_suma_cami(m->segD); // 2. Single child
+    if (m->segD == nullptr) return m->info + max_suma_cami(m->segE);
+    return m->info + max(max_suma_cami(m->segE), max_suma_cami(m->segD)); // 3. Two children
 }
 ```
 
-### Example 2: Search for a value (`buscar` - General Tree)
-*Statement: Indicate whether a value `x` is found or not in a general n-ary tree.*
+---
 
-*   **Base Case**: If the tree is empty, it is impossible for it to be there (`return false`).
-*   **My job**: Am I the node we are looking for? `if (m->info == x) return true;`.
-*   **Leap of Faith in n-aries**: If I am not it, I ask each of my children in a loop if they have it. If any child tells me `true`, I propagate the `true` upwards. If no child has it, I return `false`.
-
+### Pattern 2: Search / Boolean (General Tree)
 ```cpp
-bool buscar_aux(node_arbreGen* m, const T& x) {
-    if (m == nullptr) return false; // Base Case
-    
-    if (m->info == x) return true; // My job
-
-    // Leap of Faith in n-aries: loop over the vector of children
-    int n = m->seg.size();
-    for (int i = 0; i < n; ++i) {
-        if (buscar_aux(m->seg[i], x)) return true; // If a child finds it, we return true
+// Search for an element in an n-ary tree
+bool buscar(node_arbreGen* m, const T& x) {
+    if (m == nullptr) return false;          // 1. Base case
+    if (m->info == x) return true;           // 2. Local data
+    for (node_arbreGen* fill : m->seg) {     // 3. Recursive iteration over children
+        if (buscar(fill, x)) return true;
     }
-    return false; // No child has found it
+    return false;
 }
 ```
 
-### Example 3: The Sum Tree (`arb_sumes` - Binary)
-*Statement: Return a new identical tree in shape where each node contains the sum of its entire corresponding subtree.*
+---
 
-*   **Base Case**: If the tree is empty, the sum subtree is null and the sum is `0`.
-*   **Leap of Faith**: We assume that the left child correctly calculates its sum tree `asumE` and returns its accumulated sum `sumE`. The same for the right with `asumD` and `sumD`.
-*   **My job + Combination**: My sum is `m->info + sumE + sumD`. I create a new node with this value and connect it with the two resulting subtrees.
-
+### Pattern 3: Tree Construction / Cloning with Pointer by Reference
 ```cpp
-// Auxiliary that receives the current node, builds the sum subtree in 'res' and returns the sum
-static int arb_sumes_aux(node_arbre* m, node_arbre*& res) {
-    if (m == nullptr) {
-        res = nullptr;
-        return 0; // Base case
-    }
-
-    res = new node_arbre;
+// Generates a new tree where each node holds the sum of its subtree
+static int arb_sumes(node_arbre* m, node_arbre*& res) {
+    if (m == nullptr) { res = nullptr; return 0; } // 1. Base case
     
-    // Leap of Faith: We assume that left and right build themselves and give us the sums
-    int sumE = arb_sumes_aux(m->segE, res->segE);
-    int sumD = arb_sumes_aux(m->segD, res->segD);
-
-    // My job + Combination
-    res->info = m->info + sumE + sumD;
+    res = new node_arbre; // 2. Create new node
+    int sumE = arb_sumes(m->segE, res->segE); // 3. Recursion on children
+    int sumD = arb_sumes(m->segD, res->segD);
+    
+    res->info = m->info + sumE + sumD; // 4. Combination
     return res->info;
 }
 ```

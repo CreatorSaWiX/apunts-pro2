@@ -7,27 +7,28 @@ draft: false
 isNew: true
 ---
 
-## 1. Estructura de datos
+## 12.1 Estructura interna: Nodos N-arios con `std::vector`
 
-La estructura del nodo cambia para dar cabida a una lista dinámica de descendientes:
+Un árbol general (o N-ario) no limita el número de hijos de cada nodo a dos. La estructura interna utiliza un vector dinámico de punteros `vector<node_arbreGen*> seg` para almacenar las direcciones de los hijos:
 
 ```cpp
-template <class T> class ArbreGen {
+template <typename T>
+class ArbreGen {
 private:
-  struct node_arbreGen {
-    T info;                         // Dato del nodo
-    vector<node_arbreGen*> seg;     // Vector de punteros a los hijos
-  };
-  node_arbreGen* primer_node;       // Puntero a la raíz
+    struct node_arbreGen {
+        T info;                         // Dato contenido en el nodo
+        vector<node_arbreGen*> seg;     // Vector de punteros a los hijos
+    };
+    node_arbreGen* primer_node;         // Puntero a la raíz (nullptr si vacío)
 };
 ```
 
-### Visualización del nodo general
+### Visualización de la estructura en memoria
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-6 items-start">
 <div>
 
-En memoria, un nodo de un árbol general se representa con un vector que apunta a cada hijo:
+**Nodo con vector de hijos en memoria:**
 
 :::graph
 ```json
@@ -54,7 +55,7 @@ En memoria, un nodo de un árbol general se representa con un vector que apunta 
 </div>
 <div>
 
-La estructura jerárquica permite cualquier grado por nodo:
+**Árbol general de grado variable:**
 
 :::graph
 ```json
@@ -83,38 +84,147 @@ La estructura jerárquica permite cualquier grado por nodo:
 </div>
 </div>
 
-## 2. Gestión de memoria recursiva
+---
 
-La recursividad en árboles generales ya no se limita a dos llamadas (izquierda y derecha), sino que se debe iterar sobre el vector de hijos.
+## 12.2 Recursividad sobre Vectores y la Regla de los Tres
 
-### 2.1 Copia de nodos
-Para copiar un nodo general, debemos reservar el vector con el tamaño correcto y copiar cada hijo:
+La recursividad sobre árboles generales sustituye las dos llamadas fijas (`segE` y `segD`) por un bucle `for` que itera sobre el tamaño del vector `m->seg.size()`:
+
+### 12.2.1 Copia profunda: `copia_node_arbreGen(m)`
+Duplica todos los nodos recursivamente reservando el vector del tamaño exacto:
+
+```cpp
+static node_arbreGen* copia_node_arbreGen(node_arbreGen* m) {
+    if (m == nullptr) return nullptr;
+    node_arbreGen* n = new node_arbreGen;
+    n->info = m->info;
+    int ari = m->seg.size();
+    n->seg = vector<node_arbreGen*>(ari);
+    for (int i = 0; i < ari; ++i) {
+        n->seg[i] = copia_node_arbreGen(m->seg[i]);
+    }
+    return n;
+}
+```
 
 ::algoviz{algorithm="arbgen_copia"}
 
-### 2.2 Borrado de nodos
-El borrado también requiere un bucle para recorrer todos los subárboles antes de hacer el `delete` del nodo padre:
+---
+
+### 12.2.2 Destrucción: `esborra_node_arbreGen(m)`
+Libera la memoria recursivamente en **post-orden** (primero todos los hijos y después el padre):
+
+```cpp
+static void esborra_node_arbreGen(node_arbreGen* m) {
+    if (m != nullptr) {
+        int ari = m->seg.size();
+        for (int i = 0; i < ari; ++i) {
+            esborra_node_arbreGen(m->seg[i]);
+        }
+        delete m;
+    }
+}
+```
 
 ::algoviz{algorithm="arbgen_esborra"}
 
-## 3. Operaciones de construcción y consulta
+---
 
-Las operaciones de "plantar" e "hijos" se adaptan para trabajar con vectores de árboles enteros.
+### 12.2.3 La Regla de los Tres
+```cpp
+// 1. Destructor
+~ArbreGen() {
+    esborra_node_arbreGen(primer_node);
+}
 
-| Operación | Descripción | Complejidad |
-| :--- | :--- | :--- |
-| `plantar(x, v)` | Crea una raíz `x` y le asigna el vector de árboles `v` como hijos. | $O(N)$ (donde $N$ es el número de hijos) |
-| `fills(v)` | Vacía el árbol actual y pasa todos sus hijos al vector `v`. | $O(N)$ |
-| `nombre_fills()` | Devuelve el tamaño del vector `seg` de la raíz. | $O(1)$ |
+// 2. Constructor de copia
+ArbreGen(const ArbreGen& a) {
+    primer_node = copia_node_arbreGen(a.primer_node);
+}
+
+// 3. Operador de asignación
+ArbreGen& operator=(const ArbreGen& a) {
+    if (this != &a) {
+        esborra_node_arbreGen(primer_node);
+        primer_node = copia_node_arbreGen(a.primer_node);
+    }
+    return *this;
+}
+```
+
+---
+
+## 12.3 Transferencia de Propiedad: `plantar`, `fills` y `afegir_fill`
+
+### 12.3.1 Plantar: `plantar(x, v)`
+Crea un nodo raíz con valor `x` y "roba" los punteros `primer_node` de cada uno de los árboles del vector `v`:
+
+```cpp
+void plantar(const T &x, vector<ArbreGen> &v) {
+    node_arbreGen* aux = new node_arbreGen;
+    aux->info = x;
+    int ari = v.size();
+    aux->seg = vector<node_arbreGen*>(ari);
+    for (int i = 0; i < ari; ++i) {
+        aux->seg[i] = v[i].primer_node;
+        v[i].primer_node = nullptr; // Vacía el árbol original
+    }
+    primer_node = aux;
+}
+```
 
 ::algoviz{algorithm="arbgen_plantar"}
 
+---
+
+### 12.3.2 Hijos: `fills(v)`
+Transfiere todos los subárboles de la raíz al vector `v` y libera la raíz con `delete`:
+
+```cpp
+void fills(vector<ArbreGen> &v) {
+    node_arbreGen* aux = primer_node;
+    int ari = aux->seg.size();
+    v = vector<ArbreGen>(ari);
+    for (int i = 0; i < ari; ++i) {
+        v[i].primer_node = aux->seg[i];
+    }
+    primer_node = nullptr;
+    delete aux;
+}
+```
+
 ::algoviz{algorithm="arbgen_fills"}
 
-> **Transferencia de propiedad**: Igual que en los árboles binarios, cuando hacemos un `plantar` con un vector de árboles, los árboles originales dentro del vector se quedan vacíos para evitar duplicidades de memoria.
+---
 
-## 4. Diferencias clave con Árbol Binario
+### 12.3.3 Añadir hijo: `afegir_fill(a)`
+Permite hacer crecer la aridad de la raíz añadiendo un nuevo subárbol al final del vector `seg`:
 
-1.  **Representación**: Usad `vector<node*>` en lugar de dos punteros fijos.
-2.  **Iteración**: Todos los métodos recursivos cambian las dos llamadas fijas por un bucle `for` que recorre el vector.
-3.  **Flexibilidad**: Podemos añadir hijos a posteriori con `afegir_fill(a)`, operación que no existe en el árbol binario estándar de teoría.
+```cpp
+void afegir_fill(ArbreGen &a) {
+    if (primer_node != nullptr) {
+        primer_node->seg.push_back(a.primer_node);
+        a.primer_node = nullptr; // Transfiere la propiedad
+    }
+}
+```
+
+---
+
+## 12.4 Diferencias clave respecto al Árbol Binario
+
+1. **Sin In-orden**: En un árbol general no hay ninguna posición "intermedia" canónica. Solo se utilizan recorridos en **Pre-orden**, **Post-orden** o **Por niveles** (BFS).
+2. **Grado/Aridad dinámica**: Cada nodo puede tener un número arbitrario de hijos ($0, 1, 2, \dots, k$).
+3. **Métodos con vectores**: `plantar` y `fills` reciben y devuelven un `vector<ArbreGen>` en lugar de dos parámetros separados.
+
+---
+
+## 12.5 Resumen de Complejidad
+
+| Método | Complejidad temporal | Explicación |
+| :--- | :---: | :--- |
+| **`plantar(x, v)`** | $\mathcal{O}(k)$ | Donde $k = v.\text{size}()$ (bucle para transferir punteros). |
+| **`fills(v)`** | $\mathcal{O}(k)$ | Donde $k$ es el número de hijos de la raíz. |
+| **`afegir_fill(a)`** | $\mathcal{O}(1)$ amortizado | Inserción al final del vector `push_back`. |
+| **`arrel()` / `nombre_fills()`** | $\mathcal{O}(1)$ | Acceso directo a `info` o a `seg.size()`. |
+| **Destructor / Copia** | $\Theta(n)$ | Recorre y libera/copia los $n$ nodos del árbol. |

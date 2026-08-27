@@ -18,13 +18,21 @@ isUpdated: 1
 
 ### Errores comunes
 1.  **Segmentation Fault (SEGFAULT)**: Intentar acceder a una dirección que no te pertenece o desreferenciar `nullptr`.
-Ejemplo
+    ```cpp
+    int *p = nullptr; *p = 5; // ERROR: Desreferenciación de puntero nulo
+    ```
 2.  **Memory Leak**: Perder el único puntero que apuntaba a memoria pedida con `new` sin hacer el `delete` correspondiente.
-Ejemplo
+    ```cpp
+    int *p = new int(5); p = nullptr; // ERROR: La memoria queda huérfana en el Heap
+    ```
 3.  **Dangling Pointer (Puntero colgante)**: Puntero que apunta a una dirección de memoria que ya ha sido liberada con `delete`.
-Ejemplo
-4.  **Double-Delete**: Intentar hacer `delete` dos veces sobre la misma dirección de memoria (corrompe la pila del Heap).
-Ejemplo
+    ```cpp
+    int *p = new int(5); delete p; cout << *p; // ERROR: La memoria ya no es nuestra
+    ```
+4.  **Double-Delete**: Intentar hacer `delete` dos veces sobre la misma dirección de memoria (corrompe la memoria del Heap).
+    ```cpp
+    int *p = new int(5); delete p; delete p; // ERROR: Doble liberación
+    ```
 
 ### Paso de Parámetros
 *   **Por valor (`f(int x)`)**: Copia del valor. Ineficiente para estructuras/objetos grandes.
@@ -280,103 +288,64 @@ Como el grado de los nodos es dinámico, las operaciones recursivas ya no se pue
 *   **`plantar(x, v)`**: Transfiere de forma eficiente los punteros de todos los subárboles contenidos en el vector `v` como hijos de la nueva raíz `x` en tiempo $\mathcal{O}(N)$ (siendo $N$ el número de hijos), e inmediatamente **establece los árboles de `v` como vacíos** (`v[i].primer_node = nullptr`) para evitar aliasing.
 *   **`fills(v)`**: Libera memoria del nodo raíz actual con `delete aux` y coloca todos los hijos exactamente como nuevos árboles dentro del vector `v` en $\mathcal{O}(N)$.
 
-### B. Copia profunda forzada en `afegir_fill(a)` y `fill(a, i)`
-*   **`afegir_fill(a)`**: **¡Alerta!** A diferencia de `plantar`, este método **no transfiere punteros** directamente; en su lugar, hace una **copia profunda del árbol `a`** a través de `copia_node_arbreGen(a.primer_node)`.
-*   **`fill(a, i)`**: Toma el hijo `i`-ésimo del árbol `a` y hace una copia profunda como nuevo árbol actual. Recuerda que la llamada es **1-indexed** (es decir, el hijo 1 del árbol equivale internamente a la posición indexada `0` del vector de hijos `seg[i-1]`).
+### B. Métodos `afegir_fill(a)` y `fill(a, i)`
+*   **`afegir_fill(a)`**: Añade el subárbol `a` al final del vector de hijos `seg` (`push_back`) y transfiere la propiedad (`a.primer_node = nullptr`) en tiempo $\mathcal{O}(1)$ amortizado.
+*   **`fill(a, i)`**: Devuelve el hijo $i$-ésimo del árbol `a` (indexación 1-based, correspondiente a la posición interna `seg[i-1]`).
 
 ---
 
-## 6. Estrategia para ejercicios de árboles (Salto de fe)
+## 6. Patrones de Recursión en Árboles (Exámenes PRO2)
 
-La gran mayoría de problemas de árboles se resuelven con una función recursiva inmersiva. Esta estrategia permite escribir códigos de examen ultra-limpios sin tener que intentar simular mentalmente la pila de llamadas del procesador:
+Todos los problemas de árboles se resuelven siguiendo 4 pasos sistemáticos:
 
-1.  **El Caso Base (La condición de parada)**: Olvídate del árbol entero y pregúntate: *¿Qué es lo más simple que me pueden pasar?* 
-    *   En árboles, casi siempre es un árbol vacío (`node == nullptr`). Ejemplo `X75329`: ¿Cuál es la frecuencia de un valor en un árbol vacío? `0`. Este es tu caso base.
-    *   Si el problema requiere calcular una propiedad sobre **caminos que van desde la raíz hasta una hoja**, el caso base **no puede ser el árbol vacío**, ya que no sabríamos qué devolver para un puntero nulo sin alterar la semántica o violar la definición de camino. Por lo tanto, en estos casos especiales, el caso base es el **nodo hoja** (`m->segE == nullptr && m->segD == nullptr`). Además, habrá que gestionar de manera explícita los casos donde el nodo solo tiene un único hijo activo para obligar al camino a continuar hacia él. Ejemplo: `X67695`.
-2.  **La Fe Ciega (El Salto de Fe)**: **Escribe las llamadas recursivas** sobre los hijos activos (ej: `T res = f(m->segE);`), asumiendo y confiando ciegamente en que cada una de estas llamadas te devolverá *mágicamente* la respuesta correcta de todo su respectivo subárbol. 
-    *   *Regla de oro:* No intentes simular ni imaginar mentalmente cómo la función irá bajando por los subárboles; simplemente llámala y guarda el resultado.
-3.  **Tu Único Trabajo (El nodo actual)**: Identifica qué dato local necesitas del nodo actual. Normalmente es el valor de la raíz en la que te encuentras en el presente (`m->info`).
-4.  **La Combinación Final (El montaje)**: ¿Cómo unes el dato local del presente (Paso 3) con los resultados que te han devuelto las llamadas recursivas de tus hijos (Paso 2)?
-    *   Aquí es donde aplicas la lógica algebraica del problema (operaciones como `+`, `&&`, comparaciones `>` o condicionales para elegir el mejor resultado). 
-    *   Ejemplo: Devuelves `m->info + (esquerra > dreta ? esquerra : dreta)`.
+1. **Caso base**:
+   - Problemas globales (tamaño, búsqueda, sumas): `if (m == nullptr) return ...;`
+   - Problemas de **caminos raíz-hoja**: El caso base es la **hoja** (`if (m->segE == nullptr && m->segD == nullptr) return m->info;`) y se bifurca si solo tiene un hijo.
+2. **Llamada recursiva a los hijos**: Invocar la función sobre los hijos existentes.
+3. **Dato local**: Obtener la información del nodo actual (`m->info`).
+4. **Combinación**: Operar el dato local con los resultados devueltos por los hijos (`+`, `max`, `&&`, etc.).
 
-### Equivalencia de la Estrategia: Binario vs General (n-ario)
+---
 
-| Fase | Árbol Binario (`Arbre.hh`) | Árbol General (`ArbreG.hh`) |
-| :--- | :--- | :--- |
-| **1. Caso Base** | `if (m == nullptr) return ...;`<br>*(O caso de nodo hoja si hablamos de caminos)* | `if (m == nullptr) return ...;`<br>*(O caso de nodo hoja si hablamos de caminos)* |
-| **2. Salto de Fe** | Llamadas recursivas directas a hijo izquierdo (`m->segE`) y derecho (`m->segD`). | Bucle `for` que acumula recursivamente el resultado de cada uno de los hijos en el vector `m->seg`. |
-| **3. Trabajo en el Nodo** | Procesar el dato del nodo actual (`m->info`). | Procesar el dato del nodo actual (`m->info`). |
-| **4. Combinación** | Combinar el trabajo local con el de la izquierda y la derecha. | Combinar el trabajo local con la suma/acumulación obtenida en el bucle de hijos. |
-
-### Ejemplo 1: Suma del camino máximo (`max_suma_cami` - Binario)
-*Enunciado: Calcula la suma del camino de suma máxima desde la raíz a una hoja de un árbol binario no vacío.*
-
-*   **Caso Base**: Si un nodo es una hoja (hijos nulos), el camino máximo es simplemente su propio valor.
-*   **Salto de Fe**: Asumimos que el hijo izquierdo me da su camino máximo `maxE`, y el derecho `maxD`.
-*   **Combinación**: Mi camino máximo será mi valor (`m->info`) más el máximo de los caminos de los dos subárboles.
-
+### Patrón 1: Cálculo sobre Caminos (Binario)
 ```cpp
-T max_suma_cami_aux(node_arbre* m) {
-    // Caso Base: Nodo Hoja
-    if (m->segE == nullptr && m->segD == nullptr) return m->info;
-
-    // Salto de Fe: Asumimos que por debajo ya funciona
-    T maxE = max_suma_cami_aux(m->segE);
-    T maxD = max_suma_cami_aux(m->segD);
-
-    // Combinación
-    if (m->segE == nullptr) return m->info + maxD;
-    if (m->segD == nullptr) return m->info + maxE;
-    return m->info + max(maxE, maxD);
+// Suma del camino máximo de raíz a hoja (Caso base = Hoja)
+T max_suma_cami(node_arbre* m) {
+    if (m->segE == nullptr && m->segD == nullptr) return m->info; // 1. Hoja
+    if (m->segE == nullptr) return m->info + max_suma_cami(m->segD); // 2. Un solo hijo
+    if (m->segD == nullptr) return m->info + max_suma_cami(m->segE);
+    return m->info + max(max_suma_cami(m->segE), max_suma_cami(m->segD)); // 3. Dos hijos
 }
 ```
 
-### Ejemplo 2: Búsqueda de un valor (`buscar` - Árbol General)
-*Enunciado: Indica si un valor `x` se encuentra o no en un árbol general n-ario.*
+---
 
-*   **Caso Base**: Si el árbol está vacío, es imposible que esté (`return false`).
-*   **Mi trabajo**: ¿Soy yo el nodo que buscamos? `if (m->info == x) return true;`.
-*   **Salto de Fe en n-arios**: Si no soy yo, pregunto en bucle a cada uno de mis hijos si lo tienen. Si cualquier hijo me dice `true`, propago el `true` hacia arriba. Si ningún hijo lo tiene, devuelvo `false`.
-
+### Patrón 2: Búsqueda / Booleano (Árbol General)
 ```cpp
-bool buscar_aux(node_arbreGen* m, const T& x) {
-    if (m == nullptr) return false; // Caso Base
-    
-    if (m->info == x) return true; // Mi trabajo
-
-    // Salto de Fe en n-arios: bucle sobre el vector de hijos
-    int n = m->seg.size();
-    for (int i = 0; i < n; ++i) {
-        if (buscar_aux(m->seg[i], x)) return true; // Si un hijo lo encuentra, devolvemos true
+// Búsqueda de un elemento en árbol n-ario
+bool buscar(node_arbreGen* m, const T& x) {
+    if (m == nullptr) return false;          // 1. Caso base
+    if (m->info == x) return true;           // 2. Dato local
+    for (node_arbreGen* fill : m->seg) {     // 3. Iteración recursiva sobre hijos
+        if (buscar(fill, x)) return true;
     }
-    return false; // Ningún hijo lo ha encontrado
+    return false;
 }
 ```
 
-### Ejemplo 3: El Árbol de Sumas (`arb_sumes` - Binario)
-*Enunciado: Devuelve un nuevo árbol idéntico en forma donde cada nodo contiene la suma de todo su subárbol correspondiente.*
+---
 
-*   **Caso Base**: Si el árbol está vacío, el subárbol suma es nulo y la suma es `0`.
-*   **Salto de Fe**: Asumimos que el hijo izquierdo calcula correctamente su árbol de sumas `asumE` y me devuelve su suma acumulada `sumE`. Lo mismo para la derecha con `asumD` y `sumD`.
-*   **Mi trabajo + Combinación**: Mi suma es `m->info + sumE + sumD`. Creo un nuevo nodo con este valor y lo conecto con los dos subárboles resultantes.
-
+### Patrón 3: Construcción / Clonación de Árbol con Puntero por Referencia
 ```cpp
-// Auxiliar que recibe el nodo actual, construye el subárbol de sumas en 'res' y devuelve la suma
-static int arb_sumes_aux(node_arbre* m, node_arbre*& res) {
-    if (m == nullptr) {
-        res = nullptr;
-        return 0; // Caso base
-    }
-
-    res = new node_arbre;
+// Genera un nuevo árbol donde cada nodo guarda la suma de su subárbol
+static int arb_sumes(node_arbre* m, node_arbre*& res) {
+    if (m == nullptr) { res = nullptr; return 0; } // 1. Caso base
     
-    // Salto de Fe: Asumimos que izquierda y derecha se construyen solas y nos dan las sumas
-    int sumE = arb_sumes_aux(m->segE, res->segE);
-    int sumD = arb_sumes_aux(m->segD, res->segD);
-
-    // Mi trabajo + Combinación
-    res->info = m->info + sumE + sumD;
+    res = new node_arbre; // 2. Creación del nuevo nodo
+    int sumE = arb_sumes(m->segE, res->segE); // 3. Recursión a hijos
+    int sumD = arb_sumes(m->segD, res->segD);
+    
+    res->info = m->info + sumE + sumD; // 4. Combinación
     return res->info;
 }
 ```

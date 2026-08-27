@@ -7,7 +7,7 @@ draft: false
 isUpdated: 1
 ---
 
-## 1. Estructura interna y Atributos
+## 9.1 Estructura interna y Atributos
 
 Un vector es un **array dinámico** en el *heap*. Para gestionarlo, usamos un `namespace` propio y tres atributos:
 
@@ -29,11 +29,11 @@ namespace pro2 {
 }
 ```
 
-## 2. Regla de los tres (Gestión de memoria)
+## 9.2 Regla de los tres (Gestión de memoria)
 
 Si una clase gestiona memoria dinámica, necesita estos 3 métodos para evitar **segfaults** o **leaks**:
 
-### A. Constructor de copia
+### 9.2.1 Constructor de copia
 Crea una copia real en un nuevo bloque de memoria, no solo copia el puntero.
 ```cpp
 Vector(const Vector& v) {
@@ -44,7 +44,7 @@ Vector(const Vector& v) {
 }
 ```
 
-### B. Operador de asignación
+### 9.2.2 Operador de asignación
 Libera la memoria vieja antes de copiar la nueva.
 ```cpp
 Vector& operator=(const Vector& v) {
@@ -59,13 +59,13 @@ Vector& operator=(const Vector& v) {
 }
 ```
 
-### C. Destructor
+### 9.2.3 Destructor
 El único que libera la memoria definitivamente.
 ```cpp
 ~Vector() { delete[] data_; }
 ```
 
-## 3. Operadores
+## 9.3 Sobrecarga de operadores
 
 Cuando tú escribes `s += s2` en el main, el compilador de C++ busca si la clase tiene definida una función que se llame literalmente `operator+=`. Si la encuentra y acepta los argumentos que le pasas (en este caso un objeto de tipo Stack), hace la llamada directa.
 
@@ -75,7 +75,7 @@ s1 += s2;           // Sintaxis natural (en el main)
 s1.operator+=(s2);  // Equivalente a s1 += s2;
 ```
 
-| Categoría | Definición de la función (c+pp) | Llamada desde el main |
+| Categoría | Definición de la función (c++) | Llamada desde el main |
 | :--- | :--- | :--- |
 | **Acceso** | `T& operator[](int i)` | `v[i] = x;` |
 | **Comparación** | `bool operator<(const V& v)` | `if (a < b)` |
@@ -83,7 +83,7 @@ s1.operator+=(s2);  // Equivalente a s1 += s2;
 | **Aritméticos** | `V operator+(const V& v)` | `c = a + b;` |
 | **Flujo** | `ostream& operator<<(ostream& o, const V& v)` | `cout << v;` |
 
-## 4. Acceso e iteradores
+## 9.4 Acceso e iteradores
 
 El acceso es $\Theta(1)$ directo por aritmética de punteros.
 - **El operador `[]`**: Se duplica para permitir lectura en objetos `const`.
@@ -97,7 +97,7 @@ iterator begin() { return data_; }
 iterator end() { return data_ + size_; }
 ```
 
-## 5. El motor: `reallocate_` (La mudanza)
+## 9.5 El motor: `reallocate_` (La mudanza)
 Método privado que cambia la capacidad del vector. Operación cara $\mathcal{O}(n)$.
 1. Pide nuevo bloque.
 2. Copia elementos viejos.
@@ -116,7 +116,7 @@ void reallocate_(int new_cap) {
 }
 ```
 
-## 6. Inserción y crecimiento
+## 9.6 Inserción y coste amortizado (`push_back`)
 - **`push_back`**: Si está lleno, **dobla** la capacidad.
 - **Coste Amortizado**: Aunque redimensionar es $\mathcal{O}(n)$, solo pasa cada $2^k$ veces. La media es **$\mathcal{O}(1)$**.
 
@@ -131,7 +131,7 @@ void push_back(const T& x) {
 
 ::vectorviz
 
-## 7. Extracción y Thrashing
+## 9.7 Extracción y prevención de Thrashing (`pop_back`)
 Para evitar oscilaciones caras (doblar/reducir constantemente):
 - **Estrategia**: Esperar a estar a **1/4** de capacidad para reducirla a la **mitad**.
 
@@ -146,18 +146,18 @@ void pop_back() {
 
 ---
 
-## Resumen de Complejidad
+## 9.8 Resumen de Complejidad
 
 | Operación | Complejidad | Nota |
-| :--- | :--- | :--- |
+| :--- | :---: | :--- |
 | **Acceso `[i]`** | $\Theta(1)$ | Directo. |
 | **`push_back`** | $\mathcal{O}(1)^*$ | *Amortizado. Peor caso $\mathcal{O}(n)$. |
 | **`pop_back`** | $\mathcal{O}(1)^*$ | *Amortizado. Evitamos el Thrashing. |
 | **`insert/erase`** | $\mathcal{O}(n)$ | Hay que desplazar todos los elementos posteriores. |
 | **`size/empty`** | $\Theta(1)$ | Consulta de atributos. |
 
-## Extra: Operador de salida
-Muy útil para debugear la implementación:
+## 9.9 Extra: Operador de salida (`operator<<`)
+Muy útil para depurar la implementación:
 ```cpp
 template <typename T>
 ostream& operator<<(ostream& os, const Vector<T>& v) {

@@ -7,208 +7,216 @@ draft: false
 isUpdated: 2
 ---
 
-## 1. La memoria en C++: Stack vs Heap
+## 8.1 La memoria en C++: Stack vs Heap
 
-Para entender los punteros, primero debemos saber dónde se almacenan los datos. La memoria de un programa se divide principalmente en dos zonas:
+Para entender los punteros, primero debemos saber cómo se organiza la memoria RAM de un programa en C++:
 
 | Característica | Stack (Pila) | Heap (Montículo) |
 | :--- | :--- | :--- |
-| **Gestión** | Automática (por el ordenador). | Manual (por el programador). |
-| **Velocidad** | Muy rápida. | Más lenta. |
-| **Tamaño** | Limitado y fijo. | Muy grande (memoria RAM disponible). |
-| **Ciclo de vida** | Ligado a las llaves `{}` (stack frames). | Decidimos cuándo nacen (`new`) y mueren (`delete`). |
+| **Gestión** | **Automática**: el compilador reserva y libera espacio. | **Manual**: el programador decide cuándo pedir (`new`) y liberar (`delete`). |
+| **Velocidad** | Muy rápida (puntero de pila contiguo). | Más lenta (búsqueda de bloques libres en el sistema). |
+| **Tamaño** | Limitado y fijo (unos pocos MB, riesgo de *Stack Overflow*). | Muy grande (toda la memoria RAM disponible). |
+| **Ciclo de vida** | Ligado al ámbito (*scope*) entre llaves `{}`. | Persistente hasta que se ejecuta `delete`. |
 
-**Ejemplo de scope (Pila)**:
 ```cpp
 int f(int a, int b) {
-    int n = a;
+    int n = a;      // Reserva espacio en la pila
     if (b > n) {
-        int m = 2; // Nace aquí
+        int m = 2;  // 'm' nace en la pila al entrar al bloque if
         a = b;
-    } // m Muere aquí automáticamente
+    }               // 'm' se libera automáticamente aquí
     return a;
-} // n y a Mueren aquí
+}                   // 'n', 'a' y 'b' se liberan automáticamente al terminar la función
 ```
 
-## 2. ¿Qué es un puntero?
+---
 
-Un **puntero** es una variable que, en lugar de almacenar un valor (como un `int` o `char`), almacena una **dirección de memoria**.
+## 8.2 ¿Qué es un puntero?
+
+Un **puntero** es una variable que, en lugar de almacenar un valor directo (como `int` o `char`), almacena una **dirección de memoria** de otra variable.
+
+### Los tres operadores fundamentales
 
 | Operador | Nombre | Función | Ejemplo |
 | :--- | :--- | :--- | :--- |
-| **`&`** | Dirección de | Obtiene la dirección de memoria de una variable. | `p = &x;` |
-| **`*`** | Desreferencia | Accede al contenido de la dirección que guarda el puntero. | `cout << *p;` |
-| **`->`** | Flecha | Acceso a miembro vía puntero. Equivalente a `(*p).miembro`. | `pp->first = "b";` |
+| **`&`** | **Dirección de** | Obtiene la dirección de memoria de una variable existente. | `int* p = &x;` |
+| **`*`** | **Desreferencia** | Accede/modifica el valor situado en la dirección que guarda el puntero. | `*p = 20;` |
+| **`->`** | **Acceso a miembro** | Accede directamente a un campo de un `struct`/`class`. Equivalente a `(*p).campo`. | `p_node->value = 5;` |
 
-### Trampas de declaración y sintaxis
-
-- **Declaración múltiple**: El asterisco `*` se debe poner por cada variable.
-  ```cpp
-  int *pb, *pc; // Dos punteros que apuntan a enteros
-  int* pb, pc;  // ¡pb es puntero, pc es un entero normal! (Error típico)
-  ```
-- **Puntero a elementos de contenedores**:
-  ```cpp
-  vector<int> v = {1, 2, 3};
-  int *p = &v[1]; // Apunta al '2'
-  *p += 1;        // v[1] ahora es 3
-  ```
-- **Puntero a miembros de `pair` o `struct`**:
-  ```cpp
-  pair<string, int> a = {"a", 7};
-  int *pi = &a.second;
-  *pi = 0; // a.second ahora es 0
-  ```
-
-> **`nullptr` vs Inicialización**:
-> - `int *p = nullptr;` -> El puntero apunta a "nada". Seguro.
-> - `int *p;` -> El puntero apunta a una **dirección aleatoria** (basura). Muy peligroso.
-> - `int *p = 5;` -> **ERROR**. Estás diciendo que la dirección de memoria es la número 5. Esto provocará un **SEGFAULT** seguro.
+### Distinción fundamental: `p` vs `*p`
 
 ```cpp
 int x = 10;
-int* p = &x; // p apunta a x
+int y = 99;
+int* p = &x; // 'p' guarda la dirección de 'x' (ej: 0x7ffd8)
 
-cout << p;   // Imprime una dirección: 0x7ffe...
-cout << *p;  // Imprime el valor de x: 10
+// 1. Leer
+cout << p;   // Imprime la dirección: 0x7ffd8
+cout << *p;  // Imprime el contenido de x: 10
+
+// 2. Modificar el contenido (*p)
+*p = 25;     // ¡Cambia el valor de 'x' a 25!
+
+// 3. Modificar la referencia (p)
+p = &y;      // Ahora 'p' apunta a 'y'. 'x' se mantiene en 25 y *p vale 99.
 ```
 
-## 3. Gestión dinámica de memoria
+### Trampas típicas de declaración
 
-Esta es la utilidad real de los punteros: pedir memoria en tiempo de ejecución.
+1. **Declaración múltiple de asteriscos:**
+   ```cpp
+   int *pa, *pb; // Correcto: dos punteros a entero
+   int* pa, pb;  // Peligro: 'pa' es puntero, ¡pero 'pb' es un int normal!
+   ```
+2. **Punteros a miembros de contenedores o tuplas:**
+   ```cpp
+   vector<int> v = {10, 20, 30};
+   int* pv = &v[1]; // Apunta al 20
+   *pv += 5;        // v[1] ahora vale 25
 
-### Objetos vs vectores dinámicos
+   pair<string, int> persona = {"Anna", 21};
+   int* pedad = &persona.second;
+   *pedad = 22;     // persona.second ahora vale 22
+   ```
 
-Podemos pedir un solo objeto o un bloque entero (vector) al Heap usando `new`, y liberarlo con `delete`.
-
+:::warning
+Un puntero no inicializado (`int* p;`) contiene **basura** (apunta a una dirección aleatoria de memoria). Intentar leer o escribir con `*p` provocará un **Segmentation Fault** o corrupción de datos. Si un puntero no apunta a ningún sitio inicialmente, asígnale siempre **`nullptr`**:
 ```cpp
-// Objetos simples
-Data *pd = new Data(2025, 4, 2);
-pair<int, int> *pp = new pair<int, int>(1, 2);
-
-// Vectores dinámicos (Muy común en C)
-int *pv = new int[100]; 
-char *pc = new char[100000];
+int* p = nullptr; // Apunta de forma segura a "ninguna parte"
 ```
+:::
 
-**Memory Leak**: Se produce cuando pierdes la dirección y ya no puedes hacer `delete`.
+## 8.3 Gestión dinámica de memoria: `new` y `delete`
+
+La utilidad principal de los punteros es gestionar memoria en el **Heap** en tiempo de ejecución:
+
+### 1. Objetos individuales
 ```cpp
-int *p = new int[100];
-p = new int[100]; // ERROR: ¡Se ha perdido la dirección del primer vector! Fuga de memoria.
+int* p_int = new int(42);       // Reserva espacio para un int con valor 42
+delete p_int;                   // Libera la memoria
+p_int = nullptr;                // Evita dejar un puntero colgante (dangling pointer)
 ```
 
-## 4. Aliasing y asignación
+### 2. Bloques / Vectores dinámicos (`new[]` y `delete[]`)
+```cpp
+int* arr = new int[100];        // Reserva un bloque continuo de 100 enteros
+delete[] arr;                   // Libera el bloque entero (siempre con [])
+arr = nullptr;
+```
 
-El **aliasing** ocurre cuando dos o más punteros apuntan a la misma dirección de memoria. Modificar el valor a través de un puntero afecta a todos los demás "alias".
+:::warning
+- **`delete` vs `delete[]`:** Liberar un bloque creado con `new[]` usando solo `delete` (sin corchetes) produce **comportamiento indefinido** y fugas de memoria.
+- **Fuga de memoria (*Memory Leak*):** Se produce cuando se pierde el último puntero que apuntaba a un bloque del Heap antes de haber hecho `delete`:
+  ```cpp
+  int* p = new int(10);
+  p = new int(20); // ERROR: ¡El entero inicial (10) queda huérfano en la RAM para siempre!
+  ```
+:::
+
+---
+
+## 8.4 Aliasing y Copia Superficial vs Profunda
+
+El **aliasing** ocurre cuando dos o más punteros almacenan la **misma dirección de memoria**. Cualquier cambio realizado a través de un alias modifica el dato para todos los demás.
 
 ```cpp
 int x = 10;
 int* p1 = &x;
-int* p2 = p1; // Aliasing: p2 apunta a donde apunta p1
+int* p2 = p1; // Aliasing: p2 apunta exactamente a la misma casilla que p1
 
-*p2 = 20;
-cout << x; // ¡Imprimirá 20!
+*p2 = 99;
+cout << *p1;  // ¡Imprime 99!
 ```
 
-**Ejemplo avanzado**: Un vector de punteros apuntando al mismo objeto.
-```cpp
-int x = 3;
-vector<int*> v(10, &x); // 10 punteros que apuntan TODOS a la x
-
-for (int i = 0; i < v.size(); ++i) {
-    (*v[i])++; // ¡Incrementamos x 10 veces!
-}
-cout << x; // Imprimirá 13
-```
-
-## 5. El peligro de los punteros: errores comunes
-
-El uso de punteros requiere mucha disciplina. Los errores más habituales en PRO2 son:
-
-1.  **Segmentation Fault (SEGFAULT)**: Intentar acceder a una dirección que no te pertenece.
-    - Desreferenciar `nullptr`: `int *p = nullptr; *p = 5;`.
-    - Acceso fuera de rango en vectores: `vector<int> v; v[13] = 0;`
-2.  **Memory Leak**: Destruir la única referencia a una memoria dinámica sin liberarla.
-3.  **Dangling Pointer (Puntero colgante)**: Puntero que apunta a una dirección que ya ha sido liberada con `delete`.
-4.  **Double-Delete**: Hacer `delete` dos veces sobre la misma dirección (corrompe el heap).
-
-> En el `Makefile`, utiliza el flag `-D_GLIBCXX_DEBUG`. Esto activa comprobaciones de seguridad en los contenedores de la STL y te avisará de los accesos fuera de rango en lugar de darte un SEGFAULT silencioso o datos basura.
-
-| Operación | Iterador (STL) | Puntero (Bajo Nivel) |
-| :--- | :--- | :--- |
-| **Inicio** | `auto it = v.begin();` | `int *px = &x;` |
-| **Acceso** | `*it = 5;` | `*px = 5;` |
-| **Avanzar** | `it++;` | `px++;` (Avanza una dirección) |
-| **Reasignar** | `it = v.erase(it);` | `px = &y;` |
-
-> Un puntero puede ser visto como un iterador de un vector, pero un iterador de un `std::list` no es necesariamente un puntero (internamente puede ser más complejo).
+### Copia superficial vs profunda
+- **Copia superficial:** Copia las direcciones de los punteros. Ambos objetos comparten la misma memoria.
+- **Copia profunda:** Reserva nueva memoria en el Heap y duplica el contenido.
 
 ---
 
-## 6. Paso de parámetros 
+## 8.5 Errores críticos con punteros
 
-| Tipo | Sintaxis | Efecto | Eficiencia |
+| Error | Causa | Consecuencia | Solución |
 | :--- | :--- | :--- | :--- |
-| **Por valor** | `f(int x)` | Copia del valor. | Baja (si el objeto es grande). |
-| **Por referencia** | `f(int& x)` | Alias directo. | Alta. |
-| **Por puntero** | `f(int* pi)` | Pasa la dirección. Más rápido que por valor. |
+| **Segmentation Fault** | Desreferenciar `nullptr` o direcciones basura/fuera de rango. | El programa se detiene inmediatamente (*crash*). | Comprobar siempre `if (p != nullptr)` antes de usar `*p` o `p->`. |
+| **Memory Leak** | Perder la referencia a un bloque del Heap sin `delete`. | Consumo continuo e innecesario de memoria RAM. | Asegurar un `delete` por cada `new`. |
+| **Dangling Pointer** | Puntero que sigue guardando una dirección que ya ha sido liberada. | Datos corruptos o SEGFAULT al acceder. | Asignar `p = nullptr;` inmediatamente tras el `delete`. |
+| **Double Delete** | Hacer `delete` dos veces sobre el mismo bloque de memoria. | Corrupción del administrador del Heap (*crash*). | Hacer `p = nullptr;` (en C++, `delete nullptr;` no hace nada y es seguro). |
 
-**Ejemplo de incremento**:
-```cpp
-void inc(int *pi) {
-    (*pi)++; // quiere decir *pi += 1;
-}
-
-int i = 5;
-inc(&i); // i ahora vale 6
-```
-
-En PRO2, preferimos **referencias constantes** (`const T& x`) para objetos grandes que no queremos modificar, y **punteros** solo cuando necesitamos que el parámetro pueda ser opcional (`nullptr`) o para estructuras dinámicas.
+> **Consejo para el Jutge/Compilación:** Utiliza el flag `-D_GLIBCXX_DEBUG` al compilar para que los contenedores de la STL avisen de cualquier acceso fuera de rango en lugar de producir errores silenciosos.
 
 ---
 
-## 7. Aplicación: Estructuras Enlazadas (Nodos)
+## 8.6 Paso de parámetros en funciones
 
-La utilidad real de los punteros en PRO2 es crear colecciones de datos que crecen y decrecen nodo a nodo. Cada elemento se almacena en un **Nodo** (o `Item`).
+| Tipo de paso | Sintaxis | Cuándo utilizarlo en PRO2 |
+| :--- | :--- | :--- |
+| **Por valor** | `void f(int x)` | Tipos primitivos pequeños (`int`, `char`, `bool`, `double`). |
+| **Por referencia constante** | `void f(const string& s)` | **El estándar en PRO2** para estructuras grandes (`vector`, `list`, `BinTree`, `string`) que solo queremos leer sin coste de copia. |
+| **Por referencia** | `void f(int& x)` | Cuando la función debe **modificar directamente** el objeto original. |
+| **Por puntero** | `void f(Node* p)` | Cuando el parámetro es **opcional** (puede ser `nullptr`) o en estructuras enlazadas. |
 
-### El Nodo Básico
+---
+
+## 8.7 Aplicación: Estructuras Enlazadas (Nodos)
+
+La utilidad principal de los punteros en PRO2 es crear estructuras de datos dinámicas que crecen y decrecen nodo a nodo en memoria. Cada elemento se almacena en un **Nodo** (o `Item`):
+
 ```cpp
-struct Item {
-    T value;    // El dato
-    Item* next; // El "cable" hacia el siguiente nodo
+template <typename T>
+struct Node {
+    T value;        // Dato almacenado
+    Node* next;     // Puntero hacia el siguiente nodo (o nullptr si es el último)
 };
 ```
 
-### 7.1 La Pila (Stack) - Modelo LIFO
-En una pila enlazada, solo tenemos un puntero a la cima (`ptopitem`). Cada vez que hacemos `push`, el nuevo nodo apunta a la antigua cima.
+### 8.7.1 La Pila enlazada (Stack — LIFO)
+En una pila dinámica, solo es necesario mantener un puntero a la cima (`top` o `p_top`):
+- **`push(x)`**: Se crea un nuevo nodo que apunta a la antigua cima, y se actualiza la cima.
+- **`pop()`**: Se guarda la cima temporalmente, se avanza la cima al siguiente nodo (`top = top->next`) y se libera la memoria de la antigua cima.
 
-::stackviz
+:::stackviz
+:::
 
-> **Ejercicio `swap2Topmost()`**: Para intercambiar los dos primeros nodos sin tocar los `.value`, tienes que:
-> 1. Guardar el segundo nodo en un puntero auxiliar: `Item *p2 = ptopitem->next;`
-> 2. Reenlazar: `ptopitem->next = p2->next;`
-> 3. Hacer que el nuevo primero sea el que era segundo: `p2->next = ptopitem;`
-> 4. Actualizar la cima: `ptopitem = p2;`
-
-### 7.2 La Cola (Queue) - Modelo FIFO
-En una cola, necesitamos dos punteros: `first` (para sacar) y `last` (para añadir).
-
-::queueviz
-
-> **Ejercicio `operator[]`**: Como una cola enlazada no es un vector, para encontrar el elemento `i` tienes que hacer un bucle `for` que avance el puntero `p = p->next` exactamente `i` veces empezando desde `first`.
-
-### 7.3 Cómo borrar nodos por el medio
-Para borrar un nodo (como en `removeFirstOccurrence` - Juez: X87185), necesitas "saltártelo":
-1. Encontrar el nodo **anterior** al que quieres borrar (`ant`).
-2. Hacer el salto: `ant->next = ant->next->next;`
-3. Liberar la memoria: `delete p_a_borrar;`
-
-::pointerviz
+> **Reenlace (`swap2Topmost`):** Para intercambiar los dos primeros nodos sin copiar sus valores:
+> 1. `Node* p2 = top->next;` (guardamos el segundo nodo)
+> 2. `top->next = p2->next;` (el primero ahora apunta al tercero)
+> 3. `p2->next = top;` (el segundo ahora apunta a la antigua cima)
+> 4. `top = p2;` (la nueva cima es p2)
 
 ---
 
-## Checklist para el Juez (Punteros)
-- **¿Has puesto `nullptr`?** Comprueba siempre si un puntero es nulo antes de hacer `p->next`.
-- **¿Has hecho `delete`?** Cada `new` debe tener su `delete` para evitar Memory Leaks.
-- **Casos vacíos**: ¿Qué hace tu código si la pila/cola está vacía? ¿Y si tiene solo 1 elemento?
-- **Autoasignación**: En el uso de `operator=`, ¿has comprobado `if (this != &s)`?
+### 8.7.2 La Cola enlazada (Queue — FIFO)
+En una cola dinámica se necesitan dos punteros: **`first`** (para extraer por delante) y **`last`** (para añadir por el final):
+
+:::queueviz
+:::
+
+> **Casos especiales:**
+> - Insertar en cola vacía: tanto `first` como `last` pasan a apuntar al nuevo nodo.
+> - Extraer el último elemento: si tras el `pop` la cola queda vacía (`first == nullptr`), hay que hacer también `last = nullptr;`.
+
+---
+
+### 8.7.3 Borrado de nodos por el medio
+Para borrar un nodo situado en el interior de una secuencia enlazada:
+
+1. Localizar el nodo **anterior** (`ant`) al que queremos eliminar.
+2. Guardar el nodo a borrar: `Node* p_del = ant->next;`
+3. Saltar el nodo: `ant->next = p_del->next;`
+4. Liberar la memoria: `delete p_del;`
+
+:::pointerviz
+:::
+
+---
+
+## 8.8 Checklist para problemas de punteros en el Juez
+
+- **Comprobación de `nullptr`:** Asegúrate de no hacer nunca `p->next` o `p->value` si `p == nullptr`.
+- **Liberación con `delete`:** Cada `new` debe tener su `delete` correspondiente (o en el destructor de la clase).
+- **Gestión de los casos límite:**
+  - Estructura completamente vacía (`top == nullptr` o `first == nullptr`).
+  - Estructura con un solo elemento (donde eliminarlo requiere actualizar tanto `first` como `last` a `nullptr`).
+  - Borrado del primer nodo vs un nodo intermedio.
+- **Control de autoasignación:** Al sobrecargar el `operator=`, comprueba siempre `if (this != &other)` antes de borrar la memoria propia.

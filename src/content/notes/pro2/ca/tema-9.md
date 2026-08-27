@@ -7,7 +7,7 @@ draft: false
 isUpdated: 1
 ---
 
-## 1. Estructura interna i Atributs
+## 9.1 Estructura interna i Atributs
 
 Un vector és un **array dinàmic** al *heap*. Per gestionar-lo, usem un `namespace` propi i tres atributs:
 
@@ -29,11 +29,13 @@ namespace pro2 {
 }
 ```
 
-## 2. Regla dels tres (Gestió de memòria)
+---
+
+## 9.2 Regla dels tres (Gestió de memòria)
 
 Si una classe gestiona memòria dinàmica, necessita aquests 3 mètodes per evitar **segfaults** o **leaks**:
 
-### A. Constructor de còpia
+### 9.2.1 Constructor de còpia
 Crea una còpia real en un nou bloc de memòria, no només copia el punter.
 ```cpp
 Vector(const Vector& v) {
@@ -44,7 +46,7 @@ Vector(const Vector& v) {
 }
 ```
 
-### B. Operador d'assignació
+### 9.2.2 Operador d'assignació
 Allibera la memòria vella abans de copiar la nova.
 ```cpp
 Vector& operator=(const Vector& v) {
@@ -59,13 +61,15 @@ Vector& operator=(const Vector& v) {
 }
 ```
 
-### C. Destructor
+### 9.2.3 Destructor
 L'únic que allibera la memòria definitivament.
 ```cpp
 ~Vector() { delete[] data_; }
 ```
 
-## 3. Operadors
+---
+
+## 9.3 Sobrecàrrega d'operadors
 
 Quan tu escrius `s += s2` al main, el compilador de C++ busca si la classe té definida una funció que es digui literalment `operator+=`. Si la troba i accepta els arguments que li passes (en aquest cas un objecte de tipus Stack), fa la crida directa.
 
@@ -75,7 +79,7 @@ s1 += s2;           // Sintaxi natural (al main)
 s1.operator+=(s2);  // Equivalent a s1 += s2;
 ```
 
-| Categoria | Definició de la funció (c+pp) | Crida des del main |
+| Categoria | Definició de la funció (c++) | Crida des del main |
 | :--- | :--- | :--- |
 | **Accés** | `T& operator[](int i)` | `v[i] = x;` |
 | **Comparació** | `bool operator<(const V& v)` | `if (a < b)` |
@@ -83,7 +87,9 @@ s1.operator+=(s2);  // Equivalent a s1 += s2;
 | **Aritmètics** | `V operator+(const V& v)` | `c = a + b;` |
 | **Flux** | `ostream& operator<<(ostream& o, const V& v)` | `cout << v;` |
 
-## 4. Accés i iteradors
+---
+
+## 9.4 Accés i iteradors
 
 L'accés és $\Theta(1)$ directe per aritmètica de punters.
 - **L'operador `[]`**: Es duplica per permetre lectura en objectes `const`.
@@ -97,7 +103,9 @@ iterator begin() { return data_; }
 iterator end() { return data_ + size_; }
 ```
 
-## 5. El motor: `reallocate_` (La mudanza)
+---
+
+## 9.5 El motor: `reallocate_` (La mudanza)
 Mètode privat que canvia la capacitat del vector. Operació cara $\mathcal{O}(n)$.
 1. Demana nou bloc.
 2. Copia elements vells.
@@ -116,7 +124,9 @@ void reallocate_(int new_cap) {
 }
 ```
 
-## 6. Inserció i creixement
+---
+
+## 9.6 Inserció i cost amortitzat (`push_back`)
 - **`push_back`**: Si està ple, **dobla** la capacitat.
 - **Cost Amortitzat**: Tot i que redimensionar és $\mathcal{O}(n)$, només passa cada $2^k$ vegades. La mitjana és **$\mathcal{O}(1)$**.
 
@@ -131,7 +141,9 @@ void push_back(const T& x) {
 
 ::vectorviz
 
-## 7. Extracció i Thrashing
+---
+
+## 9.7 Extracció i prevenció de Thrashing (`pop_back`)
 Per evitar oscil·lacions cares (doblar/reduir constantment):
 - **Estratègia**: Esperar a estar a **1/4** de capacitat per reduir-la a la **meitat**.
 
@@ -146,17 +158,19 @@ void pop_back() {
 
 ---
 
-## Resum de Complexitat
+## 9.8 Resum de Complexitat
 
 | Operació | Complexitat | Nota |
-| :--- | :--- | :--- |
+| :--- | :---: | :--- |
 | **Accés `[i]`** | $\Theta(1)$ | Directe. |
 | **`push_back`** | $\mathcal{O}(1)^*$ | *Amortitzat. Pitjor cas $\mathcal{O}(n)$. |
 | **`pop_back`** | $\mathcal{O}(1)^*$ | *Amortitzat. Evitem el Thrashing. |
 | **`insert/erase`** | $\mathcal{O}(n)$ | Cal desplaçar tots els elements posteriors. |
 | **`size/empty`** | $\Theta(1)$ | Consulta d'atributs. |
 
-## Extra: Operador de sortida
+---
+
+## 9.9 Extra: Operador de sortida (`operator<<`)
 Molt útil per debugar la implementació:
 ```cpp
 template <typename T>

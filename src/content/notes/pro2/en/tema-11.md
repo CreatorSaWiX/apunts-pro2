@@ -7,28 +7,29 @@ draft: false
 isNew: true
 ---
 
-## 1. Data structure
+## 11.1 Internal Structure: Nodes and Pointers
 
-The usual representation uses linked nodes where each node has a value and two pointers to its children.
+The internal representation of a binary tree in PRO2 uses linked structures where each node stores a value and two pointers to its children:
 
 ```cpp
-template <class T> class Arbre {
+template <typename T>
+class Arbre {
 private:
-  struct node_arbre {
-    T info;             // Data contained in the node
-    node_arbre *segE;   // Pointer to left child
-    node_arbre *segD;   // Pointer to right child
-  };
-  node_arbre *primer_node; // Pointer to the root (NULL if the tree is empty)
+    struct node_arbre {
+        T info;                 // Data stored in the node
+        node_arbre *segE;       // Pointer to left child (nullptr if empty)
+        node_arbre *segD;       // Pointer to right child (nullptr if empty)
+    };
+    node_arbre *primer_node;    // Pointer to root (nullptr if tree is empty)
 };
 ```
 
-### Structure visualization
+### In-Memory Structure Visualization
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-6 items-start">
 <div>
 
-A physical level node in memory looks like this:
+**Physical Node in Memory:**
 
 :::graph
 ```json
@@ -51,7 +52,7 @@ A physical level node in memory looks like this:
 </div>
 <div>
 
-A complete binary tree:
+**Complete Binary Tree:**
 
 :::graph
 ```json
@@ -80,42 +81,132 @@ A complete binary tree:
 </div>
 </div>
 
-## 2. Memory management operations
+---
 
+## 11.2 Private Recursion Pattern and the Rule of Three
 
-Since we work with pointers and the `new` operator, we must implement the **Rule of Three** to avoid memory leaks or *shallow copies* that could corrupt memory.
+All operations that traverse the tree follow the pattern of a **public method** (without pointer parameters) invoking a **private/static recursive helper** on `node_arbre*`:
 
-### 2.1 Deep Copy
-To copy a tree, it is not enough to copy the root pointer; we must duplicate all nodes recursively.
+### 11.2.1 Deep Copy: `copia_node_arbre(m)`
+Recursively duplicates all nodes in pre-order allocating fresh memory:
+
+```cpp
+static node_arbre* copia_node_arbre(node_arbre* m) {
+    if (m == nullptr) return nullptr;
+    node_arbre* n = new node_arbre;
+    n->info = m->info;
+    n->segE = copia_node_arbre(m->segE);
+    n->segD = copia_node_arbre(m->segD);
+    return n;
+}
+```
 
 ::algoviz{algorithm="arbre_copia_node"}
 
-### 2.2 Memory freeing (Destruction)
-Destruction must be done in **post-order**: first we delete the subtrees and finally the current node.
+---
+
+### 11.2.2 Destruction: `esborra_node_arbre(m)`
+Recursively frees memory in **post-order** (first subtrees, then the root):
+
+```cpp
+static void esborra_node_arbre(node_arbre* m) {
+    if (m != nullptr) {
+        esborra_node_arbre(m->segE);
+        esborra_node_arbre(m->segD);
+        delete m;
+    }
+}
+```
 
 ::algoviz{algorithm="arbre_esborra_node"}
 
-## 3. Ownership transfer (Plant and Children)
+---
 
-In the PRO2 implementation, the `plantar` and `fills` operations are especially efficient because they **move pointers** instead of copying data, but this empties the input parameters.
+### 11.2.3 The Rule of Three
+```cpp
+// 1. Destructor
+~Arbre() {
+    esborra_node_arbre(primer_node);
+}
 
-| Operation | Effect | Complexity |
-| :--- | :--- | :--- |
-| `plantar(x, a1, a2)` | Creates a root `x` and "steals" the structures of `a1` and `a2`. | $O(1)$ |
-| `fills(fe, fd)` | "Cuts" the current root and passes the subtrees to `fe` and `fd`. | $O(1)$ |
-| `arrel()` | Returns the data of the root node. | $O(1)$ |
+// 2. Copy Constructor
+Arbre(const Arbre& a) {
+    primer_node = copia_node_arbre(a.primer_node);
+}
+
+// 3. Assignment Operator
+Arbre& operator=(const Arbre& a) {
+    if (this != &a) {
+        esborra_node_arbre(primer_node);
+        primer_node = copia_node_arbre(a.primer_node);
+    }
+    return *this;
+}
+```
+
+---
+
+## 11.3 $\mathcal{O}(1)$ Pointer Transfer: `plantar` and `fills`
+
+Unlike deep copying, `plantar` and `fills` run in $\mathcal{O}(1)$ constant time because they **transfer ownership of pointers** directly:
+
+### 11.3.1 Plant: `plantar(x, a1, a2)`
+Creates a new root node with value `x`, connects the subtrees from `a1` and `a2`, and empties the source trees:
+
+```cpp
+void plantar(const T &x, Arbre &a1, Arbre &a2) {
+    if (this != &a1 && this != &a2) {
+        if (&a1 == &a2) { // Prevents cycles if a1 and a2 are the exact same tree
+            a2.primer_node = copia_node_arbre(a1.primer_node);
+        }
+        node_arbre* aux = new node_arbre;
+        aux->info = x;
+        aux->segE = a1.primer_node;
+        aux->segD = a2.primer_node;
+        primer_node = aux;
+        a1.primer_node = nullptr;
+        a2.primer_node = nullptr;
+    }
+}
+```
 
 ::algoviz{algorithm="arbre_plantar"}
 
+---
+
+### 11.3.2 Children: `fills(fe, fd)`
+Transfers left and right subtrees to `fe` and `fd`, and deletes the current root node:
+
+```cpp
+void fills(Arbre &fe, Arbre &fd) {
+    node_arbre* aux = primer_node;
+    fe.primer_node = aux->segE;
+    fd.primer_node = aux->segD;
+    primer_node = nullptr;
+    delete aux;
+}
+```
+
 ::algoviz{algorithm="arbre_fills"}
 
-In the `plantar(x, a, a)` operation, if an attempt is made to use the same tree as left and right child, the implementation must make a copy of one of them to avoid cycles.
+---
 
-## 4. Types of traversals
+## 11.4 Traversal Types
 
-To process the information of a tree, we can do it in different orders:
+| Order | Visiting Sequence | Typical Application in PRO2 |
+| :--- | :--- | :--- |
+| **Pre-order** | Root $\rightarrow$ Left $\rightarrow$ Right | Duplicating/cloning the tree (`copia_node_arbre`), serialization. |
+| **In-order** | Left $\rightarrow$ Root $\rightarrow$ Right | Listing sorted elements in a Binary Search Tree (BST). |
+| **Post-order** | Left $\rightarrow$ Right $\rightarrow$ Root | Destroying the tree (`esborra_node_arbre`), calculating height or size. |
+| **Level-order** | Level by level, left to right | BFS algorithms (requires a `queue<node_arbre*>`). |
 
-1.  **Pre-order**: Root $\rightarrow$ Left $\rightarrow$ Right (Useful for copying).
-2.  **In-order**: Left $\rightarrow$ Root $\rightarrow$ Right (Useful to list sorted elements in a BST).
-3.  **Post-order**: Left $\rightarrow$ Right $\rightarrow$ Root (Useful for deleting or calculating subtree sums).
-4.  **Level-order**: Top to bottom and left to right (Requires a queue).
+---
+
+## 11.5 Complexity Summary
+
+| Method | Time Complexity | Explanation |
+| :--- | :---: | :--- |
+| **`plantar(x, a1, a2)`** | $\mathcal{O}(1)$ | Direct pointer transfer (no deep copy). |
+| **`fills(fe, fd)`** | $\mathcal{O}(1)$ | Pointer transfer and `delete` of root node. |
+| **`arrel()` / `es_buit()`** | $\mathcal{O}(1)$ | Direct access to root field or `nullptr` check. |
+| **Destructor / Copy** | $\Theta(n)$ | Traverses and manages all $n$ nodes in the tree. |
