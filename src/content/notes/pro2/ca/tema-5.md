@@ -7,108 +7,85 @@ order: 5
 
 ## 5.1 La cua de prioritat
 
-A diferència d'una cua normal FIFO (el primer a entrar és el primer a sortir), una **cua de prioritat** atén sempre l'element **més gran o urgent** de tots els que esperen, sense importar quan ha entrat. 
+A diferència d'una cua normal FIFO (on el primer a entrar és el primer a sortir), una **cua de prioritat** atén sempre l'element amb **més prioritat** (més gran o urgent), independentment de l'ordre d'arribada.
 
-Si ho fem en un simple vector ordenat, el `push` és absurdament lent $\mathcal{O}(N)$ movent tots els elements. I si la fem desordenada, el `pop` tardarà $\mathcal{O}(N)$ en buscar on amagàvem el màxim. Necessitem portar el cost d'ambdues accions a un curt **$\mathcal{O}(\log N)$**. Quina és l'eina definitiva? El **binary heap**.
+| Implementació | `push(x)` | `top()` | `pop()` |
+| :--- | :---: | :---: | :---: |
+| **Vector desordenat** | $\mathcal{O}(1)$ | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ |
+| **Vector ordenat** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ |
+| **Binary Heap** | **$\mathcal{O}(\log n)$** | **$\mathcal{O}(1)$** | **$\mathcal{O}(\log n)$** |
+
+Amb vectors convencionals hem de triar entre inserir ràpid o extreure ràpid. El **binary heap** és l'eina definitiva perquè aconsegueix un equilibri excel·lent amb cost logarítmic **$\mathcal{O}(\log n)$** en ambdues operacions.
 
 ---
 
 ## 5.2 El binary heap
 
-És un **arbre binari complet** modelat a dins d'un *simple vector pla*. L'arrel sempre és l'element màxim absolut de tota l'estructura.
+És un **arbre binari complet** emmagatzemat directament dins d'un **vector** (sense punters):
+- **Arrel a `v[1]`:** Conté sempre el valor **màxim absolut** (cada pare és $\ge$ que els seus fills).
+- **Fórmules d'índexs:** Per a qualsevol node a la posició $i$:
+  - **Pare:** `i / 2`
+  - **Fill esquerre:** `2 * i`
+  - **Fill dret:** `2 * i + 1`
+- **Per què s'ignora `v[0]`?** Perquè a l'índex 0 el fill seria $2 \cdot 0 = 0$. Començant a 1, l'aritmètica és directa i exacta.
 
-L'arbre ignora la posició 0. L'arrel dominant viu coronada en la posició 1. 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
-<div>
-
-Per a qualsevol node a la posició $i$:
-- **Pare:** `i / 2`
-- **Fill Esquerre:** `2 * i`
-- **Fill Dret:** `2 * i + 1`
-
-</div>
-<div>
-
-:::graph
-```json
-{
-  "nodes": [
-    { "id": "0", "label": "Pare (i/2)", "color": "#facc15" },
-    { "id": "1", "label": "Node (i)", "color": "#10b981" },
-    { "id": "2", "label": "Fill Esq (2i)", "color": "#3b82f6" },
-    { "id": "3", "label": "Fill Dre (2i+1)", "color": "#3b82f6" },
-    { "id": "4", "label": " ", "color": "#facc15" }
-  ],
-  "links": [
-    { "source": "0", "target": "1" },
-    { "source": "4", "target": "0" },
-    { "source": "1", "target": "2" },
-    { "source": "1", "target": "3" }
-  ]
-}
-```
+:::heapviz
 :::
 
-</div>
-</div>
+---
 
-
-No calen punters ni regles complexes, tot és aritmètica fulgurant $\mathcal{O}(1)$.
-
-### `push()` - inserir i pujar (flow up)
-L'element entra per l'última posició del vector. Llavors s'avalua de baix a dalt: *Soc més gran que el meu cap?* Si sí, intercanvi (`swap`) de posició amb ell cap amunt, iterant la pujada fins trobar el seu lloc jeràrquic. Exemple:
+### `push(x)` — Inserir (`flow_up`)
+1. S'afegeix $x$ a l'última posició del vector.
+2. Si és més gran que el seu pare, fa `swap` i **puja** fins a la seva posició.
 
 :::algoviz{algorithm="heap_push"}
 :::
 
-### `pop()` - extreure i baixar (flow down)
-El rei (posició 1) ha sortit en ser processat. Per substituir-lo, prenem el "peó" (últim de tots al vector) i el plantem a la casella 1 de l'arrel. Llavors avalua de dalt a baix contra els dos fills: *Quin dels meus dos nous súbdits inferiors és més gran que jo?*. Intercanvi de posició amb el fill **més gran**, iterant cap avall de cop baixant al forat que es mereix.
+---
+
+### `pop()` — Extreure el màxim (`flow_down`)
+1. S'extreu l'arrel (`v[1]`) i s'hi col·loca l'**últim element** del vector.
+2. Si és menor que algun fill, fa `swap` amb el **fill més gran** i **baixa** fins a la seva posició.
 
 :::algoviz{algorithm="heap_pop"}
 :::
 
-> **Resum de temps heap:** `top()` obté l'arrel en l'immediat **$\mathcal{O}(1)$**. Les insercions i neteges modifiquen l'altitud de l'arbre, requerint només salts de cost **$\mathcal{O}(\log N)$**.
+> **Complexitat:** `top()` és **$\mathcal{O}(1)$** (accés a `v[1]`). `push()` i `pop()` són **$\mathcal{O}(\log n)$** (alçada de l'arbre).
 
 ---
 
-## 5.3 Customitzant elements: l'operador `>`
+## 5.3 Tipus personalitzats (`struct`) i `operator>`
 
-Sovint els teus elements a examinar seran tuples o customitzacions com la pròpia `struct Persona`. Donat que tu li demanes al Heap que *col·loqui el màxim a dalt*, hauràs de donar regles de joc (C++) on re-defineixis literalment l'operador MÉS GRAN (`>`) entre dues persones en l'ambient global.
+La classe `pro2::Heap<T>` ordena els elements amb l'operador `>`. Per guardar-hi un `struct`, només cal definir la seva funció de comparació:
 
 ```cpp
-struct Persona {
-    string nom;
+struct Paquet {
     int prioritat;
+    string nom;
 };
 
-// Sobre-escrivim la lògica de "més gran" de C++
-bool operator>(const Persona& a, const Persona& b) {
-    return a.prioritat > b.prioritat; 
+bool operator>(const Paquet& a, const Paquet& b) {
+    return a.prioritat > b.prioritat; // el de més prioritat queda al cim
 }
 ```
 
-Al `main::` un cop fem `Heap<Persona> cua;` el directiu intern ja sap classificar VIPs ràpid per l'edat o puntaje pre-carregat!
+> **Nota:** La sobrecàrrega formal d'operadors s'estudia en profunditat al [Tema 9: Implementació de vectors](/notes/pro2/ca/tema-9).
 
 ---
 
 ## 5.4 Arbres generals (`Tree<T>`)
 
-S'ha acabat limitar-se al tancat esquerre/dret. A un `Tree<T>`, un node Pare pot albergar un nombre arbitrari de nodes fill infinit. Un **"vector"** literal de fills.
+A diferència dels arbres binaris (`BinTree<T>`), a un **arbre general (`Tree<T>`)** cada node pot tenir un nombre arbitrari de fills ($0, 1, 2, \dots, k$).
 
-Això canvia tota la matriu de recerca. L'etapa recursiva de cridar el `t.left()` i `t.right()` es modifica completament adoptant un **bucle iteratiu sobre les pertinences `t.child(i)`**, però la resta d'artificis recursius i immutables resten exactes.
+### Mètodes principals de `Tree<T>`
+- `t.empty()`: Comprova si l'arbre és buit.
+- `t.value()`: Retorna el valor de l'arrel.
+- `t.num_children()`: Nombre de fills directes de l'arrel.
+- `t.child(i)`: Retorna el subarbre del fill $i$-èssim ($0 \le i < \text{num\_children()}$).
 
-La classe té la següent organització visible a la pública:
-- `Tree()`: creador estàndard buit absolut.
-- `Tree(const T& val)`: crea la coronació (fulla única base del valor sense fills).
-- `Tree(const T& val, vector<Tree> fills)`: Crea arrel assignant un valor i injectant una ramificació múltiple de cop fets gràcies a un vector inicial pre-carregat.
+### Recorregut recursiu (Cerca d'un element)
 
-Consultores pràctiques per la nostra recursió:
-1. `value()`: per llegir el cor de l'arrel.
-2. `num_children()`: per la condició topall al límit iteratiu ($N$ fills).
-3. `child(i)`: desplaçament en el vector intern extraient cada node pare per reiniciar la trucada de salt.
-
-### Buscar profundament en un general
-S'itera la quantitat de fills de 0 a limit-1. En cas d'un encert interior retornem el booleà a la cadena superior parant tota dispersió erràtica a prop d'un $\mathcal{O}(N)$ salvador. No esperem que tot acabi com al recurs de dues ales antic, al trobar la clau curt-circuitem l'estratègia amb un True contundent que desapila sense remordiments cap arrel principal garantint prestacions robustes i impecables al sistema d'objectius moderns de dades.
+Per recórrer un arbre general substituïm les dues crides fixes (`left()` i `right()`) per un **bucle iteratiu** sobre els seus fills:
 
 :::algoviz{algorithm="tree_general_search"}
 :::

@@ -1,4 +1,4 @@
-declare const DOMParser: any;
+import { DOMParser } from 'linkedom';
 
 export async function getProblemInfo(id: string, reqLang: string | null) {
     const cleanId = id.replace(/[^a-zA-Z0-9_]/g, '');
@@ -143,7 +143,7 @@ export async function getProblemInfo(id: string, reqLang: string | null) {
     return {
         id: cleanId,
         title,
-        statement: doc.body.innerHTML,
+        statement: doc.toString(),
         url: `https://jutge.org/problems/${cleanId}`,
         source,
         availableLanguages

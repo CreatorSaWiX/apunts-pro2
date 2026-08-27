@@ -23,6 +23,7 @@ import SimulationPlayer from "../components/ui/players/SimulationPlayer";
 const GraphVisualizer = React.lazy(() => import("../components/ui/visualizers/GraphVisualizer"));
 const StackVisualizer = React.lazy(() => import("../components/ui/visualizers/StackVisualizer"));
 const QueueVisualizer = React.lazy(() => import("../components/ui/visualizers/QueueVisualizer"));
+const HeapVisualizer = React.lazy(() => import("../components/ui/visualizers/HeapVisualizer"));
 const ListGraphVisualizer = React.lazy(() => import("../components/ui/visualizers/ListGraphVisualizer"));
 const BinTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/BinTreeVisualizer"));
 const MafsVisualizer = React.lazy(() => import("../components/ui/visualizers/MafsVisualizer"));
@@ -105,6 +106,13 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         return (
             <React.Suspense fallback={<VizFallback />}>
                 <QueueVisualizer />
+            </React.Suspense>
+        );
+    },
+    heapviz: () => {
+        return (
+            <React.Suspense fallback={<VizFallback />}>
+                <HeapVisualizer />
             </React.Suspense>
         );
     },
@@ -269,9 +277,9 @@ const rehypePluginsConfig = [
         ...defaultSchema,
         tagNames: [
             ...(defaultSchema.tagNames || []),
-            'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 
-            'stackviz', 'queueviz', 'vectorviz', 'linkedlistviz', 'pointerviz', 
-            'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 
+            'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
+            'stackviz', 'queueviz', 'heapviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
+            'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
             'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {

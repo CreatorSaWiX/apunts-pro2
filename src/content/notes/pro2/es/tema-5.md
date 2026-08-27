@@ -7,108 +7,85 @@ order: 5
 
 ## 5.1 La cola de prioridad
 
-A diferencia de una cola normal FIFO (el primero en entrar es el primero en salir), una **cola de prioridad** atiende siempre al elemento **más grande o urgente** de todos los que esperan, sin importar cuándo ha entrado. 
+A diferencia de una cola normal FIFO (donde el primero en entrar es el primero en salir), una **cola de prioridad** atiende siempre al elemento con **mayor prioridad** (más grande o urgente), independientemente del orden de llegada.
 
-Si lo hacemos en un simple vector ordenado, el `push` es absurdamente lento $\mathcal{O}(N)$ moviendo todos los elementos. Y si la hacemos desordenada, el `pop` tardará $\mathcal{O}(N)$ en buscar dónde escondíamos el máximo. Necesitamos llevar el coste de ambas acciones a un corto **$\mathcal{O}(\log N)$**. ¿Cuál es la herramienta definitiva? El **binary heap**.
+| Implementación | `push(x)` | `top()` | `pop()` |
+| :--- | :---: | :---: | :---: |
+| **Vector desordenado** | $\mathcal{O}(1)$ | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ |
+| **Vector ordenado** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ |
+| **Binary Heap** | **$\mathcal{O}(\log n)$** | **$\mathcal{O}(1)$** | **$\mathcal{O}(\log n)$** |
+
+Con vectores convencionales debemos elegir entre insertar rápido o extraer rápido. El **binary heap** es la herramienta idónea porque logra un equilibrio excelente con coste logarítmico **$\mathcal{O}(\log n)$** en ambas operaciones.
 
 ---
 
 ## 5.2 El binary heap
 
-Es un **árbol binario completo** modelado dentro de un *simple vector plano*. La raíz siempre es el elemento máximo absoluto de toda la estructura.
+Es un **árbol binario completo** almacenado directamente dentro de un **vector** (sin punteros):
+- **Raíz en `v[1]`:** Contiene siempre el valor **máximo absoluto** (cada padre es $\ge$ que sus hijos).
+- **Fórmulas de índices:** Para cualquier nodo en la posición $i$:
+  - **Padre:** `i / 2`
+  - **Hijo izquierdo:** `2 * i`
+  - **Hijo derecho:** `2 * i + 1`
+- **¿Por qué se ignora `v[0]`?** Porque en el índice 0 el hijo sería $2 \cdot 0 = 0$. Empezando en 1, la aritmética es directa y exacta.
 
-El árbol ignora la posición 0. La raíz dominante vive coronada en la posición 1. 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
-<div>
-
-Para cualquier nodo en la posición $i$:
-- **Padre:** `i / 2`
-- **Hijo Izquierdo:** `2 * i`
-- **Hijo Derecho:** `2 * i + 1`
-
-</div>
-<div>
-
-:::graph
-```json
-{
-  "nodes": [
-    { "id": "0", "label": "Padre (i/2)", "color": "#facc15" },
-    { "id": "1", "label": "Nodo (i)", "color": "#10b981" },
-    { "id": "2", "label": "Hijo Izq (2i)", "color": "#3b82f6" },
-    { "id": "3", "label": "Hijo Der (2i+1)", "color": "#3b82f6" },
-    { "id": "4", "label": " ", "color": "#facc15" }
-  ],
-  "links": [
-    { "source": "0", "target": "1" },
-    { "source": "4", "target": "0" },
-    { "source": "1", "target": "2" },
-    { "source": "1", "target": "3" }
-  ]
-}
-```
+:::heapviz
 :::
 
-</div>
-</div>
+---
 
-
-No hacen falta punteros ni reglas complejas, todo es aritmética fulgurante en $\mathcal{O}(1)$.
-
-### `push()` - insertar y subir (flow up)
-El elemento entra por la última posición del vector. Entonces se evalúa de abajo a arriba: *¿Soy más grande que mi jefe?* Si sí, intercambio (`swap`) de posición con él hacia arriba, iterando la subida hasta encontrar su lugar jerárquico. Ejemplo:
+### `push(x)` — Insertar (`flow_up`)
+1. Se añade $x$ en la última posición del vector.
+2. Si es mayor que su padre, hace `swap` y **sube** hasta su posición.
 
 :::algoviz{algorithm="heap_push"}
 :::
 
-### `pop()` - extraer y bajar (flow down)
-El rey (posición 1) ha salido al ser procesado. Para sustituirlo, tomamos el "peón" (último de todos en el vector) y lo plantamos en la casilla 1 de la raíz. Entonces evalúa de arriba a abajo contra los dos hijos: *¿Cuál de mis dos nuevos súbditos inferiores es más grande que yo?*. Intercambio de posición con el hijo **más grande**, iterando hacia abajo de golpe bajando al agujero que se merece.
+---
+
+### `pop()` — Extraer el máximo (`flow_down`)
+1. Se extrae la raíz (`v[1]`) y se coloca el **último elemento** del vector en la raíz.
+2. Si es menor que algún hijo, hace `swap` con el **hijo mayor** y **baja** hasta su posición.
 
 :::algoviz{algorithm="heap_pop"}
 :::
 
-> **Resumen de tiempos heap:** `top()` obtiene la raíz en lo inmediato **$\mathcal{O}(1)$**. Las inserciones y limpiezas modifican la altitud del árbol, requiriendo solo saltos de coste **$\mathcal{O}(\log N)$**.
+> **Complejidad:** `top()` es **$\mathcal{O}(1)$** (acceso a `v[1]`). `push()` y `pop()` son **$\mathcal{O}(\log n)$** (altura del árbol).
 
 ---
 
-## 5.3 Customizando elementos: el operador `>`
+## 5.3 Tipos personalizados (`struct`) y `operator>`
 
-A menudo tus elementos a examinar serán tuplas o customizaciones como la propia `struct Persona`. Dado que tú le pides al Heap que *coloque el máximo arriba*, tendrás que dar reglas de juego (C++) donde redefinas literalmente el operador MÁS GRANDE (`>`) entre dos personas en el ambiente global.
+La clase `pro2::Heap<T>` ordena los elementos con el operador `>`. Para guardar un `struct`, solo hay que definir su función de comparación:
 
 ```cpp
-struct Persona {
-    string nom;
+struct Paquet {
     int prioritat;
+    string nom;
 };
 
-// Sobre-escribimos la lógica de "más grande" de C++
-bool operator>(const Persona& a, const Persona& b) {
-    return a.prioritat > b.prioritat; 
+bool operator>(const Paquet& a, const Paquet& b) {
+    return a.prioritat > b.prioritat; // el de mayor prioridad queda en la cima
 }
 ```
 
-¡En el `main::` una vez hacemos `Heap<Persona> cua;` la directiva interna ya sabe clasificar VIPs rápido por la edad o puntuación pre-cargada!
+> **Nota:** La sobrecarga formal de operadores se estudia en profundidad en el [Tema 9: Implementación de vectores](/notes/pro2/es/tema-9).
 
 ---
 
 ## 5.4 Árboles generales (`Tree<T>`)
 
-Se acabó el limitarse al cerrado izquierdo/derecho. En un `Tree<T>`, un nodo Padre puede albergar un número arbitrario de nodos hijo infinito. Un **"vector"** literal de hijos.
+A diferencia de los árboles binarios (`BinTree<T>`), en un **árbol general (`Tree<T>`)** cada nodo puede tener un número arbitrario de hijos ($0, 1, 2, \dots, k$).
 
-Esto cambia toda la matriz de búsqueda. La etapa recursiva de llamar al `t.left()` y `t.right()` se modifica completamente adoptando un **bucle iterativo sobre las pertenencias `t.child(i)`**, pero el resto de artificios recursivos e inmutables restan exactos.
+### Métodos principales de `Tree<T>`
+- `t.empty()`: Comprueba si el árbol está vacío.
+- `t.value()`: Devuelve el valor de la raíz.
+- `t.num_children()`: Número de hijos directos de la raíz.
+- `t.child(i)`: Devuelve el subárbol del hijo $i$-ésimo ($0 \le i < \text{num\_children()}$).
 
-La clase tiene la siguiente organización visible a la pública:
-- `Tree()`: creador estándar vacío absoluto.
-- `Tree(const T& val)`: crea la coronación (hoja única base del valor sin hijos).
-- `Tree(const T& val, vector<Tree> fills)`: Crea raíz asignando un valor e inyectando una ramificación múltiple de golpe hechos gracias a un vector inicial pre-cargado.
+### Recorrido recursivo (Búsqueda de un elemento)
 
-Consultoras prácticas para nuestra recursión:
-1. `value()`: para leer el corazón de la raíz.
-2. `num_children()`: para la condición tope al límite iterativo ($N$ hijos).
-3. `child(i)`: desplazamiento en el vector interno extrayendo cada nodo padre para reiniciar la llamada de salto.
-
-### Buscar profundamente en un general
-Se itera la cantidad de hijos de 0 a limite-1. En caso de un acierto interior devolvemos el booleano a la cadena superior parando toda dispersión errática cerca de un $\mathcal{O}(N)$ salvador. No esperamos que todo acabe como en el recurso de dos alas antiguo, al encontrar la clave cortocircuitamos la estrategia con un True contundente que desapila sin remordimientos hacia la raíz principal garantizando prestaciones robustas e impecables al sistema de objetivos modernos de datos.
+Para recorrer un árbol general sustituimos las dos llamadas fijas (`left()` y `right()`) por un **bucle iterativo** sobre sus hijos:
 
 :::algoviz{algorithm="tree_general_search"}
 :::

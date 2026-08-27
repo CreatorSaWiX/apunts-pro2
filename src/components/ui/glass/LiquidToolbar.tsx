@@ -30,7 +30,7 @@ export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, classNam
                 <motion.div className="absolute inset-0 pointer-events-none" style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}>
                     <LiquidPanel className="w-full h-full !rounded-full">{null}</LiquidPanel>
                 </motion.div>
-                <div className="relative flex items-center gap-1 p-2 max-w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <div className="relative flex items-center gap-1 p-2 max-w-full overflow-visible">
                     <AnimatePresence mode="popLayout">
                         {children}
                     </AnimatePresence>

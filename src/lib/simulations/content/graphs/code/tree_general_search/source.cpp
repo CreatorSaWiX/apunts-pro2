@@ -1,4 +1,4 @@
-bool tree_search(Tree<int> t, int x) {
+bool tree_search(const Tree<int>& t, int x) {
     if (t.empty()) return false;
     if (t.value() == x) return true;
     
