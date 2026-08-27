@@ -25,10 +25,9 @@ draft: false
 - **Stack (LIFO):** `push(x)`, `pop()`, `top()`, `empty()`, `size()`.
 - **Queue (FIFO):** `push(x)`, `pop()`, `front()`, `empty()`, `size()`.
 
-## 3. Llistes, Vectors i Deques
-- **`list<T>` / `deque<T>`:** `#include <list>` / `#include <deque>`.
-  - **Mètodes comuns:** `push_back(x)`, `push_front(x)`, `pop_back()`, `pop_front()`, `insert(it, x)`, `erase(it)`, `back()`, `front()`.
-  - *Diferència:* `deque` té `operator[]` ($O(1)$), `list` NO.
+## 3. Llistes i Vectors
+- **`list<T>`:** `#include <list>`. Llista doblement encadenada.
+  - **Mètodes:** `push_back(x)`, `push_front(x)`, `pop_back()`, `pop_front()`, `insert(it, x)`, `erase(it)`, `back()`, `front()`. No té `operator[]`.
 - **`vector<T>`:** `#include <vector>`.
   - **Mètodes:** `push_back(x)`, `pop_back()`, `insert(it, x)`, `erase(it)`, `back()`, `front()`, `operator[]`.
 - **Iteradors:** 
@@ -63,13 +62,29 @@ draft: false
   - **Mètodes:** `m[clau] = val`, `insert({clau, val})`, `erase(x)`, `find(clau)`, `empty()`, `size()`.
   - **Iteradors:** `begin()`, `end()`. S'accedeix com `it->first` (clau) i `it->second` (valor).
 
-## 7. Rendiment i Complexitat (Resum)
-| Mètode | Stack/Queue | Heap (PQ) | Vector | Deque | List | Map/Set |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **push / insert** | $O(1)$ | $O(\log N)$ | $O(1)$* / $O(N)$ | $O(1)$* / $O(N)$ | $O(1)$ | $O(\log N)$ |
-| **pop / erase** | $O(1)$ | $O(\log N)$ | $O(1)$ / $O(N)$ | $O(1)$ / $O(N)$ | $O(1)$ | $O(\log N)$ |
-| **top / front / back** | $O(1)$ | $O(1)$ | $O(1)$ | $O(1)$ | $O(1)$ | - |
-| **operator[]** | - | - | $O(1)$ | $O(1)$ | - | $O(\log N)$ |
-| **find** | - | - | - | - | - | $O(\log N)$ |
+## 7. Resum oficial PRO2 2026-primavera
 
-*\*Cost amortitzat.* `insert(pos, x)` i `erase(pos)` en `list` són $O(1)$ si ja tenim l'iterador.
+| Mètode | `Stack` | `Queue` | `Heap` | `vector` | `list` | `map` | `set` |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`push(x)`** | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | $\mathcal{O}(\log n)$ | — | — | — | — |
+| **`pop()`** | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | $\mathcal{O}(\log n)$ | — | — | — | — |
+| **`top()`** | $\mathcal{O}(1)$ | — | $\mathcal{O}(1)$ | — | — | — | — |
+| **`front()`** | — | $\mathcal{O}(1)$ | — | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | — | — |
+| **`back()`** | — | — | — | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | — | — |
+| **`push_back(x)`** | — | — | — | $\mathcal{O}(1)^*$ | $\mathcal{O}(1)$ | — | — |
+| **`push_front(x)`** | — | — | — | — | $\mathcal{O}(1)$ | — | — |
+| **`pop_back()`** | — | — | — | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | — | — |
+| **`pop_front()`** | — | — | — | — | $\mathcal{O}(1)$ | — | — |
+| **`operator[](·)`** | — | — | — | $\mathcal{O}(1)$ | — | $\mathcal{O}(\log n)$ | — |
+| **`find(·)`** | — | — | — | — | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| **`insert(x)`** | — | — | — | — | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| **`insert(pos, x)`** | — | — | — | $\mathcal{O}(n)$ | $\mathcal{O}(1)^\dagger$ | — | — |
+| **`erase(x)`** | — | — | — | — | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| **`erase(pos)`** | — | — | — | $\mathcal{O}(n)$ | $\mathcal{O}(1)^\dagger$ | — | — |
+
+> **Notes i Llegenda:**
+> - `*` **Cost amortitzat:** de tant en tant cal redimensionar el vector intern ($\mathcal{O}(n)$), però en mitjana cada operació és $\mathcal{O}(1)$.
+> - `†` **Amb iterador:** si ja tenim l'iterador a la posició, inserir/eliminar és $\mathcal{O}(1)$. Trobar la posició és $\mathcal{O}(n)$.
+> - Tots els contenidors tenen **`size()`** i **`empty()`** en **$\mathcal{O}(1)$**.
+> - Per a `vector` i `list`, `insert(pos, x)` i `erase(pos)` utilitzen un iterador com a posició.
+> - Per a `map` i `set`, `insert(x)` i `erase(x)` operen per clau/valor.

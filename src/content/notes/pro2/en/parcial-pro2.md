@@ -25,10 +25,9 @@ draft: false
 - **Stack (LIFO):** `push(x)`, `pop()`, `top()`, `empty()`, `size()`.
 - **Queue (FIFO):** `push(x)`, `pop()`, `front()`, `empty()`, `size()`.
 
-## 3. Lists, Vectors and Deques
-- **`list<T>` / `deque<T>`:** `#include <list>` / `#include <deque>`.
-  - **Common methods:** `push_back(x)`, `push_front(x)`, `pop_back()`, `pop_front()`, `insert(it, x)`, `erase(it)`, `back()`, `front()`.
-  - *Difference:* `deque` has `operator[]` ($O(1)$), `list` DOES NOT.
+## 3. Lists and Vectors
+- **`list<T>`:** `#include <list>`. Doubly linked list.
+  - **Methods:** `push_back(x)`, `push_front(x)`, `pop_back()`, `pop_front()`, `insert(it, x)`, `erase(it)`, `back()`, `front()`. No `operator[]`.
 - **`vector<T>`:** `#include <vector>`.
   - **Methods:** `push_back(x)`, `pop_back()`, `insert(it, x)`, `erase(it)`, `back()`, `front()`, `operator[]`.
 - **Iterators:** 
@@ -63,13 +62,29 @@ draft: false
   - **Methods:** `m[key] = val`, `insert({key, val})`, `erase(x)`, `find(key)`, `empty()`, `size()`.
   - **Iterators:** `begin()`, `end()`. Accessed as `it->first` (key) and `it->second` (value).
 
-## 7. Performance and Complexity (Summary)
-| Method | Stack/Queue | Heap (PQ) | Vector | Deque | List | Map/Set |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **push / insert** | $O(1)$ | $O(\log N)$ | $O(1)$* / $O(N)$ | $O(1)$* / $O(N)$ | $O(1)$ | $O(\log N)$ |
-| **pop / erase** | $O(1)$ | $O(\log N)$ | $O(1)$ / $O(N)$ | $O(1)$ / $O(N)$ | $O(1)$ | $O(\log N)$ |
-| **top / front / back** | $O(1)$ | $O(1)$ | $O(1)$ | $O(1)$ | $O(1)$ | - |
-| **operator[]** | - | - | $O(1)$ | $O(1)$ | - | $O(\log N)$ |
-| **find** | - | - | - | - | - | $O(\log N)$ |
+## 7. PRO2 2026-spring official summary
 
-*\*Amortized cost.* `insert(pos, x)` and `erase(pos)` in `list` are $O(1)$ if we already have the iterator.
+| Method | `Stack` | `Queue` | `Heap` | `vector` | `list` | `map` | `set` |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`push(x)`** | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | $\mathcal{O}(\log n)$ | — | — | — | — |
+| **`pop()`** | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | $\mathcal{O}(\log n)$ | — | — | — | — |
+| **`top()`** | $\mathcal{O}(1)$ | — | $\mathcal{O}(1)$ | — | — | — | — |
+| **`front()`** | — | $\mathcal{O}(1)$ | — | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | — | — |
+| **`back()`** | — | — | — | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | — | — |
+| **`push_back(x)`** | — | — | — | $\mathcal{O}(1)^*$ | $\mathcal{O}(1)$ | — | — |
+| **`push_front(x)`** | — | — | — | — | $\mathcal{O}(1)$ | — | — |
+| **`pop_back()`** | — | — | — | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | — | — |
+| **`pop_front()`** | — | — | — | — | $\mathcal{O}(1)$ | — | — |
+| **`operator[](·)`** | — | — | — | $\mathcal{O}(1)$ | — | $\mathcal{O}(\log n)$ | — |
+| **`find(·)`** | — | — | — | — | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| **`insert(x)`** | — | — | — | — | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| **`insert(pos, x)`** | — | — | — | $\mathcal{O}(n)$ | $\mathcal{O}(1)^\dagger$ | — | — |
+| **`erase(x)`** | — | — | — | — | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| **`erase(pos)`** | — | — | — | $\mathcal{O}(n)$ | $\mathcal{O}(1)^\dagger$ | — | — |
+
+> **Notes & Legend:**
+> - `*` **Amortized cost:** resizing the internal array happens occasionally ($\mathcal{O}(n)$), but on average each operation is $\mathcal{O}(1)$.
+> - `†` **With iterator:** if we already hold an iterator to the target position, insertion/removal is $\mathcal{O}(1)$. Finding the position takes $\mathcal{O}(n)$.
+> - All containers have **`size()`** and **`empty()`** running in **$\mathcal{O}(1)$**.
+> - For `vector` and `list`, `insert(pos, x)` and `erase(pos)` use an iterator as their position.
+> - For `map` and `set`, `insert(x)` and `erase(x)` operate by key/value.

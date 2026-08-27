@@ -78,111 +78,98 @@ Como `BinTree<T>` es **inmutable**, la inserción no modifica el árbol original
 
 ## 6.5 El contenedor `map<K, V>`
 
-La STL de C++ ofrece el contenedor **`map<K, V>`**, un diccionario implementado internamente como un **BST equilibrado** (árbol Rojo-Negro). Asocia **claves únicas** (`K`) a **valores** (`V`).
+La STL de C++ ofrece **`map<K, V>`**, un diccionario que asocia **claves únicas** (`K`) a **valores** (`V`). Internamente, cada elemento se almacena como un **`pair<const K, V>`** (`it->first` para la clave, `it->second` para el valor).
+
+### Operaciones principales — Coste $\mathcal{O}(\log n)$
+
+| Operación | Sintaxis | Comportamiento |
+| :--- | :--- | :--- |
+| **Acceso / Inserción** | `m[clave] = val;` | Si la clave no existe, **la crea** con el valor por defecto (`0`, `""`, etc.). |
+| **Búsqueda** | `m.find(clave)` | Devuelve un iterador al par `{clave, valor}` o `m.end()` si no está. |
+| **Existencia** | `m.count(clave)` | Devuelve `1` si la clave existe, `0` si no. |
+| **Inserción segura** | `m.insert({k, v})` | Inserta el par solo si `k` **no existía previamente**. |
 
 ```cpp
+#include <iostream>
 #include <map>
+#include <string>
 using namespace std;
 
-map<string, int> m;
-m["un"]  = 1;
-m["deu"] = 10;
-```
+int main() {
+    map<string, int> edades;
 
-Internamente, cada elemento es un **`pair<K, V>`** con los campos `first` (clave) y `second` (valor).
+    // 1. Inserción y modificación con []
+    edades["Anna"] = 21;
+    edades["Bernat"] = 25;
 
-### El operador `[]`: la puerta de entrada
+    // 2. Búsqueda segura con find()
+    auto it = edades.find("Anna");
+    if (it != edades.end()) {
+        cout << it->first << " tiene " << it->second << " años\n";
+    }
 
-El operador `[]` es la forma más natural de usar un `map`. Si la clave **no existe**, la crea automáticamente con el valor por defecto del tipo (`0` para `int`, `""` para `string`).
+    // 3. Comprobación rápida de existencia con count()
+    if (edades.count("Carla") == 0) {
+        cout << "Carla no está en el mapa\n";
+    }
 
-:::warning
-Usar `m["clave"]` en un `map` `const` es **error de compilación** porque no puede crear elementos. Utiliza `m.find("clave")` o `m.at("clave")` en contextos `const`.
-:::
-
-### `find`: la búsqueda segura
-
-```cpp
-map<string, int> m = {{"un", 1}, {"deu", 10}};
-
-auto it = m.find("deu");
-if (it != m.end()) {
-    cout << "Valor asociado: " << it->second << endl; // 10
+    // 4. Inserción sin sobrescribir con insert()
+    edades.insert({"Anna", 30}); // ¡No hace nada: "Anna" ya existía con 21!
 }
 ```
 
-`find` devuelve un **iterador** apuntando al par `{clave, valor}` si lo encuentra, o a `m.end()` si no está. Coste: $\mathcal{O}(\log n)$.
-
-### `insert`: añadir sin sobreescribir
-
-```cpp
-m.insert({20, "twenty"});
-m.insert({20, "minus twenty"}); // ¡NO sustituye si ya existe!
-```
-
-El tipo de retorno de `insert` es `pair<iterator, bool>`: el iterador al elemento y `true` si se ha insertado (`false` si ya existía).
+:::warning
+El operador `m[clave]` **modifica el mapa**, si la clave no existe la crea automáticamente. En contextos constantes (`const map<K, V>& m`), usar `[]` produce un **error de compilación**. En estos casos, utiliza siempre `m.find(clave)`.
+:::
 
 ---
 
 ## 6.6 El `map` como acumulador
 
-Uno de los usos estrella del `map` es acumular y contar. El operador `[]` hace todo el trabajo:
+Uno de los patrones más utilizados de `map` es contar o agrupar elementos. El operador `[]` gestiona ambos casos en una sola línea:
 
-1. Si la clave **no existe** → la crea con valor `0`, luego hace `++`.
-2. Si la clave **existe** → recupera el valor actual y hace `++`.
+1. Si la clave **no existe** $\rightarrow$ la crea con el valor por defecto (`0`, `vector` vacío, etc.) y realiza la operación.
+2. Si la clave **ya existe** $\rightarrow$ recupera la referencia al valor existente y la actualiza.
 
-### Ejemplo 1: Frecuencia de palabras
+### Ejemplo 1: Contador de frecuencias
 
 ```cpp
-#include <map>
-#include <iostream>
-using namespace std;
-
-int main() {
-    map<string, int> word_count;
-    string word;
-    while (cin >> word) {
-        word_count[word]++;  // <-- ¡magia pura!
-    }
-    for (auto it = word_count.begin(); it != word_count.end(); ++it) {
-        cout << it->first << ": " << it->second << endl;
-    }
+map<string, int> word_count;
+string word;
+while (cin >> word) {
+    word_count[word]++;  // Si no está, crea ("gat", 0) y hace ++ -> ("gat", 1)
 }
 ```
 
-### Ejemplo 2: Agrupa palabras por longitud
+### Ejemplo 2: Agrupación por longitud (Clave $\rightarrow$ Vector)
 
 ```cpp
 map<int, vector<string>> by_length;
 string word;
 while (cin >> word) {
-    by_length[word.size()].push_back(word);
+    by_length[word.size()].push_back(word); // Crea el vector si hace falta y añade la palabra
 }
 ```
-
-:::oopviz{simulation="racional_class"}
-:::
 
 ---
 
 ## 6.7 Iterar sobre un `map`
 
-Los iteradores de `map` recorren los elementos **en orden ascendente por clave** (porque internamente es un BST ordenado). El operador `->` accede a los campos `first` y `second` del par:
+Los iteradores de un `map` recorren los elementos **en orden ascendente de clave** (recorrido en inorden del BST interno):
 
 ```cpp
-map<string, int> m;
-// ... (llenar el map)
+map<string, int> edades = {{"Anna", 21}, {"Bernat", 25}};
 
-for (auto it = m.begin(); it != m.end(); ++it) {
-    cout << "clave: " << it->first
-         << ", valor: " << it->second << endl;
+// 1. Con iteradores
+for (auto it = edades.begin(); it != edades.end(); ++it) {
+    cout << it->first << " tiene " << it->second << " años\n";
+    // it->second = 22;      // VÁLIDO: el valor se puede modificar
+    // it->first = "Maria";  // ERROR: la clave es constante para proteger el BST
 }
-```
 
-O con el bucle `for-each` moderno (C++11):
-
-```cpp
-for (const auto& [clave, valor] : m) {
-    cout << clave << " → " << valor << endl;
+// 2. Con Structured Binding (C++17)
+for (const auto& [nombre, edad] : edades) {
+    cout << nombre << " -> " << edad << "\n";
 }
 ```
 
@@ -190,36 +177,60 @@ for (const auto& [clave, valor] : m) {
 
 ## 6.8 El contenedor `set<T>`
 
-Un **`set<T>`** es un `map` donde solo existe la clave, sin valor asociado. Se utiliza para:
-- **Eliminar duplicados** de una secuencia.
-- **Contar el vocabulario** (palabras únicas).
-- **Comprobar pertenencia** en $\mathcal{O}(\log n)$.
+Un **`set<T>`** es una colección de **claves únicas y ordenadas** sin valor asociado. Internamente se implementa como un BST equilibrado donde cada elemento es su propia clave.
+
+### Operaciones principales — Coste $\mathcal{O}(\log n)$
+
+| Operación | Sintaxis | Comportamiento |
+| :--- | :--- | :--- |
+| **Inserción** | `s.insert(elem)` | Añade el elemento si no estaba. Devuelve `pair<iterator, bool>`. |
+| **Búsqueda** | `s.find(elem)` | Devuelve un iterador al elemento o `s.end()` si no está. |
+| **Pertenencia** | `s.count(elem)` | Devuelve `1` si el elemento existe, `0` si no. |
+| **Borrado** | `s.erase(elem)` | Elimina el elemento del conjunto (si existe). |
 
 ```cpp
+#include <iostream>
 #include <set>
+#include <string>
 using namespace std;
 
-set<string> vocabulari;
-string paraula;
-while (cin >> paraula) {
-    vocabulari.insert(paraula);
+int main() {
+    set<string> vocabulario;
+
+    // 1. Inserción (ignora duplicados automáticamente)
+    vocabulario.insert("hola");
+    vocabulario.insert("mundo");
+    vocabulario.insert("hola"); // ¡No hace nada: "hola" ya existía!
+
+    // 2. Comprobación de pertenencia
+    if (vocabulario.count("mundo") == 1) {
+        cout << "'mundo' está en el conjunto\n";
+    }
+
+    // 3. Iteración ordenada (los elementos son const T)
+    for (auto it = vocabulario.begin(); it != vocabulario.end(); ++it) {
+        cout << *it << " "; // Imprime en orden alfabético: "hola mundo"
+    }
+    cout << "\n";
+
+    // 4. Borrado
+    vocabulario.erase("hola");
 }
-cout << "Palabras únicas: " << vocabulari.size() << endl;
 ```
 
 :::tip
-Si necesitas claves **repetidas** (multiset o multimap), C++ ofrece `multiset<T>` y `multimap<K, V>`. En un `map` normal, dos inserciones con la misma clave **no** añaden un segundo elemento.
+Si necesitas elementos repetidos, la STL ofrece **`multiset<T>`** y **`multimap<K, V>`**. En un `set` o `map` estándar, las claves son estrictamente únicas.
 :::
 
 ---
 
 ## 6.9 Cuándo usar cada contenedor
 
-| Situación | Contenedor recomendado |
-|:---|:---|
-| Búsqueda frecuente en datos ordenados | `map<K,V>` o `set<T>` |
-| Sin orden, búsqueda máxima velocidad | `unordered_map<K,V>` ($\mathcal{O}(1)$ amortizado) |
-| Acceso por índice numérico | `vector<T>` |
-| Inserción/borrado frecuente en medio | `list<T>` |
-| Colección de elementos únicos | `set<T>` |
-| Acumulador clave→contador/lista | `map<K, vector<T>>` |
+| Situación | Contenedor recomendado | Coste búsqueda |
+| :--- | :--- | :--- |
+| **Búsqueda frecuente en datos ordenados** | `map<K, V>` o `set<T>` | $\mathcal{O}(\log n)$ |
+| **Sin orden, máxima velocidad de búsqueda** | `unordered_map<K, V>` o `unordered_set<T>` | $\mathcal{O}(1)$ amortizado |
+| **Acceso directo por índice numérico ($0..n-1$)** | `vector<T>` | $\mathcal{O}(1)$ |
+| **Inserción / borrado frecuente en medio** | `list<T>` | $\mathcal{O}(1)$ |
+| **Colección de elementos únicos** | `set<T>` | $\mathcal{O}(\log n)$ |
+| **Acumulador / agrupador clave $\rightarrow$ lista** | `map<K, vector<T>>` | $\mathcal{O}(\log n)$ |

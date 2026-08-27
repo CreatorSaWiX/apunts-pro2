@@ -78,111 +78,98 @@ Com que `BinTree<T>` és **immutable**, la inserció no modifica l'arbre origina
 
 ## 6.5 El contenidor `map<K, V>`
 
-La STL de C++ ofereix el contenidor **`map<K, V>`**, un diccionari implementat internament com un **BST equilibrat** (arbre Vermell-Negre). Associa **claus úniques** (`K`) a **valors** (`V`).
+La STL de C++ ofereix **`map<K, V>`**, un diccionari que associa **claus úniques** (`K`) a **valors** (`V`). Internament, cada element s'emmagatzema com un **`pair<const K, V>`** (`it->first` per a la clau, `it->second` per al valor).
+
+### Operacions principals — Cost $\mathcal{O}(\log n)$
+
+| Operació | Sintaxi | Comportament |
+| :--- | :--- | :--- |
+| **Accés / Inserció** | `m[clau] = val;` | Si la clau no existeix, **la crea** amb el valor per defecte (`0`, `""`, etc.). |
+| **Cerca** | `m.find(clau)` | Retorna un iterador al parell `{clau, valor}` o `m.end()` si no hi és. |
+| **Existència** | `m.count(clau)` | Retorna `1` si la clau existeix, `0` si no. |
+| **Inserció segura** | `m.insert({k, v})` | Insereix el parell només si `k` **no existia prèviament**. |
 
 ```cpp
+#include <iostream>
 #include <map>
+#include <string>
 using namespace std;
 
-map<string, int> m;
-m["un"]  = 1;
-m["deu"] = 10;
-```
+int main() {
+    map<string, int> edats;
 
-Internament, cada element és un **`pair<K, V>`** amb els camps `first` (clau) i `second` (valor).
+    // 1. Inserció i modificació amb []
+    edats["Anna"] = 21;
+    edats["Bernat"] = 25;
 
-### L'operador `[]`: la porta d'entrada
+    // 2. Cerca segura amb find()
+    auto it = edats.find("Anna");
+    if (it != edats.end()) {
+        cout << it->first << " té " << it->second << " anys\n";
+    }
 
-L'operador `[]` és la forma més natural d'usar un `map`. Si la clau **no existeix**, la crea automàticament amb el valor per defecte del tipus (`0` per a `int`, `""` per a `string`).
+    // 3. Comprovació d'existència ràpida amb count()
+    if (edats.count("Carla") == 0) {
+        cout << "La Carla no és al mapa\n";
+    }
 
-:::warning
-Usar `m["clau"]` en un `map` `const` és **error de compilació** perquè no pot crear elements. Utilitza `m.find("clau")` o `m.at("clau")` en contextos `const`.
-:::
-
-### `find`: la cerca segura
-
-```cpp
-map<string, int> m = {{"un", 1}, {"deu", 10}};
-
-auto it = m.find("deu");
-if (it != m.end()) {
-    cout << "Valor associat: " << it->second << endl; // 10
+    // 4. Inserció sense sobreescriure amb insert()
+    edats.insert({"Anna", 30}); // No fa res: "Anna" ja existia amb 21!
 }
 ```
 
-`find` retorna un **iterador** apuntant al parell `{clau, valor}` si el troba, o a `m.end()` si no hi és. Cost: $\mathcal{O}(\log n)$.
-
-### `insert`: afegir sense sobreescriure
-
-```cpp
-m.insert({20, "twenty"});
-m.insert({20, "minus twenty"}); // NO substitueix si ja existeix!
-```
-
-El tipus de retorn d'`insert` és `pair<iterator, bool>`: l'iterador a l'element i `true` si s'ha inserit (`false` si ja existia).
+:::warning
+L'operador `m[clau]` **modifica el mapa**, si la clau no existeix la crea automàticament. En contextos constants (`const map<K, V>& m`), usar `[]` produeix un **error de compilació**. En aquests casos, utilitza sempre `m.find(clau)`.
+:::
 
 ---
 
 ## 6.6 El `map` com a acumulador
 
-Un dels usos estrella del `map` és acumular i comptar. L'operador `[]` fa tota la feina:
+Un dels patrons més utilitzats de `map` és comptar o agrupar elements. L'operador `[]` gestiona tots dos casos en una sola línia:
 
-1. Si la clau **no existeix** → la crea amb valor `0`, llavors fa `++`.
-2. Si la clau **existeix** → recupera el valor actual i fa `++`.
+1. Si la clau **no existeix** $\rightarrow$ la crea amb valor per defecte (`0`, `vector` buit, etc.) i fa l'operació.
+2. Si la clau **ja existeix** $\rightarrow$ recupera la referència al valor existent i l'actualitza.
 
-### Exemple 1: Freqüència de paraules
+### Exemple 1: Comptador de freqüències
 
 ```cpp
-#include <map>
-#include <iostream>
-using namespace std;
-
-int main() {
-    map<string, int> word_count;
-    string word;
-    while (cin >> word) {
-        word_count[word]++;  // <-- màgia pura!
-    }
-    for (auto it = word_count.begin(); it != word_count.end(); ++it) {
-        cout << it->first << ": " << it->second << endl;
-    }
+map<string, int> word_count;
+string word;
+while (cin >> word) {
+    word_count[word]++;  // Si no hi és, crea ("gat", 0) i fa ++ -> ("gat", 1)
 }
 ```
 
-### Exemple 2: Agrupa paraules per longitud
+### Exemple 2: Agrupació per longitud (Clau $\rightarrow$ Vector)
 
 ```cpp
 map<int, vector<string>> by_length;
 string word;
 while (cin >> word) {
-    by_length[word.size()].push_back(word);
+    by_length[word.size()].push_back(word); // Crea el vector si cal i hi afegeix la paraula
 }
 ```
-
-:::oopviz{simulation="racional_class"}
-:::
 
 ---
 
 ## 6.7 Iterar sobre un `map`
 
-Els iteradors de `map` recorren els elements **en ordre ascendent per clau** (perquè internament és un BST ordenat). L'operador `->` accedeix als camps `first` i `second` del parell:
+Els iteradors d'un `map` recorren els elements **en ordre ascendent de clau** (recorregut en inordre del BST intern):
 
 ```cpp
-map<string, int> m;
-// ... (omplir el map)
+map<string, int> edats = {{"Anna", 21}, {"Bernat", 25}};
 
-for (auto it = m.begin(); it != m.end(); ++it) {
-    cout << "clau: " << it->first
-         << ", valor: " << it->second << endl;
+// 1. Amb iteradors 
+for (auto it = edats.begin(); it != edats.end(); ++it) {
+    cout << it->first << " té " << it->second << " anys\n";
+    // it->second = 22;      // VÀLID: el valor es pot modificar
+    // it->first = "Maria";  // ERROR: la clau és constant per protegir el BST
 }
-```
 
-O amb el bucle `for-each` modern (C++11):
-
-```cpp
-for (const auto& [clau, valor] : m) {
-    cout << clau << " → " << valor << endl;
+// 2. Amb Structured Binding
+for (const auto& [nom, edat] : edats) {
+    cout << nom << " -> " << edat << "\n";
 }
 ```
 
@@ -190,36 +177,60 @@ for (const auto& [clau, valor] : m) {
 
 ## 6.8 El contenidor `set<T>`
 
-Un **`set<T>`** és un `map` on només existeix la clau, sense valor associat. S'utilitza per:
-- **Eliminar duplicats** d'una seqüència.
-- **Comptar el vocabulari** (paraules úniques).
-- **Comprovar pertinença** en $\mathcal{O}(\log n)$.
+Un **`set<T>`** és una col·lecció de **claus úniques i ordenades** sense valor associat. Internament s'implementa com un BST equilibrat on cada element és la seva pròpia clau.
+
+### Operacions principals — Cost $\mathcal{O}(\log n)$
+
+| Operació | Sintaxi | Comportament |
+| :--- | :--- | :--- |
+| **Inserció** | `s.insert(elem)` | Afegeix l'element si no hi era. Retorna `pair<iterator, bool>`. |
+| **Cerca** | `s.find(elem)` | Retorna un iterador a l'element o `s.end()` si no hi és. |
+| **Pertinença** | `s.count(elem)` | Retorna `1` si l'element existeix, `0` si no. |
+| **Esborrat** | `s.erase(elem)` | Elimina l'element del conjunt (si existeix). |
 
 ```cpp
+#include <iostream>
 #include <set>
+#include <string>
 using namespace std;
 
-set<string> vocabulari;
-string paraula;
-while (cin >> paraula) {
-    vocabulari.insert(paraula);
+int main() {
+    set<string> vocabulari;
+
+    // 1. Inserció (ignora duplicats automàticament)
+    vocabulari.insert("hola");
+    vocabulari.insert("món");
+    vocabulari.insert("hola"); // No fa res: "hola" ja existeix
+
+    // 2. Comprovació de pertinença
+    if (vocabulari.count("món") == 1) {
+        cout << "'món' és al conjunt\n";
+    }
+
+    // 3. Iteració ordenada (els elements són const T)
+    for (auto it = vocabulari.begin(); it != vocabulari.end(); ++it) {
+        cout << *it << " "; // Imprimeix en ordre alfabètic: "hola món"
+    }
+    cout << "\n";
+
+    // 4. Esborrat
+    vocabulari.erase("hola");
 }
-cout << "Paraules úniques: " << vocabulari.size() << endl;
 ```
 
 :::tip
-Si necessites claus **repetides** (multiset o multimap), C++ ofereix `multiset<T>` i `multimap<K, V>`. En un `map` normal, dues insercions amb la mateixa clau **no** afegeixen un segon element.
+Si necessites elements repetits, la STL ofereix **`multiset<T>`** i **`multimap<K, V>`**. En un `set` o `map` estàndard, les claus són estrictament úniques.
 :::
 
 ---
 
 ## 6.9 Quan usar cada contenidor
 
-| Situació | Contenidor recomanat |
-|:---|:---|
-| Cerca freqüent en dades ordenades | `map<K,V>` o `set<T>` |
-| Sense ordre, cerca màxima velocitat | `unordered_map<K,V>` ($\mathcal{O}(1)$ amortitzat) |
-| Accés per índex numèric | `vector<T>` |
-| Inserció/esborrat freqüent al mig | `list<T>` |
-| Col·lecció d'elements únics | `set<T>` |
-| Acumulador clau→comptador/llista | `map<K, vector<T>>` |
+| Situació | Contenidor recomanat | Cost cerca |
+| :--- | :--- | :--- |
+| **Cerca freqüent en dades ordenades** | `map<K, V>` o `set<T>` | $\mathcal{O}(\log n)$ |
+| **Sense ordre, màxima velocitat de cerca** | `unordered_map<K, V>` o `unordered_set<T>` | $\mathcal{O}(1)$ amortitzat |
+| **Accés directe per índex numèric ($0..n-1$)** | `vector<T>` | $\mathcal{O}(1)$ |
+| **Inserció / esborrat freqüent al mig** | `list<T>` | $\mathcal{O}(1)$ |
+| **Col·lecció d'elements únics** | `set<T>` | $\mathcal{O}(\log n)$ |
+| **Acumulador / agrupador clau $\rightarrow$ llista** | `map<K, vector<T>>` | $\mathcal{O}(\log n)$ |

@@ -78,111 +78,98 @@ Since `BinTree<T>` is **immutable**, insertion does not mutate the original tree
 
 ## 6.5 The `map<K, V>` container
 
-The C++ STL offers the **`map<K, V>`** container, a dictionary internally implemented as a **balanced BST** (Red-Black tree). It associates **unique keys** (`K`) to **values** (`V`).
+The C++ STL offers **`map<K, V>`**, a dictionary that associates **unique keys** (`K`) to **values** (`V`). Internally, each element is stored as a **`pair<const K, V>`** (`it->first` for the key, `it->second` for the value).
+
+### Main Operations — Cost $\mathcal{O}(\log n)$
+
+| Operation | Syntax | Behavior |
+| :--- | :--- | :--- |
+| **Access / Insertion** | `m[key] = val;` | If the key does not exist, **creates it** with default value (`0`, `""`, etc.). |
+| **Search** | `m.find(key)` | Returns an iterator to the `{key, value}` pair or `m.end()` if not found. |
+| **Existence** | `m.count(key)` | Returns `1` if key exists, `0` otherwise. |
+| **Safe Insertion** | `m.insert({k, v})` | Inserts the pair only if `k` **did not previously exist**. |
 
 ```cpp
+#include <iostream>
 #include <map>
+#include <string>
 using namespace std;
 
-map<string, int> m;
-m["un"]  = 1;
-m["deu"] = 10;
-```
+int main() {
+    map<string, int> ages;
 
-Internally, each element is a **`pair<K, V>`** with the fields `first` (key) and `second` (value).
+    // 1. Insertion and modification with []
+    ages["Anna"] = 21;
+    ages["Bernat"] = 25;
 
-### The `[]` operator: the gateway
+    // 2. Safe search with find()
+    auto it = ages.find("Anna");
+    if (it != ages.end()) {
+        cout << it->first << " is " << it->second << " years old\n";
+    }
 
-The `[]` operator is the most natural way to use a `map`. If the key **does not exist**, it creates it automatically with the default value of the type (`0` for `int`, `""` for `string`).
+    // 3. Fast existence check with count()
+    if (ages.count("Carla") == 0) {
+        cout << "Carla is not in the map\n";
+    }
 
-:::warning
-Using `m["key"]` in a `const` `map` is a **compilation error** because it cannot create elements. Use `m.find("key")` or `m.at("key")` in `const` contexts.
-:::
-
-### `find`: the safe search
-
-```cpp
-map<string, int> m = {{"un", 1}, {"deu", 10}};
-
-auto it = m.find("deu");
-if (it != m.end()) {
-    cout << "Associated value: " << it->second << endl; // 10
+    // 4. Insertion without overwriting with insert()
+    ages.insert({"Anna", 30}); // Does nothing: "Anna" already exists with 21!
 }
 ```
 
-`find` returns an **iterator** pointing to the `{key, value}` pair if it finds it, or to `m.end()` if it's not there. Cost: $\mathcal{O}(\log n)$.
-
-### `insert`: adding without overwriting
-
-```cpp
-m.insert({20, "twenty"});
-m.insert({20, "minus twenty"}); // DOES NOT substitute if it already exists!
-```
-
-The return type of `insert` is `pair<iterator, bool>`: the iterator to the element and `true` if it was inserted (`false` if it already existed).
+:::warning
+The `m[key]` operator **modifies the map**, creating the key automatically if it does not exist. In constant contexts (`const map<K, V>& m`), using `[]` causes a **compilation error**. In these cases, always use `m.find(key)`.
+:::
 
 ---
 
 ## 6.6 The `map` as an accumulator
 
-One of the star uses of the `map` is accumulating and counting. The `[]` operator does all the work:
+One of the most common `map` patterns is counting or grouping elements. The `[]` operator handles both cases in a single line:
 
-1. If the key **does not exist** → creates it with value `0`, then does `++`.
-2. If the key **exists** → retrieves the current value and does `++`.
+1. If the key **does not exist** $\rightarrow$ creates it with default value (`0`, empty `vector`, etc.) and performs the operation.
+2. If the key **already exists** $\rightarrow$ retrieves the reference to the existing value and updates it.
 
-### Example 1: Word frequency
+### Example 1: Frequency Counter
 
 ```cpp
-#include <map>
-#include <iostream>
-using namespace std;
-
-int main() {
-    map<string, int> word_count;
-    string word;
-    while (cin >> word) {
-        word_count[word]++;  // <-- pure magic!
-    }
-    for (auto it = word_count.begin(); it != word_count.end(); ++it) {
-        cout << it->first << ": " << it->second << endl;
-    }
+map<string, int> word_count;
+string word;
+while (cin >> word) {
+    word_count[word]++;  // If absent, creates ("cat", 0) and increments -> ("cat", 1)
 }
 ```
 
-### Example 2: Group words by length
+### Example 2: Grouping by Length (Key $\rightarrow$ Vector)
 
 ```cpp
 map<int, vector<string>> by_length;
 string word;
 while (cin >> word) {
-    by_length[word.size()].push_back(word);
+    by_length[word.size()].push_back(word); // Creates vector if needed and appends word
 }
 ```
-
-:::oopviz{simulation="racional_class"}
-:::
 
 ---
 
 ## 6.7 Iterating over a `map`
 
-`map` iterators traverse the elements **in ascending order by key** (because internally it is a sorted BST). The `->` operator accesses the `first` and `second` fields of the pair:
+Iterators of a `map` traverse elements **in ascending order by key** (in-order traversal of the underlying BST):
 
 ```cpp
-map<string, int> m;
-// ... (fill the map)
+map<string, int> ages = {{"Anna", 21}, {"Bernat", 25}};
 
-for (auto it = m.begin(); it != m.end(); ++it) {
-    cout << "key: " << it->first
-         << ", value: " << it->second << endl;
+// 1. With iterators
+for (auto it = ages.begin(); it != ages.end(); ++it) {
+    cout << it->first << " is " << it->second << " years old\n";
+    // it->second = 22;      // VALID: the value can be modified
+    // it->first = "Maria";  // ERROR: key is const to protect BST ordering invariant
 }
-```
 
-Or with the modern `for-each` loop (C++11):
-
-```cpp
-for (const auto& [key, value] : m) {
-    cout << key << " → " << value << endl;
+// 2. With Structured Binding (C++17)
+for (const auto& [name, age] : ages) {
+    cout << name << " -> " << age << "\n";
 }
 ```
 
@@ -190,36 +177,60 @@ for (const auto& [key, value] : m) {
 
 ## 6.8 The `set<T>` container
 
-A **`set<T>`** is a `map` where only the key exists, with no associated value. It is used to:
-- **Remove duplicates** from a sequence.
-- **Count the vocabulary** (unique words).
-- **Check membership** in $\mathcal{O}(\log n)$.
+A **`set<T>`** is a collection of **unique and sorted keys** without associated values. Internally it is implemented as a balanced BST where each element is its own key.
+
+### Main Operations — Cost $\mathcal{O}(\log n)$
+
+| Operation | Syntax | Behavior |
+| :--- | :--- | :--- |
+| **Insertion** | `s.insert(elem)` | Adds the element if not already present. Returns `pair<iterator, bool>`. |
+| **Search** | `s.find(elem)` | Returns an iterator to the element or `s.end()` if not found. |
+| **Membership** | `s.count(elem)` | Returns `1` if element exists, `0` otherwise. |
+| **Erasure** | `s.erase(elem)` | Removes the element from the set (if present). |
 
 ```cpp
+#include <iostream>
 #include <set>
+#include <string>
 using namespace std;
 
-set<string> vocabulari;
-string paraula;
-while (cin >> paraula) {
-    vocabulari.insert(paraula);
+int main() {
+    set<string> vocabulary;
+
+    // 1. Insertion (automatically ignores duplicates)
+    vocabulary.insert("hello");
+    vocabulary.insert("world");
+    vocabulary.insert("hello"); // Does nothing: "hello" already exists
+
+    // 2. Membership check
+    if (vocabulary.count("world") == 1) {
+        cout << "'world' is in the set\n";
+    }
+
+    // 3. Sorted iteration (elements are const T)
+    for (auto it = vocabulary.begin(); it != vocabulary.end(); ++it) {
+        cout << *it << " "; // Prints in alphabetical order: "hello world"
+    }
+    cout << "\n";
+
+    // 4. Erasure
+    vocabulary.erase("hello");
 }
-cout << "Unique words: " << vocabulari.size() << endl;
 ```
 
 :::tip
-If you need **repeated** keys (multiset or multimap), C++ offers `multiset<T>` and `multimap<K, V>`. In a normal `map`, two insertions with the same key **do not** add a second element.
+If you need repeated elements, the STL offers **`multiset<T>`** and **`multimap<K, V>`**. In a standard `set` or `map`, keys are strictly unique.
 :::
 
 ---
 
 ## 6.9 When to use each container
 
-| Situation | Recommended container |
-|:---|:---|
-| Frequent search in sorted data | `map<K,V>` or `set<T>` |
-| No order, maximum speed search | `unordered_map<K,V>` (amortized $\mathcal{O}(1)$) |
-| Access by numerical index | `vector<T>` |
-| Frequent insertion/deletion in the middle | `list<T>` |
-| Collection of unique elements | `set<T>` |
-| Accumulator key→counter/list | `map<K, vector<T>>` |
+| Situation | Recommended Container | Search Cost |
+| :--- | :--- | :--- |
+| **Frequent search in sorted data** | `map<K, V>` or `set<T>` | $\mathcal{O}(\log n)$ |
+| **Unordered, maximum search speed** | `unordered_map<K, V>` or `unordered_set<T>` | $\mathcal{O}(1)$ amortized |
+| **Direct access by numerical index ($0..n-1$)** | `vector<T>` | $\mathcal{O}(1)$ |
+| **Frequent insertion / deletion in the middle** | `list<T>` | $\mathcal{O}(1)$ |
+| **Collection of unique elements** | `set<T>` | $\mathcal{O}(\log n)$ |
+| **Accumulator / grouper key $\rightarrow$ list** | `map<K, vector<T>>` | $\mathcal{O}(\log n)$ |

@@ -25,10 +25,9 @@ draft: false
 - **Stack (LIFO):** `push(x)`, `pop()`, `top()`, `empty()`, `size()`.
 - **Queue (FIFO):** `push(x)`, `pop()`, `front()`, `empty()`, `size()`.
 
-## 3. Listas, Vectores y Deques
-- **`list<T>` / `deque<T>`:** `#include <list>` / `#include <deque>`.
-  - **Métodos comunes:** `push_back(x)`, `push_front(x)`, `pop_back()`, `pop_front()`, `insert(it, x)`, `erase(it)`, `back()`, `front()`.
-  - *Diferencia:* `deque` tiene `operator[]` ($O(1)$), `list` NO.
+## 3. Listas y Vectores
+- **`list<T>`:** `#include <list>`. Lista doblemente encadenada.
+  - **Métodos:** `push_back(x)`, `push_front(x)`, `pop_back()`, `pop_front()`, `insert(it, x)`, `erase(it)`, `back()`, `front()`. No tiene `operator[]`.
 - **`vector<T>`:** `#include <vector>`.
   - **Métodos:** `push_back(x)`, `pop_back()`, `insert(it, x)`, `erase(it)`, `back()`, `front()`, `operator[]`.
 - **Iteradores:** 
@@ -55,7 +54,7 @@ draft: false
   - **Métodos:** `value()`, `num_children()`, `child(i)`, `empty()`.
 
 ## 6. Diccionarios: map y set
-- **`set<T>`:** `#include <set>`. **Conjunto ordenado** que no admite duplicados. Para usar `set` con un `struct`, hay que definir el **`operator<`** (establecer el orden).
+- **`set<T>`:** `#include <set>`. **Conjunto ordenado** que no admite duplicados. Para usar `set` com un `struct`, hay que definir el **`operator<`** (establecer el orden).
   - **Métodos:** `insert(x)`, `erase(x)`, `find(x)`, `empty()`, `size()`.
   - **Iteradores:** `begin()`, `end()`. Se accede al valor con `*it`.
 - **`multiset<T>`:** Igual que el `set`, pero permite duplicados (útil para rankings donde dos elementos pueden empatar en todo).
@@ -63,13 +62,29 @@ draft: false
   - **Métodos:** `m[clave] = val`, `insert({clave, val})`, `erase(x)`, `find(clave)`, `empty()`, `size()`.
   - **Iteradores:** `begin()`, `end()`. Se accede como `it->first` (clave) y `it->second` (valor).
 
-## 7. Rendimiento y Complejidad (Resumen)
-| Método | Stack/Queue | Heap (PQ) | Vector | Deque | List | Map/Set |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **push / insert** | $O(1)$ | $O(\log N)$ | $O(1)$* / $O(N)$ | $O(1)$* / $O(N)$ | $O(1)$ | $O(\log N)$ |
-| **pop / erase** | $O(1)$ | $O(\log N)$ | $O(1)$ / $O(N)$ | $O(1)$ / $O(N)$ | $O(1)$ | $O(\log N)$ |
-| **top / front / back** | $O(1)$ | $O(1)$ | $O(1)$ | $O(1)$ | $O(1)$ | - |
-| **operator[]** | - | - | $O(1)$ | $O(1)$ | - | $O(\log N)$ |
-| **find** | - | - | - | - | - | $O(\log N)$ |
+## 7. Resumen oficial PRO2 2026-primavera
 
-*\*Coste amortizado.* `insert(pos, x)` y `erase(pos)` en `list` son $O(1)$ si ya tenemos el iterador.
+| Método | `Stack` | `Queue` | `Heap` | `vector` | `list` | `map` | `set` |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`push(x)`** | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | $\mathcal{O}(\log n)$ | — | — | — | — |
+| **`pop()`** | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | $\mathcal{O}(\log n)$ | — | — | — | — |
+| **`top()`** | $\mathcal{O}(1)$ | — | $\mathcal{O}(1)$ | — | — | — | — |
+| **`front()`** | — | $\mathcal{O}(1)$ | — | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | — | — |
+| **`back()`** | — | — | — | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | — | — |
+| **`push_back(x)`** | — | — | — | $\mathcal{O}(1)^*$ | $\mathcal{O}(1)$ | — | — |
+| **`push_front(x)`** | — | — | — | — | $\mathcal{O}(1)$ | — | — |
+| **`pop_back()`** | — | — | — | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | — | — |
+| **`pop_front()`** | — | — | — | — | $\mathcal{O}(1)$ | — | — |
+| **`operator[](·)`** | — | — | — | $\mathcal{O}(1)$ | — | $\mathcal{O}(\log n)$ | — |
+| **`find(·)`** | — | — | — | — | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| **`insert(x)`** | — | — | — | — | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| **`insert(pos, x)`** | — | — | — | $\mathcal{O}(n)$ | $\mathcal{O}(1)^\dagger$ | — | — |
+| **`erase(x)`** | — | — | — | — | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| **`erase(pos)`** | — | — | — | $\mathcal{O}(n)$ | $\mathcal{O}(1)^\dagger$ | — | — |
+
+> **Notas y Leyenda:**
+> - `*` **Coste amortizado:** de vez en cuando hay que redimensionar el vector interno ($\mathcal{O}(n)$), pero de media cada operación es $\mathcal{O}(1)$.
+> - `†` **Con iterador:** si ya tenemos el iterador en la posición, insertar/eliminar es $\mathcal{O}(1)$. Encontrar la posición es $\mathcal{O}(n)$.
+> - Todos los contenedores tienen **`size()`** y **`empty()`** en **$\mathcal{O}(1)$**.
+> - Para `vector` y `list`, `insert(pos, x)` y `erase(pos)` utilizan un iterador como posición.
+> - Para `map` y `set`, `insert(x)` y `erase(x)` operan por clave/valor.
