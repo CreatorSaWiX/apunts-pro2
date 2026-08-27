@@ -7,51 +7,30 @@ order: 6
 
 ## 6.1 The search problem
 
-So far we have seen two main linear structures to store data:
+With conventional linear structures we must choose between fast insertion or fast searching:
 
-| Container | Access | Search | Insertion in middle |
-|:---|:---:|:---:|:---:|
-| `vector<T>` (unsorted) | $\Theta(1)$ | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ |
-| `vector<T>` (sorted) | $\Theta(1)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(n)$ |
-| `list<T>` | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | $\Theta(1)$ |
-| `map<K, V>` | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
-| `set<T>` | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| Structure | Search | Insertion |
+| :--- | :---: | :---: |
+| **Unsorted vector** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ |
+| **Sorted vector** | $\mathcal{O}(\log n)$ | $\mathcal{O}(n)$ |
+| **Linked list (`list`)** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ |
+| **Binary Search Tree (BST)** | **$\mathcal{O}(\log n)$** | **$\mathcal{O}(\log n)$** |
 
-It is clear: if search is the predominant operation, we need a specialized structure. The solution is a **Binary Search Tree (BST)**.
+The **Binary Search Tree (BST)** solves this dilemma by achieving a logarithmic balance in both operations.
 
 ---
 
 ## 6.2 Binary Search Tree (BST)
 
-A **BST** (*Binary Search Tree*) is a `BinTree<T>` that meets an additional structural rule at each node:
+A **BST** (*Binary Search Tree*) is a `BinTree<T>` where each node satisfies a strict order rule:
 
-> **BST Invariant:** All values in the **left subtree** are **strictly less** than the node, and all those in the **right subtree** are **strictly greater**.
+> - All values in the **left subtree** are **smaller** ($< \text{node}$).
+> - All values in the **right subtree** are **greater** ($> \text{node}$).
 
-:::graph
-```json
-{
-  "nodes": [
-    { "id": "50", "label": "50 (root)", "color": "#0ea5e9" },
-    { "id": "20", "label": "20", "color": "#8b5cf6" },
-    { "id": "80", "label": "80", "color": "#8b5cf6" },
-    { "id": "10", "label": "10" },
-    { "id": "30", "label": "30" },
-    { "id": "70", "label": "70" },
-    { "id": "90", "label": "90" }
-  ],
-  "links": [
-    { "source": "50", "target": "20", "label": "< 50" },
-    { "source": "50", "target": "80", "label": "> 50" },
-    { "source": "20", "target": "10" },
-    { "source": "20", "target": "30" },
-    { "source": "80", "target": "70" },
-    { "source": "80", "target": "90" }
-  ]
-}
-```
+:::bstviz
 :::
 
-Thanks to the invariant, the **inorder** traversal (*left → root → right*) visits all values **in ascending order** in $\Theta(n)$.
+- **Inorder traversal:** Visiting *left $\rightarrow$ root $\rightarrow$ right* automatically yields the sequence **sorted in ascending order** in linear time $\Theta(n)$.
 
 ---
 

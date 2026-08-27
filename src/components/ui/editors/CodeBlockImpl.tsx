@@ -1,5 +1,6 @@
 import { Copy, Check, ExternalLink } from 'lucide-react';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView, Decoration, ViewPlugin, ViewUpdate } from '@codemirror/view';
@@ -68,6 +69,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
     showHeader = true,
     headerActions,
 }) => {
+    const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
     const langKey = language.toLowerCase();
     const config = LANGUAGES[langKey] || { name: language, color: 'text-slate-400', bg: 'bg-slate-500/10', border: 'border-slate-500/20' };
@@ -155,7 +157,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
                     <div className="flex items-center gap-3">
                         {title && (
                             titleHref ? (
-                                <a href={titleHref} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-slate-400 hover:text-sky-400 hover:underline transition-colors flex items-center gap-1.5" title="Obrir a una nova pestanya">
+                                <a href={titleHref} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-slate-400 hover:text-sky-400 hover:underline transition-colors flex items-center gap-1.5" title={t('markdown.code.openNewTab')}>
                                     {title}
                                     <ExternalLink size={13} className="opacity-70" />
                                 </a>
@@ -172,7 +174,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
                         <button type="button"
                             onClick={handleCopy}
                             className="p-1.5 text-slate-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                            title="Copiar codi"
+                            title={copied ? t('markdown.code.copied') : t('markdown.code.copy')}
                         >
                             {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
                         </button>

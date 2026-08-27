@@ -7,51 +7,30 @@ order: 6
 
 ## 6.1 El problema de la búsqueda
 
-Hasta ahora hemos visto dos estructuras lineales principales para guardar datos:
+Con estructuras lineales convencionales debemos elegir entre insertar rápido o buscar rápido:
 
-| Contenedor | Acceso | Búsqueda | Inserción en medio |
-|:---|:---:|:---:|:---:|
-| `vector<T>` (desordenado) | $\Theta(1)$ | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ |
-| `vector<T>` (ordenado) | $\Theta(1)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(n)$ |
-| `list<T>` | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | $\Theta(1)$ |
-| `map<K, V>` | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
-| `set<T>` | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| Estructura | Búsqueda | Inserción |
+| :--- | :---: | :---: |
+| **Vector desordenado** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ |
+| **Vector ordenado** | $\mathcal{O}(\log n)$ | $\mathcal{O}(n)$ |
+| **Lista enlazada (`list`)** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ |
+| **Árbol Binario de Búsqueda (BST)** | **$\mathcal{O}(\log n)$** | **$\mathcal{O}(\log n)$** |
 
-Queda claro: si la búsqueda es la operación predominante, necesitamos una estructura especializada. La solución es un **Árbol Binario de Búsqueda (BST)**.
+El **Árbol Binario de Búsqueda (BST)** resuelve este dilema logrando un equilibrio logarítmico en ambas operaciones.
 
 ---
 
 ## 6.2 Árbol Binario de Búsqueda (BST)
 
-Un **BST** (*Binary Search Tree*) es un `BinTree<T>` que cumple una regla estructural adicional en cada nodo:
+Un **BST** (*Binary Search Tree*) es un `BinTree<T>` donde cada nodo cumple una regla de orden estricta:
 
-> **Invariante BST:** Todos los valores del **subárbol izquierdo** son **estrictamente menores** que el nodo, y todos los del **subárbol derecho** son **estrictamente mayores**.
+> - Todos los valores del **subárbol izquierdo** son **menores** ($< \text{nodo}$).
+> - Todos los valores del **subárbol derecho** son **mayores** ($> \text{nodo}$).
 
-:::graph
-```json
-{
-  "nodes": [
-    { "id": "50", "label": "50 (raíz)", "color": "#0ea5e9" },
-    { "id": "20", "label": "20", "color": "#8b5cf6" },
-    { "id": "80", "label": "80", "color": "#8b5cf6" },
-    { "id": "10", "label": "10" },
-    { "id": "30", "label": "30" },
-    { "id": "70", "label": "70" },
-    { "id": "90", "label": "90" }
-  ],
-  "links": [
-    { "source": "50", "target": "20", "label": "< 50" },
-    { "source": "50", "target": "80", "label": "> 50" },
-    { "source": "20", "target": "10" },
-    { "source": "20", "target": "30" },
-    { "source": "80", "target": "70" },
-    { "source": "80", "target": "90" }
-  ]
-}
-```
+:::bstviz
 :::
 
-Gracias al invariante, el recorrido **inorden** (*izquierdo → raíz → derecho*) visita todos los valores **en orden ascendente** en $\Theta(n)$.
+- **Recorrido inorden:** Visitar *izquierdo $\rightarrow$ raíz $\rightarrow$ derecho* produce automáticamente la secuencia **ordenada de menor a mayor** en tiempo lineal $\Theta(n)$.
 
 ---
 

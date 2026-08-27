@@ -23,7 +23,9 @@ export function remarkDirectiveRehype() {
                 const handler = directiveHandlers[name as keyof typeof directiveHandlers];
                 handler(node);
             } else {
-                console.error(`Missing handler for directive: ${name}`);
+                if (import.meta.env.DEV) {
+                    console.warn(`[remarkDirectiveRehype] Missing handler for directive: ${name}`);
+                }
                 node.data = {
                     hName: 'div',
                     hProperties: {

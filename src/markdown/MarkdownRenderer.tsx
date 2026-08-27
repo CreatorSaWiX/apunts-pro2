@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -24,6 +25,7 @@ const GraphVisualizer = React.lazy(() => import("../components/ui/visualizers/Gr
 const StackVisualizer = React.lazy(() => import("../components/ui/visualizers/StackVisualizer"));
 const QueueVisualizer = React.lazy(() => import("../components/ui/visualizers/QueueVisualizer"));
 const HeapVisualizer = React.lazy(() => import("../components/ui/visualizers/HeapVisualizer"));
+const BSTVisualizer = React.lazy(() => import("../components/ui/visualizers/BSTVisualizer"));
 const ListGraphVisualizer = React.lazy(() => import("../components/ui/visualizers/ListGraphVisualizer"));
 const BinTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/BinTreeVisualizer"));
 const MafsVisualizer = React.lazy(() => import("../components/ui/visualizers/MafsVisualizer"));
@@ -33,29 +35,88 @@ const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
+const ThreeFallback = () => {
+    const { t } = useTranslation();
+    return (
+        <div className="w-full h-64 bg-slate-950 rounded-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-3 p-8">
+            <div className="text-3xl">🧊</div>
+            <p className="text-amber-400 font-semibold text-sm text-center">{t('markdown.threeUnavailableTitle')}</p>
+            <p className="text-slate-500 text-xs text-center max-w-xs">
+                {t('markdown.threeUnavailableDesc')}
+            </p>
+        </div>
+    );
+};
+
 const ThreeVisualizer = React.lazy(() =>
     import("../components/ui/visualizers/ThreeVisualizer").catch(() => ({
-        default: () => (
-            <div className="w-full h-64 bg-slate-950 rounded-2xl border border-amber-500/30 my-8 flex flex-col items-center justify-center gap-3 p-8">
-                <div className="text-3xl">🧊</div>
-                <p className="text-amber-400 font-semibold text-sm text-center">Visualització 3D no disponible</p>
-                <p className="text-slate-500 text-xs text-center max-w-xs">
-                    No s'ha pogut carregar el motor 3D (possiblement bloquejat per l'antivirus o sense WebGL).
-                    El contingut dels apunts és complet al text de sota.
-                </p>
-            </div>
-        )
+        default: ThreeFallback
     }))
 );
 
 
-const VizFallback = () => (
-    <div className="h-64 animate-pulse bg-slate-900/40 border border-white/5 rounded-2xl w-full my-12 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-            <Spinner size="lg" variant="emerald" />
-            <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">Carregant motor gràfic...</span>
+const VizFallback = () => {
+    const { t } = useTranslation();
+    return (
+        <div className="h-64 animate-pulse bg-slate-900/40 border border-white/5 rounded-2xl w-full my-12 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+                <Spinner size="lg" variant="emerald" />
+                <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">{t('markdown.loadingEngine')}</span>
+            </div>
         </div>
-    </div>
+    );
+};
+
+const VizErrorDisplay = ({ error }: { error: Error | null }) => {
+    const { t } = useTranslation();
+    return (
+        <div className="w-full h-48 bg-slate-950 rounded-2xl border border-red-500/30 my-8 flex flex-col items-center justify-center gap-3 p-8">
+            <p className="text-red-400 font-semibold text-sm text-center">{t('markdown.componentError')}</p>
+            <p className="text-slate-500 text-xs text-center max-w-xs font-mono">
+                {error?.message || t('markdown.unknownError')}
+            </p>
+        </div>
+    );
+};
+
+/**
+ * ErrorBoundary — Catches rendering errors in lazy-loaded visualizers
+ * so a single broken component doesn't crash the entire markdown page.
+ */
+class VizErrorBoundary extends React.Component<
+    { children: React.ReactNode },
+    { hasError: boolean; error: Error | null }
+> {
+    constructor(props: { children: React.ReactNode }) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+
+    static getDerivedStateFromError(error: Error) {
+        return { hasError: true, error };
+    }
+
+    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+        if (import.meta.env.DEV) {
+            console.error('[MarkdownRenderer] Component error:', error, errorInfo);
+        }
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return <VizErrorDisplay error={this.state.error} />;
+        }
+        return this.props.children;
+    }
+}
+
+/** Suspense + ErrorBoundary wrapper for all lazy-loaded visualizers */
+const SafeSuspense = ({ children }: { children: React.ReactNode }) => (
+    <VizErrorBoundary>
+        <React.Suspense fallback={<VizFallback />}>
+            {children}
+        </React.Suspense>
+    </VizErrorBoundary>
 );
 
 type MarkdownRendererProps = {
@@ -72,17 +133,17 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     },
     accordion: (props: MarkdownComponentProps) => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <Accordion {...(props as unknown as React.ComponentProps<typeof Accordion>)} />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     // Custom directive for graphs: ::graph
     graph: (props: MarkdownComponentProps) => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <GraphVisualizer {...(props as unknown as React.ComponentProps<typeof GraphVisualizer>)} />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     // Callouts from ::note, ::tip, etc.
@@ -97,58 +158,65 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     },
     stackviz: () => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <StackVisualizer />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     queueviz: () => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <QueueVisualizer />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     heapviz: () => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <HeapVisualizer />
-            </React.Suspense>
+            </SafeSuspense>
+        );
+    },
+    bstviz: () => {
+        return (
+            <SafeSuspense>
+                <BSTVisualizer />
+            </SafeSuspense>
         );
     },
     vectorviz: () => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <VectorVisualizer />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     linkedlistviz: () => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <ListVisualizer />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     pointerviz: () => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <PointerVisualizer />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     listviz: (props: MarkdownComponentProps) => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <ListGraphVisualizer {...(props as unknown as React.ComponentProps<typeof ListGraphVisualizer>)} />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     bintreeviz: () => {
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <BinTreeVisualizer />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     proofviz: (props: MarkdownComponentProps) => {
@@ -157,41 +225,33 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     mafs: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <MafsVisualizer {...(rest as unknown as React.ComponentProps<typeof MafsVisualizer>)} />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     threeviz: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <ThreeVisualizer {...(rest as unknown as React.ComponentProps<typeof ThreeVisualizer>)} />
-            </React.Suspense>
-        );
-    },
-    three: (props: MarkdownComponentProps) => {
-        const { node: _node, ...rest } = props;
-        return (
-            <React.Suspense fallback={<VizFallback />}>
-                <ThreeVisualizer {...(rest as unknown as React.ComponentProps<typeof ThreeVisualizer>)} />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     linkedinviz: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <LinkedInEmbed {...(rest as unknown as React.ComponentProps<typeof LinkedInEmbed>)} />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     youtubeviz: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
         return (
-            <React.Suspense fallback={<VizFallback />}>
+            <SafeSuspense>
                 <YoutubeEmbed {...(rest as unknown as React.ComponentProps<typeof YoutubeEmbed>)} />
-            </React.Suspense>
+            </SafeSuspense>
         );
     },
     pre: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
@@ -206,13 +266,13 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
 
         return match ? (
             <div className="not-prose my-8 -mx-4 md:mx-0">
-                <React.Suspense fallback={<VizFallback />}>
+                <SafeSuspense>
                     <CodeBlock
                         code={String(children).replace(/\n$/, '')}
                         language={match[1]}
                         title={title}
                     />
-                </React.Suspense>
+                </SafeSuspense>
             </div>
         ) : (
             <code {...rest}
@@ -278,13 +338,13 @@ const rehypePluginsConfig = [
         tagNames: [
             ...(defaultSchema.tagNames || []),
             'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
-            'stackviz', 'queueviz', 'heapviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
+            'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
             'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
-            '*': ['className', 'style'],
+            '*': ['className'],
             'videoviz': ['src', 'url', 'delay'],
             'oopviz': ['simulation'],
             'algoviz': ['algorithm'],
@@ -293,8 +353,8 @@ const rehypePluginsConfig = [
             'linkedinviz': ['src'],
             'mafs': ['type'],
             'threeviz': ['type'],
-            'three': ['type'],
             'graph': ['edges', 'nodes', 'height', 'directed'],
+            'listviz': ['edges', 'nodes', 'height', 'directed'],
             'accordion': ['title', 'defaultOpen'],
             'callout': ['type', 'title'],
             'object': ['data', 'type', 'width', 'height'],
@@ -305,21 +365,31 @@ const rehypePluginsConfig = [
 
 const remarkPluginsConfig = [remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMark, remarkMath];
 
-export function MarkdownRenderer({ content, components: customComponents }: MarkdownRendererProps) {
-    const mergedComponents = React.useMemo(() => {
-        return {
-            ...defaultComponents,
-            ...customComponents,
-        };
-    }, [customComponents]);
+/**
+ * MarkdownRenderer — Memoized to prevent the 9-pass AST pipeline
+ * from re-executing on every parent re-render (critical for scroll-driven
+ * animations in TopicPage that trigger 60fps re-renders).
+ */
+export const MarkdownRenderer = React.memo(
+    function MarkdownRenderer({ content, components: customComponents }: MarkdownRendererProps) {
+        const mergedComponents = React.useMemo(() => {
+            return {
+                ...defaultComponents,
+                ...customComponents,
+            };
+        }, [customComponents]);
 
-    return (
-        <ReactMarkdown
-            rehypePlugins={rehypePluginsConfig as any}
-            remarkPlugins={remarkPluginsConfig as any}
-            components={mergedComponents as unknown as React.ComponentProps<typeof ReactMarkdown>["components"]}
-        >
-            {content}
-        </ReactMarkdown>
-    );
-}
+        return (
+            <VizErrorBoundary>
+                <ReactMarkdown
+                    rehypePlugins={rehypePluginsConfig as any}
+                    remarkPlugins={remarkPluginsConfig as any}
+                    components={mergedComponents as unknown as React.ComponentProps<typeof ReactMarkdown>["components"]}
+                >
+                    {content}
+                </ReactMarkdown>
+            </VizErrorBoundary>
+        );
+    },
+    (prev, next) => prev.content === next.content && prev.components === next.components
+);

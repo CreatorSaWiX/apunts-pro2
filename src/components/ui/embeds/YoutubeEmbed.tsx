@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Spinner from '../Spinner';
 
@@ -24,6 +25,7 @@ const YoutubeEmbed: React.FC<YoutubeEmbedProps> = ({
     src,
     caption,
 }) => {
+    const { t } = useTranslation();
     const containerRef = useRef<HTMLDivElement>(null);
     const [shouldLoad, setShouldLoad] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -74,10 +76,10 @@ const YoutubeEmbed: React.FC<YoutubeEmbedProps> = ({
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-950/40 p-4 text-center">
                         <span className="text-xl">⚠️</span>
                         <span className="text-xs font-mono text-red-400">
-                            Error: No s'ha pogut extreure l'ID del vídeo de YouTube.
+                            {t('markdown.embeds.youtubeError')}
                         </span>
                         <span className="text-[10px] text-slate-500 max-w-xs truncate">
-                            URL proporcionada: {src}
+                            {t('markdown.embeds.urlProvided', { url: src })}
                         </span>
                     </div>
                 ) : null}
@@ -87,7 +89,7 @@ const YoutubeEmbed: React.FC<YoutubeEmbedProps> = ({
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-950">
                         <Spinner size="lg" variant="youtube" />
                         <span className="text-xs font-mono text-slate-500 uppercase tracking-widest animate-pulse">
-                            Carregant vídeo en alta definició…
+                            {t('markdown.embeds.loadingVideo')}
                         </span>
                     </div>
                 )}

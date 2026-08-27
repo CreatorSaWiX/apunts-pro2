@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import { Linkedin } from 'lucide-react';
 import Spinner from '../Spinner';
 
@@ -19,6 +20,7 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
     width = '100%',
     caption,
 }) => {
+    const { t } = useTranslation();
     const containerRef = useRef<HTMLDivElement>(null);
     const [shouldLoad, setShouldLoad] = useState(false);
 
@@ -62,7 +64,7 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
                     rel="noopener noreferrer"
                     className="ml-auto text-[10px] text-slate-500 hover:text-sky-400 transition-colors font-mono"
                 >
-                    Veure a LinkedIn ↗
+                    {t('markdown.embeds.viewOnLinkedIn')}
                 </a>
             </div>
 
@@ -87,7 +89,7 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-950/40 backdrop-blur-sm">
                         <Spinner size="lg" variant="linkedin" />
                         <span className="text-xs font-mono text-slate-500 uppercase tracking-widest animate-pulse">
-                            Carregant contingut…
+                            {t('markdown.embeds.loadingContent')}
                         </span>
                     </div>
                 )}
@@ -102,7 +104,12 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({
             
             {/* Adblock warning */}
             <div className="text-[10px] text-center text-slate-600/60 pb-2 px-4 font-mono">
-                Si l'embed apareix en blanc, és possible que el teu navegador (ex. Brave) estigui bloquejant el contingut de tercers. Pots <a href={src} target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-400">veure'l directament a LinkedIn</a>.
+                <Trans
+                    i18nKey="markdown.embeds.linkedInAdblock"
+                    components={{
+                        link: <a href={src} target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-400" />
+                    }}
+                />
             </div>
         </div>
     );

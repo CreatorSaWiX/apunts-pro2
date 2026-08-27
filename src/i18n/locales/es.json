@@ -2176,5 +2176,29 @@
     "memoryObjects": "Objetos en Memoria",
     "terminalOutput": "Terminal de Salida",
     "viz": "VIZ"
+  },
+  "markdown": {
+    "loadingEngine": "Cargando motor gráfico...",
+    "componentError": "Error al renderizar el componente",
+    "unknownError": "Error desconocido",
+    "threeUnavailableTitle": "Visualización 3D no disponible",
+    "threeUnavailableDesc": "No se pudo cargar el motor 3D (posiblemente bloqueado por el antivirus o sin WebGL). El contenido de los apuntes está completo en el texto inferior.",
+    "code": {
+      "copy": "Copiar código",
+      "copied": "¡Copiado!",
+      "openNewTab": "Abrir en una nueva pestaña"
+    },
+    "accordion": {
+      "untitled": "Sin título",
+      "interactiveElement": "Elemento interactivo"
+    },
+    "embeds": {
+      "loadingContent": "Cargando contenido…",
+      "loadingVideo": "Cargando vídeo en alta definición…",
+      "viewOnLinkedIn": "Ver en LinkedIn ↗",
+      "linkedInAdblock": "Si el embed aparece en blanco, es posible que tu navegador (ej. Brave) esté bloqueando el contenido de terceros. Puedes <link>verlo directamente en LinkedIn</link>.",
+      "youtubeError": "Error: No se pudo extraer el ID del vídeo de YouTube.",
+      "urlProvided": "URL proporcionada: {{url}}"
+    }
   }
 }

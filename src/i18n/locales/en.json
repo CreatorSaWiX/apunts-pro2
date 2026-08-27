@@ -2173,5 +2173,29 @@
     "memoryObjects": "Objects in Memory",
     "terminalOutput": "Output Terminal",
     "viz": "VIZ"
+  },
+  "markdown": {
+    "loadingEngine": "Loading graphics engine...",
+    "componentError": "Error rendering component",
+    "unknownError": "Unknown error",
+    "threeUnavailableTitle": "3D Visualization unavailable",
+    "threeUnavailableDesc": "Could not load 3D engine (possibly blocked by antivirus or without WebGL). Note content is complete in the text below.",
+    "code": {
+      "copy": "Copy code",
+      "copied": "Copied!",
+      "openNewTab": "Open in a new tab"
+    },
+    "accordion": {
+      "untitled": "Untitled",
+      "interactiveElement": "Interactive element"
+    },
+    "embeds": {
+      "loadingContent": "Loading content…",
+      "loadingVideo": "Loading high-definition video…",
+      "viewOnLinkedIn": "View on LinkedIn ↗",
+      "linkedInAdblock": "If the embed appears blank, your browser (e.g. Brave) might be blocking third-party content. You can <link>view it directly on LinkedIn</link>.",
+      "youtubeError": "Error: Could not extract YouTube video ID.",
+      "urlProvided": "Provided URL: {{url}}"
+    }
   }
 }

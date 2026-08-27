@@ -14,13 +14,14 @@
 
 import type { Plugin } from 'unified';
 import type { Text, Parent } from 'mdast';
-import { visit } from 'unist-util-visit';
+import { visit, SKIP } from 'unist-util-visit';
+import type { VisitorResult } from 'unist-util-visit';
 
 const MARK_REGEX = /==(.+?)==/g;
 
 const remarkMark: Plugin = () => {
     return (tree) => {
-        visit(tree, 'text', (node: Text, index: number | undefined, parent: Parent | undefined) => {
+        visit(tree, 'text', (node: Text, index: number | undefined, parent: Parent | undefined): VisitorResult => {
             if (!parent || index === undefined) return;
 
             const value = node.value;
@@ -63,8 +64,11 @@ const remarkMark: Plugin = () => {
                 } as Text);
             }
 
-            // Replace the text node with our new children
+            // Replace the text node with our new children, then SKIP to avoid
+            // re-visiting the newly inserted nodes (prevents double-processing
+            // and potential infinite loops with nested == patterns)
             parent.children.splice(index, 1, ...(children as unknown as Parent['children']));
+            return [SKIP, index + children.length] as unknown as VisitorResult;
         });
     };
 };

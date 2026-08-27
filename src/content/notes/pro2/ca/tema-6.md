@@ -7,51 +7,30 @@ order: 6
 
 ## 6.1 El problema de la cerca
 
-Fins ara hem vist dues estructures lineals principals per guardar dades:
+Amb estructures lineals convencionals hem de triar entre inserir ràpid o cercar ràpid:
 
-| Contenidor | Accés | Cerca | Inserció al mig |
-|:---|:---:|:---:|:---:|
-| `vector<T>` (desordenat) | $\Theta(1)$ | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ |
-| `vector<T>` (ordenat) | $\Theta(1)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(n)$ |
-| `list<T>` | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | $\Theta(1)$ |
-| `map<K, V>` | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
-| `set<T>` | — | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ |
+| Estructura | Cerca | Inserció |
+| :--- | :---: | :---: |
+| **Vector desordenat** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ |
+| **Vector ordenat** | $\mathcal{O}(\log n)$ | $\mathcal{O}(n)$ |
+| **Llista enllaçada (`list`)** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ |
+| **Arbre Binari de Cerca (BST)** | **$\mathcal{O}(\log n)$** | **$\mathcal{O}(\log n)$** |
 
-Queda clar: si la cerca és l'operació predominant, necessitem una estructura especialitzada. La solució és un **Arbre Binari de Cerca (BST)**.
+L'**Arbre Binari de Cerca (BST)** resol aquest dilema aconseguint un equilibri logarítmic en ambdues operacions.
 
 ---
 
 ## 6.2 Arbre Binari de Cerca (BST)
 
-Un **BST** (*Binary Search Tree*) és un `BinTree<T>` que compleix una regla estructural addicional en cada node:
+Un **BST** (*Binary Search Tree*) és un `BinTree<T>` on cada node compleix una regla d'ordre estricta:
 
-> **Invariant BST:** Tots els valors del **subarbre esquerre** són **estrictament menors** que el node, i tots els del **subarbre dret** són **estrictament majors**.
+> - Tots els valors del **subarbre esquerre** són **menors** ($< \text{node}$).
+> - Tots els valors del **subarbre dret** són **majors** ($> \text{node}$).
 
-:::graph
-```json
-{
-  "nodes": [
-    { "id": "50", "label": "50 (arrel)", "color": "#0ea5e9" },
-    { "id": "20", "label": "20", "color": "#8b5cf6" },
-    { "id": "80", "label": "80", "color": "#8b5cf6" },
-    { "id": "10", "label": "10" },
-    { "id": "30", "label": "30" },
-    { "id": "70", "label": "70" },
-    { "id": "90", "label": "90" }
-  ],
-  "links": [
-    { "source": "50", "target": "20", "label": "< 50" },
-    { "source": "50", "target": "80", "label": "> 50" },
-    { "source": "20", "target": "10" },
-    { "source": "20", "target": "30" },
-    { "source": "80", "target": "70" },
-    { "source": "80", "target": "90" }
-  ]
-}
-```
+:::bstviz
 :::
 
-Gràcies a l'invariant, el recorregut **inordre** (*esquerre → arrel → dret*) visita tots els valors **en ordre ascendent** en $\Theta(n)$.
+- **Recorregut inordre:** Visitar *esquerre $\rightarrow$ arrel $\rightarrow$ dret* produeix automàticament la seqüència **ordenada de menor a major** en temps lineal $\Theta(n)$.
 
 ---
 

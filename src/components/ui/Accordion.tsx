@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
@@ -9,11 +10,13 @@ interface AccordionProps {
 }
 
 const Accordion: React.FC<AccordionProps> = ({ 
-    title = "Sense títol", 
+    title, 
     children, 
     defaultOpen = false,
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(defaultOpen);
+  const displayTitle = title ?? t('markdown.accordion.untitled');
 
   // Funció per permetre negretes en el títol (Markdown o HTML)
   const renderTitle = (text: string) => {
@@ -35,9 +38,9 @@ const Accordion: React.FC<AccordionProps> = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between p-5 text-left"
-        aria-label="Element interactiu">
+        aria-label={t('markdown.accordion.interactiveElement')}>
         <span className="text-lg font-medium tracking-tight text-white/90">
-            {renderTitle(title)}
+            {renderTitle(displayTitle)}
         </span>
         <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}

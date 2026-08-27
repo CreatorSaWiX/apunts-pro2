@@ -2179,5 +2179,29 @@
     "memoryObjects": "Objectes a Memòria",
     "terminalOutput": "Terminal de Sortida",
     "viz": "VIZ"
+  },
+  "markdown": {
+    "loadingEngine": "Carregant motor gràfic...",
+    "componentError": "Error al renderitzar el component",
+    "unknownError": "Error desconegut",
+    "threeUnavailableTitle": "Visualització 3D no disponible",
+    "threeUnavailableDesc": "No s'ha pogut carregar el motor 3D (possiblement bloquejat per l'antivirus o sense WebGL). El contingut dels apunts és complet al text de sota.",
+    "code": {
+      "copy": "Copiar codi",
+      "copied": "Copiat!",
+      "openNewTab": "Obrir a una nova pestanya"
+    },
+    "accordion": {
+      "untitled": "Sense títol",
+      "interactiveElement": "Element interactiu"
+    },
+    "embeds": {
+      "loadingContent": "Carregant contingut…",
+      "loadingVideo": "Carregant vídeo en alta definició…",
+      "viewOnLinkedIn": "Veure a LinkedIn ↗",
+      "linkedInAdblock": "Si l'embed apareix en blanc, és possible que el teu navegador (ex. Brave) estigui bloquejant el contingut de tercers. Pots <link>veure'l directament a LinkedIn</link>.",
+      "youtubeError": "Error: No s'ha pogut extreure l'ID del vídeo de YouTube.",
+      "urlProvided": "URL proporcionada: {{url}}"
+    }
   }
 }

@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -10,7 +10,31 @@ function toInt(value: unknown, fallback: number): number {
   return Number.isFinite(n) ? n : fallback;
 }
 
+/**
+ * Factory for directives that simply pass all attributes through to a
+ * custom HTML element. Eliminates the previous 18 copy-pasted handlers.
+ */
+function makePassthrough(hName: string): DirectiveHandler {
+  return (node: DirectiveNode): void => {
+    const data = (node.data ??= {});
+    data.hName = hName;
+    data.hProperties = { ...(node.attributes ?? {}) };
+  };
+}
+
+function handleCallout(node: DirectiveNode, type: string) {
+  const data = (node.data ??= {});
+  const attrs = node.attributes || {};
+
+  data.hName = "callout";
+  data.hProperties = {
+    type,
+    title: attrs.title
+  };
+}
+
 export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
+  // --- Custom handlers (unique logic) ---
   grid: function (node: DirectiveNode): void {
     const attrs = node.attributes ?? {};
     const cols = toInt(attrs["cols"], 2);
@@ -33,190 +57,32 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
       className,
     };
   },
-  graph: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
 
-    data.hName = "graph";
-    data.hProperties = {
-      ...attrs,
-      // Pass other props if needed
-    };
-  },
-  algoviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "algoviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  oopviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "oopviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  stackviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "stackviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  queueviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "queueviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  vectorviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "vectorviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  linkedlistviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "linkedlistviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  pointerviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "pointerviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  listviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "listviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  bintreeviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "bintreeviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  heapviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "heapviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  proofviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "proofviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  mafs: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "mafs";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  videoviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "videoviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  linkedinviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "linkedinviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  youtubeviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "youtubeviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  threeviz: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "threeviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
-  three: function (node: DirectiveNode): void {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-
-    data.hName = "threeviz";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
   note: (node) => handleCallout(node, 'note'),
   tip: (node) => handleCallout(node, 'tip'),
   warning: (node) => handleCallout(node, 'warning'),
   info: (node) => handleCallout(node, 'info'),
-  accordion: (node) => {
-    const data = (node.data ??= {});
-    const attrs = node.attributes ?? {};
-    data.hName = "accordion";
-    data.hProperties = {
-      ...attrs,
-    };
-  },
+
+  accordion: makePassthrough("accordion"),
+
+  // --- Passthrough handlers (all share the same logic) ---
+  graph:          makePassthrough("graph"),
+  algoviz:        makePassthrough("algoviz"),
+  oopviz:         makePassthrough("oopviz"),
+  stackviz:       makePassthrough("stackviz"),
+  queueviz:       makePassthrough("queueviz"),
+  vectorviz:      makePassthrough("vectorviz"),
+  linkedlistviz:  makePassthrough("linkedlistviz"),
+  pointerviz:     makePassthrough("pointerviz"),
+  listviz:        makePassthrough("listviz"),
+  bintreeviz:     makePassthrough("bintreeviz"),
+  heapviz:        makePassthrough("heapviz"),
+  bstviz:         makePassthrough("bstviz"),
+  proofviz:       makePassthrough("proofviz"),
+  mafs:           makePassthrough("mafs"),
+  videoviz:       makePassthrough("videoviz"),
+  linkedinviz:    makePassthrough("linkedinviz"),
+  youtubeviz:     makePassthrough("youtubeviz"),
+  threeviz:       makePassthrough("threeviz"),
+  three:          makePassthrough("threeviz"), // Alias → maps to same component
 };
-
-function handleCallout(node: DirectiveNode, type: string) {
-  const data = (node.data ??= {});
-  const attrs = node.attributes || {};
-
-  data.hName = "callout";
-  data.hProperties = {
-    type,
-    title: attrs.title
-  };
-}
