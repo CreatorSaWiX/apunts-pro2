@@ -10,16 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     list_insert_node: {
         id: "list_insert_node",
-        code: `void insertItem(Item *pitemprev, Item *pitem) {
-    pitem->next = pitemprev->next;
-    pitem->next->prev = pitem;
-    pitem->prev = pitemprev;
-    pitemprev->next = pitem;
-    _size++;
-}`,
         initialGraph: {
             nodes: [
                 { id: 0, label: "pitemprev (A)", fx: -160, fy: 0, color: "#3b82f6" },

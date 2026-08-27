@@ -10,14 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     list_copy_items: {
         id: "list_copy_items",
-        code: `void copyItems(const List& l) {
-    for (Item *pitem = l.itemsup.prev; pitem != &l.iteminf; pitem = pitem->prev) {
-        insertItem(&iteminf, pitem->value);
-    }
-}`,
         initialGraph: {
             nodes: [
                 { id: "l_inf", label: "l.inf", fx: -160, fy: -60, color: "#8b5cf6" },

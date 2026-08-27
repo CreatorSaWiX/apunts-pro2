@@ -10,18 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     arbre_plantar: {
         id: "arbre_plantar",
-        code: `void plantar(const T &x, Arbre &a1, Arbre &a2) {
-    node_arbre* aux = new node_arbre;
-    aux->info = x;
-    aux->segE = a1.primer_node;
-    aux->segD = a2.primer_node;
-    primer_node = aux;
-    a1.primer_node = NULL;
-    a2.primer_node = NULL;
-}`,
         initialGraph: {
             nodes: [
                 { id: "a1", label: "a1 (2)", fx: -60, fy: 0, color: "#10b981" },

@@ -10,32 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const hamiltonianBacktrackCode = `bool hamiltonian_path(int u, int count, int n,
-                      const vector<vector<int>>& G,
-                      vector<bool>& visitat, vector<int>& path) {
-    if (count == n) return true;
-    
-    for (int v : G[u]) {
-        if (!visitat[v]) {
-            visitat[v] = true;
-            path.push_back(v);
-            
-            if (hamiltonian_path(v, count + 1, n, G, visitat, path)) {
-                return true;
-            }
-            
-            // Backtracking: Aquest camí no té sortida final, desfem iteració
-            visitat[v] = false;
-            path.pop_back();
-        }
-    }
-    return false;
-}`;
-
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     hamiltonian_backtrack: {
         id: "hamiltonian_backtrack",
-        code: hamiltonianBacktrackCode,
         initialGraph: {
             nodes: [
                 { id: 0, label: "0", fx: 0, fy: -80 },
@@ -66,20 +43,20 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
                 addStep(1, "algo.hamiltonian_backtrack.step_1", { u: u.toString(), count: count.toString() });
 
                 if (count === 4) {
-                    addStep(2, "algo.hamiltonian_backtrack.step_2", { count: count.toString() });
+                    addStep(4, "algo.hamiltonian_backtrack.step_2", { count: count.toString() });
                     for (let i = 0; i < 4; i++) hl[i] = "#22c55e"; // bright green
                     return true;
                 }
 
                 for (const v of adj[u]) {
-                    addStep(5, "algo.hamiltonian_backtrack.step_3", { u: u.toString(), v: v.toString() });
+                    addStep(6, "algo.hamiltonian_backtrack.step_3", { u: u.toString(), v: v.toString() });
                     if (!visitat[v]) {
                         visitat[v] = true;
                         path.push(v);
                         const oldColor = hl[v];
                         hl[v] = "#3b82f6"; // blue in path
 
-                        addStep(7, "algo.hamiltonian_backtrack.step_4", { u: u.toString(), v: v.toString() });
+                        addStep(8, "algo.hamiltonian_backtrack.step_4", { u: u.toString(), v: v.toString() });
 
                         if (solve(v, count + 1)) {
                             addStep(11, "algo.hamiltonian_backtrack.step_5", { u: u.toString(), v: v.toString() });
@@ -93,7 +70,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
                         else delete hl[v];
 
                         hl[u] = "#ef4444"; // Backtracked warning logic
-                        addStep(15, "algo.hamiltonian_backtrack.step_6", { u: u.toString(), v: v.toString() });
+                        addStep(16, "algo.hamiltonian_backtrack.step_6", { u: u.toString(), v: v.toString() });
                         hl[u] = "#3b82f6"; // Restore
                     } else {
                         addStep(6, "algo.hamiltonian_backtrack.step_7", { u: u.toString(), v: v.toString() });

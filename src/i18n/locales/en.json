@@ -1017,17 +1017,17 @@
       "dead": "Dead"
     },
     "bst_insert": {
-      "step_2": "Node 50 is not empty. 25 ≠ 50, we pass.",
-      "step_4": "Node 20 is not empty. 25 ≠ 20, we pass.",
-      "step_3": "25 < 50! We descend recursively to the LEFT SUB-TREE. The right subtree is reused as is.",
-      "step_1": "We insert x=25 into the BST. The BST tree is immutable: we reconstruct the path to the insertion point.",
-      "step_6": "Node 30 is not empty. 25 ≠ 30, we pass.",
-      "step_11": "Let's go back to the root. New BST rebuilt with node 25 in place. Total cost: O(log n).",
-      "step_5": "25 > 20 (does not satisfy x < a.value()). We go down to the RIGHT SUB-TREE of 20.",
-      "step_8": "EMPTY TREE! Base case of recursion. We create a new node BinTree<int>(25). The new element is inserted here.",
-      "step_7": "25 < 30! We go down to the LEFT SUB-TREE of 30 (which is empty).",
-      "step_10": "Let's go back to node 20. It is rebuilt with the new right branch (counting 30 and 25). The left (10) is reused.",
-      "step_9": "We return to node 30. It is rebuilt with the new left branch containing 25. The rest (right subtree → null) is reused."
+      "step_1": "We insert x=25 into the BST. Since BinTree is immutable, we reconstruct only the path to the insertion point.",
+      "step_2": "Node 50 is not empty. 25 ≠ 50, let's continue.",
+      "step_3": "25 < 50! Descend recursively into the LEFT SUBTREE. The right subtree is reused as is.",
+      "step_4": "Node 20 is not empty. 25 ≠ 20, let's continue.",
+      "step_5": "25 > 20 (does not satisfy x < a.value()). Descend into the RIGHT SUBTREE of 20.",
+      "step_6": "Node 30 is not empty. 25 ≠ 30, let's continue.",
+      "step_7": "25 < 30! Descend into the LEFT SUBTREE of 30 (which is empty).",
+      "step_8": "Empty tree: base case. Create new node BinTree<int>(25).",
+      "step_9": "Return to node 30: rebuilt with new left branch (25).",
+      "step_10": "Return to node 20: rebuilt with new right branch (30 and 25). Left branch (10) is reused.",
+      "step_11": "Return to root (50): new BST reconstructed with 25 in place. Total cost: O(log n)."
     },
     "bfs2": {
       "step_5": "There are no more new neighbors for x={{x}}. We definitely remove it from the tail (octopus).",

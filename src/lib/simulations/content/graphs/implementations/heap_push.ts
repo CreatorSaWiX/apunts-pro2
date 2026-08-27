@@ -10,25 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const heapPushCode = `template <typename T>
-void Heap<T>::push(const T& x) {
-    resize_(1);
-    elems_[size_] = x;
-    flow_up_(size_);
-}
-
-template <typename T>
-void Heap<T>::flow_up_(int i) {
-    while (i > 1 && elems_[i] > elems_[i / 2]) {
-        std::swap(elems_[i], elems_[i / 2]);
-        i /= 2;
-    }
-}`;
-
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     heap_push: {
         id: "heap_push",
-        code: heapPushCode,
         initialGraph: {
             nodes: [
                 { id: 1, label: "1 (50)", fx: 0, fy: -100 },
@@ -60,9 +44,9 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
             
             hl[6] = "#10b981"; // green: target
             labels[6] = "6 (45)";
-            addStep(3, "algo.heap_push.step_2", { x: "45", size_: "6" });
+            addStep(4, "algo.heap_push.step_2", { x: "45", size_: "6" });
             
-            addStep(4, "algo.heap_push.step_3", { i: "6" });
+            addStep(5, "algo.heap_push.step_3", { i: "6" });
             
             hl[6] = "#3b82f6"; // blue: current moving node
             addStep(10, "algo.heap_push.step_4", { i: "6", pare_val: "30", me_val: "45" });
@@ -86,7 +70,7 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
             
             hl[3] = "#22c55e"; // bright green: final position
             delete hl[1];
-            addStep(14, "algo.heap_push.step_10", { success: "Done" });
+            addStep(6, "algo.heap_push.step_10", { success: "Done" });
 
             return steps;
         }

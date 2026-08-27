@@ -10,16 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     arbre_fills: {
         id: "arbre_fills",
-        code: `void fills(Arbre &fe, Arbre &fd) {
-    node_arbre* aux = primer_node;
-    fe.primer_node = aux->segE;
-    fd.primer_node = aux->segD;
-    primer_node = NULL;
-    delete aux;
-}`,
         initialGraph: {
             nodes: [
                 { id: "m", label: "this (7)", fx: 0, fy: -80, color: "#facc15" },

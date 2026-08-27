@@ -36,40 +36,30 @@ Un **BST** (*Binary Search Tree*) és un `BinTree<T>` on cada node compleix una 
 
 ## 6.3 Cerca en un BST
 
-La cerca és l'operació més directa i eficient. A cada pas **descartem la meitat de l'arbre** sense ni explorar-la:
-
-```cpp
-bool bst_search(const BinTree<int>& a, int x) {
-    if (a.empty()) return false;
-    if (x == a.value()) return true;
-    return bst_search(a.value() < x ? a.left() : a.right(), x);
-}
-```
-
-Observa el poder de la propietat BST: si `x < a.value()`, **sabem amb certesa** que `x` no pot estar al subarbre dret. El descartem completament sense explorer-lo.
+A cada pas comparem $x$ amb el valor del node actual i **descartem la meitat de l'arbre**:
+- Si $x < \text{node}$: cerquem només al subarbre **esquerre**.
+- Si $x > \text{node}$: cerquem només al subarbre **dret**.
 
 :::algoviz{algorithm="bst_search"}
 :::
 
-:::tip
-En un BST **equilibrat**, la cerca costa $\mathcal{O}(\log n)$. En el pitjor cas (arbre degenerat/llista), pot arribar a $\mathcal{O}(n)$. La clau és mantenir l'arbre balancejat.
-:::
+> **Complexitat:** **$\mathcal{O}(\log n)$** en un arbre equilibrat (proporcional a l'alçada). En el pitjor cas d'un arbre degenerat (en forma de llista), pot arribar a $\mathcal{O}(n)$.
 
-### Mínim i Màxim
+---
 
-El valor mínim és sempre el node més a l'esquerra (baixem tot el camí cap a l'esquerra fins trobar un fill buit). El màxim, el més a la dreta.
+### Mínim i màxim
+- **Mínim:** Descendir sempre cap a l'esquerra fins a trobar un node sense fill esquerre.
+- **Màxim:** Descendir sempre cap a la dreta fins a trobar un node sense fill dret.
 
 ```cpp
 int bst_min(const BinTree<int>& a) {
-    assert(!bst.empty());
     if (a.left().empty()) return a.value();
     return bst_min(a.left());
 }
 
 int bst_max(const BinTree<int>& a) {
-    assert(!bst.empty());
     if (a.right().empty()) return a.value();
-    return bst_min(a.right());
+    return bst_max(a.right());
 }
 ```
 
@@ -77,29 +67,12 @@ int bst_max(const BinTree<int>& a) {
 
 ## 6.4 Inserció en un BST
 
-Com que `BinTree<T>` és **immutable**, no podem modificar l'arbre existent. La inserció **reconstrueix el camí** des de l'arrel fins al punt d'inserció, reutilitzant els subarbres que no canvien:
-
-```cpp
-BinTree<int> bst_insert(const BinTree<int>& a, int x) {
-    if (a.empty())
-        return BinTree<int>(x);          // Cas base: aquí va el nou node
-    if (x == a.value()) return a;        // Ja existeix, no inserim duplicat
-    if (x < a.value())
-        return BinTree<int>(a.value(),
-                            bst_insert(a.left(), x),  // Reconstruïm branca esq
-                            a.right());               // Reutilitzem branca dreta
-    return BinTree<int>(a.value(),
-                        a.left(),
-                        bst_insert(a.right(), x));    // Reutilitzem branca esq
-}
-```
+Com que `BinTree<T>` és **immutable**, la inserció no modifica l'arbre original: **reconstrueix únicament el camí** fins a la posició del nou node i **reutilitza** tots els subarbres no afectats:
 
 :::algoviz{algorithm="bst_insert"}
 :::
 
-:::info
-Fixeu-vos que els subarbres que **no estem travessant** es reutilitzen directament sense copiar-los. Gràcies a la immutabilitat funcional de `BinTree`, el compilador s'encarrega d'optimitzar la compartició de memòria (estructura persistent).
-:::
+> **Estructura persistent:** Els subarbres no modificats es comparteixen en memòria directament sense duplicar dades. Cost en temps i espai: **$\mathcal{O}(\log n)$**.
 
 ---
 

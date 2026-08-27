@@ -10,22 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const treeSearchCode = `bool tree_search(Tree<int> t, int x) {
-    if (t.empty()) return false;
-    if (t.value() == x) return true;
-    
-    for (int i = 0; i < t.num_children(); i++) {
-        if (tree_search(t.child(i), x)) {
-            return true;
-        }
-    }
-    return false;
-}`;
-
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     tree_general_search: {
         id: "tree_general_search",
-        code: treeSearchCode,
         initialGraph: {
             nodes: [
                 { id: 1, label: "50", fx: 0, fy: -100 },

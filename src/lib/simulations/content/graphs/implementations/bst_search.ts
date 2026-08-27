@@ -32,18 +32,9 @@ const bstGraph = {
 
 const bstVal = { 1: 50, 2: 20, 3: 80, 4: 10, 5: 30, 6: 70, 7: 90 };
 
-const bstSearchCode = `bool bst_search(const BinTree<int>& a, int x) {
-    if (a.empty()) return false;
-    if (x == a.value()) return true;
-    if (x < a.value())
-        return bst_search(a.left(), x);
-    return bst_search(a.right(), x);
-}`;
-
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     bst_search: {
         id: "bst_search",
-        code: bstSearchCode,
         initialGraph: bstGraph,
         generateSteps: () => {
             const steps: AlgoStep[] = [];
@@ -58,27 +49,27 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
             // Pas 1: node 50
             hl[1] = "#facc15";
             addStep(2, "algo.bst_search.step_2", { node: "50", x: "30" });
-            addStep(3, "algo.bst_search.step_3", { node: "50", x: "30", cond: "30 == 50 → F" });
-            addStep(4, "algo.bst_search.step_4", { node: "50", x: "30", cond: "30 < 50 → T" });
-            hl[1] = "#475569"; // grey: descarded direction
-            hl[3] = "#1e293b"; hl[6] = "#1e293b"; hl[7] = "#1e293b"; // grey out right subtree
+            addStep(3, "algo.bst_search.step_3", { node: "50", x: "30", cond: "30 ≠ 50" });
+            addStep(4, "algo.bst_search.step_4", { node: "50", x: "30", cond: "30 < 50 → esquerra" });
+            hl[1] = "#475569"; // gris: visitat
+            hl[3] = "#1e293b"; hl[6] = "#1e293b"; hl[7] = "#1e293b"; // descartar subarbre dret
 
             // Pas 2: node 20
             hl[2] = "#facc15";
             addStep(2, "algo.bst_search.step_5", { node: "20", x: "30" });
-            addStep(3, "algo.bst_search.step_6", { node: "20", x: "30", cond: "30 == 20 → F" });
-            addStep(4, "algo.bst_search.step_7", { node: "20", x: "30", cond: "30 < 20 → F" });
+            addStep(3, "algo.bst_search.step_6", { node: "20", x: "30", cond: "30 ≠ 20" });
+            addStep(5, "algo.bst_search.step_7", { node: "20", x: "30", cond: "30 > 20 → dreta" });
             hl[2] = "#475569";
-            hl[4] = "#1e293b"; // grey out left (10)
+            hl[4] = "#1e293b"; // descartar subarbre esquerre (10)
 
             // Pas 3: node 30 - TROBAT!
             hl[5] = "#facc15";
             addStep(2, "algo.bst_search.step_8", { node: "30", x: "30" });
             hl[5] = "#22c55e";
-            addStep(3, "algo.bst_search.step_9", { node: "30", x: "30", cond: "30 == 30 → T", return: "true" });
+            addStep(3, "algo.bst_search.step_9", { node: "30", x: "30", cond: "30 == 30 → true", return: "true" });
             hl[2] = "#22c55e";
             hl[1] = "#22c55e";
-            addStep(6, "algo.bst_search.step_10", { comparacions: "3", cost: "O(log n)" });
+            addStep(3, "algo.bst_search.step_10", { comparacions: "3", cost: "O(log n)" });
 
             return steps;
         }

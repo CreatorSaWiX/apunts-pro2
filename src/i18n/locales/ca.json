@@ -1031,17 +1031,17 @@
       "step_6": "Cua buida! L'algorisme BFS ha acabat i tenim totes les distàncies."
     },
     "bst_insert": {
-      "step_1": "Inserim x=25 al BST. L'arbre BST és immutable: reconstruïm el camí fins al punt d'inserció.",
-      "step_2": "Node 50 no és buit. 25 ≠ 50, passem.",
-      "step_3": "25 < 50! Descenidm recursivament al SUBARBRE ESQUERRE. El subarbre dret es reutilitza tal qual.",
-      "step_4": "Node 20 no és buit. 25 ≠ 20, passem.",
+      "step_1": "Inserim x=25 al BST. Com que BinTree és immutable, reconstruïm només el camí fins al punt d'inserció.",
+      "step_2": "Node 50 no és buit. 25 ≠ 50, continuem.",
+      "step_3": "25 < 50! Descendim recursivament al SUBARBRE ESQUERRE. El subarbre dret es reutilitza tal qual.",
+      "step_4": "Node 20 no és buit. 25 ≠ 20, continuem.",
       "step_5": "25 > 20 (no compleix x < a.value()). Descendim al SUBARBRE DRET del 20.",
-      "step_6": "Node 30 no és buit. 25 ≠ 30, passem.",
-      "step_7": "25 < 30! Descenidm al SUBARBRE ESQUERRE del 30 (que és buit).",
-      "step_8": "ARBRE BUIT! Cas base de la recursió. Creem un nou node BinTree<int>(25). Aquí s'insereix el nou element.",
-      "step_9": "Tornem a node 30. Es reconstrueix amb la nova branca esquerra que conté 25. La resta (subarbre dret → null) es reutilitza.",
-      "step_10": "Tornem a node 20. Es reconstrueix amb la nova branca dreta (que conte 30 i 25). L'esquerra (10) es reutilitza.",
-      "step_11": "Tornem a l'arrel. Nou BST reconstruït amb el node 25 al seu lloc. Cost total: O(log n)."
+      "step_6": "Node 30 no és buit. 25 ≠ 30, continuem.",
+      "step_7": "25 < 30! Descendim al SUBARBRE ESQUERRE del 30 (que és buit).",
+      "step_8": "Arbre buit: cas base. Creem el nou node BinTree<int>(25).",
+      "step_9": "Tornem al node 30: es reconstrueix amb la nova branca esquerra (25).",
+      "step_10": "Tornem al node 20: es reconstrueix amb la nova branca dreta (30 i 25). La branca esquerra (10) es reutilitza.",
+      "step_11": "Tornem a l'arrel (50): nou BST reconstruït amb el 25 al seu lloc. Cost total: O(log n)."
     },
     "bst_search": {
       "step_1": "Iniciem la cerca de x=30 des de l'arrel del BST.",

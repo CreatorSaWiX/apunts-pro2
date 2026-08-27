@@ -10,20 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     arbre_copia_node: {
         id: "arbre_copia_node",
-        code: `static node_arbre* copia_node_arbre(node_arbre* m) {
-    node_arbre* n;
-    if (m == NULL) n = NULL;
-    else {
-        n = new node_arbre;
-        n->info = m->info;
-        n->segE = copia_node_arbre(m->segE);
-        n->segD = copia_node_arbre(m->segD);
-    }
-    return n;
-}`,
         initialGraph: {
             nodes: [
                 { id: "m", label: "m (7)", fx: -100, fy: -80, color: "#8b5cf6" },

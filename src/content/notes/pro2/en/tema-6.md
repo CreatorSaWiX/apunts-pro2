@@ -36,40 +36,30 @@ A **BST** (*Binary Search Tree*) is a `BinTree<T>` where each node satisfies a s
 
 ## 6.3 Search in a BST
 
-Search is the most direct and efficient operation. At each step we **discard half of the tree** without even exploring it:
-
-```cpp
-bool bst_search(const BinTree<int>& a, int x) {
-    if (a.empty()) return false;
-    if (x == a.value()) return true;
-    return bst_search(a.value() < x ? a.left() : a.right(), x);
-}
-```
-
-Observe the power of the BST property: if `x < a.value()`, **we know for sure** that `x` cannot be in the right subtree. We discard it completely without exploring it.
+At each step we compare $x$ with the current node value and **discard half of the tree**:
+- If $x < \text{node}$: search only in the **left** subtree.
+- If $x > \text{node}$: search only in the **right** subtree.
 
 :::algoviz{algorithm="bst_search"}
 :::
 
-:::tip
-In a **balanced** BST, search costs $\mathcal{O}(\log n)$. In the worst case (degenerate tree/list), it can reach $\mathcal{O}(n)$. The key is to keep the tree balanced.
-:::
+> **Complexity:** **$\mathcal{O}(\log n)$** in a balanced tree (proportional to height). In the worst case of a degenerate tree (linked-list shaped), it can degrade to $\mathcal{O}(n)$.
 
-### Minimum and Maximum
+---
 
-The minimum value is always the leftmost node (we go all the way down to the left until we find an empty child). The maximum, the rightmost.
+### Minimum and maximum
+- **Minimum:** Descend always to the left until finding a node without a left child.
+- **Maximum:** Descend always to the right until finding a node without a right child.
 
 ```cpp
 int bst_min(const BinTree<int>& a) {
-    assert(!bst.empty());
     if (a.left().empty()) return a.value();
     return bst_min(a.left());
 }
 
 int bst_max(const BinTree<int>& a) {
-    assert(!bst.empty());
     if (a.right().empty()) return a.value();
-    return bst_min(a.right());
+    return bst_max(a.right());
 }
 ```
 
@@ -77,29 +67,12 @@ int bst_max(const BinTree<int>& a) {
 
 ## 6.4 Insertion in a BST
 
-Since `BinTree<T>` is **immutable**, we cannot modify the existing tree. Insertion **reconstructs the path** from the root to the insertion point, reusing the subtrees that do not change:
-
-```cpp
-BinTree<int> bst_insert(const BinTree<int>& a, int x) {
-    if (a.empty())
-        return BinTree<int>(x);          // Base case: here goes the new node
-    if (x == a.value()) return a;        // Already exists, we don't insert duplicate
-    if (x < a.value())
-        return BinTree<int>(a.value(),
-                            bst_insert(a.left(), x),  // We rebuild left branch
-                            a.right());               // We reuse right branch
-    return BinTree<int>(a.value(),
-                        a.left(),
-                        bst_insert(a.right(), x));    // We reuse left branch
-}
-```
+Since `BinTree<T>` is **immutable**, insertion does not mutate the original tree: it **reconstructs only the path** to the new node's position and **reuses** all unaffected subtrees:
 
 :::algoviz{algorithm="bst_insert"}
 :::
 
-:::info
-Notice that the subtrees we are **not traversing** are reused directly without copying them. Thanks to the functional immutability of `BinTree`, the compiler is in charge of optimizing memory sharing (persistent structure).
-:::
+> **Persistent structure:** Unaffected subtrees are directly shared in memory without duplicating data. Time and space complexity: **$\mathcal{O}(\log n)$**.
 
 ---
 

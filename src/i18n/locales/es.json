@@ -1030,17 +1030,17 @@
       "step_5": "Ya no hay vecinos nuevos por x={{x}}. Lo sacamos definitivamente de la cola (pop)."
     },
     "bst_insert": {
-      "step_1": "Insertamos x=25 en el BST. El árbol BST es inmutable: reconstruimos el camino hasta el punto de inserción.",
-      "step_2": "Nodo 50 no está vacío. 25 ≠ 50, pasamos.",
-      "step_4": "Nodo 20 no está vacío. 25 ≠ 20, pasamos.",
-      "step_3": "25 < 50! Descendemos recursivamente al SUBARBRO IZQUIERDO. El subárbol derecho se reutiliza tal cual.",
-      "step_9": "Volvemos a nodo 30. Se reconstruye con la nueva rama izquierda que contiene 25. El resto (subarmol derecho → null) se reutiliza.",
-      "step_10": "Volvemos a nodo 20. Se reconstruye con la nueva rama derecha (que contiene 30 y 25). La izquierda (10) se reutiliza.",
-      "step_5": "25 > 20 (no cumple x < a.value()). Descendemos al SUBARBRE DERECHO del 20.",
-      "step_8": "ÁRBOL VACÍO! Caso base de la recursión. Creamos un nuevo nodo BinTree<int>(25). Aquí se inserta el nuevo elemento.",
-      "step_6": "Nodo 30 no está vacío. 25 ≠ 30, pasamos.",
-      "step_7": "25 < 30! Descendemos al SUBARBRO IZQUIERDO del 30 (que está vacío).",
-      "step_11": "Volvemos a la raíz. Nuevo BST reconstruido con el nodo 25 en su sitio. Coste total: O(log n)."
+      "step_1": "Insertamos x=25 en el BST. Como BinTree es inmutable, reconstruimos solo el camino hasta el punto de inserción.",
+      "step_2": "Nodo 50 no está vacío. 25 ≠ 50, continuamos.",
+      "step_3": "25 < 50! Descendemos recursivamente al SUBÁRBOL IZQUIERDO. El subárbol derecho se reutiliza tal cual.",
+      "step_4": "Nodo 20 no está vacío. 25 ≠ 20, continuamos.",
+      "step_5": "25 > 20 (no cumple x < a.value()). Descendemos al SUBÁRBOL DERECHO del 20.",
+      "step_6": "Nodo 30 no está vacío. 25 ≠ 30, continuamos.",
+      "step_7": "25 < 30! Descendemos al SUBÁRBOL IZQUIERDO del 30 (que está vacío).",
+      "step_8": "Árbol vacío: caso base. Creamos el nuevo nodo BinTree<int>(25).",
+      "step_9": "Volvemos al nodo 30: se reconstruye con la nueva rama izquierda (25).",
+      "step_10": "Volvemos al nodo 20: se reconstruye con la nueva rama derecha (30 y 25). La izquierda (10) se reutiliza.",
+      "step_11": "Volvemos a la raíz (50): nuevo BST reconstruido con el 25 en su sitio. Coste total: O(log n)."
     },
     "bst_search": {
       "step_3": "30 ≠ 50, no es el valor buscado.",

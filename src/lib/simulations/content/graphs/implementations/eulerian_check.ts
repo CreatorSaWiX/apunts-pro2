@@ -10,28 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const eulerianCheckCode = `bool is_eulerian(const vector<vector<int>>& G) {
-    int odd_count = 0;
-    
-    for (int i = 0; i < G.size(); i++) {
-        if (G[i].size() % 2 != 0) {
-            odd_count++;
-        }
-    }
-    
-    // Si tots parells -> Circuit Eulerià
-    if (odd_count == 0) return true; 
-    
-    // Si exactament 2 senars -> Senderó Eulerià
-    if (odd_count == 2) return true; 
-    
-    return false;
-}`;
-
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     eulerian_check: {
         id: "eulerian_check",
-        code: eulerianCheckCode,
         initialGraph: {
             nodes: [
                 { id: 0, label: "0 (Gr 2)", fx: -60, fy: -40 },
@@ -69,18 +50,18 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
                     addStep(6, "algo.eulerian_check.step_3", { i: i.toString(), odd_count: odd_count.toString() });
                 } else {
                     hl[i] = "#10b981"; // green meaning even
-                    addStep(9, "algo.eulerian_check.step_4", { i: i.toString(), odd_count: odd_count.toString() });
+                    addStep(4, "algo.eulerian_check.step_4", { i: i.toString(), odd_count: odd_count.toString() });
                 }
             }
 
             addStep(11, "algo.eulerian_check.step_5", { odd_count: odd_count.toString() });
 
             if (odd_count === 0) {
-                addStep(12, "algo.eulerian_check.step_6", { odd_count: odd_count.toString() });
+                addStep(11, "algo.eulerian_check.step_6", { odd_count: odd_count.toString() });
             } else if (odd_count === 2) {
-                addStep(15, "algo.eulerian_check.step_7", { odd_count: odd_count.toString() });
+                addStep(14, "algo.eulerian_check.step_7", { odd_count: odd_count.toString() });
             } else {
-                addStep(17, "algo.eulerian_check.step_8", { odd_count: odd_count.toString() });
+                addStep(16, "algo.eulerian_check.step_8", { odd_count: odd_count.toString() });
             }
             return steps;
         }

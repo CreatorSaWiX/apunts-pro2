@@ -10,23 +10,9 @@ interface AlgoStep {
     variables: Record<string, string>;
 }
 
-const bstInsertCode = `BinTree<int> bst_insert(const BinTree<int>& a, int x) {
-    if (a.empty())
-        return BinTree<int>(x);
-    if (x == a.value()) return a; // ja existeix
-    if (x < a.value())
-        return BinTree<int>(a.value(),
-                            bst_insert(a.left(), x),
-                            a.right());
-    return BinTree<int>(a.value(),
-                        a.left(),
-                        bst_insert(a.right(), x));
-}`;
-
-const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
+const legacyAlgo: Record<string, { id: string; initialGraph?: Record<string, unknown>; generateSteps: () => AlgoStep[] }> = {
     bst_insert: {
         id: "bst_insert",
-        code: bstInsertCode,
         initialGraph: {
             nodes: [
                 { id: 1, label: "50", fx: 0,    fy: -120 },
@@ -59,20 +45,20 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 
             // Pas 1: Arrel 50
             hl[1] = "#facc15";
-            addStep(3, "algo.bst_insert.step_2", { node: "50", x: "25", cond: "buit→F, 25≠50" });
-            addStep(4, "algo.bst_insert.step_3", { node: "50", decision: "25 < 50 → T" });
-            hl[1] = "#0ea5e9"; // blue: being reconstructed
+            addStep(3, "algo.bst_insert.step_2", { node: "50", x: "25", cond: "25 ≠ 50" });
+            addStep(4, "algo.bst_insert.step_3", { node: "50", decision: "25 < 50 → esquerra" });
+            hl[1] = "#0ea5e9"; // blau: en reconstrucció
 
             // Pas 2: node 20
             hl[2] = "#facc15";
-            addStep(3, "algo.bst_insert.step_4", { node: "20", x: "25" });
-            addStep(4, "algo.bst_insert.step_5", { node: "20", decision: "25 < 20 → F" });
+            addStep(3, "algo.bst_insert.step_4", { node: "20", x: "25", cond: "25 ≠ 20" });
+            addStep(5, "algo.bst_insert.step_5", { node: "20", decision: "25 > 20 → dreta" });
             hl[2] = "#0ea5e9";
 
             // Pas 3: node 30
             hl[5] = "#facc15";
-            addStep(3, "algo.bst_insert.step_6", { node: "30", x: "25" });
-            addStep(4, "algo.bst_insert.step_7", { node: "30", decision: "25 < 30 → T" });
+            addStep(3, "algo.bst_insert.step_6", { node: "30", x: "25", cond: "25 ≠ 30" });
+            addStep(4, "algo.bst_insert.step_7", { node: "30", decision: "25 < 30 → esquerra" });
             hl[5] = "#0ea5e9";
 
             // Pas 4: Cas base - buit -> crear nou node!
@@ -82,11 +68,11 @@ const legacyAlgo: Record<string, { id: string; code?: string; initialGraph?: Rec
 
             // Propagar reconstrucció cap amunt
             hl[5] = "#22c55e";
-            addStep(7, "algo.bst_insert.step_9", { reconstruint: "BinTree(30, [25], null)" });
+            addStep(4, "algo.bst_insert.step_9", { reconstruint: "BinTree(30, [25], null)" });
             hl[2] = "#22c55e";
-            addStep(7, "algo.bst_insert.step_10", { reconstruint: "BinTree(20, [10], [30→25])" });
+            addStep(5, "algo.bst_insert.step_10", { reconstruint: "BinTree(20, [10], [30→25])" });
             hl[1] = "#22c55e";
-            addStep(7, "algo.bst_insert.step_11", { cost: "O(log n)", arbre_final: "50{20{10,30{25,NULL}},80{70,90}}" });
+            addStep(4, "algo.bst_insert.step_11", { cost: "O(log n)", arbre_final: "50" });
 
             return steps;
         }

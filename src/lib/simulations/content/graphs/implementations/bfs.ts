@@ -43,7 +43,7 @@ export const bfs: Simulation = {
       if (left !== null) {
         Q.push(left);
         builder.setHighlight(left, "#facc15"); // In queue
-        updateVars({ act: act.toString() }).addStep(14, "algo.bfs.step_4", {
+        updateVars({ act: act.toString() }).addStep(13, "algo.bfs.step_4", {
           act: act.toString(),
           left: left.toString(),
         });
@@ -51,7 +51,7 @@ export const bfs: Simulation = {
       if (right !== null) {
         Q.push(right);
         builder.setHighlight(right, "#facc15"); // In queue
-        updateVars({ act: act.toString() }).addStep(15, "algo.bfs.step_5", {
+        updateVars({ act: act.toString() }).addStep(14, "algo.bfs.step_5", {
           act: act.toString(),
           right: right.toString(),
         });
@@ -60,7 +60,7 @@ export const bfs: Simulation = {
       builder.setHighlight(act, "#3b82f6"); // Done
     }
 
-    updateVars().addStep(17, "algo.bfs.step_6");
+    updateVars().addStep(16, "algo.bfs.step_6");
 
     return builder.build();
   },
