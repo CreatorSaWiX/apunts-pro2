@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -66,6 +66,7 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   accordion: makePassthrough("accordion"),
 
   // --- Passthrough handlers (all share the same logic) ---
+  download:       makePassthrough("download"),
   graph:          makePassthrough("graph"),
   algoviz:        makePassthrough("algoviz"),
   oopviz:         makePassthrough("oopviz"),

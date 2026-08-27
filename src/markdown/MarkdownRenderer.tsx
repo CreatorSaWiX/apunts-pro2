@@ -127,6 +127,28 @@ type MarkdownRendererProps = {
 type MarkdownComponentProps = Record<string, unknown>;
 
 const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
+    download: (props: MarkdownComponentProps) => {
+        const href = (props.href || props.url || props.src) as string;
+        const label = (props.label || props.title || 'Descarregar') as string;
+        const description = props.description as string;
+        return (
+            <div className="flex flex-wrap items-center gap-3 my-4 not-prose">
+                {description && <span className="text-slate-300 text-sm font-semibold">{description}</span>}
+                <a
+                    href={href}
+                    download
+                    className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 text-[11px] font-bold tracking-wider uppercase rounded-xl border transition-all select-none bg-sky-500/10 text-sky-400 border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-500/40 hover:text-sky-300 shadow-md shadow-sky-950/20 group no-underline w-fit"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 group-hover:-translate-y-0.5 transition-transform duration-200">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>{label}</span>
+                </a>
+            </div>
+        );
+    },
     // Custom directive for videos: ::videoviz[src="/m2/video.webm" delay="3500"]
     videoviz: (props: MarkdownComponentProps) => {
         return <SimulationPlayer type="video" {...(props as any)} />;
@@ -337,14 +359,23 @@ const rehypePluginsConfig = [
         ...defaultSchema,
         tagNames: [
             ...(defaultSchema.tagNames || []),
-            'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
+            'svg', 'path', 'polyline', 'line', 'polygon', 'rect', 'circle', 'g',
+            'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
             'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
-            '*': ['className'],
+            '*': ['className', 'class', 'style', 'id'],
+            'a': ['href', 'target', 'rel', 'download', 'className', 'class', 'title'],
+            'svg': ['xmlns', 'width', 'height', 'viewBox', 'fill', 'stroke', 'strokeWidth', 'strokeLinecap', 'strokeLinejoin', 'className', 'class', 'style'],
+            'path': ['d', 'fill', 'stroke', 'strokeWidth', 'strokeLinecap', 'strokeLinejoin', 'className', 'class'],
+            'polyline': ['points', 'fill', 'stroke', 'strokeWidth', 'strokeLinecap', 'strokeLinejoin', 'className', 'class'],
+            'line': ['x1', 'y1', 'x2', 'y2', 'fill', 'stroke', 'strokeWidth', 'strokeLinecap', 'strokeLinejoin', 'className', 'class'],
+            'circle': ['cx', 'cy', 'r', 'fill', 'stroke', 'strokeWidth', 'className', 'class'],
+            'rect': ['x', 'y', 'width', 'height', 'rx', 'ry', 'fill', 'stroke', 'strokeWidth', 'className', 'class'],
+            'download': ['href', 'url', 'src', 'label', 'title', 'format', 'type', 'description'],
             'videoviz': ['src', 'url', 'delay'],
             'oopviz': ['simulation'],
             'algoviz': ['algorithm'],

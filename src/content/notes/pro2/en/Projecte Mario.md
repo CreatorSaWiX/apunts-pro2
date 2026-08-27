@@ -7,21 +7,9 @@ draft: false
 isUpdated: 6
 ---
 
-<div class="flex items-center gap-4 mb-8 mt-4">
-  <span class="text-slate-300 text-[15px] font-bold">Part 1 and Part 2 (NOT OPTIMIZED):</span>
-  <a href="/mario-pro2%203.zip" download class="flex items-center justify-center gap-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-widest rounded-xl border transition-all select-none bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 hover:text-blue-300 shadow-md shadow-blue-950/10 group no-underline w-fit">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform duration-300"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-    <span>ZIP</span>
-  </a>
-</div>
+::download{href="/mario-pro2%203.zip" label="ZIP" description="Part 1 and Part 2 (not optimized):"}
 
-<div class="flex items-center gap-4 mb-8 mt-4">
-  <span class="text-slate-300 text-[15px] font-bold">Final project with finder optimization</span>
-  <a href="/mario-pro2%204.zip" download class="flex items-center justify-center gap-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-widest rounded-xl border transition-all select-none bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 hover:text-blue-300 shadow-md shadow-blue-950/10 group no-underline w-fit">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform duration-300"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-    <span>ZIP</span>
-  </a>
-</div>
+::download{href="/mario-pro2%204.zip" label="ZIP" description="Final version with Finder optimization:"}
 
 
 ## Part 1: A new type of object (coins)
