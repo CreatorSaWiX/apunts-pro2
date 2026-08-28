@@ -196,6 +196,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
     }, [initialData, edges, nodes, children]);
 
     // Resize Handler
+    // eslint-disable-next-line react-doctor/effect-needs-cleanup
     useEffect(() => {
 
         const updateDimensions = () => {
@@ -209,6 +210,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         let timeoutId: ReturnType<typeof setTimeout> | undefined;
         const debouncedUpdate = () => {
             clearTimeout(timeoutId);
+            // eslint-disable-next-line react-doctor/effect-needs-cleanup
             timeoutId = setTimeout(updateDimensions, 100);
         };
 
@@ -226,7 +228,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps & { children?: React.ReactN
         updateDimensions();
 
         return () => {
-            clearTimeout(timeoutId);
+            if (timeoutId) clearTimeout(timeoutId);
             window.removeEventListener('resize', debouncedUpdate);
             if (observer) observer.disconnect();
         };

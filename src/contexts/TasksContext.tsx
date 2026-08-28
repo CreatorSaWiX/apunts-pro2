@@ -310,5 +310,6 @@ export function useTasks<T>(selector?: (state: TasksState) => T): T | TasksState
     if (!store) {
         throw new Error('useTasks must be used within a TasksProvider');
     }
-    return selector ? useStore(store, selector) : useStore(store);
+    const defaultSelector = (state: TasksState) => state;
+    return useStore(store, selector || (defaultSelector as any));
 }

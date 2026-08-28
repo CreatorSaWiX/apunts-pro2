@@ -8,6 +8,7 @@ const loadFeatures = () => import('framer-motion').then(res => res.domMax);
 import { AppProviders } from './contexts/AppProviders';
 import Spinner from './components/ui/Spinner';
 import { Analytics } from "@vercel/analytics/react";
+import ProtectedRoute from './components/ProtectedRoute';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
@@ -57,15 +58,15 @@ function App() {
               <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
                 <Route path="/login" element={<SuspendedPage><LoginPage /></SuspendedPage>} />
-                <Route path="/profile" element={<SuspendedPage><ProfilePage /></SuspendedPage>} />
-                <Route path="/profile/:username" element={<SuspendedPage><ProfilePage /></SuspendedPage>} />
+                <Route path="/profile" element={<ProtectedRoute><SuspendedPage><ProfilePage /></SuspendedPage></ProtectedRoute>} />
+                <Route path="/profile/:username" element={<ProtectedRoute><SuspendedPage><ProfilePage /></SuspendedPage></ProtectedRoute>} />
                 <Route path="/tema/:id" element={<SuspendedPage><TopicPage /></SuspendedPage>} />
                 <Route path="/tema/:id/test" element={<SuspendedPage><QuizPage /></SuspendedPage>} />
-                <Route path="/tema/:id/solucionaris" element={<SuspendedPage><SolutionsListPage /></SuspendedPage>} />
-                <Route path="/tema/:id/solucionaris/:problemId" element={<SuspendedPage><SolutionDetailPage /></SuspendedPage>} />
-                <Route path="/comunitat" element={<SuspendedPage><CommunityPage /></SuspendedPage>} />
+                <Route path="/tema/:id/solucionaris" element={<ProtectedRoute><SuspendedPage><SolutionsListPage /></SuspendedPage></ProtectedRoute>} />
+                <Route path="/tema/:id/solucionaris/:problemId" element={<ProtectedRoute><SuspendedPage><SolutionDetailPage /></SuspendedPage></ProtectedRoute>} />
+                <Route path="/comunitat" element={<ProtectedRoute><SuspendedPage><CommunityPage /></SuspendedPage></ProtectedRoute>} />
                 <Route path="/register" element={<SuspendedPage><RegisterPage /></SuspendedPage>} />
-                <Route path="/planner" element={<SuspendedPage><PlannerPage /></SuspendedPage>} />
+                <Route path="/planner" element={<ProtectedRoute><SuspendedPage><PlannerPage /></SuspendedPage></ProtectedRoute>} />
                 <Route path="/settings" element={<SuspendedPage><SettingsPage /></SuspendedPage>} />
               </Routes>
             </AnimatePresence>

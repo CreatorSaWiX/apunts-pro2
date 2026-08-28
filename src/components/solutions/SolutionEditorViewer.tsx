@@ -41,7 +41,7 @@ const SolutionEditorViewer = ({
     setSolution
 }: SolutionEditorViewerProps) => {
     const { t } = useTranslation();
-    if (!solution) return null;
+    
     const [isEditing, setIsEditing] = useState(false);
     const [currentCode, setCurrentCode] = useState(solution?.code || '');
 
@@ -50,6 +50,8 @@ const SolutionEditorViewer = ({
         setCurrentCode(solution?.code || '');
         setIsEditing(false); // Reset editing state on solution change
     }, [solution?.id, solution?.code]);
+
+    if (!solution) return null;
 
     const handleSave = async () => {
         if (!solution || !user) return;

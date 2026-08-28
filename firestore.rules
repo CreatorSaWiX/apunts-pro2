@@ -12,7 +12,7 @@ service cloud.firestore {
     // Usuaris
     match /users/{userId} {
       // Qualsevol usuari pot veure perfils individuals (per UI de la comunitat), però es bloqueja el list complet
-      allow get: if true;
+      allow get: if request.auth.uid != null;
       allow list: if false;
       allow update: if request.auth.uid == userId;
       
@@ -45,12 +45,12 @@ service cloud.firestore {
 
     // Solucions i Notificacions: els moderadors fan i desfan la base, tothom ho pot veure
     match /solutions/{solutionId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
       allow write: if isModerator();
       
       // Subcol·lecció de comentaris oberta per a tots
       match /comments/{commentId} {
-        allow read: if true;
+        allow read: if request.auth.uid != null;
         allow create: if request.auth.uid != null;
         allow update: if request.auth.uid != null && request.auth.uid == resource.data.userId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content', 'userAvatar', 'username', 'reactions']);
         // Només l'autor original o l'administrador pot esborrar els missatges
@@ -65,15 +65,15 @@ service cloud.firestore {
 
     // Permisos Globals per Fan-out (CollectionGroup queries)
     match /{path=**}/replies/{replyId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
     }
     match /{path=**}/comments/{commentId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
     }
 
     // Comunitat
     match /community_posts/{postId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
       allow create: if request.auth.uid != null;
       allow update: if request.auth.uid != null && (
         // Reaccions, reports i visualitzacions: qualsevol autenticat
@@ -87,7 +87,7 @@ service cloud.firestore {
       allow delete: if request.auth.uid != null && (request.auth.uid == resource.data.userId || isModerator());
 
       match /replies/{replyId} {
-        allow read: if true;
+        allow read: if request.auth.uid != null;
         allow create: if request.auth.uid != null;
         allow update: if request.auth.uid != null && request.auth.uid == resource.data.userId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content', 'userAvatar', 'username', 'reactions']);
         allow delete: if request.auth.uid != null && (request.auth.uid == resource.data.userId || isModerator());
@@ -101,7 +101,7 @@ service cloud.firestore {
 
     // Diccionari de Noms d'Usuari
     match /usernames/{usernameId} {
-      allow get: if true;
+      allow get: if request.auth.uid != null;
       allow list: if request.auth.uid != null;
       allow create: if request.auth.uid != null && request.resource.data.uid == request.auth.uid;
       allow update: if request.auth.uid != null && resource.data.uid == request.auth.uid;

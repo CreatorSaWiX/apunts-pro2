@@ -21,16 +21,15 @@ export function usePlayerEngine(totalSteps: number, defaultSpeed: number = 1000)
     }, [isPlaying, currentStep, totalSteps, defaultSpeed]);
 
     const handlePlayPause = useCallback((onPlay?: () => void) => {
-        setIsPlaying(p => {
-            const willPlay = !p;
-            if (willPlay && onPlay) onPlay();
-            
-            if (willPlay && currentStep >= totalSteps - 1) {
-                setCurrentStep(0);
-            }
-            return willPlay;
-        });
-    }, [currentStep, totalSteps]);
+        const willPlay = !isPlaying;
+        setIsPlaying(willPlay);
+        
+        if (willPlay && onPlay) onPlay();
+        
+        if (willPlay && currentStep >= totalSteps - 1) {
+            setCurrentStep(0);
+        }
+    }, [isPlaying, currentStep, totalSteps]);
 
     const handleNext = useCallback(() => React.startTransition(() => setCurrentStep(prev => Math.min(prev + 1, totalSteps - 1))), [totalSteps]);
     const handlePrev = useCallback(() => React.startTransition(() => setCurrentStep(prev => Math.max(prev - 1, 0))), []);

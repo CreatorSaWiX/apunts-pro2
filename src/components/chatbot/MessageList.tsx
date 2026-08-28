@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import { Globe, ChevronDown, Brain } from 'lucide-react';
+import { Globe, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { type Message, MARKDOWN_CLS } from './constants';
 import AIStreamingIndicator, { type StreamPhase } from '../AIStreamingIndicator';
@@ -24,9 +24,9 @@ const formatTime = (ms: number | undefined) => {
 
 const ThoughtAccordion = React.memo(({ thoughtText, thoughtTimeMs, t }: { thoughtText: string, thoughtTimeMs?: number, t: any }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const blocks = React.useMemo(() => parseThoughtText(thoughtText || '', t), [thoughtText, t]);
   
   if (!thoughtText || !thoughtText.trim()) return null;
-  const blocks = React.useMemo(() => parseThoughtText(thoughtText, t), [thoughtText, t]);
   const timeString = formatTime(thoughtTimeMs);
 
   return (
