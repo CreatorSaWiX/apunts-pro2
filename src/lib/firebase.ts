@@ -2,6 +2,7 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
+import { getMessaging } from 'firebase/messaging';
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-api-key",
@@ -31,3 +32,8 @@ try {
 
 export const db = firestoreDb;
 export const rtdb = getDatabase(app);
+
+// S'inicialitza només si el navegador suporta notifications
+export const messaging = typeof window !== 'undefined' && 'Notification' in window 
+    ? getMessaging(app) 
+    : null;

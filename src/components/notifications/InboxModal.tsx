@@ -12,6 +12,8 @@ import Modal from '../ui/modals/Modal';
 import NavigationPill from '../ui/NavigationPill';
 import Spinner from '../ui/Spinner';
 import { useTranslation } from 'react-i18next';
+import { usePushNotifications } from '../../hooks/usePushNotifications';
+import { BellRing, Smartphone, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface Notification {
     id: string;
@@ -40,6 +42,10 @@ const InboxModal = ({ isOpen, onClose }: InboxModalProps) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | 'mentions' | 'likes' | 'comments'>('all');
+    
+    // Push notifications hook
+    const { status, requestPermission, isMobile, isStandalone, canRequest } = usePushNotifications();
+    const [isActivating, setIsActivating] = useState(false);
 
     useEffect(() => {
         if (isOpen && user) {
@@ -122,6 +128,12 @@ const InboxModal = ({ isOpen, onClose }: InboxModalProps) => {
         return Array.from(groups.values()).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
     }, [notifications, filter]);
 
+    const handleEnablePush = async () => {
+        setIsActivating(true);
+        await requestPermission();
+        setIsActivating(false);
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -167,8 +179,54 @@ const InboxModal = ({ isOpen, onClose }: InboxModalProps) => {
             </Modal.Header>
 
             <Modal.Body className="!p-0 flex flex-col flex-1 overflow-hidden">
-                {/* Filter navigation moved to header */}
+                {/* Push Notifications Opt-In (Minimalist & Premium) */}
+                {canRequest && (
+                    <div className="mx-4 mt-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex flex-col sm:flex-row gap-4 items-center justify-between overflow-hidden relative">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-[40px] rounded-full pointer-events-none" />
+                        <div className="flex items-center gap-4 z-10">
+                            <div className="w-10 h-10 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-500/30">
+                                {isMobile && !isStandalone ? <Smartphone size={20} /> : <BellRing size={20} />}
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-bold text-white mb-0.5">
+                                    {isMobile && !isStandalone 
+                                        ? t('notifications.push.mobileTitle', 'Instal·la per rebre notificacions') 
+                                        : t('notifications.push.title', 'Activa les notificacions push')}
+                                </h4>
+                                <p className="text-xs text-slate-400">
+                                    {isMobile && !isStandalone 
+                                        ? t('notifications.push.mobileDesc', "Afegeix Apunts a la teva pantalla d'inici per gaudir d'una experiència nativa.") 
+                                        : t('notifications.push.desc', "Rebràs alertes de noves respostes i mencions a l'instant.")}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="z-10 shrink-0 w-full sm:w-auto">
+                            {isMobile && !isStandalone ? (
+                                <div className="text-[11px] font-medium text-slate-300 bg-white/5 px-3 py-1.5 rounded-lg text-center border border-white/10">
+                                    {t('notifications.push.iosHint', "Clica 'Compartir' i 'Afegir a la pantalla d'inici'")}
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={handleEnablePush}
+                                    disabled={isActivating}
+                                    className="w-full sm:w-auto px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(99,102,241,0.4)] hover:shadow-[0_0_25px_rgba(99,102,241,0.6)] flex items-center justify-center gap-2"
+                                >
+                                    {isActivating ? <Spinner size="sm" variant="white" /> : t('notifications.push.enable', 'Activar Ara')}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
                 
+                {status === 'denied' && (
+                    <div className="mx-4 mt-4 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3">
+                        <AlertCircle size={16} className="text-red-400 shrink-0" />
+                        <p className="text-[11px] text-red-200/80">
+                            {t('notifications.push.denied', 'Tens les notificacions bloquejades al teu navegador. Canvia els permisos per rebre alertes.')}
+                        </p>
+                    </div>
+                )}
+
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
                     {isLoading ? (
                         <div className="flex-1 flex items-center justify-center min-h-100">
