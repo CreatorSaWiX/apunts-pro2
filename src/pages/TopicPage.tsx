@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { m as motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
-import type { allPersonalNotes } from 'content-collections';
-
 import { useTranslation } from 'react-i18next';
 
 import { ArrowLeft, ArrowRight, FileText, X } from 'lucide-react';

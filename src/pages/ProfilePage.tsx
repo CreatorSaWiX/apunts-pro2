@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { LogOut, Upload, Mail, Send, Bell, ExternalLink } from 'lucide-react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
@@ -102,9 +102,7 @@ const ProfilePage = () => {
         }
     };
 
-    if (!username && !authUser && !authLoading) return <Navigate to="/login" replace />;
-
-    if (authLoading || isFetchingUser || !extendedUser) {
+    if (isFetchingUser || !extendedUser) {
         return (
             <div className="min-h-screen flex items-center justify-center w-full">
                 <Spinner size="2xl" variant="primary" />

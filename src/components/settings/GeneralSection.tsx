@@ -5,6 +5,7 @@ import { usePushNotifications } from '../../hooks/usePushNotifications';
 export const GeneralSection = () => {
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
+    const { status, canRequest, requestPermission, isStandalone, isMobile } = usePushNotifications();
 
     return (
         <div id="general" className="flex flex-col items-start gap-8 w-full pt-4 pb-12">

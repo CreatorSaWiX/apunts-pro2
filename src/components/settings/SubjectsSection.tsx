@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { m as motion, AnimatePresence, Reorder } from 'framer-motion';
 import { Search, Command, ChevronRight, X } from 'lucide-react';
 import { useSettingsStore } from '../../stores/useSettingsStore';
@@ -7,8 +7,6 @@ import subjectsData from '../../data/subjects.json';
 import NavigationPill from '../ui/NavigationPill';
 import Modal from '../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
-import { createPortal } from 'react-dom';
-import { useLayoutEffect } from 'react';
 import { useShortcut } from '../../hooks/useShortcut';
 
 export const SubjectsSection = () => {
@@ -23,30 +21,6 @@ export const SubjectsSection = () => {
     const [editingSubjectColor, setEditingSubjectColor] = useState<string | null>(null);
     const [previewSubject, setPreviewSubject] = useState<string>('');
     const [subjectError, setSubjectError] = useState<string | null>(null);
-    const [dropdownCoords, setDropdownCoords] = useState({ top: 0, left: 0, width: 0 });
-
-    const updateCoords = () => {
-        if (searchRef.current) {
-            const rect = searchRef.current.getBoundingClientRect();
-            setDropdownCoords({
-                top: rect.bottom + 8,
-                left: rect.left,
-                width: rect.width
-            });
-        }
-    };
-
-    useLayoutEffect(() => {
-        if (isCommandOpen) {
-            updateCoords();
-            window.addEventListener('resize', updateCoords);
-            window.addEventListener('scroll', updateCoords, true);
-            return () => {
-                window.removeEventListener('resize', updateCoords);
-                window.removeEventListener('scroll', updateCoords, true);
-            };
-        }
-    }, [isCommandOpen]);
 
     useEffect(() => {
         if (homeSubjects.length > 0 && !homeSubjects.includes(previewSubject)) {
@@ -70,10 +44,13 @@ export const SubjectsSection = () => {
 
     useShortcut('searchSubjects', handleSearchShortcut);
 
-    const filteredSubjects = subjectsData.filter(s =>
-        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (s.description && s.description.toLowerCase().includes(searchQuery.toLowerCase()))
-    ).filter(s => !homeSubjects.includes(s.name));
+    const filteredSubjects = useMemo(() => {
+        const query = searchQuery.toLowerCase();
+        return subjectsData.filter(s =>
+            s.name.toLowerCase().includes(query) ||
+            (s.description && s.description.toLowerCase().includes(query))
+        ).filter(s => !homeSubjects.includes(s.name));
+    }, [searchQuery, homeSubjects]);
 
     const toggleSubject = (subjectId: string) => {
         if (homeSubjects.includes(subjectId)) {
@@ -122,28 +99,15 @@ export const SubjectsSection = () => {
                     )}
                 </div>
 
-                {isCommandOpen && createPortal(
-                    <>
+                <AnimatePresence>
+                    {isCommandOpen && (
                         <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.98 }}
                             transition={{ duration: 0.2 }}
-                            className="fixed inset-0 z-9998"
-                            onClick={() => setIsCommandOpen(false)}
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.98 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.98 }}
-                            transition={{ duration: 0.2 }}
-                            style={{
-                                top: dropdownCoords.top,
-                                left: dropdownCoords.left,
-                                width: dropdownCoords.width,
-                                WebkitBackdropFilter: 'blur(24px)'
-                            }}
-                            className="fixed z-9999 p-3 rounded-3xl! backdrop-blur-xl border border-(--glass-border) border-t-(--glass-border-light) border-l-(--glass-border-light) shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-(--glass-bg) origin-top"
+                            style={{ WebkitBackdropFilter: 'blur(24px)' }}
+                            className="absolute top-[calc(100%+8px)] left-0 w-full z-50 p-3 rounded-3xl! backdrop-blur-xl border border-(--glass-border) border-t-(--glass-border-light) border-l-(--glass-border-light) shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-(--glass-bg) origin-top"
                         >
                             {filteredSubjects.length > 0 ? (
                                 <div className="flex flex-col gap-1 max-h-75 overflow-y-auto custom-scrollbar pr-1">
@@ -182,9 +146,8 @@ export const SubjectsSection = () => {
                                 <div className="p-6 text-center text-slate-500 font-medium">{t('settings.subjects.noResults', "No s'han trobat resultats")}</div>
                             )}
                         </motion.div>
-                    </>,
-                    document.body
-                )}
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Selected Subjects - Glass Pills Preview */}
@@ -268,7 +231,7 @@ export const SubjectsSection = () => {
             </div>
 
             {/* Navbar Preview */}
-            <div className="w-full mt-2 flex flex-col gap-4 bg-white/2 border border-white/5 p-6 rounded-2xl relative overflow-hidden">
+            <div className={`w-full mt-2 flex flex-col gap-4 bg-white/2 border border-white/5 p-6 rounded-2xl relative overflow-hidden transition duration-300 ${isCommandOpen ? 'opacity-30 blur-sm pointer-events-none' : ''}`}>
                 <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-white/10 to-transparent" />
                 <div className="flex flex-col gap-1">
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t('settings.subjects.previewTitle', 'Vista Prèvia del Navbar')}</span>

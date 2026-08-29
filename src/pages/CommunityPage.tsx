@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback, lazy, Suspense, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Filter, Users, Palette, BookOpen, FileText as FileTextIcon, Image, Code2, Clock, Flame, Eye, Heart, Plus } from 'lucide-react';
 
-import { useAuth } from '../contexts/AuthContext';
 import { useShortcut } from '../hooks/useShortcut';
 import type { CommunityPost } from '../types/community';
 
@@ -26,8 +24,6 @@ const CreatePostModal = lazy(() => import('../components/community/CreatePostMod
 const PostDetailModal = lazy(() => import('../components/community/PostDetailModal'));
 
 const CommunityPage = () => {
-    const { user } = useAuth();
-    const navigate = useNavigate();
     const { t } = useTranslation();
 
     // App State
@@ -106,12 +102,8 @@ const CommunityPage = () => {
     useShortcut('createResource', handleCreateShortcut);
 
     const handleUploadClick = useCallback(() => {
-        if (!user) {
-            navigate('/login');
-        } else {
-            setIsCreateOpen(true);
-        }
-    }, [user, navigate, setIsCreateOpen]);
+        setIsCreateOpen(true);
+    }, [setIsCreateOpen]);
 
     return (
         <div className="w-full min-h-screen pb-32 flex flex-col items-center text-white overflow-x-hidden selection:bg-primary selection:text-black relative">
@@ -230,11 +222,7 @@ const CommunityPage = () => {
                     <button type="button"
                         onClick={() => {
                             if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(20);
-                            if (!user) {
-                                navigate('/login');
-                            } else {
-                                handleOpenCanvas();
-                            }
+                            handleOpenCanvas();
                         }}
                         aria-label={t('community.canvas', 'Llenç')}
                         className={`relative flex items-center justify-center gap-2 px-4 sm:px-6 h-11 md:h-10 rounded-full transition duration-300 text-[11px] sm:text-sm font-bold tracking-wide z-10 group hover:scale-[1.02] active:scale-[0.98] ${isCanvasOpen ? 'text-white' : 'text-slate-400 hover:text-white'}`}
